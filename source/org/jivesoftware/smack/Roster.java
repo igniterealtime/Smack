@@ -68,6 +68,9 @@ public class Roster {
 
     private XMPPConnection connection;
     private Map groups;
+    // The roster is marked as initialized when at least a single roster packet
+    // has been recieved and processed.
+    boolean rosterInitialized = false;
 
     Roster(final XMPPConnection connection) {
         this.connection = connection;
@@ -163,8 +166,7 @@ public class Roster {
             RosterPacket rosterPacket = (RosterPacket)packet;
             for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
-                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        connection);
+                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(), connection);
                 // Find the list of groups that the user currently belongs to.
                 List currentGroupNames = new ArrayList();
                 for (Iterator j = entry.getGroups(); j.hasNext();  ) {
@@ -206,6 +208,9 @@ public class Roster {
                     }
                 }
             }
+
+            // Mark the roster as initialized.
+            rosterInitialized = true;
         }
     }
 }

@@ -53,8 +53,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.*;
 
 import javax.swing.*;
 import java.net.*;
@@ -109,7 +108,7 @@ public class XMPPConnection {
     private PacketWriter packetWriter;
     private PacketReader packetReader;
 
-    private Roster roster = null;
+    Roster roster = null;
     private AccountManager accountManager = null;
 
     Writer writer;
@@ -330,6 +329,24 @@ public class XMPPConnection {
      * @return the user's roster, or <tt>null</tt> if the user has not logged in yet.
      */
     public Roster getRoster() {
+        if (roster == null) {
+            return null;
+        }
+        // If this is the first time the user has asked for the roster after calling
+        // login, we want to wait up to 2 seconds for the server to send back the
+        // user's roster. This behavior shields API users from having to worry about the
+        // fact that roster operations are asynchronous, although they'll still have to
+        // listen for changes to the roster. Note: because of this waiting logic, internal
+        // Smack code should be wary about calling the getRoster method, and may need to
+        // access the roster object directly.
+        int elapsed = 0;
+        while (!roster.rosterInitialized && elapsed <= 2000) {
+            try {
+                Thread.sleep(500);
+            }
+            catch (Exception e) { }
+            elapsed += 500;
+        }
         return roster;
     }
 

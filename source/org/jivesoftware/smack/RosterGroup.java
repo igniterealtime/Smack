@@ -131,10 +131,10 @@ public class RosterGroup {
     }
 
     /**
-     * Returns true if an entry is part of the group.
+     * Returns true if an entry is part of this group.
      *
-     * @param entry
-     * @return
+     * @param entry a roster entry.
+     * @return true if the entry is part of this group.
      */
     public boolean contains(RosterEntry entry) {
         synchronized (entries) {
@@ -142,6 +142,11 @@ public class RosterGroup {
         }
     }
 
+    /**
+     * Adds a roster entry to this group.
+     *
+     * @param entry a roster entry.
+     */
     public void addEntry(RosterEntry entry) {
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
@@ -155,6 +160,11 @@ public class RosterGroup {
         }
     }
 
+    /**
+     * Removes a roster entry from this group.
+     *
+     * @param entry a roster entry.
+     */
     public void removeEntry(RosterEntry entry) {
         // Only remove the entry if it's in the entry list.
         synchronized (entries) {

@@ -55,11 +55,10 @@ public class RosterEntry {
      * @return an iterator for the groups this entry belongs to.
      */
     public Iterator getGroups() {
-        Roster roster = connection.getRoster();
         List results = new ArrayList();
         // Loop through all roster groups and find the ones that contain this
         // entry. This algorithm should be fine
-        for (Iterator i=roster.getGroups(); i.hasNext(); ) {
+        for (Iterator i=connection.roster.getGroups(); i.hasNext(); ) {
             RosterGroup group = (RosterGroup)i.next();
             if (group.contains(this)) {
                 results.add(group);
