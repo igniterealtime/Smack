@@ -259,7 +259,7 @@ public class ProviderManager {
      *
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
-     * @return
+     * @return the IQ provider.
      */
     public synchronized static Object getIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
@@ -283,7 +283,7 @@ public class ProviderManager {
      *
      * @param elementName
      * @param namespace
-     * @return
+     * @return the extenion provider.
      */
     public synchronized static Object getExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);

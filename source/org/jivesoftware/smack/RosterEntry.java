@@ -88,7 +88,7 @@ public class RosterEntry {
 
     /**
      * Returns the roster subscription type of the entry. When the type is
-     * {@link RosterPacket.ItemType#NONE}, the subscription request is pending.
+     * RosterPacket.ItemType.NONE, the subscription request is pending.
      *
      * @return the type.
      */
