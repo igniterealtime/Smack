@@ -265,6 +265,7 @@ class EnhancedDebuggerWindow {
 
         // Add pop-up menu.
         JPopupMenu menu = new JPopupMenu();
+        // Add a menu item that allows to close the current selected tab
         JMenuItem menuItem = new JMenuItem("Close");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -282,6 +283,33 @@ class EnhancedDebuggerWindow {
                         "Smack Debug Window -- Total connections: "
                             + (tabbedPane.getComponentCount() - 1));
                 }
+            }
+        });
+        menu.add(menuItem);
+        // Add a menu item that allows to close all the tabs that have their connections closed
+        menuItem = new JMenuItem("Close All Not Active");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ArrayList debuggersToRemove = new ArrayList();
+                // Remove all the debuggers of which their connections are no longer valid
+                for (int index=0; index < tabbedPane.getComponentCount()-1; index++) {
+                    EnhancedDebugger debugger = (EnhancedDebugger)debuggers.get(index);
+                    if (!debugger.isConnectionActive()) {
+                        // Notify to the debugger to stop debugging
+                        debugger.cancel();
+                        debuggersToRemove.add(debugger);
+                    }
+                }
+                for (Iterator it=debuggersToRemove.iterator(); it.hasNext();) {
+                    EnhancedDebugger debugger = (EnhancedDebugger)it.next();
+                    // Remove the debugger from the root window
+                    tabbedPane.remove(debugger.tabbedPane);
+                    debuggers.remove(debugger);
+                }
+                // Update the root window title
+                frame.setTitle(
+                    "Smack Debug Window -- Total connections: "
+                        + (tabbedPane.getComponentCount() - 1));
             }
         });
         menu.add(menuItem);
