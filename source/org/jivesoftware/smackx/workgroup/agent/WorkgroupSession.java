@@ -58,9 +58,6 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.GroupChatInvitation;
-
-import org.jivesoftware.smackx.workgroup.*;
 import org.jivesoftware.smackx.workgroup.packet.*;
 
 /**
@@ -460,31 +457,15 @@ public class WorkgroupSession {
      *
      * @param invitationListener the invitation listener.
      */
-    public void addInvitationListener(InvitationListener invitationListener) {
-        synchronized(invitationListeners) {
-            if (!invitationListeners.contains(invitationListener)) {
-                invitationListeners.add(invitationListener);
-            }
-        }
-    }
-
-    /**
-     * Removes an invitation listener.
-     *
-     * @param invitationListener the invitation listener.
-     */
-    public void removeInvitationListener(InvitationListener invitationListener) {
-        synchronized(invitationListeners) {
-            offerListeners.remove(invitationListener);
-        }
+    public void addInvitationListener(PacketListener invitationListener) {
+        // TODO
     }
 
     private void fireOfferRequestEvent(OfferRequestProvider.OfferRequestPacket requestPacket) {
         Offer offer = new Offer(this.connection, this, requestPacket.getUserID(),
-                                this.getWorkgroupName(),
-                                new Date((new Date()).getTime()
-                                            + (requestPacket.getTimeout() * 1000)),
-                                requestPacket.getSessionID(), requestPacket.getMetaData());
+                this.getWorkgroupName(), new Date((new Date()).getTime()
+                + (requestPacket.getTimeout() * 1000)), requestPacket.getSessionID(),
+                requestPacket.getMetaData());
 
         synchronized (offerListeners) {
             for (Iterator i=offerListeners.iterator(); i.hasNext(); ) {
@@ -496,27 +477,12 @@ public class WorkgroupSession {
 
     private void fireOfferRevokeEvent(OfferRevokeProvider.OfferRevokePacket orp) {
         RevokedOffer revokedOffer = new RevokedOffer(orp.getUserID(), this.getWorkgroupName(),
-                                                     orp.getSessionID(), orp.getReason(),
-                                                     new Date());
+                orp.getSessionID(), orp.getReason(), new Date());
 
         synchronized (offerListeners) {
             for (Iterator i=offerListeners.iterator(); i.hasNext(); ) {
                 OfferListener listener = (OfferListener)i.next();
                 listener.offerRevoked(revokedOffer);
-            }
-        }
-    }
-
-    private void fireInvitationEvent(String groupChatJID, String sessionID, String body,
-            String from, Map metaData)
-    {
-        Invitation invitation = new Invitation(connection.getUser(), groupChatJID,
-                workgroupName, sessionID, body, from, metaData);
-
-        synchronized(invitationListeners) {
-            for (Iterator i=invitationListeners.iterator(); i.hasNext(); ) {
-                InvitationListener listener = (InvitationListener)i.next();
-                listener.invitationReceived(invitation);
             }
         }
     }
@@ -647,33 +613,6 @@ public class WorkgroupSession {
                 // Fire event.
                 fireQueueAgentsEvent(queue, -1, -1, agentStatus.getAgents());
                 return;
-            }
-        }
-        else if (packet instanceof Message) {
-            Message message = (Message)packet;
-
-            GroupChatInvitation invitation = (GroupChatInvitation)message.getExtension(
-                    GroupChatInvitation.ELEMENT_NAME, GroupChatInvitation.NAMESPACE);
-
-            if (invitation != null) {
-                String roomAddress = invitation.getRoomAddress();
-                String sessionID = null;
-                Map metaData = null;
-
-                SessionID sessionIDExt = (SessionID)message.getExtension(SessionID.ELEMENT_NAME,
-                        SessionID.NAMESPACE);
-                if (sessionIDExt != null) {
-                    sessionID = sessionIDExt.getSessionID();
-                }
-
-                MetaData metaDataExt = (MetaData)message.getExtension(MetaData.ELEMENT_NAME,
-                        MetaData.NAMESPACE);
-                if (metaDataExt != null) {
-                    metaData = metaDataExt.getMetaData();
-                }
-
-                this.fireInvitationEvent(roomAddress, sessionID, message.getBody(),
-                        message.getFrom(), metaData);
             }
         }
         else if (packet instanceof OfferRevokeProvider.OfferRevokePacket) {
