@@ -130,10 +130,9 @@ public class XMPPError {
      */
     public String toXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<error>");
-        buf.append("<code>").append(code).append("</code>");
+        buf.append("<error code=\"").append(code).append("\">");
         if (message != null) {
-            buf.append("<message>").append(message).append("</message>");
+            buf.append(message);
         }
         buf.append("</error>");
         return buf.toString();
