@@ -71,9 +71,10 @@ import java.util.Hashtable;
  */
 public class PrivateDataManager {
 
+    /**
+     * Map of provider instances.
+     */
     private static Map privateDataProviders = new Hashtable();
-
-    private XMPPConnection con;
 
     /**
      * Returns the private data provider registered to the specified XML element name and namespace.
@@ -117,6 +118,9 @@ public class PrivateDataManager {
         privateDataProviders.put(key, provider);
     }
 
+
+    private XMPPConnection con;
+
     /**
      * Creates a new private data manager.
      *
@@ -127,12 +131,17 @@ public class PrivateDataManager {
     }
 
     /**
-     * Returns the private data specified by the given element name and namespace.
+     * Returns the private data specified by the given element name and namespace. Each chunk
+     * of private data is uniquely identified by an element name and namespace pair.<p>
+     *
+     * If a PrivateDataProvider is registered for the specified element name/namespace pair then
+     * that provider will determine the specific object type that is returned. If no provider
+     * is registered, a {@link DefaultPrivateData} instance will be returned.
      *
      * @param elementName the element name.
      * @param namespace the namespace.
      * @return the private data.
-     * @throws XMPPException
+     * @throws XMPPException if an error occurs getting the private data.
      */
     public PrivateData getPrivateData(final String elementName, final String namespace)
             throws XMPPException
@@ -168,6 +177,14 @@ public class PrivateDataManager {
         return ((PrivateDataResult)response).getPrivateData();
     }
 
+    /**
+     * Sets a private data value. Each chunk of private data is uniquely identified by an
+     * element name and namespace pair. If private data has already been set with the
+     * element name and namespace, then the new private data will overwrite the old value.
+     *
+     * @param privateData the private data.
+     * @throws XMPPException if setting the private data fails.
+     */
     public void setPrivateData(final PrivateData privateData) throws XMPPException {
         // Create an IQ packet to set the private data.
         IQ privateDataSet = new IQ() {
@@ -278,8 +295,8 @@ public class PrivateDataManager {
         }
     }
 
-    private static PrivateData parseWithIntrospection(String elementName,
-            Class objectClass, XmlPullParser parser) throws Exception
+    private static PrivateData parseWithIntrospection(String elementName, Class objectClass,
+            XmlPullParser parser) throws Exception
     {
         boolean done = false;
         PrivateData object = (PrivateData)objectClass.newInstance();
