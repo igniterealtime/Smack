@@ -1,54 +1,22 @@
 /**
-* $RCSfile$
-* $Revision$
-* $Date$
-*
-* Copyright (C) 2002-2004 Jive Software. All rights reserved.
-* ====================================================================
-* The Jive Software License (based on Apache Software License, Version 1.1)
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer.
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. The end-user documentation included with the redistribution,
-*    if any, must include the following acknowledgment:
-*       "This product includes software developed by
-*        Jive Software (http://www.jivesoftware.com)."
-*    Alternately, this acknowledgment may appear in the software itself,
-*    if and wherever such third-party acknowledgments normally appear.
-*
-* 4. The names "Smack" and "Jive Software" must not be used to
-*    endorse or promote products derived from this software without
-*    prior written permission. For written permission, please
-*    contact webmaster@jivesoftware.com.
-*
-* 5. Products derived from this software may not be called "Smack",
-*    nor may "Smack" appear in their name, without prior written
-*    permission of Jive Software.
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL JIVE SOFTWARE OR
-* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*/
+ * $RCSfile$
+ * $Revision$
+ * $Date$
+ *
+ * Copyright 2003-2004 Jive Software.
+ *
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.jivesoftware.smackx.workgroup.packet;
 
@@ -62,17 +30,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.jivesoftware.smackx.workgroup.agent.Agent;
 
 /**
- * An immutable container around the basic data known about a given agent, as well as a
- *  PacketExtension implementor which knows how to write the agent-status packet extension.
- *  The packet extension implementation doesn't transmit its presence information as, due to
- *  the protocol design, that is to be done by the presence packet which houses this extension.
- *  Similarly, the agent-status packet extension transmits nothing about the agent id, nor
- *  the metadata.<br>
+ * Packet extension implementation for agent status. Information about each agent includes
+ * their JID, current chat count, max chats they can handle, and their presence in the
+ * workgroup.
  *
- * PENDING: feels hacky to carry around the presence packet, but it's an adequate container
- *  for the time being.<br>
- *
- * @author loki der quaeler
+ * @author Matt Tucker
  */
 public class AgentStatus implements PacketExtension {
 
@@ -110,11 +72,11 @@ public class AgentStatus implements PacketExtension {
         }
     }
 
-    public String getElementName () {
+    public String getElementName() {
         return ELEMENT_NAME;
     }
 
-    public String getNamespace () {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
@@ -140,30 +102,13 @@ public class AgentStatus implements PacketExtension {
 
                 if (agent.getPresence() != null) {
                     buf.append(agent.getPresence().toXML());
-                    // TODO: ensure that presence.toXML method is ok, then delete code below.
-                    /*Presence presence = agent.getPresence();
-                    int priority = presence.getPriority();
-                    Presence.Mode mode = presence.getMode();
-                    String status = presence.getStatus();
-
-                    buf.append("<presence>");
-                    if (status != null) {
-                        buf.append("<status>").append(status).append("</status>");
-                    }
-                    if (priority != -1) {
-                        buf.append("<priority>").append(priority).append("</priority>");
-                    }
-                    if (mode != null && mode != Presence.Mode.AVAILABLE) {
-                        buf.append("<show>").append(mode).append("</show>");
-                    }
-                    buf.append("</presence>");*/
                 }
 
                 buf.append("</agent>");
             }
         }
 
-        buf.append("</").append(this.getElementName()).append("> ");
+        buf.append("</").append(ELEMENT_NAME).append("> ");
 
         return buf.toString();
     }
