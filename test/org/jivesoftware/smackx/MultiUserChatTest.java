@@ -175,11 +175,17 @@ public class MultiUserChatTest extends TestCase {
             muc2.invite(user3, "Meet me in this excellent room");
             Thread.sleep(300);
             
-            assertEquals("Invitation was not received", "Meet me in this excellent room", answer[0]);
+            assertEquals(
+                "Invitation was not received",
+                "Meet me in this excellent room",
+                answer[0]);
             // TODO This line was commented because jabberd2 is not accepting rejections 
             // from users that aren't participants of the room. Remove the commented line when  
             // running the test against a server that correctly implements JEP-45  
             //assertEquals("Rejection was not received", "I'm busy right now", answer[1]);
+            
+            // User2 leaves the room
+            muc2.leave();
         }
         catch (Exception e) {
             fail(e.getMessage());
@@ -212,6 +218,13 @@ public class MultiUserChatTest extends TestCase {
         }
     }*/
     
+    // TODO This test is commented because jabberd2 responds a 501 (feature-not-implemented) error
+    /*public void testDiscoverMUCSupport() {
+        // Discover user1 support of MUC
+        boolean supports = MultiUserChat.isServiceEnabled(conn2, user1);
+        assertTrue("Couldn't detect that user1 supports MUC", supports);
+    }*/
+
     public void testPrivateChat() {
         try {
             // User2 joins the new room
@@ -246,6 +259,9 @@ public class MultiUserChatTest extends TestCase {
             Message response = chat.nextMessage(2000);
             assertEquals("Sender of response is incorrect",room + "/testbot", response.getFrom());
             assertEquals("Body of response is incorrect","ACK", response.getBody());
+
+            // User2 leaves the room
+            muc2.leave();
         }
         catch (Exception e) {
             fail(e.getMessage());
@@ -260,6 +276,74 @@ public class MultiUserChatTest extends TestCase {
         String reservedNickname = muc2.getReservedNickname();
         assertNull("Reserved nickname is not null", reservedNickname);
     }*/
+
+    public void testChangeSubject() {
+        final String[] answer = new String[2];
+        try {
+            // User1 sets an initial subject
+            muc.changeSubject("Initial Subject");
+
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            
+            // User3 joins the new room
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+
+            // User3 wants to be notified every time the room's subject is changed.
+            muc3.addSubjectUpdatedListener(new SubjectUpdatedListener() {
+                public void subjectUpdated(String subject, String from) {
+                    answer[0] = subject;
+                    answer[1] = from;
+                }
+            });
+
+            // Check that a 403 error is received when a not allowed user tries to change the 
+            // subject in a room
+            try {
+                muc2.changeSubject("New Subject2");
+                fail("User2 was allowed to change the room's subject");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received when changing the room's subject",
+                    xmppError);
+                assertEquals(
+                    "Different error code was received while changing the room's subject",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that every MUC updates its subject when an allowed user changes the subject 
+            // in a room
+            muc.changeSubject("New Subject1");
+            Thread.sleep(300);
+            // Check that User2's MUC has updated its subject
+            assertEquals(
+                "User2 didn't receive the subject notification",
+                "New Subject1",
+                muc2.getSubject());
+            // Check that SubjectUpdatedListener is working OK
+            assertEquals(
+                "User3 didn't receive the subject notification",
+                "New Subject1",
+                answer[0]);
+            assertEquals(
+                "User3 didn't receive the correct user that changed the subject",
+                room + "/testbot",
+                answer[1]);
+
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 
     protected void setUp() throws Exception {
         super.setUp();
