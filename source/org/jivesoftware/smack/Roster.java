@@ -68,17 +68,24 @@ public class Roster {
 
     private XMPPConnection connection;
     private Map groups;
+    private List rosterListeners;
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
     boolean rosterInitialized = false;
 
+    /**
+     * Creates a new roster.
+     *
+     * @param connection an XMPP connection.
+     */
     Roster(final XMPPConnection connection) {
         this.connection = connection;
         groups = new HashMap();
+        rosterListeners = new ArrayList();
         // Listen for any roster packets.
         PacketFilter filter = new PacketTypeFilter(RosterPacket.class);
-        PacketListener rosterListener = new RosterListener();
-        connection.addPacketListener(rosterListener, filter);
+        PacketListener rosterPacketListener = new RosterPacketListener();
+        connection.addPacketListener(rosterPacketListener, filter);
     }
 
     /**
@@ -88,6 +95,32 @@ public class Roster {
      */
     public void reload() {
         connection.sendPacket(new RosterPacket());
+    }
+
+    /**
+     * Adds a listener to this roster. The listener will be fired anytime one or more
+     * changes to the roster are pushed from the server.
+     *
+     * @param rosterListener a roster listener.
+     */
+    public void addRosterListner(RosterListener rosterListener) {
+        synchronized (rosterListeners) {
+            if (!rosterListeners.contains(rosterListener)) {
+                rosterListeners.add(rosterListener);
+            }
+        }
+    }
+
+    /**
+     * Removes a listener from this roster. The listener will be fired anytime one or more
+     * changes to the roster are pushed from the server.
+     *
+     * @param rosterListener a roster listener.
+     */
+    public void removeRosterListener(RosterListener rosterListener) {
+        synchronized (rosterListeners) {
+            rosterListeners.remove(rosterListener);
+        }
     }
 
     /**
@@ -158,9 +191,23 @@ public class Roster {
     }
 
     /**
+     * Fires roster listeners.
+     */
+    private void fireRosterListeners() {
+        RosterListener [] listeners = null;
+        synchronized (rosterListeners) {
+            listeners = new RosterListener[rosterListeners.size()];
+            rosterListeners.toArray(listeners);
+        }
+        for (int i=0; i<listeners.length; i++) {
+            listeners[i].rosterModified();
+        }
+    }
+
+    /**
      * Listens for all roster packets and processes them.
      */
-    private class RosterListener implements PacketListener {
+    private class RosterPacketListener implements PacketListener {
 
         public void processPacket(Packet packet) {
             RosterPacket rosterPacket = (RosterPacket)packet;
@@ -208,6 +255,9 @@ public class Roster {
                     }
                 }
             }
+
+            // Fire event for roster listeners.
+            fireRosterListeners();
 
             // Mark the roster as initialized.
             rosterInitialized = true;
