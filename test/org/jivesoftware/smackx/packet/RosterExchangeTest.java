@@ -9,6 +9,7 @@ import java.util.Iterator;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smackx.*;
 
 import junit.framework.TestCase;
 

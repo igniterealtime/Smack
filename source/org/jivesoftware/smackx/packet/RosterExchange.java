@@ -56,6 +56,7 @@ import java.util.*;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.*;
 
 /**
  * Represents XMPP Roster Item Exchange packets.<p>
@@ -106,14 +107,17 @@ public class RosterExchange implements PacketExtension {
      * @param rosterEntry a roster entry to add.
      */
     public void addRosterEntry(RosterEntry rosterEntry) {
-        RosterGroup rosterGroup = null;
+		// Obtain a String[] from the roster entry groups name 
+		ArrayList groupNamesList = new ArrayList();
+		String[] groupNames;
+		for (Iterator groups = rosterEntry.getGroups(); groups.hasNext();) {
+			groupNamesList.add(((RosterGroup) groups.next()).getName());
+		}
+		groupNames = (String[]) groupNamesList.toArray(new String[groupNamesList.size()]);
+
         // Create a new Entry based on the rosterEntry and add it to the packet
-        RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getUser(), rosterEntry.getName());
-        // Add the entry groups to the Entry
-        for (Iterator groups = rosterEntry.getGroups(); groups.hasNext();) {
-            rosterGroup = (RosterGroup) groups.next();
-            remoteRosterEntry.addGroupName(rosterGroup.getName());
-        }
+        RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getUser(), rosterEntry.getName(), groupNames);
+		
         addRosterEntry(remoteRosterEntry);
     }
 

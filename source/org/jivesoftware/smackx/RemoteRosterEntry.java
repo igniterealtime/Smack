@@ -50,7 +50,7 @@
  * ====================================================================
  */
 
-package org.jivesoftware.smackx.packet;
+package org.jivesoftware.smackx;
 
 import java.util.*;
 
@@ -67,18 +67,22 @@ public class RemoteRosterEntry {
 
     private String user;
     private String name;
-    private List groupNames;
+    private List groupNames = new ArrayList();
 
     /**
      * Creates a new remote roster entry.
      *
      * @param user the user.
      * @param name the user's name.
+     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     *      the roster entry won't belong to a group.
      */
-    public RemoteRosterEntry(String user, String name) {
+    public RemoteRosterEntry(String user, String name, String [] groups) {
         this.user = user;
         this.name = name;
-        groupNames = new ArrayList();
+		if (groups != null) {
+			groupNames = new ArrayList(Arrays.asList(groups));
+		}
     }
 
     /**
@@ -97,15 +101,6 @@ public class RemoteRosterEntry {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Sets the user's name.
-     *
-     * @param name the user's name.
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -132,30 +127,6 @@ public class RemoteRosterEntry {
                 (Collections
                     .unmodifiableList(groupNames)
                     .toArray(new String[groupNames.size()]));
-        }
-    }
-
-    /**
-     * Adds a group name.
-     *
-     * @param groupName the group name.
-     */
-    public void addGroupName(String groupName) {
-        synchronized (groupNames) {
-            if (!groupNames.contains(groupName)) {
-                groupNames.add(groupName);
-            }
-        }
-    }
-
-    /**
-     * Removes a group name.
-     *
-     * @param groupName the group name.
-     */
-    public void removeGroupName(String groupName) {
-        synchronized (groupNames) {
-            groupNames.remove(groupName);
         }
     }
 

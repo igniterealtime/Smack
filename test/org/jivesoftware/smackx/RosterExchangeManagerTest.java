@@ -57,7 +57,6 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smackx.packet.RemoteRosterEntry;
 
 
 /**

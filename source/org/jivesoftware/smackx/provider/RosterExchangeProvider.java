@@ -52,8 +52,11 @@
 
 package org.jivesoftware.smackx.provider;
 
+import java.util.ArrayList;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smackx.*;
 import org.jivesoftware.smackx.packet.*;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -84,21 +87,26 @@ public class RosterExchangeProvider implements PacketExtensionProvider {
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;
         RemoteRosterEntry remoteRosterEntry = null;
+		String jid = "";
+		String name = "";
+		ArrayList groupsName = new ArrayList();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
-                    String jid = parser.getAttributeValue("", "jid");
-                    String name = parser.getAttributeValue("", "name");
-                    // Create packet.
-                    remoteRosterEntry = new RemoteRosterEntry(jid, name);
+                	// Reset this variable since they are optional for each item
+					groupsName = new ArrayList();
+					// Initialize the variables from the parsed XML
+                    jid = parser.getAttributeValue("", "jid");
+                    name = parser.getAttributeValue("", "name");
                 }
                 if (parser.getName().equals("group")) {
-                    String groupName = parser.nextText();
-                    remoteRosterEntry.addGroupName(groupName);
+					groupsName.add(parser.nextText());
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
+					// Create packet.
+					remoteRosterEntry = new RemoteRosterEntry(jid, name, (String[]) groupsName.toArray(new String[groupsName.size()]));
                     rosterExchange.addRosterEntry(remoteRosterEntry);
                 }
                 if (parser.getName().equals("x")) {
