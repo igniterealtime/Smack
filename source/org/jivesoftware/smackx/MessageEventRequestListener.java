@@ -78,49 +78,41 @@ public interface MessageEventRequestListener {
      * Called when a request for message delivered notification is received.
      *  
      * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
+     * @param packetID the id of the message that was sent.
      * @param messageEventManager the messageEventManager that fired the listener.
      */
-    public void deliveredNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager);
+    public void deliveredNotificationRequested(String from, String packetID,
+            MessageEventManager messageEventManager);
 
     /**
      * Called when a request for message displayed notification is received.
      *  
      * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
+     * @param packetID the id of the message that was sent.
      * @param messageEventManager the messageEventManager that fired the listener.
      */
-    public void displayedNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager);
+    public void displayedNotificationRequested(String from, String packetID,
+            MessageEventManager messageEventManager);
 
     /**
      * Called when a request that the receiver of the message is composing a reply notification is 
      * received.
      *  
      * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
+     * @param packetID the id of the message that was sent.
      * @param messageEventManager the messageEventManager that fired the listener.
      */
-    public void composingNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager);
+    public void composingNotificationRequested(String from, String packetID,
+                MessageEventManager messageEventManager);
 
     /**
      * Called when a request that the receiver of the message is offline is received.
      *  
      * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
+     * @param packetID the id of the message that was sent.
      * @param messageEventManager the messageEventManager that fired the listener.
      */
-    public void offlineNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager);
+    public void offlineNotificationRequested(String from, String packetID,
+            MessageEventManager messageEventManager);
 
 }

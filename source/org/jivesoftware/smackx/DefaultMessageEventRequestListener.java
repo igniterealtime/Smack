@@ -63,60 +63,25 @@ package org.jivesoftware.smackx;
  */
 public class DefaultMessageEventRequestListener implements MessageEventRequestListener {
 
-    /**
-     * Called when a request of message delivered notification is received. The default
-     * behavior is to automatically respond that the message has been delivered.
-     *  
-     * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
-     * @param messageEventManager the messageEventManager that fired the listener.
-     */
-    public void deliveredNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager) {
+    public void deliveredNotificationRequested(String from, String packetID,
+                MessageEventManager messageEventManager)
+    {
         // Send to the message's sender that the message has been delivered
         messageEventManager.sendDeliveredNotification(from, packetID);
     }
 
-    /**
-     * Called when a request of message displayed notification is received.
-     *  
-     * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
-     * @param messageEventManager the messageEventManager that fired the listener.
-     */
-    public void displayedNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager) {
+    public void displayedNotificationRequested(String from, String packetID,
+            MessageEventManager messageEventManager)
+    {
     }
 
-    /**
-     * Called when a request that the receiver of the message is composing a reply notification is 
-     * received.
-     *  
-     * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
-     * @param messageEventManager the messageEventManager that fired the listener.
-     */
-    public void composingNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager) {
+    public void composingNotificationRequested(String from, String packetID,
+            MessageEventManager messageEventManager)
+    {
     }
 
-    /**
-     * Called when a request that the receiver of the message is offline is received.
-     *  
-     * @param from the user that sent the notification.
-     * @param packetId the id of the message that was sent.
-     * @param messageEventManager the messageEventManager that fired the listener.
-     */
-    public void offlineNotificationRequested(
-        String from,
-        String packetID,
-        MessageEventManager messageEventManager) {
+    public void offlineNotificationRequested(String from, String packetID,
+            MessageEventManager messageEventManager)
+    {
     }
-
 }
