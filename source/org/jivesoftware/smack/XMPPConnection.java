@@ -107,9 +107,9 @@ public class XMPPConnection {
     }
     private JFrame debugFrame = null;
 
-    protected String host;
-    protected int port;
-    protected Socket socket;
+    String host;
+    int port;
+    Socket socket;
 
     String connectionID;
     private String user = null;
@@ -129,7 +129,7 @@ public class XMPPConnection {
     /**
      * Constructor for use by classes extending this one.
      */
-    protected XMPPConnection() {
+    XMPPConnection() {
 
     }
 
