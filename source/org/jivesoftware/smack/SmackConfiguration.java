@@ -158,6 +158,10 @@ public final class SmackConfiguration {
      * @return the milliseconds to wait for a response from the server
      */
     public static int getPacketReplyTimeout() {
+        // The timeout value must be greater than 0 otherwise we will answer the default value
+        if (packetReplyTimeout <= 0) {
+            packetReplyTimeout = 5000; 
+        }
         return packetReplyTimeout;
     }
 
@@ -168,6 +172,9 @@ public final class SmackConfiguration {
      * @param timeout the milliseconds to wait for a response from the server
      */
     public static void setPacketReplyTimeout(int timeout) {
+        if (timeout <= 0) {
+            throw new IllegalArgumentException();
+        }
         packetReplyTimeout = timeout;
     }
 
