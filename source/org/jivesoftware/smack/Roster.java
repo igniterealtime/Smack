@@ -131,6 +131,10 @@ public class Roster {
     /**
      * Returns the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
+     * The default subscription mode is {@link #SUBCRIPTION_ACCEPT_ALL}.<p>
+     *
+     * If using the manual mode, a PacketListener should be registered that
+     * listens for Presence packets that have a type of {@link Presence.Type#SUBSCRIBE}.
      *
      * @return the subscription mode.
      */
@@ -141,6 +145,10 @@ public class Roster {
     /**
      * Sets the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
+     * The default subscription mode is {@link #SUBCRIPTION_ACCEPT_ALL}.<p>
+     *
+     * If using the manual mode, a PacketListener should be registered that
+     * listens for Presence packets that have a type of {@link Presence.Type#SUBSCRIBE}.
      *
      * @param subscriptionMode the subscription mode.
      */
