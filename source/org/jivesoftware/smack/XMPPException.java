@@ -63,7 +63,8 @@ import java.io.PrintWriter;
  */
 public class XMPPException extends Exception {
 
-    private Throwable cause;
+    private Error error = null;
+    private Throwable cause = null;
 
     public XMPPException() {
         super();
@@ -78,26 +79,51 @@ public class XMPPException extends Exception {
         this.cause = cause;
     }
 
+    public XMPPException(Error error) {
+        super();
+        this.error = error;
+    }
+
     public XMPPException(String message, Throwable cause) {
         super(message);
         this.cause = cause;
     }
 
+    public XMPPException(String message, Error error) {
+        super(message);
+        this.error = error;
+    }
+
     public void printStackTrace() {
+        if (error != null) {
+            System.err.println(error);
+        }
         super.printStackTrace();
-        System.err.println("Nested Exception: ");
-        cause.printStackTrace();
+        if (cause != null) {
+            System.err.println("Nested Exception: ");
+            cause.printStackTrace();
+        }
     }
 
     public void printStackTrace(PrintStream out) {
+        if (error != null) {
+            System.err.println(error);
+        }
         super.printStackTrace(out);
-        out.println("Nested Exception: ");
-        cause.printStackTrace(out);
+        if (cause != null) {
+            out.println("Nested Exception: ");
+            cause.printStackTrace(out);
+        }
     }
 
     public void printStackTrace(PrintWriter out) {
+        if (error != null) {
+            System.err.println(error);
+        }
         super.printStackTrace(out);
-        out.println("Nested Exception: ");
-        cause.printStackTrace(out);
+        if (cause != null) {
+            out.println("Nested Exception: ");
+            cause.printStackTrace(out);
+        }
     }
 }
