@@ -172,14 +172,14 @@ public class RosterExchangeManager {
     /**
      * Fires roster exchange listeners.
      */
-    private void fireRosterExchangeListeners(String from, Iterator rosterEntries) {
+    private void fireRosterExchangeListeners(String from, Iterator remoteRosterEntries) {
         RosterExchangeListener[] listeners = null;
         synchronized (rosterExchangeListeners) {
             listeners = new RosterExchangeListener[rosterExchangeListeners.size()];
             rosterExchangeListeners.toArray(listeners);
         }
         for (int i = 0; i < listeners.length; i++) {
-            listeners[i].entriesReceived(from, rosterEntries);
+            listeners[i].entriesReceived(from, remoteRosterEntries);
         }
     }
 
