@@ -465,6 +465,74 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns the room's registration form that an unaffiliated user, can use to become a member 
+     * of the room or <tt>null</tt> if no registration is possible. Some rooms may restrict the 
+     * privilege to register members and allow only room admins to add new members.<p>
+     * 
+     * If the user requesting registration requirements is not allowed to register with the room 
+     * (e.g. because that privilege has been restricted), the room will return a "Not Allowed" 
+     * error to the user (error code 405).
+     * 
+     * @return the registration Form that contains the fields to complete together with the 
+     * instrucions or <tt>null</tt> if no registration is possible.
+     * @throws XMPPException if an error occurs asking the registration form for the room or a 
+     * 405 error if the user is not allowed to register with the room.
+     */
+    public Form getRegistrationForm() throws XMPPException {
+        Registration reg = new Registration();
+        reg.setType(IQ.Type.GET);
+        reg.setTo(room);
+
+        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
+                new PacketTypeFilter(IQ.class));
+        PacketCollector collector = connection.createPacketCollector(filter);
+        connection.sendPacket(reg);
+        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        collector.cancel();
+        if (result == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (result.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(result.getError());
+        }
+        return Form.getFormFrom(result);
+    }
+    
+    /**
+     * Sends the completed registration form to the server. After the user successfully submits 
+     * the form, the room may queue the request for review by the room admins or may immediately 
+     * add the user to the member list by changing the user's affiliation from "none" to "member.<p>
+     * 
+     * If the desired room nickname is already reserved for that room, the room will return a 
+     * "Conflict" error to the user (error code 409). If the room does not support registration, 
+     * it will return a "Service Unavailable" error to the user (error code 503).
+     * 
+     * @param form the completed registration form.
+     * @throws XMPPException if an error occurs submitting the registration form. In particular, a 
+     *      409 error can occur if the desired room nickname is already reserved for that room; 
+     *      or a 503 error can occur if the room does not support registration.
+     */
+    public void sendRegistrationForm(Form form) throws XMPPException {
+        Registration reg = new Registration();
+        reg.setType(IQ.Type.SET);
+        reg.setTo(room);
+        reg.addExtension(form.getDataFormToSend());
+
+        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
+                new PacketTypeFilter(IQ.class));
+        PacketCollector collector = connection.createPacketCollector(filter);
+        connection.sendPacket(reg);
+        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        collector.cancel();
+        if (result == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (result.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(result.getError());
+        }
+    }
+    
+    /**
      * Sends a request to the server to destroy the room. The sender of the request
      * should be the room's owner. If the sender of the destroy request is not the room's owner
      * then the server will answer a "Forbidden" error (403).
@@ -723,8 +791,8 @@ public class MultiUserChat {
      * if the room is of type anonymous. If the room is of type semi-anonymous only the 
      * moderators will have access to the participants full JID.    
      * 
-     * @param participant the room occupant to search for his JID. Format roomName@service/nickname
-     * (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch)
+     * @param participant the room occupant to search for his JID. The format of participant must
+     * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).
      * @return the participant's full JID when joining a Non-Anonymous room otherwise returns 
      * <tt>null</tt>.
      */
