@@ -10,6 +10,10 @@
 
     <property name="smack.home" value="${basedir}/../../../smack" />
     <property name="compile.dir" value="${basedir}/build/temp" />
+    <property name="jar.dest.dir" value="${basedir}/build/WEB-INF/lib" />
+    <property name="jar.name" value="webchat" />
+    <property name="war.dest.dir" value="${basedir}" />
+    <property name="war.name" value="webchat" />
 
 
     <path id="dependencies">
@@ -19,8 +23,16 @@
     </path>
 
 
+    <patternset id="web.filetypes">
+        <include name="**/*.jsp" />
+        <include name="**/*.html" />
+        <include name="**/*.gif" />
+    </patternset>
+
+
     <target name="init">
         <mkdir dir="${compile.dir}" />
+        <mkdir dir="${jar.dest.dir}" />
         <!-- call smack jar process -->
         <ant antfile="build/build.xml" dir="${smack.home}" target="jar" inheritAll="false" />
     </target>
@@ -28,6 +40,7 @@
 
     <target name="clean">
         <delete dir="${compile.dir}" />
+        <delete dir="${jar.dest.dir}" />
         <!-- call smack jar process -->
         <ant antfile="build/build.xml" dir="${smack.home}" target="clean" inheritAll="false" />
     </target>
@@ -46,10 +59,23 @@
 
 
     <target name="jar" depends="compile">
+        <jar destfile="${jar.dest.dir}/${jar.name}.jar"
+            basedir="${compile.dir}"
+            includes="**/*.class"
+         />
     </target>
 
 
     <target name="war" depends="jar">
+        <war warfile="${war.dest.dir}/${war.name}.war"
+            webxml="${basedir}/source/config/WEB-INF/web.xml"
+        >
+            <lib dir="${jar.dest.dir}" includes="*.jar" />
+            <lib dir="${smack.home}" includes="smack.jar" />
+            <zipfileset dir="${basedir}/source/web">
+                <patternset refid="web.filetypes" />
+            </zipfileset>
+        </war>
     </target>
 
 </project>
