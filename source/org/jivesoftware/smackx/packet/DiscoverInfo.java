@@ -180,6 +180,8 @@ public class DiscoverInfo extends IQ {
                 buf.append(feature.toXML());
             }
         }
+        // Add packet extensions, if any are defined.
+        buf.append(getExtensionsXML());
         buf.append("</query>");
         return buf.toString();
     }

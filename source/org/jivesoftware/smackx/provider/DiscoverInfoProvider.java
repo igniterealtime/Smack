@@ -54,6 +54,7 @@ package org.jivesoftware.smackx.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -83,9 +84,14 @@ public class DiscoverInfoProvider implements IQProvider {
                     name = parser.getAttributeValue("", "name");
                     type = parser.getAttributeValue("", "type");
                 }
-                if (parser.getName().equals("feature")) {
+                else if (parser.getName().equals("feature")) {
                     // Initialize the variables from the parsed XML
                     variable = parser.getAttributeValue("", "var");
+                }
+                // Otherwise, it must be a packet extension.
+                else {
+                    discoverInfo.addExtension(PacketParserUtils.parsePacketExtension(parser
+                            .getName(), parser.getNamespace(), parser));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("identity")) {
