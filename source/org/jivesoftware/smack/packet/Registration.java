@@ -181,6 +181,8 @@ public class Registration extends IQ {
                 buf.append("</").append(name).append(">");
             }
         }
+        // Add packet extensions, if any are defined.
+        buf.append(getExtensionsXML());
         buf.append("</query>");
         return buf.toString();
     }
