@@ -203,10 +203,10 @@ public class Message extends Packet {
             buf.append(" id=\"").append(getPacketID()).append("\"");
         }
         if (getTo() != null) {
-            buf.append(" to=\"").append(getTo()).append("\"");
+            buf.append(" to=\"").append(StringUtils.escapeForXML(getTo())).append("\"");
         }
         if (getFrom() != null) {
-            buf.append(" from=\"").append(getFrom()).append("\"");
+            buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
         }
         if (type != Type.NORMAL) {
             buf.append(" type=\"").append(type).append("\"");

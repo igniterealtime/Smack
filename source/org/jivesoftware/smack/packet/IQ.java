@@ -52,6 +52,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 /**
  * The base IQ (Info/Query) packet. IQ packets are used to get and set information
  * on the server, including authentication, roster operations, and creating
@@ -103,10 +105,10 @@ public abstract class IQ extends Packet {
             buf.append("id=\"" + getPacketID() + "\" ");
         }
         if (getTo() != null) {
-            buf.append("to=\"").append(getTo()).append("\" ");
+            buf.append("to=\"").append(StringUtils.escapeForXML(getTo())).append("\" ");
         }
         if (getFrom() != null) {
-            buf.append("from=\"").append(getFrom()).append("\" ");
+            buf.append("from=\"").append(StringUtils.escapeForXML(getFrom())).append("\" ");
         }
         if (type == null) {
             buf.append("type=\"get\">");
