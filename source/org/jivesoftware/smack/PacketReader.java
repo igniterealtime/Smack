@@ -58,7 +58,7 @@ import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.Error;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -327,7 +327,7 @@ class PacketReader {
         String to = parser.getAttributeValue("", "to");
         String from = parser.getAttributeValue("", "from");
         IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
-        Error error = null;
+        XMPPError error = null;
         Map properties = null;
 
         boolean done = false;
@@ -437,7 +437,7 @@ class PacketReader {
         return roster;
     }
 
-    private static Error parseError(XmlPullParser parser) throws Exception {
+    private static XMPPError parseError(XmlPullParser parser) throws Exception {
         String errorCode = null;
         for (int i=0; i<parser.getAttributeCount(); i++) {
             if (parser.getAttributeName(i).equals("code")) {
@@ -451,7 +451,7 @@ class PacketReader {
             }
             parser.next();
         }
-        return new Error(Integer.parseInt(errorCode), message);
+        return new XMPPError(Integer.parseInt(errorCode), message);
     }
 
     /**
@@ -592,7 +592,9 @@ class PacketReader {
         Map properties = new HashMap();
         while (true) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == parser.START_TAG && parser.getName().equals("property")) {
+                // Advance to name element.
+                parser.next();
                 String name = parser.nextText();
                 parser.next();
                 String type = parser.getAttributeValue("", "type");
@@ -612,6 +614,9 @@ class PacketReader {
                 }
                 else if ("boolean".equals(type)) {
                     value = new Boolean(valueText);
+                }
+                else if ("string".equals(type)) {
+                    value = valueText;
                 }
                 else if ("java-object".equals(type)) {
                     try {
