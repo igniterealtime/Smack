@@ -55,6 +55,7 @@ package org.jivesoftware.smackx.muc;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collection;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
@@ -94,7 +95,7 @@ public class MultiUserChatTest extends SmackTestCase {
             Thread.sleep(400);
 
             // User1 checks the presence of user2 in the room
-            Presence presence = muc.getParticipantPresence(room + "/testbot2");
+            Presence presence = muc.getOccupantPresence(room + "/testbot2");
             assertNotNull("Presence of user2 in room is missing", presence);
             assertEquals(
                 "Presence mode of user2 is wrong",
@@ -115,8 +116,8 @@ public class MultiUserChatTest extends SmackTestCase {
             groupchat.leave();
             Thread.sleep(300);
             // User1 checks the that user2 is not present in the room
-            presence = muc.getParticipantPresence(room + "/testbot2");
-            assertNull("Presence of participant testbot2 still exists", presence);
+            Occupant occupant = muc.getOccupant(room + "/testbot2");
+            assertNull("Occupant testbot2 still exists", occupant);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -191,7 +192,7 @@ public class MultiUserChatTest extends SmackTestCase {
             Thread.sleep(400);
 
             // User1 checks the presence of user2 in the room
-            Presence presence = muc.getParticipantPresence(room + "/testbot2");
+            Presence presence = muc.getOccupantPresence(room + "/testbot2");
             assertNotNull("Presence of user2 in room is missing", presence);
             assertEquals(
                 "Presence mode of user2 is wrong",
@@ -202,7 +203,7 @@ public class MultiUserChatTest extends SmackTestCase {
             muc2.changeAvailabilityStatus("Gone to have lunch", Presence.Mode.AWAY);
             Thread.sleep(200);
             // User1 checks the presence of user2 in the room
-            presence = muc.getParticipantPresence(room + "/testbot2");
+            presence = muc.getOccupantPresence(room + "/testbot2");
             assertNotNull("Presence of user2 in room is missing", presence);
             assertEquals("Presence mode of user2 is wrong", Presence.Mode.AWAY, presence.getMode());
             assertEquals(
@@ -214,9 +215,9 @@ public class MultiUserChatTest extends SmackTestCase {
             muc2.changeNickname("testbotII");
             Thread.sleep(200);
             // User1 checks the presence of user2 in the room
-            presence = muc.getParticipantPresence(room + "/testbot2");
+            presence = muc.getOccupantPresence(room + "/testbot2");
             assertNull("Presence of participant testbot2 still exists", presence);
-            presence = muc.getParticipantPresence(room + "/testbotII");
+            presence = muc.getOccupantPresence(room + "/testbotII");
             assertNotNull("Presence of participant testbotII does not exist", presence);
             assertEquals(
                 "Presence of participant testbotII has a wrong from",
@@ -227,7 +228,7 @@ public class MultiUserChatTest extends SmackTestCase {
             muc2.leave();
             Thread.sleep(250);
             // User1 checks the presence of user2 in the room
-            presence = muc.getParticipantPresence(room + "/testbotII");
+            presence = muc.getOccupantPresence(room + "/testbotII");
             assertNull("Presence of participant testbotII still exists", presence);
 
         }
@@ -573,7 +574,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
             assertNull(
                 "User2 wasn't kicked from the room",
-                muc.getParticipantPresence(room + "/testbot2"));
+                muc.getOccupant(room + "/testbot2"));
 
             assertFalse("User2 thinks that he's still in the room", muc2.isJoined());
 
@@ -650,7 +651,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
             assertNull(
                 "User2 wasn't banned from the room",
-                muc.getParticipantPresence(room + "/testbot2"));
+                muc.getOccupant(room + "/testbot2"));
 
             assertFalse("User2 thinks that he's still in the room", muc2.isJoined());
 
@@ -1390,6 +1391,115 @@ public class MultiUserChatTest extends SmackTestCase {
             muc2.leave();
             // User3 leaves the room
             muc3.leave();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testGetAffiliationList() {
+        try {
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
+            muc2.join("testbot2");
+
+            // User3 joins the new room
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
+            muc3.join("testbot3");
+
+            // Grant ownership privileges to user2
+            muc.grantOwnership(getBareJID(1));
+            // Grant moderator privileges to user3
+            muc.grantModerator("testbot3");
+
+            // Check that the owner list is correct
+            Collection affiliates = muc.getOwners();
+            assertEquals("Room does not have 2 owners", 2, affiliates.size());
+            for (Iterator it =affiliates.iterator(); it.hasNext();) {
+                Affiliate affiliate = (Affiliate)it.next();
+                if (getBareJID(0).equals(affiliate.getJid())) {
+                    assertEquals("Wrong affiliation", "owner", affiliate.getAffiliation());
+                    assertEquals("Wrong role", "moderator", affiliate.getRole());
+                    assertEquals("Wrong nick", "testbot", affiliate.getNick());
+                }
+                else if (getBareJID(1).equals(affiliate.getJid())) {
+                    assertEquals("Wrong affiliation", "owner", affiliate.getAffiliation());
+                    assertEquals("Wrong role", "moderator", affiliate.getRole());
+                    assertEquals("Wrong nick", "testbot2", affiliate.getNick());
+                }
+                else {
+                    fail("Unknown owner " + affiliate.getJid());
+                }
+            }
+
+            // Check that the admin list is correct
+            affiliates = muc.getAdmins();
+            assertEquals("Room has admins", 0, affiliates.size());
+
+            // Check that the members list is correct
+            affiliates = muc.getMembers();
+            assertEquals("Room has admins", 0, affiliates.size());
+            // Grant membership privileges to user2
+            muc.grantMembership(getBareJID(1));
+            // Check that the members list is correct
+            affiliates = muc.getMembers();
+            assertEquals("Room has admins", 1, affiliates.size());
+            Affiliate affiliate = (Affiliate) affiliates.iterator().next();
+            assertEquals("Wrong member jid", getBareJID(1), affiliate.getJid());
+
+            // Check that the members list is correct
+            affiliates = muc.getOutcasts();
+            assertEquals("Room has outcasts", 0, affiliates.size());
+
+            // Check that the moderator list is correct
+            Collection occupants = muc.getModerators();
+            assertEquals("Room does not have 2 moderators", 2, occupants.size());
+            for (Iterator it =occupants.iterator(); it.hasNext();) {
+                Occupant occupant = (Occupant)it.next();
+                if (getFullJID(0).equals(occupant.getJid())) {
+                    assertEquals("Wrong affiliation", "owner", occupant.getAffiliation());
+                    assertEquals("Wrong role", "moderator", occupant.getRole());
+                    assertEquals("Wrong nick", "testbot", occupant.getNick());
+                }
+                else if (getFullJID(2).equals(occupant.getJid())) {
+                    assertEquals("Wrong affiliation", "none", occupant.getAffiliation());
+                    assertEquals("Wrong role", "moderator", occupant.getRole());
+                    assertEquals("Wrong nick", "testbot3", occupant.getNick());
+                }
+                else {
+                    fail("Unknown moderator " + occupant.getJid());
+                }
+            }
+
+            // Check that the participants list is correct
+            occupants = muc.getParticipants();
+            assertEquals("Room does not have 1 participant", 1, occupants.size());
+            Occupant occupant = (Occupant) occupants.iterator().next();
+            assertEquals("Wrong participant jid", getFullJID(1), occupant.getJid());
+
+            Thread.sleep(500);
+            
+            // Check that we can retrieve Occupant information of a given user
+            occupant = muc.getOccupant(room + "/testbot2");
+            assertNotNull("Occupant was not found", occupant);
+            assertEquals("Wrong occupant jid", getFullJID(1), occupant.getJid());
+            assertEquals("Wrong occupant affiliation", "member", occupant.getAffiliation());
+            assertEquals("Wrong occupant role", "participant", occupant.getRole());
+
+            try {
+                // Check whether a member can get the list of owners
+                muc2.getOwners();
+                fail("User2 was able to get the list of owners");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull("No XMPPError was received getting the list of owners", xmppError);
+                assertEquals(
+                    "A member was able to get the list of owners",
+                    403,
+                    xmppError.getCode());
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
