@@ -95,8 +95,6 @@ class PacketReader {
     private String connectionID = null;
     private Object connectionIDLock = new Object();
 
-    private int packetsRead = 0;
-
     protected PacketReader(XMPPConnection connection) {
         this.connection = connection;
 
@@ -169,15 +167,6 @@ class PacketReader {
                 }
             }
         }
-    }
-
-    /**
-     * Returns the number of packets read by the packet reader.
-     *
-     * @return the number of packets read by the packet reader.
-     */
-    public int getPacketsRead() {
-        return packetsRead;
     }
 
     /**
@@ -341,9 +330,6 @@ class PacketReader {
         if (packet == null) {
             return;
         }
-
-        // Increment the number of packets read.
-        packetsRead++;
 
         // Remove all null values from the collectors list.
         synchronized (collectors) {
