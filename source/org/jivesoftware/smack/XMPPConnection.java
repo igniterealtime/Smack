@@ -59,8 +59,6 @@ import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.awt.*;
-import java.security.*;
-import java.util.PropertyPermission;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
