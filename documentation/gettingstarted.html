@@ -59,10 +59,13 @@ new <tt>Chat</tt> or <tt>GroupChat</tt> objects.
 <p class="subheader">
 Working with the Roster
 </p>
+The roster lets you keep track of the availability (presence) of other users. Users
+can be organized into groups such as "Friends" and "Co-workers", and then you
+discover whether each user is online or offline.<p> 
 
-Retrieve a roster using the <tt>XMPPConnection.getRoster()</tt> method. The roster
+Retrieve the roster using the <tt>XMPPConnection.getRoster()</tt> method. The roster
 class allows you to find all the roster entries, the groups they belong to, and the
-current presence status each entry.
+current presence status of each entry.
 
 <p class="subheader">
 Reading and Writing Packets
@@ -70,12 +73,12 @@ Reading and Writing Packets
 
 Each message to the XMPP server from a client is called a packet and is
 sent as XML. The <tt>org.jivesoftware.smack.packet</tt> package contains
-classes that encapsulate the different packet types allowed by XMPP (message, 
-presence, and IQ). Classes such as <tt>Chat</tt> and <tt>GroupChat</tt>
+classes that encapsulate the three different basic packet types allowed by 
+XMPP (message, presence, and IQ). Classes such as <tt>Chat</tt> and <tt>GroupChat</tt>
 provide higher-level constructs that manage creating and sending packets
 automatically, but you can also create and send packets directly. Below
-is a code example for changing our presence to let people know we're unavailable
-because we're "out fishing":<p>
+is a code example for changing your presence to let people know you're unavailable
+and "out fishing":<p>
 
 <div class="code">
 <pre>
@@ -94,8 +97,8 @@ while a packet collector has a result queue of packets that you can do
 polling and blocking operations on. So, a packet listener is useful when
 you want to take some action whenever a packet happens to come in, while a
 packet collector is useful when you want to wait for a specific packet
-to come through. Packet collectors and listeners can be created using the
-connection object.
+to arrive. Packet collectors and listeners can be created using an
+XMPPConnection instance.
 
 
 <p><div class="footer">

@@ -27,7 +27,7 @@ A packet listener is used for event style programming, while a packet collector 
 result queue of packets that you can do polling and blocking operations on. So, a packet 
 listener is useful when you want to take some action whenever a packet happens to come in, 
 while a packet collector is useful when you want to wait for a specific packet to come 
-through. Packet collectors and listeners can be created using an <tt>XMPPConnection</tt> object.<p>
+arrive. Packet collectors and listeners can be created using an <tt>XMPPConnection</tt> instance.<p>
 	
 The <tt>org.jivesoftware.smack.filter.PacketFilter</tt> interface determines which
 specific packets will be delivered to a <tt>PacketCollector</tt> or <tt>PacketListener</tt>.
@@ -76,8 +76,9 @@ to the <tt>PacketFilter</tt> interface. The default set of filters includes:
 	<li> <tt>NotFilter</tt> -- implements the logical NOT operation on a filter.
 </ul>
 
-<br clear="all" /><br><br>
 
+
+<br clear="all" /><br><br>
 <div class="footer">
 Copyright &copy; Jive Software 2002-2003
 </div>
