@@ -37,4 +37,11 @@
         <className>org.jivesoftware.smackx.provider.XHTMLExtensionProvider</className>
     </extensionProvider>
 
+    <!-- Group Chat Invitations -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:conference</namespace>
+        <className>org.jivesoftware.smackx.GroupChatInvitation$Provider</className>
+    </extensionProvider>	
+
 </smackProviders>
