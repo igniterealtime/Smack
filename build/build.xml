@@ -60,9 +60,15 @@
     <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
         <jar destfile="${jar.dest.dir}/smack.jar"
             basedir="${compile.dir}"
-            includes="**/*.class"
+            includes="org/jivesoftware/smack/**/*.class"
          >
              <zipfileset src="${merge.lib.dir}/xpp.jar"/>
+         </jar>
+        <jar destfile="${jar.dest.dir}/smackx.jar"
+            basedir="${compile.dir}"
+            includes="org/jivesoftware/smackx/**/*.class"
+         >
+            <metainf dir="${basedir}/resources" includes="smack.providers" />
          </jar>
     </target>
 
