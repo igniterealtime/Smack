@@ -67,6 +67,12 @@ import junit.framework.TestCase;
  */
 public class MessageEventManagerTest extends TestCase {
 
+    private XMPPConnection conn1 = null;
+    private XMPPConnection conn2 = null;
+
+    private String user1 = null;
+    private String user2 = null;
+
     /**
      * Constructor for MessageEventManagerTest.
      * @param name
@@ -83,44 +89,24 @@ public class MessageEventManagerTest extends TestCase {
      * occurs: offline, composing, displayed or delivered 
      */
     public void testSendMessageEventRequest() {
-         String host = "localhost";
-         String server_user1 = "gato3";
-         String user1 = "gato3@localhost";
-         String pass1 = "gato3";
-    
-         String user2 = "gato4@localhost";
-    
-         XMPPConnection conn1 = null;
-    
-         try {
-             // Connect to the server and log in the users
-             conn1 = new XMPPConnection(host);
-             conn1.login(server_user1, pass1);
-    
-             // Create a chat for each connection
-             Chat chat1 = conn1.createChat(user2);
-    
-             // Create the message to send with the roster
-             Message msg = chat1.createMessage();
-             msg.setSubject("Any subject you want");
-             msg.setBody("An interesting body comes here...");
-             // Add to the message all the notifications requests (offline, delivered, displayed,
-             // composing)
-             MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
-    
-             // Send the message that contains the notifications request
-             try {
-                 chat1.sendMessage(msg);
-             } catch (Exception e) {
-                 fail("An error occured sending the message");
-             }
-         } catch (Exception e) {
-             fail(e.toString());
-         } finally {
-             if (conn1 != null)
-                 conn1.close();
-         }
-     }
+        // Create a chat for each connection
+        Chat chat1 = conn1.createChat(user2);
+
+        // Create the message to send with the roster
+        Message msg = chat1.createMessage();
+        msg.setSubject("Any subject you want");
+        msg.setBody("An interesting body comes here...");
+        // Add to the message all the notifications requests (offline, delivered, displayed,
+        // composing)
+        MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
+
+        // Send the message that contains the notifications request
+        try {
+            chat1.sendMessage(msg);
+        } catch (Exception e) {
+            fail("An error occured sending the message");
+        }
+    }
 
     /**
      * High level API test.
@@ -132,68 +118,48 @@ public class MessageEventManagerTest extends TestCase {
      * 3. User_1 will display any notification that receives
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
-    
-        String user2 = "gato4@localhost";
-    
-        XMPPConnection conn1 = null;
-    
-        try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-    
-            // Create a chat for each connection
-            Chat chat1 = conn1.createChat(user2);
-    
-            MessageEventManager messageEventManager = new MessageEventManager(conn1);
-            messageEventManager
-                .addMessageEventNotificationListener(new MessageEventNotificationListener() {
-                public void deliveredNotification(String from, String packetID) {
-                    System.out.println("From: " + from + " PacketID: " + packetID + "(delivered)");
-                }
-    
-                public void displayedNotification(String from, String packetID) {
-                    System.out.println("From: " + from + " PacketID: " + packetID + "(displayed)");
-                }
-    
-                public void composingNotification(String from, String packetID) {
-                    System.out.println("From: " + from + " PacketID: " + packetID + "(composing)");
-                }
-    
-                public void offlineNotification(String from, String packetID) {
-                    System.out.println("From: " + from + " PacketID: " + packetID + "(offline)");
-                }
-    
-                public void cancelledNotification(String from, String packetID) {
-                    System.out.println("From: " + from + " PacketID: " + packetID + "(cancelled)");
-                }
-            });
-    
-            // Create the message to send with the roster
-            Message msg = chat1.createMessage();
-            msg.setSubject("Any subject you want");
-            msg.setBody("An interesting body comes here...");
-            // Add to the message all the notifications requests (offline, delivered, displayed,
-            // composing)
-            MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
-    
-            // Send the message that contains the notifications request
-            try {
-                chat1.sendMessage(msg);
-                // Wait a few seconds so that the XMPP client can send any event
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                fail("An error occured sending the message");
+        // Create a chat for each connection
+        Chat chat1 = conn1.createChat(user2);
+
+        MessageEventManager messageEventManager = new MessageEventManager(conn1);
+        messageEventManager
+            .addMessageEventNotificationListener(new MessageEventNotificationListener() {
+            public void deliveredNotification(String from, String packetID) {
+                System.out.println("From: " + from + " PacketID: " + packetID + "(delivered)");
             }
+
+            public void displayedNotification(String from, String packetID) {
+                System.out.println("From: " + from + " PacketID: " + packetID + "(displayed)");
+            }
+
+            public void composingNotification(String from, String packetID) {
+                System.out.println("From: " + from + " PacketID: " + packetID + "(composing)");
+            }
+
+            public void offlineNotification(String from, String packetID) {
+                System.out.println("From: " + from + " PacketID: " + packetID + "(offline)");
+            }
+
+            public void cancelledNotification(String from, String packetID) {
+                System.out.println("From: " + from + " PacketID: " + packetID + "(cancelled)");
+            }
+        });
+
+        // Create the message to send with the roster
+        Message msg = chat1.createMessage();
+        msg.setSubject("Any subject you want");
+        msg.setBody("An interesting body comes here...");
+        // Add to the message all the notifications requests (offline, delivered, displayed,
+        // composing)
+        MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
+
+        // Send the message that contains the notifications request
+        try {
+            chat1.sendMessage(msg);
+            // Wait a few seconds so that the XMPP client can send any event
+            Thread.sleep(200);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
+            fail("An error occured sending the message");
         }
     }
 
@@ -207,18 +173,6 @@ public class MessageEventManagerTest extends TestCase {
      * 5. User_2 will simulate that he/she has cancelled the reply
      */
     public void testRequestsAndNotifications() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
-
-        String server_user2 = "gato4";
-        String user2 = "gato4@localhost";
-        String pass2 = "gato4";
-
-        XMPPConnection conn1 = null;
-        XMPPConnection conn2 = null;
-
         final ArrayList results = new ArrayList();
         ArrayList resultsExpected = new ArrayList();
         resultsExpected.add("deliveredNotificationRequested");
@@ -230,106 +184,136 @@ public class MessageEventManagerTest extends TestCase {
         resultsExpected.add("composingNotification");
         resultsExpected.add("cancelledNotification");
 
-        try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-            conn2 = new XMPPConnection(host);
-            conn2.login(server_user2, pass2);
+        // Create a chat for each connection
+        Chat chat1 = conn1.createChat(user2);
 
-            // Create a chat for each connection
-            Chat chat1 = conn1.createChat(user2);
-
-            MessageEventManager messageEventManager1 = new MessageEventManager(conn1);
-            messageEventManager1
-                .addMessageEventNotificationListener(new MessageEventNotificationListener() {
-                public void deliveredNotification(String from, String packetID) {
-                    results.add("deliveredNotification");
-                }
-
-                public void displayedNotification(String from, String packetID) {
-                    results.add("displayedNotification");
-                }
-
-                public void composingNotification(String from, String packetID) {
-                    results.add("composingNotification");
-                }
-
-                public void offlineNotification(String from, String packetID) {
-                    results.add("offlineNotification");
-                }
-
-                public void cancelledNotification(String from, String packetID) {
-                    results.add("cancelledNotification");
-                }
-            });
-
-            MessageEventManager messageEventManager2 = new MessageEventManager(conn2);
-            messageEventManager2
-                .addMessageEventRequestListener(new DefaultMessageEventRequestListener() {
-                public void deliveredNotificationRequested(
-                    String from,
-                    String packetID,
-                    MessageEventManager messageEventManager) {
-                    super.deliveredNotificationRequested(from, packetID, messageEventManager);
-                    results.add("deliveredNotificationRequested");
-                }
-
-                public void displayedNotificationRequested(
-                    String from,
-                    String packetID,
-                    MessageEventManager messageEventManager) {
-                    super.displayedNotificationRequested(from, packetID, messageEventManager);
-                    results.add("displayedNotificationRequested");
-                }
-
-                public void composingNotificationRequested(
-                    String from,
-                    String packetID,
-                    MessageEventManager messageEventManager) {
-                    super.composingNotificationRequested(from, packetID, messageEventManager);
-                    results.add("composingNotificationRequested");
-                }
-
-                public void offlineNotificationRequested(
-                    String from,
-                    String packetID,
-                    MessageEventManager messageEventManager) {
-                    super.offlineNotificationRequested(from, packetID, messageEventManager);
-                    results.add("offlineNotificationRequested");
-                }
-            });
-
-            // Create the message to send with the roster
-            Message msg = chat1.createMessage();
-            msg.setSubject("Any subject you want");
-            msg.setBody("An interesting body comes here...");
-            // Add to the message all the notifications requests (offline, delivered, displayed,
-            // composing)
-            MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
-
-            // Send the message that contains the notifications request
-            try {
-                chat1.sendMessage(msg);
-                messageEventManager2.sendDisplayedNotification(user1, msg.getPacketID());
-                messageEventManager2.sendComposingNotification(user1, msg.getPacketID());
-                messageEventManager2.sendCancelledNotification(user1, msg.getPacketID());
-                // Wait half second so that the complete test can run
-                Thread.sleep(500);
-                assertTrue("Test failed due to bad results (1)" + resultsExpected, resultsExpected.containsAll(results));
-                assertTrue("Test failed due to bad results (2)" + results, results.containsAll(resultsExpected));
-
-            } catch (Exception e) {
-                fail("An error occured sending the message");
+        MessageEventManager messageEventManager1 = new MessageEventManager(conn1);
+        messageEventManager1
+            .addMessageEventNotificationListener(new MessageEventNotificationListener() {
+            public void deliveredNotification(String from, String packetID) {
+                results.add("deliveredNotification");
             }
+
+            public void displayedNotification(String from, String packetID) {
+                results.add("displayedNotification");
+            }
+
+            public void composingNotification(String from, String packetID) {
+                results.add("composingNotification");
+            }
+
+            public void offlineNotification(String from, String packetID) {
+                results.add("offlineNotification");
+            }
+
+            public void cancelledNotification(String from, String packetID) {
+                results.add("cancelledNotification");
+            }
+        });
+
+        MessageEventManager messageEventManager2 = new MessageEventManager(conn2);
+        messageEventManager2
+            .addMessageEventRequestListener(new DefaultMessageEventRequestListener() {
+            public void deliveredNotificationRequested(
+                String from,
+                String packetID,
+                MessageEventManager messageEventManager) {
+                super.deliveredNotificationRequested(from, packetID, messageEventManager);
+                results.add("deliveredNotificationRequested");
+            }
+
+            public void displayedNotificationRequested(
+                String from,
+                String packetID,
+                MessageEventManager messageEventManager) {
+                super.displayedNotificationRequested(from, packetID, messageEventManager);
+                results.add("displayedNotificationRequested");
+            }
+
+            public void composingNotificationRequested(
+                String from,
+                String packetID,
+                MessageEventManager messageEventManager) {
+                super.composingNotificationRequested(from, packetID, messageEventManager);
+                results.add("composingNotificationRequested");
+            }
+
+            public void offlineNotificationRequested(
+                String from,
+                String packetID,
+                MessageEventManager messageEventManager) {
+                super.offlineNotificationRequested(from, packetID, messageEventManager);
+                results.add("offlineNotificationRequested");
+            }
+        });
+
+        // Create the message to send with the roster
+        Message msg = chat1.createMessage();
+        msg.setSubject("Any subject you want");
+        msg.setBody("An interesting body comes here...");
+        // Add to the message all the notifications requests (offline, delivered, displayed,
+        // composing)
+        MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
+
+        // Send the message that contains the notifications request
+        try {
+            chat1.sendMessage(msg);
+            messageEventManager2.sendDisplayedNotification(user1, msg.getPacketID());
+            messageEventManager2.sendComposingNotification(user1, msg.getPacketID());
+            messageEventManager2.sendCancelledNotification(user1, msg.getPacketID());
+            // Wait half second so that the complete test can run
+            Thread.sleep(500);
+            assertTrue(
+                "Test failed due to bad results (1)" + resultsExpected,
+                resultsExpected.containsAll(results));
+            assertTrue(
+                "Test failed due to bad results (2)" + results,
+                results.containsAll(resultsExpected));
+
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
-            if (conn2 != null)
-                conn2.close();
+            fail("An error occured sending the message");
         }
     }
 
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        try {
+            // Connect to the server
+            conn1 = new XMPPConnection("localhost");
+            conn2 = new XMPPConnection("localhost");
+
+            // Create the test accounts
+            if (!conn1.getAccountManager().supportsAccountCreation())
+                fail("Server does not support account creation");
+            conn1.getAccountManager().createAccount("gato3", "gato3");
+            conn2.getAccountManager().createAccount("gato4", "gato4");
+
+            // Login with the test accounts
+            conn1.login("gato3", "gato3");
+            conn2.login("gato4", "gato4");
+
+            user1 = "gato3@" + conn1.getHost();
+            user2 = "gato4@" + conn2.getHost();
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /*
+     * @see TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        // Delete the created accounts for the test
+        conn1.getAccountManager().deleteAccount();
+        conn2.getAccountManager().deleteAccount();
+
+        // Close all the connections
+        conn1.close();
+        conn2.close();
+    }
 }

@@ -66,6 +66,12 @@ import junit.framework.TestCase;
  */
 public class MessageEventTest extends TestCase {
 
+    private XMPPConnection conn1 = null;
+    private XMPPConnection conn2 = null;
+
+    private String user1 = null;
+    private String user2 = null;
+
     /**
      * Constructor for MessageEventTest.
      * @param name
@@ -82,48 +88,28 @@ public class MessageEventTest extends TestCase {
      * occurs: offline, composing, displayed or delivered 
      */
     public void testSendMessageEventRequest() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
+        // Create a chat for each connection
+        Chat chat1 = conn1.createChat(user2);
 
-        String user2 = "gato4@localhost";
+        // Create the message to send with the roster
+        Message msg = chat1.createMessage();
+        msg.setSubject("Any subject you want");
+        msg.setBody("An interesting body comes here...");
+        // Create a MessageEvent Package and add it to the message
+        MessageEvent messageEvent = new MessageEvent();
+        messageEvent.setComposing(true);
+        messageEvent.setDelivered(true);
+        messageEvent.setDisplayed(true);
+        messageEvent.setOffline(true);
+        msg.addExtension(messageEvent);
 
-        XMPPConnection conn1 = null;
-
+        // Send the message that contains the notifications request
         try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-
-            // Create a chat for each connection
-            Chat chat1 = conn1.createChat(user2);
-
-            // Create the message to send with the roster
-            Message msg = chat1.createMessage();
-            msg.setSubject("Any subject you want");
-            msg.setBody("An interesting body comes here...");
-            // Create a MessageEvent Package and add it to the message
-            MessageEvent messageEvent = new MessageEvent();
-            messageEvent.setComposing(true);
-            messageEvent.setDelivered(true);
-            messageEvent.setDisplayed(true);
-            messageEvent.setOffline(true);
-            msg.addExtension(messageEvent);
-
-            // Send the message that contains the notifications request
-            try {
-                chat1.sendMessage(msg);
-                // Wait half second so that the complete test can run
-                Thread.sleep(500);
-            } catch (Exception e) {
-                fail("An error occured sending the message");
-            }
+            chat1.sendMessage(msg);
+            // Wait half second so that the complete test can run
+            Thread.sleep(200);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
+            fail("An error occured sending the message");
         }
     }
 
@@ -137,67 +123,91 @@ public class MessageEventTest extends TestCase {
      * 3. User_1 will display any notification that receives
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
+        // Create a chat for each connection
+        Chat chat1 = conn1.createChat(user2);
 
-        String user2 = "gato4@localhost";
-
-        XMPPConnection conn1 = null;
-
-        try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-
-            // Create a chat for each connection
-            Chat chat1 = conn1.createChat(user2);
-
-            // Create a Listener that listens for Messages with the extension "jabber:x:roster"
-            // This listener will listen on the conn2 and answer an ACK if everything is ok
-            PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:event");
-            PacketListener packetListener = new PacketListener() {
-                public void processPacket(Packet packet) {
-                    Message message = (Message) packet;
-                    try {
-                        MessageEvent messageEvent = (MessageEvent) message.getExtension("x", "jabber:x:event");
-                        assertNotNull("Message without extension \"jabber:x:event\"", messageEvent);
-                        assertTrue("Message event is a request not a notification", !messageEvent.isMessageEventRequest());
-                        System.out.println(messageEvent.toXML());
-                    } catch (ClassCastException e) {
-                        fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
-                    }
+        // Create a Listener that listens for Messages with the extension "jabber:x:roster"
+        // This listener will listen on the conn2 and answer an ACK if everything is ok
+        PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:event");
+        PacketListener packetListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Message message = (Message) packet;
+                try {
+                    MessageEvent messageEvent =
+                        (MessageEvent) message.getExtension("x", "jabber:x:event");
+                    assertNotNull("Message without extension \"jabber:x:event\"", messageEvent);
+                    assertTrue(
+                        "Message event is a request not a notification",
+                        !messageEvent.isMessageEventRequest());
+                    System.out.println(messageEvent.toXML());
+                } catch (ClassCastException e) {
+                    fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
                 }
-            };
-            conn1.addPacketListener(packetListener, packetFilter);
-
-            // Create the message to send with the roster
-            Message msg = chat1.createMessage();
-            msg.setSubject("Any subject you want");
-            msg.setBody("An interesting body comes here...");
-            // Create a MessageEvent Package and add it to the message
-            MessageEvent messageEvent = new MessageEvent();
-            messageEvent.setComposing(true);
-            messageEvent.setDelivered(true);
-            messageEvent.setDisplayed(true);
-            messageEvent.setOffline(true);
-            msg.addExtension(messageEvent);
-
-            // Send the message that contains the notifications request
-            try {
-                chat1.sendMessage(msg);
-                // Wait half second so that the complete test can run
-                Thread.sleep(500);
-            } catch (Exception e) {
-                fail("An error occured sending the message");
             }
+        };
+        conn1.addPacketListener(packetListener, packetFilter);
+
+        // Create the message to send with the roster
+        Message msg = chat1.createMessage();
+        msg.setSubject("Any subject you want");
+        msg.setBody("An interesting body comes here...");
+        // Create a MessageEvent Package and add it to the message
+        MessageEvent messageEvent = new MessageEvent();
+        messageEvent.setComposing(true);
+        messageEvent.setDelivered(true);
+        messageEvent.setDisplayed(true);
+        messageEvent.setOffline(true);
+        msg.addExtension(messageEvent);
+
+        // Send the message that contains the notifications request
+        try {
+            chat1.sendMessage(msg);
+            // Wait half second so that the complete test can run
+            Thread.sleep(200);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
+            fail("An error occured sending the message");
         }
     }
 
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        try {
+            // Connect to the server
+            conn1 = new XMPPConnection("localhost");
+            conn2 = new XMPPConnection("localhost");
+
+            // Create the test accounts
+            if (!conn1.getAccountManager().supportsAccountCreation())
+                fail("Server does not support account creation");
+            conn1.getAccountManager().createAccount("gato3", "gato3");
+            conn2.getAccountManager().createAccount("gato4", "gato4");
+
+            // Login with the test accounts
+            conn1.login("gato3", "gato3");
+            conn2.login("gato4", "gato4");
+
+            user1 = "gato3@" + conn1.getHost();
+            user2 = "gato4@" + conn2.getHost();
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /*
+     * @see TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        // Delete the created accounts for the test
+        conn1.getAccountManager().deleteAccount();
+        conn2.getAccountManager().deleteAccount();
+
+        // Close all the connections
+        conn1.close();
+        conn2.close();
+    }
 }

@@ -58,7 +58,6 @@ import junit.framework.TestCase;
 
 import org.jivesoftware.smack.*;
 
-
 /**
  *
  * Test the Roster Exchange extension using the high level API
@@ -66,6 +65,16 @@ import org.jivesoftware.smack.*;
  * @author Gaston Dombiak
  */
 public class RosterExchangeManagerTest extends TestCase {
+
+    private XMPPConnection conn1 = null;
+    private XMPPConnection conn2 = null;
+    private XMPPConnection conn3 = null;
+    private XMPPConnection conn4 = null;
+
+    private String user1 = null;
+    private String user2 = null;
+    private String user3 = null;
+    private String user4 = null;
 
     private int entriesSent;
     private int entriesReceived;
@@ -84,38 +93,14 @@ public class RosterExchangeManagerTest extends TestCase {
      * 1. User_1 will send his/her roster to user_2
      */
     public void testSendRoster() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
-
-        String user2 = "gato4@localhost";
-
-        XMPPConnection conn1 = null;
-
+        // Send user1's roster to user2
         try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-
-            // Send user1's roster to user2
-            try {
-                RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
-                rosterExchangeManager.send(conn1.getRoster(), user2);
-                // Wait half second so that the complete test can run
-                Thread.sleep(500);
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail("An error occured sending the roster");
-            }
-
+            RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
+            rosterExchangeManager.send(conn1.getRoster(), user2);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
+            e.printStackTrace();
+            fail("An error occured sending the roster");
         }
-
     }
 
     /**
@@ -124,39 +109,15 @@ public class RosterExchangeManagerTest extends TestCase {
      * 1. User_1 will send his/her RosterGroups to user_2
      */
     public void testSendRosterGroup() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
-
-        String user2 = "gato4@localhost";
-
-        XMPPConnection conn1 = null;
-
+        // Send user1's RosterGroups to user2
         try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-
-            // Send user1's RosterGroups to user2
-            try {
-                RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
-                for (Iterator it = conn1.getRoster().getGroups(); it.hasNext(); )
-                    rosterExchangeManager.send((RosterGroup)it.next(), user2);
-                // Wait half second so that the complete test can run
-                Thread.sleep(500);
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail("An error occured sending the roster");
-            }
-
+            RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
+            for (Iterator it = conn1.getRoster().getGroups(); it.hasNext();)
+                rosterExchangeManager.send((RosterGroup) it.next(), user2);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
+            e.printStackTrace();
+            fail("An error occured sending the roster");
         }
-
     }
 
     /**
@@ -166,64 +127,40 @@ public class RosterExchangeManagerTest extends TestCase {
      * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then something is wrong
      */
     public void testSendAndReceiveRoster() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
+        RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
+        RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
 
-        String server_user2 = "gato4";
-        String user2 = "gato4@localhost";
-        String pass2 = "gato4";
-
-        XMPPConnection conn1 = null;
-        XMPPConnection conn2 = null;
-
-        try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-            conn2 = new XMPPConnection(host);
-            conn2.login(server_user2, pass2);
-
-            RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
-            RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
-
-            // Create a RosterExchangeListener that will iterate over the received roster entries
-            RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
-                public void entriesReceived(String from, Iterator remoteRosterEntries) {
-                    int received = 0;
-                    assertNotNull("From is null", from);
-                    assertNotNull("rosterEntries is null",remoteRosterEntries);
-                    assertTrue("Roster without entries",remoteRosterEntries.hasNext());
-                    while (remoteRosterEntries.hasNext()) {
-                        received++;
-                        RemoteRosterEntry remoteEntry = (RemoteRosterEntry) remoteRosterEntries.next();
-                        System.out.println(remoteEntry);
-                    }
-                    entriesReceived = received;
+        // Create a RosterExchangeListener that will iterate over the received roster entries
+        RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
+            public void entriesReceived(String from, Iterator remoteRosterEntries) {
+                int received = 0;
+                assertNotNull("From is null", from);
+                assertNotNull("rosterEntries is null", remoteRosterEntries);
+                assertTrue("Roster without entries", remoteRosterEntries.hasNext());
+                while (remoteRosterEntries.hasNext()) {
+                    received++;
+                    RemoteRosterEntry remoteEntry = (RemoteRosterEntry) remoteRosterEntries.next();
+                    System.out.println(remoteEntry);
                 }
-            };
-            rosterExchangeManager2.addRosterListener(rosterExchangeListener);
-
-            // Send user1's roster to user2
-            try {
-                entriesSent = conn1.getRoster().getEntryCount();
-                entriesReceived = 0;
-                rosterExchangeManager1.send(conn1.getRoster(), user2);
-            } catch (Exception e) {
-                fail("An error occured sending the message with the roster");
+                entriesReceived = received;
             }
-            // Wait for 2 seconds
-            Thread.sleep(2000);
-            assertEquals("Number of sent and received entries does not match", entriesSent, entriesReceived);
+        };
+        rosterExchangeManager2.addRosterListener(rosterExchangeListener);
+
+        // Send user1's roster to user2
+        try {
+            entriesSent = conn1.getRoster().getEntryCount();
+            entriesReceived = 0;
+            rosterExchangeManager1.send(conn1.getRoster(), user2);
+            // Wait for 1 second
+            Thread.sleep(300);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
-            if (conn2 != null)
-                conn2.close();
+            fail("An error occured sending the message with the roster");
         }
+        assertEquals(
+            "Number of sent and received entries does not match",
+            entriesSent,
+            entriesReceived);
     }
 
     /**
@@ -233,73 +170,109 @@ public class RosterExchangeManagerTest extends TestCase {
      * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then something is wrong
      */
     public void testSendAndAcceptRoster() {
-        String host = "localhost";
-        String server_user1 = "gato3";
-        String user1 = "gato3@localhost";
-        String pass1 = "gato3";
+        RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
+        RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
 
-        String server_user2 = "gato4";
-        String user2 = "gato4@localhost";
-        String pass2 = "gato4";
-
-        XMPPConnection conn1 = null;
-        XMPPConnection conn2 = null;
-
-        try {
-            // Connect to the server and log in the users
-            conn1 = new XMPPConnection(host);
-            conn1.login(server_user1, pass1);
-            conn2 = new XMPPConnection(host);
-            conn2.login(server_user2, pass2);
-            final Roster user2_roster = conn2.getRoster();
-
-            RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
-            RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
-
-            // Create a RosterExchangeListener that will accept all the received roster entries
-            RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
-                public void entriesReceived(String from, Iterator remoteRosterEntries) {
-                    int received = 0;
-                    assertNotNull("From is null", from);
-                    assertNotNull("remoteRosterEntries is null",remoteRosterEntries);
-                    assertTrue("Roster without entries",remoteRosterEntries.hasNext());
-                    while (remoteRosterEntries.hasNext()) {
-                        received++;
-                        try {
-                            RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) remoteRosterEntries.next();
-                            user2_roster.createEntry(
-                                remoteRosterEntry.getUser(),
-                                remoteRosterEntry.getName(),
-                                remoteRosterEntry.getGroupArrayNames());
-                        }
-                        catch (XMPPException e) {
-                            fail(e.toString());
-                        }
+        // Create a RosterExchangeListener that will accept all the received roster entries
+        RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
+            public void entriesReceived(String from, Iterator remoteRosterEntries) {
+                int received = 0;
+                assertNotNull("From is null", from);
+                assertNotNull("remoteRosterEntries is null", remoteRosterEntries);
+                assertTrue("Roster without entries", remoteRosterEntries.hasNext());
+                while (remoteRosterEntries.hasNext()) {
+                    received++;
+                    try {
+                        RemoteRosterEntry remoteRosterEntry =
+                            (RemoteRosterEntry) remoteRosterEntries.next();
+                        conn2.getRoster().createEntry(
+                            remoteRosterEntry.getUser(),
+                            remoteRosterEntry.getName(),
+                            remoteRosterEntry.getGroupArrayNames());
+                    } catch (Exception e) {
+                        fail(e.toString());
                     }
-                    entriesReceived = received;
                 }
-            };
-            rosterExchangeManager2.addRosterListener(rosterExchangeListener);
-
-            // Send user1's roster to user2
-            try {
-                entriesSent = conn1.getRoster().getEntryCount();
-                entriesReceived = 0;
-                rosterExchangeManager1.send(conn1.getRoster(), user2);
-            } catch (Exception e) {
-                fail("An error occured sending the message with the roster");
+                entriesReceived = received;
             }
-            // Wait for 2 seconds
-            Thread.sleep(2000);
-            assertEquals("Number of sent and received entries does not match", entriesSent, entriesReceived);
+        };
+        rosterExchangeManager2.addRosterListener(rosterExchangeListener);
+
+        // Send user1's roster to user2
+        try {
+            entriesSent = conn1.getRoster().getEntryCount();
+            entriesReceived = 0;
+            rosterExchangeManager1.send(conn1.getRoster(), user2);
+            // Wait for 1 seconds
+            Thread.sleep(400);
         } catch (Exception e) {
-            fail(e.toString());
-        } finally {
-            if (conn1 != null)
-                conn1.close();
-            if (conn2 != null)
-                conn2.close();
+            fail("An error occured sending the message with the roster");
+        }
+        assertEquals(
+            "Number of sent and received entries does not match",
+            entriesSent,
+            entriesReceived);
+        assertTrue("Roster2 has no entries", conn2.getRoster().getEntryCount() > 0);
+    }
+
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        try {
+            // Connect to the server
+            conn1 = new XMPPConnection("localhost");
+            conn2 = new XMPPConnection("localhost");
+            conn3 = new XMPPConnection("localhost");
+            conn4 = new XMPPConnection("localhost");
+
+            // Create the test accounts
+            if (!conn1.getAccountManager().supportsAccountCreation())
+                fail("Server does not support account creation");
+            conn1.getAccountManager().createAccount("gato3", "gato3");
+            conn2.getAccountManager().createAccount("gato4", "gato4");
+            conn3.getAccountManager().createAccount("gato5", "gato5");
+            conn4.getAccountManager().createAccount("gato6", "gato6");
+
+            // Login with the test accounts
+            conn1.login("gato3", "gato3");
+            conn2.login("gato4", "gato4");
+            conn3.login("gato5", "gato5");
+            conn4.login("gato6", "gato6");
+
+            user1 = "gato3@" + conn1.getHost();
+            user2 = "gato4@" + conn2.getHost();
+            user3 = "gato5@" + conn3.getHost();
+            user4 = "gato6@" + conn4.getHost();
+
+            conn1.getRoster().createEntry(
+                "gato5@" + conn3.getHost(),
+                "gato5",
+                new String[] { "Friends, Coworker" });
+            conn1.getRoster().createEntry("gato6@" + conn4.getHost(), "gato6", null);
+            Thread.sleep(100);
+
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
     }
 
+    /*
+     * @see TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        // Delete the created accounts for the test
+        conn1.getAccountManager().deleteAccount();
+        conn2.getAccountManager().deleteAccount();
+        conn3.getAccountManager().deleteAccount();
+        conn4.getAccountManager().deleteAccount();
+
+        // Close all the connections
+        conn1.close();
+        conn2.close();
+        conn3.close();
+        conn4.close();
+    }
 }
