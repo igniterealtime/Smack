@@ -104,16 +104,27 @@ Release made, testing Ant targets of release...
         <antcall target="test" />
     </target>
 
-    <!-- all -->
+    <!-- test -->
     <!-- ======================================================================================= -->
     <target name="test">
-        <ant dir="${release.dir}" antfile="build/build.xml" target="jar" inheritAll="false">
+        <property name="testdir" value="${release.dir}/.test" />
+
+        <!-- copy the build to a temp dir so we can run sanity tests -->
+        <mkdir dir="${testdir}" />
+        <copy todir="${testdir}">
+            <fileset dir="${release.dir}">
+                <exclude name=".test/**/*.*" />
+            </fileset>
+        </copy>
+
+        <!-- run sanity tests -->
+        <ant dir="${testdir}" antfile="build/build.xml" target="jar" inheritAll="false">
             <property name="no.test" value="true" />
         </ant>
-        <ant dir="${release.dir}" antfile="build/build.xml" target="javadoc" inheritAll="false">
+        <ant dir="${testdir}" antfile="build/build.xml" target="javadoc" inheritAll="false">
             <property name="no.test" value="true" />
         </ant>
-        <ant dir="${release.dir}" antfile="build/build.xml" target="clean" inheritAll="false">
+        <ant dir="${testdir}" antfile="build/build.xml" target="clean" inheritAll="false">
             <property name="no.test" value="true" />
         </ant>
 
@@ -123,6 +134,5 @@ Release made, testing Ant targets of release...
 ----------------------------
         </echo>
     </target>
-
 
 </project>
