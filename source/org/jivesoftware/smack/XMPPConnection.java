@@ -58,6 +58,7 @@ import org.jivesoftware.smack.filter.*;
 
 import java.lang.reflect.Constructor;
 import java.net.*;
+import java.util.*;
 import java.io.*;
 
 /**
@@ -100,6 +101,9 @@ public class XMPPConnection {
         catch (Exception e) {
         }
     }
+    
+    private static List connectionEstablishedListeners = new ArrayList();
+
     private SmackDebugger debugger = null;
 
     String host;
@@ -633,6 +637,31 @@ public class XMPPConnection {
     }
 
     /**
+     * Adds a connection established listener that will be notified when a new connection 
+     * is established.
+     *
+     * @param connectionEstablishedListener a listener interested on connection established events.
+     */
+    public static void addConnectionListener(ConnectionEstablishedListener connectionEstablishedListener) {
+        synchronized (connectionEstablishedListeners) {
+            if (!connectionEstablishedListeners.contains(connectionEstablishedListener)) {
+                connectionEstablishedListeners.add(connectionEstablishedListener);
+            }
+        }
+    }
+
+    /**
+     * Removes a listener on new established connections.
+     *
+     * @param connectionEstablishedListener a listener interested on connection established events.
+     */
+    public static void removeConnectionListener(ConnectionEstablishedListener connectionEstablishedListener) {
+        synchronized (connectionEstablishedListeners) {
+            connectionEstablishedListeners.remove(connectionEstablishedListener);
+        }
+    }
+
+    /**
      * Initializes the connection by creating a packet reader and writer and opening a
      * XMPP stream to the server.
      *
@@ -704,5 +733,22 @@ public class XMPPConnection {
 
         // Make note of the fact that we're now connected.
         connected = true;
+        
+        // Notify that a new connection has been established
+        connectionEstablished(this);
+    }
+
+    /**
+     * Fires listeners on connection established events.
+     */
+    private static void connectionEstablished(XMPPConnection connection) {
+        ConnectionEstablishedListener[] listeners = null;
+        synchronized (connectionEstablishedListeners) {
+            listeners = new ConnectionEstablishedListener[connectionEstablishedListeners.size()];
+            connectionEstablishedListeners.toArray(listeners);
+        }
+        for (int i = 0; i < listeners.length; i++) {
+            listeners[i].connectionEstablished(connection);
+        }
     }
 }
