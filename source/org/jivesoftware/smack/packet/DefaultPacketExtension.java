@@ -133,7 +133,7 @@ public class DefaultPacketExtension implements PacketExtension {
      */
     public synchronized Iterator getNames() {
         if (map == null) {
-            Collections.EMPTY_LIST.iterator();
+            return Collections.EMPTY_LIST.iterator();
         }
         return Collections.unmodifiableMap(new HashMap(map)).keySet().iterator();
     }
