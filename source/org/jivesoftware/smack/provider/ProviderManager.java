@@ -261,22 +261,29 @@ public class ProviderManager {
      * @param namespace the XML namespace.
      * @return the IQ provider.
      */
-    public synchronized static Object getIQProvider(String elementName, String namespace) {
+    public static Object getIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return iqProviders.get(key);
     }
 
     /**
-     * Adds an IQ provider with the specified element name and name space. The provider
-     * will override any providers loaded through the classpath.
+     * Adds an IQ provider (must be an instance of IQProvider or Class object that is an IQ)
+     * with the specified element name and name space. The provider will override any providers
+     * loaded through the classpath.
      *
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
      * @param provider the IQ provider.
      */
-    public synchronized static void addIQProvider(String elementName, String namespace,
-            IQProvider provider)
+    public static void addIQProvider(String elementName, String namespace,
+            Object provider)
     {
+        if (!(provider instanceof IQProvider || (provider instanceof Class &&
+                IQ.class.isAssignableFrom((Class)provider))))
+        {
+            throw new IllegalArgumentException("Provider must be an IQProvider " +
+                    "or a Class instance.");
+        }
         String key = getProviderKey(elementName, namespace);
         iqProviders.put(key, provider);
     }
@@ -300,7 +307,7 @@ public class ProviderManager {
      * @param namespace
      * @return the extenion provider.
      */
-    public synchronized static Object getExtensionProvider(String elementName, String namespace) {
+    public static Object getExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return extensionProviders.get(key);
     }
@@ -314,7 +321,7 @@ public class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the extension provider.
      */
-    public synchronized static void addExtensionProvider(String elementName, String namespace,
+    public static void addExtensionProvider(String elementName, String namespace,
             Object provider)
     {
         if (!(provider instanceof PacketExtensionProvider || provider instanceof Class)) {
