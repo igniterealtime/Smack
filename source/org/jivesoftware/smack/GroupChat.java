@@ -199,6 +199,16 @@ public class GroupChat {
     }
 
     /**
+     * Returns true if currently in the group chat (after calling the {@link
+     * #join(String)} method.
+     *
+     * @return true if currently in the group chat room.
+     */
+    public boolean isJoined() {
+        return joined;
+    }
+
+    /**
      * Leave the chat room.
      */
     public synchronized void leave() {
