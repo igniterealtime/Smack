@@ -22,8 +22,8 @@
 
     <property name="version.major" value="1" />
     <property name="version.minor" value="0" />
-    <property name="version.string" value="beta2" />
-    <property name="version.name" value="${version.major}.${version.minor} Beta 2" />
+    <property name="version.string" value="beta3" />
+    <property name="version.name" value="${version.major}.${version.minor} Beta 3" />
 
     <!-- TARGETS -->
     <!-- ======================================================================================= -->
@@ -78,6 +78,7 @@
             destdir="${javadoc.dest.dir}"
             author="true"
             windowtitle="Smack ${version.name} Documentation"
+            overview="${basedir}/source/overview.html"
         >
             <classpath>
                 <fileset dir="${build.lib.dir}">
