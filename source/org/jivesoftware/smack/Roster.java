@@ -96,16 +96,6 @@ public class Roster {
      */
     public static final int SUBSCRIPTION_MANUAL = 2;
 
-    /**
-     * Value that indicates the number of milliseconds to wait for a response from
-     * the server. 
-     *
-     * The reply timeout value can be assigned by setting this field to the required 
-     * timeout, or by modifying the smack.configuration file that holds the default value
-     * to use.
-     */
-    public static int REPLY_TIMEOUT = 5000;
-
     private XMPPConnection connection;
     private Map groups;
     private List entries;
@@ -176,8 +166,14 @@ public class Roster {
      * Reloads the entire roster from the server. This is an asynchronous operation,
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
+     * 
+     * @throws IllegalStateException if the roster has not been initialized. The roster gets 
+     * initialized when the user has logged in a a roster packet was received.
      */
     public void reload() {
+        if (!rosterInitialized) {
+            throw new IllegalStateException("Roster not initialized yet.");
+        }
         connection.sendPacket(new RosterPacket());
     }
 
@@ -214,9 +210,14 @@ public class Roster {
      * after a logout/login. This is due to the way that XMPP stores group information.
      *
      * @param name the name of the group.
+     * @throws IllegalStateException if the roster has not been initialized. The roster gets 
+     * initialized when the user has logged in a a roster packet was received.
      * @return a new group.
      */
     public RosterGroup createGroup(String name) {
+        if (!rosterInitialized) {
+            throw new IllegalStateException("Roster not initialized yet.");
+        }
         synchronized (groups) {
             if (groups.containsKey(name)) {
                 throw new IllegalArgumentException("Group with name " + name + " alread exists.");
@@ -235,8 +236,13 @@ public class Roster {
      * @param name the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *      the roster entry won't belong to a group.
+     * @throws IllegalStateException if the roster has not been initialized. The roster gets 
+     * initialized when the user has logged in a a roster packet was received.
      */
     public void createEntry(String user, String name, String [] groups) throws XMPPException {
+        if (!rosterInitialized) {
+            throw new IllegalStateException("Roster not initialized yet.");
+        }
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
         rosterPacket.setType(IQ.Type.SET);
@@ -251,7 +257,7 @@ public class Roster {
         PacketCollector collector = connection.createPacketCollector(
                 new PacketIDFilter(rosterPacket.getPacketID()));
         connection.sendPacket(rosterPacket);
-        IQ response = (IQ)collector.nextResult(REPLY_TIMEOUT);
+        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {
             throw new XMPPException("No response from the server.");
         }
