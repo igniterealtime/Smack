@@ -296,8 +296,7 @@ public class XMPPConnection {
 
         auth.setResource(resource);
 
-        collector = packetReader.createPacketCollector(
-                new PacketIDFilter(auth.getPacketID()));
+        collector = packetReader.createPacketCollector(new PacketIDFilter(auth.getPacketID()));
         // Send the packet.
         packetWriter.sendPacket(auth);
         // Wait up to five seconds for a response from the server.
@@ -313,10 +312,9 @@ public class XMPPConnection {
             this.user = response.getTo();
         }
         else {
-            Authentication authResponse = (Authentication)response;
-            this.user = authResponse.getUsername() + "@" + this.host;
-            if (authResponse.getResource() != null) {
-                this.user += "/" + authResponse.getResource();
+            this.user = username + "@" + this.host;
+            if (resource != null) {
+                this.user += "/" + resource;
             }
         }
         // We're done with the collector, so explicitly cancel it.
