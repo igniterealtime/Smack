@@ -86,8 +86,6 @@ public class Message extends Packet {
     public static final Type HEADLINE = new Type("headline");
     public static final Type ERROR = new Type("error");
 
-    private String sender = null;
-    private String recipient = null;
     private Type type = NORMAL;
     private String subject = null;
     private String body = null;
@@ -103,63 +101,24 @@ public class Message extends Packet {
     /**
      * Creates a new "normal" message to the specified recipient.
      *
-     * @param recipient the recipient of the message.
+     * @param to the recipient of the message.
      */
-    public Message(String recipient) {
-        this.recipient = recipient;
+    public Message(String to) {
+        setTo(to);
     }
 
     /**
      * Creates a new message of the specified type to a recipient.
      *
-     * @param recipient the user to send the message to.
+     * @param to the user to send the message to.
      * @param type the message type.
      */
-    public Message(String recipient, Type type) {
-        if (recipient == null || type == null) {
+    public Message(String to, Type type) {
+        if (to == null || type == null) {
             throw new IllegalArgumentException("Parameters cannot be null.");
         }
-        this.recipient = recipient;
+        setTo(to);
         this.type = type;
-    }
-
-    /**
-     * Returns the sender of the message, or null if the sender has not been set.
-     *
-     * @return the sender of the message.
-     */
-    public String getSender() {
-        return sender;
-    }
-
-    /**
-     * Sets the sender of the message.
-     *
-     * @param sender the sender of the message.
-     */
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    /**
-     * Returns the recipient of the message, or null if the recipient has not been set.
-     *
-     * @return the recipient of the message.
-     */
-    public String getRecipient() {
-        return recipient;
-    }
-
-    /**
-     * Sets the recipient of the message.
-     *
-     * @param recipient the recipient of the message.
-     */
-    public void setRecipient(String recipient) {
-        if (recipient == null) {
-            throw new IllegalArgumentException("Recipient cannot be null.");
-        }
-        this.recipient = recipient;
     }
 
     /**
@@ -250,11 +209,11 @@ public class Message extends Packet {
         StringBuffer buf = new StringBuffer();
         buf.append("<message");
         buf.append(" id=\"").append(getPacketID()).append("\"");
-        if (recipient != null) {
-            buf.append(" to=\"").append(recipient).append("\"");
+        if (getTo() != null) {
+            buf.append(" to=\"").append(getTo()).append("\"");
         }
-        if (sender != null) {
-            buf.append(" from=\"").append(sender).append("\"");
+        if (getFrom() != null) {
+            buf.append(" from=\"").append(getFrom()).append("\"");
         }
         if (type != NORMAL) {
             buf.append(" type=\"").append(type).append("\"");
@@ -290,16 +249,16 @@ public class Message extends Packet {
     public static class Type {
 
         public static Type fromString(String type) {
-            if (type.equals(CHAT.toString())) {
+            if (CHAT.toString().equals(type)) {
                 return CHAT;
             }
-            else if (type.equals(GROUP_CHAT.toString())) {
+            else if (GROUP_CHAT.toString().equals(type)) {
                 return GROUP_CHAT;
             }
-            else if (type.equals(HEADLINE.toString())) {
+            else if (HEADLINE.toString().equals(type)) {
                 return HEADLINE;
             }
-            else if (type.equals(ERROR.toString())) {
+            else if (ERROR.toString().equals(type)) {
                 return ERROR;
             }
             else {
