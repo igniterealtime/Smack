@@ -347,7 +347,6 @@ class PacketReader {
         String from = parser.getAttributeValue("", "from");
         IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
         XMPPError error = null;
-        Map properties = null;
 
         boolean done = false;
         while (!done) {
@@ -391,21 +390,19 @@ class PacketReader {
         }
         // Set basic values on the iq packet.
         if (iqPacket == null) {
-            iqPacket = new IQ();
+            // If an IQ packet wasn't created above, create an empty IQ packet.
+            iqPacket = new IQ() {
+                public String getChildElementXML() {
+                    return null;
+                }
+            };
         }
         iqPacket.setPacketID(id);
         iqPacket.setTo(to);
         iqPacket.setFrom(from);
         iqPacket.setType(type);
         iqPacket.setError(error);
-        // Set packet properties.
-        if (properties != null) {
-            for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
-                String name = (String)i.next();
-                iqPacket.setProperty(name, properties.get(name));
-            }
-        }
-        // Return the packet.
+
         return iqPacket;
     }
 
