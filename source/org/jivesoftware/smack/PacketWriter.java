@@ -172,13 +172,18 @@ class PacketWriter {
      */
     private Packet nextPacket() {
         synchronized(queue) {
-            while (queue.size() == 0) {
+            while (!done && queue.size() == 0) {
                 try {
-                    queue.wait();
+                    queue.wait(2000);
                 }
                 catch (InterruptedException ie) { }
             }
-            return (Packet)queue.removeLast();
+            if (queue.size() > 0) {
+                return (Packet)queue.removeLast();
+            }
+            else {
+                return null;
+            }
         }
     }
 
@@ -196,8 +201,10 @@ class PacketWriter {
             // Write out packets from the queue.
             while (!done) {
                 Packet packet = nextPacket();
-                writer.write(packet.toXML());
-                writer.flush();
+                if (packet != null) {
+                    writer.write(packet.toXML());
+                    writer.flush();
+                }
             }
             // Close the stream.
             try {
@@ -228,20 +235,27 @@ class PacketWriter {
             Packet sentPacket;
             // Wait until a new packet has been sent
             synchronized(sentPackets) {
-                while (sentPackets.size() == 0) {
+                while (!done && sentPackets.size() == 0) {
                     try {
-                        sentPackets.wait();
+                        sentPackets.wait(2000);
                     }
                     catch (InterruptedException ie) { }
                 }
-                sentPacket = (Packet)sentPackets.removeLast();
+                if (sentPackets.size() > 0) {
+                    sentPacket = (Packet)sentPackets.removeLast();
+                }
+                else {
+                    sentPacket = null;
+                }
             }
-            // Notify the listeners of the new sent packet
-            int size = listeners.size();
-            for (int i=0; i<size; i++) {
-                ListenerWrapper listenerWrapper = (ListenerWrapper)listeners.get(i);
-                if (listenerWrapper != null) {
-                    listenerWrapper.notifyListener(sentPacket);
+            if (sentPacket != null) {
+                // Notify the listeners of the new sent packet
+                int size = listeners.size();
+                for (int i=0; i<size; i++) {
+                    ListenerWrapper listenerWrapper = (ListenerWrapper)listeners.get(i);
+                    if (listenerWrapper != null) {
+                        listenerWrapper.notifyListener(sentPacket);
+                    }
                 }
             }
         }
