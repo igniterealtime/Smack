@@ -332,6 +332,11 @@ public class RosterPacket extends IQ {
          */
         public static final ItemType BOTH = new ItemType("both");
 
+        /**
+         * The user wishes to stop receiving presence updates from the subscriber.
+         */
+        public static final ItemType REMOVE = new ItemType("remove");
+
         public static ItemType fromString(String value) {
             if (value == null) {
                 return null;
@@ -348,6 +353,9 @@ public class RosterPacket extends IQ {
             }
             else if ("both".equals(value)) {
                 return BOTH;
+            }
+            else if ("remove".equals(value)) {
+                return REMOVE;
             }
             else {
                 return null;
