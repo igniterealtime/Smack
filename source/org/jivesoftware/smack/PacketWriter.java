@@ -72,7 +72,7 @@ class PacketWriter {
     private boolean done = false;
     
     private List listeners = new ArrayList();
-    private boolean listenersUpdated = false;
+    private boolean listenersDeleted = false;
     private Thread listenerThread;
     private LinkedList sentPackets = new LinkedList();
 
@@ -159,7 +159,7 @@ class PacketWriter {
                     listeners.set(i, null);
                     // Set the flag to indicate that the listener list needs
                     // to be cleaned up.
-                    listenersUpdated = true;
+                    listenersDeleted = true;
                 }
             }
         }
@@ -284,13 +284,13 @@ class PacketWriter {
                 // removes are done seperately so that the main notification process doesn't
                 // need to synchronize on the list.
                 synchronized (listeners) {
-                    if (listenersUpdated) {
+                    if (listenersDeleted) {
                         for (int i=listeners.size()-1; i>=0; i--) {
                             if (listeners.get(i) == null) {
                                 listeners.remove(i);
                             }
                         }
-                        listenersUpdated = false;
+                        listenersDeleted = false;
                     }
                 }
                 // Notify the listeners of the new sent packet
