@@ -408,7 +408,12 @@ public class RosterTest extends SmackTestCase {
         Iterator it = getConnection(0).getRoster().getEntries();
         while (it.hasNext()) {
             RosterEntry entry = (RosterEntry) it.next();
-            getConnection(0).getRoster().removeEntry(entry);
+            try {
+                getConnection(0).getRoster().removeEntry(entry);
+            } catch (XMPPException e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
         }
         try {
             Thread.sleep(700);
