@@ -53,7 +53,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.Error;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 
@@ -98,6 +98,7 @@ public class XMPPConnection {
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".
      */
     public static boolean DEBUG_ENABLED = Boolean.getBoolean("smack.debugEnabled");
+    private JFrame debugFrame = null;
 
     protected String host;
     protected int port;
@@ -149,7 +150,7 @@ public class XMPPConnection {
             throw new XMPPException("Could not connect to " + host + ":" + port + ".", uhe);
         }
         catch (IOException ioe) {
-            throw new XMPPException("Error connecting to " + host + ":" + port + ".", ioe);
+            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".", ioe);
         }
         init();
     }
@@ -228,10 +229,12 @@ public class XMPPConnection {
         // Wait up to five seconds for a response from the server.
         Authentication authTypes = (Authentication)collector.nextResult(5000);
         collector.cancel();
-        if (authTypes == null || authTypes.getType().equals(IQ.Type.ERROR)) {
+        if (authTypes == null) {
             throw new XMPPException("No response from the server.");
         }
-
+        else if (authTypes.getType().equals(IQ.Type.ERROR)) {
+            throw new XMPPException(authTypes.getError());
+        }
 
         // Now, create the authentication packet we'll send to the server.
         Authentication auth = new Authentication();
@@ -264,7 +267,7 @@ public class XMPPConnection {
                 throw new XMPPException("Authentication failed.");
             }
             else {
-                Error error = response.getError();
+                XMPPError error = response.getError();
                 String msg = "Authentication failed -- " + error.getCode();
                 if (error.getMessage() != null) {
                     msg += ": " + error.getMessage();
@@ -280,6 +283,16 @@ public class XMPPConnection {
         // Finally, create the roster.
         this.roster = new Roster(this);
         roster.reload();
+
+        // If debugging is enabled, change the the debug window title to include the
+        // name we are now logged-in as.
+        if (DEBUG_ENABLED) {
+            String title = "Smack Debug Window -- " + username + "@" + getHost() + ":" + getPort();
+            if (resource != null) {
+                title += "/" + resource;
+            }
+            debugFrame.setTitle(title);
+        }
     }
 
     public Roster getRoster() {
@@ -403,7 +416,7 @@ public class XMPPConnection {
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
         }
         catch (IOException ioe) {
-            throw new XMPPException("Error establishing connection with server.", ioe);
+            throw new XMPPException("XMPPError establishing connection with server.", ioe);
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.
@@ -451,7 +464,7 @@ public class XMPPConnection {
             e.printStackTrace();
         }
 
-        JFrame frame = new JFrame("Smack Debug Window -- " + getHost() + ":" + getPort());
+        debugFrame = new JFrame("Smack Debug Window -- " + getHost() + ":" + getPort());
 
         // We'll arrange the UI into four tabs. The first tab contains all data, the second
         // client generated XML, the third server generated XML, and the fourth is packet
@@ -492,10 +505,10 @@ public class XMPPConnection {
         allPane.add(new JScrollPane(interpretedText1));
         tabbedPane.add("Interpreted Packets", new JScrollPane(interpretedText2));
 
-        frame.getContentPane().add(tabbedPane);
+        debugFrame.getContentPane().add(tabbedPane);
 
-        frame.setSize(550, 400);
-        frame.show();
+        debugFrame.setSize(550, 400);
+        debugFrame.show();
 
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
         Reader debugReader = new Reader() {

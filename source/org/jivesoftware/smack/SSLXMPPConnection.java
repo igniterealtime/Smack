@@ -89,7 +89,7 @@ public class SSLXMPPConnection extends XMPPConnection {
             throw new XMPPException("Could not connect to " + host + ":" + port + ".", uhe);
         }
         catch (IOException ioe) {
-            throw new XMPPException("Error connecting to " + host + ":" + port + ".", ioe);
+            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".", ioe);
         }
         super.init();
     }
