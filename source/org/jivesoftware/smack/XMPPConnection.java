@@ -581,7 +581,7 @@ public class XMPPConnection {
         debugFrame.getContentPane().add(tabbedPane);
 
         debugFrame.setSize(550, 400);
-        debugFrame.show();
+        debugFrame.setVisible(true);
 
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
         Reader debugReader = new Reader() {
