@@ -11,6 +11,13 @@
 
 <project name="Smack Release Script" default="all" basedir="..">
 
+    <!-- Include Ant Optional Tasks -->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="${basedir}/build/ant-contrib.jar"/>
+        </classpath>
+    </taskdef> 
+
     <!-- PROPERTIES -->
     <!-- ======================================================================================= -->
 
@@ -20,8 +27,19 @@
     <!-- all -->
     <!-- ======================================================================================= -->
     <target name="all">
-        <!-- create release properties -->
-        <property name="release.name" value="smack-${version.major}.${version.minor}-${version.string}" />
+        <!-- create release properties -->        
+        <if>
+            <equals arg1="${dailybuild}" arg2="true" />
+            <then>
+                <tstamp>
+                    <format property="build.date" pattern="MMM-dd-yyyy" locale="en"/>
+                </tstamp>
+                <property name="release.name" value="smack-${build.date}" />
+            </then>
+            <else>
+                <property name="release.name" value="smack-${version.major}.${version.minor}-${version.string}" />
+            </else>
+        </if> 
         <property name="release.dir" value="${basedir}/release/${release.name}" />
         <!-- create release dirs -->
         <mkdir dir="${release.dir}" />
