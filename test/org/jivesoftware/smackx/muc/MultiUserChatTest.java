@@ -280,18 +280,19 @@ public class MultiUserChatTest extends SmackTestCase {
                     String room,
                     String inviter,
                     String reason,
-                    String password) {
-                    // Indicate that the invitation was received 
+                    String password,
+                    Message message) {
+                    // Indicate that the invitation was received
                     answer[0] = reason;
                     // Reject the invitation
                     MultiUserChat.decline(conn, room, inviter, "I'm busy right now");
                 }
             });
 
-            // User2 is listening to invitation rejections            
+            // User2 is listening to invitation rejections
             muc2.addInvitationRejectionListener(new InvitationRejectionListener() {
                 public void invitationDeclined(String invitee, String reason) {
-                    // Indicate that the rejection was received 
+                    // Indicate that the rejection was received
                     answer[1] = reason;
                 }
             });

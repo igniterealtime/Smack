@@ -639,8 +639,23 @@ public class MultiUserChat {
      * @param reason the reason why the user is being invited.
      */
     public void invite(String user, String reason) {
+        invite(new Message(), user, reason);
+    }
+
+    /**
+     * Invites another user to the room in which one is an occupant using a given Message. The invitation
+     * will be sent to the room which in turn will forward the invitation to the invitee.<p>
+     *
+     * If the room is password-protected, the invitee will receive a password to use to join
+     * the room. If the room is members-only, the the invitee may be added to the member list.
+     *
+     * @param message the message to use for sending the invitation.
+     * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
+     * @param reason the reason why the user is being invited.
+     */
+    public void invite(Message message, String user, String reason) {
         // TODO listen for 404 error code when inviter supplies a non-existent JID
-        Message message = new Message(room);
+        message.setTo(room);
 
         // Create the MUCUser packet that will include the invitation
         MUCUser mucUser = new MUCUser();
@@ -652,7 +667,6 @@ public class MultiUserChat {
         message.addExtension(mucUser);
 
         connection.sendPacket(message);
-
     }
 
     /**
@@ -2465,18 +2479,15 @@ public class MultiUserChat {
         /**
          * Fires invitation listeners.
          */
-        private void fireInvitationListeners(
-            String room,
-            String inviter,
-            String reason,
-            String password) {
+        private void fireInvitationListeners(String room, String inviter, String reason, String password,
+                                             Message message) {
             InvitationListener[] listeners = null;
             synchronized (invitationsListeners) {
                 listeners = new InvitationListener[invitationsListeners.size()];
                 invitationsListeners.toArray(listeners);
             }
             for (int i = 0; i < listeners.length; i++) {
-                listeners[i].invitationReceived(connection, room, inviter, reason, password);
+                listeners[i].invitationReceived(connection, room, inviter, reason, password, message);
             }
         }
 
@@ -2507,11 +2518,8 @@ public class MultiUserChat {
                     // Check if the MUCUser extension includes an invitation
                     if (mucUser.getInvite() != null) {
                         // Fire event for invitation listeners
-                        fireInvitationListeners(
-                            packet.getFrom(),
-                            mucUser.getInvite().getFrom(),
-                            mucUser.getInvite().getReason(),
-                            mucUser.getPassword());
+                        fireInvitationListeners(packet.getFrom(), mucUser.getInvite().getFrom(),
+                                mucUser.getInvite().getReason(), mucUser.getPassword(), (Message) packet);
                     }
                 };
             };

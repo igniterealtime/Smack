@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Message;
 
 /**
  * A listener that is fired anytime an invitation to join a MUC room is received.
@@ -40,12 +41,9 @@ public interface InvitationListener {
      * @param inviter the inviter that sent the invitation. (e.g. crone1@shakespeare.lit).
      * @param reason the reason why the inviter sent the invitation.
      * @param password the password to use when joining the room.
+     * @param message the message used by the inviter to send the invitation.
      */
-    public abstract void invitationReceived(
-        XMPPConnection conn,
-        String room,
-        String inviter,
-        String reason,
-        String password);
+    public abstract void invitationReceived(XMPPConnection conn, String room, String inviter, String reason,
+                                            String password, Message message);
 
 }
