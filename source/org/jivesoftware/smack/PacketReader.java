@@ -293,6 +293,10 @@ class PacketReader {
                                         connectionIDLock.notifyAll();
                                     }
                                 }
+                                else if (parser.getAttributeName(i).equals("from")) {
+                                    // Use the server name that the server says that it is.
+                                    connection.host = parser.getAttributeValue(i);
+                                }
                             }
                         }
                     }
