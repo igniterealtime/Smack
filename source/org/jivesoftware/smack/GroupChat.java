@@ -129,12 +129,27 @@ public class GroupChat {
     /**
      * Joins the chat room using the specified nickname. If already joined as
      * another nickname, will leave as that name first before joining under the new
-     * name.
+     * name. The default timeout of 5 seconds for a reply from the group chat server
+     * that the join succeeded will be used.
      *
      * @param nickname the nicknam to use.
      * @throws XMPPException if an error occurs joining the room.
      */
     public synchronized void join(String nickname) throws XMPPException {
+        join(nickname, 5000);
+    }
+
+    /**
+     * Joins the chat room using the specified nickname. If already joined as
+     * another nickname, will leave as that name first before joining under the new
+     * name.
+     *
+     * @param nickname the nicknam to use.
+     * @param timeout the number of milleseconds to wait for a reply from the
+     *      group chat that joining the room succeeded.
+     * @throws XMPPException if an error occurs joining the room.
+     */
+    public synchronized void join(String nickname, long timeout) throws XMPPException {
         if (nickname == null || nickname.equals("")) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
