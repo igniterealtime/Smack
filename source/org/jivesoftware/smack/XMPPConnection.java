@@ -81,7 +81,7 @@ import java.awt.*;
  */
 public class XMPPConnection {
 
-    private static final String NEWLINE = System.getProperty ("line.separator");
+    private static final String NEWLINE = System.getProperty("line.separator");
 
     /**
      * Value that indicates whether debugging is enabled. When enabled, a debug
@@ -272,7 +272,7 @@ public class XMPPConnection {
         // We're done with the collector, so explicitly cancel it.
         collector.cancel();
         // Set presence to online.
-        packetWriter.sendPacket(new Presence(true));
+        packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
     }
 
     /**
@@ -319,7 +319,7 @@ public class XMPPConnection {
      */
     public void close() {
         // Set presence to offline.
-        packetWriter.sendPacket(new Presence(false));
+        packetWriter.sendPacket(new Presence(Presence.Type.UNAVAILABLE));
         packetWriter.shutdown();
         packetReader.shutdown();
         try {

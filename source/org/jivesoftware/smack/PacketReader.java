@@ -440,16 +440,15 @@ public class PacketReader {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     private static Packet parsePresence(XmlPullParser parser) throws Exception {
-        String type = parser.getAttributeValue("", "type");
-        // If the type value isn't set, it should default to available.
-        if (type == null) {
-            type = "available";
-        }
+        Presence.Type type = Presence.Type.fromString(parser.getAttributeValue("", "type"));
         // We only handle "available" or "unavailable" packets for now.
-        if (!(type.equals("available") || type.equals("unavailable"))) {
+        if (!(type == Presence.Type.AVAILABLE || type == Presence.Type.UNAVAILABLE)) {
             System.out.println("FOUND OTHER PRESENCE TYPE: " + type);
         }
-        Presence presence = new Presence("available".equals(type));
+
+        // Otherwise, it's a presence packet that has nothing to do with roster items.
+
+        Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
         presence.setFrom(parser.getAttributeValue("", "from"));
         presence.setPacketID(parser.getAttributeValue("", "id"));

@@ -107,7 +107,7 @@ public class GroupChat {
         }
         // We join a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
-        Presence joinPresence = new Presence(true);
+        Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
         joinPresence.setTo(room + "/" + nickname);
         connection.getPacketWriter().sendPacket(joinPresence);
         // Wait for a presence packet back from the server.
@@ -139,7 +139,7 @@ public class GroupChat {
         }
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
-        Presence leavePresence = new Presence(false);
+        Presence leavePresence = new Presence(Presence.Type.UNAVAILABLE);
         leavePresence.setTo(room + "/" + nickname);
         connection.getPacketWriter().sendPacket(leavePresence);
         nickname = null;
