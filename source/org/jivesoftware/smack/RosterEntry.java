@@ -58,7 +58,7 @@ public class RosterEntry {
      */
     public void setName(String name) {
         // Do nothing if the name hasn't changed.
-        if (this.name.equals(name)) {
+        if (name != null && this.name.equals(name)) {
             return;
         }
         this.name = name;
