@@ -59,6 +59,8 @@ import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.awt.*;
+import java.security.*;
+import java.util.PropertyPermission;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -77,7 +79,7 @@ import java.awt.*;
  */
 public class XMPPConnection {
 
-    private static final String NEWLINE = System.getProperty("line.separator");
+    private static final String NEWLINE = "\n";
 
     /**
      * Value that indicates whether debugging is enabled. When enabled, a debug
@@ -92,7 +94,17 @@ public class XMPPConnection {
      * property <tt>smack.debugEnabled</tt> to true. The system property can be set on the
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".
      */
-    public static boolean DEBUG_ENABLED = Boolean.getBoolean("smack.debugEnabled");
+    public static boolean DEBUG_ENABLED = false;
+    static {
+        try {
+            // See if we're allowed to access the debug flag system property. This will
+            // not be allowed on applets, so we need to do a special check.
+            AccessController.checkPermission(new PropertyPermission("smack.debugEnabled", "read"));
+            // Passed permission check, so must be allowed. Get the value of the flag.
+            DEBUG_ENABLED = Boolean.getBoolean("smack.debugEnabled");
+        }
+        catch (AccessControlException ace) { }
+    }
     private JFrame debugFrame = null;
 
     protected String host;
