@@ -76,12 +76,12 @@
             <fileset dir="${basedir}/test" includes="**/*.java" />
         </copy>
         <!-- Copy resources -->
-        <copy todir="${release.dir}/resources">
-            <fileset dir="${basedir}/resources" includes="META-INF/smack.providers" />
+        <copy todir="${release.dir}/build/resources">
+            <fileset dir="${basedir}/build/resources" includes="META-INF/smack.providers" />
         </copy>
         <!-- Copy readme.html and changelog.html -->
         <copy todir="${release.dir}">
-            <fileset dir="${basedir}/resources/releasedocs" includes="*.html" />
+            <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
         </copy>
         <!-- Package -->
         <zip destfile="${basedir}/release/${release.name}.zip"

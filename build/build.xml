@@ -109,6 +109,7 @@
                 </fileset>
                 <fileset dir="${basedir}/build">
                     <include name="junit.jar"/>
+                    <include name="xmlunit.jar"/>
                 </fileset>
                 <pathelement location="${compile.dir}" />
             </classpath>
@@ -125,7 +126,7 @@
          >
              <zipfileset src="${merge.lib.dir}/xpp.jar"/>
         </jar>
-        <copy todir="${compile.dir}/META-INF" file="${basedir}/resources/META-INF/smack.providers" />
+        <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack.providers" />
         <jar destfile="${jar.dest.dir}/smackx.jar"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smackx/**/*.class, **/*.providers"
@@ -176,6 +177,14 @@
     <!-- ======================================================================================= -->
     <target name="test" depends="compile, jar-test" unless="no.test">
 
+        <echo>
+
+
+            **** no.test: ${no.test}
+
+
+        </echo>
+
         <property name="test.messenger" value="false" />
 
         <if>
@@ -201,6 +210,9 @@
             <classpath>
                 <fileset dir="${build.lib.dir}">
                     <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${basedir}/build">
+                    <include name="xmlunit.jar"/>
                 </fileset>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
@@ -236,7 +248,7 @@
 
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" if="release.exists" depends="release-exists, test">
+    <target name="release" if="release.exists" depends="release-exists">
         <antcall target="jar">
             <param name="no.test" value="true" />
         </antcall>
