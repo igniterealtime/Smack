@@ -200,14 +200,16 @@ class PacketReader {
      * Shuts the packet reader down.
      */
     public void shutdown() {
-        done = true;
-        // Notify connection listeners of the connection closing.
-        synchronized (connectionListeners) {
-            for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
-                ConnectionListener listener = (ConnectionListener)i.next();
-                listener.connectionClosed();
+        // Notify connection listeners of the connection closing if done hasn't already been set.
+        if (!done) {
+            synchronized (connectionListeners) {
+                for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+                    ConnectionListener listener = (ConnectionListener)i.next();
+                    listener.connectionClosed();
+                }
             }
         }
+        done = true;
     }
 
     /**
@@ -287,15 +289,18 @@ class PacketReader {
         }
         catch (Exception e) {
             if (!done) {
+                // Set done to true since we want to do our own notification of connection closing.
+                done = true;
+                connection.close();
                 // An exception occurred while parsing. Notify connection listeners of
                 // the error and close the connection.
-                connection.close();
                 synchronized (connectionListeners) {
                     for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
                         ConnectionListener listener = (ConnectionListener)i.next();
                         listener.connectionClosedOnError(e);
                     }
                 }
+
             }
         }
     }
