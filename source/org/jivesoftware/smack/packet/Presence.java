@@ -135,11 +135,16 @@ public class Presence extends Packet {
     }
 
     /**
-     * Sets the priority of the presence.
+     * Sets the priority of the presence. The valid range is -128 through 128.
      *
      * @param priority the priority of the presence.
+     * @throws IllegalArgumentException if the priority is outside the valid range.
      */
     public void setPriority(int priority) {
+        if (priority < -128 || priority > 128) {
+            throw new IllegalArgumentException("Priority value " + priority +
+                    " is not valid. Valid range is -128 through 128.");
+        }
         this.priority = priority;
     }
 
