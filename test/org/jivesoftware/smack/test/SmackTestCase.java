@@ -256,17 +256,17 @@ public abstract class SmackTestCase extends TestCase {
         try {
             boolean found = false;
             // Try to load the configutation from an XML file specific for this test case 
-            Enumeration enum =
+            Enumeration resources =
                 ClassLoader.getSystemClassLoader().getResources(getConfigurationFilename());
-            while (enum.hasMoreElements()) {
-                found = parseURL((URL) enum.nextElement());
+            while (resources.hasMoreElements()) {
+                found = parseURL((URL) resources.nextElement());
             }
             // If none was found then try to load the configuration from the default configuration 
             // file (i.e. "config/test-case.xml")
             if (!found) {
-                enum = ClassLoader.getSystemClassLoader().getResources("config/test-case.xml");
-                while (enum.hasMoreElements()) {
-                    found = parseURL((URL) enum.nextElement());
+                resources = ClassLoader.getSystemClassLoader().getResources("config/test-case.xml");
+                while (resources.hasMoreElements()) {
+                    found = parseURL((URL) resources.nextElement());
                 }
             }
             if (!found) {
