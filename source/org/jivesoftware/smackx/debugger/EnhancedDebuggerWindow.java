@@ -58,6 +58,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 /**
@@ -165,8 +166,7 @@ class EnhancedDebuggerWindow {
         versionPanel.setLayout(new BoxLayout(versionPanel, BoxLayout.X_AXIS));
         versionPanel.setMaximumSize(new Dimension(2000, 31));
         versionPanel.add(new JLabel(" Smack version: "));
-        // TODO Replace the Smack version with the real one
-        JFormattedTextField field = new JFormattedTextField("1.3.0");
+        JFormattedTextField field = new JFormattedTextField(SmackConfiguration.getVersionNumber());
         field.setEditable(false);
         field.setBorder(null);
         versionPanel.add(field);
