@@ -11,8 +11,20 @@
 
 <project name="Smack" default="all" basedir="..">
 
+    <!-- TASKDEFS -->
+    <!-- ======================================================================================= -->
+    <!-- ======================================================================================= -->
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="${basedir}/build/ant-contrib.jar"/>
+        </classpath>
+    </taskdef>
+
     <!-- PROPERTIES -->
     <!-- ======================================================================================= -->
+
+    <property file="${basedir}/build/build.properties" />
 
     <property name="compile.dir" value="${basedir}/classes" />
     <property name="compile.test.dir" value="${basedir}/classes-test" />
@@ -25,6 +37,27 @@
     <property name="version.minor" value="2" />
     <property name="version.revision" value="0" />
     <property name="version.name" value="${version.major}.${version.minor}.${version.revision}" />
+
+    <!-- Test props - override these defaults in the properties file or in command line -->
+    <property name="test.host" value="localhost" />
+    <property name="test.port" value="5222" />
+    <property name="test.admin.username" value="admin" />
+    <property name="test.admin.password" value="admin" />
+    <property name="test.admin.resource" value="Test" />
+    <property name="test.smack.debug" value="false" />
+
+    <!-- PATHS, DEPENDIENCIES, PATTERNS -->
+    <!-- ======================================================================================= -->
+    <!-- ======================================================================================= -->
+
+    <patternset id="test.cases">
+        <include name="org/jivesoftware/smack/**/*Test.java" />
+        <exclude name="org/jivesoftware/smack/**/Messenger*Test.java" />
+    </patternset>
+
+    <patternset id="messenger.test.cases">
+        <include name="org/jivesoftware/smack/**/Messenger*Test.java" />
+    </patternset>
 
     <!-- TARGETS -->
     <!-- ======================================================================================= -->
@@ -142,11 +175,28 @@
     <!-- test -->
     <!-- ======================================================================================= -->
     <target name="test" depends="compile, jar-test" unless="no.test">
+
+        <property name="test.messenger" value="false" />
+
+        <if>
+            <not><equals arg1="test.messenger" arg2="true" /></not>
+            <then>
+                <property name="test.classes" value="test.cases" />
+            </then>
+        </if>
+
         <junit printsummary="on"
             fork="false"
             haltonfailure="false"
             failureproperty="tests.failed"
             showoutput="true">
+
+            <sysproperty key="smack.test.host" value="${test.host}" />
+            <sysproperty key="smack.test.port" value="${test.port}" />
+            <sysproperty key="smack.test.admin.username" value="${test.admin.username}" />
+            <sysproperty key="smack.test.admin.password" value="${test.admin.password}" />
+            <sysproperty key="smack.test.admin.resource" value="${test.admin.resource}" />
+            <sysproperty key="smack.debug" value="${test.smack.debug}" />
 
             <classpath>
                 <fileset dir="${build.lib.dir}">
@@ -165,12 +215,22 @@
 
             <batchtest>
                 <fileset dir="${basedir}/test">
-                    <include name="org/jivesoftware/smack/**/*Test.java"/>
+                    <patternset refid="${test.classes}" />
                 </fileset>
             </batchtest>
         </junit>
 
-        <fail if="tests.failed" message="Tests failed, see test log." />
+        <fail if="tests.failed" message="** Tests failed, see test log. **" />
+    </target>
+
+
+    <!-- test -->
+    <!-- ======================================================================================= -->
+    <target name="test.messenger" depends="compile, jar-test" unless="no.test">
+        <antcall target="test" inheritall="true" inheritrefs="true">
+            <param name="test.messenger" value="true" />
+            <param name="test.classes" value="messenger.test.cases" />
+        </antcall>
     </target>
 
 
