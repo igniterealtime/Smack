@@ -500,15 +500,22 @@ class PacketReader {
                 else if (parser.getName().equals("password")) {
                     registration.setPassword(parser.nextText());
                 }
-                else {
+                // Else if any other element that's in the jabber:iq:register namespace,
+                // attempt to parse it if it's in the form <name>value</name>.
+                else if (parser.getNamespace().equals("jabber:iq:register")) {
                     String name = parser.getName();
-                    String value = parser.nextText();
-                    // Ignore instructions, but anything else should be added to the map.
-                    if (!name.equals("instructions")) {
-                        if (fields == null) {
-                            fields = new HashMap();
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        String value = parser.getText();
+                        // Ignore instructions, but anything else should be added to the map.
+                        if (!name.equals("instructions")) {
+                            if (fields == null) {
+                                fields = new HashMap();
+                            }
+                            fields.put(name, value);
                         }
-                        fields.put(name, value);
+                        else {
+                            registration.setInstructions(value);
+                        }
                     }
                 }
             }
