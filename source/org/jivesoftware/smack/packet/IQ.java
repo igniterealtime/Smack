@@ -127,11 +127,9 @@ public abstract class IQ extends Packet {
      * Returns the sub-element XML section of the IQ packet, or <tt>null</tt> if there
      * isn't one.<p>
      *
-     * Generally, extensions of this class should override this method. This lets
-     * the majority of IQ XML writing be generic, with each sub-class providing just
-     * the packet-specific XML.
+     * Extensions of this class must override this method.
      *
-     * @return the query section of the IQ XML.
+     * @return the child element section of the IQ XML.
      */
     public abstract String getChildElementXML();
 
