@@ -7,14 +7,15 @@
     <display-name>WebChat</display-name>
     <description>Smack-powered WebChat Application</description>
       
+   <context-param>
+        <param-name>host</param-name>
+        <param-value>jivesoftware.com</param-value>
+   </context-param>
+
     <!-- Servlets -->
     <servlet>
         <servlet-name>ChatServlet</servlet-name>
         <servlet-class>org.jivesoftware.webchat.ChatServlet</servlet-class>
-        <init-param>
-            <param-name>host</param-name>
-            <param-value></param-value>
-        </init-param>
         <load-on-startup>1</load-on-startup>        
     </servlet>
 
