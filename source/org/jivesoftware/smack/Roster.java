@@ -436,7 +436,10 @@ public class Roster {
     /**
      * Returns the presence info for a particular user, or <tt>null</tt> if the user
      * is unavailable (offline) or if no presence information is available, such as
-     * when you are not subscribed to the user's presence updates.
+     * when you are not subscribed to the user's presence updates.<p>
+     * 
+     * If the user has several presences (one for each resource) then answer the presence
+     * with the highest priority.
      *
      * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
      * @return the user's current presence, or <tt>null</tt> if the user is unavailable
@@ -444,7 +447,72 @@ public class Roster {
      */
     public Presence getPresence(String user) {
         String key = StringUtils.parseName(user) + "@" + StringUtils.parseServer(user);
-        return (Presence)presenceMap.get(key);
+        Map userPresences = (Map) presenceMap.get(key);
+        if (userPresences == null) {
+            return null;
+        }
+        else {
+            // Find the resource with the highest priority
+            // Might be changed to use the resource with the highest availability instead.
+            Iterator it = userPresences.keySet().iterator();
+            Presence p;
+            Presence presence = null;
+
+            while (it.hasNext()) {
+                p = (Presence) userPresences.get(it.next());
+                if (presence == null) {
+                    presence = p;
+                }
+                else {
+                    if (p.getPriority() > presence.getPriority()) {
+                        presence = p;
+                    }
+                }
+            }
+            return presence;
+        }
+    }
+
+    /**                                                                                                    
+     * Returns the presence info for a particular user's resource, or <tt>null</tt> if the user
+     * is unavailable (offline) or if no presence information is available, such as
+     * when you are not subscribed to the user's presence updates.
+     *
+     * @param user a fully qualified xmpp ID including a resource, e.g. jdoe@example.com/Home
+     * @return the user's current presence, or <tt>null</tt> if the user is unavailable 
+     * or if no presence information is available.
+     */
+    public Presence getPresenceResource(String userResource) {
+        String key =
+            StringUtils.parseName(userResource) + "@" + StringUtils.parseServer(userResource);
+        String resource = StringUtils.parseResource(userResource);
+        Map userPresences = (Map) presenceMap.get(key);
+        if (userPresences == null) {
+            return null;
+        }
+        else {
+            return (Presence) userPresences.get(resource);
+        }
+    }
+
+    /**
+     * Returns an iterator for all the user's current presences or <tt>null</tt> if the user
+     * is unavailable (offline) or if no presence information is available, such as
+     * when you are not subscribed to the user's presence updates.
+     *
+     * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
+     * @return an iterator for all the user's current presences, or <tt>null</tt> if the user is 
+     * unavailable or if no presence information is available.
+     */
+    public Iterator getPresences(String user) {
+        String key = StringUtils.parseName(user) + "@" + StringUtils.parseServer(user);
+        Map userPresences = (Map) presenceMap.get(key);
+        if (userPresences == null) {
+            return null;
+        }
+        else {
+            return userPresences.entrySet().iterator();
+        }
     }
 
     /**
@@ -483,16 +551,23 @@ public class Roster {
             Presence presence = (Presence)packet;
             String from = presence.getFrom();
             String key = StringUtils.parseBareAddress(from);
-            // If an "available" packet, add it to the presence map. This means that for
-            // a particular user, we'll only ever have a single presence packet saved.
-            // Because this ignores resources, this is not an ideal solution, so will
-            // have to be revisited.
+            // If an "available" packet, add it to the presence map. Each presence map will hold
+            // for a particular user a map with the presence packets saved for each resource.
             if (presence.getType() == Presence.Type.AVAILABLE) {
-                presenceMap.put(key, presence);
+                Map userPresences;
+                // Get the user presence map
+                if (presenceMap.get(key) == null) {
+                    userPresences = new HashMap();
+                    presenceMap.put(key, userPresences);
+                } else {
+                    userPresences = (Map) presenceMap.get(key);
+                }
+                // Add the new presence taking in consideration the presence´s resource
+                userPresences.put(StringUtils.parseResource(from), presence);
                 // If the user is in the roster, fire an event.
                 synchronized (entries) {
-                    for (Iterator i=entries.iterator(); i.hasNext(); ) {
-                        RosterEntry entry = (RosterEntry)i.next();
+                    for (Iterator i = entries.iterator(); i.hasNext();) {
+                        RosterEntry entry = (RosterEntry) i.next();
                         if (entry.getUser().equals(key)) {
                             fireRosterPresenceEvent(key);
                         }
@@ -501,7 +576,13 @@ public class Roster {
             }
             // If an "unavailable" packet, remove any entries in the presence map.
             else if (presence.getType() == Presence.Type.UNAVAILABLE) {
-                presenceMap.remove(key);
+                if (presenceMap.get(key) != null) {
+                    Map userPresences = (Map) presenceMap.get(key);
+                    userPresences.remove(StringUtils.parseResource(from));
+                    if (userPresences.isEmpty()) {
+                        presenceMap.remove(key);
+                    }
+                }
                 // If the user is in the roster, fire an event.
                 synchronized (entries) {
                     for (Iterator i=entries.iterator(); i.hasNext(); ) {
