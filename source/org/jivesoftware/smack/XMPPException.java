@@ -195,12 +195,14 @@ public class XMPPException extends Exception {
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        if (wrappedThrowable != null) {
-            buf.append(wrappedThrowable);
-        }
+        buf.append(super.toString());
         if (error != null) {
-            buf.append(" -- ").append(error);
+            buf.append(": ").append(error);
         }
+        if (wrappedThrowable != null) {
+            buf.append("\n  -- caused by: ").append(wrappedThrowable);
+        }
+
         return buf.toString();
     }
 }
