@@ -53,7 +53,6 @@
 package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.*;
 
 /**
  * Authentication packet, which can be used to login to a XMPP server as well
