@@ -68,6 +68,74 @@ public class StringUtils {
     private static final char[] GT_ENCODE = "&gt;".toCharArray();
 
     /**
+     * Returns the name portion of a Jabber ID (JID). For example, for the
+     * JID "matt@jivesoftware.com/Smack", "matt" would be returned. If no
+     * username is present in the JID, the empty string will be returned.
+     *
+     * @param JID the Jabber ID.
+     * @return the name portion of the JID.
+     */
+    public static String parseName(String JID) {
+        if (JID == null) {
+            return null;
+        }
+        int atIndex = JID.indexOf("@");
+        if (atIndex > 0) {
+            return JID.substring(0, atIndex);
+        }
+        else {
+            return JID.substring(0);
+        }
+    }
+
+    /**
+     * Returns the name portion of a Jabber ID (JID). For example, for the
+     * JID "matt@jivesoftware.com/Smack", "jivesoftware.com" would be returned.
+     * If no server is present in the JID, the empty string will be returned.
+     *
+     * @param JID the Jabber ID.
+     * @return the resource portion of the JID.
+     */
+    public static String parseServer(String JID) {
+        if (JID == null) {
+            return null;
+        }
+        int atIndex = JID.indexOf("@");
+        // If the String ends with '@', return the empty string.
+        if (atIndex + 1 > JID.length() || atIndex < 0) {
+            return "";
+        }
+        int slashIndex = JID.indexOf("/");
+        if (slashIndex > 0) {
+            return JID.substring(atIndex + 1, slashIndex);
+        }
+        else {
+            return JID.substring(atIndex + 1);
+        }
+    }
+
+    /**
+     * Returns the name portion of a Jabber ID (JID). For example, for the
+     * JID "matt@jivesoftware.com/Smack", "Smack" would be returned. If no
+     * resource is present in the JID, the empty string will be returned.
+     *
+     * @param JID the Jabber ID.
+     * @return the resource portion of the JID.
+     */
+    public static String parseResource(String JID) {
+        if (JID == null) {
+            return null;
+        }
+        int slashIndex = JID.indexOf("/");
+        if (slashIndex + 1 > JID.length() || slashIndex < 0) {
+            return "";
+        }
+        else {
+            return JID.substring(slashIndex + 1);
+        }
+    }
+
+    /**
      * Escapes all necessary characters in the String so that it can be used
      * in an XML doc.
      *
