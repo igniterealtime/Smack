@@ -202,8 +202,11 @@ class PacketReader {
     public void shutdown() {
         // Notify connection listeners of the connection closing if done hasn't already been set.
         if (!done) {
+            ArrayList listenersCopy;
             synchronized (connectionListeners) {
-                for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+                // Make a copy since it's possible that a listener will be removed from the list
+                listenersCopy = new ArrayList(connectionListeners);
+                for (Iterator i=listenersCopy.iterator(); i.hasNext(); ) {
                     ConnectionListener listener = (ConnectionListener)i.next();
                     listener.connectionClosed();
                 }
@@ -222,8 +225,11 @@ class PacketReader {
         done = true;
         connection.close();
         // Notify connection listeners of the error.
+        ArrayList listenersCopy;
         synchronized (connectionListeners) {
-            for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+            // Make a copy since it's possible that a listener will be removed from the list
+            listenersCopy = new ArrayList(connectionListeners);
+            for (Iterator i=listenersCopy.iterator(); i.hasNext(); ) {
                 ConnectionListener listener = (ConnectionListener)i.next();
                 listener.connectionClosedOnError(e);
             }
