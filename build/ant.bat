@@ -5,8 +5,8 @@ rem // $RCSfile$
 rem // $Revision$
 rem // $Date$
 rem //
-rem // Standard Jive Forums ant.bat file. Do not change this file. If you do,
-rem // you will have seven years of bad luck.
+rem // Standard Jive Software ant.bat file. Do not change this file. If you do,
+rem // you will have seven years of bad luck and bad builds.
 rem //------------------------------------------------------------------------//
 
 rem //------------------------------------------------------------------------//
