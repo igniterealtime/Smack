@@ -70,7 +70,8 @@ import org.xmlpull.v1.*;
  */
 public final class SmackConfiguration {
 
-    private static String versionNumber;
+    private static String versionNumber = "1.3.0";
+    private static int packetReplyTimeout = -1;
 
     private SmackConfiguration() {
     }
@@ -88,7 +89,7 @@ public final class SmackConfiguration {
             // Get an array of class loaders to try loading the providers files from.
             ClassLoader[] classLoaders = getClassLoaders();
             for (int i = 0; i < classLoaders.length; i++) {
-                Enumeration enum = classLoaders[i].getResources("META-INF/smack.configuration");
+                Enumeration enum = classLoaders[i].getResources("META-INF/smack-config.xml");
                 while (enum.hasMoreElements()) {
                     URL url = (URL) enum.nextElement();
                     InputStream systemStream = null;
@@ -108,11 +109,8 @@ public final class SmackConfiguration {
                                     // Attempt to load the class so that the class can get initialized
                                     parseClassToLoad(parser);
                                 }
-                                else if (parser.getName().equals("versionNumber")) {
-                                    versionNumber = parser.nextText();
-                                }
-                                else if (parser.getName().equals("replyTimeout")) {
-                                    parseReplyTimeout(parser);
+                                else if (parser.getName().equals("packetReplyTimeout")) {
+                                    parsePacketReplyTimeout(parser);
                                 }
                             }
                             eventType = parser.next();
@@ -144,48 +142,42 @@ public final class SmackConfiguration {
         }
     }
 
-    private static void parseReplyTimeout(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        String timeout = null;
-        String className = null;
-        // Parse the timeout value to set
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String elementName = parser.getName();
-                if (elementName.equals("value")) {
-                    timeout = parser.nextText();
-                }
-                else if (elementName.equals("className")) {
-                    className = parser.nextText();
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("replyTimeout")) {
-                    done = true;
-                }
-            }
-        }
-        
-        // Set the reply timeout value
-        try {
-            Class classToConfigure = Class.forName(className);
-            Field field = classToConfigure.getDeclaredField("REPLY_TIMEOUT");
-            field.set(null, new Integer(timeout));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+    private static void parsePacketReplyTimeout(XmlPullParser parser) throws Exception {
+        int timeout = Integer.parseInt(parser.nextText());
+        // Set the specified timeout value in the file if the user didn't specify 
+        // a timeout value before. Don't overwrite user preferences.
+        if (packetReplyTimeout == -1) {
+            packetReplyTimeout = timeout;
         }
     }
 
     /**
-     * Returns the current Smack release version. The version number value
-     * gets loaded from the smack.configuration file at system startup.
+     * Returns the current Smack release version.
      * 
      * @return the current Smack release version number
      */
     public static String getVersionNumber() {
         return versionNumber;
+    }
+
+    /**
+     * Returns the number of milliseconds to wait for a response from
+     * the server.
+     * 
+     * @return the milliseconds to wait for a response from the server
+     */
+    public static int getPacketReplyTimeout() {
+        return packetReplyTimeout;
+    }
+
+    /**
+     * Sets the number of milliseconds to wait for a response from
+     * the server.
+     * 
+     * @param timeout the milliseconds to wait for a response from the server
+     */
+    public static void setPacketReplyTimeout(int timeout) {
+        packetReplyTimeout = timeout;
     }
 
     /**
