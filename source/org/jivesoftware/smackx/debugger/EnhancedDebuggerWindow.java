@@ -232,9 +232,11 @@ class EnhancedDebuggerWindow {
         field.setBorder(null);
         versionPanel.add(field);
         informationPanel.add(versionPanel);
-        //informationPanel.add(Box.createVerticalGlue());
 
         // Add the list of installed IQ Providers
+        JPanel iqProvidersPanel = new JPanel();
+        iqProvidersPanel.setLayout(new GridLayout(1, 1));
+        iqProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed IQ Providers"));
         Vector providers = new Vector();
         for (Iterator it = ProviderManager.getIQProviders(); it.hasNext();) {
             Object provider = it.next();
@@ -242,10 +244,13 @@ class EnhancedDebuggerWindow {
                 (provider.getClass() == Class.class ? provider : provider.getClass().getName()));
         }
         JList list = new JList(providers);
-        list.setBorder(BorderFactory.createTitledBorder("Installed IQ Providers"));
-        informationPanel.add(new JScrollPane(list));
+        iqProvidersPanel.add(new JScrollPane(list));
+        informationPanel.add(iqProvidersPanel);
 
         // Add the list of installed Extension Providers
+        JPanel extensionProvidersPanel = new JPanel();
+        extensionProvidersPanel.setLayout(new GridLayout(1, 1));
+        extensionProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed Extension Providers"));
         providers = new Vector();
         for (Iterator it = ProviderManager.getExtensionProviders(); it.hasNext();) {
             Object provider = it.next();
@@ -253,8 +258,8 @@ class EnhancedDebuggerWindow {
                 (provider.getClass() == Class.class ? provider : provider.getClass().getName()));
         }
         list = new JList(providers);
-        list.setBorder(BorderFactory.createTitledBorder("Installed Extension Providers"));
-        informationPanel.add(new JScrollPane(list));
+        extensionProvidersPanel.add(new JScrollPane(list));
+        informationPanel.add(extensionProvidersPanel);
 
         tabbedPane.add("Smack Info", informationPanel);
 
