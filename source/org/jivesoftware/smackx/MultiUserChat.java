@@ -357,7 +357,7 @@ public class MultiUserChat {
      * decide to create a new room or not. 
      * 
      * @param nickname the nickname to use.
-     * @param timeout the number of seconds to wait for reply from the group chat server.
+     * @param timeout the amount of time to wait for a reply from the MUC service(in milleseconds).
      * @param password the password to use.
      * @param maxchars the total number of characters to receive in the history.
      * @param maxstanzas the total number of messages to receive in the history.
@@ -485,7 +485,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.GET);
 
-        // Wait for a presence packet back from the server.
+        // Filter packets looking for an answer from the server.
         PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Request the configuration form to the server.
@@ -518,11 +518,22 @@ public class MultiUserChat {
         iq.setType(IQ.Type.SET);
         iq.addExtension(form.getDataFormToSend());
 
+        // Filter packets looking for an answer from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send the completed configuration form to the server.
         connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
 
-        // TODO Check for possible returned errors? permission errors?
-        // TODO Check that the form is of type "submit" or "cancel"
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
     }
 
     /**
@@ -1882,11 +1893,11 @@ public class MultiUserChat {
      * 
      * <tr><td>Moderator</td><td>Participant</td><td>moderatorRevoked</td></tr>
      * <tr><td>Participant</td><td>Visitor</td><td>voiceRevoked</td></tr>
-     * <tr><td>Visitor</td><td>None</td><td>--</td></tr>
+     * <tr><td>Visitor</td><td>None</td><td>kicked</td></tr>
      *
      * <tr><td>Moderator</td><td>Visitor</td><td>voiceRevoked + moderatorRevoked</td></tr>
-     * <tr><td>Moderator</td><td>None</td><td>voiceRevoked + moderatorRevoked</td></tr>
-     * <tr><td>Participant</td><td>None</td><td>voiceRevoked</td></tr>
+     * <tr><td>Moderator</td><td>None</td><td>kicked</td></tr>
+     * <tr><td>Participant</td><td>None</td><td>kicked</td></tr>
      * </table>
      * </pre>
      * 
@@ -1986,6 +1997,7 @@ public class MultiUserChat {
      * <tr><td>Owner</td><td>Member</td><td>ownershipRevoked + membershipGranted</td></tr>
      * <tr><td>Owner</td><td>None</td><td>ownershipRevoked</td></tr>
      * <tr><td>Admin</td><td>None</td><td>adminRevoked</td></tr>
+     * <tr><td><i>Anyone</i></td><td>Outcast</td><td>banned</td></tr>
      * </table>
      * </pre>
      * 
@@ -2110,7 +2122,7 @@ public class MultiUserChat {
                 userHasLeft();
             }
             else {
-                // TODO Check is we have to send the JID of the banned user
+                // TODO Check if we have to send the JID of the banned user
                 fireParticipantStatusListeners("banned", from);
             }
         }
