@@ -55,47 +55,47 @@ package org.jivesoftware.smackx.workgroup.agent;
 import java.util.Date;
 
 /**
- * An immutable simple class to embody the information concerning a revoked offer, this is namely
- *  the reason, the workgroup, the userJID, and the timestamp which the message was received.<br>
+ * A revoked offer which contains the reason the offer was revoked, the
+ * workgroup, the user JID, and the timestamp of the revocation.
  *
- * @author loki der quaeler
+ * @author Matt Tucker
  */
 public class RevokedOffer {
 
-    protected String userID;
-    protected String workgroupName;
-    protected String sessionID;
-    protected String reason;
-    protected Date timestamp;
+    private String userID;
+    private String workgroupName;
+    private String sessionID;
+    private String reason;
+    private Date timestamp;
 
     /**
-     * @param uid the jid of the user for which this revocation was issued
-     * @param wg the fully qualified name of the workgroup
-     * @param sid the session id attributed to this chain of packets
-     * @param cause the server issued message as to why this revocation was issued
-     * @param ts the timestamp at which the revocation was issued
+     * @param userID the jid of the user for which this revocation was issued.
+     * @param workgroupName the fully qualified name of the workgroup.
+     * @param sessionID the session id attributed to this chain of packets.
+     * @param reason the server issued message as to why this revocation was issued.
+     * @param timestamp the timestamp at which the revocation was issued.
      */
-    public RevokedOffer (String uid, String wg, String sid, String cause, Date ts) {
-        super();
-
-        this.userID = uid;
-        this.workgroupName = wg;
-        this.sessionID = sid;
-        this.reason = cause;
-        this.timestamp = ts;
+    public RevokedOffer(String userID, String workgroupName, String sessionID,
+            String reason, Date timestamp)
+    {
+        this.userID = userID;
+        this.workgroupName = workgroupName;
+        this.sessionID = sessionID;
+        this.reason = reason;
+        this.timestamp = timestamp;
     }
 
     /**
-     * @return the jid of the user for which this revocation was issued
+     * @return the jid of the user for which this rejection was issued.
      */
-    public String getUserID () {
+    public String getUserID() {
         return this.userID;
     }
 
     /**
      * @return the fully qualified name of the workgroup
      */
-    public String getWorkgroupName () {
+    public String getWorkgroupName() {
         return this.workgroupName;
     }
 

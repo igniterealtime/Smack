@@ -55,8 +55,10 @@ package org.jivesoftware.smackx.workgroup.agent;
 import java.util.*;
 
 /**
- * A queue in a workgroup, which is a pool of agents that are routed  a specific type of
+ * A queue in a workgroup, which is a pool of agents that are routed a specific type of
  * chat request.
+ *
+ * @author Matt Tucker
  */
 public class WorkgroupQueue {
 
@@ -81,18 +83,18 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the name of the queue.
+     * Returns the name of this queue.
      *
-     * @return the name of the queue.
+     * @return the name of this queue.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the status of the queue.
+     * Returns the status of this queue.
      *
-     * @return the status of the queue.
+     * @return the status of this queue.
      */
     public Status getStatus() {
         return status;
@@ -103,7 +105,7 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the number of users waiting in the queue waiting to be routed to
+     * Returns the number of users in this queue that are waiting to be routed to
      * an agent.
      *
      * @return the number of users waiting in the queue.
@@ -116,8 +118,8 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns an Iterator for the users in the queue waiting to be routed to
-     * an agent (QueueUser instances).
+     * Returns an Iterator for the users in this queue that are waiting
+     * to be routed to an agent (QueueUser instances).
      *
      * @return an Iterator for the users waiting in the queue.
      */
@@ -133,11 +135,11 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the average amount of time users wait in the queue before being
+     * Returns the average amount of time users wait in this queue before being
      * routed to an agent. If average wait time info isn't available, -1 will
      * be returned.
      *
-     * @return the average wait time
+     * @return the average wait time in this queue.
      */
     public int getAverageWaitTime() {
         return averageWaitTime;
@@ -148,10 +150,10 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the date of the oldest request waiting in the queue. If there
+     * Returns the date of the oldest request waiting in this queue. If there
      * are no requests waiting to be routed, this method will return <tt>null</tt>.
      *
-     * @return the date of the oldest request in the queue.
+     * @return the date of the oldest request in this queue.
      */
     public Date getOldestEntry() {
         return oldestEntry;
@@ -162,9 +164,9 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the count of the currently available agents in the queue.
+     * Returns the count of the currently available agents in this queue.
      *
-     * @return the number of active agents in the queue.
+     * @return the number of active agents in this queue.
      */
     public int getAgentCount() {
         synchronized (agents)  {
@@ -173,9 +175,10 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns an Iterator the currently active agents (Agent instances).
+     * Returns an Iterator the currently active agents (Agent instances)
+     * in this queue.
      *
-     * @return an Iterator for the active agents.
+     * @return an Iterator for the active agents in this queue.
      */
     public Iterator getAgents() {
         return Collections.unmodifiableSet(agents).iterator();
@@ -186,9 +189,9 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the maximum number of simultaneous chats the queue can handle.
+     * Returns the maximum number of simultaneous chats this queue can handle.
      *
-     * @return the max number of chats the queue can handle.
+     * @return the max number of chats this queue can handle.
      */
     public int getMaxChats() {
         return maxChats;
@@ -199,9 +202,9 @@ public class WorkgroupQueue {
     }
 
     /**
-     * Returns the current number of active chat sessions in the queue.
+     * Returns the current number of active chat sessions in this queue.
      *
-     * @return the current number of active chat sessions in the queue.
+     * @return the current number of active chat sessions in this queue.
      */
     public int getCurrentChats() {
         return currentChats;
@@ -212,7 +215,7 @@ public class WorkgroupQueue {
     }
 
     /**
-     * A class to represent the status of the workgroup. The possible values are:
+     * Represents the status of the queue. The possible values are:
      *
      * <ul>
      *      <li>WorkgroupQueue.Status.OPEN -- the queue is active and accepting
