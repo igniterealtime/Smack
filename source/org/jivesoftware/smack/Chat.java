@@ -57,8 +57,14 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.filter.*;
 
 /**
- * A chat is a series of messages sent between two users. Each chat has
- * a unique ID, which is used to track which messages are part of the chat.
+ * A chat is a series of messages sent between two users. Each chat can have
+ * a unique thread ID, which is used to track which messages are part of a particular
+ * conversation.<p>
+ *
+ * In some situations, it is better to have all messages from the other user delivered
+ * to a Chat rather than just the messages that have a particular thread ID. To
+ * enable this behavior, call {@link #setFilteredOnThreadID(boolean)} with
+ * <tt>false</tt> as the parameter.
  *
  * @see XMPPConnection#createChat(String)
  * @author Matt Tucker
@@ -71,11 +77,10 @@ public class Chat {
     private static String prefix = StringUtils.randomString(5);
     
     /**
-     * Value that indicates the message filter type to use. When true, only the messages with 
-     * the Chat's id will be filtered, otherwise the messages of type "chat" and from the Chat´s 
-     * participant will be filtered.
+     * True if only messages that have a matching threadID will be delivered to a Chat. When
+     * false, any message from the other participant will be delivered to a Chat.
      */
-    public static boolean FILTER_ONLY_BY_THREAD = true;
+    private static boolean filteredOnThreadID = true;
     
     /**
      * Keeps track of the current increment, which is appended to the prefix to
@@ -94,7 +99,7 @@ public class Chat {
     }
 
     private XMPPConnection connection;
-    private String chatID;
+    private String threadID;
     private String participant;
     private PacketFilter messageFilter;
     private PacketCollector messageCollector;
@@ -108,23 +113,27 @@ public class Chat {
     public Chat(XMPPConnection connection, String participant) {
         // Automatically assign the next chat ID.
         this(connection, participant, nextID());
+        // If not filtering on thread ID, force the thread ID for this Chat to be null.
+        if (!filteredOnThreadID) {
+            this.threadID = null;
+        }
     }
 
     /**
-     * Creates a new chat with the specified user and chat ID (the XMPP "thread).
+     * Creates a new chat with the specified user and thread ID.
      *
      * @param connection the connection the chat will use.
      * @param participant the user to chat with.
-     * @param chatID the chat ID to use.
+     * @param threadID the thread ID to use.
      */
-    public Chat(XMPPConnection connection, String participant, String chatID) {
+    public Chat(XMPPConnection connection, String participant, String threadID) {
         this.connection = connection;
         this.participant = participant;
-        this.chatID = chatID;
+        this.threadID = threadID;
 
-        if (FILTER_ONLY_BY_THREAD) {
+        if (filteredOnThreadID) {
             // Filter the messages whose thread equals Chat's id
-            messageFilter = new ThreadFilter(chatID);
+            messageFilter = new ThreadFilter(threadID);
         }
         else {
             // Filter the messages of type "chat" and sender equals Chat's participant
@@ -133,19 +142,40 @@ public class Chat {
                     new AndFilter(
                         new MessageTypeFilter(Message.Type.CHAT),
                         new FromContainsFilter(participant)),
-                    new ThreadFilter(chatID));
+                    new ThreadFilter(threadID));
         }
         messageCollector = connection.createPacketCollector(messageFilter);
     }
 
     /**
-     * Returns the unique id of this chat, which corresponds to the
-     * <tt>thread</tt> field of XMPP messages.
+     * Returns true if only messages that have a matching threadID will be delivered to Chat
+     * instances. When false, any message from the other participant will be delivered to Chat instances.
      *
-     * @return the unique ID of this chat.
+     * @return true if messages delivered to Chat instances are filtered on thread ID.
      */
-    public String getChatID() {
-        return chatID;
+    public static boolean isFilteredOnThreadID() {
+        return filteredOnThreadID;
+    }
+
+    /**
+     * Sets whether only messages that have a matching threadID will be delivered to Chat instances.
+     * When false, any message from the other participant will be delivered to a Chat instances.
+     *
+     * @value true if messages delivered to Chat instances are filtered on thread ID.
+     */
+    public static void setFilteredOnThreadID(boolean value) {
+        filteredOnThreadID = value;
+    }
+
+    /**
+     * Returns the thread id associated with this chat, which corresponds to the
+     * <tt>thread</tt> field of XMPP messages. This method may return <tt>null</tt>
+     * if there is no thread ID is associated with this Chat.
+     *
+     * @return the thread ID of this chat.
+     */
+    public String getThreadID() {
+        return threadID;
     }
 
     /**
@@ -186,7 +216,7 @@ public class Chat {
      */
     public Message createMessage() {
         Message message = new Message(participant, Message.Type.CHAT);
-        message.setThread(chatID);
+        message.setThread(threadID);
         return message;
     }
 
@@ -204,7 +234,7 @@ public class Chat {
         // to send the message through this chat object.
         message.setTo(participant);
         message.setType(Message.Type.CHAT);
-        message.setThread(chatID);
+        message.setThread(threadID);
         connection.sendPacket(message);
     }
 
