@@ -75,6 +75,8 @@ public class GroupChat {
     private boolean joined = false;
     private List participants = new ArrayList();
 
+    private PacketFilter presenceFilter;
+    private PacketFilter messageFilter;
     private PacketCollector messageCollector;
 
     /**
@@ -89,11 +91,11 @@ public class GroupChat {
         this.connection = connection;
         this.room = room;
         // Create a collector for all incoming messages.
-        PacketFilter messageFilter = new AndFilter(new FromContainsFilter(room),
+        messageFilter = new AndFilter(new FromContainsFilter(room),
                 new PacketTypeFilter(Message.class));
         messageCollector = connection.createPacketCollector(messageFilter);
         // Create a listener for all presence updates.
-        PacketFilter presenceFilter = new AndFilter(new FromContainsFilter(room),
+        presenceFilter = new AndFilter(new FromContainsFilter(room),
                 new PacketTypeFilter(Presence.class));
         connection.addPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
@@ -214,6 +216,18 @@ public class GroupChat {
     }
 
     /**
+     * Adds a packet listener that will be notified of any new Presence packets
+     * sent to the group chat. Using a listener is a suitable way to know when the list
+     * of participants should be re-loaded due to any changes.
+     *
+     * @param listener a packet listener that will be notified of any presence packets
+     *      sent to the group chat.
+     */
+    public void addParticipantListner(PacketListener listener) {
+        connection.addPacketListener(listener, presenceFilter);
+    }
+
+    /**
      * Sends a message to the chat room.
      *
      * @param text the text of the message to send.
@@ -280,5 +294,15 @@ public class GroupChat {
      */
     public Message nextMessage(long timeout) {
         return (Message)messageCollector.nextResult(timeout);
+    }
+
+    /**
+     * Adds a packet listener that will be notified of any new messages in the
+     * group chat.
+     *
+     * @param listener a packet listener.
+     */
+    public void addMessageListener(PacketListener listener) {
+        connection.addPacketListener(listener, messageFilter);
     }
 }
