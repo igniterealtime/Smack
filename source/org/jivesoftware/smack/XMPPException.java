@@ -97,19 +97,12 @@ public class XMPPException extends Exception {
     }
 
     public void printStackTrace() {
-        if (error != null) {
-            System.err.println(error);
-        }
-        super.printStackTrace();
-        if (cause != null) {
-            System.err.println("Nested Exception: ");
-            cause.printStackTrace();
-        }
+        printStackTrace(System.err);
     }
 
     public void printStackTrace(PrintStream out) {
         if (error != null) {
-            System.err.println(error);
+            System.err.print(error + " -- ");
         }
         super.printStackTrace(out);
         if (cause != null) {
@@ -120,7 +113,7 @@ public class XMPPException extends Exception {
 
     public void printStackTrace(PrintWriter out) {
         if (error != null) {
-            System.err.println(error);
+            System.err.print(error + " -- ");
         }
         super.printStackTrace(out);
         if (cause != null) {

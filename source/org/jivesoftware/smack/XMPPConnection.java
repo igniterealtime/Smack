@@ -53,7 +53,6 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 
@@ -71,12 +70,9 @@ import java.awt.*;
  * // Most servers require you to login before performing other tasks.
  * con.login("jsmith", "mypass");
  * // Start a new conversation with John Doe and send him a message.
- * Chat chat = new Chat("jdoe@jabber.org");
+ * Chat chat = con.createChat("jdoe@jabber.org");
  * chat.sendMessage("Hey, how's it going?");
  * </pre>
- *
- * Every connection has a PacketReader and PacketWriter instance, which are used
- * to read and write XML with the server.
  *
  * @author Matt Tucker
  */
@@ -106,11 +102,13 @@ public class XMPPConnection {
 
     String connectionID;
     private boolean connected = false;
+    private boolean authenticated = false;
 
     private PacketWriter packetWriter;
     private PacketReader packetReader;
 
-    private Roster roster;
+    private Roster roster = null;
+    private AccountManager accountManager = null;
 
     Writer writer;
     Reader reader;
@@ -209,12 +207,17 @@ public class XMPPConnection {
      * @param password the password.
      * @param resource the resource.
      * @throws XMPPException if an error occurs.
+     * @throws IllegalStateException if not connected to the server, or already logged in
+     *      to the serrver.
      */
     public synchronized void login(String username, String password, String resource)
             throws XMPPException
     {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
+        }
+        if (authenticated) {
+            throw new IllegalStateException("Already logged in to server.");
         }
         // If we send an authentication packet in "get" mode with just the username,
         // the server will return the list of authentication protocols it supports.
@@ -263,17 +266,7 @@ public class XMPPConnection {
             throw new XMPPException("Authentication failed.");
         }
         else if (response.getType() == IQ.Type.ERROR) {
-            if (response.getError() == null) {
-                throw new XMPPException("Authentication failed.");
-            }
-            else {
-                XMPPError error = response.getError();
-                String msg = "Authentication failed -- " + error.getCode();
-                if (error.getMessage() != null) {
-                    msg += ": " + error.getMessage();
-                }
-                throw new XMPPException(msg);
-            }
+            throw new XMPPException(response.getError());
         }
         // We're done with the collector, so explicitly cancel it.
         collector.cancel();
@@ -283,6 +276,9 @@ public class XMPPConnection {
         // Finally, create the roster.
         this.roster = new Roster(this);
         roster.reload();
+
+        // Indicate that we're now authenticated.
+        authenticated = true;
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
@@ -295,8 +291,25 @@ public class XMPPConnection {
         }
     }
 
+    /**
+     * Returns the roster for the user logged into the server. If the user has not yet
+     * logged into the server, this method will return <tt>null</tt>.
+     *
+     * @return the user's roster, or <tt>null</tt> if the user has not logged in yet.
+     */
     public Roster getRoster() {
         return roster;
+    }
+
+    /**
+     * Returns an account manager instance for this
+     * @return
+     */
+    public synchronized AccountManager getAccountManager() {
+        if (accountManager == null) {
+            accountManager = new AccountManager(this);
+        }
+        return accountManager;
     }
 
     /**
@@ -329,12 +342,21 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns true if currently connected to the Jabber server.
+     * Returns true if currently connected to the XMPP server.
      *
      * @return true if connected.
      */
     public boolean isConnected() {
         return connected;
+    }
+
+    /**
+     * Returns true if currently authenticated by successfully calling the login method.
+     *
+     * @return true if authenticated.
+     */
+    public boolean isAuthenticated() {
+        return authenticated;
     }
 
     /**
@@ -355,6 +377,7 @@ public class XMPPConnection {
             socket.close();
         }
         catch (Exception e) { }
+        authenticated = false;
         connected = false;
     }
 

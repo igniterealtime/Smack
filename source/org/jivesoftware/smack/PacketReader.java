@@ -342,6 +342,9 @@ class PacketReader {
                     else if (namespace.equals("jabber:iq:roster")) {
                         iqPacket = parseRoster(parser);
                     }
+                    else if (namespace.equals("jabber:iq:register")) {
+                        iqPacket = parseRegistration(parser);
+                    }
                 }
                 else if (parser.getName().equals("error")) {
                     error = parseError(parser);
@@ -437,6 +440,41 @@ class PacketReader {
         return roster;
     }
 
+     private static Registration parseRegistration(XmlPullParser parser) throws Exception {
+        Registration registration = new Registration();
+        Map fields = null;
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == parser.START_TAG) {
+                if (parser.getName().equals("username")) {
+                    registration.setUsername(parser.nextText());
+                }
+                else if (parser.getName().equals("password")) {
+                    registration.setPassword(parser.nextText());
+                }
+                else {
+                    String name = parser.getName();
+                    String value = parser.nextText();
+                    // Ignore instructions, but anything else should be added to the map.
+                    if (!name.equals("instructions")) {
+                        if (fields == null) {
+                            fields = new HashMap();
+                        }
+                        fields.put(name, value);
+                    }
+                }
+            }
+            else if (eventType == parser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+        registration.setAttributes(fields);
+        return registration;
+    }
+
     private static XMPPError parseError(XmlPullParser parser) throws Exception {
         String errorCode = null;
         for (int i=0; i<parser.getAttributeCount(); i++) {
@@ -449,7 +487,6 @@ class PacketReader {
             if (parser.getEventType() == parser.END_TAG && parser.getName().equals("error")) {
                 break;
             }
-            parser.next();
         }
         return new XMPPError(Integer.parseInt(errorCode), message);
     }
@@ -492,6 +529,9 @@ class PacketReader {
                     if (thread == null) {
                         thread = parser.nextText();
                     }
+                }
+                else if (parser.getName().equals("error")) {
+                    message.setError(parseError(parser));
                 }
                 else if (parser.getName().equals("x") &&
                         parser.getNamespace().equals(PROPERTIES_NAMESPACE))
@@ -556,6 +596,9 @@ class PacketReader {
                 }
                 else if (parser.getName().equals("show")) {
                     presence.setMode(Presence.Mode.fromString(parser.nextText()));
+                }
+                else if (parser.getName().equals("error")) {
+                    presence.setError(parseError(parser));
                 }
                 else if (parser.getName().equals("x") &&
                         parser.getNamespace().equals(PROPERTIES_NAMESPACE))

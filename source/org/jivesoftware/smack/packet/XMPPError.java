@@ -141,9 +141,9 @@ public class XMPPError {
 
     public String toString() {
         StringBuffer txt = new StringBuffer();
-        txt.append(code);
+        txt.append("(").append(code).append(")");
         if (message != null) {
-            txt.append(": ").append(message);
+            txt.append(" ").append(message);
         }
         return txt.toString();
     }
