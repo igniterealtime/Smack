@@ -217,6 +217,28 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns a collection of HostedRooms where each HostedRoom has the XMPP address of the room
+     * and the room's name. Once discovered the rooms hosted by a chat service it is possible to
+     * discover more detailed room information or join the room.
+     *
+     * @param connection the XMPP connection to use for discovering hosted rooms by the MUC service.
+     * @param serviceName the service that is hosting the rooms to discover.
+     * @return a collection of HostedRooms.
+     * @throws XMPPException if an error occured while trying to discover the information.
+     */
+    public static Collection getHostedRooms(XMPPConnection connection, String serviceName)
+            throws XMPPException {
+        List answer = new ArrayList();
+        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        DiscoverItems items = discoManager.discoverItems(serviceName);
+        for (Iterator it = items.getItems(); it.hasNext();) {
+            DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+            answer.add(new HostedRoom(item));
+        }
+        return answer;
+    }
+
+    /**
      * Returns the name of the room this MultiUserChat object represents.
      *
      * @return the multi user chat room name.

@@ -420,6 +420,14 @@ public class MultiUserChatTest extends SmackTestCase {
         try {
             Collection services = MultiUserChat.getServiceNames(getConnection(1));
             assertFalse("No MUC service was found", services.isEmpty());
+
+            // Discover the hosted rooms by the chat service.
+            Collection rooms = MultiUserChat.getHostedRooms(getConnection(1),
+                    (String) services.toArray()[0]);
+            // Check that we have discovered the room used by this test
+            assertFalse("No room was found", rooms.isEmpty());
+            // Check that we have discovered the room used by this test
+            assertEquals("Wrong room JID found", room, ((HostedRoom)rooms.toArray()[0]).getJid());
         }
         catch (XMPPException e) {
             e.printStackTrace();
