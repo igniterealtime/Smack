@@ -1,0 +1,14 @@
+<?xml version="1.0"?> 
+<!-- Configuration file to load at system start up -->
+<smackSystem> 
+    
+    <!-- Classes to load at start up -->
+    <classesToLoad> 
+        <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className> 
+        <className>org.jivesoftware.smackx.XHTMLManager</className> 
+    </classesToLoad>
+    
+    <!-- Smack Release -->
+    <versionNumber>1.3.0</versionNumber> 
+
+</smackSystem>
