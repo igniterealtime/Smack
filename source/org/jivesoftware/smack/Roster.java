@@ -432,11 +432,13 @@ public class Roster {
     }
 
     /**
-     * Returns the presence info for a particular user, or <tt>null</tt> if there is
-     * no presence information.
+     * Returns the presence info for a particular user, or <tt>null</tt> if the user
+     * is unavailable (offline) or if no presence information is available, such as
+     * when you are not subscribed to the user's presence updates.
      *
      * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
-     * @return the user's presence.
+     * @return the user's current presence, or <tt>null</tt> if the user is unavailable
+     *      or if no presence information is available..
      */
     public Presence getPresence(String user) {
         String key = StringUtils.parseName(user) + "@" + StringUtils.parseServer(user);
@@ -577,14 +579,14 @@ public class Roster {
                         }
                     }
                 }
-                
+
                 // Find the list of groups that the user currently belongs to.
                 List currentGroupNames = new ArrayList();
                 for (Iterator j = entry.getGroups(); j.hasNext();  ) {
                     RosterGroup group = (RosterGroup)j.next();
                     currentGroupNames.add(group.getName());
                 }
-                
+
                 // If the packet is not of the type REMOVE then add the entry to the groups
                 if (!RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
                     // Create the new list of groups the user belongs to.
@@ -593,7 +595,7 @@ public class Roster {
                         String groupName = (String)k.next();
                         // Add the group name to the list.
                         newGroupNames.add(groupName);
-    
+
                         // Add the entry to the group.
                         RosterGroup group = getGroup(groupName);
                         if (group == null) {
