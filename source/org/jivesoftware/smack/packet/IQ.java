@@ -57,7 +57,7 @@ package org.jivesoftware.smack.packet;
  *
  * @author Matt Tucker
  */
-public abstract class IQ extends Packet {
+public class IQ extends Packet {
 
     private Type type = Type.GET;
 
@@ -114,7 +114,9 @@ public abstract class IQ extends Packet {
      *
      * @return the query section of the IQ XML.
      */
-    public abstract String getQueryXML();
+    public String getQueryXML() {
+        return null;
+    }
 
     /**
      * A class to represent the type of the IQ packet. Valid types are:
@@ -134,16 +136,16 @@ public abstract class IQ extends Packet {
         public static final Type ERROR = new Type("error");
 
         public static Type fromString(String type) {
-            if (type.equals(GET.toString())) {
+            if (GET.toString().equals(type)) {
                 return GET;
             }
-            else if (type.equals(SET.toString())) {
+            else if (SET.toString().equals(type)) {
                 return SET;
             }
-            else if (type.equals(ERROR.toString())) {
+            else if (ERROR.toString().equals(type)) {
                 return ERROR;
             }
-            else if (type.equals(RESULT.toString())) {
+            else if (RESULT.toString().equals(type)) {
                 return RESULT;
             }
             else {
