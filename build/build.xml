@@ -10,12 +10,19 @@
 -->
 
 <project name="Smack" default="all" basedir="..">
-    
-    <property name="version" value="1.0 Beta 1" />
+
+    <!-- PROPERTIES -->
+    <!-- ======================================================================================= -->
+
     <property name="compile.dir" value="${basedir}/classes" />
     <property name="jar.dest.dir" value="${basedir}" />
     <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
-    <property name="build.lib.dir" value="${basedir}/build/lib" />   
+    <property name="build.lib.dir" value="${basedir}/build/lib" />
+
+    <property name="version.major" value="1" />
+    <property name="version.minor" value="0" />
+    <property name="version.string" value="beta1" />
+    <property name="version.name" value="${version.major}.${version.minor} Beta 1" />
 
     <!-- TARGETS -->
     <!-- ======================================================================================= -->
@@ -27,9 +34,7 @@
 
     <!-- compile -->
     <!-- ======================================================================================= -->
-    <target name="compile" 
-            description="Compiles all source to ${compile.dir}."
-        >
+    <target name="compile" description="Compiles all source to ${compile.dir}.">
         <!-- make target dir -->
         <mkdir dir="${compile.dir}" />
         <javac
@@ -49,9 +54,7 @@
 
     <!-- jar -->
     <!-- ======================================================================================= -->
-    <target name="jar" depends="compile" unless="jar.uptodate"
-            description="Produces smack.jar"
-    >
+    <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
         <jar destfile="${jar.dest.dir}/smack.jar"
             basedir="${compile.dir}"
             includes="**/*.class"
@@ -70,14 +73,14 @@
             sourcepath="${basedir}/source"
             destdir="${javadoc.dest.dir}"
             author="true"
-            windowtitle="Smack ${version} Documentation"
+            windowtitle="Smack ${version.name} Documentation"
         >
             <classpath>
                 <fileset dir="${build.lib.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
-            <doctitle><![CDATA[<font face="arial,helvetica">Smack ${version}</font>]]></doctitle>
+            <doctitle><![CDATA[<font face="arial,helvetica">Smack ${version.name}</font>]]></doctitle>
             <header><![CDATA[<b>Smack</b>]]></header>
             <bottom><![CDATA[<i>Copyright &copy; 2003 Jive Software. </i>]]></bottom>
             <link href="http://java.sun.com/j2se/1.3/docs/api/" />
@@ -86,12 +89,27 @@
     </target>
 
 
+    <!-- release -->
+    <!-- ======================================================================================= -->
+    <target name="release" if="release.exists" depends="release-exists, jar, javadoc">
+        <ant antfile="${basedir}/build/release.xml" />
+    </target>
+
+
+    <!-- release-exists -->
+    <!-- ======================================================================================= -->
+    <target name="release-exists" >
+        <available file="${basedir}/build/release.xml" property="release.exists"/>
+    </target>
+
+
     <!-- clean -->
     <!-- ======================================================================================= -->
     <target name="clean" description="Deletes all generated content.">
     	<delete dir="${javadoc.dest.dir}" />
-      <delete dir="${compile.dir}" />
-	<delete file="${basedir}/smack.jar" />
+        <delete dir="${compile.dir}" />
+	    <delete file="${basedir}/smack.jar" />
+        <delete dir="${basedir}/release" />
     </target>
 
 </project>
