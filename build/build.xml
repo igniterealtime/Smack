@@ -76,7 +76,7 @@
             destdir="${compile.dir}"
             includeAntRuntime="no"
             debug="on"
-            source="1.2"
+            source="1.3"
         >
             <src path="${basedir}/source" />
             <classpath>
@@ -99,7 +99,7 @@
             destdir="${compile.test.dir}"
             includeAntRuntime="no"
             debug="on"
-            source="1.2"
+            source="1.3"
         >
             <src path="${basedir}/test" />
             <classpath>
