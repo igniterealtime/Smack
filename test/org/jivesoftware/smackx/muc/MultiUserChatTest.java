@@ -315,6 +315,27 @@ public class MultiUserChatTest extends SmackTestCase {
         assertTrue("Couldn't detect that user1 supports MUC", supports);
     }
 
+    public void testDiscoverRoomInfo() {
+        try {
+            makeRoomModerated();
+
+            RoomInfo info = MultiUserChat.getRoomInfo(getConnection(1), room);
+
+            assertFalse("Room is members-only", info.isMembersOnly());
+            assertTrue("Room is moderated", info.isModerated());
+            assertFalse("Room is Nonanonymous", info.isNonanonymous());
+            assertFalse("Room is PasswordProtected", info.isPasswordProtected());
+            assertFalse("Room is Persistent", info.isPersistent());
+            assertEquals("Room's description is incorrect", "fruta124", info.getDescription());
+            assertEquals("Room's subject is incorrect", "", info.getSubject());
+            assertEquals("Number of occupants is incorrect", 1, info.getOccupantsCount());
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
     public void testPrivateChat() {
         try {
             // User2 joins the new room
