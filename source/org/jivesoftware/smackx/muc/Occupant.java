@@ -23,6 +23,7 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smackx.packet.MUCAdmin;
 import org.jivesoftware.smackx.packet.MUCUser;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Represents the information about an occupant in a given room. The information will always have
@@ -54,6 +55,8 @@ public class Occupant {
         this.jid = item.getJid();
         this.affiliation = item.getAffiliation();
         this.role = item.getRole();
+        // Get the nickname from the FROM attribute of the presence
+        this.nick = StringUtils.parseResource(presence.getFrom());
     }
 
     /**

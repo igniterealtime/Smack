@@ -1576,6 +1576,7 @@ public class MultiUserChatTest extends SmackTestCase {
             assertEquals("Wrong occupant jid", getFullJID(1), occupant.getJid());
             assertEquals("Wrong occupant affiliation", "member", occupant.getAffiliation());
             assertEquals("Wrong occupant role", "participant", occupant.getRole());
+            assertEquals("Wrong occupant nick", "testbot2", occupant.getNick());            
 
             try {
                 // Check whether a member can get the list of owners
