@@ -35,21 +35,29 @@
                     <format property="build.date" pattern="MMM-dd-yyyy" locale="en"/>
                 </tstamp>
                 <property name="release.name" value="smack-${build.date}" />
+                <property name="release-dev.name" value="smack-dev-${build.date}" />
             </then>
             <else>
                 <property name="release.name" value="smack-${version.name}" />
+                <property name="release-dev.name" value="smack-dev-${version.name}" />
             </else>
         </if>
         <property name="release.dir" value="${basedir}/release/${release.name}" />
+        <property name="release-dev.dir" value="${basedir}/release/${release-dev.name}" />
         <!-- create release dirs -->
         <mkdir dir="${release.dir}" />
+        <mkdir dir="${release-dev.dir}" />
         <!-- Copy smack.jar -->
         <copy todir="${release.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
         </copy>
+        <copy todir="${release-dev.dir}">
+            <fileset dir="${jar.dest.dir}" includes="smack.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
+        </copy>
         <!-- Copy build dir -->
-        <copy todir="${release.dir}/build">
+        <copy todir="${release-dev.dir}/build">
             <fileset dir="${basedir}/build">
                 <include name="ant*" />
                 <include name="junit.jar" />
@@ -63,24 +71,33 @@
         <copy todir="${release.dir}/javadoc">
             <fileset dir="${basedir}/javadoc" includes="**/*.*" />
         </copy>
+        <copy todir="${release-dev.dir}/javadoc">
+            <fileset dir="${basedir}/javadoc" includes="**/*.*" />
+        </copy>
         <!-- Copy documentation -->
         <copy todir="${release.dir}/documentation">
             <fileset dir="${basedir}/documentation" includes="**/*.*" />
         </copy>
+        <copy todir="${release-dev.dir}/documentation">
+            <fileset dir="${basedir}/documentation" includes="**/*.*" />
+        </copy>
         <!-- Copy source -->
-        <copy todir="${release.dir}/source">
+        <copy todir="${release-dev.dir}/source">
             <fileset dir="${basedir}/source" includes="**/*.java" />
             <fileset dir="${basedir}/source" includes="**/*.html" />
         </copy>
-        <copy todir="${release.dir}/test">
+        <copy todir="${release-dev.dir}/test">
             <fileset dir="${basedir}/test" includes="**/*.java" />
         </copy>
         <!-- Copy resources -->
-        <copy todir="${release.dir}/build/resources">
+        <copy todir="${release-dev.dir}/build/resources">
             <fileset dir="${basedir}/build/resources" includes="META-INF/smack.providers" />
         </copy>
         <!-- Copy readme.html and changelog.html -->
         <copy todir="${release.dir}">
+            <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
+        </copy>
+        <copy todir="${release-dev.dir}">
             <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
         </copy>
         <!-- Package -->
@@ -91,6 +108,15 @@
         <tar destfile="${basedir}/release/${release.name}.tar.gz"
             basedir="${release.dir}/.."
             includes="${release.name}/**/*.*"
+            compression="gzip"
+        />
+        <zip destfile="${basedir}/release/${release-dev.name}.zip"
+            basedir="${release-dev.dir}/.."
+            includes="${release-dev.name}/**/*.*"
+        />
+        <tar destfile="${basedir}/release/${release-dev.name}.tar.gz"
+            basedir="${release-dev.dir}/.."
+            includes="${release-dev.name}/**/*.*"
             compression="gzip"
         />
 
@@ -107,12 +133,12 @@ Release made, testing Ant targets of release...
     <!-- test -->
     <!-- ======================================================================================= -->
     <target name="test">
-        <property name="testdir" value="${release.dir}/.test" />
+        <property name="testdir" value="${release-dev.dir}/.test" />
 
         <!-- copy the build to a temp dir so we can run sanity tests -->
         <mkdir dir="${testdir}" />
         <copy todir="${testdir}">
-            <fileset dir="${release.dir}">
+            <fileset dir="${release-dev.dir}">
                 <exclude name=".test/**/*.*" />
             </fileset>
         </copy>
