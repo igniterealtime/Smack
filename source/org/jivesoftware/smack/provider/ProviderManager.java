@@ -111,25 +111,30 @@ import java.net.URL;
  * value from the XML into a boolean, int, long, float, double, or Class depending on the
  * type the IQ instance expects.<p>
  *
- * A pluggable system for the &lt;x&gt; portion of packets also exists. Each x provider
+ * A pluggable system for packet extensions, child elements in a custom namespace for
+ * message and presence packets, also exists. Each extension provider
  * is registered with a name space in the smack.providers file as in the following example:
  *
  * <pre>
  * &lt;?xml version="1.0"?&gt;
  * &lt;smackProviders&gt;
- *     &lt;xProvider namespace="jabber:iq:event"
- *                   className="org.jivesoftware.smack.packet.MessageEvent"/&gt;
+ *     &lt;extensionProvider&gt;
+ *         &lt;elementName&gt;x&lt;/elementName&gt;
+ *         &lt;namespace&gt;jabber:iq:event&lt;/namespace&gt;
+ *         &lt;className&gt;org.jivesoftware.smack.packet.MessageEvent&lt/className&gt;
+ *     &lt;/extensionProvider&gt;
  * &lt;/smackProviders&gt;</pre>
  *
- * If multiple provider entries attempt to register to handle the same namespace, the
- * first entry loaded from the classpath will take precedence. Whenever an &lt;x&gt; element
+ * If multiple provider entries attempt to register to handle the same element name and namespace,
+ * the first entry loaded from the classpath will take precedence. Whenever a packet extension
  * is found in a packet, parsing will be passed to the correct provider. Each provider
- * can either implement the XProvider or be a standard Java Bean. In the former case,
- * each XProvider is responsible for parsing the raw XML stream to contruct an object.
- * In the latter case, bean introspection is used to try to automatically set the
- * properties of the class using the values in the x sub-element. When a XProvider is
- * not registered for a namespace, Smack will store all top-level elements of the sub-packet
- * in a Map and attach it to the packet.
+ * can either implement the PacketExtensionProvider interface or be a standard Java Bean. In
+ * the former case, each extension provider is responsible for parsing the raw XML stream to
+ * contruct an object. In the latter case, bean introspection is used to try to automatically
+ * set the properties of the class using the values in the packet extension sub-element. When an
+ * extension provider is not registered for an element name and namespace combination, Smack will
+ * store all top-level elements of the sub-packet in DefaultPacketExtension object and then
+ * attach it to the packet.
  *
  * @author Matt Tucker
  */
