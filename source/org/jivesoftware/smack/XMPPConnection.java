@@ -191,7 +191,24 @@ public class XMPPConnection {
      * @param password the password.
      * @throws XMPPException if an error occurs.
      */
-    public synchronized void login(String username, String password) throws XMPPException {
+    public void login(String username, String password) throws XMPPException {
+        login(username, password, "Smack");
+    }
+
+    /**
+     * Login to the server using the strongest authentication mode supported by
+     * the server, then set our presence to available. If more than five seconds
+     * elapses in each step of the authentication process without a response from
+     * the server, or if an error occurs, a XMPPException will be thrown.
+     *
+     * @param username the username.
+     * @param password the password.
+     * @param resource the resource.
+     * @throws XMPPException if an error occurs.
+     */
+    public synchronized void login(String username, String password, String resource)
+            throws XMPPException
+    {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
@@ -200,15 +217,18 @@ public class XMPPConnection {
         Authentication discoveryAuth = new Authentication();
         discoveryAuth.setType(IQ.Type.GET);
         discoveryAuth.setUsername(username);
-        packetWriter.sendPacket(discoveryAuth);
-        // Wait up to five seconds for a response from the server.
+
         PacketCollector collector = packetReader.createPacketCollector(
                 new PacketIDFilter(discoveryAuth.getPacketID()));
+        // Send the packet
+        packetWriter.sendPacket(discoveryAuth);
+        // Wait up to five seconds for a response from the server.
         Authentication authTypes = (Authentication)collector.nextResult(5000);
         collector.cancel();
         if (authTypes == null || authTypes.getType().equals(IQ.Type.ERROR)) {
             throw new XMPPException("No response from the server.");
         }
+
 
         // Now, create the authentication packet we'll send to the server.
         Authentication auth = new Authentication();
@@ -225,11 +245,13 @@ public class XMPPConnection {
             throw new XMPPException("Server does not support compatible authentication mechanism.");
         }
 
-        auth.setResource("Smack");
-        packetWriter.sendPacket(auth);
-        // Wait up to five seconds for a response from the server.
+        auth.setResource(resource);
+
         collector = packetReader.createPacketCollector(
                 new PacketIDFilter(auth.getPacketID()));
+        // Send the packet.
+        packetWriter.sendPacket(auth);
+        // Wait up to five seconds for a response from the server.
         IQ response = (IQ)collector.nextResult(5000);
         if (response == null) {
             throw new XMPPException("Authentication failed.");
