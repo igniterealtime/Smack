@@ -55,18 +55,34 @@ package org.jivesoftware.smack.filter;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
- * Implements the logical OR operation over two packet filters. In other words, packets
- * pass this filter if they pass <b>either</b> of the filters.
+ * Implements the logical OR operation over two or more packet filters. In
+ * other words, packets pass this filter if they pass <b>any</b> of the filters.
  *
  * @author Matt Tucker
  */
 public class OrFilter implements PacketFilter {
 
-    private PacketFilter filter1;
-    private PacketFilter filter2;
+    /**
+     * The current number of elements in the filter.
+     */
+    private int size;
 
     /**
-     * Creates an OR filter using the specified filters.
+     * The list of filters.
+     */
+    private PacketFilter [] filters;
+
+    /**
+     * Creates an empty OR filter. Filters should be added using the
+     * {@link #addFilter(PacketFilter) method.
+     */
+    public OrFilter() {
+        size = 0;
+        filters = new PacketFilter[3];
+    }
+
+    /**
+     * Creates an OR filter using the two specified filters.
      *
      * @param filter1 the first packet filter.
      * @param filter2 the second packet filter.
@@ -75,11 +91,45 @@ public class OrFilter implements PacketFilter {
         if (filter1 == null || filter2 == null) {
             throw new IllegalArgumentException("Parameters cannot be null.");
         }
-        this.filter1 = filter1;
-        this.filter2 = filter2;
+        size = 2;
+        filters = new PacketFilter[2];
+        filters[0] = filter1;
+        filters[1] = filter2;
+    }
+
+    /**
+     * Adds a filter to the filter list for the OR operation. A packet
+     * will pass the filter if any filter in the list accepts it.
+     *
+     * @param filter a filter to add to the filter list.
+     */
+    public void addFilter(PacketFilter filter) {
+        if (filter == null) {
+            throw new IllegalArgumentException("Parameter cannot be null.");
+        }
+        // If there is no more room left in the filters array, expand it.
+        if (size == filters.length) {
+            PacketFilter [] newFilters = new PacketFilter[filters.length+2];
+            for (int i=0; i<filters.length; i++) {
+                newFilters[i] = filters[i];
+            }
+            filters = newFilters;
+        }
+        // Add the new filter to the array.
+        filters[size] = filter;
+        size++;
     }
 
     public boolean accept(Packet packet) {
-        return filter1.accept(packet) || filter2.accept(packet);
+        for (int i=0; i<size; i++) {
+            if (filters[i].accept(packet)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String toString() {
+        return filters.toString();
     }
 }

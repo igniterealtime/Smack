@@ -88,5 +88,12 @@ public class AndFilterTest extends TestCase {
 
         andFilter = new AndFilter(falseFilter, falseFilter);
         assertFalse(andFilter.accept(packet));
+
+        andFilter = new AndFilter();
+        andFilter.addFilter(trueFilter);
+        andFilter.addFilter(trueFilter);
+        andFilter.addFilter(falseFilter);
+        andFilter.addFilter(trueFilter);
+        assertFalse(andFilter.accept(packet));
     }
 }

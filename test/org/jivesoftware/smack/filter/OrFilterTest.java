@@ -122,5 +122,12 @@ public class OrFilterTest extends TestCase {
             new OrFilter(falseFilter, falseFilter), new OrFilter(falseFilter, falseFilter)
         );
         assertFalse(orFilter.accept(packet));
+
+        orFilter = new OrFilter();
+        orFilter.addFilter(trueFilter);
+        orFilter.addFilter(trueFilter);
+        orFilter.addFilter(falseFilter);
+        orFilter.addFilter(trueFilter);
+        assertTrue(orFilter.accept(packet));
     }
 }
