@@ -53,7 +53,11 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * A generic IQ packet.
+ * A generic IQ (Info/Query) packet. IQ packets are used to get and set information
+ * on the server, including authentication, roster operations, and creating
+ * accounts. Each IQ packet has a specific type that indicates what type of action
+ * is being taken: "get", "set", "result", or "error". The actual data of an IQ
+ * packet is normally enclosed in the query section with a specific namespace.
  *
  * @author Matt Tucker
  */
@@ -61,10 +65,20 @@ public class IQ extends Packet {
 
     private Type type = Type.GET;
 
+    /**
+     * Returns the type of the IQ packet.
+     *
+     * @return the type of the IQ packet.
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * Sets the type of the IQ packet.
+     *
+     * @param type the type of the IQ packet.
+     */
     public void setType(Type type) {
         this.type = type;
     }
@@ -107,10 +121,12 @@ public class IQ extends Packet {
     }
 
     /**
-     * Implementations of this method should return the XML of the query section of
-     * an IQ packet if that section should exist, or <tt>null</tt> otherwise. This lets
-     * the majority of IQ XML writing be generic, with each sub-class providing just the
-     * packet specific XML.
+     * Returns the "query" XML section of the IQ packet, or <tt>null</tt> if there
+     * isn't one.<p>
+     *
+     * Generally, extensions of this class should override this method. This lets
+     * the majority of IQ XML writing be generic, with each sub-class providing just
+     * the packet-specific XML.
      *
      * @return the query section of the IQ XML.
      */
@@ -119,7 +135,7 @@ public class IQ extends Packet {
     }
 
     /**
-     * A class to represent the type of the IQ packet. Valid types are:
+     * A class to represent the type of the IQ packet. The types are:
      *
      * <ul>
      *      <li>IQ.Type.GET
@@ -135,6 +151,13 @@ public class IQ extends Packet {
         public static final Type RESULT = new Type("result");
         public static final Type ERROR = new Type("error");
 
+        /**
+         * Converts a String into the corresponding types. Valid String values
+         * that can be converted to types are: "get", "set", "result", and "error".
+         *
+         * @param type the String value to covert.
+         * @return the corresponding Type.
+         */
         public static Type fromString(String type) {
             if (GET.toString().equals(type)) {
                 return GET;
