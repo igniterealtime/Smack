@@ -399,7 +399,7 @@ public class Roster {
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().equals(user)) {
+                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
                     return entry;
                 }
             }
@@ -423,7 +423,7 @@ public class Roster {
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().equals(user)) {
+                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
                     return true;
                 }
             }
@@ -602,7 +602,7 @@ public class Roster {
                 synchronized (entries) {
                     for (Iterator i = entries.iterator(); i.hasNext();) {
                         RosterEntry entry = (RosterEntry) i.next();
-                        if (entry.getUser().equals(key)) {
+                        if (entry.getUser().toLowerCase().equals(key.toLowerCase())) {
                             fireRosterPresenceEvent(key);
                         }
                     }
@@ -621,7 +621,7 @@ public class Roster {
                 synchronized (entries) {
                     for (Iterator i=entries.iterator(); i.hasNext(); ) {
                         RosterEntry entry = (RosterEntry)i.next();
-                        if (entry.getUser().equals(key)) {
+                        if (entry.getUser().toLowerCase().equals(key.toLowerCase())) {
                             fireRosterPresenceEvent(key);
                         }
                     }

@@ -133,7 +133,7 @@ public class RosterEntry {
             return true;
         }
         if (object != null && object instanceof RosterEntry) {
-            return user.equals(((RosterEntry)object).getUser());
+            return user.toLowerCase().equals(((RosterEntry)object).getUser().toLowerCase());
         }
         else {
             return false;

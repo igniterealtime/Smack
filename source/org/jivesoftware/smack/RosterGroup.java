@@ -153,7 +153,7 @@ public class RosterGroup {
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().equals(user)) {
+                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
                     return entry;
                 }
             }
@@ -189,7 +189,7 @@ public class RosterGroup {
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().equals(user)) {
+                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
                     return true;
                 }
             }
