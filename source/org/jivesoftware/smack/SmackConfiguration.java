@@ -107,6 +107,7 @@ public final class SmackConfiguration {
             }
         }
         catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -200,10 +201,9 @@ public final class SmackConfiguration {
      * @return an array of ClassLoader instances.
      */
     private static ClassLoader[] getClassLoaders() {
-        ClassLoader[] classLoaders = new ClassLoader[3];
+        ClassLoader[] classLoaders = new ClassLoader[2];
         classLoaders[0] = new SmackConfiguration().getClass().getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        classLoaders[2] = ClassLoader.getSystemClassLoader();
         return classLoaders;
     }
 }

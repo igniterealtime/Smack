@@ -214,7 +214,9 @@ public class ProviderManager {
                 }
             }
         }
-        catch (Exception e) { }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -346,10 +348,9 @@ public class ProviderManager {
      * @return an array of ClassLoader instances.
      */
     private static ClassLoader[] getClassLoaders() {
-        ClassLoader[] classLoaders = new ClassLoader[3];
+        ClassLoader[] classLoaders = new ClassLoader[2];
         classLoaders[0] = new ProviderManager().getClass().getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        classLoaders[2] = ClassLoader.getSystemClassLoader();
         return classLoaders;
     }
 
