@@ -51,6 +51,7 @@
  */
 package org.jivesoftware.smackx;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 import org.jivesoftware.smack.*;
@@ -209,7 +210,8 @@ public class MultiUserChat {
         // Send create & join packet.
         connection.sendPacket(joinPresence);
         // Wait up to a certain number of seconds for a reply.
-        Presence presence = (Presence) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        Presence presence =
+            (Presence) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (presence == null) {
             throw new XMPPException("No response from server.");
         }
@@ -232,7 +234,7 @@ public class MultiUserChat {
         leave();
         throw new XMPPException("Creation failed - Missing acknowledge of room creation.");
     }
-    
+
     /**
      * Joins the chat room using the specified nickname. If already joined
      * using another nickname, this method will first leave the room and then
@@ -483,11 +485,11 @@ public class MultiUserChat {
         reg.setType(IQ.Type.GET);
         reg.setTo(room);
 
-        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
-                new PacketTypeFilter(IQ.class));
+        PacketFilter filter =
+            new AndFilter(new PacketIDFilter(reg.getPacketID()), new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from server.");
@@ -497,7 +499,7 @@ public class MultiUserChat {
         }
         return Form.getFormFrom(result);
     }
-    
+
     /**
      * Sends the completed registration form to the server. After the user successfully submits 
      * the form, the room may queue the request for review by the room admins or may immediately 
@@ -518,11 +520,11 @@ public class MultiUserChat {
         reg.setTo(room);
         reg.addExtension(form.getDataFormToSend());
 
-        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
-                new PacketTypeFilter(IQ.class));
+        PacketFilter filter =
+            new AndFilter(new PacketIDFilter(reg.getPacketID()), new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from server.");
@@ -531,7 +533,7 @@ public class MultiUserChat {
             throw new XMPPException(result.getError());
         }
     }
-    
+
     /**
      * Sends a request to the server to destroy the room. The sender of the request
      * should be the room's owner. If the sender of the destroy request is not the room's owner
@@ -625,8 +627,26 @@ public class MultiUserChat {
         conn.sendPacket(message);
     }
 
+    /**
+     * Adds a listener to invitation notifications. The listener will be fired anytime 
+     * an invitation is received.
+     *
+     * @param conn the connection where the listener will be applied.
+     * @param listener an invitation listener.
+     */
     public static void addInvitationListener(XMPPConnection conn, InvitationListener listener) {
-        //TODO Implement the InvitationListener functionality
+        InvitationsMonitor.getInvitationsMonitor(conn).addInvitationListener(listener);
+    }
+
+    /**
+     * Removes a listener to invitation notifications. The listener will be fired anytime 
+     * an invitation is received.
+     *
+     * @param conn the connection where the listener was applied.
+     * @param listener an invitation listener.
+     */
+    public static void removeInvitationListener(XMPPConnection conn, InvitationListener listener) {
+        InvitationsMonitor.getInvitationsMonitor(conn).removeInvitationListener(listener);
     }
 
     /**
@@ -934,5 +954,164 @@ public class MultiUserChat {
             connection.removePacketListener(presenceListener);
             connection.removePacketListener(declinesListener);
         }
+    }
+
+    /**
+     * An InvitationsMonitor monitors a given connection to detect room invitations. Every
+     * time the InvitationsMonitor detects a new invitation it will fire the invitation listeners. 
+     * 
+     * @author Gaston Dombiak
+     */
+    private static class InvitationsMonitor implements ConnectionListener {
+        // We use a WeakHashMap so that the GC can collect the monitor when the
+        // connection is no longer referenced by any object.
+        private static Map monitors = new WeakHashMap();
+
+        private List invitationsListeners = new ArrayList();
+        private XMPPConnection connection;
+        private PacketFilter invitationFilter;
+        private PacketListener invitationPacketListener;
+
+        /**
+         * Returns a new or existing InvitationsMonitor for a given connection.
+         * 
+         * @param connection the connection to monitor for room invitations.
+         * @return a new or existing InvitationsMonitor for a given connection.
+         */
+        public static InvitationsMonitor getInvitationsMonitor(XMPPConnection conn) {
+            synchronized (monitors) {
+                if (!monitors.containsKey(conn)) {
+                    // We need to use a WeakReference because the monitor references the 
+                    // connection and this could prevent the GC from collecting the monitor
+                    // when no other object references the monitor
+                    monitors.put(conn, new WeakReference(new InvitationsMonitor(conn)));
+                }
+                // Return the InvitationsMonitor that monitors the connection
+                return (InvitationsMonitor) ((WeakReference) monitors.get(conn)).get();
+            }
+        }
+
+        /**
+         * Creates a new InvitationsMonitor that will monitor invitations received
+         * on a given connection.
+         * 
+         * @param connection the connection to monitor for possible room invitations
+         */
+        private InvitationsMonitor(XMPPConnection connection) {
+            this.connection = connection;
+        }
+
+        /**
+         * Adds a listener to invitation notifications. The listener will be fired anytime 
+         * an invitation is received.<p>
+         * 
+         * If this is the first monitor's listener then the monitor will be initialized in 
+         * order to start listening to room invitations.
+         * 
+         * @param listener an invitation listener.
+         */
+        public void addInvitationListener(InvitationListener listener) {
+            synchronized (invitationsListeners) {
+                // If this is the first monitor's listener then initialize the listeners 
+                // on the connection to detect room invitations
+                if (invitationsListeners.size() == 0) {
+                    init();
+                }
+                if (!invitationsListeners.contains(listener)) {
+                    invitationsListeners.add(listener);
+                }
+            }
+        }
+
+        /**
+         * Removes a listener to invitation notifications. The listener will be fired anytime 
+         * an invitation is received.<p>
+         * 
+         * If there are no more listeners to notifiy for room invitations then the monitor will
+         * be stopped. As soon as a new listener is added to the monitor, the monitor will resume
+         * monitoring the connection for new room invitations.
+         * 
+         * @param listener an invitation listener.
+         */
+        public void removeInvitationListener(InvitationListener listener) {
+            synchronized (invitationsListeners) {
+                if (invitationsListeners.contains(listener)) {
+                    invitationsListeners.remove(listener);
+                }
+                // If there are no more listeners to notifiy for room invitations
+                // then proceed to cancel/release this monitor 
+                if (invitationsListeners.size() == 0) {
+                    cancel();
+                }
+            }
+        }
+
+        /**
+         * Fires invitation listeners.
+         */
+        private void fireInvitationListeners(
+            String room,
+            String inviter,
+            String reason,
+            String password) {
+            InvitationListener[] listeners = null;
+            synchronized (invitationsListeners) {
+                listeners = new InvitationListener[invitationsListeners.size()];
+                invitationsListeners.toArray(listeners);
+            }
+            for (int i = 0; i < listeners.length; i++) {
+                listeners[i].invitationReceived(connection, room, inviter, reason, password);
+            }
+        }
+
+        public void connectionClosed() {
+            cancel();
+        }
+
+        public void connectionClosedOnError(Exception e) {
+            cancel();
+        }
+
+        /**
+         * Initializes the listeners to detect received room invitations and to detect when the 
+         * connection gets closed. As soon as a room invitation is received the invitations 
+         * listeners will be fired. When the connection gets closed the monitor will remove
+         * his listeners on the connection.       
+         */
+        private void init() {
+            // Listens for all messages that include a MUCUser extension and fire the invitation 
+            // listeners if the message includes an invitation.
+            invitationFilter =
+                new PacketExtensionFilter("x", "http://jabber.org/protocol/muc#user");
+            invitationPacketListener = new PacketListener() {
+                public void processPacket(Packet packet) {
+                    // Get the MUCUser extension
+                    MUCUser mucUser =
+                        (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
+                    // Check if the MUCUser extension includes an invitation
+                    if (mucUser.getInvite() != null) {
+                        // Fire event for invitation listeners
+                        fireInvitationListeners(
+                            packet.getFrom(),
+                            mucUser.getInvite().getFrom(),
+                            mucUser.getInvite().getReason(),
+                            mucUser.getPassword());
+                    }
+                };
+            };
+            connection.addPacketListener(invitationPacketListener, invitationFilter);
+            // Add a listener to detect when the connection gets closed in order to
+            // cancel/release this monitor 
+            connection.addConnectionListener(this);
+        }
+
+        /**
+         * Cancels all the listeners that this InvitationsMonitor has added to the connection.
+         */
+        private void cancel() {
+            connection.removePacketListener(invitationPacketListener);
+            connection.removeConnectionListener(this);
+        }
+
     }
 }
