@@ -424,16 +424,26 @@ public abstract class Packet {
                 // a binary format, which won't work well inside of XML. Therefore, we base-64
                 // encode the binary data before adding it.
                 else {
+                    ByteArrayOutputStream byteStream = null;
+                    ObjectOutputStream out = null;
                     try {
-                        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                        ObjectOutputStream out = new ObjectOutputStream(byteStream);
+                        byteStream = new ByteArrayOutputStream();
+                        out = new ObjectOutputStream(byteStream);
                         out.writeObject(value);
                         buf.append("java-object\">");
                         String encodedVal = StringUtils.encodeBase64(byteStream.toByteArray());
                         buf.append(encodedVal).append("</value>");
                     }
                     catch (Exception e) {
-
+                        e.printStackTrace();
+                    }
+                    finally {
+                        if (out != null) {
+                            try { out.close(); } catch (Exception e) { }
+                        }
+                        if (byteStream != null) {
+                            try { byteStream.close(); } catch (Exception e) { }
+                        }
                     }
                 }
                 buf.append("</property>");
