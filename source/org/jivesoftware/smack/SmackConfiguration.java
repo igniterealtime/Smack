@@ -121,6 +121,9 @@ public final class SmackConfiguration {
                         }
                         while (eventType != XmlPullParser.END_DOCUMENT);
                     }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     finally {
                         try {
                             systemStream.close();
