@@ -57,7 +57,14 @@ import java.util.Date;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
- * Represents...
+ * Represents extended presence information whose sole purpose is to signal the ability of 
+ * the occupant to speak the MUC protocol when joining a room. If the room requires a password 
+ * then the MUCInitialPresence should include one.<p>
+ * 
+ * The amount of discussion history provided on entering a room (perhaps because the 
+ * user is on a low-bandwidth connection or is using a small-footprint client) could be managed by
+ * setting a configured History instance to the MUCInitialPresence instance. 
+ * @see MUCInitialPresence#setHistory(MUCInitialPresence.History).
  *
  * @author Gaston Dombiak
  */
@@ -89,33 +96,51 @@ public class MUCInitialPresence implements PacketExtension {
     }
 
     /**
-     * @return
+     * Returns the history that manages the amount of discussion history provided on 
+     * entering a room.
+     * 
+     * @return the history that manages the amount of discussion history provided on 
+     * entering a room.
      */
     public History getHistory() {
         return history;
     }
 
     /**
-     * @return
+     * Returns the password to use when the room requires a password.
+     * 
+     * @return the password to use when the room requires a password.
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * @param history
+     * Sets the History that manages the amount of discussion history provided on 
+     * entering a room.
+     * 
+     * @param history that manages the amount of discussion history provided on 
+     * entering a room.
      */
     public void setHistory(History history) {
         this.history = history;
     }
 
     /**
-     * @param string
+     * Sets the password to use when the room requires a password.
+     * 
+     * @param password the password to use when the room requires a password.
      */
-    public void setPassword(String string) {
-        password = string;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
+    /**
+     * The History class controls the number of characters or messages to receive
+     * when entering a room.
+     * 
+     * @author Gaston Dombiak
+     */
     public static class History {
 
         private int maxChars = -1;
@@ -124,59 +149,84 @@ public class MUCInitialPresence implements PacketExtension {
         private Date since; 
 
         /**
-         * @return
+         * Returns the total number of characters to receive in the history.
+         * 
+         * @return total number of characters to receive in the history.
          */
         public int getMaxChars() {
             return maxChars;
         }
 
         /**
-         * @return
+         * Returns the total number of messages to receive in the history.
+         * 
+         * @return the total number of messages to receive in the history.
          */
         public int getMaxStanzas() {
             return maxStanzas;
         }
 
         /**
-         * @return
+         * Returns the number of seconds to use to filter the messages received during that time. 
+         * In other words, only the messages received in the last "X" seconds will be included in 
+         * the history.
+         * 
+         * @return the number of seconds to use to filter the messages received during that time.
          */
         public int getSeconds() {
             return seconds;
         }
 
         /**
-         * @return
+         * Returns the since date to use to filter the messages received during that time. 
+         * In other words, only the messages received since the datetime specified will be 
+         * included in the history.
+         * 
+         * @return the since date to use to filter the messages received during that time.
          */
         public Date getSince() {
             return since;
         }
 
         /**
-         * @param i
+         * Sets the total number of characters to receive in the history.
+         * 
+         * @param maxChars the total number of characters to receive in the history.
          */
-        public void setMaxChars(int i) {
-            maxChars = i;
+        public void setMaxChars(int maxChars) {
+            this.maxChars = maxChars;
         }
 
         /**
-         * @param i
+         * Sets the total number of messages to receive in the history.
+         * 
+         * @param maxStanzas the total number of messages to receive in the history.
          */
-        public void setMaxStanzas(int i) {
-            maxStanzas = i;
+        public void setMaxStanzas(int maxStanzas) {
+            this.maxStanzas = maxStanzas;
         }
 
         /**
-         * @param i
+         * Sets the number of seconds to use to filter the messages received during that time. 
+         * In other words, only the messages received in the last "X" seconds will be included in 
+         * the history.
+         * 
+         * @param seconds he number of seconds to use to filter the messages received during 
+         * that time.
          */
-        public void setSeconds(int i) {
-            seconds = i;
+        public void setSeconds(int seconds) {
+            this.seconds = seconds;
         }
 
         /**
-         * @param date
+         * Sets the since date to use to filter the messages received during that time. 
+         * In other words, only the messages received since the datetime specified will be 
+         * included in the history.
+         * 
+         * @param since the since date to use to filter the messages received during that time.
          */
-        public void setSince(Date date) {
-            since = date;
+        public void setSince(Date since) {
+            this.since = since;
         }
 
         public String toXML() {
