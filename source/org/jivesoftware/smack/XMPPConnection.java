@@ -336,7 +336,9 @@ public class XMPPConnection {
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
-        if (DEBUG_ENABLED) {
+        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger 
+        // will be null
+        if (DEBUG_ENABLED && debugger != null) {
             debugger.userHasLogged(user);
         }
     }
@@ -396,7 +398,9 @@ public class XMPPConnection {
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
-        if (DEBUG_ENABLED) {
+        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger 
+        // will be null
+        if (DEBUG_ENABLED && debugger != null) {
             debugger.userHasLogged(user);
         }
     }
