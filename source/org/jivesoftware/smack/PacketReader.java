@@ -54,9 +54,13 @@ package org.jivesoftware.smack;
 
 import org.xmlpull.v1.*;
 import java.util.*;
+import java.io.ObjectInputStream;
+import java.io.ByteArrayInputStream;
+
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.Error;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Listens for XML traffic from the XMPP server, and parses it into packet objects.
@@ -66,6 +70,9 @@ import org.jivesoftware.smack.filter.PacketFilter;
  * @author Matt Tucker
  */
 public class PacketReader {
+
+    private static final String PROPERTIES_NAMESPACE =
+            "http://www.jivesoftware.com/xmlns/xmpp/properties";
 
     private Thread readerThread;
     private Thread listenerThread;
@@ -199,9 +206,6 @@ public class PacketReader {
                     else if (parser.getName().equals("stream")) {
                         // Ensure the correct jabber:client namespace is being used.
                         if ("jabber:client".equals(parser.getNamespace(null))) {
-                            // Check to see if the server supports SASL. We don't actually
-                            // do anything with this information at the moment.
-                            boolean supportsSASL = parser.getNamespace("sasl") != null;
                             // Get the connection id.
                             for (int i=0; i<parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals("id")) {
@@ -272,6 +276,7 @@ public class PacketReader {
         String from = parser.getAttributeValue("", "from");
         IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
         Error error = null;
+        Map properties = null;
 
         boolean done = false;
         while (!done) {
@@ -283,8 +288,13 @@ public class PacketReader {
                         iqPacket = parseAuthentication(parser);
                     }
                 }
-                if (parser.getName().equals("error")) {
+                else if (parser.getName().equals("error")) {
                     error = parseError(parser);
+                }
+                else if (parser.getName().equals("x") &&
+                        parser.getNamespace().equals(PROPERTIES_NAMESPACE))
+                {
+                    properties = parseProperties(parser);
                 }
             }
             else if (eventType == parser.END_TAG) {
@@ -302,6 +312,13 @@ public class PacketReader {
         iqPacket.setFrom(from);
         iqPacket.setType(type);
         iqPacket.setError(error);
+        // Set packet properties.
+        if (properties != null) {
+            for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
+                String name = (String)i.next();
+                iqPacket.setProperty(name, properties.get(name));
+            }
+        }
         // Return the packet.
         return iqPacket;
     }
@@ -371,6 +388,7 @@ public class PacketReader {
         String subject = null;
         String body = null;
         String thread = null;
+        Map properties = null;
         while (!done) {
             int eventType = parser.next();
             if (eventType == parser.START_TAG) {
@@ -389,6 +407,11 @@ public class PacketReader {
                         thread = parser.nextText();
                     }
                 }
+                else if (parser.getName().equals("x") &&
+                        parser.getNamespace().equals(PROPERTIES_NAMESPACE))
+                {
+                    properties = parseProperties(parser);
+                }
             }
             else if (eventType == parser.END_TAG) {
                 if (parser.getName().equals("message")) {
@@ -399,6 +422,13 @@ public class PacketReader {
         message.setSubject(subject);
         message.setBody(body);
         message.setThread(thread);
+        // Set packet properties.
+        if (properties != null) {
+            for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
+                String name = (String)i.next();
+                message.setProperty(name, properties.get(name));
+            }
+        }
         return message;
     }
 
@@ -442,6 +472,16 @@ public class PacketReader {
                 else if (parser.getName().equals("show")) {
                     presence.setMode(Presence.Mode.fromString(parser.nextText()));
                 }
+                else if (parser.getName().equals("x") &&
+                        parser.getNamespace().equals(PROPERTIES_NAMESPACE))
+                {
+                    Map properties = parseProperties(parser);
+                    // Set packet properties.
+                    for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
+                        String name = (String)i.next();
+                        presence.setProperty(name, properties.get(name));
+                    }
+                }
             }
             else if (eventType == parser.END_TAG) {
                 if (parser.getName().equals("presence")) {
@@ -460,18 +500,56 @@ public class PacketReader {
      * of the same class.
      *
      * @param parser the XML parser, positioned at the start of a properties sub-packet.
-     * @param packet the packet being parsed.
+     * @return a map of the properties.
      * @throws Exception if an error occurs while parsing the properties.
      */
-    private static void parseProperties(XmlPullParser parser, Packet packet) throws Exception {
-        boolean done = false;
-        while (!done) {
+    private static Map parseProperties(XmlPullParser parser) throws Exception {
+        Map properties = new HashMap();
+        while (true) {
             int eventType = parser.next();
+            System.out.println("Start: " + parser.getName());
             if (eventType == parser.START_TAG) {
-
-
+                String name = parser.nextText();
+                parser.next();
+                String type = parser.getAttributeValue("", "type");
+                String valueText = parser.nextText();
+                Object value = null;
+                if ("integer".equals(type)) {
+                    value = new Integer(valueText);
+                }
+                else if ("long".equals(type))  {
+                    value = new Long(valueText);
+                }
+                else if ("float".equals(type)) {
+                    value = new Float(valueText);
+                }
+                else if ("double".equals(type)) {
+                    value = new Double(valueText);
+                }
+                else if ("boolean".equals(type)) {
+                    value = new Boolean(valueText);
+                }
+                else if ("java-object".equals(type)) {
+                    try {
+                        byte [] bytes = StringUtils.decodeBase64(valueText).getBytes("ISO-8859-1");
+                        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+                        value = in.readObject();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (name != null && value != null) {
+                    properties.put(name, value);
+                }
+            }
+            else if (eventType == parser.END_TAG) {
+                if (parser.getName().equals("x")) {
+                    break;
+                }
             }
         }
+        return properties;
     }
 
     /**
