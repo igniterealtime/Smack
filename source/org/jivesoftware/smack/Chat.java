@@ -177,16 +177,19 @@ public class Chat {
     }
 
     /**
-     * Sends a message to the other chat participant. The thread property of
-     * the message will automatically set to this chat ID in case the Message
-     * was not created using the {@link #createMessage() createMessage} method.
+     * Sends a message to the other chat participant. The thread ID, recipient,
+     * and message type of the message will automatically set to those of this chat
+     * in case the Message was not created using the {@link #createMessage() createMessage}
+     * method.
      *
-     * @param message
-     * @throws XMPPException
+     * @param message the message to send.
+     * @throws XMPPException if an error occurs sending the message.
      */
     public void sendMessage(Message message) throws XMPPException {
-        // Force the chatID since the user elected to send the message
-        // through this chat object.
+        // Force the recipient, message type, and thread ID since the user elected
+        // to send the message through this chat object.
+        message.setTo(participant);
+        message.setType(Message.Type.CHAT);
         message.setThread(chatID);
         connection.sendPacket(message);
     }
