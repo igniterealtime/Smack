@@ -368,9 +368,9 @@ public class MultiUserChatTest extends SmackTestCase {
             // User2 registers with the room and reserves a nickname
             Form registrationForm = muc2.getRegistrationForm();
             Form answerForm = registrationForm.createAnswerForm();
-            answerForm.setAnswer("muc#user_first", "MyFirstName");
-            answerForm.setAnswer("muc#user_last", "MyLastName");
-            answerForm.setAnswer("muc#user_roomnick", "MyNick");
+            answerForm.setAnswer("muc#register_first", "MyFirstName");
+            answerForm.setAnswer("muc#register_last", "MyLastName");
+            answerForm.setAnswer("muc#register_roomnick", "MyNick");
             muc2.sendRegistrationForm(answerForm);
             
             // Check that user2 has a reserved nickname
@@ -405,9 +405,9 @@ public class MultiUserChatTest extends SmackTestCase {
             // Check that another user cannot reserve an already reserved nickname
             registrationForm = muc3.getRegistrationForm();
             answerForm = registrationForm.createAnswerForm();
-            answerForm.setAnswer("muc#user_first", "MyFirstName 2");
-            answerForm.setAnswer("muc#user_last", "MyLastName 2");
-            answerForm.setAnswer("muc#user_roomnick", "MyNick");
+            answerForm.setAnswer("muc#register_first", "MyFirstName 2");
+            answerForm.setAnswer("muc#register_last", "MyLastName 2");
+            answerForm.setAnswer("muc#register_roomnick", "MyNick");
             try {
                 muc3.sendRegistrationForm(answerForm);
             }
@@ -425,9 +425,9 @@ public class MultiUserChatTest extends SmackTestCase {
             // Check that another user can reserve a new nickname
             registrationForm = muc3.getRegistrationForm();
             answerForm = registrationForm.createAnswerForm();
-            answerForm.setAnswer("muc#user_first", "MyFirstName 2");
-            answerForm.setAnswer("muc#user_last", "MyLastName 2");
-            answerForm.setAnswer("muc#user_roomnick", "MyNick 2");
+            answerForm.setAnswer("muc#register_first", "MyFirstName 2");
+            answerForm.setAnswer("muc#register_last", "MyLastName 2");
+            answerForm.setAnswer("muc#register_roomnick", "MyNick 2");
             muc3.sendRegistrationForm(answerForm);
             
         }
@@ -1380,12 +1380,12 @@ public class MultiUserChatTest extends SmackTestCase {
         // User1 (which is the room owner) converts the instant room into a moderated room
         Form form = muc.getConfigurationForm();
         Form answerForm = form.createAnswerForm();
-        answerForm.setAnswer("muc#owner_moderatedroom", true);
+        answerForm.setAnswer("muc#roomconfig_moderatedroom", true);
         // Keep the room owner
         try {
             List owners = new ArrayList();
             owners.add(getBareJID(0));
-            answerForm.setAnswer("muc#owner_roomowners", owners);
+            answerForm.setAnswer("muc#roomconfig_roomowners", owners);
         }
         catch (IllegalArgumentException e) {
             // Do nothing

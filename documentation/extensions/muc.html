@@ -413,7 +413,7 @@ In this example we can see how to grant voice to a visitor and listen for the no
       <font color="#3f7f5f">// User1 (which is the room owner) configures the room as a moderated room</font>
       Form form = muc.getConfigurationForm();
       Form answerForm = form.createAnswerForm();
-      answerForm.setAnswer(<font color="#0000FF">"muc#owner_moderatedroom"</font>, <font color="#0000FF">"1"</font>);
+      answerForm.setAnswer(<font color="#0000FF">"muc#roomconfig_moderatedroom"</font>, <font color="#0000FF">"1"</font>);
       muc.sendConfigurationForm(answerForm);
 
       <font color="#3f7f5f">// User2 joins the new room (as a visitor)</font>
@@ -550,7 +550,7 @@ In this example we can see how to grant admin privileges to a user and listen fo
       <font color="#3f7f5f">// User1 (which is the room owner) configures the room as a moderated room</font>
       Form form = muc.getConfigurationForm();
       Form answerForm = form.createAnswerForm();
-      answerForm.setAnswer(<font color="#0000FF">"muc#owner_moderatedroom"</font>, <font color="#0000FF">"1"</font>);
+      answerForm.setAnswer(<font color="#0000FF">"muc#roomconfig_moderatedroom"</font>, <font color="#0000FF">"1"</font>);
       muc.sendConfigurationForm(answerForm);
 
       <font color="#3f7f5f">// User2 joins the new room (as a visitor)</font>

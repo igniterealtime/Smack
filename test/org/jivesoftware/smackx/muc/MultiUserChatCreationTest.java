@@ -100,7 +100,7 @@ public class MultiUserChatCreationTest extends SmackTestCase {
             }
             List owners = new ArrayList();
             owners.add(getBareJID(0));
-            submitForm.setAnswer("muc#owner_roomowners", owners);
+            submitForm.setAnswer("muc#roomconfig_roomowners", owners);
 
             // Update the new room's configuration
             muc.sendConfigurationForm(submitForm);
