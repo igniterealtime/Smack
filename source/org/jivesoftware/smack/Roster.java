@@ -208,9 +208,6 @@ public class Roster {
      * @return a new group.
      */
     public RosterGroup createGroup(String name) {
-        if (!rosterInitialized) {
-            waitUntilInitialized();
-        }
         synchronized (groups) {
             if (groups.containsKey(name)) {
                 throw new IllegalArgumentException("Group with name " + name + " alread exists.");
@@ -338,6 +335,9 @@ public class Roster {
      * @return the number of unfiled entries in the roster.
      */
     public int getUnfiledEntryCount() {
+        if (!rosterInitialized) {
+            waitUntilInitialized();
+        }
         synchronized (unfiledEntries) {
             return unfiledEntries.size();
         }
@@ -350,6 +350,9 @@ public class Roster {
      * @return an iterator the unfiled roster entries.
      */
     public Iterator getUnfiledEntries() {
+        if (!rosterInitialized) {
+            waitUntilInitialized();
+        }
         synchronized (unfiledEntries) {
             return Collections.unmodifiableList(new ArrayList(unfiledEntries)).iterator();
         }
@@ -366,11 +369,14 @@ public class Roster {
         if (user == null) {
             return null;
         }
+        if (!rosterInitialized) {
+            waitUntilInitialized();
+        }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
         user = StringUtils.parseBareAddress(user);
         synchronized (entries) {
-            for (Iterator i=getFiledEntriesList().iterator(); i.hasNext(); ) {
+            for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
                 if (entry.getUser().equals(user)) {
                     return entry;
@@ -390,11 +396,14 @@ public class Roster {
         if (user == null) {
             return false;
         }
+        if (!rosterInitialized) {
+            waitUntilInitialized();
+        }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
         user = StringUtils.parseBareAddress(user);
         synchronized (entries) {
-            for (Iterator i=getFiledEntriesList().iterator(); i.hasNext(); ) {
+            for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
                 if (entry.getUser().equals(user)) {
                     return true;
@@ -434,38 +443,13 @@ public class Roster {
      * @return an iterator for all roster groups.
      */
     public Iterator getGroups() {
+        if (!rosterInitialized) {
+            waitUntilInitialized();
+        }
         synchronized (groups) {
-            List groupsList = Collections.unmodifiableList(new ArrayList(getGroupsMap().values()));
+            List groupsList = Collections.unmodifiableList(new ArrayList(groups.values()));
             return groupsList.iterator();
         }
-    }
-
-    /**
-     * Returns entries in the roster that belong to at least one group.<p>
-     * 
-     * Since the user can ask for the entries after calling login, it's possible that the 
-     * entries were not received yet. Therefore, the method call won't return until the 
-     * roster has been initialized or two seconds has elapsed.
-     *
-     * @return filed entries in the roster.
-     */
-    private List getFiledEntriesList() {
-        waitUntilInitialized();
-        return entries;
-    }
-
-    /**
-     * Returns the roster groups.<p>
-     * 
-     * Since the user can ask for the groups after calling login, it's possible that the 
-     * groups were not received yet. Therefore, the method call won't return until the 
-     * roster has been initialized or two seconds has elapsed.
-     *
-     * @return filed entries in the roster.
-     */
-    private Map getGroupsMap() {
-        waitUntilInitialized();
-        return groups;
     }
 
     /**
@@ -724,9 +708,11 @@ public class Roster {
 
                 // Find the list of groups that the user currently belongs to.
                 List currentGroupNames = new ArrayList();
-                for (Iterator j = entry.getGroups(); j.hasNext();  ) {
-                    RosterGroup group = (RosterGroup)j.next();
-                    currentGroupNames.add(group.getName());
+                if (rosterInitialized) {
+                    for (Iterator j = entry.getGroups(); j.hasNext();  ) {
+                        RosterGroup group = (RosterGroup)j.next();
+                        currentGroupNames.add(group.getName());
+                    }
                 }
 
                 // If the packet is not of the type REMOVE then add the entry to the groups
@@ -757,23 +743,25 @@ public class Roster {
                 }
 
                 // Loop through any groups that remain and remove the entries.
-                for (int n=0; n<currentGroupNames.size(); n++) {
-                    String groupName = (String)currentGroupNames.get(n);
-                    RosterGroup group = getGroup(groupName);
-                    group.removeEntryLocal(entry);
-                    if (group.getEntryCount() == 0) {
-                        synchronized (groups) {
-                            groups.remove(groupName);
+                if (rosterInitialized) {
+                    for (int n=0; n<currentGroupNames.size(); n++) {
+                        String groupName = (String)currentGroupNames.get(n);
+                        RosterGroup group = getGroup(groupName);
+                        group.removeEntryLocal(entry);
+                        if (group.getEntryCount() == 0) {
+                            synchronized (groups) {
+                                groups.remove(groupName);
+                            }
                         }
                     }
                 }
             }
 
-            // Fire event for roster listeners.
-            fireRosterChangedEvent();
-
             // Mark the roster as initialized.
             rosterInitialized = true;
+
+            // Fire event for roster listeners.
+            fireRosterChangedEvent();
         }
     }
 }
