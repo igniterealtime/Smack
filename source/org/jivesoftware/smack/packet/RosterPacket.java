@@ -269,6 +269,7 @@ public class RosterPacket extends IQ {
     public static class ItemType {
 
         public static final ItemType NONE = new ItemType("none");
+        public static final ItemType PENDING = new ItemType("pending");
         public static final ItemType TO = new ItemType("to");
         public static final ItemType FROM = new ItemType("from");
         public static final ItemType BOTH = new ItemType("both");
@@ -276,6 +277,9 @@ public class RosterPacket extends IQ {
         public static ItemType fromString(String value) {
             if ("none".equals(value)) {
                 return NONE;
+            }
+            if ("pending".equals(value)) {
+                return PENDING;
             }
             else if ("to".equals(value)) {
                 return TO;
