@@ -1,7 +1,7 @@
 <%--
-  - $$RCSfile$$
-  - $$Revision$$
-  - $$Date$$
+  - $RCSfile$
+  - $Revision$
+  - $Date$
   -
   - Copyright (C) 2002-2003 Jive Software. All rights reserved.
   - 
@@ -150,8 +150,8 @@
                       <tr> 
                         <td class=text id=black height=16>Debug Connection:</td>
                         <td><select size="1" name="debug">
-                            <option <%= ("Yes".equals(debug))?"selected":""%>>Yes</option>
                             <option <%= ("No".equals(debug))?"selected":""%>>No</option>
+                            <option <%= ("Yes".equals(debug))?"selected":""%>>Yes</option>
                           </select></td>
                       </tr>
                       <tr> 
