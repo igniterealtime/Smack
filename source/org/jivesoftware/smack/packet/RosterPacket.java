@@ -75,6 +75,17 @@ public class RosterPacket extends IQ {
     }
 
     /**
+     * Returns the number of roster items in this roster packet.
+     *
+     * @return the number of roster items.
+     */
+    public int getRosterItemCount() {
+        synchronized (rosterItems) {
+            return rosterItems.size();
+        }
+    }
+
+    /**
      * Returns an Iterator for the roster items in the packet.
      *
      * @return and Iterator for the roster items in the packet.
