@@ -218,9 +218,7 @@ public class RosterTest extends TestCase {
     }
 
     /**
-     * 1. Create unfiled entries
-     * 2. Iterate on all the entries and remove them from the roster
-     * 3. Check that the number of entries and groups is zero
+     * Test presence management.
      */
     public void testRosterPresences() {
         try {
@@ -273,6 +271,38 @@ public class RosterTest extends TestCase {
 
             cleanUpRoster();
 
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * Test if renaming a roster group works fine.
+     *
+     */
+    public void testRenameRosterGroup() {
+        try {
+            // Add a new roster entry
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", new String[] {"Friends"});
+            conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", new String[] {"Friends"});
+
+            Thread.sleep(200);
+
+            conn1.getRoster().getGroup("Friends").setName("Amigos");
+            Thread.sleep(200);
+            assertNull("The group Friends still exists", conn1.getRoster().getGroup("Friends"));
+            assertNotNull("The group Amigos does not exist", conn1.getRoster().getGroup("Amigos"));
+            assertEquals("Wrong number of entries in the group Amigos ", 2, conn1.getRoster().getGroup("Amigos").getEntryCount());
+
+            
+            conn1.getRoster().getGroup("Amigos").setName("");
+            Thread.sleep(200);
+            assertNull("The group Amigos still exists", conn1.getRoster().getGroup("Amigos"));
+            assertNotNull("The group with no name does not exist", conn1.getRoster().getGroup(""));
+            assertEquals("Wrong number of entries in the group \"\" ", 2, conn1.getRoster().getGroup("").getEntryCount());
+
+            cleanUpRoster();
         }
         catch (Exception e) {
             fail(e.getMessage());
