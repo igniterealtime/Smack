@@ -26,8 +26,7 @@ to start your chat session.
 Other options:
 
 <ul>
-	<li><a href="email">Email Transcript</a>
-	<li><a href="something">Something Else</a>
+	<li><a href="email" onclick="alert('Coming soon');return false;">Email Transcript</a>
 </ul>
 
 </body>

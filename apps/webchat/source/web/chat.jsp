@@ -4,6 +4,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Chat Session</title>
+    <script language="JavaScript" type="text/javascript">
+    function handleLogoff() {
+        if (confirm('Are you sure you want to end this chat session and close this window?')) {
+            window.close();
+        }
+        return false;
+    }
+    </script>
 </head>
 
 <frameset rows="25,30,*,95,0,0,0" border="0" frameborder="0" framespacing="0">
