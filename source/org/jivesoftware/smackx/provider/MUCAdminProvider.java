@@ -54,21 +54,60 @@ package org.jivesoftware.smackx.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smackx.packet.MUCAdmin;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Represents .....
+ * The MUCAdminProvider parses MUCAdmin packets. (@see MUCAdmin)
  * 
  * @author Gaston Dombiak
  */
 public class MUCAdminProvider implements IQProvider {
 
-    /* (non-Javadoc)
-     * @see org.jivesoftware.smack.provider.IQProvider#parseIQ(org.xmlpull.v1.XmlPullParser)
-     */
     public IQ parseIQ(XmlPullParser parser) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        MUCAdmin mucAdmin = new MUCAdmin();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("item")) {
+                    mucAdmin.addItem(parseItem(parser));
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+
+        return mucAdmin;
     }
 
+    private MUCAdmin.Item parseItem(XmlPullParser parser) throws Exception {
+        boolean done = false;
+        MUCAdmin.Item item =
+            new MUCAdmin.Item(
+                parser.getAttributeValue("", "affiliation"),
+                parser.getAttributeValue("", "role"));
+        item.setNick(parser.getAttributeValue("", "nick"));
+        item.setJid(parser.getAttributeValue("", "jid"));
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("actor")) {
+                    item.setActor(parser.getAttributeValue("", "jid"));
+                }
+                if (parser.getName().equals("reason")) {
+                    item.setReason(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("item")) {
+                    done = true;
+                }
+            }
+        }
+        return item;
+    }
 }
