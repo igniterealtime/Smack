@@ -52,7 +52,7 @@
 
 package org.jivesoftware.smack;
 
-import java.util.LinkedList;
+import java.util.*;
 import java.io.*;
 
 import org.jivesoftware.smack.packet.Packet;
@@ -69,7 +69,10 @@ class PacketWriter {
     private XMPPConnection connection;
     private LinkedList queue;
     private boolean done = false;
-    private int packetsWritten = 0;
+    
+    private List listeners = new ArrayList();
+    private Thread listenerThread;
+    private LinkedList sentPackets = new LinkedList();
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -88,6 +91,14 @@ class PacketWriter {
         };
         writerThread.setName("Smack Packet Writer");
         writerThread.setDaemon(true);
+
+        listenerThread = new Thread() {
+            public void run() {
+                processListeners();
+            }
+        };
+        listenerThread.setName("Smack Writer Listener Processor");
+        listenerThread.setDaemon(true);
     }
 
     /**
@@ -101,16 +112,36 @@ class PacketWriter {
                 queue.addFirst(packet);
                 queue.notify();
             }
+            // Add the sent packet to the list of sent packets
+            // The PacketWriterListeners will be notified of the new packet
+            synchronized(sentPackets) {
+                sentPackets.addFirst(packet);
+                sentPackets.notify();
+            }
         }
     }
 
     /**
-     * Returns the number of packets written through this packet writer.
+     * Registers a packet writer listener with this writer. The listener will be
+     * notified of every packet that this writer sends.
      *
-     * @return the number of packets written.
+     * @param packetWriterListener the packet writer listener to notify of sent packets.
      */
-    public int getPacketsWritten() {
-        return packetsWritten;
+    public void addPacketListener(PacketWriterListener packetWriterListener) {
+        synchronized (listeners) {
+            listeners.add(packetWriterListener);
+        }
+    }
+
+    /**
+     * Removes a packet writer listener.
+     *
+     * @param packetWriterListener the packet writer listener to remove.
+     */
+    public void removePacketListener(PacketWriterListener packetWriterListener) {
+        synchronized (listeners) {
+            listeners.remove(packetWriterListener);
+        }
     }
 
     /**
@@ -120,6 +151,7 @@ class PacketWriter {
      */
     public void startup() {
         writerThread.start();
+        listenerThread.start();
     }
 
     /**
@@ -162,8 +194,6 @@ class PacketWriter {
             while (!done) {
                 Packet packet = nextPacket();
                 writer.write(packet.toXML());
-                // Increment the count of packets written.
-                packetsWritten++;
                 writer.flush();
             }
             // Close the stream.
@@ -183,6 +213,33 @@ class PacketWriter {
             if (!done) {
                 done = true;
                 connection.packetReader.notifyConnectionError(ioe);
+            }
+        }
+    }
+
+    /**
+     * Process listeners.
+     */
+    private void processListeners() {
+        while (!done) {
+            Packet sentPacket;
+            // Wait until a new packet has been sent
+            synchronized(sentPackets) {
+                while (sentPackets.size() == 0) {
+                    try {
+                        sentPackets.wait();
+                    }
+                    catch (InterruptedException ie) { }
+                }
+                sentPacket = (Packet)sentPackets.removeLast();
+            }
+            // Notify the listeners of the new sent packet
+            int size = listeners.size();
+            for (int i=0; i<size; i++) {
+                PacketWriterListener packetWriterListener = (PacketWriterListener)listeners.get(i);
+                if (packetWriterListener != null) {
+                    packetWriterListener.processPacket(sentPacket);
+                }
             }
         }
     }
