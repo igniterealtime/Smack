@@ -138,6 +138,7 @@ public class MultiUserChatTest extends TestCase {
         }
         catch (Exception e) {
             fail(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -173,14 +174,14 @@ public class MultiUserChatTest extends TestCase {
 
             // User2 invites user3 to join to the room
             muc2.invite(user3, "Meet me in this excellent room");
-            Thread.sleep(300);
+            Thread.sleep(350);
             
             assertEquals(
                 "Invitation was not received",
                 "Meet me in this excellent room",
                 answer[0]);
             // TODO This line was commented because jabberd2 is not accepting rejections 
-            // from users that aren't participants of the room. Remove the commented line when  
+            // from users that aren't participants of the room. Comment out this line when  
             // running the test against a server that correctly implements JEP-45  
             //assertEquals("Rejection was not received", "I'm busy right now", answer[1]);
             
@@ -189,11 +190,11 @@ public class MultiUserChatTest extends TestCase {
         }
         catch (Exception e) {
             fail(e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // TODO This test is commented because jabberd2 is responding an incorrect disco packet
-    /*public void testDiscoverJoinedRooms() {
+    public void testDiscoverJoinedRooms() {
         try {
             // Check that user1 has joined only to one room
             Iterator joinedRooms = MultiUserChat.getJoinedRooms(conn2, user1);
@@ -215,15 +216,15 @@ public class MultiUserChatTest extends TestCase {
         }
         catch (XMPPException e) {
             fail(e.getMessage());
+            e.printStackTrace();
         }
-    }*/
+    }
     
-    // TODO This test is commented because jabberd2 responds a 501 (feature-not-implemented) error
-    /*public void testDiscoverMUCSupport() {
+    public void testDiscoverMUCSupport() {
         // Discover user1 support of MUC
         boolean supports = MultiUserChat.isServiceEnabled(conn2, user1);
         assertTrue("Couldn't detect that user1 supports MUC", supports);
-    }*/
+    }
 
     public void testPrivateChat() {
         try {
@@ -265,6 +266,7 @@ public class MultiUserChatTest extends TestCase {
         }
         catch (Exception e) {
             fail(e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -342,6 +344,908 @@ public class MultiUserChatTest extends TestCase {
         }
         catch (Exception e) {
             fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testKickParticipant() {
+        final String[] answer = new String[3];
+        try {
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will lister for his own "kicking"            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void kicked(String actor, String reason) {
+                    super.kicked(actor, reason);
+                    answer[0] = actor;
+                    answer[1] = reason;
+                }
+            });
+
+            // User3 joins the new room
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's "kicking"            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void kicked(String participant) {
+                    super.kicked(participant);
+                    answer[2] = participant;
+                }
+            });
+
+            try {
+                // Check whether a simple participant can kick a room owner or not
+                muc2.kickParticipant("testbot", "Because I'm bad");
+                fail("User2 was able to kick a room owner");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received when kicking a room owner",
+                    xmppError);
+                assertEquals(
+                    "A simple participant was able to kick another participant from the room",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can kick a simple participant
+            muc.kickParticipant("testbot2", "Because I'm the owner");
+            Thread.sleep(300);
+
+            assertNull("User2 wasn't kicked from the room", muc.getParticipantPresence(room + "/testbot2"));
+            
+            assertFalse("User2 thinks that he's still in the room", muc2.isJoined());
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the correct initiator of the kick",
+                "gato3@" + conn1.getHost(),
+                answer[0]);
+            assertEquals(
+                "User2 didn't receive the correct reason for the kick",
+                "Because I'm the owner",
+                answer[1]);
+
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive the correct kicked participant",
+                room + "/testbot2",
+                answer[2]);
+            
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testBanUser() {
+        final String[] answer = new String[3];
+        try {
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will lister for his own "banning"            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void banned(String actor, String reason) {
+                    super.banned(actor, reason);
+                    answer[0] = actor;
+                    answer[1] = reason;
+                }
+            });
+
+            // User3 joins the new room
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's "banning"            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void banned(String participant) {
+                    super.banned(participant);
+                    answer[2] = participant;
+                }
+            });
+
+            try {
+                // Check whether a simple participant can ban a room owner or not
+                muc2.banUser("gato3@" + conn2.getHost(), "Because I'm bad");
+                fail("User2 was able to ban a room owner");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received when banning a room owner",
+                    xmppError);
+                assertEquals(
+                    "A simple participant was able to ban another participant from the room",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can ban a simple participant
+            muc.banUser("gato4@" + conn2.getHost(), "Because I'm the owner");
+            Thread.sleep(300);
+
+            assertNull("User2 wasn't banned from the room", muc.getParticipantPresence(room + "/testbot2"));
+            
+            assertFalse("User2 thinks that he's still in the room", muc2.isJoined());
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the correct initiator of the ban",
+                "gato3@" + conn1.getHost(),
+                answer[0]);
+            assertEquals(
+                "User2 didn't receive the correct reason for the banning",
+                "Because I'm the owner",
+                answer[1]);
+
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive the correct banned JID",
+                room + "/testbot2",
+                answer[2]);
+            
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testVoice() {
+        final String[] answer = new String[4];
+        try {
+
+            makeRoomModerated();
+            
+            // User2 joins the new room (as a visitor)
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will listen for his own "voice"            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void voiceGranted() {
+                    super.voiceGranted();
+                    answer[0] = "canSpeak";
+                }
+                public void voiceRevoked() {
+                    super.voiceRevoked();
+                    answer[1] = "cannot speak";
+                }
+            });
+
+            // User3 joins the new room (as a visitor)
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's "voice"            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void voiceGranted(String participant) {
+                    super.voiceGranted(participant);
+                    answer[2] = participant;
+                }
+
+                public void voiceRevoked(String participant) {
+                    super.voiceRevoked(participant);
+                    answer[3] = participant;
+                }
+            });
+
+            try {
+                // Check whether a visitor can grant voice to another visitor
+                muc2.grantVoice("testbot3");
+                fail("User2 was able to grant voice");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received granting voice",
+                    xmppError);
+                assertEquals(
+                    "A visitor was able to grant voice to another visitor",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can grant voice to a participant
+            muc.grantVoice("testbot2");
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the grant voice notification",
+                "canSpeak",
+                answer[0]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's grant voice notification",
+                room + "/testbot2",
+                answer[2]);
+
+            // Check that the room's owner can revoke voice from a participant
+            muc.revokeVoice("testbot2");
+            Thread.sleep(300);
+
+            assertEquals(
+                "User2 didn't receive the revoke voice notification",
+                "cannot speak",
+                answer[1]);
+            assertEquals(
+                "User3 didn't receive user2's revoke voice notification",
+                room + "/testbot2",
+                answer[3]);
+
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testModerator() {
+        final String[] answer = new String[8];
+        try {
+
+            makeRoomModerated();
+            
+            // User2 joins the new room (as a visitor)
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will listen for moderator privileges            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void voiceGranted() {
+                    super.voiceGranted();
+                    answer[0] = "canSpeak";
+                }
+                public void voiceRevoked() {
+                    super.voiceRevoked();
+                    answer[1] = "cannot speak";
+                }
+                public void moderatorGranted() {
+                    super.moderatorGranted();
+                    answer[4] = "I'm a moderator";
+                }
+                public void moderatorRevoked() {
+                    super.moderatorRevoked();
+                    answer[5] = "I'm not a moderator";
+                }
+            });
+
+            // User3 joins the new room (as a visitor)
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's moderator privileges            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void voiceGranted(String participant) {
+                    super.voiceGranted(participant);
+                    answer[2] = participant;
+                }
+                public void voiceRevoked(String participant) {
+                    super.voiceRevoked(participant);
+                    answer[3] = participant;
+                }
+                public void moderatorGranted(String participant) {
+                    super.moderatorGranted(participant);
+                    answer[6] = participant;
+                }
+                public void moderatorRevoked(String participant) {
+                    super.moderatorRevoked(participant);
+                    answer[7] = participant;
+                }
+            });
+
+            try {
+                // Check whether a visitor can grant moderator privileges to another visitor
+                muc2.grantModerator("testbot3");
+                fail("User2 was able to grant moderator privileges");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received granting moderator privileges",
+                    xmppError);
+                assertEquals(
+                    "A visitor was able to grant moderator privileges to another visitor",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can grant moderator privileges to a visitor
+            muc.grantModerator("testbot2");
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the grant voice notification",
+                "canSpeak",
+                answer[0]);
+            assertEquals(
+                "User2 didn't receive the grant moderator privileges notification",
+                "I'm a moderator",
+                answer[4]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's grant voice notification",
+                room + "/testbot2",
+                answer[2]);
+            assertEquals(
+                "User3 didn't receive user2's grant moderator privileges notification",
+                room + "/testbot2",
+                answer[6]);
+
+            // Check that the room's owner can revoke moderator privileges from a moderator
+            muc.revokeModerator("testbot2");
+            Thread.sleep(300);
+
+            assertNull(
+                "User2 received a false revoke voice notification",
+                answer[1]);
+            assertNull(
+                "User3 received a false user2's voice privileges notification",
+                answer[3]);
+            assertEquals(
+                "User2 didn't receive the revoke moderator privileges notification",
+                "I'm not a moderator",
+                answer[5]);
+            assertEquals(
+                "User3 didn't receive user2's revoke moderator privileges notification",
+                room + "/testbot2",
+                answer[7]);
+
+            
+            // Check that the room's owner can grant moderator privileges to a participant
+            clearAnswer(answer);
+            muc.grantModerator("testbot2");
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertNull(
+                "User2 received a false grant voice notification",
+                answer[0]);
+            assertEquals(
+                "User2 didn't receive the grant moderator privileges notification",
+                "I'm a moderator",
+                answer[4]);
+            // Check that ParticipantStatusListener is working OK
+            assertNull(
+                "User3 received a false user2's grant voice notification",
+                answer[2]);
+            assertEquals(
+                "User3 didn't receive user2's grant moderator privileges notification",
+                room + "/testbot2",
+                answer[6]);
+
+            // Check that the room's owner can revoke voice from a moderator
+            clearAnswer(answer);
+            muc.revokeVoice("testbot2");
+            Thread.sleep(300);
+
+            assertEquals(
+                "User2 didn't receive the revoke voice notification",
+                "cannot speak",
+                answer[1]);
+            assertEquals(
+                "User3 didn't receive user2's revoke voice notification",
+                room + "/testbot2",
+                answer[3]);
+
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testMembership() {
+        final String[] answer = new String[4];
+        try {
+
+            makeRoomModerated();
+            
+            // User2 joins the new room (as a visitor)
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will listen for membership privileges            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void membershipGranted() {
+                    super.membershipGranted();
+                    answer[0] = "I'm a member";
+                }
+                public void membershipRevoked() {
+                    super.membershipRevoked();
+                    answer[1] = "I'm not a member";
+                }
+            });
+
+            // User3 joins the new room (as a visitor)
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's membership privileges            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void membershipGranted(String participant) {
+                    super.membershipGranted(participant);
+                    answer[2] = participant;
+                }
+                public void membershipRevoked(String participant) {
+                    super.membershipRevoked(participant);
+                    answer[3] = participant;
+                }
+            });
+
+            try {
+                // Check whether a visitor can grant membership privileges to another visitor
+                muc2.grantMembership("gato5@" + conn2.getHost());
+                fail("User2 was able to grant membership privileges");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received granting membership privileges",
+                    xmppError);
+                assertEquals(
+                    "A visitor was able to grant membership privileges to another visitor",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can grant membership privileges to a visitor
+            muc.grantMembership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the grant membership notification",
+                "I'm a member",
+                answer[0]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's grant membership notification",
+                room + "/testbot2",
+                answer[2]);
+
+            // Check that the room's owner can revoke membership privileges from a member
+            // and make the occupant a visitor
+            muc.revokeMembership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke membership notification",
+                "I'm not a member",
+                answer[1]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke membership notification",
+                room + "/testbot2",
+                answer[3]);
+            
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testAdmin() {
+        final String[] answer = new String[8];
+        try {
+
+            makeRoomModerated();
+            
+            // User2 joins the new room (as a visitor)
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will listen for admin privileges            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void membershipGranted() {
+                    super.membershipGranted();
+                    answer[0] = "I'm a member";
+                }
+                public void membershipRevoked() {
+                    super.membershipRevoked();
+                    answer[1] = "I'm not a member";
+                }
+                public void adminGranted() {
+                    super.adminGranted();
+                    answer[2] = "I'm an admin";
+                }
+                public void adminRevoked() {
+                    super.adminRevoked();
+                    answer[3] = "I'm not an admin";
+                }
+            });
+
+            // User3 joins the new room (as a visitor)
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's admin privileges            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void membershipGranted(String participant) {
+                    super.membershipGranted(participant);
+                    answer[4] = participant;
+                }
+                public void membershipRevoked(String participant) {
+                    super.membershipRevoked(participant);
+                    answer[5] = participant;
+                }
+                public void adminGranted(String participant) {
+                    super.adminGranted(participant);
+                    answer[6] = participant;
+                }
+                public void adminRevoked(String participant) {
+                    super.adminRevoked(participant);
+                    answer[7] = participant;
+                }
+            });
+
+            try {
+                // Check whether a visitor can grant admin privileges to another visitor
+                muc2.grantAdmin("gato5@" + conn2.getHost());
+                fail("User2 was able to grant admin privileges");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received granting admin privileges",
+                    xmppError);
+                assertEquals(
+                    "A visitor was able to grant admin privileges to another visitor",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can grant admin privileges to a visitor
+            muc.grantAdmin("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the grant admin notification",
+                "I'm an admin",
+                answer[2]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's grant admin notification",
+                room + "/testbot2",
+                answer[6]);
+
+            // Check that the room's owner can revoke admin privileges from an admin
+            // and make the occupant a visitor
+            muc.revokeMembership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke admin notification",
+                "I'm not an admin",
+                answer[3]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke admin notification",
+                room + "/testbot2",
+                answer[7]);
+            
+            // Check that the room's owner can grant admin privileges to a member
+            clearAnswer(answer);
+            muc.grantMembership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+            muc.grantAdmin("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke membership notification",
+                "I'm not a member",
+                answer[1]);
+            assertEquals(
+                "User2 didn't receive the grant admin notification",
+                "I'm an admin",
+                answer[2]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke membership notification",
+                room + "/testbot2",
+                answer[5]);
+            assertEquals(
+                "User3 didn't receive user2's grant admin notification",
+                room + "/testbot2",
+                answer[6]);
+
+            // Check that the room's owner can revoke admin privileges from an admin
+            // and make the occupant a member
+            clearAnswer(answer);
+            muc.revokeAdmin("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke admin notification",
+                "I'm not an admin",
+                answer[3]);
+            assertEquals(
+                "User2 didn't receive the grant membership notification",
+                "I'm a member",
+                answer[0]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke admin notification",
+                room + "/testbot2",
+                answer[7]);
+            assertEquals(
+                "User3 didn't receive user2's grant membership notification",
+                room + "/testbot2",
+                answer[4]);
+
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void testOwnership() {
+        final String[] answer = new String[12];
+        try {
+
+            makeRoomModerated();
+            
+            // User2 joins the new room (as a visitor)
+            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            muc2.join("testbot2",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User2 will listen for ownership privileges            
+            muc2.addUserStatusListener(new DefaultUserStatusListener() {
+                public void membershipGranted() {
+                    super.membershipGranted();
+                    answer[0] = "I'm a member";
+                }
+                public void membershipRevoked() {
+                    super.membershipRevoked();
+                    answer[1] = "I'm not a member";
+                }
+                public void adminGranted() {
+                    super.adminGranted();
+                    answer[2] = "I'm an admin";
+                }
+                public void adminRevoked() {
+                    super.adminRevoked();
+                    answer[3] = "I'm not an admin";
+                }
+                public void ownershipGranted() {
+                    super.ownershipGranted();
+                    answer[4] = "I'm an owner";
+                }
+                public void ownershipRevoked() {
+                    super.ownershipRevoked();
+                    answer[5] = "I'm not an owner";
+                }
+            });
+
+            // User3 joins the new room (as a visitor)
+            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            muc3.join("testbot3",SmackConfiguration.getPacketReplyTimeout(),null,0,-1,-1,null);
+            // User3 will lister for user2's ownership privileges            
+            muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void membershipGranted(String participant) {
+                    super.membershipGranted(participant);
+                    answer[6] = participant;
+                }
+                public void membershipRevoked(String participant) {
+                    super.membershipRevoked(participant);
+                    answer[7] = participant;
+                }
+                public void adminGranted(String participant) {
+                    super.adminGranted(participant);
+                    answer[8] = participant;
+                }
+                public void adminRevoked(String participant) {
+                    super.adminRevoked(participant);
+                    answer[9] = participant;
+                }
+                public void ownershipGranted(String participant) {
+                    super.ownershipGranted(participant);
+                    answer[10] = participant;
+                }
+                public void ownershipRevoked(String participant) {
+                    super.ownershipRevoked(participant);
+                    answer[11] = participant;
+                }
+            });
+
+            try {
+                // Check whether a visitor can grant ownership privileges to another visitor
+                muc2.grantOwnership("gato5@" + conn2.getHost());
+                fail("User2 was able to grant ownership privileges");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received granting ownership privileges",
+                    xmppError);
+                assertEquals(
+                    "A visitor was able to grant ownership privileges to another visitor",
+                    403,
+                    xmppError.getCode());
+            }
+            
+            // Check that the room's owner can grant ownership privileges to a visitor
+            muc.grantOwnership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the grant ownership notification",
+                "I'm an owner",
+                answer[4]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's grant ownership notification",
+                room + "/testbot2",
+                answer[10]);
+
+            // Check that the room's owner can revoke ownership privileges from an owner
+            // and make the occupant a visitor
+            muc.revokeMembership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke ownership notification",
+                "I'm not an owner",
+                answer[5]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke ownership notification",
+                room + "/testbot2",
+                answer[11]);
+            
+            // Check that the room's owner can grant ownership privileges to a member
+            clearAnswer(answer);
+            muc.grantMembership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+            muc.grantOwnership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke membership notification",
+                "I'm not a member",
+                answer[1]);
+            assertEquals(
+                "User2 didn't receive the grant ownership notification",
+                "I'm an owner",
+                answer[4]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke membership notification",
+                room + "/testbot2",
+                answer[7]);
+            assertEquals(
+                "User3 didn't receive user2's grant ownership notification",
+                room + "/testbot2",
+                answer[10]);
+
+            // Check that the room's owner can revoke ownership privileges from an owner
+            // and make the occupant a member
+            clearAnswer(answer);
+            muc.revokeAdmin("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke ownership notification",
+                "I'm not an owner",
+                answer[5]);
+            assertEquals(
+                "User2 didn't receive the grant membership notification",
+                "I'm a member",
+                answer[0]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke ownership notification",
+                room + "/testbot2",
+                answer[11]);
+            assertEquals(
+                "User3 didn't receive user2's grant membership notification",
+                room + "/testbot2",
+                answer[6]);
+
+            // Check that the room's owner can grant ownership privileges to an admin
+            clearAnswer(answer);
+            muc.grantAdmin("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+            muc.grantOwnership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke admin notification",
+                "I'm not an admin",
+                answer[3]);
+            assertEquals(
+                "User2 didn't receive the grant ownership notification",
+                "I'm an owner",
+                answer[4]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke admin notification",
+                room + "/testbot2",
+                answer[9]);
+            assertEquals(
+                "User3 didn't receive user2's grant ownership notification",
+                room + "/testbot2",
+                answer[10]);
+
+            // Check that the room's owner can revoke ownership privileges from an owner
+            // and make the occupant an admin
+            clearAnswer(answer);
+            muc.revokeOwnership("gato4@" + conn2.getHost());
+            Thread.sleep(300);
+
+            // Check that UserStatusListener is working OK
+            assertEquals(
+                "User2 didn't receive the revoke ownership notification",
+                "I'm not an owner",
+                answer[5]);
+            assertEquals(
+                "User2 didn't receive the grant admin notification",
+                "I'm an admin",
+                answer[2]);
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User3 didn't receive user2's revoke ownership notification",
+                room + "/testbot2",
+                answer[11]);
+            assertEquals(
+                "User3 didn't receive user2's grant admin notification",
+                room + "/testbot2",
+                answer[8]);
+
+            // User2 leaves the room
+            muc2.leave();
+            // User3 leaves the room
+            muc3.leave();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void makeRoomModerated() throws XMPPException {
+        // User1 (which is the room owner) converts the instant room into a moderated room
+        Form form = muc.getConfigurationForm();
+        Form answerForm = form.createAnswerForm();
+        answerForm.setAnswer("muc#owner_moderatedroom", "1");
+        muc.sendConfigurationForm(answerForm);
+    }
+    
+    private void clearAnswer(String[] answer) {
+        for (int i=0; i < answer.length; i++) {
+            answer[i] = null;
         }
     }
 
@@ -365,9 +1269,9 @@ public class MultiUserChatTest extends TestCase {
             conn2.login("gato4", "gato4");
             conn3.login("gato5", "gato5");
 
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-            user3 = "gato5@" + conn2.getHost();
+            user1 = "gato3@" + conn1.getHost() + "/Smack";
+            user2 = "gato4@" + conn2.getHost() + "/Smack";
+            user3 = "gato5@" + conn2.getHost() + "/Smack";
 
             // User1 creates the room
             muc = new MultiUserChat(conn1, room);
