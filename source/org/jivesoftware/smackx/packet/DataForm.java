@@ -69,7 +69,7 @@ public class DataForm implements PacketExtension {
 
     private String type;
     private String title;
-    private String instructions;
+    private List instructions = new ArrayList();
     private ReportedData reportedData;
     private List items = new ArrayList();
     private List fields = new ArrayList();
@@ -109,12 +109,17 @@ public class DataForm implements PacketExtension {
     }
 
     /**
-     * Returns the instructions that explain how to fill out the form and what the form is about.
+     * Returns an Iterator for the list of instructions that explain how to fill out the form and 
+     * what the form is about. The dataform could include multiple instructions since each 
+     * instruction could not contain newlines characters. Join the instructions together in order 
+     * to show them to the user.    
      * 
-     * @return instructions that explain how to fill out the form.
+     * @return an Iterator for the list of instructions that explain how to fill out the form.
      */
-    public String getInstructions() {
-        return instructions;
+    public Iterator getInstructions() {
+        synchronized (instructions) {
+            return Collections.unmodifiableList(new ArrayList(instructions)).iterator();
+        }
     }
 
     /**
@@ -167,11 +172,13 @@ public class DataForm implements PacketExtension {
     }
 
     /**
-     * Sets instructions that explain how to fill out the form and what the form is about.
+     * Sets the list of instructions that explain how to fill out the form and what the form is 
+     * about. The dataform could include multiple instructions since each instruction could not 
+     * contain newlines characters. 
      * 
-     * @param instructions instructions that explain how to fill out the form.
+     * @param instructions list of instructions that explain how to fill out the form.
      */
-    public void setInstructions(String instructions) {
+    public void setInstructions(List instructions) {
         this.instructions = instructions;
     }
 
@@ -196,6 +203,19 @@ public class DataForm implements PacketExtension {
     }
     
     /**
+     * Adds a new instruction to the list of instructions that explain how to fill out the form 
+     * and what the form is about. The dataform could include multiple instructions since each 
+     * instruction could not contain newlines characters. 
+     * 
+     * @param instruction the new instruction that explain how to fill out the form.
+     */
+    public void addInstruction(String instruction) {
+        synchronized (instructions) {
+            instructions.add(instruction);
+        }
+    }
+
+    /**
      * Adds a new item returned from a search.
      * 
      * @param item the item returned from a search.
@@ -213,8 +233,8 @@ public class DataForm implements PacketExtension {
         if (getTitle() != null) {
             buf.append("<title>").append(getTitle()).append("</title>");
         }
-        if (getInstructions() != null) {
-            buf.append("<instructions>").append(getInstructions()).append("</instructions>");
+        for (Iterator it=getInstructions(); it.hasNext();) {
+            buf.append("<instructions>").append(it.next()).append("</instructions>");
         }
         // Append the list of fields returned from a search
         if (getReportedData() != null) {

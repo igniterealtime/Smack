@@ -225,7 +225,16 @@ public class Form {
      * @return instructions that explain how to fill out the form.
      */
     public String getInstructions() {
-        return dataForm.getInstructions();
+        StringBuffer sb = new StringBuffer();
+        // Join the list of instructions together separated by newlines
+        for (Iterator it = dataForm.getInstructions(); it.hasNext();) {
+            sb.append((String) it.next());
+            // If this is not the last instruction then append a newline
+            if (it.hasNext()) {
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
 
@@ -266,7 +275,15 @@ public class Form {
      * @param instructions instructions that explain how to fill out the form.
      */
     public void setInstructions(String instructions) {
-        dataForm.setInstructions(instructions);
+        // Split the instructions into multiple instructions for each existent newline
+        ArrayList instructionsList = new ArrayList();
+        StringTokenizer st = new StringTokenizer(instructions, "\n");
+        while (st.hasMoreTokens()) {
+            instructionsList.add(st.nextToken());
+        }
+        // Set the new list of instructions
+        dataForm.setInstructions(instructionsList);
+        
     }
 
 
@@ -282,18 +299,15 @@ public class Form {
     
     /**
      * Returns a DataForm that serves to send this Form to the server. If the form is of type 
-     * submit, it may contain fields with no value. These fields will be remove since they only 
+     * submit, it may contain fields with no value. These fields will be removed since they only 
      * exist to assist the user while editing/completing the form in a UI. 
      * 
      * @return the wrapped DataForm.
      */
-    DataForm getDataFormToSend() {
+    public DataForm getDataFormToSend() {
         if (isSubmitType()) {
-            // Answer a new form based on the values of this form
+            // Create a new DataForm that contains only the answered fields 
             DataForm dataFormToSend = new DataForm(getType());
-            dataFormToSend.setInstructions(getInstructions());
-            dataFormToSend.setTitle(getTitle());
-            // Remove all the fields that have no answer
             for(Iterator it=getFields();it.hasNext();) {
                 FormField field = (FormField)it.next();
                 if (field.getValues().hasNext()) {

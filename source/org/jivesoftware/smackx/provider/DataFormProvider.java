@@ -83,7 +83,7 @@ public class DataFormProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("instructions")) { 
-                    dataForm.setInstructions(parser.nextText());
+                    dataForm.addInstruction(parser.nextText());
                 }
                 else if (parser.getName().equals("title")) {                    
                     dataForm.setTitle(parser.nextText());
