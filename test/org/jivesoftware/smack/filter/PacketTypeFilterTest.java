@@ -56,36 +56,92 @@ import junit.framework.TestCase;
 import org.jivesoftware.smack.packet.*;
 
 /**
- *
+ * Test cases for the PacketTypeFilter class.
  */
 public class PacketTypeFilterTest extends TestCase {
 
     private class Dummy {}
 
+    private class InnerClassDummy {
+        public class DummyPacket extends Packet {
+            public String toXML() {
+                return null;
+            }
+        }
+        public DummyPacket getInnerInstance() {
+            return new DummyPacket();
+        }
+    }
+
+    private static class StaticInnerClassDummy {
+        public static class StaticDummyPacket extends Packet {
+            public String toXML() {
+                return null;
+            }
+        }
+        public static StaticDummyPacket getInnerInstance() {
+            return new StaticDummyPacket();
+        }
+    }
+
+    /**
+     * Test case for the constructor of PacketTypeFilter objects.
+     */
     public void testConstructor() {
+        // Test a class that is not a subclass of Packet
         try {
             new PacketTypeFilter(Dummy.class);
             fail("Parameter must be a subclass of Packet.");
         }
-        catch (IllegalArgumentException e) {
-        }
+        catch (IllegalArgumentException e) {}
+
+        // Test a class that is a subclass of Packet
         try {
             new PacketTypeFilter(MockPacket.class);
         }
         catch (IllegalArgumentException e) {
             fail();
         }
+
+        // Test another class which is a subclass of Packet
         try {
             new PacketTypeFilter(IQ.class);
         }
         catch (IllegalArgumentException e) {
             fail();
         }
+
+        // Test an internal class which is a subclass of Packet
+        try {
+            new PacketTypeFilter(InnerClassDummy.DummyPacket.class);
+        }
+        catch (IllegalArgumentException e) {
+            fail();
+        }
+
+        // Test an internal static class which is a static subclass of Packet
+        try {
+            new PacketTypeFilter(StaticInnerClassDummy.StaticDummyPacket.class);
+        }
+        catch (IllegalArgumentException e) {
+            fail();
+        }
     }
 
+    /**
+     * Test case to test the accept() method of PacketTypeFilter objects.
+     */
     public void testAccept() {
-        MockPacket packet = new MockPacket();
+        Packet packet = new MockPacket();
         PacketTypeFilter filter = new PacketTypeFilter(MockPacket.class);
+        assertTrue(filter.accept(packet));
+
+        packet = (new InnerClassDummy()).getInnerInstance();
+        filter = new PacketTypeFilter(InnerClassDummy.DummyPacket.class);
+        assertTrue(filter.accept(packet));
+
+        packet = StaticInnerClassDummy.getInnerInstance();
+        filter = new PacketTypeFilter(StaticInnerClassDummy.StaticDummyPacket.class);
         assertTrue(filter.accept(packet));
     }
 }

@@ -77,16 +77,50 @@ public class OrFilterTest extends TestCase {
 
         MockPacket packet = new MockPacket();
 
-        OrFilter OrFilter = new OrFilter(trueFilter, trueFilter);
-        assertTrue(OrFilter.accept(packet));
+        // Testing TT == T
+        OrFilter orFilter = new OrFilter(trueFilter, trueFilter);
+        assertTrue(orFilter.accept(packet));
 
-        OrFilter = new OrFilter(trueFilter, falseFilter);
-        assertTrue(OrFilter.accept(packet));
+        // Testing TF = F
+        orFilter = new OrFilter(trueFilter, falseFilter);
+        assertTrue(orFilter.accept(packet));
 
-        OrFilter = new OrFilter(falseFilter, trueFilter);
-        assertTrue(OrFilter.accept(packet));
+        // Testing FT = F
+        orFilter = new OrFilter(falseFilter, trueFilter);
+        assertTrue(orFilter.accept(packet));
 
-        OrFilter = new OrFilter(falseFilter, falseFilter);
-        assertFalse(OrFilter.accept(packet));
+        // Testing FF = F
+        orFilter = new OrFilter(falseFilter, falseFilter);
+        assertFalse(orFilter.accept(packet));
+
+        // Testing TTTT = T
+        orFilter = new OrFilter(
+            new OrFilter(trueFilter, trueFilter), new OrFilter(trueFilter, trueFilter)
+        );
+        assertTrue(orFilter.accept(packet));
+
+        // Testing TFTT = F
+        orFilter = new OrFilter(
+            new OrFilter(trueFilter, falseFilter), new OrFilter(trueFilter, trueFilter)
+        );
+        assertTrue(orFilter.accept(packet));
+
+        // Testing TTFT = F
+        orFilter = new OrFilter(
+            new OrFilter(trueFilter, trueFilter), new OrFilter(falseFilter, trueFilter)
+        );
+        assertTrue(orFilter.accept(packet));
+
+        // Testing TTTF = F
+        orFilter = new OrFilter(
+            new OrFilter(trueFilter, trueFilter), new OrFilter(trueFilter, falseFilter)
+        );
+        assertTrue(orFilter.accept(packet));
+
+        // Testing FFFF = F
+        orFilter = new OrFilter(
+            new OrFilter(falseFilter, falseFilter), new OrFilter(falseFilter, falseFilter)
+        );
+        assertFalse(orFilter.accept(packet));
     }
 }
