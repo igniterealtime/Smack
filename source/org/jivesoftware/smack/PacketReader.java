@@ -58,11 +58,11 @@ import java.util.*;
 import java.util.List;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
-import java.beans.PropertyDescriptor;
 
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.util.*;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.provider.*;
 
@@ -395,7 +395,7 @@ class PacketReader {
                             iqPacket = ((IQProvider)provider).parseIQ(parser);
                         }
                         else if (provider instanceof Class) {
-                            iqPacket = (IQ)parseWithIntrospection(elementName,
+                            iqPacket = (IQ)PacketParserUtils.parseWithIntrospection(elementName,
                                     (Class)provider, parser);
                         }
                     }
@@ -543,6 +543,14 @@ class PacketReader {
                         }
                     }
                 }
+                // Otherwise, it must be a packet extension.
+                else {
+                    registration.addExtension(
+                        PacketParserUtils.parsePacketExtension(
+                            parser.getName(),
+                            parser.getNamespace(),
+                            parser));
+                }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
@@ -552,67 +560,6 @@ class PacketReader {
         }
         registration.setAttributes(fields);
         return registration;
-    }
-
-    private Object parseWithIntrospection(String elementName,
-            Class objectClass, XmlPullParser parser) throws Exception
-    {
-        boolean done = false;
-        Object object = objectClass.newInstance();
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = parser.getName();
-                String stringValue = parser.nextText();
-                PropertyDescriptor descriptor = new PropertyDescriptor(name, objectClass);
-                // Load the class type of the property.
-                Class propertyType = descriptor.getPropertyType();
-                // Get the value of the property by converting it from a
-                // String to the correct object type.
-                Object value = decode(propertyType, stringValue);
-                // Set the value of the bean.
-                descriptor.getWriteMethod().invoke(object, new Object[] { value });
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(elementName)) {
-                    done = true;
-                }
-            }
-        }
-        return object;
-    }
-
-    /**
-     * Decodes a String into an object of the specified type. If the object
-     * type is not supported, null will be returned.
-     *
-     * @param type the type of the property.
-     * @param value the encode String value to decode.
-     * @return the String value decoded into the specified type.
-     */
-    private static Object decode(Class type, String value) throws Exception {
-        if (type.getName().equals("java.lang.String")) {
-            return value;
-        }
-        if (type.getName().equals("boolean")) {
-            return Boolean.valueOf(value);
-        }
-        if (type.getName().equals("int")) {
-            return Integer.valueOf(value);
-        }
-        if (type.getName().equals("long")) {
-            return Long.valueOf(value);
-        }
-        if (type.getName().equals("float")) {
-            return Float.valueOf(value);
-        }
-        if (type.getName().equals("double")) {
-            return Double.valueOf(value);
-        }
-        if (type.getName().equals("java.lang.Class")) {
-            return Class.forName(value);
-        }
-        return null;
     }
 
     /**
@@ -697,7 +644,8 @@ class PacketReader {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    message.addExtension(parsePacketExtension(elementName, namespace, parser));
+                    message.addExtension(
+                    PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -770,7 +718,8 @@ class PacketReader {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    presence.addExtension(parsePacketExtension(elementName, namespace, parser));
+                    presence.addExtension(
+                        PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -780,58 +729,6 @@ class PacketReader {
             }
         }
         return presence;
-    }
-
-    /**
-     * Parses a packet extension sub-packet.
-     *
-     * @param elementName the XML element name of the packet extension.
-     * @param namespace the XML namespace of the packet extension.
-     * @param parser the XML parser, positioned at the starting element of the extension.
-     * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
-     */
-    private PacketExtension parsePacketExtension(String elementName, String namespace, XmlPullParser parser)
-            throws Exception
-    {
-        // See if a provider is registered to handle the extension.
-        Object provider = ProviderManager.getExtensionProvider(elementName, namespace);
-        if (provider != null) {
-            if (provider instanceof PacketExtensionProvider) {
-                return ((PacketExtensionProvider)provider).parseExtension(parser);
-            }
-            else if (provider instanceof Class) {
-                return (PacketExtension)parseWithIntrospection(
-                        elementName, (Class)provider, parser);
-            }
-        }
-        // No providers registered, so use a default extension.
-        DefaultPacketExtension extension = new DefaultPacketExtension(elementName, namespace);
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = parser.getName();
-                // If an empty element, set the value with the empty string.
-                if (parser.isEmptyElementTag()) {
-                    extension.setValue(name,"");
-                }
-                // Otherwise, get the the element text.
-                else {
-                    eventType = parser.next();
-                    if (eventType == XmlPullParser.TEXT) {
-                        String value = parser.getText();
-	                    extension.setValue(name, value);
-                    }
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(elementName)) {
-                    done = true;
-                }
-            }
-        }
-        return extension;
     }
 
     /**
