@@ -16,7 +16,7 @@
         <classpath>
             <pathelement location="${basedir}/build/ant-contrib.jar"/>
         </classpath>
-    </taskdef> 
+    </taskdef>
 
     <!-- PROPERTIES -->
     <!-- ======================================================================================= -->
@@ -27,7 +27,7 @@
     <!-- all -->
     <!-- ======================================================================================= -->
     <target name="all">
-        <!-- create release properties -->        
+        <!-- create release properties -->
         <if>
             <equals arg1="${dailybuild}" arg2="true" />
             <then>
@@ -39,7 +39,7 @@
             <else>
                 <property name="release.name" value="smack-${version.name}" />
             </else>
-        </if> 
+        </if>
         <property name="release.dir" value="${basedir}/release/${release.name}" />
         <!-- create release dirs -->
         <mkdir dir="${release.dir}" />
@@ -52,6 +52,7 @@
         <copy todir="${release.dir}/build">
             <fileset dir="${basedir}/build">
                 <include name="ant*" />
+                <include name="junit.jar" />
                 <include name="build.xml" />
                 <include name="README.html" />
                 <include name="lib/*.jar" />
@@ -69,6 +70,14 @@
         <!-- Copy source -->
         <copy todir="${release.dir}/source">
             <fileset dir="${basedir}/source" includes="**/*.java" />
+            <fileset dir="${basedir}/source" includes="**/*.html" />
+        </copy>
+        <copy todir="${release.dir}/test">
+            <fileset dir="${basedir}/test" includes="**/*.java" />
+        </copy>
+        <!-- Copy resources -->
+        <copy todir="${release.dir}/resources">
+            <fileset dir="${basedir}/resources" includes="META-INF/smack.providers" />
         </copy>
         <!-- Copy readme.html and changelog.html -->
         <copy todir="${release.dir}">
@@ -84,6 +93,36 @@
             includes="${release.name}/**/*.*"
             compression="gzip"
         />
+
+        <echo>
+-----------------------------------------------
+Release made, testing Ant targets of release...
+-----------------------------------------------
+        </echo>
+
+        <!-- call the release tester -->
+        <antcall target="test" />
     </target>
+
+    <!-- all -->
+    <!-- ======================================================================================= -->
+    <target name="test">
+        <ant dir="${release.dir}" antfile="build/build.xml" target="jar" inheritAll="false">
+            <property name="no.test" value="true" />
+        </ant>
+        <ant dir="${release.dir}" antfile="build/build.xml" target="javadoc" inheritAll="false">
+            <property name="no.test" value="true" />
+        </ant>
+        <ant dir="${release.dir}" antfile="build/build.xml" target="clean" inheritAll="false">
+            <property name="no.test" value="true" />
+        </ant>
+
+        <echo>
+----------------------------
+...release tests pass, done.
+----------------------------
+        </echo>
+    </target>
+
 
 </project>
