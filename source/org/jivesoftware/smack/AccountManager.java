@@ -137,6 +137,25 @@ public class AccountManager {
     }
 
     /**
+     * Returns the instructions for creating a new account, or <tt>null</tt> if there
+     * are no instructions. If present, instructions should be displayed to the end-user
+     * that will complete the registration process.
+     *
+     * @return the account creation instructions, or <tt>null</tt> if there are none.
+     */
+    public String getAccountInstructions() {
+        try {
+            if (info == null) {
+                getRegistrationInfo();
+            }
+            return info.getInstructions();
+        }
+        catch (XMPPException xe) {
+            return null;
+        }
+    }
+
+    /**
      * Creates a new account using the specified username and password. The server may
      * require a number of extra account attributes such as an email address and phone
      * number. In that case, Smack will attempt to automatically set all required
@@ -149,6 +168,9 @@ public class AccountManager {
      * @throws XMPPException if an error occurs creating the account.
      */
     public void createAccount(String username, String password) throws XMPPException {
+        if (!supportsAccountCreation()) {
+            throw new XMPPException("Server does not support account creation.");
+        }
         // Create a map for all the required attributes, but give them blank values.
         Map attributes = new HashMap();
         for (Iterator i=getAccountAttributes(); i.hasNext(); ) {

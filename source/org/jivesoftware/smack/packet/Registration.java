@@ -82,6 +82,7 @@ public class Registration extends IQ {
 
     private String username = null;
     private String password = null;
+    private String instructions = null;
     private Map attributes = null;
 
     /**
@@ -121,6 +122,26 @@ public class Registration extends IQ {
     }
 
     /**
+     * Returns the registration instructions, or <tt>null</tt> if no instructions
+     * have been set. If present, instructions should be displayed to the end-user
+     * that will complete the registration process.
+     *
+     * @return the registration instructions, or <tt>null</tt> if there are none.
+     */
+    public String getInstructions() {
+        return instructions;
+    }
+
+    /**
+     * Sets the registration instructions.
+     *
+     * @param instructions the registration instructions.
+     */
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    /**
      * Returns the map of String key/value pairs of account attributes.
      *
      * @return the account attributes.
@@ -146,6 +167,9 @@ public class Registration extends IQ {
         }
         if (password != null) {
             buf.append("<password>").append(password).append("</password>");
+        }
+        if (instructions != null) {
+            buf.append("<instructions>").append(instructions).append("</instructions>");
         }
         if (attributes != null && attributes.size() > 0) {
             Iterator fieldNames = attributes.keySet().iterator();
