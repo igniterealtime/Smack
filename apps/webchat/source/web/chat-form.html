@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Chat Session</title>
+    <script language="JavaScript" type="text/javascript">
+	// update the send button to be disabled/enabled
+	function updateButton(el) {
+		if (el.value != '') {
+			el.form.send.disabled = false;
+		}
+		else {
+			el.form.send.disabled = true;
+		}
+	}
+	function handleSubmit(el) {
+		// el is the form
+		submitForm(el);
+		
+		// return false so this form does not sumbmit:
+		return false;
+	}
+	function handleKeyEvent(evt, el) {
+		// el is the textarea, so get the form:
+		var form = el.form;
+		var keyCode = document.layers ? evt.which : evt.keyCode;
+		if (keyCode == 13) {
+			// submit form here
+			submitForm(form);
+			// clear the TA
+			form.message.value = '';
+			return false;
+		}
+		return true;
+	}
+	function submitForm(el) {
+		// el is the form
+		var chatform = window.parent.frames['hiddenform'].document.chatform;
+		chatform.message.value = el.message.value;
+		chatform.submit();
+		el.message.focus();
+		el.message.value = '';
+		updateButton(el.message);
+	}
+    </script>
+</head>
+
+<body topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0">
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+
+<form name="chatform" onsubmit="return handleSubmit(this);">
+
+<!--
+<tr valign="top">
+	<td colspan="2" style="padding:8px;">
+		<iframe src="chat-conv.html" frameborder="1"
+		 id="chatconv"
+		 style="border:1px #ccc solid;width:100%;height:250px;" scrolling="yes"
+		 height="100%" width="100%"></iframe>
+	</td>
+</tr>
+-->
+
+<tr>
+	<td width="99%">
+		<table cellpadding="7" cellspacing="0" border="0" width="100%">
+		<tr><td>
+				<textarea name="message" cols="58" rows="4" style="width:100%" wrap="virtual"
+				 onkeyup="handleKeyEvent(event,this);updateButton(this);"
+				 onchange="updateButton(this);"></textarea>
+			</td>
+		</tr></table>
+	</td>
+	<td width="1%" nowrap align="center">
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		<input type="submit" name="send" value=" Send " disabled>
+		&nbsp;
+		&nbsp;
+		&nbsp;
+	</td>
+</tr>
+
+</form>
+
+</table>
+
+<script language="JavaScript" type="text/javascript">
+document.chatform.message.focus();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+BODY, TD, TH {
+	font-family : tahoma; font-size : 0.8em;
+}
+H3 {
+	font-size : 1.2em;
+}
+.error-text {
+	color : red;
+}
