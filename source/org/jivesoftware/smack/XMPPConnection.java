@@ -138,7 +138,11 @@ public class XMPPConnection {
      * be used.
      *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
-     * @throws XMPPException if an error occurs while trying to establish a connection.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host) throws XMPPException {
         this(host, 5222);
@@ -149,7 +153,11 @@ public class XMPPConnection {
      *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
-     * @throws XMPPException if an error occurs while trying to establish a connection.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host, int port) throws XMPPException {
         this.host = host;
@@ -158,10 +166,12 @@ public class XMPPConnection {
             this.socket = new Socket(host, port);
         }
         catch (UnknownHostException uhe) {
-            throw new XMPPException("Could not connect to " + host + ":" + port + ".", uhe);
+            throw new XMPPException("Could not connect to " + host + ":" + port + ".",
+                    new XMPPError(502), uhe);
         }
         catch (IOException ioe) {
-            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".", ioe);
+            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".",
+                    new XMPPError(502), ioe);
         }
         init();
     }
@@ -601,7 +611,8 @@ public class XMPPConnection {
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
         }
         catch (IOException ioe) {
-            throw new XMPPException("XMPPError establishing connection with server.", ioe);
+            throw new XMPPException("XMPPError establishing connection with server.",
+                    new XMPPError(502), ioe);
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.

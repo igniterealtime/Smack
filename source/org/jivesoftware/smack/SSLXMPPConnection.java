@@ -66,6 +66,8 @@ import java.security.cert.X509Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 
+import org.jivesoftware.smack.packet.XMPPError;
+
 
 /**
  * Creates an SSL connection to a XMPP server.
@@ -79,7 +81,11 @@ public class SSLXMPPConnection extends XMPPConnection {
      * SSL port (5223).
      *
      * @param host the XMPP host.
-     * @throws XMPPException if an error occurs making the connection.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
      */
     public SSLXMPPConnection(String host) throws XMPPException {
         this(host, 5223);
@@ -90,7 +96,11 @@ public class SSLXMPPConnection extends XMPPConnection {
      *
      * @param host the XMPP host.
      * @param port the port to use for the connection (default XMPP SSL port is 5223).
-     * @throws XMPPException if an error occurs making the connection.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
      */
     public SSLXMPPConnection(String host, int port) throws XMPPException {
         this.host = host;
@@ -100,10 +110,12 @@ public class SSLXMPPConnection extends XMPPConnection {
             this.socket = sslFactory.createSocket(host, port);
         }
         catch (UnknownHostException uhe) {
-            throw new XMPPException("Could not connect to " + host + ":" + port + ".", uhe);
+            throw new XMPPException("Could not connect to " + host + ":" + port + ".",
+                    new XMPPError(504), uhe);
         }
         catch (IOException ioe) {
-            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".", ioe);
+            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".",
+                    new XMPPError(502), ioe);
         }
         super.init();
     }

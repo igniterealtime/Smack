@@ -122,6 +122,20 @@ public class XMPPException extends Exception {
     }
 
     /**
+     * Creates a new XMPPException with a description of the exception, an XMPPError,
+     * and the Throwable that was the root cause of the exception.
+     *
+     * @param message a description of the exception.
+     * @param error the root cause of the exception.
+     * @param wrappedThrowable the root cause of the exception.
+     */
+    public XMPPException(String message, XMPPError error, Throwable wrappedThrowable) {
+        super(message);
+        this.error = error;
+        this.wrappedThrowable = wrappedThrowable;
+    }
+
+    /**
      * Creates a new XMPPException with a description of the exception and the
      * XMPPException that was the root cause of the exception.
      *
