@@ -310,7 +310,7 @@ public class XHTMLManagerTest extends TestCase {
             xhtmlText.appendCloseParagraphTag();
             xhtmlText.appendOpenBlockQuoteTag(null);
             xhtmlText.appendOpenParagraphTag(null);
-            xhtmlText.append("Una consistencia ridícula es el espantajo de mentes pequeñas.");
+            xhtmlText.append("Una consistencia rid&#237;cula es el espantajo de mentes peque&#241;as.");
             xhtmlText.appendCloseParagraphTag();
             xhtmlText.appendCloseBlockQuoteTag();
             // Add the XHTML text to the message
