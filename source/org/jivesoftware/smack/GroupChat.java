@@ -149,6 +149,16 @@ public class GroupChat {
     }
 
     /**
+     * Returns true if currently in the group chat (after calling the {@link
+     * #join(String)} method.
+     *
+     * @return true if currently in the group chat room.
+     */
+    public boolean isJoined() {
+        return joined;
+    }
+
+    /**
      * Joins the chat room using the specified nickname. If already joined as
      * another nickname, will leave as that name first before joining under the new
      * name.
