@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright (C) 2003 CoolServlets, Inc. All rights reserved.
+ * Copyright (C) 2003 Jive Software. All rights reserved.
  *
  * This software is the proprietary information of Jive Software. Use is subject to license terms.
  */
@@ -15,9 +15,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.packet.Message;
 
 import javax.servlet.http.*;
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
-import javax.servlet.RequestDispatcher;
+import javax.servlet.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -36,6 +34,8 @@ import java.util.*;
 public class ChatServlet extends HttpServlet implements HttpSessionListener {
 
     private Map chatData = new HashMap();
+    private EmoticonFilter emoticonFilter = new EmoticonFilter();
+    private URLFilter urlFilter = new URLFilter();
 
     private String host;
     private int port = -1;
@@ -43,11 +43,12 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        host = config.getInitParameter("host");
+        ServletContext context = config.getServletContext();
+        host = context.getInitParameter("host");
         if (host == null) {
             throw new ServletException("Init parameter \"host\" must be set.");
         }
-        String portString = config.getInitParameter("port");
+        String portString = context.getInitParameter("port");
         if (portString != null) {
             try {
                 port = Integer.parseInt(portString);
@@ -56,7 +57,7 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
                 throw new ServletException("Init parameter \"port\" must be a valid number.", nfe);
             }
         }
-        SSLEnabled = Boolean.valueOf(config.getInitParameter("SSLEnabled")).booleanValue();
+        SSLEnabled = Boolean.valueOf(context.getInitParameter("SSLEnabled")).booleanValue();
     }
 
     public void destroy() {
@@ -156,6 +157,9 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
                 body = replace(body, "\n", "<br>");
                 // escape quotes
                 body = replace(body, "\"", "&quot;");
+                // Apply emoticons
+                body = urlFilter.applyFilter(body);
+                body = emoticonFilter.applyFilter(body);
                 reply.append("data[data.length] = new Array(\"" + from + "\", \"" + body + "\");\n");
                 message = data.groupChat.pollMessage();
             }
@@ -190,7 +194,6 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
         String password = request.getParameter("password");
         String room = request.getParameter("room");
         String nickname = request.getParameter("nickname");
-        String garbage = request.getParameter("garbage");
         // Validate parameters
         Map errors = new HashMap();
         if (username == null || "".equals(username.trim())) {
@@ -239,7 +242,7 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
                     }
                 }
                 // Login
-                data.connection.login(username, password, "Jive Messenger Chat Servlet " + garbage);
+                data.connection.login(username, password, "WebChat");
                 // Join groupChat room.
                 data.groupChat = data.connection.createGroupChat(room);
                 data.groupChat.join(nickname);
@@ -252,8 +255,7 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
                 request.getSession().setAttribute("messenger.servlet.nickname", nickname);
             }
             catch (XMPPException e) {
-                errors.put("general","");
-                e.printStackTrace();
+                errors.put("general", e.getMessage());
             }
             catch (ClassCastException e) {
                 // TODO: remove this catch - it's just a bug workaround for now
