@@ -100,6 +100,8 @@ public class XMPPConnection {
         }
         catch (Exception e) {
         }
+        // Initialize Smack with the parameterized configuration
+        SmackConfiguration.init();
     }
     
     private static List connectionEstablishedListeners = new ArrayList();
