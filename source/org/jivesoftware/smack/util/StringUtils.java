@@ -89,12 +89,12 @@ public class StringUtils {
     }
 
     /**
-     * Returns the name portion of a XMPP address. For example, for the
+     * Returns the server portion of a XMPP address. For example, for the
      * address "matt@jivesoftware.com/Smack", "jivesoftware.com" would be returned.
      * If no server is present in the address, the empty string will be returned.
      *
      * @param XMPPAddress the XMPP address.
-     * @return the resource portion of the XMPP address.
+     * @return the server portion of the XMPP address.
      */
     public static String parseServer(String XMPPAddress) {
         if (XMPPAddress == null) {
@@ -104,6 +104,9 @@ public class StringUtils {
         // If the String ends with '@', return the empty string.
         if (atIndex + 1 > XMPPAddress.length()) {
             return "";
+        }
+        if (atIndex < 0) {
+            atIndex = 0;
         }
         int slashIndex = XMPPAddress.indexOf("/");
         if (slashIndex > 0) {
@@ -115,7 +118,7 @@ public class StringUtils {
     }
 
     /**
-     * Returns the name portion of a XMPP address. For example, for the
+     * Returns the resource portion of a XMPP address. For example, for the
      * address "matt@jivesoftware.com/Smack", "Smack" would be returned. If no
      * resource is present in the address, the empty string will be returned.
      *
