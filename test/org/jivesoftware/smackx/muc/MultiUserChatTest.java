@@ -57,27 +57,17 @@ import java.util.Iterator;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the new MUC functionalities.
  * 
  * @author Gaston Dombiak
  */
-public class MultiUserChatTest extends TestCase {
+public class MultiUserChatTest extends SmackTestCase {
 
-    private String host = "gatoux";
-    private String room = "fruta124@conference." + host;
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-    private XMPPConnection conn3 = null;
-
-    private String user1 = null;
-    private String user2 = null;
-    private String user3 = null;
+    private String room = "fruta124@" + getMUCDomain();
 
     private MultiUserChat muc;
 
@@ -92,19 +82,19 @@ public class MultiUserChatTest extends TestCase {
     /*public void testDiscussionHistory() {
         try {
             // User2 joins the room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 sends some messages to the room
             muc2.sendMessage("Message 1");
             muc2.sendMessage("Message 2");
             muc2.sendMessage("Message 3");
-
+    
             // User3 joins the room requesting to receive the last 2 messages.
-            MultiUserChat muc3 = new MultiUserChat(conn2, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(1), room);
             DiscussionHistory history = new DiscussionHistory();
             history.setMaxStanzas(2);
             muc3.join("testbot3", null, history, SmackConfiguration.getPacketReplyTimeout());
-
+    
             Message msg;
             msg = muc3.nextMessage(1000);
             assertNotNull("First message is null", msg);
@@ -114,26 +104,26 @@ public class MultiUserChatTest extends TestCase {
             assertEquals("Body of second message is incorrect", "Message 3", msg.getBody());
             msg = muc3.nextMessage(1000);
             assertNull("Third message is not null", msg);
-
+    
             // User2 leaves the room
             muc2.leave();
             // User3 leaves the room
             muc3.leave();
-
+    
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }*/
 
     public void testParticipantPresence() {
         try {
             // User2 joins the new room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             Thread.sleep(300);
-            
+
             // User1 checks the presence of user2 in the room
             Presence presence = muc.getParticipantPresence(room + "/testbot2");
             assertNotNull("Presence of user2 in room is missing", presence);
@@ -176,8 +166,8 @@ public class MultiUserChatTest extends TestCase {
 
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -185,21 +175,21 @@ public class MultiUserChatTest extends TestCase {
         final String[] answer = new String[2];
         try {
             // User2 joins the new room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
 
             // User3 is listening to MUC invitations
-            MultiUserChat.addInvitationListener(conn3, new InvitationListener() {
+            MultiUserChat.addInvitationListener(getConnection(2), new InvitationListener() {
                 public void invitationReceived(
                     XMPPConnection conn,
                     String room,
                     String inviter,
                     String reason,
                     String password) {
-                        // Indicate that the invitation was received 
-                        answer[0] = reason;
-                        // Reject the invitation
-                        MultiUserChat.decline(conn, room, inviter, "I'm busy right now");
+                    // Indicate that the invitation was received 
+                    answer[0] = reason;
+                    // Reject the invitation
+                    MultiUserChat.decline(conn, room, inviter, "I'm busy right now");
                 }
             });
 
@@ -212,9 +202,9 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User2 invites user3 to join to the room
-            muc2.invite(user3, "Meet me in this excellent room");
+            muc2.invite(getFullJID(2), "Meet me in this excellent room");
             Thread.sleep(350);
-            
+
             assertEquals(
                 "Invitation was not received",
                 "Meet me in this excellent room",
@@ -223,58 +213,55 @@ public class MultiUserChatTest extends TestCase {
             // from users that aren't participants of the room. Comment out this line when  
             // running the test against a server that correctly implements JEP-45  
             //assertEquals("Rejection was not received", "I'm busy right now", answer[1]);
-            
+
             // User2 leaves the room
             muc2.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
     public void testDiscoverJoinedRooms() {
         try {
             // Check that user1 has joined only to one room
-            Iterator joinedRooms = MultiUserChat.getJoinedRooms(conn2, user1);
+            Iterator joinedRooms = MultiUserChat.getJoinedRooms(getConnection(1), getFullJID(0));
             assertTrue("Joined rooms shouldn't be empty", joinedRooms.hasNext());
-            assertEquals(
-                "Joined room is incorrect",
-                joinedRooms.next(),
-                room);
+            assertEquals("Joined room is incorrect", joinedRooms.next(), room);
             assertFalse("User has joined more than one room", joinedRooms.hasNext());
-    
+
             // Leave the new room
             muc.leave();
-    
+
             // Check that user1 is not currently join any room
-            joinedRooms = MultiUserChat.getJoinedRooms(conn2, user1);
+            joinedRooms = MultiUserChat.getJoinedRooms(getConnection(1), getFullJID(0));
             assertFalse("Joined rooms should be empty", joinedRooms.hasNext());
 
             muc.join("testbot");
         }
         catch (XMPPException e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
-    
+
     public void testDiscoverMUCSupport() {
         // Discover user1 support of MUC
-        boolean supports = MultiUserChat.isServiceEnabled(conn2, user1);
+        boolean supports = MultiUserChat.isServiceEnabled(getConnection(1), getFullJID(0));
         assertTrue("Couldn't detect that user1 supports MUC", supports);
     }
 
     public void testPrivateChat() {
         try {
             // User2 joins the new room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
 
-            conn1.addPacketListener(new PacketListener() {
+            getConnection(0).addPacketListener(new PacketListener() {
                 public void processPacket(Packet packet) {
                     Message message = (Message) packet;
-                    Chat chat2 = new Chat(conn1, message.getFrom(), message.getThread());
+                    Chat chat2 = new Chat(getConnection(0), message.getFrom(), message.getThread());
                     assertEquals(
                         "Sender of chat is incorrect",
                         room + "/testbot2",
@@ -289,30 +276,29 @@ public class MultiUserChatTest extends TestCase {
             },
                 new AndFilter(
                     new MessageTypeFilter(Message.Type.CHAT),
-                    new PacketTypeFilter(Message.class))
-            );
+                    new PacketTypeFilter(Message.class)));
 
             // Start a private chat with another participant            
             Chat chat = muc2.createPrivateChat(room + "/testbot");
             chat.sendMessage("Hello there");
-            
+
             Message response = chat.nextMessage(2000);
-            assertEquals("Sender of response is incorrect",room + "/testbot", response.getFrom());
-            assertEquals("Body of response is incorrect","ACK", response.getBody());
+            assertEquals("Sender of response is incorrect", room + "/testbot", response.getFrom());
+            assertEquals("Body of response is incorrect", "ACK", response.getBody());
 
             // User2 leaves the room
             muc2.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
-    
+
     // TODO This test is commented because jabberd2 doesn't support discovering reserved nicknames
     /*public void testReservedNickname() {
         // User2 joins the new room
-        MultiUserChat muc2 = new MultiUserChat(conn2, room);
+        MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
         
         String reservedNickname = muc2.getReservedNickname();
         assertNull("Reserved nickname is not null", reservedNickname);
@@ -325,11 +311,11 @@ public class MultiUserChatTest extends TestCase {
             muc.changeSubject("Initial Subject");
 
             // User2 joins the new room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
-            
+
             // User3 joins the new room
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
 
             // User3 wants to be notified every time the room's subject is changed.
@@ -356,7 +342,7 @@ public class MultiUserChatTest extends TestCase {
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that every MUC updates its subject when an allowed user changes the subject 
             // in a room
             muc.changeSubject("New Subject1");
@@ -382,8 +368,8 @@ public class MultiUserChatTest extends TestCase {
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -391,7 +377,7 @@ public class MultiUserChatTest extends TestCase {
         final String[] answer = new String[3];
         try {
             // User2 joins the new room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will lister for his own "kicking"            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -403,7 +389,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's "kicking"            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -420,27 +406,27 @@ public class MultiUserChatTest extends TestCase {
             }
             catch (XMPPException e) {
                 XMPPError xmppError = e.getXMPPError();
-                assertNotNull(
-                    "No XMPPError was received when kicking a room owner",
-                    xmppError);
+                assertNotNull("No XMPPError was received when kicking a room owner", xmppError);
                 assertEquals(
                     "A simple participant was able to kick another participant from the room",
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can kick a simple participant
             muc.kickParticipant("testbot2", "Because I'm the owner");
             Thread.sleep(300);
 
-            assertNull("User2 wasn't kicked from the room", muc.getParticipantPresence(room + "/testbot2"));
-            
+            assertNull(
+                "User2 wasn't kicked from the room",
+                muc.getParticipantPresence(room + "/testbot2"));
+
             assertFalse("User2 thinks that he's still in the room", muc2.isJoined());
 
             // Check that UserStatusListener is working OK
             assertEquals(
                 "User2 didn't receive the correct initiator of the kick",
-                "gato3@" + conn1.getHost(),
+                getBareJID(0),
                 answer[0]);
             assertEquals(
                 "User2 didn't receive the correct reason for the kick",
@@ -452,15 +438,15 @@ public class MultiUserChatTest extends TestCase {
                 "User3 didn't receive the correct kicked participant",
                 room + "/testbot2",
                 answer[2]);
-            
+
             // User2 leaves the room
             muc2.leave();
             // User3 leaves the room
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -468,7 +454,7 @@ public class MultiUserChatTest extends TestCase {
         final String[] answer = new String[3];
         try {
             // User2 joins the new room
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will lister for his own "banning"            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -480,7 +466,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's "banning"            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -492,32 +478,32 @@ public class MultiUserChatTest extends TestCase {
 
             try {
                 // Check whether a simple participant can ban a room owner or not
-                muc2.banUser("gato3@" + conn2.getHost(), "Because I'm bad");
+                muc2.banUser(getBareJID(0), "Because I'm bad");
                 fail("User2 was able to ban a room owner");
             }
             catch (XMPPException e) {
                 XMPPError xmppError = e.getXMPPError();
-                assertNotNull(
-                    "No XMPPError was received when banning a room owner",
-                    xmppError);
+                assertNotNull("No XMPPError was received when banning a room owner", xmppError);
                 assertEquals(
                     "A simple participant was able to ban another participant from the room",
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can ban a simple participant
-            muc.banUser("gato4@" + conn2.getHost(), "Because I'm the owner");
+            muc.banUser(getBareJID(1), "Because I'm the owner");
             Thread.sleep(300);
 
-            assertNull("User2 wasn't banned from the room", muc.getParticipantPresence(room + "/testbot2"));
-            
+            assertNull(
+                "User2 wasn't banned from the room",
+                muc.getParticipantPresence(room + "/testbot2"));
+
             assertFalse("User2 thinks that he's still in the room", muc2.isJoined());
 
             // Check that UserStatusListener is working OK
             assertEquals(
                 "User2 didn't receive the correct initiator of the ban",
-                "gato3@" + conn1.getHost(),
+                getBareJID(0),
                 answer[0]);
             assertEquals(
                 "User2 didn't receive the correct reason for the banning",
@@ -529,15 +515,15 @@ public class MultiUserChatTest extends TestCase {
                 "User3 didn't receive the correct banned JID",
                 room + "/testbot2",
                 answer[2]);
-            
+
             // User2 leaves the room
             muc2.leave();
             // User3 leaves the room
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -546,9 +532,9 @@ public class MultiUserChatTest extends TestCase {
         try {
 
             makeRoomModerated();
-            
+
             // User2 joins the new room (as a visitor)
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will listen for his own "voice"            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -563,7 +549,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room (as a visitor)
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's "voice"            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -585,15 +571,13 @@ public class MultiUserChatTest extends TestCase {
             }
             catch (XMPPException e) {
                 XMPPError xmppError = e.getXMPPError();
-                assertNotNull(
-                    "No XMPPError was received granting voice",
-                    xmppError);
+                assertNotNull("No XMPPError was received granting voice", xmppError);
                 assertEquals(
                     "A visitor was able to grant voice to another visitor",
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can grant voice to a participant
             muc.grantVoice("testbot2");
             Thread.sleep(300);
@@ -628,8 +612,8 @@ public class MultiUserChatTest extends TestCase {
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -638,9 +622,9 @@ public class MultiUserChatTest extends TestCase {
         try {
 
             makeRoomModerated();
-            
+
             // User2 joins the new room (as a visitor)
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will listen for moderator privileges            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -663,7 +647,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room (as a visitor)
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's moderator privileges            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -692,15 +676,13 @@ public class MultiUserChatTest extends TestCase {
             }
             catch (XMPPException e) {
                 XMPPError xmppError = e.getXMPPError();
-                assertNotNull(
-                    "No XMPPError was received granting moderator privileges",
-                    xmppError);
+                assertNotNull("No XMPPError was received granting moderator privileges", xmppError);
                 assertEquals(
                     "A visitor was able to grant moderator privileges to another visitor",
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can grant moderator privileges to a visitor
             muc.grantModerator("testbot2");
             Thread.sleep(300);
@@ -728,12 +710,8 @@ public class MultiUserChatTest extends TestCase {
             muc.revokeModerator("testbot2");
             Thread.sleep(300);
 
-            assertNull(
-                "User2 received a false revoke voice notification",
-                answer[1]);
-            assertNull(
-                "User3 received a false user2's voice privileges notification",
-                answer[3]);
+            assertNull("User2 received a false revoke voice notification", answer[1]);
+            assertNull("User3 received a false user2's voice privileges notification", answer[3]);
             assertEquals(
                 "User2 didn't receive the revoke moderator privileges notification",
                 "I'm not a moderator",
@@ -743,24 +721,19 @@ public class MultiUserChatTest extends TestCase {
                 room + "/testbot2",
                 answer[7]);
 
-            
             // Check that the room's owner can grant moderator privileges to a participant
             clearAnswer(answer);
             muc.grantModerator("testbot2");
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
-            assertNull(
-                "User2 received a false grant voice notification",
-                answer[0]);
+            assertNull("User2 received a false grant voice notification", answer[0]);
             assertEquals(
                 "User2 didn't receive the grant moderator privileges notification",
                 "I'm a moderator",
                 answer[4]);
             // Check that ParticipantStatusListener is working OK
-            assertNull(
-                "User3 received a false user2's grant voice notification",
-                answer[2]);
+            assertNull("User3 received a false user2's grant voice notification", answer[2]);
             assertEquals(
                 "User3 didn't receive user2's grant moderator privileges notification",
                 room + "/testbot2",
@@ -786,8 +759,8 @@ public class MultiUserChatTest extends TestCase {
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -796,9 +769,9 @@ public class MultiUserChatTest extends TestCase {
         try {
 
             makeRoomModerated();
-            
+
             // User2 joins the new room (as a visitor)
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will listen for membership privileges            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -813,7 +786,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room (as a visitor)
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's membership privileges            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -829,7 +802,7 @@ public class MultiUserChatTest extends TestCase {
 
             try {
                 // Check whether a visitor can grant membership privileges to another visitor
-                muc2.grantMembership("gato5@" + conn2.getHost());
+                muc2.grantMembership(getBareJID(2));
                 fail("User2 was able to grant membership privileges");
             }
             catch (XMPPException e) {
@@ -842,9 +815,9 @@ public class MultiUserChatTest extends TestCase {
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can grant membership privileges to a visitor
-            muc.grantMembership("gato4@" + conn2.getHost());
+            muc.grantMembership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -860,7 +833,7 @@ public class MultiUserChatTest extends TestCase {
 
             // Check that the room's owner can revoke membership privileges from a member
             // and make the occupant a visitor
-            muc.revokeMembership("gato4@" + conn2.getHost());
+            muc.revokeMembership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -873,15 +846,15 @@ public class MultiUserChatTest extends TestCase {
                 "User3 didn't receive user2's revoke membership notification",
                 room + "/testbot2",
                 answer[3]);
-            
+
             // User2 leaves the room
             muc2.leave();
             // User3 leaves the room
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -890,9 +863,9 @@ public class MultiUserChatTest extends TestCase {
         try {
 
             makeRoomModerated();
-            
+
             // User2 joins the new room (as a visitor)
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will listen for admin privileges            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -915,7 +888,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room (as a visitor)
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's admin privileges            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -939,22 +912,20 @@ public class MultiUserChatTest extends TestCase {
 
             try {
                 // Check whether a visitor can grant admin privileges to another visitor
-                muc2.grantAdmin("gato5@" + conn2.getHost());
+                muc2.grantAdmin(getBareJID(2));
                 fail("User2 was able to grant admin privileges");
             }
             catch (XMPPException e) {
                 XMPPError xmppError = e.getXMPPError();
-                assertNotNull(
-                    "No XMPPError was received granting admin privileges",
-                    xmppError);
+                assertNotNull("No XMPPError was received granting admin privileges", xmppError);
                 assertEquals(
                     "A visitor was able to grant admin privileges to another visitor",
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can grant admin privileges to a visitor
-            muc.grantAdmin("gato4@" + conn2.getHost());
+            muc.grantAdmin(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -970,7 +941,7 @@ public class MultiUserChatTest extends TestCase {
 
             // Check that the room's owner can revoke admin privileges from an admin
             // and make the occupant a visitor
-            muc.revokeMembership("gato4@" + conn2.getHost());
+            muc.revokeMembership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -983,12 +954,12 @@ public class MultiUserChatTest extends TestCase {
                 "User3 didn't receive user2's revoke admin notification",
                 room + "/testbot2",
                 answer[7]);
-            
+
             // Check that the room's owner can grant admin privileges to a member
             clearAnswer(answer);
-            muc.grantMembership("gato4@" + conn2.getHost());
+            muc.grantMembership(getBareJID(1));
             Thread.sleep(300);
-            muc.grantAdmin("gato4@" + conn2.getHost());
+            muc.grantAdmin(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1013,7 +984,7 @@ public class MultiUserChatTest extends TestCase {
             // Check that the room's owner can revoke admin privileges from an admin
             // and make the occupant a member
             clearAnswer(answer);
-            muc.revokeAdmin("gato4@" + conn2.getHost());
+            muc.revokeAdmin(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1041,8 +1012,8 @@ public class MultiUserChatTest extends TestCase {
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -1051,9 +1022,9 @@ public class MultiUserChatTest extends TestCase {
         try {
 
             makeRoomModerated();
-            
+
             // User2 joins the new room (as a visitor)
-            MultiUserChat muc2 = new MultiUserChat(conn2, room);
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
             // User2 will listen for ownership privileges            
             muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -1084,7 +1055,7 @@ public class MultiUserChatTest extends TestCase {
             });
 
             // User3 joins the new room (as a visitor)
-            MultiUserChat muc3 = new MultiUserChat(conn3, room);
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
             // User3 will lister for user2's ownership privileges            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -1116,22 +1087,20 @@ public class MultiUserChatTest extends TestCase {
 
             try {
                 // Check whether a visitor can grant ownership privileges to another visitor
-                muc2.grantOwnership("gato5@" + conn2.getHost());
+                muc2.grantOwnership(getBareJID(2));
                 fail("User2 was able to grant ownership privileges");
             }
             catch (XMPPException e) {
                 XMPPError xmppError = e.getXMPPError();
-                assertNotNull(
-                    "No XMPPError was received granting ownership privileges",
-                    xmppError);
+                assertNotNull("No XMPPError was received granting ownership privileges", xmppError);
                 assertEquals(
                     "A visitor was able to grant ownership privileges to another visitor",
                     403,
                     xmppError.getCode());
             }
-            
+
             // Check that the room's owner can grant ownership privileges to a visitor
-            muc.grantOwnership("gato4@" + conn2.getHost());
+            muc.grantOwnership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1147,7 +1116,7 @@ public class MultiUserChatTest extends TestCase {
 
             // Check that the room's owner can revoke ownership privileges from an owner
             // and make the occupant a visitor
-            muc.revokeMembership("gato4@" + conn2.getHost());
+            muc.revokeMembership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1160,12 +1129,12 @@ public class MultiUserChatTest extends TestCase {
                 "User3 didn't receive user2's revoke ownership notification",
                 room + "/testbot2",
                 answer[11]);
-            
+
             // Check that the room's owner can grant ownership privileges to a member
             clearAnswer(answer);
-            muc.grantMembership("gato4@" + conn2.getHost());
+            muc.grantMembership(getBareJID(1));
             Thread.sleep(300);
-            muc.grantOwnership("gato4@" + conn2.getHost());
+            muc.grantOwnership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1190,7 +1159,7 @@ public class MultiUserChatTest extends TestCase {
             // Check that the room's owner can revoke ownership privileges from an owner
             // and make the occupant a member
             clearAnswer(answer);
-            muc.revokeAdmin("gato4@" + conn2.getHost());
+            muc.revokeAdmin(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1214,9 +1183,9 @@ public class MultiUserChatTest extends TestCase {
 
             // Check that the room's owner can grant ownership privileges to an admin
             clearAnswer(answer);
-            muc.grantAdmin("gato4@" + conn2.getHost());
+            muc.grantAdmin(getBareJID(1));
             Thread.sleep(300);
-            muc.grantOwnership("gato4@" + conn2.getHost());
+            muc.grantOwnership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1241,7 +1210,7 @@ public class MultiUserChatTest extends TestCase {
             // Check that the room's owner can revoke ownership privileges from an owner
             // and make the occupant an admin
             clearAnswer(answer);
-            muc.revokeOwnership("gato4@" + conn2.getHost());
+            muc.revokeOwnership(getBareJID(1));
             Thread.sleep(300);
 
             // Check that UserStatusListener is working OK
@@ -1269,8 +1238,8 @@ public class MultiUserChatTest extends TestCase {
             muc3.leave();
         }
         catch (Exception e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
@@ -1281,9 +1250,9 @@ public class MultiUserChatTest extends TestCase {
         answerForm.setAnswer("muc#owner_moderatedroom", "1");
         muc.sendConfigurationForm(answerForm);
     }
-    
+
     private void clearAnswer(String[] answer) {
-        for (int i=0; i < answer.length; i++) {
+        for (int i = 0; i < answer.length; i++) {
             answer[i] = null;
         }
     }
@@ -1291,35 +1260,13 @@ public class MultiUserChatTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         try {
-            // Connect to the server
-            conn1 = new XMPPConnection(host);
-            conn2 = new XMPPConnection(host);
-            conn3 = new XMPPConnection(host);
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-            conn3.getAccountManager().createAccount("gato5", "gato5");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-            conn3.login("gato5", "gato5");
-
-            user1 = "gato3@" + conn1.getHost() + "/Smack";
-            user2 = "gato4@" + conn2.getHost() + "/Smack";
-            user3 = "gato5@" + conn2.getHost() + "/Smack";
-
             // User1 creates the room
-            muc = new MultiUserChat(conn1, room);
+            muc = new MultiUserChat(getConnection(0), room);
             muc.create("testbot");
 
             // User1 sends an empty room configuration form which indicates that we want
             // an instant room
             muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
-
         }
         catch (Exception e) {
             fail(e.getMessage());
@@ -1327,18 +1274,13 @@ public class MultiUserChatTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        super.tearDown();
         // Destroy the new room
         muc.destroy("The room has almost no activity...", null);
 
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-        conn3.getAccountManager().deleteAccount();
+        super.tearDown();
+    }
 
-        // Close all the connections
-        conn1.close();
-        conn2.close();
-        conn3.close();
+    protected int getMaxConnections() {
+        return 3;
     }
 }

@@ -55,8 +55,7 @@ package org.jivesoftware.smackx.packet;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-
-import junit.framework.TestCase;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  *
@@ -64,13 +63,7 @@ import junit.framework.TestCase;
  *
  * @author Gaston Dombiak
  */
-public class MessageEventTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class MessageEventTest extends SmackTestCase {
 
     /**
      * Constructor for MessageEventTest.
@@ -89,7 +82,7 @@ public class MessageEventTest extends TestCase {
      */
     public void testSendMessageEventRequest() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
         // Create the message to send with the roster
         Message msg = chat1.createMessage();
@@ -108,7 +101,8 @@ public class MessageEventTest extends TestCase {
             chat1.sendMessage(msg);
             // Wait half second so that the complete test can run
             Thread.sleep(200);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("An error occured sending the message");
         }
     }
@@ -124,7 +118,7 @@ public class MessageEventTest extends TestCase {
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
         // Create a Listener that listens for Messages with the extension "jabber:x:roster"
         // This listener will listen on the conn2 and answer an ACK if everything is ok
@@ -140,12 +134,13 @@ public class MessageEventTest extends TestCase {
                         "Message event is a request not a notification",
                         !messageEvent.isMessageEventRequest());
                     System.out.println(messageEvent.toXML());
-                } catch (ClassCastException e) {
+                }
+                catch (ClassCastException e) {
                     fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
                 }
             }
         };
-        conn1.addPacketListener(packetListener, packetFilter);
+        getConnection(0).addPacketListener(packetListener, packetFilter);
 
         // Create the message to send with the roster
         Message msg = chat1.createMessage();
@@ -164,50 +159,13 @@ public class MessageEventTest extends TestCase {
             chat1.sendMessage(msg);
             // Wait half second so that the complete test can run
             Thread.sleep(200);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("An error occured sending the message");
         }
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 }

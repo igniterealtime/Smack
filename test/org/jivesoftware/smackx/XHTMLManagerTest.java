@@ -56,21 +56,14 @@ import java.util.Iterator;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
-
-import junit.framework.TestCase;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Test the XHTML extension using the high level API
  *
  * @author Gaston Dombiak
  */
-public class XHTMLManagerTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class XHTMLManagerTest extends SmackTestCase {
 
     private int bodiesSent;
     private int bodiesReceived;
@@ -90,7 +83,7 @@ public class XHTMLManagerTest extends TestCase {
      */
     public void testSendSimpleXHTMLMessage() {
         // User1 creates a chat with user2
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
         // User1 creates a message to send to user2
         Message msg = chat1.createMessage();
@@ -130,8 +123,8 @@ public class XHTMLManagerTest extends TestCase {
     */
     public void testSendSimpleXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        final Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat1.getThreadID());
 
         // Create a listener for the chat that will check if the received message includes 
         // an XHTML extension. Answer an ACK if everything is ok
@@ -201,8 +194,8 @@ public class XHTMLManagerTest extends TestCase {
     */
     public void testSendComplexXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        final Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat1.getThreadID());
 
         // Create a listener for the chat that will check if the received message includes 
         // an XHTML extension. Answer an ACK if everything is ok
@@ -283,46 +276,9 @@ public class XHTMLManagerTest extends TestCase {
             bodiesSent,
             bodiesReceived);
     }
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
 
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 
 }

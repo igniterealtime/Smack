@@ -55,21 +55,15 @@ package org.jivesoftware.smack;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.SmackTestCase;
 
-import junit.framework.TestCase;
 
 /**
  * Tests the chat functionality.
  * 
  * @author Gaston Dombiak
  */
-public class ChatTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class ChatTest extends SmackTestCase {
 
     /**
      * Constructor for ChatTest.
@@ -79,10 +73,10 @@ public class ChatTest extends TestCase {
         super(arg0);
     }
 
-    public void testChat() {
+    public void testProperties() {
         try {
-            Chat newChat = conn1.createChat(user2);
-            Chat newChat2 = new Chat(conn2, user1, newChat.getThreadID());
+            Chat newChat = getConnection(0).createChat(getFullJID(1));
+            Chat newChat2 = new Chat(getConnection(1), getFullJID(0), newChat.getThreadID());
 
             Message msg = newChat.createMessage();
 
@@ -126,48 +120,12 @@ public class ChatTest extends TestCase {
                 msg2.getProperty("birthdate"));
         }
         catch (XMPPException e) {
-            fail(e.getMessage());
             e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato10", "gato10");
-            conn2.getAccountManager().createAccount("gato11", "gato11");
-
-            // Login with the test accounts
-            conn1.login("gato10", "gato10");
-            conn2.login("gato11", "gato11");
-
-            user1 = "gato10@" + conn1.getHost() + "/Smack";
-            user2 = "gato11@" + conn2.getHost() + "/Smack";
-
-        }
-        catch (Exception e) {
-            fail(e.getMessage());
-            e.printStackTrace();
-        }
-
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 }

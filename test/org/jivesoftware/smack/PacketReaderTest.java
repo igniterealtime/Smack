@@ -54,16 +54,10 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.test.SmackTestCase;
 
-import junit.framework.TestCase;
 
-public class PacketReaderTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class PacketReaderTest extends SmackTestCase {
 
     /**
      * Constructor for PacketReaderTest.
@@ -86,13 +80,13 @@ public class PacketReaderTest extends TestCase {
                 return "<query xmlns=\"my:ns:test\"/>";
             }
         };
-        iqPacket.setTo(user2);
+        iqPacket.setTo(getBareJID(1));
         iqPacket.setType(IQ.Type.GET);
 
         // Send the IQ and wait for the answer
-        PacketCollector collector = conn1.createPacketCollector(
+        PacketCollector collector = getConnection(0).createPacketCollector(
                 new PacketIDFilter(iqPacket.getPacketID()));
-        conn1.sendPacket(iqPacket);
+        getConnection(0).sendPacket(iqPacket);
         IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {
             fail("No response from the other user.");
@@ -102,45 +96,7 @@ public class PacketReaderTest extends TestCase {
         collector.cancel();
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 }

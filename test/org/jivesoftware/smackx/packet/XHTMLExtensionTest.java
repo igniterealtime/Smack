@@ -57,21 +57,14 @@ import java.util.*;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-
-import junit.framework.TestCase;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Test the XHTML extension using the low level API
  *
  * @author Gaston Dombiak
  */
-public class XHTMLExtensionTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class XHTMLExtensionTest extends SmackTestCase {
 
     private int bodiesSent;
     private int bodiesReceived;
@@ -91,7 +84,7 @@ public class XHTMLExtensionTest extends TestCase {
      */
     public void testSendSimpleXHTMLMessage() {
         // User1 creates a chat with user2
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
         // User1 creates a message to send to user2
         Message msg = chat1.createMessage();
@@ -107,7 +100,8 @@ public class XHTMLExtensionTest extends TestCase {
         try {
             chat1.sendMessage(msg);
             Thread.sleep(200);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("An error occured sending the message with XHTML");
         }
     }
@@ -122,8 +116,8 @@ public class XHTMLExtensionTest extends TestCase {
     */
     public void testSendSimpleXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        final Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat1.getThreadID());
 
         // Create a Listener that listens for Messages with the extension 
         //"http://jabber.org/protocol/xhtml-im"
@@ -147,17 +141,19 @@ public class XHTMLExtensionTest extends TestCase {
                         String body = (String) it.next();
                         System.out.println(body);
                     }
-                } catch (ClassCastException e) {
+                }
+                catch (ClassCastException e) {
                     fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
                 }
                 try {
                     chat2.sendMessage("ok");
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     fail("An error occured sending ack " + e.getMessage());
                 }
             }
         };
-        conn2.addPacketListener(packetListener, packetFilter);
+        getConnection(1).addPacketListener(packetListener, packetFilter);
 
         // User1 creates a message to send to user2
         Message msg = chat1.createMessage();
@@ -172,7 +168,8 @@ public class XHTMLExtensionTest extends TestCase {
         // User1 sends the message that contains the XHTML to user2
         try {
             chat1.sendMessage(msg);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("An error occured sending the message with XHTML");
         }
         // Wait for 2 seconds for a reply
@@ -190,8 +187,8 @@ public class XHTMLExtensionTest extends TestCase {
     */
     public void testSendComplexXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        final Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat1.getThreadID());
 
         // Create a Listener that listens for Messages with the extension 
         //"http://jabber.org/protocol/xhtml-im"
@@ -217,12 +214,13 @@ public class XHTMLExtensionTest extends TestCase {
                         System.out.println((String) it.next());
                     }
                     bodiesReceived = received;
-                } catch (ClassCastException e) {
+                }
+                catch (ClassCastException e) {
                     fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
                 }
             }
         };
-        conn2.addPacketListener(packetListener, packetFilter);
+        getConnection(1).addPacketListener(packetListener, packetFilter);
 
         // User1 creates a message to send to user2
         Message msg = chat1.createMessage();
@@ -243,7 +241,8 @@ public class XHTMLExtensionTest extends TestCase {
             bodiesReceived = 0;
             chat1.sendMessage(msg);
             Thread.sleep(300);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("An error occured sending the message with XHTML");
         }
         // Wait half second so that the complete test can run
@@ -253,46 +252,8 @@ public class XHTMLExtensionTest extends TestCase {
             bodiesReceived);
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 
 }

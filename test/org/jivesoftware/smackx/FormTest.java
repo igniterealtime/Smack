@@ -53,24 +53,16 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-
-import junit.framework.TestCase;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Tests the DataForms extensions.
  * 
  * @author Gaston Dombiak
  */
-public class FormTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class FormTest extends SmackTestCase {
 
     /**
      * Constructor for FormTest.
@@ -109,10 +101,20 @@ public class FormTest extends TestCase {
         field.setLabel("Enter a description");
         field.setType(FormField.TYPE_TEXT_MULTI);
         formToSend.addField(field);
+        // Add a boolean variable
+        field = new FormField("time");
+        field.setLabel("Is this your first case?");
+        field.setType(FormField.TYPE_BOOLEAN);
+        formToSend.addField(field);
+        // Add a text variable where an int value is expected
+        field = new FormField("age");
+        field.setLabel("How old are you?");
+        field.setType(FormField.TYPE_TEXT_SINGLE);
+        formToSend.addField(field);
 
         // Create the chats between the two participants
-        Chat chat = conn1.createChat(user2);
-        Chat chat2 = new Chat(conn2, user1, chat.getThreadID());
+        Chat chat = getConnection(0).createChat(getBareJID(1));
+        Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat.getThreadID());
 
         Message msg = chat.createMessage();
         msg.setBody("To enter a case please fill out this form and send it back to me");
@@ -132,12 +134,23 @@ public class FormTest extends TestCase {
             // Obtain the form to send with the replies
             Form completedForm = formToRespond.createAnswerForm();
             assertNotNull(completedForm.getField("hidden_var"));
+            // Check that a field of type String does not accept booleans
+            try {
+                completedForm.setAnswer("name", true);
+                fail("A boolean value was set to a field of type String");
+            }
+            catch (IllegalArgumentException e) {
+            }
             completedForm.setAnswer("name", "Credit card number invalid");
             completedForm.setAnswer(
                 "description",
                 "The ATM says that my credit card number is invalid. What's going on?");
+            completedForm.setAnswer("time", true);
+            completedForm.setAnswer("age", 20);
+            // Create a new message to send with the completed form
             msg2 = chat2.createMessage();
             msg2.setBody("To enter a case please fill out this form and send it back to me");
+            // Add the completed form to the message
             msg2.addExtension(completedForm.getDataFormToSend());
             // Send the message with the completed form
             chat2.sendMessage(msg2);
@@ -152,6 +165,9 @@ public class FormTest extends TestCase {
             assertEquals(
                 completedForm.getField("name").getValues().next(),
                 "Credit card number invalid");
+            assertNotNull(completedForm.getField("time"));
+            assertNotNull(completedForm.getField("age"));
+            assertEquals("The age is bad", "20", completedForm.getField("age").getValues().next());
 
         }
         catch (XMPPException ex) {
@@ -159,41 +175,8 @@ public class FormTest extends TestCase {
         }
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-
-        }
-        catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 
 }

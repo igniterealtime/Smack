@@ -54,9 +54,8 @@ package org.jivesoftware.smackx;
 
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  *
@@ -64,17 +63,7 @@ import org.jivesoftware.smack.*;
  *
  * @author Gaston Dombiak
  */
-public class RosterExchangeManagerTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-    private XMPPConnection conn3 = null;
-    private XMPPConnection conn4 = null;
-
-    private String user1 = null;
-    private String user2 = null;
-    private String user3 = null;
-    private String user4 = null;
+public class RosterExchangeManagerTest extends SmackTestCase {
 
     private int entriesSent;
     private int entriesReceived;
@@ -89,15 +78,18 @@ public class RosterExchangeManagerTest extends TestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with a XMPP client and check if the client receives user1's roster
+     * This is a simple test to use with a XMPP client and check if the client receives user1's 
+     * roster
      * 1. User_1 will send his/her roster to user_2
      */
     public void testSendRoster() {
         // Send user1's roster to user2
         try {
-            RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
-            rosterExchangeManager.send(conn1.getRoster(), user2);
-        } catch (Exception e) {
+            RosterExchangeManager rosterExchangeManager =
+                new RosterExchangeManager(getConnection(0));
+            rosterExchangeManager.send(getConnection(0).getRoster(), getBareJID(1));
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail("An error occured sending the roster");
         }
@@ -105,16 +97,19 @@ public class RosterExchangeManagerTest extends TestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with a XMPP client and check if the client receives user1's roster groups
+     * This is a simple test to use with a XMPP client and check if the client receives user1's 
+     * roster groups
      * 1. User_1 will send his/her RosterGroups to user_2
      */
     public void testSendRosterGroup() {
         // Send user1's RosterGroups to user2
         try {
-            RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
-            for (Iterator it = conn1.getRoster().getGroups(); it.hasNext();)
-                rosterExchangeManager.send((RosterGroup) it.next(), user2);
-        } catch (Exception e) {
+            RosterExchangeManager rosterExchangeManager =
+                new RosterExchangeManager(getConnection(0));
+            for (Iterator it = getConnection(0).getRoster().getGroups(); it.hasNext();)
+                rosterExchangeManager.send((RosterGroup) it.next(), getBareJID(1));
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail("An error occured sending the roster");
         }
@@ -124,11 +119,12 @@ public class RosterExchangeManagerTest extends TestCase {
      * High level API test.
      * 1. User_1 will send his/her roster to user_2
      * 2. User_2 will receive the entries and iterate over them to check if everything is fine
-     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then something is wrong
+     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then 
+     * something is wrong
      */
     public void testSendAndReceiveRoster() {
-        RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
-        RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
+        RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(getConnection(0));
+        RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(getConnection(1));
 
         // Create a RosterExchangeListener that will iterate over the received roster entries
         RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
@@ -149,12 +145,13 @@ public class RosterExchangeManagerTest extends TestCase {
 
         // Send user1's roster to user2
         try {
-            entriesSent = conn1.getRoster().getEntryCount();
+            entriesSent = getConnection(0).getRoster().getEntryCount();
             entriesReceived = 0;
-            rosterExchangeManager1.send(conn1.getRoster(), user2);
+            rosterExchangeManager1.send(getConnection(0).getRoster(), getBareJID(1));
             // Wait for 1 second
             Thread.sleep(300);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("An error occured sending the message with the roster");
         }
         assertEquals(
@@ -166,12 +163,14 @@ public class RosterExchangeManagerTest extends TestCase {
     /**
      * High level API test.
      * 1. User_1 will send his/her roster to user_2
-     * 2. User_2 will automatically add the entries that receives to his/her roster in the corresponding group
-     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then something is wrong
+     * 2. User_2 will automatically add the entries that receives to his/her roster in the 
+     * corresponding group
+     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then 
+     * something is wrong
      */
     public void testSendAndAcceptRoster() {
-        RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
-        RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
+        RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(getConnection(0));
+        RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(getConnection(1));
 
         // Create a RosterExchangeListener that will accept all the received roster entries
         RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
@@ -185,11 +184,12 @@ public class RosterExchangeManagerTest extends TestCase {
                     try {
                         RemoteRosterEntry remoteRosterEntry =
                             (RemoteRosterEntry) remoteRosterEntries.next();
-                        conn2.getRoster().createEntry(
+                        getConnection(1).getRoster().createEntry(
                             remoteRosterEntry.getUser(),
                             remoteRosterEntry.getName(),
                             remoteRosterEntry.getGroupArrayNames());
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         fail(e.toString());
                     }
                 }
@@ -200,79 +200,39 @@ public class RosterExchangeManagerTest extends TestCase {
 
         // Send user1's roster to user2
         try {
-            entriesSent = conn1.getRoster().getEntryCount();
+            entriesSent = getConnection(0).getRoster().getEntryCount();
             entriesReceived = 0;
-            rosterExchangeManager1.send(conn1.getRoster(), user2);
+            rosterExchangeManager1.send(getConnection(0).getRoster(), getBareJID(1));
             // Wait for 1 seconds
-            Thread.sleep(400);
-        } catch (Exception e) {
+            Thread.sleep(600);
+        }
+        catch (Exception e) {
             fail("An error occured sending the message with the roster");
         }
         assertEquals(
             "Number of sent and received entries does not match",
             entriesSent,
             entriesReceived);
-        assertTrue("Roster2 has no entries", conn2.getRoster().getEntryCount() > 0);
+        assertTrue("Roster2 has no entries", getConnection(1).getRoster().getEntryCount() > 0);
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
     protected void setUp() throws Exception {
         super.setUp();
         try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-            conn3 = new XMPPConnection("localhost");
-            conn4 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-            conn3.getAccountManager().createAccount("gato5", "gato5");
-            conn4.getAccountManager().createAccount("gato6", "gato6");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-            conn3.login("gato5", "gato5");
-            conn4.login("gato6", "gato6");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-            user3 = "gato5@" + conn3.getHost();
-            user4 = "gato6@" + conn4.getHost();
-
-            conn1.getRoster().createEntry(
-                "gato5@" + conn3.getHost(),
+            getConnection(0).getRoster().createEntry(
+                getBareJID(2),
                 "gato5",
                 new String[] { "Friends, Coworker" });
-            conn1.getRoster().createEntry("gato6@" + conn4.getHost(), "gato6", null);
+            getConnection(0).getRoster().createEntry(getBareJID(3), "gato6", null);
             Thread.sleep(100);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-        conn3.getAccountManager().deleteAccount();
-        conn4.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
-        conn3.close();
-        conn4.close();
+    protected int getMaxConnections() {
+        return 4;
     }
 }

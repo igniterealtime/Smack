@@ -54,28 +54,34 @@ package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import junit.framework.TestCase;
 
 /**
  * 
  * 
  * @author Matt Tucker
  */
-public class GroupChatInvitationTest extends TestCase {
+public class GroupChatInvitationTest extends SmackTestCase {
 
-    private XMPPConnection con1 = null;
-    private XMPPConnection con2 = null;
     private PacketCollector collector = null;
+
+    /**
+     * Constructor for GroupChatInvitationTest.
+     * @param arg0
+     */
+    public GroupChatInvitationTest(String arg0) {
+        super(arg0);
+    }
 
     public void testInvitation() {
         try {
-            GroupChatInvitation invitation = new GroupChatInvitation("test@chat.localhost");
-            Message message = new Message("test2@" + con1.getHost());
+            GroupChatInvitation invitation = new GroupChatInvitation("test@" + getChatDomain());
+            Message message = new Message(getBareJID(1));
             message.setBody("Group chat invitation!");
             message.addExtension(invitation);
-            con1.sendPacket(message);
+            getConnection(0).sendPacket(message);
 
             Thread.sleep(250);
 
@@ -85,7 +91,7 @@ public class GroupChatInvitationTest extends TestCase {
             GroupChatInvitation resultInvite = (GroupChatInvitation)result.getExtension("x",
                     "jabber:x:conference");
 
-            assertEquals("Invitation not to correct room", "test@chat.localhost",
+            assertEquals("Invitation not to correct room", "test@" + getChatDomain(),
                     resultInvite.getRoomAddress());
         }
         catch (Exception e) {
@@ -95,42 +101,19 @@ public class GroupChatInvitationTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        try {
-            con1 = new XMPPConnection("localhost");
-            con2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!con1.getAccountManager().supportsAccountCreation()) {
-                fail("Server does not support account creation");
-            }
-            con1.getAccountManager().createAccount("test1", "test1");
-            con2.getAccountManager().createAccount("test2", "test2");
-
-            // Login with the test accounts
-            con1.login("test1", "test1");
-            con2.login("test2", "test2");
-
-            // Register listener for groupchat invitations.
-            PacketFilter filter = new PacketExtensionFilter("x", "jabber:x:conference");
-            collector = con2.createPacketCollector(filter);
-        }
-        catch (Exception e) {
-            fail(e.getMessage());
-        }
+        // Register listener for groupchat invitations.
+        PacketFilter filter = new PacketExtensionFilter("x", "jabber:x:conference");
+        collector = getConnection(1).createPacketCollector(filter);
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
     protected void tearDown() throws Exception {
+        // Cancel the packet collector so that no more results are queued up
+        collector.cancel();
+
         super.tearDown();
+    }
 
-        // Delete the created accounts for the test
-        con1.getAccountManager().deleteAccount();
-        con2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        con1.close();
-        con2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 }

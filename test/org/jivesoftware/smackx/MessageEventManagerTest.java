@@ -56,8 +56,7 @@ import java.util.ArrayList;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
-
-import junit.framework.TestCase;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  *
@@ -65,13 +64,7 @@ import junit.framework.TestCase;
  *
  * @author Gaston Dombiak
  */
-public class MessageEventManagerTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
-
-    private String user1 = null;
-    private String user2 = null;
+public class MessageEventManagerTest extends SmackTestCase {
 
     /**
      * Constructor for MessageEventManagerTest.
@@ -90,7 +83,7 @@ public class MessageEventManagerTest extends TestCase {
      */
     public void testSendMessageEventRequest() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
         // Create the message to send with the roster
         Message msg = chat1.createMessage();
@@ -119,9 +112,9 @@ public class MessageEventManagerTest extends TestCase {
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
-        MessageEventManager messageEventManager = new MessageEventManager(conn1);
+        MessageEventManager messageEventManager = new MessageEventManager(getConnection(0));
         messageEventManager
             .addMessageEventNotificationListener(new MessageEventNotificationListener() {
             public void deliveredNotification(String from, String packetID) {
@@ -185,9 +178,9 @@ public class MessageEventManagerTest extends TestCase {
         resultsExpected.add("cancelledNotification");
 
         // Create a chat for each connection
-        Chat chat1 = conn1.createChat(user2);
+        Chat chat1 = getConnection(0).createChat(getBareJID(1));
 
-        MessageEventManager messageEventManager1 = new MessageEventManager(conn1);
+        MessageEventManager messageEventManager1 = new MessageEventManager(getConnection(0));
         messageEventManager1
             .addMessageEventNotificationListener(new MessageEventNotificationListener() {
             public void deliveredNotification(String from, String packetID) {
@@ -211,7 +204,7 @@ public class MessageEventManagerTest extends TestCase {
             }
         });
 
-        MessageEventManager messageEventManager2 = new MessageEventManager(conn2);
+        MessageEventManager messageEventManager2 = new MessageEventManager(getConnection(1));
         messageEventManager2
             .addMessageEventRequestListener(new DefaultMessageEventRequestListener() {
             public void deliveredNotificationRequested(
@@ -258,9 +251,9 @@ public class MessageEventManagerTest extends TestCase {
         // Send the message that contains the notifications request
         try {
             chat1.sendMessage(msg);
-            messageEventManager2.sendDisplayedNotification(user1, msg.getPacketID());
-            messageEventManager2.sendComposingNotification(user1, msg.getPacketID());
-            messageEventManager2.sendCancelledNotification(user1, msg.getPacketID());
+            messageEventManager2.sendDisplayedNotification(getBareJID(0), msg.getPacketID());
+            messageEventManager2.sendComposingNotification(getBareJID(0), msg.getPacketID());
+            messageEventManager2.sendCancelledNotification(getBareJID(0), msg.getPacketID());
             // Wait half second so that the complete test can run
             Thread.sleep(500);
             assertTrue(
@@ -275,45 +268,7 @@ public class MessageEventManagerTest extends TestCase {
         }
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato3", "gato3");
-            conn2.getAccountManager().createAccount("gato4", "gato4");
-
-            // Login with the test accounts
-            conn1.login("gato3", "gato3");
-            conn2.login("gato4", "gato4");
-
-            user1 = "gato3@" + conn1.getHost();
-            user2 = "gato4@" + conn2.getHost();
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 }

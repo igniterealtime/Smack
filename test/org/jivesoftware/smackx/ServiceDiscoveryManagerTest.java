@@ -52,20 +52,16 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 
-import junit.framework.TestCase;
 
 /**
  * Tests the service discovery functionality.
  * 
  * @author Gaston Dombiak
  */
-public class ServiceDiscoveryManagerTest extends TestCase {
-
-    private XMPPConnection conn1 = null;
-    private XMPPConnection conn2 = null;
+public class ServiceDiscoveryManagerTest extends SmackTestCase {
 
     /**
      * Constructor for ServiceDiscoveryManagerTest.
@@ -81,18 +77,18 @@ public class ServiceDiscoveryManagerTest extends TestCase {
     public void testXHTMLFeature() {
         // Check for local XHTML service support
         // By default the XHTML service support is enabled in all the connections
-        assertTrue(XHTMLManager.isServiceEnabled(conn1));
-        assertTrue(XHTMLManager.isServiceEnabled(conn2));
+        assertTrue(XHTMLManager.isServiceEnabled(getConnection(0)));
+        assertTrue(XHTMLManager.isServiceEnabled(getConnection(1)));
         // Check for XHTML support in connection1 from connection2 
-        assertTrue(XHTMLManager.isServiceEnabled(conn2, "gato10@" + conn1.getHost()));
+        assertTrue(XHTMLManager.isServiceEnabled(getConnection(1), getBareJID(0)));
         
         // Disable the XHTML Message support in connection1
-        XHTMLManager.setServiceEnabled(conn1, false);
+        XHTMLManager.setServiceEnabled(getConnection(0), false);
         // Check for local XHTML service support 
-        assertFalse(XHTMLManager.isServiceEnabled(conn1));
-        assertTrue(XHTMLManager.isServiceEnabled(conn2));
+        assertFalse(XHTMLManager.isServiceEnabled(getConnection(0)));
+        assertTrue(XHTMLManager.isServiceEnabled(getConnection(1)));
         // Check for XHTML support in connection1 from connection2 
-        assertFalse(XHTMLManager.isServiceEnabled(conn2, "gato10@" + conn1.getHost()));
+        assertFalse(XHTMLManager.isServiceEnabled(getConnection(1), getFullJID(0)));
     }
 
     /**
@@ -101,7 +97,7 @@ public class ServiceDiscoveryManagerTest extends TestCase {
     /*public void testPublishItems() {
         // TODO Remove this line when the "additional services for extensions" are 
         // implemented 
-        new ServiceDiscoveryManager(conn1);
+        new ServiceDiscoveryManager(getConnection(0));
 
         DiscoverItems itemsToPublish = new DiscoverItems();
         DiscoverItems.Item itemToPublish = new DiscoverItems.Item("pubsub.shakespeare.lit");
@@ -111,7 +107,7 @@ public class ServiceDiscoveryManagerTest extends TestCase {
         itemsToPublish.addItem(itemToPublish);
         
         try {
-            ServiceDiscoveryManager.getInstanceFor(conn1).publishItems("host", itemsToPublish);
+            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems("host", itemsToPublish);
         }
         catch (XMPPException e) {
             fail(e.getMessage());
@@ -119,42 +115,7 @@ public class ServiceDiscoveryManagerTest extends TestCase {
         
     }*/
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        try {
-            // Connect to the server
-            conn1 = new XMPPConnection("localhost");
-            conn2 = new XMPPConnection("localhost");
-
-            // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-            conn1.getAccountManager().createAccount("gato10", "gato10");
-            conn2.getAccountManager().createAccount("gato11", "gato11");
-
-            // Login with the test accounts
-            conn1.login("gato10", "gato10");
-            conn2.login("gato11", "gato11");
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        // Delete the created accounts for the test
-        conn1.getAccountManager().deleteAccount();
-        conn2.getAccountManager().deleteAccount();
-
-        // Close all the connections
-        conn1.close();
-        conn2.close();
+    protected int getMaxConnections() {
+        return 2;
     }
 }
