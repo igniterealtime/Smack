@@ -64,12 +64,13 @@ import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Listens for XML traffic from the XMPP server, and parses it into packet objects.
+ * The packet reader also manages all packet listeners and collectors.
  *
- * @see XMPPConnection#getPacketReader()
  * @see PacketCollector
+ * @see PacketListener
  * @author Matt Tucker
  */
-public class PacketReader {
+class PacketReader {
 
     private static final String PROPERTIES_NAMESPACE =
             "http://www.jivesoftware.com/xmlns/xmpp/properties";

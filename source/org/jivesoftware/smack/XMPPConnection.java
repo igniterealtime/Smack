@@ -55,6 +55,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.Error;
 import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 
 import javax.swing.*;
 import java.net.*;
@@ -182,7 +183,7 @@ public class XMPPConnection {
     }
 
     /**
-     * Login to the server using the strongest authentication mode supported by
+     * Logs in to the server using the strongest authentication mode supported by
      * the server, then set our presence to available. If more than five seconds
      * elapses in each step of the authentication process without a response from
      * the server, or if an error occurs, a XMPPException will be thrown.
@@ -196,7 +197,7 @@ public class XMPPConnection {
     }
 
     /**
-     * Login to the server using the strongest authentication mode supported by
+     * Logs in to the server using the strongest authentication mode supported by
      * the server, then set our presence to available. If more than five seconds
      * elapses in each step of the authentication process without a response from
      * the server, or if an error occurs, a XMPPException will be thrown.
@@ -314,8 +315,8 @@ public class XMPPConnection {
     }
 
     /**
-     * Set presence to unavailable then and closes the connection to the Jabber server.
-     * Once a connection has been closed, it cannot be re-opened.
+     * Closes the connection by setting presence to unavailable then closing the stream to
+     * the XMPP server. Once a connection has been closed, it cannot be re-opened.
      */
     public void close() {
         // Set presence to offline.
@@ -330,31 +331,49 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns the packet writer for this connection. This exposes the ability to directly
-     * write Packet objects to the Jabber server. In general, this is only required for
-     * advanced uses of the API.
+     * Sends the specified packet to the server.
      *
-     * @return the packet writer for the connection.
+     * @param packet the packet to send.
      */
-    public PacketWriter getPacketWriter() {
+    public void sendPacket(Packet packet) {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
-        return packetWriter;
+        packetWriter.sendPacket(packet);
     }
 
     /**
-     * Returns the packet reader for this connection. This exposes the ability to register
-     * listeners for incoming Packet objects. In general, this is only required for advanced
-     * uses of the API.
+     * Registers a packet listener with this connection. A packet filter determines
+     * which packets will be delivered to the listener.
      *
-     * @return the packet reader for the connection.
+     * @param packetListener the packet listener to notify of new packets.
+     * @param packetFilter the packet filter to use.
      */
-    public PacketReader getPacketReader() {
+    public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
-        return packetReader;
+        packetReader.addPacketListener(packetListener, packetFilter);
+    }
+
+    /**
+     * Removes a packet listener from this connection.
+     *
+     * @param packetListener the packet listener to remove.
+     */
+    public void removePacketListener(PacketListener packetListener) {
+        packetReader.removePacketListener(packetListener);
+    }
+
+    /**
+     * Creates a new packet collector for this connection. A packet filter determines
+     * which packets will be accumulated by the collector.
+     *
+     * @param packetFilter
+     * @return
+     */
+    public PacketCollector createPacketCollector(PacketFilter packetFilter) {
+        return packetReader.createPacketCollector(packetFilter);
     }
 
     /**
@@ -363,7 +382,7 @@ public class XMPPConnection {
      *
      * @throws XMPPException if establishing a connection to the server fails.
      */
-    protected void init() throws XMPPException {
+    void init() throws XMPPException {
         try {
             reader = new InputStreamReader(socket.getInputStream(), "UTF-8");
             writer = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");

@@ -58,12 +58,11 @@ import java.io.*;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
- * Writes packets to an XMPP server.
+ * Writes packets to a XMPP server.
  *
- * @see XMPPConnection#getPacketWriter()
  * @author Matt Tucker
  */
-public class PacketWriter {
+class PacketWriter {
 
     private Thread writerThread;
     private Writer writer;
