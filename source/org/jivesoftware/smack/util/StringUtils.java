@@ -200,8 +200,16 @@ public class StringUtils {
                 if (i > last) {
                     out.append(input, last, i - last);
                 }
-                last = i + 1;
-                out.append(AMP_ENCODE);
+                // Do nothing if the string is of the form &#235; (unicode value) 
+                if (!(len > i + 5
+                    && input[i + 1] == '#'
+                    && Character.isDigit(input[i + 2])
+                    && Character.isDigit(input[i + 3])
+                    && Character.isDigit(input[i + 4])
+                    && input[i + 5] == ';')) {
+                        last = i + 1;
+                        out.append(AMP_ENCODE);
+                    }
             }
             else if (ch == '"') {
                 if (i > last) {
