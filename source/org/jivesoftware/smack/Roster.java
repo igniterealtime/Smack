@@ -107,11 +107,14 @@ public class Roster {
     /**
      * Cretaes a new roster entry.
      *
-     * @param user
-     * @param name
-     * @return
+     * @param user the user.
+     * @param name the nickname of the user.
+     * @return a new roster entry.
      */
     public RosterEntry createEntry(String user, String name) {
+        // TODO: need to send a subscribe packet if we haven't already subscibed to
+        // TODO: the user. If we have already subscribed to the user, this method shoul
+        // TODO: probably return an existing roster entry object.
         return new RosterEntry(user, name, connection);
     }
 
