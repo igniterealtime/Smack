@@ -11,4 +11,9 @@
         <namespace>jabber:x:roster</namespace>
         <className>org.jivesoftware.smackx.provider.RosterExchangeProvider</className>
     </extensionProvider>
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:event</namespace>
+        <className>org.jivesoftware.smackx.provider.MessageEventProvider</className>
+    </extensionProvider>
 </smackProviders>
