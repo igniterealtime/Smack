@@ -98,6 +98,7 @@ public class Roster {
 
     private XMPPConnection connection;
     private Map groups;
+    private List entries;
     private List unfiledEntries;
     private List rosterListeners;
     private Map presenceMap;
@@ -116,6 +117,7 @@ public class Roster {
         this.connection = connection;
         groups = new Hashtable();
         unfiledEntries = new ArrayList();
+        entries = new ArrayList();
         rosterListeners = new ArrayList();
         presenceMap = new HashMap();
         // Listen for any roster packets.
@@ -188,7 +190,10 @@ public class Roster {
     }
 
     /**
-     * Creates a new group.
+     * Creates a new group.<p>
+     *
+     * Note: you must add at least one entry to the group for the group to be kept
+     * after a logout/login. This is due to the way that XMPP stores group information.
      *
      * @param name the name of the group.
      * @return a new group.
@@ -210,7 +215,7 @@ public class Roster {
      *
      * @param user the user.
      * @param name the nickname of the user.
-     * @param groups the list of groups entry will belong to, or <tt>null</tt> if the
+     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *      the roster entry won't belong to a group.
      */
     public void createEntry(String user, String name, String [] groups) throws XMPPException {
@@ -283,15 +288,28 @@ public class Roster {
         }
         // Add the roster unfiled entries to the new RosterExchange
         synchronized (unfiledEntries) {
-            allEntries.add(unfiledEntries);
+            allEntries.addAll(unfiledEntries);
         }
         return allEntries.iterator();
     }
 
     /**
-     * Returns an Iterator for the roster entries that haven't been assigned to any groups.
+     * Returns a count of the unfiled entries in the roster. An unfiled entry is
+     * an entry that doesn't belong to any groups.
      *
-     * @return an iterator the roster entries that haven't been filed into groups.
+     * @return the number of unfiled entries in the roster.
+     */
+    public int getUnfiledEntryCount() {
+        synchronized (unfiledEntries) {
+            return unfiledEntries.size();
+        }
+    }
+
+    /**
+     * Returns an Iterator for the unfiled roster entries. An unfiled entry is
+     * an entry that doesn't belong to any groups.
+     *
+     * @return an iterator the unfiled roster entries.
      */
     public Iterator getUnfiledEntries() {
         synchronized (unfiledEntries) {
@@ -348,9 +366,9 @@ public class Roster {
     }
 
     /**
-     * Fires roster listeners.
+     * Fires roster changed event to roster listeners.
      */
-    private void fireRosterListeners() {
+    private void fireRosterChangedEvent() {
         RosterListener [] listeners = null;
         synchronized (rosterListeners) {
             listeners = new RosterListener[rosterListeners.size()];
@@ -358,6 +376,20 @@ public class Roster {
         }
         for (int i=0; i<listeners.length; i++) {
             listeners[i].rosterModified();
+        }
+    }
+
+    /**
+     * Fires roster presence changed event to roster listeners.
+     */
+    private void fireRosterPresenceEvent(String user) {
+        RosterListener [] listeners = null;
+        synchronized (rosterListeners) {
+            listeners = new RosterListener[rosterListeners.size()];
+            rosterListeners.toArray(listeners);
+        }
+        for (int i=0; i<listeners.length; i++) {
+            listeners[i].presenceChanged(user);
         }
     }
 
@@ -375,12 +407,19 @@ public class Roster {
             // have to be revisited.
             if (presence.getType() == Presence.Type.AVAILABLE) {
                 presenceMap.put(key, presence);
+                // If the user is in the roster, fire an event.
+                if (entries.contains(key)) {
+                    fireRosterPresenceEvent(key);
+                }
             }
             // If an "unavailable" packet, remove any entries in the presence map.
             else if (presence.getType() == Presence.Type.UNAVAILABLE) {
                 presenceMap.remove(key);
+                // If the user is in the roster, fire an event.
+                if (entries.contains(key)) {
+                    fireRosterPresenceEvent(key);
+                }
             }
-
             else if (presence.getType() == Presence.Type.SUBSCRIBE) {
                 if (subscriptionMode == SUBCRIPTION_ACCEPT_ALL) {
                     // Accept all subscription requests.
@@ -410,11 +449,24 @@ public class Roster {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), connection);
-                // If the roster entry has any groups, remove it from the list of unfiled
-                // users.
-                if (entry.getGroups().hasNext()) {
+
+                // Make sure the entry is in the entry list.
+                if (!entries.contains(entry)) {
+                    entries.add(entry);
+                }
+                // If the roster entry belongs to any groups, remove it from the
+                // list of unfiled entries.
+                if (item.getGroupNames().hasNext()) {
                     synchronized (unfiledEntries) {
                         unfiledEntries.remove(entry);
+                    }
+                }
+                // Otherwise add it to the list of unfiled entries.
+                else {
+                    synchronized (unfiledEntries) {
+                        if (!unfiledEntries.contains(entry)) {
+                            unfiledEntries.add(entry);
+                        }
                     }
                 }
                 // Find the list of groups that the user currently belongs to.
@@ -423,7 +475,7 @@ public class Roster {
                     RosterGroup group = (RosterGroup)j.next();
                     currentGroupNames.add(group.getName());
                 }
-
+                // Create the new list of groups the user belongs to.
                 List newGroupNames = new ArrayList();
                 for (Iterator k = item.getGroupNames(); k.hasNext();  ) {
                     String groupName = (String)k.next();
@@ -457,19 +509,10 @@ public class Roster {
                         }
                     }
                 }
-                // If the user doesn't belong to any groups, add them to the list of
-                // unfiled users.
-                if (currentGroupNames.isEmpty() && newGroupNames.isEmpty()) {
-                    synchronized (unfiledEntries) {
-                        if (!unfiledEntries.contains(entry)) {
-                            unfiledEntries.add(entry);
-                        }
-                    }
-                }
             }
 
             // Fire event for roster listeners.
-            fireRosterListeners();
+            fireRosterChangedEvent();
 
             // Mark the roster as initialized.
             rosterInitialized = true;
