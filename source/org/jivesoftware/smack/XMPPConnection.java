@@ -772,28 +772,23 @@ public class XMPPConnection {
 			// An exception occurred in setting up the connection. Make sure we shut down the
 			// readers and writers and close the socket.
 
-			if (packetWriter != null)
-			{
+			if (packetWriter != null) {
 				try { packetWriter.shutdown(); } catch (Throwable ignore) { }
 				packetWriter = null;
 			}
-			if (packetReader != null)
-			{
+			if (packetReader != null) {
 				try { packetReader.shutdown(); } catch (Throwable ignore) { }
 				packetReader = null;
 			}
-			if (reader != null)
-			{
+			if (reader != null) {
 				try { reader.close(); } catch (Throwable ignore) { }
 				reader = null;
 			}
-			if (writer != null)
-			{
+			if (writer != null) {
 				try { writer.close(); } catch (Throwable ignore) { }
 				writer = null;
 			}
-			if (socket != null)
-			{
+			if (socket != null) {
 				try { socket.close(); } catch (Exception e) { }
 				socket = null;
 			}
