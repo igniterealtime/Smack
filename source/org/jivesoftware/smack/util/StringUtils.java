@@ -285,7 +285,7 @@ public class StringUtils {
     public static String encodeBase64(String data) {
         byte [] bytes = null;
         try {
-            bytes = data.getBytes("UTF8");
+            bytes = data.getBytes("ISO-8859-1");
         }
         catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
@@ -343,8 +343,8 @@ public class StringUtils {
     public static byte[] decodeBase64(String data) {
         byte [] bytes = null;
         try {
-            bytes = data.getBytes("UTF8");
-            return decodeBase64(bytes).getBytes("UTF8");
+            bytes = data.getBytes("ISO-8859-1");
+            return decodeBase64(bytes).getBytes("ISO-8859-1");
         }
         catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
