@@ -71,7 +71,7 @@ public class GroupChat {
     private String nickname = null;
     private boolean joined = false;
 
-    private PacketCollector collector;
+    private PacketCollector messageCollector;
 
     /**
      * Creates a new group chat with the specified connection and room name.
@@ -84,8 +84,9 @@ public class GroupChat {
     public GroupChat(XMPPConnection connection, String room) {
         this.connection = connection;
         this.room = room;
-        collector = connection.getPacketReader().createPacketCollector(
-                new FromContainsFilter(room));
+        PacketFilter messageFilter = new AndFilter(new FromContainsFilter(room),
+                new PacketTypeFilter(Message.class));
+        messageCollector = connection.createPacketCollector(messageFilter);
     }
 
     /**
@@ -109,13 +110,12 @@ public class GroupChat {
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
         joinPresence.setTo(room + "/" + nickname);
-        connection.getPacketWriter().sendPacket(joinPresence);
+        connection.sendPacket(joinPresence);
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter = new AndFilter(
                 new FromContainsFilter(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
-        PacketCollector response = connection.getPacketReader().createPacketCollector(
-                responseFilter);
+        PacketCollector response = connection.createPacketCollector(responseFilter);
         // Wait up to five seconds for a reply.
         Presence presence = (Presence)response.nextResult(5000);
         if (presence == null) {
@@ -141,7 +141,7 @@ public class GroupChat {
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.UNAVAILABLE);
         leavePresence.setTo(room + "/" + nickname);
-        connection.getPacketWriter().sendPacket(leavePresence);
+        connection.sendPacket(leavePresence);
         nickname = null;
         joined = false;
     }
@@ -163,9 +163,9 @@ public class GroupChat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(String text) throws XMPPException {
-        Message message = new Message(room, Message.CHAT);
+        Message message = new Message(room, Message.GROUP_CHAT);
         message.setBody(text);
-        connection.getPacketWriter().sendPacket(message);
+        connection.sendPacket(message);
     }
 
     /**
@@ -174,7 +174,7 @@ public class GroupChat {
      * @return a new Message addressed to the chat room.
      */
     public Message createMessage() {
-        return new Message(room, Message.CHAT);
+        return new Message(room, Message.GROUP_CHAT);
     }
 
     /**
@@ -184,6 +184,44 @@ public class GroupChat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(Message message) throws XMPPException {
-        connection.getPacketWriter().sendPacket(message);
+        connection.sendPacket(message);
+    }
+
+     /**
+     * Polls for and returns the next message, or <tt>null</tt> if there isn't
+     * a message immediately available. This method provides significantly different
+     * functionalty than the {@link #nextMessage()} method since it's non-blocking.
+     * In other words, the method call will always return immediately, whereas the
+     * nextMessage method will return only when a message is available (or after
+     * a specific timeout).
+     *
+     * @return the next message if one is immediately available and
+     *      <tt>null</tt> otherwise.
+     */
+    public Message pollMessage() {
+        return (Message)messageCollector.pollResult();
+    }
+
+    /**
+     * Returns the next available message in the chat. The method call will block
+     * (not return) until a message is available.
+     *
+     * @return the next message.
+     */
+    public Message nextMessage() {
+        return (Message)messageCollector.nextResult();
+    }
+
+    /**
+     * Returns the next available message in the chat. The method call will block
+     * (not return) until a packet is available or the <tt>timeout</tt> has elapased.
+     * If the timeout elapses without a result, <tt>null</tt> will be returned.
+     *
+     * @param timeout the maximum amount of time to wait for the next message.
+     * @return the next message, or <tt>null</tt> if the timeout elapses without a
+     *      message becoming available.
+     */
+    public Message nextMessage(long timeout) {
+        return (Message)messageCollector.nextResult(timeout);
     }
 }
