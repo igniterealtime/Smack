@@ -67,10 +67,6 @@ import org.jivesoftware.smackx.FormField;
  */
 public class DataForm implements PacketExtension {
 
-    public static final String TYPE_FORM = "form";
-    public static final String TYPE_SUBMIT = "submit";
-    public static final String TYPE_RESULT = "result";
-    
     private String type;
     private String title;
     private String instructions;
