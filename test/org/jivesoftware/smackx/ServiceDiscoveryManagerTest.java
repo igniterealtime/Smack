@@ -52,7 +52,11 @@
 
 package org.jivesoftware.smackx;
 
+import java.util.Iterator;
+
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 
 
@@ -69,6 +73,33 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
      */
     public ServiceDiscoveryManagerTest(String arg0) {
         super(arg0);
+    }
+
+    /**
+     * Tests info discovery of a Smack client. 
+     */
+    public void testSmackInfo() {
+
+        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager
+                .getInstanceFor(getConnection(0));
+        try {
+            // Discover the information of another Smack client
+            DiscoverInfo info = discoManager.discoverInfo(getFullJID(1));
+            // Check the identity of the Smack client
+            Iterator identities = info.getIdentities();
+            assertTrue("No identities were found", identities.hasNext());
+            DiscoverInfo.Identity identity = (DiscoverInfo.Identity)identities.next();
+            assertEquals("Name in identity is wrong", SmackConfiguration.getIdentityName(),
+                    identity.getName());
+            assertEquals("Category in identity is wrong", "client", identity.getCategory());
+            assertEquals("Type in identity is wrong", SmackConfiguration.getIdentityType(),
+                    identity.getType());
+            assertFalse("More identities were found", identities.hasNext());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
     }
 
     /**
