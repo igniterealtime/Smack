@@ -176,6 +176,7 @@ public class AccountManager {
         }
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
+        reg.setTo(connection.getHost());
         reg.setUsername(username);
         reg.setPassword(password);
         reg.setAttributes(attributes);
@@ -203,6 +204,7 @@ public class AccountManager {
     public void changePassword(String newPassword) throws XMPPException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
+        reg.setTo(connection.getHost());
         reg.setUsername(connection.getUsername());
         reg.setPassword(newPassword);
         PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
@@ -232,6 +234,7 @@ public class AccountManager {
         }
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
+        reg.setTo(connection.getHost());
         Map attributes = new HashMap();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
@@ -256,6 +259,7 @@ public class AccountManager {
      */
     private synchronized void getRegistrationInfo() throws XMPPException {
         Registration reg = new Registration();
+        reg.setTo(connection.getHost());
         PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
