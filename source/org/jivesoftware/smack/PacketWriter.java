@@ -157,7 +157,7 @@ class PacketWriter {
             }
             // Close the stream.
             try {
-                writer.write("</stream>");
+                writer.write("</stream:stream>");
                 writer.flush();
             }
             catch (Exception e) { }
@@ -176,5 +176,3 @@ class PacketWriter {
         }
     }
 }
-
-
