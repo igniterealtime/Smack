@@ -32,7 +32,7 @@
             <equals arg1="${dailybuild}" arg2="true" />
             <then>
                 <tstamp>
-                    <format property="build.date" pattern="MMM-dd-yyyy" locale="en"/>
+                    <format property="build.date" pattern="yyyy-MM-dd" locale="en"/>
                 </tstamp>
                 <property name="release.name" value="smack-${build.date}" />
                 <property name="release-dev.name" value="smack-dev-${build.date}" />
