@@ -58,30 +58,32 @@ import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
  * Represents message events relating to the delivery, display, composition and cancellation of 
- * messages.
+ * messages.<p>
  * 
  * There are four message events currently defined in this namespace:
- * 1.Offline
+ * <ol>
+ * <li>Offline<br>
  * Indicates that the message has been stored offline by the intended recipient's server. This 
  * event is triggered only if the intended recipient's server supports offline storage, has that 
- * support enabled, and the recipient is offline when the server receives the message for delivery.
+ * support enabled, and the recipient is offline when the server receives the message for delivery.</li>
  * 
- * 2.Delivered
+ * <li>Delivered<br>
  * Indicates that the message has been delivered to the recipient. This signifies that the message
  * has reached the recipient's XMPP client, but does not necessarily mean that the message has 
- * been displayed. This event is to be raised by the XMPP client.
+ * been displayed. This event is to be raised by the XMPP client.</li>
  * 
- * 3.Displayed
+ * <li>Displayed<br>
  * Once the message has been received by the recipient's XMPP client, it may be displayed to the
  * user. This event indicates that the message has been displayed, and is to be raised by the 
  * XMPP client. Even if a message is displayed multiple times, this event should be raised only 
- * once.
+ * once.</li>
  * 
- * 4.Composing
+ * <li>Composing<br>
  * In threaded chat conversations, this indicates that the recipient is composing a reply to a 
  * message. The event is to be raised by the recipient's XMPP client. A XMPP client is allowed
  * to raise this event multiple times in response to the same request, providing the original 
- * event is cancelled first.
+ * event is cancelled first.</li>
+ * </ol>
  *
  * @author Gaston Dombiak
  */
@@ -305,27 +307,31 @@ public class MessageEvent implements PacketExtension {
      * Returns the XML representation of a Message Event according the specification.
      * 
      * Usually the XML representation will be inside of a Message XML representation like
-     * in the following examples:
+     * in the following examples:<p>
      * 
      * Request to be notified when displayed:
-     * <message
+     * <pre>
+     * &lt;message
      *    to='romeo@montague.net/orchard'
      *    from='juliet@capulet.com/balcony'
-     *    id='message22'>
-     * <x xmlns='jabber:x:event'>
-     *   <displayed/>
-     * </x>
-     * </message>
+     *    id='message22'&gt;
+     * &lt;x xmlns='jabber:x:event'&gt;
+     *   &lt;displayed/&gt;
+     * &lt;/x&gt;
+     * &lt;/message&gt;
+     * </pre>
      * 
      * Notification of displayed:
-     * <message
+     * <pre>
+     * &lt;message
      *    from='romeo@montague.net/orchard'
-     *    to='juliet@capulet.com/balcony'>
-     * <x xmlns='jabber:x:event'>
-     *   <displayed/>
-     *   <id>message22</id>
-     * </x>
-     * </message>
+     *    to='juliet@capulet.com/balcony'&gt;
+     * &lt;x xmlns='jabber:x:event'&gt;
+     *   &lt;displayed/&gt;
+     *   &lt;id&gt;message22&lt;/id&gt;
+     * &lt;/x&gt;
+     * &lt;/message&gt;
+     * </pre>
      * 
      */
     public String toXML() {

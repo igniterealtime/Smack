@@ -58,11 +58,13 @@ package org.jivesoftware.smackx;
  * Message event requests are received when the received message includes an extension 
  * like this:
  * 
- * <x xmlns='jabber:x:event'>
- *  <offline/>
- *  <delivered/>
- *  <composing/>
- * </x>
+ * <pre>
+ * &lt;x xmlns='jabber:x:event'&gt;
+ *  &lt;offline/&gt;
+ *  &lt;delivered/&gt;
+ *  &lt;composing/&gt;
+ * &lt;/x&gt;
+ * </pre>
  * 
  * In this example you can see that the sender of the message requests to be notified
  * when the user couldn't receive the message because he/she is offline, the message 
