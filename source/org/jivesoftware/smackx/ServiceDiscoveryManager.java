@@ -169,6 +169,11 @@ public class ServiceDiscoveryManager {
                     response.setType(IQ.Type.RESULT);
                     response.setTo(discoverInfo.getFrom());
                     response.setPacketID(discoverInfo.getPacketID());
+                    // Set this client identity
+                    DiscoverInfo.Identity identity = new DiscoverInfo.Identity("client",
+                            SmackConfiguration.getIdentityName());
+                    identity.setType(SmackConfiguration.getIdentityType());
+                    response.addIdentity(identity);
                     // Add the registered features to the response
                     synchronized (features) {
                         for (Iterator it = getFeatures(); it.hasNext();) {
