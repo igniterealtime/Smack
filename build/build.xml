@@ -81,7 +81,7 @@
                 </fileset>
             </classpath>
             <doctitle><![CDATA[<font face="arial,helvetica">Smack ${version}</font>]]></doctitle>
-            <header><![CDATA[<b>Smack</b>]]</header>
+            <header><![CDATA[<b>Smack</b>]]></header>
             <bottom><![CDATA[<i>Copyright &copy; 2003 Jive Software. </i>]]></bottom>
             <link href="http://java.sun.com/j2se/1.3/docs/api/" />
             <link href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" />
