@@ -108,9 +108,8 @@ public class DataFormProvider implements PacketExtensionProvider {
 
     private FormField parseField(XmlPullParser parser) throws Exception {
         boolean done = false;
-        FormField formField = new FormField();
+        FormField formField = new FormField(parser.getAttributeValue("", "var"));
         formField.setLabel(parser.getAttributeValue("", "label"));
-        formField.setVariable(parser.getAttributeValue("", "var"));
         formField.setType(parser.getAttributeValue("", "type"));
         while (!done) {
             int eventType = parser.next();
