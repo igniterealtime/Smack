@@ -52,52 +52,34 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.*;
+
 /**
- * Authentication packet, which can be used to login to a Jabber server as well as discover
- * login information from the server.
+ * Authentication packet, which can be used to login to a XMPP server as well
+ * as discover login information from the server.
  */
 public class Authentication extends IQ {
 
-    private IQ.Type type;
     private String username = null;
     private String password = null;
+    private String digest = null;
     private String resource = null;
 
     /**
-     * Creates a new Authentication object with the specified type.
+     * Create a new authentication packet. By default, the packet will be in
+     * "set" mode in order to perform an actual authentication with the server.
+     * In order to send a "get" request to get the available authentication
+     * modes back from the server, change the type of the IQ packet to "get":
      *
-     * @param type the Type of authentication packet.
+     * <p><tt>setType(IQ.Type.GET);</tt>
      */
-    public Authentication(IQ.Type type) {
-        this.type = type;
-    }
-
-    public Authentication(String username, String password, String resource) {
-        this.username = username;
-        this.password = password;
-        this.resource = resource;
+    public Authentication() {
+        setType(IQ.Type.SET);
     }
 
     /**
-     * Returns the type of the authentication packet.
-     *
-     * @return the type of the authentication packet.
-     */
-    public Type getType() {
-        return type;
-    }
-
-    /**
-     * Sets the type of the authentication packet.
-     *
-     * @param type the type of the authentication packet.
-     */
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    /**
-     * Returns the username.
+     * Returns the username, or <tt>null</tt> if the username hasn't been sent.
      *
      * @return the username.
      */
@@ -115,7 +97,8 @@ public class Authentication extends IQ {
     }
 
     /**
-     * Returns the password.
+     * Returns the plain text password or <tt>null</tt> if the password hasn't
+     * been set.
      *
      * @return the password.
      */
@@ -124,7 +107,7 @@ public class Authentication extends IQ {
     }
 
     /**
-     * Sets the password.
+     * Sets the plain text password.
      *
      * @param password the password.
      */
@@ -133,7 +116,52 @@ public class Authentication extends IQ {
     }
 
     /**
-     * Returns the resource.
+     * Returns the password digest or <tt>null</tt> if the digest hasn't
+     * been set. Password digests offer a more secure alternative for
+     * authentication compared to plain text. The digest is the hex-encoded
+     * SHA-1 hash of the connection ID plus the user's password. If the
+     * digest and password are set, digest authentication will be used. If
+     * only one value is set, the respective authentication mode will be used.
+     *
+     * @return the digest of the user's password.
+     */
+    public String getDigest() {
+        return digest;
+    }
+
+    /**
+     * Sets the digest value using a connection ID and password. Password
+     * digests offer a more secure alternative for authentication compared to
+     * plain text. The digest is the hex-encoded SHA-1 hash of the connection ID
+     * plus the user's password. If the digest and password are set, digest
+     * authentication will be used. If only one value is set, the respective
+     * authentication mode will be used.
+     *
+     * @param connectionID the connection ID.
+     * @param password the password.
+     * @see XMPPConnection#getConnectionID()
+     */
+    public void setDigest(String connectionID, String password) {
+        this.digest = StringUtils.hash(connectionID + password);
+    }
+
+    /**
+     * Sets the digest value directly. Password digests offer a more secure
+     * alternative for authentication compared to plain text. The digest is
+     * the hex-encoded SHA-1 hash of the connection ID plus the user's password.
+     * If the digest and password are set, digest authentication will be used.
+     * If only one value is set, the respective authentication mode will be used.
+     *
+     * @param digest the digest, which is the SHA-1 hash of the connection ID
+     *      the user's password, encoded as hex.
+     * @see XMPPConnection#getConnectionID()
+     */
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
+
+    /**
+     * Returns the resource or <tt>null</tt> if the resource hasn't been set.
      *
      * @return the resource.
      */
@@ -152,15 +180,38 @@ public class Authentication extends IQ {
 
     public String getQueryXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<query xmlns='jabber:iq:auth'>");
+        buf.append("<query xmlns=\"jabber:iq:auth\">");
         if (username != null) {
-            buf.append("<username>").append( username).append("</username>");
+            if (username.equals("")) {
+                buf.append("<username/>");
+            }
+            else {
+                buf.append("<username>").append( username).append("</username>");
+            }
         }
-        if (password != null) {
-            buf.append("<password>").append(password).append("</password>");
+        if (digest != null) {
+            if (digest.equals("")) {
+                buf.append("<digest/>");
+            }
+            else {
+                buf.append("<digest>").append(digest).append("</digest>");
+            }
+        }
+        if (password != null && digest == null) {
+            if (password.equals("")) {
+                buf.append("<password/>");
+            }
+            else {
+                buf.append("<password>").append(password).append("</password>");
+            }
         }
         if (resource != null) {
-            buf.append("<resource>").append(resource).append("</resource>");
+            if (resource.equals("")) {
+                buf.append("<resource/>");
+            }
+            else {
+                buf.append("<resource>").append(resource).append("</resource>");
+            }
         }
         buf.append("</query>");
         return buf.toString();
