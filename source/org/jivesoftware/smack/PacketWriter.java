@@ -74,6 +74,7 @@ class PacketWriter {
     private List listeners = new ArrayList();
     private Thread listenerThread;
     private LinkedList sentPackets = new LinkedList();
+    private Timer keepAliveTimer = new Timer(true);
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -100,6 +101,10 @@ class PacketWriter {
         };
         listenerThread.setName("Smack Writer Listener Processor");
         listenerThread.setDaemon(true);
+
+        // Schedule a keep-alive task for once every 30 seconds. It will write
+        // out a space character each time it runs to keep the TCP/IP connection open.
+        keepAliveTimer.scheduleAtFixedRate(new KeepAliveTask(), 30000, 30000);
     }
 
     /**
@@ -207,8 +212,10 @@ class PacketWriter {
             while (!done) {
                 Packet packet = nextPacket();
                 if (packet != null) {
-                    writer.write(packet.toXML());
-                    writer.flush();
+                    synchronized (writer) {
+                        writer.write(packet.toXML());
+                        writer.flush();
+                    }
                 }
             }
             // Close the stream.
@@ -220,6 +227,7 @@ class PacketWriter {
             finally {
                 try {
                     writer.close();
+                    keepAliveTimer.cancel();
                 }
                 catch (Exception e) { }
             }
@@ -307,6 +315,23 @@ class PacketWriter {
         public void notifyListener(Packet packet) {
             if (packetFilter == null || packetFilter.accept(packet)) {
                 packetListener.processPacket(packet);
+            }
+        }
+    }
+
+    /**
+     * A TimerTask that keeps connections to the server alive by sending a space
+     * character. The
+     */
+    private class KeepAliveTask extends TimerTask {
+        public void run() {
+            if (!done) {
+                synchronized (writer) {
+                    try {
+                        writer.write(" ");
+                    }
+                    catch (Exception e) { }
+                }
             }
         }
     }
