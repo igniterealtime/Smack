@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
-<!-- Configuration file to load at system start up -->
-<smackSystem>
+<!-- Smack configuration file. -->
+<smack>
 
-    <!-- Classes to load at start up -->
-    <classesToLoad>
+    <!-- Classes that will be loaded when Smack starts -->
+    <startupClasss>
         <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
         <className>org.jivesoftware.smackx.XHTMLManager</className>
-    </classesToLoad>
+    </startupClasses>
 
-    <!-- Default reply timeout milliseconds -->
+    <!-- Paket reply timeout in milliseconds -->
     <packetReplyTimeout>5000</packetReplyTimeout>
 
-</smackSystem>
+    <!-- Keep-alive interval in milleseconds -->
+    <keepAliveTimeout>30000</keepAliveTimeout>
+
+</smack>
