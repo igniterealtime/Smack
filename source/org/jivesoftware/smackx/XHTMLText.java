@@ -52,6 +52,8 @@
 
 package org.jivesoftware.smackx;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 /**
  * An XHTMLText represents formatted text. This class also helps to build valid 
  * XHTML tags.
@@ -69,9 +71,9 @@ public class XHTMLText {
      * @param lang the language of the body
      */
     public XHTMLText(String style, String lang) {
-        appendOpenBodyTag(style, lang);     
+        appendOpenBodyTag(style, lang);
     }
-    
+
     /**
      * Appends a tag that indicates that an anchor section begins.
      * 
@@ -442,7 +444,7 @@ public class XHTMLText {
      * @param textToAppend the text to append   
      */
     public void append(String textToAppend) {
-        text.append(textToAppend);
+        text.append(StringUtils.escapeForXML(textToAppend));
     }
 
     /**
