@@ -120,12 +120,13 @@ public class DiscoverItems extends IQ {
 
     public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<query xmlns=\"http://jabber.org/protocol/disco#items");
+        buf.append("<query xmlns=\"http://jabber.org/protocol/disco#items\"");
         if (getNode() != null) {
-            buf.append(" node=");
+            buf.append(" node=\"");
             buf.append(getNode());
+            buf.append("\"");
         }
-        buf.append("\">");
+        buf.append(">");
         synchronized (items) {
             for (int i = 0; i < items.size(); i++) {
                 Item item = (Item) items.get(i);
