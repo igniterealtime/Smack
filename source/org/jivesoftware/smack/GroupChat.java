@@ -80,9 +80,12 @@ public class GroupChat {
     private PacketCollector messageCollector;
 
     /**
-     * Creates a new group chat with the specified connection and room name.
+     * Creates a new group chat with the specified connection and room name. Note: no
+     * information is sent to or received from the server until you attempt to join the
+     * chat room. On some server implementations, the room will not be created until the
+     * first person joins it.
      *
-     * @param connection
+     * @param connection the XMPP Connection.
      * @param room the name of the room in the form "roomName@service", where
      *      "service" is the hostname at which the multi-user chat
      *      service is running.
@@ -93,6 +96,12 @@ public class GroupChat {
         // Create a collector for all incoming messages.
         messageFilter = new AndFilter(new FromContainsFilter(room),
                 new PacketTypeFilter(Message.class));
+        messageFilter = new AndFilter(messageFilter, new PacketFilter() {
+            public boolean accept(Packet packet) {
+                Message msg = (Message)packet;
+                return msg.getType() == Message.Type.GROUP_CHAT;
+            }
+        });
         messageCollector = connection.createPacketCollector(messageFilter);
         // Create a listener for all presence updates.
         presenceFilter = new AndFilter(new FromContainsFilter(room),
@@ -224,7 +233,7 @@ public class GroupChat {
      * @param listener a packet listener that will be notified of any presence packets
      *      sent to the group chat.
      */
-    public void addParticipantListner(PacketListener listener) {
+    public void addParticipantListener(PacketListener listener) {
         connection.addPacketListener(listener, presenceFilter);
     }
 
@@ -235,7 +244,7 @@ public class GroupChat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(String text) throws XMPPException {
-        Message message = new Message(room, Message.GROUP_CHAT);
+        Message message = new Message(room, Message.Type.GROUP_CHAT);
         message.setBody(text);
         connection.sendPacket(message);
     }
@@ -246,7 +255,7 @@ public class GroupChat {
      * @return a new Message addressed to the chat room.
      */
     public Message createMessage() {
-        return new Message(room, Message.GROUP_CHAT);
+        return new Message(room, Message.Type.GROUP_CHAT);
     }
 
     /**
