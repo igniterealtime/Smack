@@ -252,6 +252,10 @@ public class Presence extends Packet {
          * Returns the type constant associated with the String value.
          */
         public static Type fromString(String value) {
+            if (value == null) {
+                return AVAILABLE;
+            }
+            value = value.toLowerCase();
             if ("unavailable".equals(value)) {
                 return UNAVAILABLE;
             }
@@ -306,7 +310,8 @@ public class Presence extends Packet {
             if (value == null) {
                 return AVAILABLE;
             }
-            else if (value.equals("chat")) {
+            value = value.toLowerCase();
+            if (value.equals("chat")) {
                 return CHAT;
             }
             else if (value.equals("away")) {

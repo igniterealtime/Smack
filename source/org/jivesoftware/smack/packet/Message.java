@@ -269,6 +269,10 @@ public class Message extends Packet {
          * @return the Type corresponding to the String.
          */
         public static Type fromString(String type) {
+            if (type == null) {
+                return NORMAL;
+            }
+            type = type.toLowerCase();
             if (CHAT.toString().equals(type)) {
                 return CHAT;
             }

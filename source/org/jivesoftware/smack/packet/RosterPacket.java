@@ -276,6 +276,10 @@ public class RosterPacket extends IQ {
         public static final ItemStatus UNSUBCRIPTION_PENDING = new ItemStatus("unsubscribe");
 
         public static ItemStatus fromString(String value) {
+            if (value == null) {
+                return null;
+            }
+            value = value.toLowerCase();
             if ("unsubscribe".equals(value)) {
                 return SUBSCRIPTION_PENDING;
             }
@@ -329,6 +333,10 @@ public class RosterPacket extends IQ {
         public static final ItemType BOTH = new ItemType("both");
 
         public static ItemType fromString(String value) {
+            if (value == null) {
+                return null;
+            }
+            value = value.toLowerCase();
             if ("none".equals(value)) {
                 return NONE;
             }

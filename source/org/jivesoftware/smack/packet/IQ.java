@@ -154,6 +154,10 @@ public class IQ extends Packet {
          * @return the corresponding Type.
          */
         public static Type fromString(String type) {
+            if (type == null) {
+                return null;
+            }
+            type = type.toLowerCase();
             if (GET.toString().equals(type)) {
                 return GET;
             }
