@@ -1,7 +1,7 @@
 <%--
-  - $$RCSfile$$
-  - $$Revision$$
-  - $$Date$$
+  - $RCSfile$
+  - $Revision$
+  - $Date$
   -
   - Copyright (C) 2002-2003 Jive Software. All rights reserved.
   - 
@@ -66,24 +66,24 @@
     String user = getParameter(request, "user");
     String groupName = getParameter(request, "group");
 
-	// Removes the selected user from the roster (and all the groups)
+    // Remove the selected user from the roster (and all the groups)
     if ("rosterDelete".equals(action)) {
         RosterEntry entry = roster.getEntry(user);
-		roster.removeEntry(entry);
+        roster.removeEntry(entry);
         response.sendRedirect("viewRoster.jsp");
         return;
     }
 
-	// Removes the selected user from the selected group
+    // Remove the selected user from the selected group
     if ("groupDelete".equals(action)) {
         RosterEntry entry = roster.getEntry(user);
-		RosterGroup rosterGroup = roster.getGroup(groupName);
-		rosterGroup.removeEntry(entry);
+        RosterGroup rosterGroup = roster.getGroup(groupName);
+        rosterGroup.removeEntry(entry);
         response.sendRedirect("viewRoster.jsp");
         return;
     }
 
-	// Close the connection to the XMPP server
+    // Close the connection to the XMPP server
     if ("close".equals(action)) {
         conn.close();
         session.invalidate();
@@ -119,7 +119,7 @@
               <tr> 
                 <td> <TABLE cellSpacing=0 borderColorDark=#E0E0E0 cellPadding=0 width=100% align=center borderColorLight=#000000 border=1>
                     <% for (Iterator groups = roster.getGroups(); groups.hasNext();) {
-					RosterGroup group = (RosterGroup)groups.next();%>
+                    RosterGroup group = (RosterGroup)groups.next();%>
                     <tr> 
                       <td bgcolor="#AAAAAA" colspan="6" class=text id=white height=16>Group: 
                         <%= group.getName()%></td>
@@ -131,12 +131,12 @@
                       <TD colspan="3" class=text id=white height=16><a href="addContact.jsp?group1=<%=group.getName()%>"><img src="images/businessman_add.png" alt="Add contact to group" border="0"></a></TD>
                     </TR>
                     <% for (Iterator it = group.getEntries(); it.hasNext();) { 
-						RosterEntry entry = (RosterEntry)it.next();%>
+                        RosterEntry entry = (RosterEntry)it.next();%>
                     <TR vAlign=center align=middle bgColor=#ffffff> 
                       <TD class=text height=16><%= entry.getUser()%></TD>
                       <TD class=text height=16><%= entry.getName()%></TD>
                       <TD class=text height=16><%= entry.getType()%></TD>
-                      <TD class=text height=16><a href="moveContact.jsp?user=<%=entry.getUser()%>"><img src="images/businessmen.png" alt="Move entry to other group" border="0"></a></TD>
+                      <TD class=text height=16><a href="moveContact.jsp?user=<%=entry.getUser()%>&fromGroup=<%=group.getName()%>"><img src="images/businessmen.png" alt="Groups management" border="0"></a></TD>
                       <TD class=text height=16><a href="viewRoster.jsp?action=groupDelete&user=<%=entry.getUser()%>&group=<%=group.getName()%>"><img src="images/businessman_delete.png" alt="Remove contact from the group" border="0"></a></TD>
                       <TD class=text height=16><a href="viewRoster.jsp?action=rosterDelete&user=<%=entry.getUser()%>"><img src="images/garbage.png" alt="Remove contact from the roster" border="0"></a></TD>
                     </TR>
@@ -158,7 +158,7 @@
                       <td class=text height=16><%= entry.getUser()%></td>
                       <td class=text height=16><%= entry.getName()%></td>
                       <td class=text height=16><%= entry.getType()%></td>
-                      <TD class=text height=16><a href="moveContact.jsp?user=<%=entry.getUser()%>"><img src="images/businessmen.png" alt="Move entry to a group" border="0"></a></td>
+                      <TD class=text height=16><a href="moveContact.jsp?user=<%=entry.getUser()%>"><img src="images/businessmen.png" alt="Groups management" border="0"></a></td>
                       <TD class=text height=16>&nbsp;</TD>
                       <TD class=text height=16><a href="viewRoster.jsp?action=rosterDelete&user=<%=entry.getUser()%>"><img src="images/garbage.png" alt="Remove contact from roster" border="0"></a></td>
                     </tr>
@@ -184,11 +184,11 @@
                       <TD class=text id=white height=16>&nbsp;</TD>
                     </TR>
                     <% for (Iterator entries = roster.getEntries(); entries.hasNext();) {
-					RosterEntry entry = (RosterEntry)entries.next();
-					Iterator presences = roster.getPresences(entry.getUser());
-					if (presences != null) {
-						while (presences.hasNext()) {
-							Presence presence = (Presence)presences.next(); %>
+                    RosterEntry entry = (RosterEntry)entries.next();
+                    Iterator presences = roster.getPresences(entry.getUser());
+                    if (presences != null) {
+                        while (presences.hasNext()) {
+                            Presence presence = (Presence)presences.next(); %>
                     <TR vAlign=center align=middle bgColor=#ffffff> 
                       <TD class=text height=16><%= presence.getFrom()%></TD>
                       <TD class=text height=16><%= presence.getMode()%></TD>
@@ -208,10 +208,10 @@
                       <TD class=text id=white height=16>&nbsp;</TD>
                     </TR>
                     <%  // Show other presences of the current user
-				Iterator presences = roster.getPresences(conn.getUser());
-				if (presences != null) {
-					while (presences.hasNext()) {
-						Presence presence = (Presence)presences.next(); %>
+                Iterator presences = roster.getPresences(conn.getUser());
+                if (presences != null) {
+                    while (presences.hasNext()) {
+                        Presence presence = (Presence)presences.next(); %>
                     <tr vAlign=center align=middle bgColor=#ffffff> 
                       <TD class=text height=16><%= presence.getFrom()%></TD>
                       <TD class=text height=16><%= presence.getMode()%></TD>
