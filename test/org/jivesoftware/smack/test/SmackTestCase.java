@@ -177,6 +177,10 @@ public abstract class SmackTestCase extends TestCase {
         return host;
     }
 
+    protected int getPort() {
+        return port;
+    }
+
     /**
      * Returns the default groupchat service domain.
      * 
@@ -198,6 +202,9 @@ public abstract class SmackTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         init();
+        if (getMaxConnections() < 1) {
+            return;
+        }
         connections = new XMPPConnection[getMaxConnections()];
         try {
             // Connect to the server
