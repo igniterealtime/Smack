@@ -137,6 +137,25 @@ public class AccountManager {
     }
 
     /**
+     * Returns the value of a given account attribute or <tt>null</tt> if the account
+     * attribute wasn't found.
+     *
+     * @param name the name of the account attribute to return its value.
+     * @return the value of the account attribute or <tt>null</tt> if an account
+     * attribute wasn't found for the requested name.
+     */
+    public String getAccountAttribute(String name) {
+        try {
+            if (info == null) {
+                getRegistrationInfo();
+            }
+            return (String) info.getAttributes().get(name);
+        }
+        catch (XMPPException xe) { }
+        return null;
+    }
+
+    /**
      * Returns the instructions for creating a new account, or <tt>null</tt> if there
      * are no instructions. If present, instructions should be displayed to the end-user
      * that will complete the registration process.
