@@ -1,13 +1,54 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
- *
- * Copyright (C) 1999-2003 Jive Software. All rights reserved.
- *
- * This software is the proprietary information of Jive Software.
- * Use is subject to license terms.
- */
+* $RCSfile$
+* $Revision$
+* $Date$
+*
+* Copyright (C) 2002-2004 Jive Software. All rights reserved.
+* ====================================================================
+* The Jive Software License (based on Apache Software License, Version 1.1)
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions
+* are met:
+*
+* 1. Redistributions of source code must retain the above copyright
+*    notice, this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in
+*    the documentation and/or other materials provided with the
+*    distribution.
+*
+* 3. The end-user documentation included with the redistribution,
+*    if any, must include the following acknowledgment:
+*       "This product includes software developed by
+*        Jive Software (http://www.jivesoftware.com)."
+*    Alternately, this acknowledgment may appear in the software itself,
+*    if and wherever such third-party acknowledgments normally appear.
+*
+* 4. The names "Smack" and "Jive Software" must not be used to
+*    endorse or promote products derived from this software without
+*    prior written permission. For written permission, please
+*    contact webmaster@jivesoftware.com.
+*
+* 5. Products derived from this software may not be called "Smack",
+*    nor may "Smack" appear in their name, without prior written
+*    permission of Jive Software.
+*
+* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED.  IN NO EVENT SHALL JIVE SOFTWARE OR
+* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+* SUCH DAMAGE.
+* ====================================================================
+*/
 
 package org.jivesoftware.smackx.workgroup.user;
 
@@ -18,12 +59,11 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.GroupChatInvitation;
 
-import org.jivesoftware.smackx.workgroup.*;
 import org.jivesoftware.smackx.workgroup.packet.*;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
 /**
- * Provides workgroup services for users. Users can join the workgropu queue, depart the
+ * Provides workgroup services for users. Users can join the workgroup queue, depart the
  * queue, find status information about their placement in the queue, and register to
  * be notified when they are routed to an agent.<p>
  *
@@ -31,18 +71,18 @@ import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
  * for use by agents.
  *
  * @author Matt Tucker
- * @author loki der quaeler
  */
 public class Workgroup {
 
     private String workgroupName;
     private XMPPConnection connection;
     private boolean inQueue;
-    private List invitationListeners;
     private List queueListeners;
 
     private int queuePosition = -1;
     private int queueRemainingTime = -1;
+
+    private PacketListener packetListener;
 
     /**
      * Creates a new workgroup instance using the specified workgroup name
@@ -63,7 +103,6 @@ public class Workgroup {
         this.workgroupName = workgroupName;
         this.connection = connection;
         inQueue = false;
-        invitationListeners = new ArrayList();
         queueListeners = new ArrayList();
 
         // Register as a queue listener for internal usage by this instance.
@@ -88,11 +127,16 @@ public class Workgroup {
         });
 
         // Register an invitation listener for internal usage by this instance.
-        addInvitationListener(new InvitationListener() {
-            public void invitationReceived(Invitation invitation) {
-                inQueue = false;
-                queuePosition = -1;
-                queueRemainingTime = -1;
+        addInvitationListener(new PacketListener() {
+
+            public void processPacket(Packet packet) {
+                GroupChatInvitation invitation = (GroupChatInvitation)packet.getExtension(
+                        GroupChatInvitation.ELEMENT_NAME, GroupChatInvitation.NAMESPACE);
+                if (invitation != null) {
+                    inQueue = false;
+                    queuePosition = -1;
+                    queueRemainingTime = -1;
+                }
             }
         });
 
@@ -102,11 +146,13 @@ public class Workgroup {
 
         PacketFilter filter = new AndFilter(new FromContainsFilter(this.workgroupName), orFilter);
 
-        connection.addPacketListener(new PacketListener() {
-                public void processPacket(Packet packet) {
-                    handlePacket(packet);
-                }
-            }, filter);
+        packetListener = new PacketListener() {
+
+            public void processPacket(Packet packet) {
+                handlePacket(packet);
+            }
+        };
+        connection.addPacketListener(packetListener, filter);
     }
 
     /**
@@ -306,34 +352,14 @@ public class Workgroup {
      * Adds an invitation listener that will be notified of groupchat invitations
      * from the workgroup for the the user that created this Workgroup instance.
      *
-     * @param invitationListener the invitation listener.
+     * @param packetListener the invitation listener.
      */
-    public void addInvitationListener(InvitationListener invitationListener) {
-        synchronized(invitationListeners) {
-            if (!invitationListeners.contains(invitationListener)) {
-                invitationListeners.add(invitationListener);
-            }
-        }
+    public void addInvitationListener(PacketListener packetListener) {
+        connection.addPacketListener(packetListener, null);
     }
 
-    /**
-     * Removes an invitation listener.
-     *
-     * @param invitationListener the invitation listener.
-     */
-    public void removeQueueListener(InvitationListener invitationListener) {
-        synchronized(invitationListeners) {
-            invitationListeners.remove(invitationListener);
-        }
-    }
-
-    private void fireInvitationEvent(Invitation invitation) {
-        synchronized (invitationListeners) {
-            for (Iterator i=invitationListeners.iterator(); i.hasNext(); ) {
-                InvitationListener listener = (InvitationListener)i.next();
-                listener.invitationReceived(invitation);
-            }
-        }
+    protected void finalize() throws Throwable {
+        connection.removePacketListener(packetListener);
     }
 
     private void fireQueueJoinedEvent() {
@@ -383,35 +409,6 @@ public class Workgroup {
             if (pe != null) {
                 fireQueueDepartedEvent();
             }
-            else {
-                // Check to see if the user has been invited to a chat.
-                GroupChatInvitation invitation = (GroupChatInvitation)msg.getExtension(
-                        "x", "jabber:x:conference");
-
-                if (invitation != null) {
-                    String roomAddress = invitation.getRoomAddress();
-                    String sessionID = null;
-                    Map metaData = null;
-
-                    pe = msg.getExtension(SessionID.ELEMENT_NAME,
-                            SessionID.NAMESPACE);
-                    if (pe != null) {
-                        sessionID = ((SessionID)pe).getSessionID();
-                    }
-
-                    pe = msg.getExtension(MetaData.ELEMENT_NAME,
-                            MetaData.NAMESPACE);
-                    if (pe != null) {
-                        metaData = ((MetaData)pe).getMetaData();
-                    }
-
-                    Invitation inv = new Invitation(connection.getUser(), roomAddress,
-                            workgroupName, sessionID, msg.getBody(),
-                            msg.getFrom(), metaData);
-
-                    fireInvitationEvent(inv);
-                }
-            }
         }
         // Check to see if it's a queue update notification.
         else if (packet instanceof QueueUpdate) {
@@ -446,7 +443,7 @@ public class Workgroup {
             buf.append("<queue-notifications/>");
 
             // Add any meta-data.
-            buf.append(MetaDataUtils.serializeMetaData(metaData));
+            buf.append(MetaDataUtils.encodeMetaData(metaData));
 
             buf.append("</join-queue>");
 

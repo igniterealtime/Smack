@@ -52,77 +52,67 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.xmlpull.v1.XmlPullParser;
-
+import java.util.Date;
 
 /**
- * A packet extension that contains information about the user and agent in a
- * workgroup chat. The packet extension is attached to group chat invitations.
+ * An immutable class which wraps up customer-in-queue data return from the server; depending on
+ *  the type of information dispatched from the server, not all information will be available in
+ *  any given instance.
+ *
+ * @author loki der quaeler
  */
-public class WorkgroupInformation implements PacketExtension {
-
-    /**
-     * Element name of the packet extension.
-     */
-    public static final String ELEMENT_NAME = "workgroup";
-
-    /**
-     * Namespace of the packet extension.
-     */
-    public static final String NAMESPACE = "xmpp:workgroup";
+public class QueueUser {
 
     private String userID;
-    private String agentID;
 
-    protected WorkgroupInformation(String userID, String agentID) {
-        this.userID = userID;
-        this.agentID = agentID;
+    private int queuePosition;
+    private int estimatedTime;
+    private Date joinDate;
+
+    /**
+     * @param uid the user jid of the customer in the queue
+     * @param position the position customer sits in the queue
+     * @param time the estimate of how much longer the customer will be in the queue in seconds
+     * @param joinedAt the timestamp of when the customer entered the queue
+     */
+    public QueueUser (String uid, int position, int time, Date joinedAt) {
+        super();
+
+        this.userID = uid;
+        this.queuePosition = position;
+        this.estimatedTime = time;
+        this.joinDate = joinedAt;
     }
 
-    public String getUserID() {
-        return userID;
+    /**
+     * @return the user jid of the customer in the queue
+     */
+    public String getUserID () {
+        return this.userID;
     }
 
-    public String getAgentID() {
-        return agentID;
+    /**
+     * @return the position in the queue at which the customer sits, or -1 if the update which
+     *          this instance embodies is only a time update instead
+     */
+    public int getQueuePosition () {
+        return this.queuePosition;
     }
 
-    public String getElementName() {
-        return ELEMENT_NAME;
+    /**
+     * @return the estimated time remaining of the customer in the queue in seconds, or -1 if
+     *          if the update which this instance embodies is only a position update instead
+     */
+    public int getEstimatedRemainingTime () {
+        return this.estimatedTime;
     }
 
-    public String getNamespace() {
-        return NAMESPACE;
+    /**
+     * @return the timestamp of when this customer entered the queue, or null if the server did not
+     *          provide this information
+     */
+    public Date getQueueJoinTimestamp () {
+        return this.joinDate;
     }
 
-    public String toXML() {
-        StringBuffer buf = new StringBuffer();
-
-        buf.append('<').append(ELEMENT_NAME);
-        buf.append(" user=\"").append(userID).append("\"");
-        buf.append(" agent=\"").append(agentID);
-        buf.append("\" xmlns=\"").append(NAMESPACE).append("\" />");
-
-        return buf.toString();
-    }
-
-    public static class Provider implements PacketExtensionProvider {
-
-        /**
-         * PacketExtensionProvider implementation
-         */
-        public PacketExtension parseExtension (XmlPullParser parser)
-            throws Exception {
-            String user = parser.getAttributeValue("", "user");
-            String agent = parser.getAttributeValue("", "agent");
-
-            // since this is a start and end tag, and we arrive on the start, this should guarantee
-            //      we leave on the end
-            parser.next();
-
-            return new WorkgroupInformation(user, agent);
-        }
-    }
 }
