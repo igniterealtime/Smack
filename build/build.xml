@@ -85,6 +85,7 @@
     <!-- jar -->
     <!-- ======================================================================================= -->
     <target name="jar" depends="compile, test" unless="jar.uptodate" description="Produces smack.jar">
+
         <jar destfile="${jar.dest.dir}/smack.jar"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smack/**/*.class"
@@ -175,9 +176,13 @@
 
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" if="release.exists" depends="release-exists, test">
-        <antcall target="jar" />
-        <antcall target="javadoc" />
+    <target name="release" if="release.exists" depends="release-exists">
+        <antcall target="jar">
+            <param name="no.test" value="true" />
+        </antcall>
+        <antcall target="javadoc">
+            <param name="no.test" value="true" />
+        </antcall>
         <ant antfile="${basedir}/build/release.xml" />
     </target>
 
