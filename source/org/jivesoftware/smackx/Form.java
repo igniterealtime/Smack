@@ -138,34 +138,185 @@ public class Form {
     }
     
     /**
-     * Sets a new answer as part of a form's field. The field whose variable matches the requested 
-     * variable will be completed with the specified value. If no field could be found for 
-     * the specified variable then an exception will be raised.
+     * Sets a new String value to a given form's field. The field whose variable matches the 
+     * requested variable will be completed with the specified value. If no field could be found 
+     * for the specified variable then an exception will be raised.<p>
      * 
-     * @param variable the variable that was completed.
-     * @param value the value that was answered.
+     * If the value to set to the field is not a basic type (e.g. String, boolean, int, etc.) you
+     * can use this message where the String value is the String representation of the object. 
+     * 
+     * @param variable the variable name that was completed.
+     * @param value the String value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
      * @throws IllegalArgumentException if the form does not include the specified variable.
+     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
      */
     public void setAnswer(String variable, String value) {
+        FormField field = getField(variable);
+        if (field == null) {
+            throw new IllegalArgumentException("Field not found for the specified variable name.");
+        }
+        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
+            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
+            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())
+            && !FormField.TYPE_JID_SINGLE.equals(field.getType())
+            && !FormField.TYPE_HIDDEN.equals(field.getType())) {
+            throw new IllegalArgumentException("This field is not of type String.");
+        }
+        setAnswer(field, value);
+    }
+
+    /**
+     * Sets a new int value to a given form's field. The field whose variable matches the 
+     * requested variable will be completed with the specified value. If no field could be found 
+     * for the specified variable then an exception will be raised.
+     * 
+     * @param variable the variable name that was completed.
+     * @param value the int value that was answered.
+     * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
+     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     */
+    public void setAnswer(String variable, int value) {
+        FormField field = getField(variable);
+        if (field == null) {
+            throw new IllegalArgumentException("Field not found for the specified variable name.");
+        }
+        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
+            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
+            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
+            throw new IllegalArgumentException("This field is not of type int.");
+        }
+        setAnswer(field, new Integer(value));
+    }
+
+    /**
+     * Sets a new long value to a given form's field. The field whose variable matches the 
+     * requested variable will be completed with the specified value. If no field could be found 
+     * for the specified variable then an exception will be raised.
+     * 
+     * @param variable the variable name that was completed.
+     * @param value the long value that was answered.
+     * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
+     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     */
+    public void setAnswer(String variable, long value) {
+        FormField field = getField(variable);
+        if (field == null) {
+            throw new IllegalArgumentException("Field not found for the specified variable name.");
+        }
+        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
+            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
+            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
+            throw new IllegalArgumentException("This field is not of type long.");
+        }
+        setAnswer(field, new Long(value));
+    }
+
+    /**
+     * Sets a new float value to a given form's field. The field whose variable matches the 
+     * requested variable will be completed with the specified value. If no field could be found 
+     * for the specified variable then an exception will be raised.
+     * 
+     * @param variable the variable name that was completed.
+     * @param value the float value that was answered.
+     * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
+     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     */
+    public void setAnswer(String variable, float value) {
+        FormField field = getField(variable);
+        if (field == null) {
+            throw new IllegalArgumentException("Field not found for the specified variable name.");
+        }
+        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
+            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
+            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
+            throw new IllegalArgumentException("This field is not of type float.");
+        }
+        setAnswer(field, new Float(value));
+    }
+
+    /**
+     * Sets a new double value to a given form's field. The field whose variable matches the 
+     * requested variable will be completed with the specified value. If no field could be found 
+     * for the specified variable then an exception will be raised.
+     * 
+     * @param variable the variable name that was completed.
+     * @param value the double value that was answered.
+     * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
+     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     */
+    public void setAnswer(String variable, double value) {
+        FormField field = getField(variable);
+        if (field == null) {
+            throw new IllegalArgumentException("Field not found for the specified variable name.");
+        }
+        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
+            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
+            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
+            throw new IllegalArgumentException("This field is not of type double.");
+        }
+        setAnswer(field, new Double(value));
+    }
+
+    /**
+     * Sets a new boolean value to a given form's field. The field whose variable matches the 
+     * requested variable will be completed with the specified value. If no field could be found 
+     * for the specified variable then an exception will be raised.
+     * 
+     * @param variable the variable name that was completed.
+     * @param value the boolean value that was answered.
+     * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
+     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     */
+    public void setAnswer(String variable, boolean value) {
+        FormField field = getField(variable);
+        if (field == null) {
+            throw new IllegalArgumentException("Field not found for the specified variable name.");
+        }
+        if (!FormField.TYPE_BOOLEAN.equals(field.getType())) {
+            throw new IllegalArgumentException("This field is not of type boolean.");
+        }
+        setAnswer(field, (value ? "1" : "0"));
+    }
+
+    /**
+     * Sets a new Object value to a given form's field. In fact, the object representation 
+     * (i.e. #toString) will be the actual value of the field.<p>
+     * 
+     * If the value to set to the field is not a basic type (e.g. String, boolean, int, etc.) you
+     * will need to use {@link #setAnswer(String, String))} where the String value is the 
+     * String representation of the object.<p> 
+     * 
+     * Before setting the new value to the field we will check if the form is of type submit. If 
+     * the form isn't of type submit means that it's not possible to complete the form and an   
+     * exception will be thrown.
+     * 
+     * @param field the form field that was completed.
+     * @param value the Object value that was answered. The object representation will be the 
+     * actual value.
+     * @throws IllegalStateException if the form is not of type "submit".
+     */
+    private void setAnswer(FormField field, Object value) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot set an answer if the form is not of type " +
             "\"submit\"");
         }
-        FormField field = getField(variable);
-        if (field != null) {
-            field.resetValues();
-            field.addValue(value);
-        }
-        else {
-            throw new IllegalArgumentException("Couldn't find a field for the specified variable.");
-        }
+        field.resetValues();
+        field.addValue(value.toString());
     }
 
     /**
-     * Sets new answers as part of a form's field. The field whose variable matches the requested 
+     * Sets a new values to a given form's field. The field whose variable matches the requested 
      * variable will be completed with the specified values. If no field could be found for 
-     * the specified variable then an exception will be raised.
+     * the specified variable then an exception will be raised.<p>
+     * 
+     * The Objects contained in the List could be of any type. The String representation of them
+     * (i.e. #toString) will be actually used when sending the answer to the server.
      * 
      * @param variable the variable that was completed.
      * @param values the values that were answered.
@@ -179,7 +330,16 @@ public class Form {
         }
         FormField field = getField(variable);
         if (field != null) {
+            // Check that the field can accept a collection of values
+            if (!FormField.TYPE_JID_MULTI.equals(field.getType())
+                && !FormField.TYPE_LIST_MULTI.equals(field.getType())
+                && !FormField.TYPE_LIST_SINGLE.equals(field.getType())
+                && !FormField.TYPE_HIDDEN.equals(field.getType())) {
+                throw new IllegalArgumentException("This field only accept list of values.");
+            }
+            // Clear the old values 
             field.resetValues();
+            // Set the new values. The string representation of each value will be actually used.
             field.addValues(values);
         }
         else {
@@ -362,7 +522,9 @@ public class Form {
             // Add to the new form any type of field that includes a variable.
             // Note: The fields of type FIXED are the only ones that don't specify a variable
             if (field.getVariable() != null) {
-                form.addField(new FormField(field.getVariable()));
+                FormField newField = new FormField(field.getVariable());
+                newField.setType(field.getType());
+                form.addField(newField);
                 // Set the answer ONLY to the hidden fields 
                 if (FormField.TYPE_HIDDEN.equals(field.getType())) {
                     // Since a hidden field could have many values we need to collect them 
