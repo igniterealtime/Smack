@@ -82,6 +82,16 @@ public class FormField {
     private List values = new ArrayList();
 
     /**
+     * Creates a new FormField with the variable name that uniquely identifies the field 
+     * in the context of the form. 
+     *  
+     * @param variable the variable name of the question.
+     */
+    public FormField(String variable) {
+        this.variable = variable;
+    }
+    
+    /**
      * Returns a description that provides extra clarification about the question. This information
      * could be presented to the user either in tool-tip, help button, or as a section of text 
      * before the question.<p> 
@@ -227,15 +237,6 @@ public class FormField {
      */
     public void setType(String type) {
         this.type = type;
-    }
-
-    /**
-     * Returns the variable name that the question is filling out.
-     * 
-     * @param variable the variable name of the question. 
-     */
-    public void setVariable(String variable) {
-        this.variable = variable;
     }
 
     /**
