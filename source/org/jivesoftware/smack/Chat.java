@@ -55,6 +55,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.filter.ThreadFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 
 /**
  * A chat is a series of messages sent between two users. Each chat has
@@ -89,6 +90,7 @@ public class Chat {
     private XMPPConnection connection;
     private String chatID;
     private String participant;
+    private PacketFilter messageFilter;
     private PacketCollector messageCollector;
 
     /**
@@ -103,7 +105,8 @@ public class Chat {
         // Automatically assign the next chat ID.
         chatID = nextID();
 
-        messageCollector = connection.createPacketCollector(new ThreadFilter(chatID));
+        messageFilter = new ThreadFilter(chatID);
+        messageCollector = connection.createPacketCollector(messageFilter);
     }
 
     /**
@@ -224,5 +227,15 @@ public class Chat {
      */
     public Message nextMessage(long timeout) {
         return (Message)messageCollector.nextResult(timeout);
+    }
+
+    /**
+     * Adds a packet listener that will be notified of any new messages in the
+     * chat.
+     *
+     * @param listener a packet listener.
+     */
+    public void addMessageListener(PacketListener listener) {
+        connection.addPacketListener(listener, messageFilter);
     }
 }
