@@ -16,7 +16,7 @@ Messaging using Chat and GroupChat
 
 <p>
 Sending messages back and forth is at the core of instant messaging. Two classes
-aid in sending and recieiving messages:
+aid in sending and receiving messages:
 <ul>
 	<li> <tt>org.jivesoftware.smack.Chat</tt> -- used to send messages between two people.
 	<li> <tt>org.jivesoftware.smack.GroupChat</tt> -- used to join a chat room to send messages between many people.
@@ -31,7 +31,7 @@ Chat and GroupChat classes to send and listen for messages directly.
 Chat
 </p>
 
-A chat creates a new thread of messgaes (using a thread ID) between two users. The 
+A chat creates a new thread of messages (using a thread ID) between two users. The 
 following code snippet demonstrates how to create a new Chat with a user and then send
 them a text message:<p>
 
@@ -88,7 +88,7 @@ message.<p>
 <div class="code"><pre>
 <font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
 GroupChat newGroupChat = connection.createGroupChat(<font color="green">"test@jivesoftware.com"</font>);
-<font color="gray"><i>// Join the gropu chat using the nickname "jsmith".</i></font>
+<font color="gray"><i>// Join the group chat using the nickname "jsmith".</i></font>
 newGroupChat.join(<font color="green">"jsmith"</font>);
 <font color="gray"><i>// Send a message to all the other people in the chat room.</i></font>
 newGroupChat.sendMessage(<font color="green">"Howdy!"</font>);
