@@ -52,21 +52,134 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.filter.*;
+
 import java.util.*;
 
 /**
- * NOTE: this class is not yet implemented.
+ * Roster.
  *
+ * @see XMPPConnection#getRoster()
  * @author Matt Tucker
  */
 public class Roster {
 
-    private Map presenceMap = new HashMap();
-
     private XMPPConnection connection;
+    private Map groups;
 
-    protected Roster(XMPPConnection connection) {
-
+    Roster(final XMPPConnection connection) {
+        this.connection = connection;
+        groups = new HashMap();
+        // Listen for any roster packets.
+        PacketFilter filter = new PacketTypeFilter(RosterPacket.class);
+        PacketListener rosterListener = new RosterListener();
+        connection.addPacketListener(rosterListener, filter);
     }
 
+    /**
+     * Reloads the entire roster from the server. This is an asynchronous operation,
+     * which means the method will return immediately, and the roster will be
+     * reloaded at a later point when the server responds to the reload request.
+     */
+    public void reload() {
+        connection.sendPacket(new RosterPacket());
+    }
+
+    /**
+     * Creates a new group.
+     *
+     * @param name the name of the group.
+     * @return a new group.
+     */
+    public RosterGroup createGroup(String name) {
+        synchronized (groups) {
+            if (groups.containsKey(name)) {
+                throw new IllegalArgumentException("Group with name " + name + " alread exists.");
+            }
+            RosterGroup group = new RosterGroup(name, connection);
+            groups.put(name, group);
+            return group;
+        }
+    }
+
+    /**
+     * Returns the roster group with the specified name, or <tt>null</tt> if the
+     * group doesn't exist.
+     *
+     * @param name the name of the group.
+     * @return the roster group with the specified name.
+     */
+    public RosterGroup getGroup(String name) {
+        synchronized (groups) {
+            return (RosterGroup)groups.get(name);
+        }
+    }
+
+    /**
+     * Returns an iterator the for all the roster groups.
+     *
+     * @return an iterator for all roster groups.
+     */
+    public Iterator getGroups() {
+        synchronized (groups) {
+            List groupsList = Collections.unmodifiableList(new ArrayList(groups.values()));
+            return groupsList.iterator();
+        }
+    }
+
+    /**
+     * Listens for all roster packets and processes them.
+     */
+    private class RosterListener implements PacketListener {
+
+        public void processPacket(Packet packet) {
+            RosterPacket rosterPacket = (RosterPacket)packet;
+            for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
+                RosterPacket.Item item = (RosterPacket.Item)i.next();
+                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                        connection);
+                // Find the list of groups that the user currently belongs to.
+                List currentGroupNames = new ArrayList();
+                for (Iterator j = entry.getGroups(); j.hasNext();  ) {
+                    RosterGroup group = (RosterGroup)j.next();
+                    currentGroupNames.add(group.getName());
+                }
+
+                List newGroupNames = new ArrayList();
+                for (Iterator k = item.getGroupNames(); k.hasNext();  ) {
+                    String groupName = (String)k.next();
+                    // Add the group name to the list.
+                    newGroupNames.add(groupName);
+
+                    // Add the entry to the group.
+                    RosterGroup group = getGroup(groupName);
+                    if (group == null) {
+                        group = createGroup(groupName);
+                        groups.put(groupName, group);
+                    }
+                    // Add the entry.
+                    group.addEntryLocal(entry);
+                }
+
+                // We have the list of old and new group names. We now need to
+                // remove the entry from the all the groups it may no longer belong
+                // to. We do this by subracting the new group set from the old.
+                for (int m=0; m<newGroupNames.size(); m++) {
+                    currentGroupNames.remove(newGroupNames.get(m));
+                }
+                // Loop through any groups that remain and remove the entries.
+                for (int n=0; n<currentGroupNames.size(); n++) {
+                    String groupName = (String)currentGroupNames.get(n);
+                    RosterGroup group = getGroup(groupName);
+                    group.removeEntryLocal(entry);
+                    if (group.getEntryCount() == 0) {
+                        synchronized (groups) {
+                            groups.remove(groupName);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

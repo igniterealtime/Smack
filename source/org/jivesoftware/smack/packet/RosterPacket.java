@@ -1,0 +1,232 @@
+/**
+ * $RCSfile$
+ * $Revision$
+ * $Date$
+ *
+ * Copyright (C) 2002-2003 Jive Software. All rights reserved.
+ * ====================================================================
+ * The Jive Software License (based on Apache Software License, Version 1.1)
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software developed by
+ *        Jive Software (http://www.jivesoftware.com)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Smack" and "Jive Software" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please
+ *    contact webmaster@jivesoftware.com.
+ *
+ * 5. Products derived from this software may not be called "Smack",
+ *    nor may "Smack" appear in their name, without prior written
+ *    permission of Jive Software.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL JIVE SOFTWARE OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ */
+
+package org.jivesoftware.smack.packet;
+
+import java.util.*;
+
+/**
+ * Represents XMPP roster packets.
+ *
+ * @author Matt Tucker
+ */
+public class RosterPacket extends IQ {
+
+    private List rosterItems = new ArrayList();
+
+    public void addRosterItem(Item entry) {
+        synchronized (rosterItems) {
+            rosterItems.add(entry);
+        }
+    }
+
+    public Iterator getRosterItems() {
+        synchronized (rosterItems) {
+            List entries = Collections.unmodifiableList(new ArrayList(rosterItems));
+            return entries.iterator();
+        }
+    }
+
+    public String getQueryXML() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<query xmlns=\"jabber:iq:roster\">");
+        synchronized (rosterItems) {
+            for (int i=0; i<rosterItems.size(); i++) {
+                Item entry = (Item)rosterItems.get(i);
+                buf.append(entry.toXML());
+            }
+        }
+        buf.append("</query>");
+        return buf.toString();
+    }
+
+    public static class Item {
+
+        private String user;
+        private String name;
+        private ItemType itemType;
+        private List groupNames;
+
+        public Item(String user, String name) {
+            this.user = user;
+            this.name = name;
+            itemType = null;
+            groupNames = new ArrayList();
+        }
+
+        public String getUser() {
+            return user;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public ItemType getItemType() {
+            return itemType;
+        }
+
+        public void setItemType(ItemType itemType) {
+            this.itemType = itemType;
+        }
+
+        public Iterator getGroupNames() {
+            synchronized (groupNames) {
+                return Collections.unmodifiableList(groupNames).iterator();
+            }
+        }
+
+        public void addGroupName(String groupName) {
+            synchronized (groupNames) {
+                if (!groupNames.contains(groupName)) {
+                    groupNames.add(groupName);
+                }
+            }
+        }
+
+        public void removeGroupName(String groupName) {
+            synchronized (groupNames) {
+                groupNames.remove(groupName);
+            }
+        }
+
+        public String toXML() {
+            StringBuffer buf = new StringBuffer();
+            buf.append("<item jid=\"").append(user).append("\"");
+            if (name != null) {
+                buf.append(" name=\"").append(name).append("\"");
+            }
+            if (itemType != null) {
+                buf.append(" subscription=\"").append(itemType).append("\"");
+            }
+            buf.append(">");
+            synchronized (groupNames) {
+                for (int i=0; i<groupNames.size(); i++) {
+                    String groupName = (String)groupNames.get(i);
+                    buf.append("<group>").append(groupName).append("</group>");
+                }
+            }
+            buf.append("</item>");
+            return buf.toString();
+        }
+    }
+
+    public static class ItemStatus {
+
+        public static final ItemStatus SUBSCRIBED = new ItemStatus("subscribed");
+        public static final ItemStatus SUBSCRIPTION_PENDING = new ItemStatus("subscribe");
+        public static final ItemStatus UNSUBCRIPTION_PENDING = new ItemStatus("unsubscribe");
+
+        public static ItemStatus fromString(String value) {
+            if ("subscribed".equals(value)) {
+                return SUBSCRIBED;
+            }
+            else if ("subscribe".equals(value)) {
+                return SUBSCRIPTION_PENDING;
+            }
+            else {
+                return SUBSCRIBED;
+            }
+        }
+
+        private String value;
+
+        private ItemStatus (String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+    }
+
+    public static class ItemType {
+
+        public static final ItemType NONE = new ItemType("none");
+        public static final ItemType TO = new ItemType("to");
+        public static final ItemType FROM = new ItemType("from");
+        public static final ItemType BOTH = new ItemType("both");
+
+        public static ItemType fromString(String value) {
+            if ("none".equals(value)) {
+                return NONE;
+            }
+            else if ("to".equals(value)) {
+                return TO;
+            }
+            else if ("from".equals(value)) {
+                return FROM;
+            }
+            else if ("both".equals(value)) {
+                return BOTH;
+            }
+            else {
+                return null;
+            }
+        }
+
+        private String value;
+
+        public ItemType (String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+    }
+}

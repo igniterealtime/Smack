@@ -72,6 +72,9 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 class PacketReader {
 
+    /**
+     * Namespace used to store packet properties.
+     */
     private static final String PROPERTIES_NAMESPACE =
             "http://www.jivesoftware.com/xmlns/xmpp/properties";
 
@@ -107,8 +110,21 @@ class PacketReader {
         listenerThread.setDaemon(true);
 
         try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance(
-                    System.getProperty(XmlPullParserFactory.PROPERTY_NAME), null);
+            final String defaultProviderName = "org.xmlpull.mxp1.MXParserFactory";
+            XmlPullParserFactory factory = null;
+            try {
+                // Attempt to load a factory implementation using a system property
+                // and a classloader context.
+                factory = XmlPullParserFactory.newInstance(
+                        System.getProperty(XmlPullParserFactory.PROPERTY_NAME),
+                        Thread.currentThread().getContextClassLoader().getClass());
+            }
+            catch (Exception e) {
+                if (factory == null) {
+                    // Loading failed. Therefore, use the hardcoded default.
+                    factory = XmlPullParserFactory.newInstance(defaultProviderName, null);
+                }
+            }
             factory.setNamespaceAware(true);
             parser = factory.newPullParser();
             parser.setInput(connection.reader);
@@ -323,6 +339,9 @@ class PacketReader {
                     if (namespace.equals("jabber:iq:auth")) {
                         iqPacket = parseAuthentication(parser);
                     }
+                    else if (namespace.equals("jabber:iq:roster")) {
+                        iqPacket = parseRoster(parser);
+                    }
                 }
                 else if (parser.getName().equals("error")) {
                     error = parseError(parser);
@@ -385,6 +404,37 @@ class PacketReader {
             }
         }
         return authentication;
+    }
+
+    private static RosterPacket parseRoster(XmlPullParser parser) throws Exception {
+        RosterPacket roster = new RosterPacket();
+        boolean done = false;
+        RosterPacket.Item item = null;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == parser.START_TAG) {
+                if (parser.getName().equals("item")) {
+                    String jid = parser.getAttributeValue("", "jid");
+                    String name = parser.getAttributeValue("", "name");
+                    String subscription = parser.getAttributeValue("", "subscription");
+                    item = new RosterPacket.Item(jid, name);
+                    item.setItemType(RosterPacket.ItemType.fromString(subscription));
+                }
+                if (parser.getName().equals("group")) {
+                    String groupName = parser.nextText();
+                    item.addGroupName(groupName);
+                }
+            }
+            else if (eventType == parser.END_TAG) {
+                if (parser.getName().equals("item")) {
+                    roster.addRosterItem(item);
+                }
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+        return roster;
     }
 
     private static Error parseError(XmlPullParser parser) throws Exception {
@@ -542,7 +592,6 @@ class PacketReader {
         Map properties = new HashMap();
         while (true) {
             int eventType = parser.next();
-            System.out.println("Start: " + parser.getName());
             if (eventType == parser.START_TAG) {
                 String name = parser.nextText();
                 parser.next();
@@ -613,10 +662,6 @@ class PacketReader {
                 return object.equals(this.packetListener);
             }
             return false;
-        }
-
-        public void processPacket(Packet packet) {
-            packetCollector.processPacket(packet);
         }
 
         public boolean notifyListener() {

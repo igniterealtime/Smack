@@ -52,8 +52,6 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.*;
-
 /**
  * Represents XMPP presence packets. Every presence packet has a type, which is one of
  * the following values:
@@ -84,7 +82,7 @@ import org.jivesoftware.smack.*;
  * the clients current presence status. Second, they are used to subscribe and
  * unsubscribe users from the roster.
  *
- * @see Roster
+ * @see RosterPacket
  * @author Matt Tucker
  */
 public class Presence extends Packet {

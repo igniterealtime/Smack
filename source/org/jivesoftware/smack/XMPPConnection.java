@@ -109,6 +109,8 @@ public class XMPPConnection {
     private PacketWriter packetWriter;
     private PacketReader packetReader;
 
+    private Roster roster;
+
     Writer writer;
     Reader reader;
 
@@ -274,6 +276,14 @@ public class XMPPConnection {
         collector.cancel();
         // Set presence to online.
         packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
+
+        // Finally, create the roster.
+        this.roster = new Roster(this);
+        roster.reload();
+    }
+
+    public Roster getRoster() {
+        return roster;
     }
 
     /**
@@ -389,8 +399,8 @@ public class XMPPConnection {
      */
     void init() throws XMPPException {
         try {
-            reader = new InputStreamReader(socket.getInputStream(), "UTF-8");
-            writer = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
         }
         catch (IOException ioe) {
             throw new XMPPException("Error establishing connection with server.", ioe);
@@ -496,11 +506,20 @@ public class XMPPConnection {
                 int count = myReader.read(cbuf, off, len);
                 if (count > 0) {
                     String str = new String(cbuf, off, count);
-                    receivedText1.append(str);
-                    receivedText2.append(str);
-                    if (str.endsWith(">")) {
+                    int index = str.lastIndexOf(">");
+                    if (index != -1) {
+                        receivedText1.append(str.substring(0, index+1));
+                        receivedText2.append(str.substring(0, index+1));
                         receivedText1.append(NEWLINE);
                         receivedText2.append(NEWLINE);
+                        if (str.length() > index) {
+                            receivedText1.append(str.substring(index+1));
+                            receivedText2.append(str.substring(index+1));
+                        }
+                    }
+                    else {
+                        receivedText1.append(str);
+                        receivedText2.append(str);
                     }
                 }
                 return count;
