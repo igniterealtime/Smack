@@ -92,7 +92,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
                     mucUser.setItem(parseItem(parser));
                 }
                 if (parser.getName().equals("password")) {
-                    mucUser.setPassword(parser.getText());
+                    mucUser.setPassword(parser.nextText());
                 }
                 if (parser.getName().equals("status")) {
                     mucUser.setStatus(new MUCUser.Status(parser.getAttributeValue("", "code")));
@@ -129,7 +129,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
                     item.setActor(parser.getAttributeValue("", "jid"));
                 }
                 if (parser.getName().equals("reason")) {
-                    item.setReason(parser.getText());
+                    item.setReason(parser.nextText());
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -150,7 +150,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("reason")) {
-                    invite.setReason(parser.getText());
+                    invite.setReason(parser.nextText());
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -171,7 +171,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("reason")) {
-                    decline.setReason(parser.getText());
+                    decline.setReason(parser.nextText());
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -191,7 +191,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("reason")) {
-                    destroy.setReason(parser.getText());
+                    destroy.setReason(parser.nextText());
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
