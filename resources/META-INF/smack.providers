@@ -29,5 +29,12 @@
         <namespace>jabber:x:event</namespace>
         <className>org.jivesoftware.smackx.provider.MessageEventProvider</className>
     </extensionProvider>
+    
+    <!-- XHTML -->
+    <extensionProvider>
+        <elementName>html</elementName>
+        <namespace>http://jabber.org/protocol/xhtml-im</namespace>
+        <className>org.jivesoftware.smackx.provider.XHTMLExtensionProvider</className>
+    </extensionProvider>
 
 </smackProviders>
