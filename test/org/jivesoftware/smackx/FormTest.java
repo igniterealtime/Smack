@@ -125,7 +125,7 @@ public class FormTest extends SmackTestCase {
             chat.sendMessage(msg);
 
             // Get the message with the form to fill out
-            Message msg2 = chat2.nextMessage();
+            Message msg2 = chat2.nextMessage(2000);
             // Retrieve the form to fill out
             Form formToRespond = Form.getFormFrom(msg2);
             assertNotNull(formToRespond);
@@ -156,7 +156,7 @@ public class FormTest extends SmackTestCase {
             chat2.sendMessage(msg2);
 
             // Get the message with the completed form
-            Message msg3 = chat.nextMessage();
+            Message msg3 = chat.nextMessage(2000);
             // Retrieve the completed form
             completedForm = Form.getFormFrom(msg3);
             assertNotNull(completedForm);
