@@ -424,11 +424,11 @@ public class XMPPConnection {
     public void close() {
         // Set presence to offline.
         packetWriter.sendPacket(new Presence(Presence.Type.UNAVAILABLE));
-        packetWriter.shutdown();
         packetReader.shutdown();
-        // Wait 100 ms for processes to clean-up, then shutdown.
+        packetWriter.shutdown();
+        // Wait 150 ms for processes to clean-up, then shutdown.
         try {
-            Thread.sleep(100);
+            Thread.sleep(150);
         }
         catch (Exception e) { }
         try {
