@@ -130,7 +130,7 @@ public abstract class IQ extends Packet {
 
     /**
      * Returns the sub-element XML section of the IQ packet, or <tt>null</tt> if there
-     * isn't one.<p>
+     * isn't one. Packet extensions <b>must</b> be included, if any are defined.<p>
      *
      * Extensions of this class must override this method.
      *
