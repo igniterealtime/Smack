@@ -97,7 +97,7 @@ import java.net.URL;
  * used to try to automatically set properties of the IQ instance using the values found
  * in the IQ packet XML. For example, an XMPP time packet resembles the following:
  * <pre>
- * &lt;iq type='get' to='joe@example.com' from='mary@example.com' id='time_1'&gt;
+ * &lt;iq type='result' to='joe@example.com' from='mary@example.com' id='time_1'&gt;
  *     &lt;query xmlns='jabber:iq:time'&gt;
  *         &lt;utc&gt;20020910T17:58:35&lt;/utc&gt;
  *         &lt;tz&gt;MDT&lt;/tz&gt;
@@ -233,19 +233,61 @@ public class ProviderManager {
         catch (Exception e) { }
     }
 
+    /**
+     * Returns the IQ provider registered to the specified XML element name and namespace.
+     * For example, if a provider was registered to the element name "query" and the
+     * namespace "jabber:iq:time", then the following packet would trigger the provider:
+     *
+     * <pre>
+     * &lt;iq type='result' to='joe@example.com' from='mary@example.com' id='time_1'&gt;
+     *     &lt;query xmlns='jabber:iq:time'&gt;
+     *         &lt;utc&gt;20020910T17:58:35&lt;/utc&gt;
+     *         &lt;tz&gt;MDT&lt;/tz&gt;
+     *         &lt;display&gt;Tue Sep 10 12:58:35 2002&lt;/display&gt;
+     *     &lt;/query&gt;
+     * &lt;/iq&gt;</pre>
+     *
+     * @param elementName the XML element name.
+     * @param namespace the XML namespace.
+     * @return
+     */
     public synchronized static Object getIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return iqProviders.get(key);
     }
 
+    /**
+     * Returns the packet extension provider registered to the specified XML element name
+     * and namespace. For example, if a provider was registered to the element name "x" and the
+     * namespace "jabber:x:event", then the following packet would trigger the provider:
+     *
+     * <pre>
+     * &lt;message to='romeo@montague.net' id='message_1'&gt;
+     *     &lt;body&gt;Art thou not Romeo, and a Montague?&lt;/body&gt;
+     *     &lt;x xmlns='jabber:x:event'&gt;
+     *         &lt;composing/&gt;
+     *     &lt;/x&gt;
+     * &lt;/message&gt;</pre>
+     *
+     * @param elementName
+     * @param namespace
+     * @return
+     */
     public synchronized static Object getExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return extensionProviders.get(key);
     }
 
-    private static String getProviderKey(String elementName, String nameSpace) {
+    /**
+     * Returns a String key for a given element name and namespace.
+     *
+     * @param elementName the element name.
+     * @param namespace the namespace.
+     * @return a unique key for the element name and namespace pair.
+     */
+    private static String getProviderKey(String elementName, String namespace) {
         StringBuffer buf = new StringBuffer();
-        buf.append("<").append(elementName).append("/><").append(nameSpace).append("/>");
+        buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
         return buf.toString();
     }
 
