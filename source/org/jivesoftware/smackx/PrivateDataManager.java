@@ -60,7 +60,6 @@ import org.jivesoftware.smackx.packet.*;
 import org.jivesoftware.smackx.provider.*;
 import org.xmlpull.v1.XmlPullParser;
 
-import java.beans.PropertyDescriptor;
 import java.util.Map;
 import java.util.Hashtable;
 
@@ -296,17 +295,10 @@ public class PrivateDataManager {
                     String elementName = parser.getName();
                     String namespace = parser.getNamespace();
                     // See if any objects are registered to handle this private data type.
-                    Object provider = getPrivateDataProvider(elementName, namespace);
+                    PrivateDataProvider provider = getPrivateDataProvider(elementName, namespace);
                     // If there is a registered provider, use it.
                     if (provider != null) {
-                        if (provider instanceof PrivateDataProvider) {
-                            privateData = ((PrivateDataProvider)provider).parsePrivateData(parser);
-                        }
-                        // Otherwise it's a JavaBean, so use introspection.
-                        else {
-                            privateData = parseWithIntrospection(elementName, (Class)provider,
-                                    parser);
-                        }
+                        privateData = provider.parsePrivateData(parser);
                     }
                     // Otherwise, use a DefaultPrivateData instance to store the private data.
                     else {
@@ -347,67 +339,6 @@ public class PrivateDataManager {
             IQ result = new PrivateDataResult(privateData);
             return result;
         }
-    }
-
-    private static PrivateData parseWithIntrospection(String elementName, Class objectClass,
-            XmlPullParser parser) throws Exception
-    {
-        boolean done = false;
-        PrivateData object = (PrivateData)objectClass.newInstance();
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = parser.getName();
-                String stringValue = parser.nextText();
-                PropertyDescriptor descriptor = new PropertyDescriptor(name, objectClass);
-                // Load the class type of the property.
-                Class propertyType = descriptor.getPropertyType();
-                // Get the value of the property by converting it from a
-                // String to the correct object type.
-                Object value = decode(propertyType, stringValue);
-                // Set the value of the bean.
-                descriptor.getWriteMethod().invoke(object, new Object[] { value });
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(elementName)) {
-                    done = true;
-                }
-            }
-        }
-        return object;
-    }
-
-    /**
-     * Decodes a String into an object of the specified type. If the object
-     * type is not supported, null will be returned.
-     *
-     * @param type the type of the property.
-     * @param value the encode String value to decode.
-     * @return the String value decoded into the specified type.
-     */
-    private static Object decode(Class type, String value) throws Exception {
-        if (type.getName().equals("java.lang.String")) {
-            return value;
-        }
-        if (type.getName().equals("boolean")) {
-            return Boolean.valueOf(value);
-        }
-        if (type.getName().equals("int")) {
-            return Integer.valueOf(value);
-        }
-        if (type.getName().equals("long")) {
-            return Long.valueOf(value);
-        }
-        if (type.getName().equals("float")) {
-            return Float.valueOf(value);
-        }
-        if (type.getName().equals("double")) {
-            return Double.valueOf(value);
-        }
-        if (type.getName().equals("java.lang.Class")) {
-            return Class.forName(value);
-        }
-        return null;
     }
 
     /**
