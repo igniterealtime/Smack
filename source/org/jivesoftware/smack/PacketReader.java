@@ -747,53 +747,61 @@ class PacketReader {
         while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
-                // Advance to name element.
-                parser.next();
-                // Depending on the server we may need to skip possible CRs
-                eventType = parser.next();
-                String name;
-                if (eventType == XmlPullParser.TEXT) {
-                    name = parser.getText();
-                }
-                else {
-                    name = parser.nextText();
-                }
-                parser.next();
-                // Skip CRs
-                parser.next();
-                String type = parser.getAttributeValue("", "type");
-                String valueText = parser.nextText();
+                // Parse a property
+                boolean done = false;
+                String name = null;
+                String type = null;
+                String valueText = null;
                 Object value = null;
-                if ("integer".equals(type)) {
-                    value = new Integer(valueText);
-                }
-                else if ("long".equals(type))  {
-                    value = new Long(valueText);
-                }
-                else if ("float".equals(type)) {
-                    value = new Float(valueText);
-                }
-                else if ("double".equals(type)) {
-                    value = new Double(valueText);
-                }
-                else if ("boolean".equals(type)) {
-                    value = new Boolean(valueText);
-                }
-                else if ("string".equals(type)) {
-                    value = valueText;
-                }
-                else if ("java-object".equals(type)) {
-                    try {
-                        byte [] bytes = StringUtils.decodeBase64(valueText);
-                        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-                        value = in.readObject();
+                while (!done) {
+                    eventType = parser.next();
+                    if (eventType == XmlPullParser.START_TAG) {
+                        String elementName = parser.getName();
+                        String namespace = parser.getNamespace();
+                        if (elementName.equals("name")) {
+                            name = parser.nextText();
+                        }
+                        else if (elementName.equals("value")) {
+                            type = parser.getAttributeValue("", "type");
+                            valueText = parser.nextText();
+                        }
                     }
-                    catch (Exception e) {
-                        e.printStackTrace();
+                    else if (eventType == XmlPullParser.END_TAG) {
+                        if (parser.getName().equals("property")) {
+                            if ("integer".equals(type)) {
+                                value = new Integer(valueText);
+                            }
+                            else if ("long".equals(type))  {
+                                value = new Long(valueText);
+                            }
+                            else if ("float".equals(type)) {
+                                value = new Float(valueText);
+                            }
+                            else if ("double".equals(type)) {
+                                value = new Double(valueText);
+                            }
+                            else if ("boolean".equals(type)) {
+                                value = new Boolean(valueText);
+                            }
+                            else if ("string".equals(type)) {
+                                value = valueText;
+                            }
+                            else if ("java-object".equals(type)) {
+                                try {
+                                    byte [] bytes = StringUtils.decodeBase64(valueText);
+                                    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+                                    value = in.readObject();
+                                }
+                                catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            if (name != null && value != null) {
+                                properties.put(name, value);
+                            }
+                            done = true;
+                        }
                     }
-                }
-                if (name != null && value != null) {
-                    properties.put(name, value);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
