@@ -86,4 +86,60 @@
         <className>org.jivesoftware.smackx.provider.MUCOwnerProvider</className> 
     </iqProvider>
 
+    <!-- Workgroup JEP -->
+    
+    <iqProvider>     
+        <elementName>queue-status</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.QueueUpdate$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>offer</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.OfferRequestProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>offer-revoke</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.OfferRevokeProvider</className>
+    </iqProvider>
+
+    <extensionProvider>
+        <elementName>workgroup</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.WorkgroupInformation$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>metadata</elementName>
+        <namespace>http://www.jivesoftware.com/workgroup/metadata</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.MetaDataProvider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>jive</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.SessionID$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>agent-status</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.AgentStatus$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>notify-queue-details</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.QueueDetails$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>notify-queue</elementName>
+        <namespace>xmpp:workgroup</namespace>
+        <className>com.jivesoftware.smack.workgroup.packet.QueueOverview$Provider</className>
+    </extensionProvider>
+
 </smackProviders>
