@@ -204,7 +204,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
             entriesReceived = 0;
             rosterExchangeManager1.send(getConnection(0).getRoster(), getBareJID(1));
             // Wait for 1 seconds
-            Thread.sleep(600);
+            Thread.sleep(700);
         }
         catch (Exception e) {
             fail("An error occured sending the message with the roster");

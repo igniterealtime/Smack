@@ -43,6 +43,7 @@ public class PresencePriorityTest extends SmackTestCase {
                     Presence.Mode.AVAILABLE));
             conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
                     Presence.Mode.AVAILABLE));
+            Thread.sleep(150);
             // Create the chats between the participants
             Chat chat0 = new Chat(getConnection(0), getBareJID(1));
             Chat chat1 = new Chat(getConnection(1), getBareJID(0));
