@@ -60,14 +60,10 @@ import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.KeyManagementException;
 import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 import com.sun.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
-
-import org.jivesoftware.smack.packet.XMPPError;
-
 
 /**
  * Creates an SSL connection to a XMPP server.
@@ -75,6 +71,8 @@ import org.jivesoftware.smack.packet.XMPPError;
  * @author Matt Tucker
  */
 public class SSLXMPPConnection extends XMPPConnection {
+
+    private static SocketFactory socketFactory = new DummySSLSocketFactory();
 
     /**
      * Creates a new SSL connection to the specified host on the default
@@ -103,21 +101,7 @@ public class SSLXMPPConnection extends XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public SSLXMPPConnection(String host, int port) throws XMPPException {
-        this.host = host;
-        this.port = port;
-        try {
-            SSLSocketFactory sslFactory = new DummySSLSocketFactory();
-            this.socket = sslFactory.createSocket(host, port);
-        }
-        catch (UnknownHostException uhe) {
-            throw new XMPPException("Could not connect to " + host + ":" + port + ".",
-                    new XMPPError(504), uhe);
-        }
-        catch (IOException ioe) {
-            throw new XMPPException("XMPPError connecting to " + host + ":" + port + ".",
-                    new XMPPError(502), ioe);
-        }
-        super.init();
+        super(host, port, socketFactory);
     }
 
     public boolean isSecureConnection() {

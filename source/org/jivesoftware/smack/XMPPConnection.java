@@ -56,6 +56,7 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.debugger.*;
 import org.jivesoftware.smack.filter.*;
 
+import javax.net.SocketFactory;
 import java.lang.reflect.Constructor;
 import java.net.*;
 import java.util.*;
@@ -128,13 +129,6 @@ public class XMPPConnection {
     Reader reader;
 
     /**
-     * Constructor for use by classes extending this one.
-     */
-    XMPPConnection() {
-
-    }
-
-    /**
      * Creates a new connection to the specified XMPP server. The default port of 5222 will
      * be used.
      *
@@ -150,7 +144,7 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new connection to the  to the specified XMPP server on the given port.
+     * Creates a new connection to the specified XMPP server on the given port.
      *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
@@ -165,6 +159,42 @@ public class XMPPConnection {
         this.port = port;
         try {
             this.socket = new Socket(host, port);
+        }
+        catch (UnknownHostException uhe) {
+            throw new XMPPException(
+                "Could not connect to " + host + ":" + port + ".",
+                new XMPPError(504),
+                uhe);
+        }
+        catch (IOException ioe) {
+            throw new XMPPException(
+                "XMPPError connecting to " + host + ":" + port + ".",
+                new XMPPError(502),
+                ioe);
+        }
+        init();
+    }
+
+    /**
+     * Creates a new connection to the specified XMPP server on the given port using the specified SocketFactory.
+     *
+     * <p>A custom SocketFactory allows fine-grained control of the actual connection to the XMPP server. A typical
+     * use for a custom SocketFactory is when connecting through a SOCKS proxy.
+     *
+     * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
+     * @param socketFactory a SocketFactory that will be used to create the socket to the XMPP server.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
+     */
+    public XMPPConnection(String host, int port, SocketFactory socketFactory) throws XMPPException {
+        this.host = host;
+        this.port = port;
+        try {
+            this.socket = socketFactory.createSocket(host, port);
         }
         catch (UnknownHostException uhe) {
             throw new XMPPException(
@@ -673,7 +703,7 @@ public class XMPPConnection {
      *
      * @throws XMPPException if establishing a connection to the server fails.
      */
-    void init() throws XMPPException {
+    private void init() throws XMPPException {
         try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
