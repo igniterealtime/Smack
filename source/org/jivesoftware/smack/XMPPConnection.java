@@ -690,13 +690,18 @@ public class XMPPConnection {
             // Detect the debugger class to use.             
             String className = System.getProperty("smack.debuggerClass");
             Class debuggerClass = null;
-            try {
-                debuggerClass = Class.forName(className);
+            if (className != null) {
+                try {
+                    debuggerClass = Class.forName(className);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            catch (Exception e) {
+            if (debuggerClass == null) {
                 try {
                     debuggerClass =
-                        Class.forName("org.jivesoftware.smackx.debugger.EnhancedDebugger");
+                            Class.forName("org.jivesoftware.smackx.debugger.EnhancedDebugger");
                 }
                 catch (Exception ex) {
                     debuggerClass = LiteDebugger.class;
