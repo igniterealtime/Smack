@@ -74,6 +74,10 @@ import org.jivesoftware.smackx.packet.DataForm;
  */
 public class Form {
     
+    public static final String TYPE_FORM = "form";
+    public static final String TYPE_SUBMIT = "submit";
+    public static final String TYPE_RESULT = "result";
+    
     private DataForm dataForm;
     
     /**
@@ -127,6 +131,7 @@ public class Form {
      * Adds a new field to complete as part of the form.
      * 
      * @param field the field to complete.
+     * @throws IllegalStateException if the form is not of type "form".
      */
     public void addField(FormField field) {
         if (!isFormType()) {
@@ -141,13 +146,13 @@ public class Form {
      * 
      * @param variable the variable that was completed.
      * @param value the value that was answered.
+     * @throws IllegalStateException if the form is not of type "submit".
      */
     public void addAnswer(String variable, String value) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot add fields if the form is not of type \"submit\"");
         }
-        FormField field = new FormField();
-        field.setVariable(variable);
+        FormField field = new FormField(variable);
         field.addValue(value);
         dataForm.addField(field);
     }
@@ -158,13 +163,13 @@ public class Form {
      * 
      * @param variable the variable that was completed.
      * @param values the values that were answered.
+     * @throws IllegalStateException if the form is not of type "submit".
      */
     public void addAnswer(String variable, List values) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot add fields if the form is not of type \"submit\"");
         }
-        FormField field = new FormField();
-        field.setVariable(variable);
+        FormField field = new FormField(variable);
         field.addValues(values);
         dataForm.addField(field);
     }
@@ -255,7 +260,7 @@ public class Form {
      * @return if the form is a form to fill out.
      */
     private boolean isFormType() {
-        return DataForm.TYPE_FORM.equals(dataForm.getType());
+        return TYPE_FORM.equals(dataForm.getType());
     }
     
     /**
@@ -264,7 +269,7 @@ public class Form {
      * @return if the form is a form to submit.
      */
     private boolean isSubmitType() {
-        return DataForm.TYPE_SUBMIT.equals(dataForm.getType());
+        return TYPE_SUBMIT.equals(dataForm.getType());
     }
 
     /**
@@ -278,7 +283,7 @@ public class Form {
             throw new IllegalStateException("Only forms of type \"form\" could be answered");
         }
         // Create a new Form
-        Form form = new Form(DataForm.TYPE_SUBMIT);
+        Form form = new Form(TYPE_SUBMIT);
         // Copy the hidden fields to the new form
         for (Iterator fields=getFields(); fields.hasNext();) {
             FormField field = (FormField)fields.next();
