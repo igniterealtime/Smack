@@ -63,8 +63,13 @@ you should keep the following in mind:
 </p>
 
 <ul>
-	<li>When you send a Java object, only clients running Java will be able to interpret the data.
-		So, consider using a series of primitive values to transfer data instead.
+ 	<li>Packet extensions are the more standard way to add extra data to XMPP stanzas. Using
+		properties may be more convenient in some cases, however, since Smack will do the
+		work of handling the XML.
+
+	<li>When you send a Java object as a property, only clients running Java will be able to 
+		interpret the data. So, consider using a series of primitive values to transfer data 
+		instead.
 
 	<li>Objects sent as property values must implement Serialiable. Additionally, both the sender
 		and receiver must have identical versions of the class, or a serialization exception
