@@ -1,7 +1,7 @@
 <%--
-  - $RCSfile$
-  - $Revision$
-  - $Date$
+  - $$RCSfile$$
+  - $$Revision$$
+  - $$Date$$
   -
   - Copyright (C) 2002-2003 Jive Software. All rights reserved.
   - 
