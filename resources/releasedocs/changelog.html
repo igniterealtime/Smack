@@ -26,6 +26,9 @@
             border-bottom : 1px #ccc solid;
             padding-bottom : 2px;
         }
+        .bugNum {
+            color: #666;
+        }
         .subheader {
             font-weight: bold;
             color: #600;
@@ -51,6 +54,24 @@
 <div class="header">
 Smack Changelog
 </div>
+
+<p>
+<b>1.2.1</b> - September 28, 2003
+<p>
+<ul>
+    <li><font color="#777777">(SMACK-79)</font> Added XHTML message support as a Smack extension, which allows sending
+        richly formatted messages.
+    <li><font color="#777777">(SMACK-88)</font> Fixed bug with parsing registation packets that contain extra data.
+    <li><font color="#777777">(SMACK-90)</font> Added support for getting registration instructions.
+    <li><font color="#777777">(SMACK-85)</font> Exceptions in the PacketWriter now correctly generates a connection
+        error event.
+    <li><font color="#777777">(SMACK-84)</font> Added <tt>isSecureConnection()</tt> method to XMPPConnection class.
+    <li><font color="#777777">(SMACK-86)</font> Added <tt>isJoined()</tt> method to GroupChat class. 
+    <li><font color="#777777">(SMACK-87, SMACK-82)</font> Added the following methods related to rosters:
+        <tt>Roster.contains(String user)</tt>, <tt>Roster.getEntry(String user)</tt>, 
+        <tt>RosterGroup.getEntry(String user)</tt>, <tt>Roster.removeEntry(RosterEntry entry)</tt>.
+    <li><font color="#777777">(SMACK-73)</font> Fixed bugs handling roster remove and update operations.    
+</ul>
 
 <p>
 <b>1.2.0</b> - August 29, 2003
