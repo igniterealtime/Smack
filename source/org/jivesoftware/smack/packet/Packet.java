@@ -74,7 +74,7 @@ public abstract class Packet {
     /**
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
-    private static String prefix = StringUtils.randomString(5);
+    private static String prefix = StringUtils.randomString(5) + "-";
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to
@@ -92,7 +92,7 @@ public abstract class Packet {
         return prefix + Long.toString(id++);
     }
 
-    private String packetID = nextID();
+    private String packetID = null;
     private String to = null;
     private String from = null;
     private Map properties = null;
@@ -104,6 +104,9 @@ public abstract class Packet {
      * @return the packet's unique ID.
      */
     public String getPacketID() {
+        if (packetID == null) {
+            packetID = nextID();
+        }
         return packetID;
     }
 
