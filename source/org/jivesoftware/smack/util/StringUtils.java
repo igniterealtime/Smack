@@ -80,11 +80,12 @@ public class StringUtils {
             return null;
         }
         int atIndex = JID.indexOf("@");
-        if (atIndex > 0) {
-            return JID.substring(0, atIndex);
+        if (atIndex < 0) {
+            return JID.substring(0);
         }
         else {
-            return JID.substring(0);
+            return JID.substring(0, atIndex);
+
         }
     }
 
