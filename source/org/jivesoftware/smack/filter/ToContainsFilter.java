@@ -73,7 +73,7 @@ public class ToContainsFilter implements PacketFilter {
         if (to == null) {
             throw new IllegalArgumentException("Parameter cannot be null.");
         }
-        this.to = to;
+        this.to = to.toLowerCase();
     }
 
     public boolean accept(Packet packet) {
@@ -81,7 +81,7 @@ public class ToContainsFilter implements PacketFilter {
             return false;
         }
         else {
-            return packet.getTo().indexOf(to) != -1;
+            return packet.getTo().toLowerCase().indexOf(to) != -1;
         }
     }
 }

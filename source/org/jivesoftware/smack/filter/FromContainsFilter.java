@@ -72,15 +72,15 @@ public class FromContainsFilter implements PacketFilter {
         if (from == null) {
             throw new IllegalArgumentException("Parameter cannot be null.");
         }
-        this.from = from;
+        this.from = from.toLowerCase();
     }
 
     public boolean accept(Packet packet) {
-        if (packet.getFrom() != null) {
-            return packet.getFrom().indexOf(from) != -1;
+        if (packet.getFrom() == null) {
+            return false;
         }
         else {
-            return false;
+            return packet.getFrom().toLowerCase().indexOf(from) != -1;
         }
     }
 }
