@@ -1560,11 +1560,16 @@ public class MultiUserChatTest extends SmackTestCase {
             MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             muc3.join("testbot3");
 
+            Thread.sleep(150);
+
             // User3 leaves the room
             muc3.leave();
+            
+            Thread.sleep(150);
             // User2 leaves the room
             muc2.leave();
 
+            Thread.sleep(150);
             // Check that ParticipantStatusListener is working OK
             assertEquals(
                 "User1 didn't receive the event of User2 joining the room",
