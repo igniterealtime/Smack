@@ -121,7 +121,8 @@ public class Chat {
         this.participant = participant;
         this.chatID = chatID;
 
-        messageCollector = connection.createPacketCollector(new ThreadFilter(chatID));
+        messageFilter = new ThreadFilter(chatID);
+        messageCollector = connection.createPacketCollector(messageFilter);
     }
 
     /**
