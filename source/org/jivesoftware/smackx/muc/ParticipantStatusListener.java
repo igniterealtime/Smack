@@ -29,7 +29,9 @@ package org.jivesoftware.smackx.muc;
 public interface ParticipantStatusListener {
 
     /**
-     * Called when a new room occupant has joined the room.
+     * Called when a new room occupant has joined the room. Note: Take in consideration that when
+     * you join a room you will receive the list of current occupants in the room. This message will
+     * be sent for each occupant.
      *
      * @param participant the participant that has just joined the room
      * (e.g. room@conference.jabber.org/nick).
