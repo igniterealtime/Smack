@@ -182,6 +182,24 @@ public class RosterPacket extends IQ {
         }
 
         /**
+         * Returns the roster item status.
+         *
+         * @return the roster item status.
+         */
+        public ItemStatus getItemStatus() {
+            return itemStatus;
+        }
+
+        /**
+         * Sets the roster item status.
+         *
+         * @param itemStatus the roster item status.
+         */
+        public void setItemStatus(ItemStatus itemStatus) {
+            this.itemStatus = itemStatus;
+        }
+
+        /**
          * Returns an Iterator for the group names (as Strings) that the roster item
          * belongs to.
          *
@@ -296,11 +314,6 @@ public class RosterPacket extends IQ {
         public static final ItemType NONE = new ItemType("none");
 
         /**
-         * The subscription request is pending.
-         */
-        public static final ItemType PENDING = new ItemType("pending");
-
-        /**
          * The user is interested in receiving presence updates from the subscriber.
          */
         public static final ItemType TO = new ItemType("to");
@@ -318,9 +331,6 @@ public class RosterPacket extends IQ {
         public static ItemType fromString(String value) {
             if ("none".equals(value)) {
                 return NONE;
-            }
-            if ("pending".equals(value)) {
-                return PENDING;
             }
             else if ("to".equals(value)) {
                 return TO;

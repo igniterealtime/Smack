@@ -364,11 +364,6 @@ public class Roster {
             RosterPacket rosterPacket = (RosterPacket)packet;
             for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
-                if (item.getItemType() == RosterPacket.ItemType.TO ||
-                        item.getItemType() == RosterPacket.ItemType.BOTH)
-                {
-
-                }
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), connection);
                 // If the roster entry has any groups, remove it from the list of unfiled

@@ -433,16 +433,16 @@ class PacketReader {
                 if (parser.getName().equals("item")) {
                     String jid = parser.getAttributeValue("", "jid");
                     String name = parser.getAttributeValue("", "name");
-                    String subscription = parser.getAttributeValue("", "subscription");
-                    String ask = parser.getAttributeValue("", "ask");
+                    // Create packet.
                     item = new RosterPacket.Item(jid, name);
+                    // Set status.
+                    String ask = parser.getAttributeValue("", "ask");
+                    RosterPacket.ItemStatus status = RosterPacket.ItemStatus.fromString(ask);
+                    item.setItemStatus(status);
+                    // Set type.
+                    String subscription = parser.getAttributeValue("", "subscription");
                     RosterPacket.ItemType type = RosterPacket.ItemType.fromString(subscription);
-                    if (type == RosterPacket.ItemType.NONE && "subscribe".equals(ask)) {
-                        item.setItemType(RosterPacket.ItemType.PENDING);
-                    }
-                    else {
-                        item.setItemType(type);
-                    }
+                    item.setItemType(type);
                 }
                 if (parser.getName().equals("group")) {
                     String groupName = parser.nextText();
