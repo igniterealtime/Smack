@@ -76,6 +76,7 @@ public class Form {
     
     public static final String TYPE_FORM = "form";
     public static final String TYPE_SUBMIT = "submit";
+    public static final String TYPE_CANCEL = "cancel";
     public static final String TYPE_RESULT = "result";
     
     private DataForm dataForm;
