@@ -88,7 +88,7 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * Each IQ provider is associated with a namespace. If multiple provider entries attempt to
  * register to handle the same namespace, the first entry loaded from the classpath will
- * take precendence. The IQ provider class can either implement the IQProvider interface,
+ * take precedence. The IQ provider class can either implement the IQProvider interface,
  * or extend the IQ class. In the former case, each IQProvider is responsible for parsing
  * the raw XML stream to create an IQ instance. In the latter case, bean introspection is
  * used to try to automatically set properties of the IQ instance using the values found
