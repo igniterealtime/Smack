@@ -570,7 +570,7 @@ public class Roster {
             return null;
         }
         else {
-            return userPresences.entrySet().iterator();
+            return userPresences.values().iterator();
         }
     }
 
