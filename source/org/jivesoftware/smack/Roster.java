@@ -65,7 +65,7 @@ import java.util.*;
  * Others users may attempt to subscribe to this user using a subscription request. Three
  * modes are supported for handling these requests: <ul>
  *      <li> SUBSCRIPTION_ACCEPT_ALL -- accept all subscription requests.
- *      <li> SUBCRIPTION_REJECT_ALL -- reject all subscription requests.
+ *      <li> SUBSCRIPTION_REJECT_ALL -- reject all subscription requests.
  *      <li> SUBSCRIPTION_MANUAL -- manually process all subscription requests. </ul>
  *
  * All presence subscription requests are automatically approved to this client
@@ -82,12 +82,12 @@ public class Roster {
      * and is suitable for simple client. More complex client will likely wish to
      * handle subscription requests manually.
      */
-    public static final int SUBCRIPTION_ACCEPT_ALL = 0;
+    public static final int SUBSCRIPTION_ACCEPT_ALL = 0;
 
     /**
      * Automatically reject all subscription requests.
      */
-    public static final int SUBCRIPTION_REJECT_ALL = 1;
+    public static final int SUBSCRIPTION_REJECT_ALL = 1;
 
     /**
      * Subscription requests are ignored, which means they must be manually
@@ -106,7 +106,7 @@ public class Roster {
     // has been recieved and processed.
     boolean rosterInitialized = false;
 
-    private int subscriptionMode = SUBCRIPTION_ACCEPT_ALL;
+    private int subscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
 
     /**
      * Creates a new roster.
@@ -131,7 +131,7 @@ public class Roster {
     /**
      * Returns the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link #SUBCRIPTION_ACCEPT_ALL}.<p>
+     * The default subscription mode is {@link #SUBSCRIPTION_ACCEPT_ALL}.<p>
      *
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of {@link Presence.Type#SUBSCRIBE}.
@@ -145,7 +145,7 @@ public class Roster {
     /**
      * Sets the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link #SUBCRIPTION_ACCEPT_ALL}.<p>
+     * The default subscription mode is {@link #SUBSCRIPTION_ACCEPT_ALL}.<p>
      *
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of {@link Presence.Type#SUBSCRIBE}.
@@ -153,8 +153,8 @@ public class Roster {
      * @param subscriptionMode the subscription mode.
      */
     public void setSubscriptionMode(int subscriptionMode) {
-        if (subscriptionMode != SUBCRIPTION_ACCEPT_ALL &&
-                subscriptionMode != SUBCRIPTION_REJECT_ALL &&
+        if (subscriptionMode != SUBSCRIPTION_ACCEPT_ALL &&
+                subscriptionMode != SUBSCRIPTION_REJECT_ALL &&
                 subscriptionMode != SUBSCRIPTION_MANUAL)
         {
             throw new IllegalArgumentException("Invalid mode.");
@@ -511,13 +511,13 @@ public class Roster {
                 }
             }
             else if (presence.getType() == Presence.Type.SUBSCRIBE) {
-                if (subscriptionMode == SUBCRIPTION_ACCEPT_ALL) {
+                if (subscriptionMode == SUBSCRIPTION_ACCEPT_ALL) {
                     // Accept all subscription requests.
                     Presence response = new Presence(Presence.Type.SUBSCRIBED);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
                 }
-                else if (subscriptionMode == SUBCRIPTION_REJECT_ALL) {
+                else if (subscriptionMode == SUBSCRIPTION_REJECT_ALL) {
                     // Reject all subscription requests.
                     Presence response = new Presence(Presence.Type.UNSUBSCRIBED);
                     response.setTo(presence.getFrom());
