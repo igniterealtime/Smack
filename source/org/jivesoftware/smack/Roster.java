@@ -593,7 +593,7 @@ public class Roster {
                     for (Iterator i = entries.iterator(); i.hasNext();) {
                         RosterEntry entry = (RosterEntry) i.next();
                         if (entry.getUser().toLowerCase().equals(key.toLowerCase())) {
-                            fireRosterPresenceEvent(key);
+                            fireRosterPresenceEvent(from);
                         }
                     }
                 }
@@ -614,7 +614,7 @@ public class Roster {
                     for (Iterator i=entries.iterator(); i.hasNext(); ) {
                         RosterEntry entry = (RosterEntry)i.next();
                         if (entry.getUser().toLowerCase().equals(key.toLowerCase())) {
-                            fireRosterPresenceEvent(key);
+                            fireRosterPresenceEvent(from);
                         }
                     }
                 }

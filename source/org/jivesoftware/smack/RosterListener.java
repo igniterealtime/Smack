@@ -36,7 +36,8 @@ public interface RosterListener {
     /**
      * Called when the presence of a roster entry is changed.
      *
-     * @param XMPPAddress the XMPP address of the user who's presence has changed.
+     * @param XMPPAddress the XMPP address of the user who's presence has changed,
+     *      including the resource.
      */
     public void presenceChanged(String XMPPAddress);
 }
