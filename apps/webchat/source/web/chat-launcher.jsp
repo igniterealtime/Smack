@@ -1,34 +1,39 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Chat Session</title>
-	<script language="JavaScript" type="text/javascript">
-	function launchWin() {
-		var newWin = window.open("chat.jsp","chatWin",
-			"location=no,status=no,toolbar=no,personalbar=no,menubar=no,width=600,height=400");
-	}
-	</script>
-	<link rel="stylesheet" href="<%= request.getContextPath() %>/style.css" type="text/css">
-</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<body onload="launchWin();">
+	    <title>Web Chat Session</title>
+	    <script language="JavaScript" type="text/javascript">
 
-<h3>Chat Session Options</h3>
+	        function launchWin() {
+		        var newWin = window.open("frame_master.jsp", "chatWin",
+			     "location=no,status=no,toolbar=no,personalbar=no,menubar=no,width=650,height=430");
+	        }
 
-You chat session should have already started. If for some reason it did
-not, click <a href="#" onclick="launchWin();return false;">this link</a>
-to start your chat session.
+	    </script>
 
-<br><br>
+	    <link rel="stylesheet" href="<%= request.getContextPath() %>/style_sheet.jsp"
+                type="text/css">
+    </head>
 
-Other options:
+    <body class="deffr" onload="launchWin();">
 
-<ul>
-	<li><a href="email" onclick="alert('Coming soon');return false;">Email Transcript</a>
-</ul>
+        <h3>Chat Session Options</h3>
 
-</body>
+            Your chat session should have already started. If for some reason it did
+            not, click <a href="#" onclick="launchWin(); return false;">this link</a>
+            to start your chat session.
 
+        <br><br>
+
+        Other options:
+
+        <ul>
+	        <li><a href="email" onclick="alert('Coming soon'); return false;">Email Transcript</a>
+	        <li><a href="index.jsp">Return to the login page.</a>
+        </ul>
+
+    </body>
 </html>
