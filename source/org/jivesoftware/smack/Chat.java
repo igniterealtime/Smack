@@ -161,7 +161,7 @@ public class Chat {
      * Sets whether only messages that have a matching threadID will be delivered to Chat instances.
      * When false, any message from the other participant will be delivered to a Chat instances.
      *
-     * @value true if messages delivered to Chat instances are filtered on thread ID.
+     * @param value true if messages delivered to Chat instances are filtered on thread ID.
      */
     public static void setFilteredOnThreadID(boolean value) {
         filteredOnThreadID = value;

@@ -74,7 +74,7 @@ public class OrFilter implements PacketFilter {
 
     /**
      * Creates an empty OR filter. Filters should be added using the
-     * {@link #addFilter(PacketFilter) method.
+     * {@link #addFilter(PacketFilter)} method.
      */
     public OrFilter() {
         size = 0;

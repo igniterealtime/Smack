@@ -138,7 +138,7 @@ public class Authentication extends IQ {
      *
      * @param connectionID the connection ID.
      * @param password the password.
-     * @see XMPPConnection#getConnectionID()
+     * @see org.jivesoftware.smack.XMPPConnection#getConnectionID()
      */
     public void setDigest(String connectionID, String password) {
         this.digest = StringUtils.hash(connectionID + password);
@@ -153,7 +153,7 @@ public class Authentication extends IQ {
      *
      * @param digest the digest, which is the SHA-1 hash of the connection ID
      *      the user's password, encoded as hex.
-     * @see XMPPConnection#getConnectionID()
+     * @see org.jivesoftware.smack.XMPPConnection#getConnectionID()
      */
     public void setDigest(String digest) {
         this.digest = digest;

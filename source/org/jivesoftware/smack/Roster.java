@@ -164,7 +164,8 @@ public class Roster {
      * The default subscription mode is {@link #SUBSCRIPTION_ACCEPT_ALL}.<p>
      *
      * If using the manual mode, a PacketListener should be registered that
-     * listens for Presence packets that have a type of {@link Presence.Type#SUBSCRIBE}.
+     * listens for Presence packets that have a type of
+     * {@link org.jivesoftware.smack.packet.Presence.Type#SUBSCRIBE}.
      *
      * @return the subscription mode.
      */
@@ -178,7 +179,8 @@ public class Roster {
      * The default subscription mode is {@link #SUBSCRIPTION_ACCEPT_ALL}.<p>
      *
      * If using the manual mode, a PacketListener should be registered that
-     * listens for Presence packets that have a type of {@link Presence.Type#SUBSCRIBE}.
+     * listens for Presence packets that have a type of
+     * {@link org.jivesoftware.smack.packet.Presence.Type#SUBSCRIBE}.
      *
      * @param subscriptionMode the subscription mode.
      */
@@ -510,7 +512,7 @@ public class Roster {
      * is unavailable (offline) or if no presence information is available, such as
      * when you are not subscribed to the user's presence updates.
      *
-     * @param user a fully qualified xmpp ID including a resource, e.g. jdoe@example.com/Home
+     * @param userResource a fully qualified xmpp ID including a resource, e.g. jdoe@example.com/Home
      * @return the user's current presence, or <tt>null</tt> if the user is unavailable 
      * or if no presence information is available.
      */

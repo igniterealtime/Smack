@@ -237,7 +237,7 @@ public class DiscoverInfo extends IQ {
          * Sets the entity's type. To get the official registry of values for the 
          * 'type' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a> 
          *
-         * @param name the identity's type.
+         * @param type the identity's type.
          */
         public void setType(String type) {
             this.type = type;

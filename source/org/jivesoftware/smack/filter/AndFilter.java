@@ -74,7 +74,7 @@ public class AndFilter implements PacketFilter {
 
     /**
      * Creates an empty AND filter. Filters should be added using the
-     * {@link #addFilter(PacketFilter) method.
+     * {@link #addFilter(PacketFilter)} method.
      */
     public AndFilter() {
         size = 0;
