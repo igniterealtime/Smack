@@ -117,8 +117,8 @@ public class XMPPConnection {
     private boolean authenticated = false;
     private boolean anonymous = false;
 
-    private PacketWriter packetWriter;
-    private PacketReader packetReader;
+    PacketWriter packetWriter;
+    PacketReader packetReader;
 
     Roster roster = null;
     private AccountManager accountManager = null;

@@ -213,6 +213,24 @@ class PacketReader {
     }
 
     /**
+     * Sends out a notification that there was an error with the connection
+     * and closes the connection.
+     *
+     * @param e the exception that causes the connection close event.
+     */
+    void notifyConnectionError(Exception e) {
+        done = true;
+        connection.close();
+        // Notify connection listeners of the error.
+        synchronized (connectionListeners) {
+            for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+                ConnectionListener listener = (ConnectionListener)i.next();
+                listener.connectionClosedOnError(e);
+            }
+        }
+    }
+
+    /**
      * Process listeners.
      */
     private void processListeners() {
@@ -238,7 +256,8 @@ class PacketReader {
             if (!processedPacket) {
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException ie) { }
+                }
+                catch (InterruptedException ie) { }
             }
         }
     }
@@ -289,18 +308,9 @@ class PacketReader {
         }
         catch (Exception e) {
             if (!done) {
-                // Set done to true since we want to do our own notification of connection closing.
-                done = true;
-                connection.close();
-                // An exception occurred while parsing. Notify connection listeners of
-                // the error and close the connection.
-                synchronized (connectionListeners) {
-                    for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
-                        ConnectionListener listener = (ConnectionListener)i.next();
-                        listener.connectionClosedOnError(e);
-                    }
-                }
-
+                // Close the connection and notify connection listeners of the
+                // error.
+                notifyConnectionError(e);
             }
         }
     }

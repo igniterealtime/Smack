@@ -53,6 +53,7 @@
 package org.jivesoftware.smack;
 
 import java.util.LinkedList;
+import java.util.Iterator;
 import java.io.*;
 
 import org.jivesoftware.smack.packet.Packet;
@@ -145,7 +146,6 @@ class PacketWriter {
             stream.append(" to=\"" + connection.getHost() + "\"");
             stream.append(" xmlns=\"jabber:client\"");
             stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\">");
-//            stream.append("xmlns:sasl=\"http://www.iana.org/assignments/sasl-mechanisms\" ");
             writer.write(stream.toString());
             writer.flush();
             stream = null;
@@ -170,8 +170,8 @@ class PacketWriter {
         }
         catch (IOException ioe){
             if (!done) {
-                ioe.printStackTrace();
-                connection.close();
+                done = true;
+                connection.packetReader.notifyConnectionError(ioe);
             }
         }
     }
