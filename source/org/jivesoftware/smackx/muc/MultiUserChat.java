@@ -180,6 +180,22 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns the discovered information of a given room whithout actually having to join the room.
+     * The server will provide information only for rooms that are public.
+     *
+     * @param connection the XMPP connection to use for discovering information about the room.
+     * @param room the name of the room in the form "roomName@service" of which we want to discover
+     *        its information.
+     * @return the discovered information of a given room whithout actually having to join the room.
+     * @throws XMPPException if an error occured while trying to discover information of a room.
+     */
+    public static RoomInfo getRoomInfo(XMPPConnection connection, String room)
+            throws XMPPException {
+        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(room);
+        return new RoomInfo(info);
+    }
+
+    /**
      * Returns the name of the room this MultiUserChat object represents.
      *
      * @return the multi user chat room name.
@@ -2119,7 +2135,7 @@ public class MultiUserChat {
         /**
          * Returns a new or existing InvitationsMonitor for a given connection.
          * 
-         * @param connection the connection to monitor for room invitations.
+         * @param conn the connection to monitor for room invitations.
          * @return a new or existing InvitationsMonitor for a given connection.
          */
         public static InvitationsMonitor getInvitationsMonitor(XMPPConnection conn) {
