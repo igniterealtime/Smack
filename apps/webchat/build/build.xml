@@ -1,1 +1,55 @@
-<!-- blank for now -->
+<?xml version="1.0"?>
+
+<!--
+    $RCSfile$
+    $Revision$
+    $Date$
+-->
+
+<project name="WebChat" default="all" basedir="..">
+
+    <property name="smack.home" value="${basedir}/../../../smack" />
+    <property name="compile.dir" value="${basedir}/build/temp" />
+
+
+    <path id="dependencies">
+        <!-- build jars -->
+        <fileset dir="${smack.home}" includes="smack.jar" />
+        <fileset dir="${basedir}/build/lib" includes="*.jar" />
+    </path>
+
+
+    <target name="init">
+        <mkdir dir="${compile.dir}" />
+        <!-- call smack jar process -->
+        <ant antfile="build/build.xml" dir="${smack.home}" target="jar" inheritAll="false" />
+    </target>
+
+
+    <target name="clean">
+        <delete dir="${compile.dir}" />
+        <!-- call smack jar process -->
+        <ant antfile="build/build.xml" dir="${smack.home}" target="clean" inheritAll="false" />
+    </target>
+
+
+    <target name="compile" depends="init">
+        <javac
+            destdir="${compile.dir}"
+            includeAntRuntime="no"
+            debug="on"
+            classpathref="dependencies"
+        >
+            <src path="${basedir}/source/java" />
+        </javac>
+    </target>
+
+
+    <target name="jar" depends="compile">
+    </target>
+
+
+    <target name="war" depends="jar">
+    </target>
+
+</project>
