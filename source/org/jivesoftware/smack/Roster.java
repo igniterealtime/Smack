@@ -669,6 +669,11 @@ public class Roster {
                             unfiledEntries.remove(entry);
                         }
                     }
+                    // Removing the user from the roster, so remove any presence information
+                    // about them.
+                    String key = StringUtils.parseName(item.getUser()) + "@" +
+                            StringUtils.parseServer(item.getUser());
+                    presenceMap.remove(key);
                 }
                 else {
                     // Make sure the entry is in the entry list.
