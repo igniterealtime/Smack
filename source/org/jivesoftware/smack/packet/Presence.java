@@ -225,6 +225,18 @@ public class Presence extends Packet {
         return buf.toString();
     }
 
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(type);
+        if (mode != null) {
+            buf.append(": ").append(mode);
+        }
+        if (status != null) {
+            buf.append(" (").append(status).append(")");
+        }
+        return buf.toString();
+    }
+
     /**
      * A typsafe enum class to represent the presecence type.
      */
