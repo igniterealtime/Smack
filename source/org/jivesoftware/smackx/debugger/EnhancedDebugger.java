@@ -92,27 +92,32 @@ public class EnhancedDebugger implements SmackDebugger {
     {
         URL url;
         // Load the image icons 
-        url = ClassLoader.getSystemClassLoader().getResource("images/nav_left_blue.png");
+        url =
+            Thread.currentThread().getContextClassLoader().getResource("images/nav_left_blue.png");
         if (url != null) {
             packetReceivedIcon = new ImageIcon(url);
-        }            
-        url = ClassLoader.getSystemClassLoader().getResource("images/nav_right_red.png");
+        }
+        url =
+            Thread.currentThread().getContextClassLoader().getResource("images/nav_right_red.png");
         if (url != null) {
             packetSentIcon = new ImageIcon(url);
         }
-        url = ClassLoader.getSystemClassLoader().getResource("images/photo_portrait.png");
+        url =
+            Thread.currentThread().getContextClassLoader().getResource("images/photo_portrait.png");
         if (url != null) {
             presencePacketIcon = new ImageIcon(url);
         }
-        url = ClassLoader.getSystemClassLoader().getResource("images/question_and_answer.png");
+        url =
+            Thread.currentThread().getContextClassLoader().getResource(
+                "images/question_and_answer.png");
         if (url != null) {
             iqPacketIcon = new ImageIcon(url);
         }
-        url = ClassLoader.getSystemClassLoader().getResource("images/message.png");
+        url = Thread.currentThread().getContextClassLoader().getResource("images/message.png");
         if (url != null) {
             messagePacketIcon = new ImageIcon(url);
         }
-        url = ClassLoader.getSystemClassLoader().getResource("images/unknown.png");
+        url = Thread.currentThread().getContextClassLoader().getResource("images/unknown.png");
         if (url != null) {
             unknownPacketTypeIcon = new ImageIcon(url);
         }

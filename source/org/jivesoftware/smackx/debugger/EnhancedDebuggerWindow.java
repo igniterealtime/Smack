@@ -84,19 +84,25 @@ class EnhancedDebuggerWindow {
     {
         URL url;
         
-        url = ClassLoader.getSystemClassLoader().getResource("images/trafficlight_off.png");
+        url =
+            Thread.currentThread().getContextClassLoader().getResource(
+                "images/trafficlight_off.png");
         if (url != null) {
             connectionCreatedIcon = new ImageIcon(url);
-        }            
-        url = ClassLoader.getSystemClassLoader().getResource("images/trafficlight_green.png");
+        }
+        url =
+            Thread.currentThread().getContextClassLoader().getResource(
+                "images/trafficlight_green.png");
         if (url != null) {
             connectionActiveIcon = new ImageIcon(url);
         }
-        url = ClassLoader.getSystemClassLoader().getResource("images/trafficlight_red.png");
+        url =
+            Thread.currentThread().getContextClassLoader().getResource(
+                "images/trafficlight_red.png");
         if (url != null) {
             connectionClosedIcon = new ImageIcon(url);
         }
-        url = ClassLoader.getSystemClassLoader().getResource("images/warning.png");
+        url = Thread.currentThread().getContextClassLoader().getResource("images/warning.png");
         if (url != null) {
             connectionClosedOnErrorIcon = new ImageIcon(url);
         }
