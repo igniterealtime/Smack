@@ -22,8 +22,8 @@
 
     <property name="version.major" value="1" />
     <property name="version.minor" value="0" />
-    <property name="version.string" value="beta1" />
-    <property name="version.name" value="${version.major}.${version.minor} Beta 1" />
+    <property name="version.string" value="beta2" />
+    <property name="version.name" value="${version.major}.${version.minor} Beta 2" />
 
     <!-- TARGETS -->
     <!-- ======================================================================================= -->
