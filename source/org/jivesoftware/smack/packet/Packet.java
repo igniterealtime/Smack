@@ -72,6 +72,13 @@ import java.io.*;
 public abstract class Packet {
 
     /**
+     * Constant used as packetID to indicate that a packet has no id. To indicate that a packet
+     * has no id set this constant as the packet's id. When the packet is asked for its id the 
+     * answer will be <tt>null</tt>.
+     */
+    public static final String ID_NOT_AVAILABLE = "ID_NOT_AVAILABLE";
+
+    /**
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
     private static String prefix = StringUtils.randomString(5) + "-";
@@ -100,11 +107,16 @@ public abstract class Packet {
     private XMPPError error = null;
 
     /**
-     * Returns the unique ID of the packet.
+     * Returns the unique ID of the packet. The returned value could be <tt>null</tt> when
+     * ID_NOT_AVAILABLE was set as the packet's id.
      *
-     * @return the packet's unique ID.
+     * @return the packet's unique ID or <tt>null</tt> if the packet's id is not available.
      */
     public String getPacketID() {
+        if (ID_NOT_AVAILABLE.equals(packetID)) {
+            return null;
+        }
+        
         if (packetID == null) {
             packetID = nextID();
         }
@@ -112,7 +124,8 @@ public abstract class Packet {
     }
 
     /**
-     * Sets the unique ID of the packet.
+     * Sets the unique ID of the packet. To indicate that a packet has no id 
+     * pass the constant ID_NOT_AVAILABLE as the packet's id value.
      *
      * @param packetID the unique ID for the packet.
      */
