@@ -53,6 +53,7 @@
 package org.jivesoftware.smack;
 
 import java.io.*;
+import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
 
@@ -104,17 +105,14 @@ public final class SmackConfiguration {
                         do {
                             if (eventType == XmlPullParser.START_TAG) {
                                 if (parser.getName().equals("className")) {
-                                    String className = parser.nextText();
                                     // Attempt to load the class so that the class can get initialized
-                                    try {
-                                        Class provider = Class.forName(className);
-                                    }
-                                    catch (ClassNotFoundException cnfe) {
-                                        cnfe.printStackTrace();
-                                    }
+                                    parseClassToLoad(parser);
                                 }
                                 else if (parser.getName().equals("versionNumber")) {
                                     versionNumber = parser.nextText();
+                                }
+                                else if (parser.getName().equals("replyTimeout")) {
+                                    parseReplyTimeout(parser);
                                 }
                             }
                             eventType = parser.next();
@@ -135,6 +133,51 @@ public final class SmackConfiguration {
         }
     }
     
+    private static void parseClassToLoad(XmlPullParser parser) throws Exception {
+        String className = parser.nextText();
+        // Attempt to load the class so that the class can get initialized
+        try {
+            Class.forName(className);
+        }
+        catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+    }
+
+    private static void parseReplyTimeout(XmlPullParser parser) throws Exception {
+        boolean done = false;
+        String timeout = null;
+        String className = null;
+        // Parse the timeout value to set
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                String elementName = parser.getName();
+                if (elementName.equals("value")) {
+                    timeout = parser.nextText();
+                }
+                else if (elementName.equals("className")) {
+                    className = parser.nextText();
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("replyTimeout")) {
+                    done = true;
+                }
+            }
+        }
+        
+        // Set the reply timeout value
+        try {
+            Class classToConfigure = Class.forName(className);
+            Field field = classToConfigure.getDeclaredField("REPLY_TIMEOUT");
+            field.set(null, new Integer(timeout));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Returns the current Smack release version. The version number value
      * gets loaded from the smack.configuration file at system startup.

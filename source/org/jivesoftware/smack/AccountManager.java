@@ -67,6 +67,16 @@ import java.util.*;
  */
 public class AccountManager {
 
+    /**
+     * Value that indicates the number of milliseconds to wait for a response from
+     * the server. 
+     *
+     * The reply timeout value can be assigned by setting this field to the required 
+     * timeout, or by modifying the smack.configuration file that holds the default value
+     * to use.
+     */
+    public static int REPLY_TIMEOUT = 5000;
+
     private XMPPConnection connection;
     private Registration info = null;
 
@@ -207,7 +217,7 @@ public class AccountManager {
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(5000);
+        IQ result = (IQ)collector.nextResult(REPLY_TIMEOUT);
         if (result == null) {
             throw new XMPPException("No response from server.");
         }
@@ -234,7 +244,7 @@ public class AccountManager {
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(5000);
+        IQ result = (IQ)collector.nextResult(REPLY_TIMEOUT);
         if (result == null) {
             throw new XMPPException("No response from server.");
         }
@@ -266,7 +276,7 @@ public class AccountManager {
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(5000);
+        IQ result = (IQ)collector.nextResult(REPLY_TIMEOUT);
         if (result == null) {
             throw new XMPPException("No response from server.");
         }
@@ -287,7 +297,7 @@ public class AccountManager {
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(5000);
+        IQ result = (IQ)collector.nextResult(REPLY_TIMEOUT);
         if (result == null) {
             throw new XMPPException("No response from server.");
         }

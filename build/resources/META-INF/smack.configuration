@@ -1,14 +1,38 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <!-- Configuration file to load at system start up -->
-<smackSystem> 
-    
-    <!-- Classes to load at start up -->
-    <classesToLoad> 
-        <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className> 
-        <className>org.jivesoftware.smackx.XHTMLManager</className> 
-    </classesToLoad>
-    
+<smackSystem>
+
     <!-- Smack Release -->
-    <versionNumber>1.3.0</versionNumber> 
+    <versionNumber>1.3.0</versionNumber>
+
+    <!-- Classes to load at start up -->
+    <classesToLoad>
+        <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
+        <className>org.jivesoftware.smackx.XHTMLManager</className>
+    </classesToLoad>
+
+    <!-- Default reply timeout milliseconds -->
+    <replyTimeout>
+        <value>5000</value>
+        <className>org.jivesoftware.smack.AccountManager</className>
+    </replyTimeout>
+
+    <!-- Default reply timeout milliseconds -->
+    <replyTimeout>
+        <value>5000</value>
+        <className>org.jivesoftware.smack.GroupChat</className>
+    </replyTimeout>
+
+    <!-- Default reply timeout milliseconds -->
+    <replyTimeout>
+        <value>5000</value>
+        <className>org.jivesoftware.smack.Roster</className>
+    </replyTimeout>
+
+    <!-- Default reply timeout milliseconds -->
+    <replyTimeout>
+        <value>5000</value>
+        <className>org.jivesoftware.smack.XMPPConnection</className>
+    </replyTimeout>
 
 </smackSystem>

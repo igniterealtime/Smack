@@ -96,6 +96,16 @@ public class Roster {
      */
     public static final int SUBSCRIPTION_MANUAL = 2;
 
+    /**
+     * Value that indicates the number of milliseconds to wait for a response from
+     * the server. 
+     *
+     * The reply timeout value can be assigned by setting this field to the required 
+     * timeout, or by modifying the smack.configuration file that holds the default value
+     * to use.
+     */
+    public static int REPLY_TIMEOUT = 5000;
+
     private XMPPConnection connection;
     private Map groups;
     private List entries;
@@ -237,11 +247,11 @@ public class Roster {
             }
         }
         rosterPacket.addRosterItem(item);
-        // Wait up to 5 seconds for a reply from the server.
+        // Wait up to a certain number of seconds for a reply from the server.
         PacketCollector collector = connection.createPacketCollector(
                 new PacketIDFilter(rosterPacket.getPacketID()));
         connection.sendPacket(rosterPacket);
-        IQ response = (IQ)collector.nextResult(5000);
+        IQ response = (IQ)collector.nextResult(REPLY_TIMEOUT);
         if (response == null) {
             throw new XMPPException("No response from the server.");
         }
