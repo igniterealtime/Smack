@@ -192,4 +192,15 @@ public class XMPPException extends Exception {
             wrappedThrowable.printStackTrace(out);
         }
     }
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        if (wrappedThrowable != null) {
+            buf.append(wrappedThrowable);
+        }
+        if (error != null) {
+            buf.append(" -- ").append(error);
+        }
+        return buf.toString();
+    }
 }
