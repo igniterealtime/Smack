@@ -112,12 +112,10 @@ join message to send. If you want to just join the room without a password and w
 of history to receive then you could use <b>join(String nickname)</b> where nickname if your nickname in
 the room. In case the room requires a password in order to join you could then use 
 <b>join(String nickname, String password)</b>. And finally, the most complete way to join a room is to send 
-<b>join(String nickname, long timeout, String password, int maxchars, int maxstanzas, int seconds, Date since)</b>
-where nickname is your nickname in the room, timeout is the amount of time to wait for a reply from the MUC 
-service(in milleseconds), password is your password to join the room, maxchars is the total number of characters 
-to receive in the history, maxstanzas is the total number of messages to receive in the history, seconds indicates 
-to the service to send only the messages received in the last "X" seconds and since indicates to the service 
-to send only the messages received since the Date specified.</p>
+<b>join(String nickname, String password, DiscussionHistory history, long timeout)</b>
+where nickname is your nickname in the room, , password is your password to join the room, history is
+an object that specifies the amount of history to receive and timeout is the milliseconds to wait
+for a response from the server.</p>
 
 <b>Examples</b><p>
 
@@ -150,8 +148,10 @@ to receive: <br>
       MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
 
       <font color="#3f7f5f">// User2 joins the new room using a password and specifying</font>
-      <font color="#3f7f5f">// the amount of history to receive</font>
-      muc2.join(<font color="#0000FF">"testbot2"</font>,SmackConfiguration.getPacketReplyTimeout(), <font color="#0000FF">"password"</font>, 0, -1, -1, null);
+      <font color="#3f7f5f">// the amount of history to receive. In this example we are requesting the last 5 messages.</font>
+      DiscussionHistory history = new DiscussionHistory();
+      history.setMaxStanzas(5);
+      muc2.join(<font color="#0000FF">"testbot2"</font>, <font color="#0000FF">"password"</font>, history, SmackConfiguration.getPacketReplyTimeout());
 </pre>
 </blockquote>
 
