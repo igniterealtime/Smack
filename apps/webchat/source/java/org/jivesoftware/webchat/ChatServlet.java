@@ -140,6 +140,7 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
             reply.append("<meta http-equiv=\"refresh\" content=\"2\">\n");
             reply.append("<script language=\"JavaScript\" type=\"text/javascript\">\n");
             reply.append("var data = window.parent.frames['data'].data;\n");
+            reply.append("if (data != null) {\n");
             boolean foundData = false;
             Message message = data.groupChat.pollMessage();
             while (message != null) {
@@ -160,12 +161,13 @@ public class ChatServlet extends HttpServlet implements HttpSessionListener {
                 // Apply emoticons
                 body = urlFilter.applyFilter(body);
                 body = emoticonFilter.applyFilter(body);
-                reply.append("data[data.length] = new Array(\"" + from + "\", \"" + body + "\");\n");
+                reply.append("\tdata[data.length] = new Array(\"" + from + "\", \"" + body + "\");\n");
                 message = data.groupChat.pollMessage();
             }
             if (foundData) {
                 reply.append("window.parent.frames['main'].location.reload();\n");
             }
+            reply.append("}\n");
             reply.append("</script>\n");
             reply.append("</head>\n");
             reply.append("<body></body>\n");
