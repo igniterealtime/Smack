@@ -74,7 +74,6 @@ class PacketWriter {
     private List listeners = new ArrayList();
     private Thread listenerThread;
     private LinkedList sentPackets = new LinkedList();
-    private Timer keepAliveTimer = new Timer(true);
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -102,9 +101,14 @@ class PacketWriter {
         listenerThread.setName("Smack Writer Listener Processor");
         listenerThread.setDaemon(true);
 
-        // Schedule a keep-alive task for once every 30 seconds. It will write
+        // Schedule a keep-alive task to run if the feature is enabled. will write
         // out a space character each time it runs to keep the TCP/IP connection open.
-        keepAliveTimer.scheduleAtFixedRate(new KeepAliveTask(), 30000, 30000);
+        int keepAliveInterval = SmackConfiguration.getKeepAliveInterval();
+        if (keepAliveInterval > 0) {
+            Thread keepAliveThread = new Thread(new KeepAliveTask(keepAliveInterval));
+            keepAliveThread.setDaemon(true);
+            keepAliveThread.start();
+        }
     }
 
     /**
@@ -227,7 +231,6 @@ class PacketWriter {
             finally {
                 try {
                     writer.close();
-                    keepAliveTimer.cancel();
                 }
                 catch (Exception e) { }
             }
@@ -323,14 +326,26 @@ class PacketWriter {
      * A TimerTask that keeps connections to the server alive by sending a space
      * character. The
      */
-    private class KeepAliveTask extends TimerTask {
+    private class KeepAliveTask implements Runnable {
+
+        private int delay;
+
+        public KeepAliveTask(int delay) {
+            this.delay = delay;
+        }
+
         public void run() {
-            if (!done) {
+            while (!done) {
                 synchronized (writer) {
                     try {
                         writer.write(" ");
                     }
                     catch (Exception e) { }
+                    try {
+                        // Sleep 30 seconds.
+                        Thread.sleep(delay);
+                    }
+                    catch (InterruptedException ie) { }
                 }
             }
         }

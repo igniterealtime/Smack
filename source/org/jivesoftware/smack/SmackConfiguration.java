@@ -69,8 +69,10 @@ import org.xmlpull.v1.*;
  */
 public final class SmackConfiguration {
 
-    private static String versionNumber = "1.3.0";
-    private static int packetReplyTimeout = -1;
+    private static final String SMACK_VERSION = "1.3.1";
+
+    private static int packetReplyTimeout = 5000;
+    private static int keepAliveInterval = 30000;
 
     private SmackConfiguration() {
     }
@@ -109,7 +111,10 @@ public final class SmackConfiguration {
                                     parseClassToLoad(parser);
                                 }
                                 else if (parser.getName().equals("packetReplyTimeout")) {
-                                    parsePacketReplyTimeout(parser);
+                                    packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
+                                }
+                                else if (parser.getName().equals("keepAliveInterval")) {
+                                    keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
                                 }
                             }
                             eventType = parser.next();
@@ -129,48 +134,23 @@ public final class SmackConfiguration {
         catch (Exception e) {
         }
     }
-    
-    private static void parseClassToLoad(XmlPullParser parser) throws Exception {
-        String className = parser.nextText();
-        // Attempt to load the class so that the class can get initialized
-        try {
-            Class.forName(className);
-        }
-        catch (ClassNotFoundException cnfe) {
-            // TODO Replace the printStackTrace to the console with a logger system
-            //cnfe.printStackTrace();
-        }
-    }
-
-    private static void parsePacketReplyTimeout(XmlPullParser parser) throws Exception {
-        int timeout = Integer.parseInt(parser.nextText());
-        // Set the specified timeout value in the file if the user didn't specify 
-        // a timeout value before. Don't overwrite user preferences.
-        if (packetReplyTimeout == -1) {
-            packetReplyTimeout = timeout;
-        }
-    }
 
     /**
-     * Returns the current Smack release version.
+     * Returns the Smack version information, e.g. "1.3.0".
      * 
-     * @return the current Smack release version number
+     * @return the Smack version information.
      */
-    public static String getVersionNumber() {
-        return versionNumber;
+    public static String getVersion() {
+        return SMACK_VERSION;
     }
 
     /**
      * Returns the number of milliseconds to wait for a response from
-     * the server.
+     * the server. The default value is 5000 ms.
      * 
      * @return the milliseconds to wait for a response from the server
      */
     public static int getPacketReplyTimeout() {
-        // Return a default value if packetReplyTimeout has not been initialized yet
-        if (packetReplyTimeout == -1) {
-            return 5000;
-        }
         return packetReplyTimeout;
     }
 
@@ -182,6 +162,54 @@ public final class SmackConfiguration {
      */
     public static void setPacketReplyTimeout(int timeout) {
         packetReplyTimeout = timeout;
+    }
+
+    /**
+     * Returns the number of milleseconds delay between sending keep-alive
+     * requests to the server. The default value is 30000 ms. A value of -1
+     * mean no keep-alive requests will be sent to the server.
+     *
+     * @return the milliseconds to wait between keep-alive requests, or -1 if
+     *      no keep-alive should be sent.
+     */
+    public static int getKeepAliveInterval() {
+        return keepAliveInterval;
+    }
+
+    /**
+     * Sets the number of milleseconds delay between sending keep-alive
+     * requests to the server. The default value is 30000 ms. A value of -1
+     * mean no keep-alive requests will be sent to the server.
+     *
+     * @param interval the milliseconds to wait between keep-alive requests,
+     *      or -1 if no keep-alive should be sent.
+     */
+    public static void setKeepAliveInterval(int interval) {
+        keepAliveInterval = interval;
+    }
+
+    private static void parseClassToLoad(XmlPullParser parser) throws Exception {
+        String className = parser.nextText();
+        // Attempt to load the class so that the class can get initialized
+        try {
+            Class.forName(className);
+        }
+        catch (ClassNotFoundException cnfe) {
+            System.err.println("Error! a startup class specified in smack-config.xml could " +
+                    "not be loaded: " + className);
+        }
+    }
+
+    private static int parseIntProperty(XmlPullParser parser, int defaultValue)
+            throws Exception
+    {
+        try {
+            return Integer.parseInt(parser.nextText());
+        }
+        catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+            return defaultValue;
+        }
     }
 
     /**
