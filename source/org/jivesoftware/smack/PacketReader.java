@@ -114,7 +114,9 @@ class PacketReader {
         listenerThread.setDaemon(true);
 
         try {
-            parser = getParserInstance();
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            parser = factory.newPullParser();
             parser.setInput(connection.reader);
         }
         catch (XmlPullParserException xppe) {
@@ -742,8 +744,11 @@ class PacketReader {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 String name = parser.getName();
-                String value = parser.nextText();
-                extension.setValue(name, value);
+                parser.next();
+                if (eventType == XmlPullParser.TEXT) {
+                    String value = parser.getText();
+                    extension.setValue(name, value);
+                }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals(elementName)) {
@@ -797,7 +802,7 @@ class PacketReader {
                 }
                 else if ("java-object".equals(type)) {
                     try {
-                        byte [] bytes = StringUtils.decodeBase64(valueText).getBytes("ISO-8859-1");
+                        byte [] bytes = StringUtils.decodeBase64(valueText);
                         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
                         value = in.readObject();
                     }
@@ -816,38 +821,6 @@ class PacketReader {
             }
         }
         return properties;
-    }
-
-    /**
-     * Returns an XML parser instance.
-     *
-     * @return an XML parser instance.
-     */
-    private static XmlPullParser getParserInstance() {
-        XmlPullParser parser = null;
-        try {
-            final String defaultProviderName = "org.xmlpull.mxp1.MXParserFactory";
-            XmlPullParserFactory factory = null;
-            try {
-                // Attempt to load a factory implementation using a system property
-                // and a classloader context.
-                factory = XmlPullParserFactory.newInstance(
-                        System.getProperty(XmlPullParserFactory.PROPERTY_NAME),
-                        Thread.currentThread().getContextClassLoader().getClass());
-            }
-            catch (Exception e) {
-                if (factory == null) {
-                    // Loading failed. Therefore, use the hardcoded default.
-                    factory = XmlPullParserFactory.newInstance(defaultProviderName, null);
-                }
-            }
-            factory.setNamespaceAware(true);
-            parser = factory.newPullParser();
-        }
-        catch (XmlPullParserException xppe) {
-            xppe.printStackTrace();
-        }
-        return parser;
     }
 
     /**

@@ -153,7 +153,9 @@ public class ProviderManager {
                 java.io.InputStream providerStream = null;
                 try {
                     providerStream = url.openStream();
-                    XmlPullParser parser = getParserInstance();
+                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                    factory.setNamespaceAware(true);
+                    XmlPullParser parser = factory.newPullParser();
                     parser.setInput(providerStream, "UTF-8");
                     int eventType = parser.getEventType();
                     do {
@@ -298,37 +300,5 @@ public class ProviderManager {
         StringBuffer buf = new StringBuffer();
         buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
         return buf.toString();
-    }
-
-    /**
-     * Returns an XML parser instance.
-     *
-     * @return an XML parser instance.
-     */
-    private static XmlPullParser getParserInstance() {
-        XmlPullParser parser = null;
-        try {
-            final String defaultProviderName = "org.xmlpull.mxp1.MXParserFactory";
-            XmlPullParserFactory factory = null;
-            try {
-                // Attempt to load a factory implementation using a system property
-                // and a classloader context.
-                factory = XmlPullParserFactory.newInstance(
-                        System.getProperty(XmlPullParserFactory.PROPERTY_NAME),
-                        Thread.currentThread().getContextClassLoader().getClass());
-            }
-            catch (Exception e) {
-                if (factory == null) {
-                    // Loading failed. Therefore, use the hardcoded default.
-                    factory = XmlPullParserFactory.newInstance(defaultProviderName, null);
-                }
-            }
-            factory.setNamespaceAware(true);
-            parser = factory.newPullParser();
-        }
-        catch (XmlPullParserException xppe) {
-            xppe.printStackTrace();
-        }
-        return parser;
     }
 }
