@@ -545,6 +545,9 @@ public class XMPPConnection {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
+        if (packet == null) {
+            throw new NullPointerException("Packet is null.");
+        }
         packetWriter.sendPacket(packet);
     }
 
