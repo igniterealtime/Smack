@@ -53,7 +53,6 @@
 package org.jivesoftware.smack;
 
 import java.util.LinkedList;
-import java.util.Iterator;
 import java.io.*;
 
 import org.jivesoftware.smack.packet.Packet;
