@@ -127,8 +127,8 @@ public class MultiUserChatTest extends TestCase {
                     for (Iterator it=field.getValues();it.hasNext();) {
                         values.add((String)it.next());
                     }
-                    // Add a new answer to form to submit
-                    submitForm.addAnswer(field.getVariable(), values);
+                    // Sets the new answer to form to submit
+                    submitForm.setAnswer(field.getVariable(), values);
                 }
             }
             // Update the new room's configuration
