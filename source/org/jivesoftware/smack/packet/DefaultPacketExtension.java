@@ -112,7 +112,17 @@ public class DefaultPacketExtension implements PacketExtension {
     }
 
     public String toXML() {
-        return null;
+        StringBuffer buf = new StringBuffer();
+        buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
+        for (Iterator i=getNames(); i.hasNext(); ) {
+            String name = (String)i.next();
+            String value = getValue(name);
+            buf.append("<").append(name).append(">");
+            buf.append(value);
+            buf.append("</").append(name).append(">");
+        }
+        buf.append("</").append(elementName).append(">");
+        return buf.toString();
     }
 
     /**
