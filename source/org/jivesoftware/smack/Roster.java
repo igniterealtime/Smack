@@ -105,6 +105,17 @@ public class Roster {
     }
 
     /**
+     * Cretaes a new roster entry.
+     *
+     * @param user
+     * @param name
+     * @return
+     */
+    public RosterEntry createEntry(String user, String name) {
+        return new RosterEntry(user, name, connection);
+    }
+
+    /**
      * Returns the roster group with the specified name, or <tt>null</tt> if the
      * group doesn't exist.
      *
@@ -114,6 +125,17 @@ public class Roster {
     public RosterGroup getGroup(String name) {
         synchronized (groups) {
             return (RosterGroup)groups.get(name);
+        }
+    }
+
+    /**
+     * Returns the number of the groups in the roster.
+     *
+     * @return the number of groups in the roster.
+     */
+    public int getGroupCount() {
+        synchronized (groups) {
+            return groups.size();
         }
     }
 

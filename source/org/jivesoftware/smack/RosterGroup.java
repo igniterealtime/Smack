@@ -108,18 +108,38 @@ public class RosterGroup {
         }
     }
 
+    /**
+     * Returns the number of entries in the group.
+     *
+     * @return the number of entries in the group.
+     */
     public int getEntryCount() {
         synchronized (entries) {
             return entries.size();
         }
     }
 
+    /**
+     * Returns an iterator for the entries in the group.
+     *
+     * @return an iterator for the entries in the group.
+     */
     public Iterator getEntries() {
-        return Collections.unmodifiableList(entries).iterator();
+        synchronized (entries) {
+            return Collections.unmodifiableList(new ArrayList(entries)).iterator();
+        }
     }
 
+    /**
+     * Returns true if an entry is part of the group.
+     *
+     * @param entry
+     * @return
+     */
     public boolean contains(RosterEntry entry) {
-        return entries.contains(entry);
+        synchronized (entries) {
+            return entries.contains(entry);
+        }
     }
 
     public void addEntry(RosterEntry entry) {
