@@ -408,8 +408,13 @@ public class Roster {
             if (presence.getType() == Presence.Type.AVAILABLE) {
                 presenceMap.put(key, presence);
                 // If the user is in the roster, fire an event.
-                if (entries.contains(key)) {
-                    fireRosterPresenceEvent(key);
+                synchronized (entries) {
+                    for (Iterator i=entries.iterator(); i.hasNext(); ) {
+                        RosterEntry entry = (RosterEntry)i.next();
+                        if (entry.getUser().equals(key)) {
+                            fireRosterPresenceEvent(key);
+                        }
+                    }
                 }
             }
             // If an "unavailable" packet, remove any entries in the presence map.
