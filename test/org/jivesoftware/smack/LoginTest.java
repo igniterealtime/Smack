@@ -55,17 +55,20 @@ public class LoginTest extends SmackTestCase {
      */
     public void testAnonymousLogin() {
         try {
-            XMPPConnection connection = new XMPPConnection(getHost(), getPort());
+            XMPPConnection conn1 = new XMPPConnection(getHost(), getPort());
+            XMPPConnection conn2 = new XMPPConnection(getHost(), getPort());
             try {
                 // Try to login anonymously
-                connection.loginAnonymously();
+                conn1.loginAnonymously();
+                conn2.loginAnonymously();
             }
             catch (XMPPException e) {
                 e.printStackTrace();
                 fail(e.getMessage());
             }
             // Close the connection
-            connection.close();
+            conn1.close();
+            conn2.close();
         }
         catch (Exception e) {
             e.printStackTrace();
