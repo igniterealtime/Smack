@@ -220,6 +220,8 @@ public class PrivateDataManager {
 
         // Wait up to five seconds for a response from the server.
         IQ response = (IQ)collector.nextResult(5000);
+        // Stop queuing results
+        collector.cancel();
         if (response == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -264,6 +266,8 @@ public class PrivateDataManager {
 
         // Wait up to five seconds for a response from the server.
         IQ response = (IQ)collector.nextResult(5000);
+        // Stop queuing results
+        collector.cancel();
         if (response == null) {
             throw new XMPPException("No response from the server.");
         }

@@ -285,4 +285,14 @@ public class Chat {
     public void addMessageListener(PacketListener listener) {
         connection.addPacketListener(listener, messageFilter);
     }
+
+    public void finalize() throws Throwable {
+        super.finalize();
+        try {
+            if (messageCollector != null) {
+                messageCollector.cancel();
+            }
+        }
+        catch (Exception e) {}
+    }
 }

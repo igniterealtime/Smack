@@ -208,6 +208,8 @@ public class AccountManager {
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from server.");
         }
@@ -235,6 +237,8 @@ public class AccountManager {
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from server.");
         }
@@ -267,6 +271,8 @@ public class AccountManager {
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from server.");
         }
@@ -288,6 +294,8 @@ public class AccountManager {
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from server.");
         }

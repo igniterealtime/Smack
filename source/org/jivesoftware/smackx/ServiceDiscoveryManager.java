@@ -310,6 +310,8 @@ public class ServiceDiscoveryManager {
 
         // Wait up to 5 seconds for a result.
         IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -355,6 +357,8 @@ public class ServiceDiscoveryManager {
 
         // Wait up to 5 seconds for a result.
         IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -386,6 +390,8 @@ public class ServiceDiscoveryManager {
 
         // Wait up to 5 seconds for a result.
         IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
         if (result == null) {
             throw new XMPPException("No response from the server.");
         }
