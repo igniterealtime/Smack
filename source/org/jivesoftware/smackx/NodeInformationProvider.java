@@ -65,9 +65,9 @@ import java.util.Iterator;
 public interface NodeInformationProvider {
     
     /**
-     * Returns an Iterator on the Items (@see DiscoverItems.Item) defined in the node. For example, 
-     * the MUC protocol specifies that an XMPP client should answer an Item for each joined room 
-     * when asked for the rooms where the use has joined.
+     * Returns an Iterator on the Items {@link org.jivesoftware.smackx.packet.DiscoverItems.Item} 
+     * defined in the node. For example, the MUC protocol specifies that an XMPP client should 
+     * answer an Item for each joined room when asked for the rooms where the use has joined.
      *  
      * @return an Iterator on the Items defined in the node.
      */

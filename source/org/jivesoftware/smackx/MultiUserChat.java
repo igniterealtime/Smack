@@ -208,9 +208,9 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the name of the room this GroupChat object represents.
+     * Returns the name of the room this MultiUserChat object represents.
      *
-     * @return the groupchat room name.
+     * @return the multi user chat room name.
      */
     public String getRoom() {
         return room;
@@ -224,12 +224,12 @@ public class MultiUserChat {
      * 
      * To create an "Instant Room", that means a room with some default configuration that is 
      * available for immediate access, the room's owner should send an empty form after creating 
-     * the room. (@see MultiUserChat.sendConfigurationForm(Form))<p>
+     * the room. {@link #sendConfigurationForm(Form)}<p>
      *   
      * To create a "Reserved Room", that means a room manually configured by the room creator 
      * before anyone is allowed to enter, the room's owner should complete and send a form after 
      * creating the room. Once the completed configutation form is sent to the server, the server  
-     * will unlock the room. (@see MultiUserChat.sendConfigurationForm(Form))
+     * will unlock the room. {@link #sendConfigurationForm(Form)}
      * 
      * @param nickname the nickname to use.
      * @throws XMPPException if the room couldn't be created for some reason
@@ -442,10 +442,10 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns true if currently in the group chat (after calling the {@link
-     * #join(String)} method.
+     * Returns true if currently in the multi user chat (after calling the {@link
+     * #join(String)} method).
      *
-     * @return true if currently in the group chat room.
+     * @return true if currently in the multi user chat room.
      */
     public boolean isJoined() {
         return joined;
@@ -798,9 +798,9 @@ public class MultiUserChat {
      * user joins the room a message with the current room's subject will be received.<p>
      * 
      * To be notified every time the room's subject change you should add a listener
-     * to this room. (@see addSubjectUpdatedListener(SubjectUpdatedListener))<p>
+     * to this room. {@link #addSubjectUpdatedListener(SubjectUpdatedListener)}<p>
      * 
-     * To change the room's subject use <code>changeSubject(String)</code>.
+     * To change the room's subject use {@link #changeSubject(String)}.
      *
      * @return the room's subject or <tt>null</tt> if the user hasn't joined the room or the 
      * room does not have a subject yet.
@@ -1452,6 +1452,17 @@ public class MultiUserChat {
     }
 
     /**
+     * Remoces a packet listener that was being notified of any new Presence packets
+     * sent to the group chat.
+     *
+     * @param listener a packet listener that was being notified of any presence packets
+     *      sent to the group chat.
+     */
+    public void removeParticipantListener(PacketListener listener) {
+        connection.removePacketListener(listener);
+    }
+
+    /**
      * Sends a message to the chat room.
      *
      * @param text the text of the message to send.
@@ -1548,6 +1559,17 @@ public class MultiUserChat {
     }
 
     /**
+     * Removes a packet listener that was being notified of any new messages in the
+     * multi user chat. Only "group chat" messages addressed to this multi user chat were
+     * being delivered to the listener.
+     *
+     * @param listener a packet listener.
+     */
+    public void removeMessageListener(PacketListener listener) {
+        connection.removePacketListener(listener);
+    }
+
+    /**
      * Changes the subject within the room. As a default, only users with a role of "moderator" 
      * are allowed to change the subject in a room. Although some rooms may be configured to 
      * allow a mere participant or even a visitor to change the subject.
@@ -1626,6 +1648,12 @@ public class MultiUserChat {
         return null;
     }
 
+    /**
+     * Adds a listener that will be notified of changes in your status in the room 
+     * such as the user being kicked, banned, or granted admin permissions. 
+     *
+     * @param listener a user status listener.
+     */
     public void addUserStatusListener(UserStatusListener listener) {
         synchronized (userStatusListeners) {
             if (!userStatusListeners.contains(listener)) {
@@ -1634,6 +1662,12 @@ public class MultiUserChat {
         }
     }
 
+    /**
+     * Removes a listener that was being notified of changes in your status in the room 
+     * such as the user being kicked, banned, or granted admin permissions. 
+     *
+     * @param listener a user status listener.
+     */
     public void removeUserStatusListener(UserStatusListener listener) {
         synchronized (userStatusListeners) {
             userStatusListeners.remove(listener);
@@ -1666,6 +1700,12 @@ public class MultiUserChat {
         }
     }
 
+    /**
+     * Adds a listener that will be notified of changes in participants status in the room 
+     * such as the user being kicked, banned, or granted admin permissions. 
+     *
+     * @param listener a participant status listener.
+     */
     public void addParticipantStatusListener(ParticipantStatusListener listener) {
         synchronized (participantStatusListeners) {
             if (!participantStatusListeners.contains(listener)) {
@@ -1674,6 +1714,12 @@ public class MultiUserChat {
         }
     }
 
+    /**
+     * Removes a listener that was being notified of changes in participants status in the room 
+     * such as the user being kicked, banned, or granted admin permissions. 
+     *
+     * @param listener a participant status listener.
+     */
     public void removeParticipantStatusListener(ParticipantStatusListener listener) {
         synchronized (participantStatusListeners) {
             participantStatusListeners.remove(listener);
