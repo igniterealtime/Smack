@@ -63,6 +63,8 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.debugger.*;
@@ -88,7 +90,7 @@ public class EnhancedDebugger implements SmackDebugger {
     private static ImageIcon iqPacketIcon;
     private static ImageIcon messagePacketIcon;
     private static ImageIcon unknownPacketTypeIcon;
-    
+
     {
         URL url;
         // Load the image icons 
@@ -123,7 +125,6 @@ public class EnhancedDebugger implements SmackDebugger {
         }
     }
 
-    private JFrame frame = null;
     private DefaultTableModel messagesTable = null;
     private JTextArea messageTextArea = null;
     private JFormattedTextField userField = null;
@@ -228,7 +229,10 @@ public class EnhancedDebugger implements SmackDebugger {
         tabbedPane.add("All Packets", allPane);
         tabbedPane.setToolTipTextAt(0, "Sent and received packets processed by Smack");
 
-        messagesTable = new DefaultTableModel(new Object[] { "Hide", "Timestamp", "", "", "Message", "Type", "To", "From" }, 0) {
+        messagesTable =
+            new DefaultTableModel(
+                new Object[] { "Hide", "Timestamp", "", "", "Message", "Type", "To", "From" },
+                0) {
             public boolean isCellEditable(int rowIndex, int mColIndex) {
                 return false;
             }
@@ -549,93 +553,100 @@ public class EnhancedDebugger implements SmackDebugger {
     private void addInformationPanel() {
         // Create UI elements for connection information.
         JPanel informationPanel = new JPanel();
-        informationPanel.setLayout(null);
+        informationPanel.setLayout(new BorderLayout());
 
         // Add the Host information
         JPanel connPanel = new JPanel();
-        connPanel.setLayout(null);
+        connPanel.setLayout(new GridBagLayout());
         connPanel.setBorder(BorderFactory.createTitledBorder("Connection information"));
-        connPanel.setBounds(0, 0, 320, 135);
 
         JLabel label = new JLabel("Host: ");
-        label.setBounds(10, 20, 150, 14);
         label.setMinimumSize(new java.awt.Dimension(150, 14));
         label.setMaximumSize(new java.awt.Dimension(150, 14));
-        connPanel.add(label);
+        connPanel.add(
+            label,
+            new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
         JFormattedTextField field = new JFormattedTextField(connection.getHost());
-        field.setBounds(160, 18, 150, 20);
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setEditable(false);
         field.setBorder(null);
-        connPanel.add(field);
+        connPanel.add(
+            field,
+            new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, 10, 2, new Insets(0, 0, 0, 0), 0, 0));
 
         // Add the Port information
         label = new JLabel("Port: ");
-        label.setBounds(10, 42, 150, 14);
         label.setMinimumSize(new java.awt.Dimension(150, 14));
         label.setMaximumSize(new java.awt.Dimension(150, 14));
-        connPanel.add(label);
+        connPanel.add(
+            label,
+            new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
         field = new JFormattedTextField(new Integer(connection.getPort()));
-        field.setBounds(160, 40, 150, 20);
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setEditable(false);
         field.setBorder(null);
-        connPanel.add(field);
+        connPanel.add(
+            field,
+            new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, 10, 2, new Insets(0, 0, 0, 0), 0, 0));
 
         // Add the connection's User information
         label = new JLabel("User: ");
-        label.setBounds(10, 64, 150, 14);
         label.setMinimumSize(new java.awt.Dimension(150, 14));
         label.setMaximumSize(new java.awt.Dimension(150, 14));
-        connPanel.add(label);
+        connPanel.add(
+            label,
+            new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
         userField = new JFormattedTextField();
-        userField.setBounds(160, 62, 150, 20);
         userField.setMinimumSize(new java.awt.Dimension(150, 20));
         userField.setMaximumSize(new java.awt.Dimension(150, 20));
         userField.setEditable(false);
         userField.setBorder(null);
-        connPanel.add(userField);
+        connPanel.add(
+            userField,
+            new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, 10, 2, new Insets(0, 0, 0, 0), 0, 0));
 
         // Add the connection's creationTime information
         label = new JLabel("Creation time: ");
-        label.setBounds(10, 86, 150, 14);
         label.setMinimumSize(new java.awt.Dimension(150, 14));
         label.setMaximumSize(new java.awt.Dimension(150, 14));
-        connPanel.add(label);
+        connPanel.add(
+            label,
+            new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
         field = new JFormattedTextField(new SimpleDateFormat("yyyy.MM.dd hh:mm:ss aaa"));
-        field.setBounds(160, 84, 150, 20);
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setValue(creationTime);
         field.setEditable(false);
         field.setBorder(null);
-        connPanel.add(field);
+        connPanel.add(
+            field,
+            new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, 10, 2, new Insets(0, 0, 0, 0), 0, 0));
 
         // Add the connection's creationTime information
         label = new JLabel("Status: ");
-        label.setBounds(10, 108, 150, 14);
         label.setMinimumSize(new java.awt.Dimension(150, 14));
         label.setMaximumSize(new java.awt.Dimension(150, 14));
-        connPanel.add(label);
+        connPanel.add(
+            label,
+            new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
         statusField = new JFormattedTextField();
-        statusField.setBounds(160, 106, 150, 20);
         statusField.setMinimumSize(new java.awt.Dimension(150, 20));
         statusField.setMaximumSize(new java.awt.Dimension(150, 20));
         statusField.setValue("Active");
         statusField.setEditable(false);
         statusField.setBorder(null);
-        connPanel.add(statusField);
+        connPanel.add(
+            statusField,
+            new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, 10, 2, new Insets(0, 0, 0, 0), 0, 0));
         // Add the connection panel to the information panel
-        informationPanel.add(connPanel);
+        informationPanel.add(connPanel, BorderLayout.NORTH);
 
         // Add the Number of sent packets information
         JPanel packetsPanel = new JPanel();
         packetsPanel.setLayout(new GridLayout(1, 1));
-        //packetsPanel.setLayout(null);
         packetsPanel.setBorder(BorderFactory.createTitledBorder("Transmitted Packets"));
-        packetsPanel.setBounds(1, 135, 320, 174);
 
         statisticsTable =
             new DefaultTableModel(new Object[][] { { "IQ", new Integer(0), new Integer(0)}, {
@@ -658,7 +669,7 @@ public class EnhancedDebugger implements SmackDebugger {
         packetsPanel.add(new JScrollPane(table));
 
         // Add the packets panel to the information panel
-        informationPanel.add(packetsPanel);
+        informationPanel.add(packetsPanel, BorderLayout.CENTER);
 
         tabbedPane.add("Information", new JScrollPane(informationPanel));
         tabbedPane.setToolTipTextAt(4, "Information and statistics about the debugged connection");
@@ -687,7 +698,7 @@ public class EnhancedDebugger implements SmackDebugger {
     public PacketListener getWriterListener() {
         return writerListener;
     }
-    
+
     /**
      * Updates the statistics table
      */
@@ -740,20 +751,20 @@ public class EnhancedDebugger implements SmackDebugger {
         }
         else {
             packetTypeIcon = unknownPacketTypeIcon;
-            messageType = packet.getClass().getName()+ " Received";
+            messageType = packet.getClass().getName() + " Received";
             receivedOtherPackets++;
         }
 
         messagesTable.addRow(
             new Object[] {
-                packet.toXML(),
+                formatXML(packet.toXML()),
                 dateFormatter.format(new Date()),
                 packetReceivedIcon,
                 packetTypeIcon,
                 messageType,
                 type,
                 "",
-                from});
+                from });
         // Update the statistics table
         updateStatistics();
     }
@@ -790,23 +801,78 @@ public class EnhancedDebugger implements SmackDebugger {
         }
         else {
             packetTypeIcon = unknownPacketTypeIcon;
-            messageType = packet.getClass().getName()+ " Sent";
+            messageType = packet.getClass().getName() + " Sent";
             sentOtherPackets++;
         }
 
         messagesTable.addRow(
             new Object[] {
-                packet.toXML(),
+                formatXML(packet.toXML()),
                 dateFormatter.format(new Date()),
                 packetSentIcon,
                 packetTypeIcon,
                 messageType,
                 type,
                 to,
-                ""});
-        
+                "" });
+
         // Update the statistics table
         updateStatistics();
+    }
+
+    private String formatXML(String str) {
+        try {
+            // Use a Transformer for output
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            Transformer transformer = tFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+            // Transform the requested string into a nice formatted XML string
+            StreamSource source = new StreamSource(new StringReader(str));
+            StringWriter sw = new StringWriter();
+            StreamResult result = new StreamResult(sw);
+            transformer.transform(source, result);
+            return sw.toString();
+
+        }
+        catch (TransformerConfigurationException tce) {
+            // Error generated by the parser
+            System.out.println("\n** Transformer Factory error");
+            System.out.println("   " + tce.getMessage());
+
+            // Use the contained exception, if any
+            Throwable x = tce;
+            if (tce.getException() != null)
+                x = tce.getException();
+            x.printStackTrace();
+
+        }
+        catch (TransformerException te) {
+            // Error generated by the parser
+            System.out.println("\n** Transformation error");
+            System.out.println("   " + te.getMessage());
+
+            // Use the contained exception, if any
+            Throwable x = te;
+            if (te.getException() != null)
+                x = te.getException();
+            x.printStackTrace();
+
+        }
+        return str;
+    }
+
+    /**
+     * Stops debugging the connection. Removes any listener on the connection.
+     *
+     */
+    void cancel() {
+        connection.removeConnectionListener(connListener);
+        connection.removePacketListener(readerListener);
+        connection.removePacketWriterListener(writerListener);
+        messagesTable = null;
     }
 
     /**
@@ -879,6 +945,8 @@ public class EnhancedDebugger implements SmackDebugger {
                 // Set the detail of the packet in the messageTextArea 
                 messageTextArea.setText(
                     (String) table.getModel().getValueAt(table.getSelectedRow(), 0));
+                // Scroll up to the top
+                messageTextArea.setCaretPosition(0);
             }
         }
     }
