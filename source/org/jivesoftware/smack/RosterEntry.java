@@ -98,6 +98,9 @@ public class RosterEntry {
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
+        if (name != null) {
+            buf.append(name).append(": ");
+        }
         buf.append(user);
         Iterator groups = getGroups();
         if (groups.hasNext()) {
