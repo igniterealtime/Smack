@@ -250,6 +250,49 @@ public class RosterTest extends SmackTestCase {
     }
 
     /**
+     * 1. Create an unfiled entry with no name
+     * 2. Check that the the entry does not belong to any group
+     * 3. Change its name and add it to a group
+     * 4. Check that the name has been modified and that the entry belongs to a group
+     */
+    public void testChangeGroupAndNameToUnfiledEntry() {
+        try {
+            // Add a new roster entry
+            Roster roster = getConnection(0).getRoster();
+            roster.createEntry(getBareJID(1), null, null);
+
+            Thread.sleep(200);
+
+            getConnection(1).getRoster().createEntry(getBareJID(0), null, null);
+
+            Thread.sleep(200);
+
+            Iterator it = roster.getEntries();
+            while (it.hasNext()) {
+                RosterEntry entry = (RosterEntry) it.next();
+                assertFalse("The roster entry belongs to a group", entry.getGroups().hasNext());
+            }
+
+            // Change the roster entry name and check if the change was made
+            roster.createEntry(getBareJID(1), "NewName", new String[] { "Friends" });
+
+            // Reload the roster and check the name again
+            Thread.sleep(200);
+            it = roster.getEntries();
+            while (it.hasNext()) {
+                RosterEntry entry = (RosterEntry) it.next();
+                assertEquals("Name of roster entry is wrong", "NewName", entry.getName());
+                assertTrue("The roster entry does not belong to any group", entry.getGroups()
+                        .hasNext());
+            }
+
+            cleanUpRoster();
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
      * Test if renaming a roster group works fine.
      *
      */
