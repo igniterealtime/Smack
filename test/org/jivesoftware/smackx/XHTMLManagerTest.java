@@ -131,7 +131,7 @@ public class XHTMLManagerTest extends TestCase {
     public void testSendSimpleXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
         Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getChatID());
+        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
 
         // Create a listener for the chat that will check if the received message includes 
         // an XHTML extension. Answer an ACK if everything is ok
@@ -202,7 +202,7 @@ public class XHTMLManagerTest extends TestCase {
     public void testSendComplexXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
         Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getChatID());
+        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
 
         // Create a listener for the chat that will check if the received message includes 
         // an XHTML extension. Answer an ACK if everything is ok

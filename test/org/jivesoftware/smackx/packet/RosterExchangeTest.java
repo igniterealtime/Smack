@@ -74,7 +74,7 @@ public class RosterExchangeTest extends TestCase {
     public void testSendAndReceiveRosterEntries() {
         // Create a chat for each connection
         Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getChatID());
+        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
 
         // Create a Listener that listens for Messages with the extension "jabber:x:roster"
         // This listener will listen on the conn2 and answer an ACK if everything is ok
@@ -134,7 +134,7 @@ public class RosterExchangeTest extends TestCase {
     public void testSendAndAcceptRosterEntries() {
         // Create a chat for each connection
         Chat chat1 = conn1.createChat(user2);
-        final Chat chat2 = new Chat(conn2, user1, chat1.getChatID());
+        final Chat chat2 = new Chat(conn2, user1, chat1.getThreadID());
 
         // Create a Listener that listens for Messages with the extension "jabber:x:roster"
         // This listener will listen on the conn2, save the roster entries and answer an ACK if everything is ok
