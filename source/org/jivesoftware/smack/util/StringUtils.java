@@ -285,7 +285,7 @@ public class StringUtils {
     public static String encodeBase64(String data) {
         byte [] bytes = null;
         try {
-            bytes = data.getBytes("ISO-8859-1");
+            bytes = data.getBytes("UTF8");
         }
         catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
@@ -340,15 +340,16 @@ public class StringUtils {
      * @param data a base64 encoded String to decode.
      * @return the decoded String.
      */
-    public static String decodeBase64(String data) {
+    public static byte[] decodeBase64(String data) {
         byte [] bytes = null;
         try {
-            bytes = data.getBytes("ISO-8859-1");
+            bytes = data.getBytes("UTF8");
+            return decodeBase64(bytes).getBytes("UTF8");
         }
         catch (UnsupportedEncodingException uee) {
             uee.printStackTrace();
         }
-        return decodeBase64(bytes);
+        return new byte[] { };
     }
 
     /**
@@ -357,7 +358,7 @@ public class StringUtils {
      * @param data a base64 encode byte array to decode.
      * @return the decoded String.
      */
-    public static String decodeBase64(byte[] data) {
+    private static String decodeBase64(byte[] data) {
         int c, c1;
         int len = data.length;
         StringBuffer ret = new StringBuffer((len * 3) / 4);
