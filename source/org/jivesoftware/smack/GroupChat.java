@@ -138,12 +138,13 @@ public class GroupChat {
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
         joinPresence.setTo(room + "/" + nickname);
-        connection.sendPacket(joinPresence);
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter = new AndFilter(
                 new FromContainsFilter(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send join packet.
+        connection.sendPacket(joinPresence);
         // Wait up to five seconds for a reply.
         Presence presence = (Presence)response.nextResult(5000);
         if (presence == null) {
