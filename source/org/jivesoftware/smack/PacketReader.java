@@ -748,8 +748,12 @@ class PacketReader {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
                 // Advance to name element.
+                // Skip CRs
+                parser.next();
                 parser.next();
                 String name = parser.nextText();
+                parser.next();
+                // Skip CRs
                 parser.next();
                 String type = parser.getAttributeValue("", "type");
                 String valueText = parser.nextText();
