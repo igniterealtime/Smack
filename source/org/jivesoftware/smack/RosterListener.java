@@ -53,16 +53,23 @@
 package org.jivesoftware.smack;
 
 /**
- * A listener that is fired anytime a roster is changed.
+ * A listener that is fired any time a roster is changed or the presence of
+ * a user in the roster is changed.
  *
  * @author Matt Tucker
  */
 public interface RosterListener {
 
     /**
-     * Called when the roster is modified.
+     * Called when a roster entry is added or removed.
      */
-   public void rosterModified();
+    public void rosterModified();
 
+    /**
+     * Called when the presence of a roster entry is changed.
+     *
+     * @param XMPPAddress the XMPP address of the user who's presence has changed.
+     */
+    public void presenceChanged(String XMPPAddress);
 }
 
