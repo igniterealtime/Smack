@@ -259,14 +259,17 @@ public class XMPPConnection {
         // Send the packet
         packetWriter.sendPacket(discoveryAuth);
         // Wait up to five seconds for a response from the server.
-        Authentication authTypes = (Authentication)collector.nextResult(5000);
-        collector.cancel();
-        if (authTypes == null) {
+        IQ response = (IQ)collector.nextResult(5000);
+        if (response == null) {
             throw new XMPPException("No response from the server.");
         }
-        else if (authTypes.getType().equals(IQ.Type.ERROR)) {
-            throw new XMPPException(authTypes.getError());
+        // If the server replied with an error, throw an exception.
+        else if (response.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(response.getError());
         }
+        // Otherwise, no error so continue processing.
+        Authentication authTypes = (Authentication)response;
+        collector.cancel();
 
         // Now, create the authentication packet we'll send to the server.
         Authentication auth = new Authentication();
@@ -290,7 +293,7 @@ public class XMPPConnection {
         // Send the packet.
         packetWriter.sendPacket(auth);
         // Wait up to five seconds for a response from the server.
-        IQ response = (IQ)collector.nextResult(5000);
+        response = (IQ)collector.nextResult(5000);
         if (response == null) {
             throw new XMPPException("Authentication failed.");
         }
