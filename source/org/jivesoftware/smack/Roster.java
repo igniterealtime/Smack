@@ -421,8 +421,13 @@ public class Roster {
             else if (presence.getType() == Presence.Type.UNAVAILABLE) {
                 presenceMap.remove(key);
                 // If the user is in the roster, fire an event.
-                if (entries.contains(key)) {
-                    fireRosterPresenceEvent(key);
+                synchronized (entries) {
+                    for (Iterator i=entries.iterator(); i.hasNext(); ) {
+                        RosterEntry entry = (RosterEntry)i.next();
+                        if (entry.getUser().equals(key)) {
+                            fireRosterPresenceEvent(key);
+                        }
+                    }
                 }
             }
             else if (presence.getType() == Presence.Type.SUBSCRIBE) {
