@@ -53,7 +53,6 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.filter.PacketFilter;
 
 /**
  * Provides a mechanism to listen for packets that pass a specified filter.
