@@ -484,6 +484,15 @@ public class XMPPConnection {
     }
 
     /**
+     * Returns true if the connection is a secured one, such as an SSL connection.
+     *
+     * @return true if a secure connection to the server.
+     */
+    public boolean isSecureConnection() {
+        return false;
+    }
+
+    /**
      * Returns true if currently authenticated by successfully calling the login method.
      *
      * @return true if authenticated.

@@ -120,6 +120,10 @@ public class SSLXMPPConnection extends XMPPConnection {
         super.init();
     }
 
+    public boolean isSecureConnection() {
+        return true;
+    }
+
     /**
      * An SSL socket factory that will let any certifacte past, even if it's expired or
      * not singed by a root CA.
