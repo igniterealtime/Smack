@@ -40,7 +40,7 @@ listener:<p>
 <div class="code"><pre>
 <font color="gray"><i>// Create a packet filter to listen for new messages from a particular</i></font>
 <font color="gray"><i>// user. We use an AndFilter to combine two other filters.</i></font>
-PacketFilter filter = new AndFilter(new PacketTypeTypeFilter(<b>Message.class</b>), 
+PacketFilter filter = new AndFilter(new PacketTypeFilter(<b>Message.class</b>), 
         new FromContainsFilter(<font color="green">"mary@jivesoftware.com"</font>));
 <font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
 
