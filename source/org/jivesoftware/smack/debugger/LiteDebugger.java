@@ -94,17 +94,8 @@ public class LiteDebugger implements SmackDebugger {
      * Creates the debug process, which is a GUI window that displays XML traffic.
      */
     private void createDebug() {
-        // Use the native look and feel.
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        frame =
-            new JFrame(
-                "Smack Debug Window -- " + connection.getHost() + ":" + connection.getPort());
+        frame = new JFrame("Smack Debug Window -- " + connection.getHost() + ":" +
+                connection.getPort());
 
         // Add listener for window closing event 
         frame.addWindowListener(new WindowAdapter() {

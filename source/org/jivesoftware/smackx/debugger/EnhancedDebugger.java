@@ -170,14 +170,6 @@ public class EnhancedDebugger implements SmackDebugger {
      * Creates the debug process, which is a GUI window that displays XML traffic.
      */
     private void createDebug() {
-        // Use the native look and feel.
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
         // We'll arrange the UI into six tabs. The first tab contains all data, the second
         // client generated XML, the third server generated XML, the fourth allows to send 
         // ad-hoc messages and the fifth contains connection information.
