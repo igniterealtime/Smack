@@ -111,7 +111,8 @@ public class MUCOwner extends IQ {
         private String affiliation;
         private String jid;
         private String nick;
-        
+        private String role;
+
         /**
          * Creates a new item child. 
          * 
@@ -173,6 +174,18 @@ public class MUCOwner extends IQ {
         }
 
         /**
+         * Returns the temporary position or privilege level of an occupant within a room. The
+         * possible roles are "moderator", "participant", and "visitor" (it is also possible to
+         * have no defined role). A role lasts only for the duration of an occupant's visit to
+         * a room.
+         *
+         * @return the privilege level of an occupant within a room.
+         */
+        public String getRole() {
+            return role;
+        }
+
+        /**
          * Sets the actor (JID of an occupant in the room) that was kicked or banned.
          * 
          * @param actor the actor (JID of an occupant in the room) that was kicked or banned.
@@ -211,6 +224,18 @@ public class MUCOwner extends IQ {
             this.nick = nick;
         }
 
+        /**
+         * Sets the temporary position or privilege level of an occupant within a room. The
+         * possible roles are "moderator", "participant", and "visitor" (it is also possible to
+         * have no defined role). A role lasts only for the duration of an occupant's visit to
+         * a room.
+         *
+         * @param role the new privilege level of an occupant within a room.
+         */
+        public void setRole(String role) {
+            this.role = role;
+        }
+
         public String toXML() {
             StringBuffer buf = new StringBuffer();
             buf.append("<item");
@@ -222,6 +247,9 @@ public class MUCOwner extends IQ {
             }
             if (getNick() != null) {
                 buf.append(" nick=\"").append(getNick()).append("\"");
+            }
+            if (getRole() != null) {
+                buf.append(" role=\"").append(getRole()).append("\"");
             }
             if (getReason() == null && getActor() == null) {
                 buf.append("/>");

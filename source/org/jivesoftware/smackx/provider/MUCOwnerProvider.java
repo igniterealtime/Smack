@@ -36,7 +36,6 @@ public class MUCOwnerProvider implements IQProvider {
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         MUCOwner mucOwner = new MUCOwner();
         boolean done = false;
-        MUCOwner.Item item = null;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -66,6 +65,7 @@ public class MUCOwnerProvider implements IQProvider {
         boolean done = false;
         MUCOwner.Item item = new MUCOwner.Item(parser.getAttributeValue("", "affiliation"));
         item.setNick(parser.getAttributeValue("", "nick"));
+        item.setRole(parser.getAttributeValue("", "role"));
         item.setJid(parser.getAttributeValue("", "jid"));
         while (!done) {
             int eventType = parser.next();
