@@ -193,7 +193,8 @@ public class RosterGroup {
     }
 
     /**
-     * Adds a roster entry to this group.
+     * Adds a roster entry to this group. If the entry was unfiled then it will be removed from 
+     * the unfiled list and will be added to this group.
      *
      * @param entry a roster entry.
      */
@@ -211,7 +212,9 @@ public class RosterGroup {
     }
 
     /**
-     * Removes a roster entry from this group.
+     * Removes a roster entry from this group. If the entry does not belong to any other group 
+     * then it will be considered as unfiled, therefore it will be added to the list of unfiled 
+     * entries.
      *
      * @param entry a roster entry.
      */
