@@ -69,6 +69,7 @@ class PacketWriter {
     private XMPPConnection connection;
     private LinkedList queue;
     private boolean done = false;
+    private int packetsWritten = 0;
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -101,6 +102,15 @@ class PacketWriter {
                 queue.notify();
             }
         }
+    }
+
+    /**
+     * Returns the number of packets written through this packet writer.
+     *
+     * @return the number of packets written.
+     */
+    public int getPacketsWritten() {
+        return packetsWritten;
     }
 
     /**
@@ -152,6 +162,8 @@ class PacketWriter {
             while (!done) {
                 Packet packet = nextPacket();
                 writer.write(packet.toXML());
+                // Increment the count of packets written.
+                packetsWritten++;
                 writer.flush();
             }
             // Close the stream.
