@@ -217,6 +217,10 @@ public abstract class SmackTestCase extends TestCase {
                     connections[i] = new XMPPConnection(host, port, getSocketFactory());
                 }
             }
+            // Use the host name that the server reports. This is a good idea in most
+            // cases, but could fail if the user set a hostname in their XMPP server
+            // that will not resolve as a network connection.
+            host = connections[0].getHost();
             // Create the test accounts
             if (!getConnection(0).getAccountManager().supportsAccountCreation())
                 fail("Server does not support account creation");
