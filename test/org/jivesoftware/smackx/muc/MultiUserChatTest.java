@@ -52,7 +52,9 @@
 
 package org.jivesoftware.smackx.muc;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
@@ -79,29 +81,50 @@ public class MultiUserChatTest extends SmackTestCase {
         super(arg0);
     }
 
-    /*public void testDiscussionHistory() {
+    public void testDiscussionHistory() {
         try {
-            // User2 joins the room
+            // User1 sends some messages to the room
+            muc.sendMessage("Message 1");
+            muc.sendMessage("Message 2");
+            // Wait 5 seconds before sending the last message
+            Thread.sleep(5000);
+            muc.sendMessage("Message 3");
+
+            // User2 joins the room requesting to receive the messages of the last 2 seconds.
             MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
-            muc2.join("testbot2");
-            // User2 sends some messages to the room
-            muc2.sendMessage("Message 1");
-            muc2.sendMessage("Message 2");
-            muc2.sendMessage("Message 3");
-    
-            // User3 joins the room requesting to receive the last 2 messages.
-            MultiUserChat muc3 = new MultiUserChat(getConnection(1), room);
             DiscussionHistory history = new DiscussionHistory();
-            history.setMaxStanzas(2);
-            muc3.join("testbot3", null, history, SmackConfiguration.getPacketReplyTimeout());
+            history.setSeconds(2);
+            muc2.join("testbot2", null, history, SmackConfiguration.getPacketReplyTimeout());
     
             Message msg;
+            // Get welcome message
+            muc2.nextMessage(1000);
+            // Get first historic message 
+            msg = muc2.nextMessage(1000);
+            assertNotNull("First message is null", msg);
+            assertEquals("Body of first message is incorrect", "Message 3", msg.getBody());
+            // Try to get second historic message 
+            msg = muc2.nextMessage(1000);
+            assertNull("Second message is not null", msg);
+
+
+            // User3 joins the room requesting to receive the last 2 messages.
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
+            history = new DiscussionHistory();
+            history.setMaxStanzas(2);
+            muc3.join("testbot3", null, history, SmackConfiguration.getPacketReplyTimeout());
+
+            // Get welcome message
+            muc3.nextMessage(1000);
+            // Get first historic message 
             msg = muc3.nextMessage(1000);
             assertNotNull("First message is null", msg);
             assertEquals("Body of first message is incorrect", "Message 2", msg.getBody());
+            // Get second historic message 
             msg = muc3.nextMessage(1000);
             assertNotNull("Second message is null", msg);
             assertEquals("Body of second message is incorrect", "Message 3", msg.getBody());
+            // Try to get third historic message 
             msg = muc3.nextMessage(1000);
             assertNull("Third message is not null", msg);
     
@@ -115,7 +138,7 @@ public class MultiUserChatTest extends SmackTestCase {
             e.printStackTrace();
             fail(e.getMessage());
         }
-    }*/
+    }
 
     public void testParticipantPresence() {
         try {
@@ -209,10 +232,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 "Invitation was not received",
                 "Meet me in this excellent room",
                 answer[0]);
-            // TODO This line was commented because jabberd2 is not accepting rejections 
-            // from users that aren't participants of the room. Comment out this line when  
-            // running the test against a server that correctly implements JEP-45  
-            //assertEquals("Rejection was not received", "I'm busy right now", answer[1]);
+            assertEquals("Rejection was not received", "I'm busy right now", answer[1]);
 
             // User2 leaves the room
             muc2.leave();
@@ -295,14 +315,84 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
-    // TODO This test is commented because jabberd2 doesn't support discovering reserved nicknames
-    /*public void testReservedNickname() {
-        // User2 joins the new room
-        MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
-        
-        String reservedNickname = muc2.getReservedNickname();
-        assertNull("Reserved nickname is not null", reservedNickname);
-    }*/
+    public void testReservedNickname() {
+        try {
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
+            // Check that user2 doesn't have a reserved nickname yet
+            String reservedNickname = muc2.getReservedNickname();
+            assertNull("Reserved nickname is not null", reservedNickname);
+            
+            // User2 registers with the room and reserves a nickname
+            Form registrationForm = muc2.getRegistrationForm();
+            Form answerForm = registrationForm.createAnswerForm();
+            answerForm.setAnswer("muc#user_first", "MyFirstName");
+            answerForm.setAnswer("muc#user_last", "MyLastName");
+            answerForm.setAnswer("muc#user_roomnick", "MyNick");
+            muc2.sendRegistrationForm(answerForm);
+            
+            // Check that user2 has a reserved nickname
+            reservedNickname = muc2.getReservedNickname();
+            assertEquals("Reserved nickname is wrong", "MyNick", reservedNickname);
+            
+            // Check that user2 can join the room using his reserved nickname
+            muc2.join("MyNick");
+            muc2.leave();
+            
+            // Check that other users cannot join the room with user2's reserved nickname
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
+            try {
+                muc3.join("MyNick");
+                fail("Other user was able to join with other user's reserved nickname");
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received when joining with other user's reserved nickname",
+                    xmppError);
+                assertEquals(
+                    "Different error code was received while joining with other user's reserved nickname",
+                    409,
+                    xmppError.getCode());
+            }
+            
+            // Check that user3 can join the room using his own nickname (not reserved)
+            muc3.join("MyNotReservedNick");
+            muc3.leave();
+            
+            // Check that another user cannot reserve an already reserved nickname
+            registrationForm = muc3.getRegistrationForm();
+            answerForm = registrationForm.createAnswerForm();
+            answerForm.setAnswer("muc#user_first", "MyFirstName 2");
+            answerForm.setAnswer("muc#user_last", "MyLastName 2");
+            answerForm.setAnswer("muc#user_roomnick", "MyNick");
+            try {
+                muc3.sendRegistrationForm(answerForm);
+            }
+            catch (XMPPException e) {
+                XMPPError xmppError = e.getXMPPError();
+                assertNotNull(
+                    "No XMPPError was received when reserving an already reserved nickname",
+                    xmppError);
+                assertEquals(
+                    "Different error code was received while reserving an already reserved nickname",
+                    409,
+                    xmppError.getCode());
+            }
+            
+            // Check that another user can reserve a new nickname
+            registrationForm = muc3.getRegistrationForm();
+            answerForm = registrationForm.createAnswerForm();
+            answerForm.setAnswer("muc#user_first", "MyFirstName 2");
+            answerForm.setAnswer("muc#user_last", "MyLastName 2");
+            answerForm.setAnswer("muc#user_roomnick", "MyNick 2");
+            muc3.sendRegistrationForm(answerForm);
+            
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
 
     public void testChangeSubject() {
         final String[] answer = new String[2];
@@ -1247,7 +1337,16 @@ public class MultiUserChatTest extends SmackTestCase {
         // User1 (which is the room owner) converts the instant room into a moderated room
         Form form = muc.getConfigurationForm();
         Form answerForm = form.createAnswerForm();
-        answerForm.setAnswer("muc#owner_moderatedroom", "1");
+        answerForm.setAnswer("muc#owner_moderatedroom", true);
+        // Keep the room owner
+        try {
+            List owners = new ArrayList();
+            owners.add(getBareJID(0));
+            answerForm.setAnswer("muc#owner_roomowners", owners);
+        }
+        catch (IllegalArgumentException e) {
+            // Do nothing
+        }
         muc.sendConfigurationForm(answerForm);
     }
 
