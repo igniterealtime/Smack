@@ -74,5 +74,5 @@ public interface PacketExtensionProvider {
      * @return a new IQ instance.
      * @throws java.lang.Exception if an error occurs parsing the XML.
      */
-    public PacketExtension parseExtensions(XmlPullParser parser) throws Exception;
+    public PacketExtension parseExtension(XmlPullParser parser) throws Exception;
 }
