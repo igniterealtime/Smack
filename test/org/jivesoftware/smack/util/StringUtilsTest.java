@@ -209,16 +209,16 @@ public class StringUtilsTest extends TestCase {
 
     public void testParsing() {
         String error = "Error parsing node name";
-        assertEquals(error, StringUtils.parseName("yahoo.myjabber.net"), "");
-        assertEquals(error, StringUtils.parseName("yahoo.myjabber.net/registred"), "");
-        assertEquals(error, StringUtils.parseName("user@yahoo.myjabber.net/registred"), "user");
-        assertEquals(error, StringUtils.parseName("user@yahoo.myjabber.net"), "user");
+        assertEquals(error, "", StringUtils.parseName("yahoo.myjabber.net"));
+        assertEquals(error, "", StringUtils.parseName("yahoo.myjabber.net/registred"));
+        assertEquals(error, "user", StringUtils.parseName("user@yahoo.myjabber.net/registred"));
+        assertEquals(error, "user", StringUtils.parseName("user@yahoo.myjabber.net"));
 
         error = "Error parsing server name";
         String result = "yahoo.myjabber.net";
-        assertEquals(error, StringUtils.parseServer("yahoo.myjabber.net"), result);
-        assertEquals(error, StringUtils.parseServer("yahoo.myjabber.net/registred"), result);
-        assertEquals(error, StringUtils.parseServer("user@yahoo.myjabber.net/registred"), result);
-        assertEquals(error, StringUtils.parseServer("user@yahoo.myjabber.net"), result);
+        assertEquals(error, result, StringUtils.parseServer("yahoo.myjabber.net"));
+        assertEquals(error, result, StringUtils.parseServer("yahoo.myjabber.net/registred"));
+        assertEquals(error, result, StringUtils.parseServer("user@yahoo.myjabber.net/registred"));
+        assertEquals(error, result, StringUtils.parseServer("user@yahoo.myjabber.net"));
     }
 }
