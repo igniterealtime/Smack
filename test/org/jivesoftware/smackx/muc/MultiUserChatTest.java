@@ -81,6 +81,49 @@ public class MultiUserChatTest extends SmackTestCase {
         super(arg0);
     }
 
+    /**
+     * Test the compatibility of the MUC service with clients that still use the old groupchat
+     * protocol.
+     */
+    public void testGroupchatCompatibility() {
+        try {
+            Message message;
+            
+            GroupChat groupchat = new GroupChat(getConnection(1), room);
+            groupchat.join("testbot2");
+            Thread.sleep(400);
+
+            // User1 checks the presence of user2 in the room
+            Presence presence = muc.getParticipantPresence(room + "/testbot2");
+            assertNotNull("Presence of user2 in room is missing", presence);
+            assertEquals(
+                "Presence mode of user2 is wrong",
+                Presence.Mode.AVAILABLE,
+                presence.getMode());
+            
+            // User using old client send a message
+            groupchat.sendMessage("Hello");
+            // Check that the rest of the occupants (that are support MUC) received the message
+            message = muc.nextMessage(1000);
+            assertNotNull("A MUC client didn't receive the message from an old client", message);
+            // User that supports MUC send a message
+            muc.sendMessage("Bye");
+            // Check that the client the doesn't support MUC received the message
+            message = groupchat.nextMessage(1000);
+            assertNotNull("An old client didn't receive the message from a MUC client", message);
+            // User that doesn't support MUC leaves the room
+            groupchat.leave();
+            Thread.sleep(300);
+            // User1 checks the that user2 is not present in the room
+            presence = muc.getParticipantPresence(room + "/testbot2");
+            assertNull("Presence of participant testbot2 still exists", presence);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
     public void testDiscussionHistory() {
         try {
             // User1 sends some messages to the room
@@ -145,7 +188,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // User2 joins the new room
             MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
-            Thread.sleep(300);
+            Thread.sleep(400);
 
             // User1 checks the presence of user2 in the room
             Presence presence = muc.getParticipantPresence(room + "/testbot2");
@@ -182,7 +225,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
             // User2 leaves the room
             muc2.leave();
-            Thread.sleep(200);
+            Thread.sleep(250);
             // User1 checks the presence of user2 in the room
             presence = muc.getParticipantPresence(room + "/testbotII");
             assertNull("Presence of participant testbotII still exists", presence);
