@@ -54,6 +54,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
 
@@ -69,6 +70,7 @@ public class Roster {
     private XMPPConnection connection;
     private Map groups;
     private List rosterListeners;
+    private Map presenceMap;
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
     boolean rosterInitialized = false;
@@ -82,10 +84,15 @@ public class Roster {
         this.connection = connection;
         groups = new HashMap();
         rosterListeners = new ArrayList();
+        presenceMap = new HashMap();
         // Listen for any roster packets.
-        PacketFilter filter = new PacketTypeFilter(RosterPacket.class);
-        PacketListener rosterPacketListener = new RosterPacketListener();
-        connection.addPacketListener(rosterPacketListener, filter);
+        PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
+        connection.addPacketListener(new RosterPacketListener(), rosterFilter);
+        // Listen for any presence packets.
+        String JID = connection.getUsername() + "@" + connection.getHost();
+        PacketFilter presenceFilter = new AndFilter(new PacketTypeFilter(Presence.class),
+                new ToContainsFilter(JID));
+        connection.addPacketListener(new PresencePacketListener(), presenceFilter);
     }
 
     /**
@@ -145,11 +152,13 @@ public class Roster {
      *
      * @param user the user.
      * @param name the nickname of the user.
+     * @param group the group the entry will belong to, or <tt>null</tt> if the
+     *      the roster entry won't belong to a group.
      * @return a new roster entry.
      */
-    public RosterEntry createEntry(String user, String name) {
+    public RosterEntry createEntry(String user, String name, RosterGroup group) {
         // TODO: need to send a subscribe packet if we haven't already subscibed to
-        // TODO: the user. If we have already subscribed to the user, this method shoul
+        // TODO: the user. If we have already subscribed to the user, this method should
         // TODO: probably return an existing roster entry object.
         return new RosterEntry(user, name, connection);
     }
@@ -202,6 +211,28 @@ public class Roster {
         for (int i=0; i<listeners.length; i++) {
             listeners[i].rosterModified();
         }
+    }
+
+    /**
+     * Listens for all presence packets and processes them.
+     */
+    private class PresencePacketListener implements PacketListener {
+        public void processPacket(Packet packet) {
+                Presence presence = (Presence)packet;
+                String from = presence.getFrom();
+                String key = StringUtils.parseName(from) + "@" + StringUtils.parseServer(from);
+                // If an "available" packet, add it to the presence map. This means that for
+                // a particular user, we'll only ever have a single presence packet saved.
+                // Because this ignores resources, this is not an ideal solution, so will
+                // have to be revisited.
+                if (presence.getType() == Presence.Type.AVAILABLE) {
+                    presenceMap.put(key, presence);
+                }
+                // If an "unavailable" packet, remove any entries in the presence map.
+                else if (presence.getType() == Presence.Type.UNAVAILABLE) {
+                    presenceMap.remove(key);
+                }
+            }
     }
 
     /**
