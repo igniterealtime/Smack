@@ -60,7 +60,11 @@ import java.util.*;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
- * presence updates for. Roster items are categorized into groups for easier management.
+ * presence updates for. Roster items are categorized into groups for easier management.<p>
+ *
+ * All presence subscription requests are automatically approved to this client
+ * are automatically approved. This logic will be updated in the future to allow for
+ * pluggable behavior.
  *
  * @see XMPPConnection#getRoster()
  * @author Matt Tucker
@@ -69,6 +73,7 @@ public class Roster {
 
     private XMPPConnection connection;
     private Map groups;
+    private List unfiledEntries;
     private List rosterListeners;
     private Map presenceMap;
     // The roster is marked as initialized when at least a single roster packet
@@ -82,14 +87,14 @@ public class Roster {
      */
     Roster(final XMPPConnection connection) {
         this.connection = connection;
-        groups = new HashMap();
+        groups = new Hashtable();
+        unfiledEntries = new ArrayList();
         rosterListeners = new ArrayList();
         presenceMap = new HashMap();
         // Listen for any roster packets.
         PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
         connection.addPacketListener(new RosterPacketListener(), rosterFilter);
         // Listen for any presence packets.
-        String JID = connection.getUsername() + "@" + connection.getHost();
         PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
         connection.addPacketListener(new PresencePacketListener(), presenceFilter);
     }
@@ -147,19 +152,54 @@ public class Roster {
     }
 
     /**
-     * Cretaes a new roster entry.
+     * Cretaes a new roster entry and prsence subscription. The server will asynchronously
+     * update the roster with the subscription status.
      *
      * @param user the user.
      * @param name the nickname of the user.
-     * @param group the group the entry will belong to, or <tt>null</tt> if the
+     * @param groups the list of groups entry will belong to, or <tt>null</tt> if the
      *      the roster entry won't belong to a group.
-     * @return a new roster entry.
      */
-    public RosterEntry createEntry(String user, String name, RosterGroup group) {
-        // TODO: need to send a subscribe packet if we haven't already subscibed to
-        // TODO: the user. If we have already subscribed to the user, this method should
-        // TODO: probably return an existing roster entry object.
-        return new RosterEntry(user, name, connection);
+    public void createEntry(String user, String name, String [] groups) throws XMPPException {
+        // Create and send roster entry creation packet.
+        RosterPacket rosterPacket = new RosterPacket();
+        rosterPacket.setType(IQ.Type.SET);
+        RosterPacket.Item item = new RosterPacket.Item(user, name);
+        if (groups != null) {
+            for (int i=0; i<groups.length; i++) {
+                item.addGroupName(groups[i]);
+            }
+        }
+        rosterPacket.addRosterItem(item);
+        // Wait up to 5 seconds for a reply from the server.
+        PacketCollector collector = connection.createPacketCollector(
+                new PacketIDFilter(rosterPacket.getPacketID()));
+        connection.sendPacket(rosterPacket);
+        IQ response = (IQ)collector.nextResult(5000);
+        if (response == null) {
+            throw new XMPPException("No response from the server.");
+        }
+        // If the server replied with an error, throw an exception.
+        else if (response.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(response.getError());
+        }
+        collector.cancel();
+
+        // Create a presence subscription packet and send.
+        Presence presencePacket = new Presence(Presence.Type.SUBSCRIBE);
+        presencePacket.setTo(user);
+        connection.sendPacket(presencePacket);
+    }
+
+    /**
+     * Returns an Iterator for the roster entries that haven't been assigned to any groups.
+     *
+     * @return an iterator the roster entries that haven't been filed into groups.
+     */
+    public Iterator getUnfiledEntries() {
+        synchronized (unfiledEntries) {
+            return Collections.unmodifiableList(new ArrayList(unfiledEntries)).iterator();
+        }
     }
 
     /**
@@ -199,6 +239,18 @@ public class Roster {
     }
 
     /**
+     * Returns the presence info for a particular user, or <tt>null</tt> if there is
+     * no presence information.
+     *
+     * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
+     * @return the user's presence.
+     */
+    public Presence getPresence(String user) {
+        String key = StringUtils.parseName(user) + "@" + StringUtils.parseServer(user);
+        return (Presence)presenceMap.get(key);
+    }
+
+    /**
      * Fires roster listeners.
      */
     private void fireRosterListeners() {
@@ -217,21 +269,28 @@ public class Roster {
      */
     private class PresencePacketListener implements PacketListener {
         public void processPacket(Packet packet) {
-                Presence presence = (Presence)packet;
-                String from = presence.getFrom();
-                String key = StringUtils.parseName(from) + "@" + StringUtils.parseServer(from);
-                // If an "available" packet, add it to the presence map. This means that for
-                // a particular user, we'll only ever have a single presence packet saved.
-                // Because this ignores resources, this is not an ideal solution, so will
-                // have to be revisited.
-                if (presence.getType() == Presence.Type.AVAILABLE) {
-                    presenceMap.put(key, presence);
-                }
-                // If an "unavailable" packet, remove any entries in the presence map.
-                else if (presence.getType() == Presence.Type.UNAVAILABLE) {
-                    presenceMap.remove(key);
-                }
+            Presence presence = (Presence)packet;
+            String from = presence.getFrom();
+            String key = StringUtils.parseName(from) + "@" + StringUtils.parseServer(from);
+            // If an "available" packet, add it to the presence map. This means that for
+            // a particular user, we'll only ever have a single presence packet saved.
+            // Because this ignores resources, this is not an ideal solution, so will
+            // have to be revisited.
+            if (presence.getType() == Presence.Type.AVAILABLE) {
+                presenceMap.put(key, presence);
             }
+            // If an "unavailable" packet, remove any entries in the presence map.
+            else if (presence.getType() == Presence.Type.UNAVAILABLE) {
+                presenceMap.remove(key);
+            }
+
+            else if (presence.getType() == Presence.Type.SUBSCRIBE) {
+                // Accept all subscription requests.
+                Presence response = new Presence(Presence.Type.SUBSCRIBED);
+                response.setTo(presence.getFrom());
+                connection.sendPacket(response);
+            }
+        }
     }
 
     /**
@@ -243,7 +302,21 @@ public class Roster {
             RosterPacket rosterPacket = (RosterPacket)packet;
             for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
-                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(), connection);
+                if (item.getItemType() == RosterPacket.ItemType.TO ||
+                        item.getItemType() == RosterPacket.ItemType.BOTH ||
+                        item.getItemType() == RosterPacket.ItemType.PENDING)
+                {
+
+                }
+                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                        item.getItemType(), connection);
+                // If the roster entry has any groups, remove it from the list of unfiled
+                // users.
+                if (entry.getGroups().hasNext()) {
+                    synchronized (unfiledEntries) {
+                        unfiledEntries.remove(entry);
+                    }
+                }
                 // Find the list of groups that the user currently belongs to.
                 List currentGroupNames = new ArrayList();
                 for (Iterator j = entry.getGroups(); j.hasNext();  ) {
@@ -281,6 +354,15 @@ public class Roster {
                     if (group.getEntryCount() == 0) {
                         synchronized (groups) {
                             groups.remove(groupName);
+                        }
+                    }
+                }
+                // If the user doesn't belong to any groups, add them to the list of
+                // unfiled users.
+                if (currentGroupNames.isEmpty() && newGroupNames.isEmpty()) {
+                    synchronized (unfiledEntries) {
+                        if (!unfiledEntries.contains(entry)) {
+                            unfiledEntries.add(entry);
                         }
                     }
                 }
