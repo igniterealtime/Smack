@@ -4,6 +4,6 @@
     <iqProvider> 
         <elementName>query</elementName> 
         <namespace>jabber:iq:private</namespace> 
-        <className>org.jivesoftware.smack.packet.PrivateDataManager.PrivateDataIQProvider</className> 
+        <className>org.jivesoftware.smackx.packet.PrivateDataManager.PrivateDataIQProvider</className> 
     </iqProvider>
 </smackProviders>
