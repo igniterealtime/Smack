@@ -239,7 +239,7 @@ public class XMPPConnection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server, then set our presence to available. If more than five seconds
+     * the server, then sets presence to available. If more than five seconds
      * elapses in each step of the authentication process without a response from
      * the server, or if an error occurs, a XMPPException will be thrown.
      *
@@ -258,6 +258,8 @@ public class XMPPConnection {
         if (authenticated) {
             throw new IllegalStateException("Already logged in to server.");
         }
+        // Do partial version of nameprep on the username.
+        username = username.toLowerCase().trim();
         // If we send an authentication packet in "get" mode with just the username,
         // the server will return the list of authentication protocols it supports.
         Authentication discoveryAuth = new Authentication();
