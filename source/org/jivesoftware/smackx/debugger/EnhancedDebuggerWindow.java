@@ -208,9 +208,15 @@ class EnhancedDebuggerWindow {
         Vector providers = new Vector();
         for (Iterator it = ProviderManager.getIQProviders(); it.hasNext();) {
             Object provider = it.next();
-            providers.add(
-                (provider.getClass() == Class.class ? provider : provider.getClass().getName()));
+            if (provider.getClass() == Class.class) {
+                providers.add(((Class) provider).getName());
+            }
+            else {
+                providers.add(provider.getClass().getName());
+            }
         }
+        // Sort the collection of providers
+        Collections.sort(providers);
         JList list = new JList(providers);
         iqProvidersPanel.add(new JScrollPane(list));
         informationPanel.add(iqProvidersPanel);
@@ -222,9 +228,15 @@ class EnhancedDebuggerWindow {
         providers = new Vector();
         for (Iterator it = ProviderManager.getExtensionProviders(); it.hasNext();) {
             Object provider = it.next();
-            providers.add(
-                (provider.getClass() == Class.class ? provider : provider.getClass().getName()));
+            if (provider.getClass() == Class.class) {
+                providers.add(((Class) provider).getName());
+            }
+            else {
+                providers.add(provider.getClass().getName());
+            }
         }
+        // Sort the collection of providers
+        Collections.sort(providers);
         list = new JList(providers);
         extensionProvidersPanel.add(new JScrollPane(list));
         informationPanel.add(extensionProvidersPanel);
