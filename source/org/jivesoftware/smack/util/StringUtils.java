@@ -80,12 +80,11 @@ public class StringUtils {
             return null;
         }
         int atIndex = XMPPAddress.indexOf("@");
-        if (atIndex < 0) {
-            return XMPPAddress.substring(0);
+        if (atIndex <= 0) {
+            return "";
         }
         else {
             return XMPPAddress.substring(0, atIndex);
-
         }
     }
 
@@ -133,6 +132,30 @@ public class StringUtils {
         }
         else {
             return XMPPAddress.substring(slashIndex + 1);
+        }
+    }
+
+    /**
+     * Returns the XMPP address with any resource information removed. For example,
+     * for the address "matt@jivesoftware.com/Smack", "matt@jivesoftware.com" would
+     * be returned.
+     *
+     * @param XMPPAddress the XMPP address.
+     * @return the bare XMPP address without resource information.
+     */
+    public static String parseBareAddress(String XMPPAddress) {
+        if (XMPPAddress == null) {
+            return null;
+        }
+        int slashIndex = XMPPAddress.indexOf("/");
+        if (slashIndex < 0) {
+            return XMPPAddress;
+        }
+        else if (slashIndex == 0) {
+            return "";
+        }
+        else {
+            return XMPPAddress.substring(0, slashIndex);
         }
     }
 
