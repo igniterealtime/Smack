@@ -6,6 +6,7 @@
     <startupClasses>
         <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
         <className>org.jivesoftware.smackx.XHTMLManager</className>
+        <className>org.jivesoftware.smackx.MultiUserChat</className>
     </startupClasses>
 
     <!-- Paket reply timeout in milliseconds -->
