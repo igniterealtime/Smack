@@ -14,24 +14,23 @@ import java.text.DateFormat;
  * following code snippet:
  *
  * <pre>
- * <font color="darkgreen">// Request the time from a remote user.</font>
- * Time timeRequest = <font color="navy"><b>new</b></font> Time();
+ * // Request the time from a remote user.
+ * Time timeRequest = new Time();
  * timeRequest.setType(IQ.Type.GET);
- * timeRequest.setTo(<font color="red">"someUser@example.com"</font>);
-
- * &nbsp;
- * <font color="darkgreen">// Create a packet collector to listen for a response.</font>
+ * timeRequest.setTo(someUser@example.com);
+ *
+ * // Create a packet collector to listen for a response.
  * PacketCollector collector = con.createPacketCollector(
- *                <font color="navy"><b>new</b></font> PacketIDFilter(timeRequest.getPacketID()));
- * &nbsp;
+ *                new PacketIDFilter(timeRequest.getPacketID()));
+ *
  * con.sendPacket(timeRequest);
- * &nbsp;
- * <font color="darkgreen">// Wait up to 5 seconds for a result.</font>
+ *
+ * // Wait up to 5 seconds for a result.
  * IQ result = (IQ)collector.nextResult(5000);
- * <font color="navy"><b>if</b></font> (result != <font color="navy"><b>null</b></font> &#38;&#38; result.getType() == IQ.Type.RESULT) <font color="navy">{</font>
+ * if (result != null && result.getType() == IQ.Type.RESULT) {
  *     Time timeResult = (Time)result;
- *     <font color="darkgreen">// Do something with result...</font>
- * <font color="navy">}</font></pre><p>
+ *     // Do something with result...
+ * }</pre><p>
  *
  * Warning: this is an non-standard protocol documented by
  * <a href="http://www.jabber.org/jeps/jep-0090.html">JEP-90</a>. Because this is a
