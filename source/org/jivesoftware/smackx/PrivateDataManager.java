@@ -77,7 +77,11 @@ import java.util.Hashtable;
  *
  * {@link PrivateDataProvider} instances are responsible for translating the XML into objects.
  * If no PrivateDataProvider is registered for a given element name and namespace, then
- * a {@link DefaultPrivateData} instance will be returned.
+ * a {@link DefaultPrivateData} instance will be returned.<p>
+ *
+ * Warning: this is an non-standard protocol documented by
+ * <a href="http://www.jabber.org/jeps/jep-0049.html">JEP-49</a>. Because this is a
+ * non-standard protocol, it is subject to change.
  *
  * @author Matt Tucker
  */
