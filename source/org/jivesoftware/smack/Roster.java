@@ -58,7 +58,8 @@ import org.jivesoftware.smack.filter.*;
 import java.util.*;
 
 /**
- * Roster.
+ * Represents a user's roster, which is the collection of users a person receives
+ * presence updates for. Roster items are categorized into groups for easier management.
  *
  * @see XMPPConnection#getRoster()
  * @author Matt Tucker

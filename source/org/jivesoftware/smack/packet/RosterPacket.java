@@ -63,12 +63,22 @@ public class RosterPacket extends IQ {
 
     private List rosterItems = new ArrayList();
 
-    public void addRosterItem(Item entry) {
+    /**
+     * Adds a roster item to the packet.
+     *
+     * @param item a roster item.
+     */
+    public void addRosterItem(Item item) {
         synchronized (rosterItems) {
-            rosterItems.add(entry);
+            rosterItems.add(item);
         }
     }
 
+    /**
+     * Returns an Iterator for the roster items in the packet.
+     *
+     * @return and Iterator for the roster items in the packet.
+     */
     public Iterator getRosterItems() {
         synchronized (rosterItems) {
             List entries = Collections.unmodifiableList(new ArrayList(rosterItems));
@@ -89,6 +99,10 @@ public class RosterPacket extends IQ {
         return buf.toString();
     }
 
+    /**
+     * A roster item, which consists of a JID, their name, the type of subscription, and
+     * the groups the roster item belongs to.
+     */
     public static class Item {
 
         private String user;
@@ -96,6 +110,12 @@ public class RosterPacket extends IQ {
         private ItemType itemType;
         private List groupNames;
 
+        /**
+         * Creates a new roster item.
+         *
+         * @param user the user.
+         * @param name the user's name.
+         */
         public Item(String user, String name) {
             this.user = user;
             this.name = name;
@@ -103,32 +123,68 @@ public class RosterPacket extends IQ {
             groupNames = new ArrayList();
         }
 
+        /**
+         * Returns the user.
+         *
+         * @return the user.
+         */
         public String getUser() {
             return user;
         }
 
+        /**
+         * Returns the user's name.
+         *
+         * @return the user's name.
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * Sets the user's name.
+         *
+         * @param name the user's name.
+         */
         public void setName(String name) {
             this.name = name;
         }
 
+        /**
+         * Returns the roster item type.
+         *
+         * @return the roster item type.
+         */
         public ItemType getItemType() {
             return itemType;
         }
 
+        /**
+         * Sets the roster item type.
+         *
+         * @param itemType the roster item type.
+         */
         public void setItemType(ItemType itemType) {
             this.itemType = itemType;
         }
 
+        /**
+         * Returns an Iterator for the group names (as Strings) that the roster item
+         * belongs to.
+         *
+         * @return an Iterator for the group names.
+         */
         public Iterator getGroupNames() {
             synchronized (groupNames) {
                 return Collections.unmodifiableList(groupNames).iterator();
             }
         }
 
+        /**
+         * Adds a group name.
+         *
+         * @param groupName the group name.
+         */
         public void addGroupName(String groupName) {
             synchronized (groupNames) {
                 if (!groupNames.contains(groupName)) {
@@ -137,6 +193,11 @@ public class RosterPacket extends IQ {
             }
         }
 
+        /**
+         * Removes a group name.
+         *
+         * @param groupName the group name.
+         */
         public void removeGroupName(String groupName) {
             synchronized (groupNames) {
                 groupNames.remove(groupName);
@@ -164,6 +225,9 @@ public class RosterPacket extends IQ {
         }
     }
 
+    /**
+     * The subscription status of a roster item.
+     */
     public static class ItemStatus {
 
         public static final ItemStatus SUBSCRIBED = new ItemStatus("subscribed");
@@ -184,7 +248,12 @@ public class RosterPacket extends IQ {
 
         private String value;
 
-        private ItemStatus (String value) {
+        /**
+         * Returns the item status associated with the specified string.
+         *
+         * @param value the item status.
+         */
+        private ItemStatus(String value) {
             this.value = value;
         }
 
@@ -194,6 +263,9 @@ public class RosterPacket extends IQ {
 
     }
 
+    /**
+     * The subscription type of a roster item.
+     */
     public static class ItemType {
 
         public static final ItemType NONE = new ItemType("none");
@@ -221,7 +293,12 @@ public class RosterPacket extends IQ {
 
         private String value;
 
-        public ItemType (String value) {
+        /**
+         * Returns the item type associated with the specified string.
+         *
+         * @param value the item type.
+         */
+        public ItemType(String value) {
             this.value = value;
         }
 

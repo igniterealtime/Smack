@@ -53,9 +53,9 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * Represents a XMPP error subpacket. Typically, a server responds to a request that has
+ * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
  * problems by sending the packet back and including an error packet. Each error has a code
- * as well as as an optional text explanation. Typical error codes are as follows:
+ * as well as as an optional text explanation. Typical error codes are as follows:<p>
  *
  * <table border=1>
  *      <tr><td><b>Code</b></td><td><b>Description</b></td></tr>

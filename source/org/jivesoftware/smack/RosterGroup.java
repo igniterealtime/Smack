@@ -50,7 +50,6 @@
  * ====================================================================
  */
 
-
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.RosterPacket;
@@ -59,6 +58,7 @@ import org.jivesoftware.smack.packet.IQ;
 import java.util.*;
 
 /**
+ * A group of roster entries.
  *
  * @see Roster#getGroup(String)
  * @author Matt Tucker
