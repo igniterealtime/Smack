@@ -23,7 +23,7 @@ rem //------------------------------------------------------------------------//
 rem // Make the correct classpath (should include the java jars and the
 rem // Ant jars)
 rem //------------------------------------------------------------------------//
-SET CP=%JAVA_HOME%\lib\tools.jar;.\ant.jar;.\xmltask.jar
+SET CP=%JAVA_HOME%\lib\tools.jar;.\ant.jar
 
 rem //------------------------------------------------------------------------//
 rem // Run Ant
