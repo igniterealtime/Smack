@@ -11,10 +11,28 @@
 
 <project name="Smack" default="all" basedir="..">
 
+    <!-- TASKDEFS -->
+    <!-- ======================================================================================= -->
+
+    <!-- org.apache.tools.ant.taskdefs.optional.junit.JUnitTask -->
+<!--    <taskdef resource="junit.properties">-->
+<!--        <classpath>-->
+<!--            <pathelement location="${basedir}/build/ant.jar"/>-->
+<!--            <pathelement location="${basedir}/build/junit.jar"/>-->
+<!--        </classpath>-->
+<!--    </taskdef>-->
+<!--    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">-->
+<!--        <classpath>-->
+<!--            <pathelement location="${basedir}/build/ant.jar"/>-->
+<!--            <pathelement location="${basedir}/build/junit.jar"/>-->
+<!--        </classpath>-->
+<!--    </taskdef>-->
+
     <!-- PROPERTIES -->
     <!-- ======================================================================================= -->
 
     <property name="compile.dir" value="${basedir}/classes" />
+    <property name="compile.test.dir" value="${basedir}/classes-test" />
     <property name="jar.dest.dir" value="${basedir}" />
     <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
     <property name="build.lib.dir" value="${basedir}/build/lib" />
@@ -55,9 +73,35 @@
         </javac>
     </target>
 
+    <!-- compile-test -->
+    <!-- ======================================================================================= -->
+    <target name="compile-test" description="Compiles all source to ${compile.dir}.">
+        <!-- make target dir -->
+        <mkdir dir="${compile.test.dir}" />
+        <javac
+            destdir="${compile.test.dir}"
+            includeAntRuntime="no"
+            debug="on"
+        >
+            <src path="${basedir}/test" />
+            <classpath>
+                <fileset dir="${build.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${basedir}/build">
+                    <include name="junit.jar"/>
+                </fileset>
+                <pathelement location="${compile.dir}" />
+            </classpath>
+        </javac>
+    </target>
+
     <!-- jar -->
     <!-- ======================================================================================= -->
-    <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
+    <target name="jar" depends="compile, test" unless="jar.uptodate" description="Produces smack.jar">
         <jar destfile="${jar.dest.dir}/smack.jar"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smack/**/*.class"
@@ -70,6 +114,15 @@
          >
             <metainf dir="${basedir}/resources" includes="smack.providers" />
          </jar>
+    </target>
+
+    <!-- jar -->
+    <!-- ======================================================================================= -->
+    <target name="jar-test" depends="compile-test" description="Produces jar of test code">
+        <jar destfile="${jar.dest.dir}/smack-test.jar"
+            basedir="${compile.test.dir}"
+            includes="org/jivesoftware/smack/**/*.class"
+        />
     </target>
 
     <!-- javadoc -->
@@ -102,9 +155,44 @@
     </target>
 
 
+    <!-- test -->
+    <!-- ======================================================================================= -->
+    <target name="test" depends="compile, jar-test" unless="no.test">
+        <junit printsummary="on"
+            fork="false"
+            haltonfailure="false"
+            failureproperty="tests.failed"
+            showoutput="true">
+
+            <classpath>
+                <fileset dir="${build.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${basedir}">
+                    <include name="smack-test.jar"/>
+                </fileset>
+                <pathelement location="${compile.dir}" />
+            </classpath>
+
+            <formatter type="brief" usefile="false"/>
+
+            <batchtest>
+                <fileset dir="${basedir}/test">
+                    <include name="org/jivesoftware/smack/**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <fail if="tests.failed" message="Tests failed, see test log." />
+    </target>
+
+
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" if="release.exists" depends="release-exists">
+    <target name="release" if="release.exists" depends="release-exists, test">
         <antcall target="jar" />
         <antcall target="javadoc" />
         <ant antfile="${basedir}/build/release.xml" />
@@ -123,7 +211,10 @@
     <target name="clean" description="Deletes all generated content.">
     	<delete dir="${javadoc.dest.dir}" />
         <delete dir="${compile.dir}" />
+        <delete dir="${compile.test.dir}" />
         <delete file="${basedir}/smack.jar" />
+        <delete file="${basedir}/smackx.jar" />
+        <delete file="${basedir}/smack-test.jar" />
         <delete dir="${basedir}/release" />
     </target>
 
