@@ -53,6 +53,7 @@
 package org.jivesoftware.smack;
 
 /**
+ * A listener that is fired anytime a roster is changed.
  *
  * @author Matt Tucker
  */
