@@ -206,4 +206,19 @@ public class StringUtilsTest extends TestCase {
         result = StringUtils.randomString(128);
         assertTrue(result.length() == 128);
     }
+
+    public void testParsing() {
+        String error = "Error parsing node name";
+        assertEquals(error, StringUtils.parseName("yahoo.myjabber.net"), "");
+        assertEquals(error, StringUtils.parseName("yahoo.myjabber.net/registred"), "");
+        assertEquals(error, StringUtils.parseName("user@yahoo.myjabber.net/registred"), "user");
+        assertEquals(error, StringUtils.parseName("user@yahoo.myjabber.net"), "user");
+
+        error = "Error parsing server name";
+        String result = "yahoo.myjabber.net";
+        assertEquals(error, StringUtils.parseServer("yahoo.myjabber.net"), result);
+        assertEquals(error, StringUtils.parseServer("yahoo.myjabber.net/registred"), result);
+        assertEquals(error, StringUtils.parseServer("user@yahoo.myjabber.net/registred"), result);
+        assertEquals(error, StringUtils.parseServer("user@yahoo.myjabber.net"), result);
+    }
 }
