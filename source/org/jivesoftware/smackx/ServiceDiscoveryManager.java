@@ -248,6 +248,9 @@ public class ServiceDiscoveryManager {
      * to a given node.
      */
     private NodeInformationProvider getNodeInformationProvider(String node) {
+        if (node == null) {
+            return null;
+        }
         return (NodeInformationProvider) nodeInformationProviders.get(node);
     }
 
