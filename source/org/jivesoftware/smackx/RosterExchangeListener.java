@@ -66,7 +66,7 @@ public interface RosterExchangeListener {
      * Called when roster entries are received as part of a roster exchange.
      *  
      * @param from the user that sent the entries.
-     * @param rosterEntries the entries sent by the user. The entries are instances of 
+     * @param remoteRosterEntries the entries sent by the user. The entries are instances of 
      * RemoteRosterEntry.
      */
     public void entriesReceived(String from, Iterator remoteRosterEntries);
