@@ -55,6 +55,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
 
@@ -205,7 +206,7 @@ public class AccountManager {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getHost());
-        reg.setUsername(connection.getUsername());
+        reg.setUsername(StringUtils.parseName(connection.getUser()));
         reg.setPassword(newPassword);
         PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
                 new PacketTypeFilter(IQ.class));
