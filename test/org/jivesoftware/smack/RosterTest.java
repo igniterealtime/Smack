@@ -54,6 +54,9 @@ package org.jivesoftware.smack;
 
 import java.util.Iterator;
 
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.util.StringUtils;
+
 import junit.framework.TestCase;
 
 /**
@@ -208,6 +211,68 @@ public class RosterTest extends TestCase {
             }
 
             cleanUpRoster();
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 1. Create unfiled entries
+     * 2. Iterate on all the entries and remove them from the roster
+     * 3. Check that the number of entries and groups is zero
+     */
+    public void testRosterPresences() {
+        try {
+            Presence presence = null;
+            
+            XMPPConnection conn4 = new XMPPConnection("localhost");
+            conn4.login("gato11", "gato11", "Home");
+
+            // Add a new roster entry
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", null);
+
+            Thread.sleep(200);
+            
+            // Check that a presence is returned for a user
+            presence = conn1.getRoster().getPresence("gato11@" + conn1.getHost());
+            assertNotNull("Returned a null Presence for an existing user", presence);
+            
+            // Check that the right presence is returned for a user+resource
+            presence = conn1.getRoster().getPresenceResource("gato11@" + conn1.getHost() + "/Home");
+            assertEquals("Returned the wrong Presence", StringUtils.parseResource(presence.getFrom()), "Home");
+
+            // Check that the right presence is returned for a user+resource
+            presence = conn1.getRoster().getPresenceResource("gato11@" + conn1.getHost() + "/Smack");
+            assertEquals("Returned the wrong Presence", StringUtils.parseResource(presence.getFrom()), "Smack");
+            
+            // Check that the no presence is returned for a non-existent user+resource
+            presence = conn1.getRoster().getPresenceResource("gato15@" + conn1.getHost() + "/Smack");
+            assertNull("Returned a Presence for a non-existing user", presence);
+            
+            // Check that the returned presences are correct
+            Iterator presences = conn1.getRoster().getPresences("gato11@" + conn1.getHost());
+            int count = 0;
+            while (presences.hasNext()) {
+                count++;
+                presences.next();
+            }
+            assertEquals("Wrong number of returned presences", count, 2);
+
+            // Close the connection so one presence must go            
+            conn4.close();
+            
+            // Check that the returned presences are correct
+            presences = conn1.getRoster().getPresences("gato11@" + conn1.getHost());
+            count = 0;
+            while (presences.hasNext()) {
+                count++;
+                presences.next();
+            }
+            assertEquals("Wrong number of returned presences", count, 1);
+
+            cleanUpRoster();
+
         }
         catch (Exception e) {
             fail(e.getMessage());
