@@ -53,6 +53,7 @@
 package org.jivesoftware.smack;
 
 import org.xmlpull.v1.*;
+
 import java.util.*;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
@@ -250,7 +251,7 @@ class PacketReader {
         try {
             int eventType = parser.getEventType();
             do {
-                if (eventType == parser.START_TAG) {
+                if (eventType == XmlPullParser.START_TAG) {
                     if (parser.getName().equals("message")) {
                         processPacket(parseMessage(parser));
                     }
@@ -278,13 +279,13 @@ class PacketReader {
                         }
                     }
                 }
-                else if (eventType == parser.END_TAG) {
+                else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("stream")) {
                         connection.close();
                     }
                 }
                 eventType = parser.next();
-            } while (eventType != parser.END_DOCUMENT && !done);
+            } while (eventType != XmlPullParser.END_DOCUMENT && !done);
         }
         catch (Exception e) {
             if (!done) {
@@ -348,7 +349,7 @@ class PacketReader {
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("query")) {
                     String namespace = parser.getNamespace();
                     if (namespace.equals("jabber:iq:auth")) {
@@ -370,7 +371,7 @@ class PacketReader {
                     properties = parseProperties(parser);
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("iq")) {
                     done = true;
                 }
@@ -401,7 +402,7 @@ class PacketReader {
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("username")) {
                     authentication.setUsername(parser.nextText());
                 }
@@ -415,7 +416,7 @@ class PacketReader {
                     authentication.setResource(parser.nextText());
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
                     done = true;
                 }
@@ -430,7 +431,7 @@ class PacketReader {
         RosterPacket.Item item = null;
         while (!done) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
                     String jid = parser.getAttributeValue("", "jid");
                     String name = parser.getAttributeValue("", "name");
@@ -443,7 +444,7 @@ class PacketReader {
                     item.addGroupName(groupName);
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
                     roster.addRosterItem(item);
                 }
@@ -461,7 +462,7 @@ class PacketReader {
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("username")) {
                     registration.setUsername(parser.nextText());
                 }
@@ -480,7 +481,7 @@ class PacketReader {
                     }
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
                     done = true;
                 }
@@ -506,7 +507,7 @@ class PacketReader {
         }
         String message = parser.nextText();
         while (true) {
-            if (parser.getEventType() == parser.END_TAG && parser.getName().equals("error")) {
+            if (parser.getEventType() == XmlPullParser.END_TAG && parser.getName().equals("error")) {
                 break;
             }
         }
@@ -536,7 +537,7 @@ class PacketReader {
         Map properties = null;
         while (!done) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("subject")) {
                     if (subject == null) {
                         subject = parser.nextText();
@@ -561,7 +562,7 @@ class PacketReader {
                     properties = parseProperties(parser);
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("message")) {
                     done = true;
                 }
@@ -605,7 +606,7 @@ class PacketReader {
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("status")) {
                     presence.setStatus(parser.nextText());
                 }
@@ -633,7 +634,7 @@ class PacketReader {
                     }
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("presence")) {
                     done = true;
                 }
@@ -657,7 +658,7 @@ class PacketReader {
         Map properties = new HashMap();
         while (true) {
             int eventType = parser.next();
-            if (eventType == parser.START_TAG && parser.getName().equals("property")) {
+            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
                 // Advance to name element.
                 parser.next();
                 String name = parser.nextText();
@@ -697,7 +698,7 @@ class PacketReader {
                     properties.put(name, value);
                 }
             }
-            else if (eventType == parser.END_TAG) {
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("x")) {
                     break;
                 }
