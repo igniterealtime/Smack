@@ -64,7 +64,7 @@ public class FromContainsFilter implements PacketFilter {
     private String from;
 
     /**
-     * Creates a "to" contains filter using the "to" field part.
+     * Creates a "from" contains filter using the "from" field part.
      *
      * @param from the from field value the packet must contain.
      */
