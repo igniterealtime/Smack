@@ -62,12 +62,55 @@ public class PresencePriorityTest extends SmackTestCase {
             conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
                     Presence.Mode.AVAILABLE));
 
+            Thread.sleep(150);
             // Test delivery of message to the presence with highest priority
             chat0.sendMessage("Hello");
             assertNotNull("Resource with highest priority didn't receive the message",
                     chat1.nextMessage(2000));
             assertNull("Resource with lowest priority received the message",
                     chat2.nextMessage(1000));
+
+            // User_1 closes his connection
+            chat2 = null;
+            conn.close();
+            Thread.sleep(150);
+
+            // Test delivery of message to the unique presence of the user_1
+            chat0.sendMessage("Hello");
+            assertNotNull("Resource with highest priority didn't receive the message",
+                    chat1.nextMessage(2000));
+
+            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
+                    Presence.Mode.AVAILABLE));
+
+            // User_1 will log in again using another resource
+            conn = new XMPPConnection(getHost(), getPort());
+            conn.login(getUsername(1), getUsername(1), "OtherPlace");
+            conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
+                    Presence.Mode.AVAILABLE));
+            chat2 = new Chat(conn, getBareJID(0));
+
+            Thread.sleep(150);
+            // Test delivery of message to the presence with highest priority
+            chat0.sendMessage("Hello");
+            assertNotNull("Resource with highest priority didn't receive the message",
+                    chat1.nextMessage(2000));
+            assertNull("Resource with lowest priority received the message",
+                    chat2.nextMessage(1000));
+
+            // Invert the presence priorities of User_1
+            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
+                    Presence.Mode.AVAILABLE));
+            conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
+                    Presence.Mode.AVAILABLE));
+
+            Thread.sleep(150);
+            // Test delivery of message to the presence with highest priority
+            chat0.sendMessage("Hello");
+            assertNotNull("Resource with highest priority didn't receive the message",
+                    chat2.nextMessage(2000));
+            assertNull("Resource with lowest priority received the message",
+                    chat1.nextMessage(1000));
 
         }
         catch (Exception e) {
@@ -85,5 +128,10 @@ public class PresencePriorityTest extends SmackTestCase {
 
     protected int getMaxConnections() {
         return 2;
+    }
+
+    protected void setUp() throws Exception {
+        XMPPConnection.DEBUG_ENABLED = false;
+        super.setUp();
     }
 }
