@@ -216,16 +216,20 @@ public class MultiUserChat {
         else if (presence.getError() != null) {
             throw new XMPPException(presence.getError());
         }
+        // Whether the room existed before or was created, the user has joined the room
+        this.nickname = nickname;
+        joined = true;
+
         // Look for confirmation of room creation from the server
         MUCUser mucUser = getMUCUserExtension(presence);
         if (mucUser != null && mucUser.getStatus() != null) {
             if ("201".equals(mucUser.getStatus().getCode())) {
                 // Room was created and the user has joined the room
-                this.nickname = nickname;
-                joined = true;
                 return;
             }
         }
+        // We need to leave the room since it seems that the room already existed
+        leave();
         throw new XMPPException("Creation failed - Missing acknowledge of room creation.");
     }
     
@@ -451,7 +455,7 @@ public class MultiUserChat {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
-        iq.addExtension(form.getDataForm());
+        iq.addExtension(form.getDataFormToSend());
 
         // Send the completed configuration form to the server.
         connection.sendPacket(iq);
