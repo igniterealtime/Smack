@@ -212,17 +212,12 @@ public abstract class Packet {
     /**
      * Returns the first packet extension that matches the specified element name and
      * namespace, or <tt>null</tt> if it doesn't exist. Packet extensions are
-     * are arbitrary XML sub-documents in standard XMPP packets (except for IQ packets,
-     * which don't allow extensions). By default, a DefaultPacketExtension instance will
-     * be returned for each extension. However, PacketExtensionProvider instances can be
-     * registered with the {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager}
+     * are arbitrary XML sub-documents in standard XMPP packets. By default, a 
+     * DefaultPacketExtension instance will be returned for each extension. However, 
+     * PacketExtensionProvider instances can be registered with the 
+     * {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager}
      * class to handle custom parsing. In that case, the type of the Object
      * will be determined by the provider.
-     *
-     * <p>Note: According to the XMPP specification, IQ packets cannot contain
-     * packet extensions. Instead, they must contain only a single XML sub-document,
-     * which is returned via the {@link IQ#getChildElementXML()} method. Therefore,
-     * attempting to add an extension to an IQ packet will silently fail.
      *
      * @param elementName the XML element name of the packet extension.
      * @param namespace the XML element namespace of the packet extension.
@@ -244,19 +239,9 @@ public abstract class Packet {
     /**
      * Adds a packet extension to the packet.
      *
-     * <p>Note: According to the XMPP specification, IQ packets cannot contain
-     * packet extensions. Instead, they must contain only a single XML sub-document,
-     * which is returned via the {@link IQ#getChildElementXML()} method. Therefore,
-     * attempting to add an extension to an IQ packet will silently fail.
-     *
      * @param extension a packet extension.
      */
     public synchronized void addExtension(PacketExtension extension) {
-        // If the packet is an IQ packet, ignore trying to add an extension to it.
-        if (this instanceof IQ) {
-            return;
-        }
-
         if (packetExtensions == null) {
             packetExtensions = new ArrayList();
         }
@@ -265,11 +250,6 @@ public abstract class Packet {
 
     /**
      * Removes a packet extension from the packet.
-     *
-     * <p>Note: According to the XMPP specification, IQ packets cannot contain
-     * packet extensions. Instead, they must contain only a single XML sub-document,
-     * which is returned via the {@link IQ#getChildElementXML()} method. Therefore,
-     * attempting to add an extension to an IQ packet will silently fail.
      *
      * @param extension the packet extension to remove.
      */
