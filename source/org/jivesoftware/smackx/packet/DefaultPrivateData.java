@@ -75,7 +75,7 @@ import java.util.HashMap;
  * In this case, getValue("color") would return "blue", and getValue("food") would
  * return "pizza". This parsing mechanism mechanism is very simplistic and will not work
  * as desired in all cases (for example, if some of the elements have attributes. In those
- * cases, a custom PrivateDataProvider should be used.
+ * cases, a custom {@link org.jivesoftware.smackx.provider.PrivateDataProvider} should be used.
  *
  * @author Matt Tucker
  */

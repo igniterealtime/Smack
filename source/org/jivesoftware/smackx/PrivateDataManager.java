@@ -65,7 +65,20 @@ import java.util.Map;
 import java.util.Hashtable;
 
 /**
- * Manages private data.
+ * Manages private data, which is a mechanism to allow users to store arbitrary XML
+ * data on an XMPP server. Each private data chunk is defined by a element name and
+ * XML namespace. Example private data:
+ *
+ * <pre>
+ * &lt;color xmlns="http://example.com/xmpp/color"&gt;
+ *     &lt;favorite&gt;blue&lt;/blue&gt;
+ *     &lt;leastFavorite&gt;puce&lt;/leastFavorite&gt;
+ * &lt;/color&gt;
+ * </pre>
+ *
+ * {@link PrivateDataProvider} instances are responsible for translating the XML into objects.
+ * If no PrivateDataProvider is registered for a given element name and namespace, then
+ * a {@link DefaultPrivateData} instance will be returned.
  *
  * @author Matt Tucker
  */
@@ -119,15 +132,21 @@ public class PrivateDataManager {
     }
 
 
-    private XMPPConnection con;
+    private XMPPConnection connection;
 
     /**
-     * Creates a new private data manager.
+     * Creates a new private data manager. The connection must have
+     * undergone a successful login before being used to construct an instance of
+     * this class.
      *
-     * @param con an XMPPConnection.
+     * @param connection an XMPP connection which must have already undergone a
+     *      successful login.
      */
-    public PrivateDataManager(XMPPConnection con) {
-        this.con = con;
+    public PrivateDataManager(XMPPConnection connection) {
+        if (!connection.isAuthenticated()) {
+            throw new IllegalStateException("Must be logged in to XMPP server.");
+        }
+        this.connection = connection;
     }
 
     /**
@@ -160,10 +179,10 @@ public class PrivateDataManager {
 
         // Setup a listener for the reply to the set operation.
         String packetID = privateDataGet.getPacketID();
-        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(packetID));
+        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(packetID));
 
         // Send the private data.
-        con.sendPacket(privateDataGet);
+        connection.sendPacket(privateDataGet);
 
         // Wait up to five seconds for a response from the server.
         IQ response = (IQ)collector.nextResult(5000);
@@ -200,10 +219,10 @@ public class PrivateDataManager {
 
         // Setup a listener for the reply to the set operation.
         String packetID = privateDataSet.getPacketID();
-        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(packetID));
+        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(packetID));
 
         // Send the private data.
-        con.sendPacket(privateDataSet);
+        connection.sendPacket(privateDataSet);
 
         // Wait up to five seconds for a response from the server.
         IQ response = (IQ)collector.nextResult(5000);
