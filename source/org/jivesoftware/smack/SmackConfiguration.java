@@ -53,7 +53,6 @@
 package org.jivesoftware.smack;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
 
@@ -138,7 +137,8 @@ public final class SmackConfiguration {
             Class.forName(className);
         }
         catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
+            // TODO Replace the printStackTrace to the console with a logger system
+            //cnfe.printStackTrace();
         }
     }
 
