@@ -70,7 +70,6 @@ Smack Source Distribution<br>
 This document provides detailed information for developers that wish to 
 compile and make changes to the Smack source code.
 
-
 <p>For additional developer resources, please visit: 
 <a href="http://www.jivesoftware.com/xmpp/smack/">
 http://www.jivesoftware.com/xmpp/smack/</a>. The Smack build process is based on Ant. Visit the
@@ -97,7 +96,7 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 	If Java isn't installed, download a copy from the 
 	<a href="http://java.sun.com/">Java website</a>.
 	<p>
-	<font color="red">Important!</font> -- the Jive Forums build tool needs to know
+	<font color="red">Important!</font> -- the Smack build tool needs to know
 	where Java is installed on your system. You must configure the "JAVA_HOME"
 	environment variable to point to the correct directory. Instructions on
 	how to set this variable for various platforms are as follows:
@@ -248,8 +247,8 @@ ant compile <br>
 
 <p><i>Description:</i></p>
 
-Compiles all the Jive Forums source code.
-The build directory is the "classes" directory under your Jive Forums source distribution.
+Compiles all the Smack source code.
+The build directory is the "classes" directory under your Smack source distribution.
 
 <p>[<a href="#tasks">return to task list</a>]
 </ul>
@@ -266,11 +265,9 @@ ant jar <br>
 
 <p><i>Description:</i></p>
 
-Bundles the Jive Forums class files into two JAR files (jivebase.jar and jiveforums.jar)
-that are suitable for adding
+Bundles the Smack class files into a JAR file (smack.jar)
+that is suitable for adding
 into the classpath of an application server.
-The resulting files are copied into build/WEB-INF/lib. To deploy
-the JAR files, use the <a href="#deployjar">deployjar</a> task.
 <p>[<a href="#tasks">return to task list</a>]
 </ul>
 
@@ -286,7 +283,7 @@ ant javadoc <br>
 
 <p><i>Description:</i></p>
 
-JavaDocs all Jive Forums source code in the source directory.
+JavaDocs all Smack source code in the source directory.
 
 <p>[<a href="#tasks">return to task list</a>]
 </ul>
@@ -302,10 +299,8 @@ ant clean<br>
 
 <p><i>Description:</i></p>
 
-Cleans your Jive Forums distribution directory by deleting compiled class files, the
-jive.jar file and Javadoc files. If you specified alternate
-destination directories for any of those files, you'll need to delete them
-manually.<p>
+Cleans your Smack distribution directory by deleting compiled class files, the
+smack.jar file and Javadoc files.<p>
 
 <p>[<a href="#tasks">return to task list</a>]
 </ul>
