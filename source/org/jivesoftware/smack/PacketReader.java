@@ -180,11 +180,11 @@ class PacketReader {
     public void startup() throws XMPPException {
         readerThread.start();
         listenerThread.start();
-        // Wait for stream tag before returing. We'll wait a maximum of five seconds before
+        // Wait for stream tag before returing. We'll wait a couple of seconds before
         // giving up and throwing an error.
         try {
             synchronized(connectionIDLock) {
-                connectionIDLock.wait(5000);
+                connectionIDLock.wait(SmackConfiguration.getPacketReplyTimeout());
             }
         }
         catch (InterruptedException ie) { }
