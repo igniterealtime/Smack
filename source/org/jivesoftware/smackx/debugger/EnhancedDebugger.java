@@ -132,12 +132,14 @@ public class EnhancedDebugger implements SmackDebugger {
 
     private XMPPConnection connection = null;
 
-    private PacketListener readerListener = null;
-    private PacketListener writerListener = null;
+    private PacketListener packetReaderListener = null;
+    private PacketListener packetWriterListener = null;
     private ConnectionListener connListener = null;
 
     private Writer writer;
     private Reader reader;
+    private ReaderListener readerListener;
+    private WriterListener writerListener;
 
     private Date creationTime = new Date();
 
@@ -193,7 +195,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // Create a thread that will listen for all incoming packets and write them to
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
-        readerListener = new PacketListener() {
+        packetReaderListener = new PacketListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
             public void processPacket(Packet packet) {
                 addReadPacketToTable(dateFormatter, packet);
@@ -202,7 +204,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
         // Create a thread that will listen for all outgoing packets and write them to
         // the GUI.
-        writerListener = new PacketListener() {
+        packetWriterListener = new PacketListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
             public void processPacket(Packet packet) {
                 addSentPacketToTable(dateFormatter, packet);
@@ -231,7 +233,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
         messagesTable =
             new DefaultTableModel(
-                new Object[] { "Hide", "Timestamp", "", "", "Message", "Type", "To", "From" },
+                new Object[] { "Hide", "Timestamp", "", "", "Message", "Id", "Type", "To", "From" },
                 0) {
             public boolean isCellEditable(int rowIndex, int mColIndex) {
                 return false;
@@ -261,15 +263,18 @@ public class EnhancedDebugger implements SmackDebugger {
         // Set the column "packet type" icon size
         table.getColumnModel().getColumn(3).setMaxWidth(50);
         table.getColumnModel().getColumn(3).setPreferredWidth(30);
+        // Set the column "Id" size
+        table.getColumnModel().getColumn(5).setMaxWidth(100);
+        table.getColumnModel().getColumn(5).setPreferredWidth(55);
         // Set the column "type" size
-        table.getColumnModel().getColumn(5).setMaxWidth(200);
-        table.getColumnModel().getColumn(5).setPreferredWidth(50);
+        table.getColumnModel().getColumn(6).setMaxWidth(200);
+        table.getColumnModel().getColumn(6).setPreferredWidth(50);
         // Set the column "to" size
-        table.getColumnModel().getColumn(6).setMaxWidth(300);
-        table.getColumnModel().getColumn(6).setPreferredWidth(90);
-        // Set the column "from" size
         table.getColumnModel().getColumn(7).setMaxWidth(300);
         table.getColumnModel().getColumn(7).setPreferredWidth(90);
+        // Set the column "from" size
+        table.getColumnModel().getColumn(8).setMaxWidth(300);
+        table.getColumnModel().getColumn(8).setPreferredWidth(90);
         // Create a table listener that listen for row selection events
         SelectionListener selectionListener = new SelectionListener(table);
         table.getSelectionModel().addListSelectionListener(selectionListener);
@@ -358,114 +363,35 @@ public class EnhancedDebugger implements SmackDebugger {
         menu.add(menuItem2);
 
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
-        Reader debugReader = new Reader() {
-
-            Reader myReader = reader;
-
-            public int read(char cbuf[], int off, int len) throws IOException {
-                int count = myReader.read(cbuf, off, len);
-                if (count > 0) {
-                    String str = new String(cbuf, off, count);
-                    int index = str.lastIndexOf(">");
-                    if (index != -1) {
-                        receivedText.append(str.substring(0, index + 1));
-                        receivedText.append(NEWLINE);
-                        if (str.length() > index) {
-                            receivedText.append(str.substring(index + 1));
+        ObservableReader debugReader = new ObservableReader(reader);
+        readerListener = new ReaderListener() {
+                    public void read(String str) {
+                        int index = str.lastIndexOf(">");
+                        if (index != -1) {
+                            receivedText.append(str.substring(0, index + 1));
+                            receivedText.append(NEWLINE);
+                            if (str.length() > index) {
+                                receivedText.append(str.substring(index + 1));
+                            }
+                        }
+                        else {
+                            receivedText.append(str);
                         }
                     }
-                    else {
-                        receivedText.append(str);
-                    }
-                }
-                return count;
-            }
-
-            public void close() throws IOException {
-                myReader.close();
-            }
-
-            public int read() throws IOException {
-                return myReader.read();
-            }
-
-            public int read(char cbuf[]) throws IOException {
-                return myReader.read(cbuf);
-            }
-
-            public long skip(long n) throws IOException {
-                return myReader.skip(n);
-            }
-
-            public boolean ready() throws IOException {
-                return myReader.ready();
-            }
-
-            public boolean markSupported() {
-                return myReader.markSupported();
-            }
-
-            public void mark(int readAheadLimit) throws IOException {
-                myReader.mark(readAheadLimit);
-            }
-
-            public void reset() throws IOException {
-                myReader.reset();
-            }
-        };
+                };
+        debugReader.addReaderListener(readerListener);
 
         // Create a special Writer that wraps the main Writer and logs data to the GUI.
-        Writer debugWriter = new Writer() {
-
-            Writer myWriter = writer;
-
-            public void write(char cbuf[], int off, int len) throws IOException {
-                myWriter.write(cbuf, off, len);
-                String str = new String(cbuf, off, len);
-                sentText.append(str);
-                if (str.endsWith(">")) {
-                    sentText.append(NEWLINE);
-                }
-            }
-
-            public void flush() throws IOException {
-                myWriter.flush();
-            }
-
-            public void close() throws IOException {
-                myWriter.close();
-            }
-
-            public void write(int c) throws IOException {
-                myWriter.write(c);
-            }
-
-            public void write(char cbuf[]) throws IOException {
-                myWriter.write(cbuf);
-                String str = new String(cbuf);
-                sentText.append(str);
-                if (str.endsWith(">")) {
-                    sentText.append(NEWLINE);
-                }
-            }
-
-            public void write(String str) throws IOException {
-                myWriter.write(str);
-                sentText.append(str);
-                if (str.endsWith(">")) {
-                    sentText.append(NEWLINE);
-                }
-            }
-
-            public void write(String str, int off, int len) throws IOException {
-                myWriter.write(str, off, len);
-                str = str.substring(off, off + len);
-                sentText.append(str);
-                if (str.endsWith(">")) {
-                    sentText.append(NEWLINE);
-                }
-            }
-        };
+        ObservableWriter debugWriter = new ObservableWriter(writer);
+        writerListener = new WriterListener() {
+                    public void write(String str) {
+                        sentText.append(str);
+                        if (str.endsWith(">")) {
+                            sentText.append(NEWLINE);
+                        }
+                    }
+                };
+        debugWriter.addWriterListener(writerListener);
 
         // Assign the reader/writer objects to use the debug versions. The packet reader
         // and writer will use the debug versions when they are created.
@@ -692,11 +618,11 @@ public class EnhancedDebugger implements SmackDebugger {
     }
 
     public PacketListener getReaderListener() {
-        return readerListener;
+        return packetReaderListener;
     }
 
     public PacketListener getWriterListener() {
-        return writerListener;
+        return packetWriterListener;
     }
 
     /**
@@ -762,6 +688,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 packetReceivedIcon,
                 packetTypeIcon,
                 messageType,
+                packet.getPacketID(),
                 type,
                 "",
                 from });
@@ -812,6 +739,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 packetSentIcon,
                 packetTypeIcon,
                 messageType,
+                packet.getPacketID(),
                 type,
                 to,
                 "" });
@@ -870,8 +798,10 @@ public class EnhancedDebugger implements SmackDebugger {
      */
     void cancel() {
         connection.removeConnectionListener(connListener);
-        connection.removePacketListener(readerListener);
-        connection.removePacketWriterListener(writerListener);
+        connection.removePacketListener(packetReaderListener);
+        connection.removePacketWriterListener(packetWriterListener);
+        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ((ObservableWriter)writer).removeWriterListener(writerListener);
         messagesTable = null;
     }
 
