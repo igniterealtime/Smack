@@ -90,8 +90,7 @@ public class Roster {
         connection.addPacketListener(new RosterPacketListener(), rosterFilter);
         // Listen for any presence packets.
         String JID = connection.getUsername() + "@" + connection.getHost();
-        PacketFilter presenceFilter = new AndFilter(new PacketTypeFilter(Presence.class),
-                new ToContainsFilter(JID));
+        PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
         connection.addPacketListener(new PresencePacketListener(), presenceFilter);
     }
 
