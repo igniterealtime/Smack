@@ -79,16 +79,10 @@ public class ServiceDiscoveryManagerTest extends TestCase {
      * Tests service discovery of XHTML support. 
      */
     public void testXHTMLFeature() {
-        // TODO Remove these two lines when the "additional services for extensions" are 
-        // implemented 
-        new ServiceDiscoveryManager(conn1);
-        new ServiceDiscoveryManager(conn2);
-
-        // Enable the XHTML Message support in connection1
-        XHTMLManager.setServiceEnabled(conn1, true);
-        // Check for local XHTML service support 
+        // Check for local XHTML service support
+        // By default the XHTML service support is enabled in all the connections
         assertTrue(XHTMLManager.isServiceEnabled(conn1));
-        assertFalse(XHTMLManager.isServiceEnabled(conn2));
+        assertTrue(XHTMLManager.isServiceEnabled(conn2));
         // Check for XHTML support in connection1 from connection2 
         assertTrue(XHTMLManager.isServiceEnabled(conn2, "gato10@" + conn1.getHost()));
         
@@ -96,7 +90,7 @@ public class ServiceDiscoveryManagerTest extends TestCase {
         XHTMLManager.setServiceEnabled(conn1, false);
         // Check for local XHTML service support 
         assertFalse(XHTMLManager.isServiceEnabled(conn1));
-        assertFalse(XHTMLManager.isServiceEnabled(conn2));
+        assertTrue(XHTMLManager.isServiceEnabled(conn2));
         // Check for XHTML support in connection1 from connection2 
         assertFalse(XHTMLManager.isServiceEnabled(conn2, "gato10@" + conn1.getHost()));
     }
