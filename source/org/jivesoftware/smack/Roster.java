@@ -258,7 +258,9 @@ public class Roster {
     }
 
     /**
-     * Removes a roster entry from the roster.
+     * Removes a roster entry from the roster. The roster entry will also be removed from the 
+     * unfiled entries or from any roster group where it could belong and will no longer be part
+     * of the roster.
      *
      * @param entry a roster entry.
      */
