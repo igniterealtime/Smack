@@ -80,13 +80,7 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public class Message extends Packet {
 
-    public static final Type NORMAL = new Type("normal");
-    public static final Type CHAT = new Type("chat");
-    public static final Type GROUP_CHAT = new Type("groupchat");
-    public static final Type HEADLINE = new Type("headline");
-    public static final Type ERROR = new Type("error");
-
-    private Type type = NORMAL;
+    private Type type = Type.NORMAL;
     private String subject = null;
     private String body = null;
     private String thread = null;
@@ -95,7 +89,6 @@ public class Message extends Packet {
      * Creates a new, "normal" message.
      */
     public Message() {
-
     }
 
     /**
@@ -104,6 +97,9 @@ public class Message extends Packet {
      * @param to the recipient of the message.
      */
     public Message(String to) {
+        if (to == null) {
+            throw new IllegalArgumentException("Parameter cannot be null");
+        }
         setTo(to);
     }
 
@@ -182,9 +178,9 @@ public class Message extends Packet {
 
     /**
      * Returns the thread id of the message, which is a unique identifier for a sequence
-     * of "chat" messages.
+     * of "chat" messages. If no thread id is set, <tt>null</tt> will be returned.
      *
-     * @return the thread id of the message.
+     * @return the thread id of the message, or <tt>null</tt> if it doesn't exist.
      */
     public String getThread() {
         return thread;
@@ -200,11 +196,6 @@ public class Message extends Packet {
         this.thread = thread;
     }
 
-    /**
-     * Returns the message as XML.
-     *
-     * @return the message as XML.
-     */
     public String toXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<message");
@@ -215,7 +206,7 @@ public class Message extends Packet {
         if (getFrom() != null) {
             buf.append(" from=\"").append(getFrom()).append("\"");
         }
-        if (type != NORMAL) {
+        if (type != Type.NORMAL) {
             buf.append(" type=\"").append(type).append("\"");
         }
         buf.append(">");
@@ -229,16 +220,14 @@ public class Message extends Packet {
             buf.append("<thread>").append(thread).append("</thread>");
         }
         // Append the error subpacket if the message type is an error.
-        if (type == ERROR) {
+        if (type == Type.ERROR) {
             XMPPError error = getError();
             if (error != null) {
                 buf.append(error.toXML());
             }
         }
-        String properties = getPropertiesXML();
-        if (properties != null) {
-            buf.append(properties);
-        }
+        // Add packet extensions, if any are defined.
+        buf.append(getExtentionsXML());
         buf.append("</message>");
         return buf.toString();
     }
@@ -248,6 +237,37 @@ public class Message extends Packet {
      */
     public static class Type {
 
+        /**
+         * (Default) a normal text message used in email like interface.
+         */
+        public static final Type NORMAL = new Type("normal");
+
+        /**
+         * Typically short text message used in line-by-line chat interfaces.
+         */
+        public static final Type CHAT = new Type("chat");
+
+        /**
+         * Chat message sent to a groupchat server for group chats.
+         */
+        public static final Type GROUP_CHAT = new Type("groupchat");
+
+        /**
+         * Text message to be displayed in scrolling marquee displays.
+         */
+        public static final Type HEADLINE = new Type("headline");
+
+        /**
+         * indicates a messaging error.
+         */
+        public static final Type ERROR = new Type("error");
+
+        /**
+         * Converts a String value into its Type representation.
+         *
+         * @param type the String value.
+         * @return the Type corresponding to the String.
+         */
         public static Type fromString(String type) {
             if (CHAT.toString().equals(type)) {
                 return CHAT;
