@@ -339,6 +339,7 @@ class PacketWriter {
                 synchronized (writer) {
                     try {
                         writer.write(" ");
+                        writer.flush();
                     }
                     catch (Exception e) { }
                 }
