@@ -89,10 +89,10 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
             Iterator identities = info.getIdentities();
             assertTrue("No identities were found", identities.hasNext());
             DiscoverInfo.Identity identity = (DiscoverInfo.Identity)identities.next();
-            assertEquals("Name in identity is wrong", SmackConfiguration.getIdentityName(),
+            assertEquals("Name in identity is wrong", ServiceDiscoveryManager.getIdentityName(),
                     identity.getName());
             assertEquals("Category in identity is wrong", "client", identity.getCategory());
-            assertEquals("Type in identity is wrong", SmackConfiguration.getIdentityType(),
+            assertEquals("Type in identity is wrong", ServiceDiscoveryManager.getIdentityType(),
                     identity.getType());
             assertFalse("More identities were found", identities.hasNext());
         }

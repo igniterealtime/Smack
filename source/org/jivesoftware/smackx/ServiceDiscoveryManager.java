@@ -72,6 +72,9 @@ import org.jivesoftware.smackx.packet.*;
  */
 public class ServiceDiscoveryManager {
 
+    private static String identityName = "Smack";
+    private static String identityType = "pc";
+
     private static Map instances = new Hashtable();
 
     private XMPPConnection connection;
@@ -107,6 +110,52 @@ public class ServiceDiscoveryManager {
      */
     public static ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
         return (ServiceDiscoveryManager) instances.get(connection);
+    }
+
+    /**
+     * Returns the name of the client that will be returned when asked for the client identity
+     * in a disco request. The name could be any value you need to identity this client.
+     * 
+     * @return the name of the client that will be returned when asked for the client identity
+     *          in a disco request.
+     */
+    public static String getIdentityName() {
+        return identityName;
+    }
+
+    /**
+     * Sets the name of the client that will be returned when asked for the client identity
+     * in a disco request. The name could be any value you need to identity this client.
+     * 
+     * @param name the name of the client that will be returned when asked for the client identity
+     *          in a disco request.
+     */
+    public static void setIdentityName(String name) {
+        identityName = name;
+    }
+
+    /**
+     * Returns the type of client that will be returned when asked for the client identity in a 
+     * disco request. The valid types are defined by the category client. Follow this link to learn 
+     * the possible types: <a href="http://www.jabber.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * 
+     * @return the type of client that will be returned when asked for the client identity in a 
+     *          disco request.
+     */
+    public static String getIdentityType() {
+        return identityType;
+    }
+
+    /**
+     * Sets the type of client that will be returned when asked for the client identity in a 
+     * disco request. The valid types are defined by the category client. Follow this link to learn 
+     * the possible types: <a href="http://www.jabber.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * 
+     * @param type the type of client that will be returned when asked for the client identity in a 
+     *          disco request.
+     */
+    public static void setIdentityType(String type) {
+        identityType = type;
     }
 
     /**
@@ -171,8 +220,8 @@ public class ServiceDiscoveryManager {
                     response.setPacketID(discoverInfo.getPacketID());
                     // Set this client identity
                     DiscoverInfo.Identity identity = new DiscoverInfo.Identity("client",
-                            SmackConfiguration.getIdentityName());
-                    identity.setType(SmackConfiguration.getIdentityType());
+                            getIdentityName());
+                    identity.setType(getIdentityType());
                     response.addIdentity(identity);
                     // Add the registered features to the response
                     synchronized (features) {

@@ -79,8 +79,6 @@ public final class SmackConfiguration {
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
-    private static String identityName = "Smack";
-    private static String identityType = "pc";
 
     private SmackConfiguration() {
     }
@@ -121,12 +119,6 @@ public final class SmackConfiguration {
                                 }
                                 else if (parser.getName().equals("keepAliveInterval")) {
                                     keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
-                                }
-                                else if (parser.getName().equals("identityName")) {
-                                    identityName = parser.nextText();
-                                }
-                                else if (parser.getName().equals("identityType")) {
-                                    identityType = parser.nextText();
                                 }
                             }
                             eventType = parser.next();
@@ -201,52 +193,6 @@ public final class SmackConfiguration {
      */
     public static void setKeepAliveInterval(int interval) {
         keepAliveInterval = interval;
-    }
-
-    /**
-     * Returns the name of the client that will be returned when asked for the client identity
-     * in a disco request. The name could be any value you need to identity this client.
-     * 
-     * @return the name of the client that will be returned when asked for the client identity
-     *          in a disco request.
-     */
-    public static String getIdentityName() {
-        return identityName;
-    }
-
-    /**
-     * Sets the name of the client that will be returned when asked for the client identity
-     * in a disco request. The name could be any value you need to identity this client.
-     * 
-     * @param name the name of the client that will be returned when asked for the client identity
-     *          in a disco request.
-     */
-    public static void setIdentityName(String name) {
-        identityName = name;
-    }
-
-    /**
-     * Returns the type of client that will be returned when asked for the client identity in a 
-     * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://www.jabber.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
-     * 
-     * @return the type of client that will be returned when asked for the client identity in a 
-     *          disco request.
-     */
-    public static String getIdentityType() {
-        return identityType;
-    }
-
-    /**
-     * Sets the type of client that will be returned when asked for the client identity in a 
-     * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://www.jabber.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
-     * 
-     * @param type the type of client that will be returned when asked for the client identity in a 
-     *          disco request.
-     */
-    public static void setIdentityType(String type) {
-        identityType = type;
     }
 
     private static void parseClassToLoad(XmlPullParser parser) throws Exception {
