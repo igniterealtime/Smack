@@ -81,7 +81,7 @@ public class Authentication extends IQ {
     /**
      * Returns the type of the authentication packet.
      *
-     * @return
+     * @return the type of the authentication packet.
      */
     public Type getType() {
         return type;
@@ -90,7 +90,7 @@ public class Authentication extends IQ {
     /**
      * Sets the type of the authentication packet.
      *
-     * @param type
+     * @param type the type of the authentication packet.
      */
     public void setType(Type type) {
         this.type = type;

@@ -66,9 +66,9 @@ import org.jivesoftware.smack.util.StringUtils;
  * </ul>
  *
  * For each message type, different message fields are typically used as follows:
- *
- * <table>
- * <tr><td>&nbsp;</td><td><b>Message type</b></td></tr>
+ * <p>
+ * <table border="1">
+ * <tr><td>&nbsp;</td><td colspan="5"><b>Message type</b></td></tr>
  * <tr><td><i>Field</i></td><td><b>Normal</b></td><td><b>Chat</b></td><td><b>Group Chat</b></td><td><b>Headline</b></td><td><b>Error</b></td></tr>
  * <tr><td><i>subject</i></td> <td>SHOULD</td><td>SHOULD NOT</td><td>SHOULD NOT</td><td>SHOULD NOT</td><td>SHOULD NOT</td></tr>
  * <tr><td><i>thread</i></td>  <td>OPTIONAL</td><td>SHOULD</td><td>OPTIONAL</td><td>OPTIONAL</td><td>SHOULD NOT</td></tr>
