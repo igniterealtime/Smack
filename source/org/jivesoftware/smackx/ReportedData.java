@@ -228,16 +228,32 @@ public class ReportedData {
         }
         
         /**
+         * Returns the value of the field whose variable matches the requested variable.
+         * 
+         * @param variable the variable to match.
+         * @return the value of the field whose variable matches the requested variable.
+         */
+        public String getValue(String variable) {
+            for(Iterator it=getFields();it.hasNext();) {
+                Field field = (Field) it.next();
+                if (variable.equals(field.getVariable())) {
+                    return field.getValue();
+                }
+            }
+            return null;
+        }
+        
+        /**
          * Returns the fields that define the data that goes with the item.
          * 
          * @return the fields that define the data that goes with the item.
          */
-        public Iterator getFields() {
+        private Iterator getFields() {
             return Collections.unmodifiableList(new ArrayList(fields)).iterator();
         }
     }
     
-    public static class Field {
+    private static class Field {
         private String variable;
         private String value;
 
