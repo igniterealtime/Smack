@@ -67,7 +67,7 @@ public class RosterGroup {
 
     private String name;
     private XMPPConnection connection;
-    List entries;
+    private List entries;
 
     /**
      * Creates a new roster group instance.
