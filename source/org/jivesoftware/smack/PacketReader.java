@@ -311,7 +311,7 @@ class PacketReader {
 
         // Remove all null values from the collectors list.
         synchronized (collectors) {
-            for (int i=collectors.size()-1; i<=0; i--) {
+            for (int i=collectors.size()-1; i>=0; i--) {
                     if (collectors.get(i) == null) {
                         collectors.remove(i);
                     }
