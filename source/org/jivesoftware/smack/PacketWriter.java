@@ -148,6 +148,7 @@ class PacketWriter {
 //            stream.append("xmlns:sasl=\"http://www.iana.org/assignments/sasl-mechanisms\" ");
             writer.write(stream.toString());
             writer.flush();
+            stream = null;
             // Write out packets from the queue.
             while (!done) {
                 Packet packet = nextPacket();
@@ -168,8 +169,10 @@ class PacketWriter {
             }
         }
         catch (IOException ioe){
-            ioe.printStackTrace();
-            connection.close();
+            if (!done) {
+                ioe.printStackTrace();
+                connection.close();
+            }
         }
     }
 }

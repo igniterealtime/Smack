@@ -263,10 +263,10 @@ class PacketReader {
             } while (eventType != parser.END_DOCUMENT && !done);
         }
         catch (Exception e) {
-            // An exception occurred while parsing. Print the error an close the
-            // connection.
-            e.printStackTrace();
             if (!done) {
+                // An exception occurred while parsing. Print the error an close the
+                // connection.
+                e.printStackTrace();
                 connection.close();
             }
         }

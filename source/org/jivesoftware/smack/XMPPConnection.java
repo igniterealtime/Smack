@@ -323,6 +323,11 @@ public class XMPPConnection {
         packetWriter.sendPacket(new Presence(Presence.Type.UNAVAILABLE));
         packetWriter.shutdown();
         packetReader.shutdown();
+        // Wait 100 ms for processes to clean-up, then shutdown.
+        try {
+            Thread.sleep(100);
+        }
+        catch (Exception e) { }
         try {
             socket.close();
         }
