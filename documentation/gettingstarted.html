@@ -58,7 +58,7 @@ Working with the Roster
 CONTENT COMING SOON
 
 <p class="subheader">
-Packets, the PacketReader, and the PacketWriter
+Packets -- Reading and Writing
 </p>
 
 Each message to the XMPP server from a client is called a packet and is
@@ -67,25 +67,28 @@ classes that encapsulate the different packet types allowed by XMPP (message,
 presence, and IQ). Classes such as <tt>Chat</tt> and <tt>GroupChat</tt>
 provide higher-level constructs that manage creating and sending packets
 automatically, but you can also create and send packets directly. Below
-is a code example for changing the presence to let people we're unavailable
-because we're out fishing:<p>
+is a code example for changing our presence to let people know we're unavailable
+because we're "out fishing":<p>
 
 <div class="code">
 <pre>
 <font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
-Presence presence = new Presence(false);
+Presence presence = new Presence(Presence.Type.UNAVAILABLE);
 presence.setStatus(<font color="green">"Gone fishing"</font>);
 <font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
-con.getPacketWriter().sendPacket(presence);
+con.sendPacket(presence);
 </pre></div>
 <p>
 
-Every connection has a <tt>PacketReader</tt> and <tt>PacketWriter</tt>. The
-packet reader listens for XML data from the server and parses it into
-individual packets. You can listen for incoming packets by registering
-<tt>PacketWatcher</tt> objects with the packet reader. The packet writer
-is responsible for writing packets to the server. It takes <tt>Packet</tt>
-objects and converts them to XML before sending them over the network.
+Smack provides two ways to read incoming packets: <tt>PacketListener</tt>, and 
+<tt>PacketCollector</tt>. Both use <tt>PacketFilter</tt> instances to determine 
+which packets should be processed. A packet listener is used for event style programming,
+while a packet collector has a result queue of packets that you can do
+polling and blocking operations on. So, a packet listener is useful when
+you want to take some action whenever a packet happens to come in, while a
+packet collector is useful when you want to wait for a specific packet
+to come through. Packet collectors and listeners can be created using the
+connection object.
 
 
 <p><div class="footer">
