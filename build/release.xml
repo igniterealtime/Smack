@@ -27,7 +27,7 @@
         <mkdir dir="${release.dir}" />
         <!-- Copy smack.jar -->
         <copy todir="${release.dir}">
-            <fileset dir="${jar.dest.dir}" includes="smack.jar" /> 
+            <fileset dir="${jar.dest.dir}" includes="smack.jar" />
         </copy>
         <!-- Copy build dir -->
         <copy todir="${release.dir}/build">
@@ -36,6 +36,7 @@
                 <include name="build.xml" />
                 <include name="README.html" />
                 <include name="lib/*.jar" />
+                <include name="merge/*.jar" />
             </fileset>
         </copy>
         <!-- Copy Javadocs -->
