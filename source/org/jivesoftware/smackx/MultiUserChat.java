@@ -52,6 +52,7 @@
 package org.jivesoftware.smackx;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.*;
 import java.util.*;
 
 import org.jivesoftware.smack.*;
@@ -85,6 +86,8 @@ public class MultiUserChat {
 
     private List invitationRejectionListeners = new ArrayList();
     private List subjectUpdatedListeners = new ArrayList();
+    private List userStatusListeners = new ArrayList();
+    private List participantStatusListeners = new ArrayList();
 
     private PacketFilter presenceFilter;
     private PacketListener presenceListener;
@@ -108,7 +111,12 @@ public class MultiUserChat {
                     discoNode,
                     new NodeInformationProvider() {
                         public Iterator getNodeItems() {
-                            return MultiUserChat.getJoinedRooms(connection);
+                            ArrayList answer = new ArrayList();
+                            Iterator rooms=MultiUserChat.getJoinedRooms(connection);
+                            while (rooms.hasNext()) {
+                                answer.add(new DiscoverItems.Item((String)rooms.next()));
+                            }
+                            return answer.iterator(); 
                         }
                     });
             }
@@ -478,8 +486,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.GET);
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter =
-            new AndFilter(new FromContainsFilter(room), new PacketTypeFilter(IQ.class));
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Request the configuration form to the server.
         connection.sendPacket(iq);
@@ -610,8 +617,7 @@ public class MultiUserChat {
         iq.setDestroy(destroy);
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter =
-            new AndFilter(new FromContainsFilter(room), new PacketTypeFilter(IQ.class));
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send the room destruction request.
         connection.sendPacket(iq);
@@ -919,6 +925,454 @@ public class MultiUserChat {
     }
 
     /**
+     * Kicks a visitor or participant from the room. The kicked participant will receive a presence 
+     * of type "unavailable" including a status code 307 and optionally along with the reason 
+     * (if provided) and the bare JID of the user who initiated the kick. After the participant 
+     * was kicked from the room, the rest of the participants will receive a presence of type 
+     * "unavailable". The presence will include a status code 307 which means that the participant 
+     * was kicked from the room. 
+     * 
+     * @param nickname the nickname of the participant or visitor to kick from the room 
+     * (e.g. "john").
+     * @param reason the reason why the participant or visitor is being kicked from the room.
+     * @throws XMPPException if an error occurs kicking the participant. In particular, a 
+     *      405 error can occur if a moderator or a user with an affiliation of "owner" or "admin"
+     *      was intended to be kicked (i.e. Not Allowed error); or a
+     *      403 error can occur if the participant that intended to kick another participant does
+     *      not have kicking privileges (i.e. Forbidden error); or a
+     *      400 error can occur if the provided nickname is not present in the room.
+     */
+    public void kickParticipant(String nickname, String reason) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the role to "none". This will request the room to kick the participant or visitor
+        MUCAdmin.Item item = new MUCAdmin.Item(null, "none");
+        item.setNick(nickname);
+        item.setReason(reason); 
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the kick request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Grants voice to a visitor in the room. In a moderated room, a moderator may want to manage 
+     * who does and does not have "voice" in the room. To have voice means that a room participant
+     * is able to send messages to the room occupants.
+     * 
+     * @param nickname the nickname of the visitor to grant voice in the room (e.g. "john").
+     * @throws XMPPException if an error occurs granting voice to a visitor. In particular, a 
+     *      403 error can occur if the participant that intended to grant voice is not 
+     *      a moderator in this room (i.e. Forbidden error); or a
+     *      400 error can occur if the provided nickname is not present in the room.
+     */
+    public void grantVoice(String nickname) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the role to "participant". This will grant voice to the visitor
+        MUCAdmin.Item item = new MUCAdmin.Item(null, "participant");
+        item.setNick(nickname);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the grant voice request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Revokes voice from a participant in the room. In a moderated room, a moderator may want to 
+     * revoke a participant's privileges to speak. To have voice means that a room participant
+     * is able to send messages to the room occupants.
+     * 
+     * @param nickname the nickname of the participant to revoke voice (e.g. "john").
+     * @throws XMPPException if an error occurs revoking voice from a participant. In particular, a 
+     *      405 error can occur if a moderator or a user with an affiliation of "owner" or "admin"
+     *      was tried to revoke his voice (i.e. Not Allowed error); or a
+     *      400 error can occur if the provided nickname is not present in the room.
+     */
+    public void revokeVoice(String nickname) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the role to "visitor". This will revoke voice from the participant
+        MUCAdmin.Item item = new MUCAdmin.Item(null, "visitor");
+        item.setNick(nickname);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the revoke voice request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Bans a user from the room. An admin or owner of the room can ban users from a room. This 
+     * means that the banned user will no longer be able to join the room unless the ban has been 
+     * removed. If the banned user was present in the room then he/she will be removed from the 
+     * room and notified that he/she was banned along with the reason (if provided) and the bare 
+     * XMPP user ID of the user who initiated the ban. 
+     * 
+     * @param jid the bare XMPP user ID of the user to ban (e.g. "user@host.org").
+     * @param reason the reason why the user was banned.
+     * @throws XMPPException if an error occurs banning a user. In particular, a 
+     *      405 error can occur if a moderator or a user with an affiliation of "owner" or "admin"
+     *      was tried to be banned (i.e. Not Allowed error).
+     */
+    public void banUser(String jid, String reason) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "outcast". This will ban the user
+        MUCAdmin.Item item = new MUCAdmin.Item("outcast", null);
+        item.setJid(jid);
+        item.setReason(reason);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the ban user request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Grants membership to a user. Only administrators are able to grant membership. A user
+     * that becomes a room member will be able to enter a room of type Members-Only (i.e. a room
+     * that a user cannot enter without being on the member list). 
+     * 
+     * @param jid the XMPP user ID of the user to grant membership (e.g. "user@host.org").
+     * @throws XMPPException if an error occurs granting membership to a user.
+     */
+    public void grantMembership(String jid) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "member". This will grant membership to the user
+        MUCAdmin.Item item = new MUCAdmin.Item("member", null);
+        item.setJid(jid);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the grant membership request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Revokes a user's membership. Only administrators are able to revoke membership. A user
+     * that becomes a room member will be able to enter a room of type Members-Only (i.e. a room
+     * that a user cannot enter without being on the member list). If the user is in the room and 
+     * the room is of type members-only then the user will be removed from the room.
+     * 
+     * @param jid the bare XMPP user ID of the user to grant membership (e.g. "user@host.org").
+     * @throws XMPPException if an error occurs revoking membership to a user.
+     */
+    public void revokeMembership(String jid) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "none". This will revoke a user's membership
+        MUCAdmin.Item item = new MUCAdmin.Item("none", null);
+        item.setJid(jid);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the revoke membership request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Grants moderator privileges to a participant or visitor. Room administrators may grant 
+     * moderator privileges. A moderator is allowed to kick users, grant and revoke voice, invite 
+     * other users, modify room's subject plus all the partcipants privileges.
+     *  
+     * @param nickname the nickname of the occupant to grant moderator privileges.
+     * @throws XMPPException if an error occurs granting moderator privileges to a user.
+     */
+    public void grantModerator(String nickname) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the role to "moderator". This will grant moderator privileges
+        MUCAdmin.Item item = new MUCAdmin.Item(null, "moderator");
+        item.setNick(nickname);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the grant moderator privileges request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Revokes moderator privileges from another user. The occupant that loses moderator 
+     * privileges will become a participant. Room administrators may revoke moderator privileges 
+     * only to occupants whose affiliation is member or none. This means that an administrator is 
+     * not allowed to revoke moderator privileges from other room administrators or owners.
+     *  
+     * @param nickname the nickname of the occupant to revoke moderator privileges.
+     * @throws XMPPException if an error occurs revoking moderator privileges from a user.
+     */
+    public void revokeModerator(String nickname) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the role to "participant". This will revoke moderator privileges
+        MUCAdmin.Item item = new MUCAdmin.Item(null, "participant");
+        item.setNick(nickname);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the revoke moderator privileges request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Grants ownership privileges to another user. Room owners may grant ownership privileges. 
+     * Some room implementations will not allow to grant ownership privileges to other users.
+     * An owner is allowed to change defining room features as well as perform all administrative 
+     * functions.
+     *  
+     * @param jid the bare XMPP user ID of the user to grant ownership (e.g. "user@host.org").
+     * @throws XMPPException if an error occurs granting ownership privileges to a user.
+     */
+    public void grantOwnership(String jid) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "owner". This will grant a user's ownership
+        MUCAdmin.Item item = new MUCAdmin.Item("owner", null);
+        item.setJid(jid);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the grant ownership request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Revokes ownership privileges from another user. The occupant that loses ownership 
+     * privileges will become an administrator. Room owners may revoke ownership privileges. 
+     * Some room implementations will not allow to grant ownership privileges to other users.
+     *  
+     * @param jid the bare XMPP user ID of the user to grant ownership (e.g. "user@host.org").
+     * @throws XMPPException if an error occurs granting ownership privileges to a user.
+     */
+    public void revokeOwnership(String jid) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "admin". This will revoke a user's ownership
+        MUCAdmin.Item item = new MUCAdmin.Item("admin", null);
+        item.setJid(jid);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the revoke ownership request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Grants administrator privileges to another user. Room owners may grant administrator 
+     * privileges to a member or unaffiliated user. An administrator is allowed to perform 
+     * administrative functions such as banning users and edit moderator list. 
+     *  
+     * @param jid the bare XMPP user ID of the user to grant administrator privileges 
+     * (e.g. "user@host.org").
+     * @throws XMPPException if an error occurs granting administrator privileges to a user.
+     */
+    public void grantAdmin(String jid) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "admin". This will grant administrator privileges
+        MUCAdmin.Item item = new MUCAdmin.Item("admin", null);
+        item.setJid(jid);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the grant administrator privileges request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
+     * Revokes administrator privileges from a user. The occupant that loses administrator 
+     * privileges will become a member. Room owners may revoke administrator privileges from 
+     * a member or unaffiliated user. 
+     *  
+     * @param jid the bare XMPP user ID of the user to revoke administrator privileges 
+     * (e.g. "user@host.org").
+     * @throws XMPPException if an error occurs revoking administrator privileges from a user.
+     */
+    public void revokeAdmin(String jid) throws XMPPException {
+        MUCAdmin iq = new MUCAdmin();
+        iq.setTo(room);
+        iq.setType(IQ.Type.SET);
+        // Set the affiliation to "member". This will revoke a user's ownership
+        MUCAdmin.Item item = new MUCAdmin.Item("member", null);
+        item.setJid(jid);
+        iq.addItem(item);
+
+        // Wait for a response packet back from the server.
+        PacketFilter responseFilter = new PacketIDFilter(iq.getPacketID());
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send the revoke ownership request to the server.
+        connection.sendPacket(iq);
+        // Wait up to a certain number of seconds for a reply.
+        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
      * Returns the number of participants in the group chat.<p>
      *
      * Note: this value will only be accurate after joining the group chat, and
@@ -1103,7 +1557,6 @@ public class MultiUserChat {
      *          room subject will throw an error with code 403 (i.e. Forbidden)
      */
     public void changeSubject(final String subject) throws XMPPException {
-        // TODO Implement way to listen to changes of subject made by other users
         Message message = new Message(room, Message.Type.GROUP_CHAT);
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
@@ -1173,8 +1626,86 @@ public class MultiUserChat {
         return null;
     }
 
+    public void addUserStatusListener(UserStatusListener listener) {
+        synchronized (userStatusListeners) {
+            if (!userStatusListeners.contains(listener)) {
+                userStatusListeners.add(listener);
+            }
+        }
+    }
+
+    public void removeUserStatusListener(UserStatusListener listener) {
+        synchronized (userStatusListeners) {
+            userStatusListeners.remove(listener);
+        }
+    }
+
+    private void fireUserStatusListeners(String methodName, Object[] params) {
+        UserStatusListener[] listeners = null;
+        synchronized (userStatusListeners) {
+            listeners = new UserStatusListener[userStatusListeners.size()];
+            userStatusListeners.toArray(listeners);
+        }
+        // Get the classes of the method parameters
+        Class[] paramClasses = new Class[params.length];
+        for (int i = 0; i < params.length; i++) {
+            paramClasses[i] = params[i].getClass();
+        }
+        try {
+            // Get the method to execute based on the requested methodName and parameters classes
+            Method method = UserStatusListener.class.getDeclaredMethod(methodName, paramClasses);
+            for (int i = 0; i < listeners.length; i++) {
+                method.invoke(listeners[i], params);
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addParticipantStatusListener(ParticipantStatusListener listener) {
+        synchronized (participantStatusListeners) {
+            if (!participantStatusListeners.contains(listener)) {
+                participantStatusListeners.add(listener);
+            }
+        }
+    }
+
+    public void removeParticipantStatusListener(ParticipantStatusListener listener) {
+        synchronized (participantStatusListeners) {
+            participantStatusListeners.remove(listener);
+        }
+    }
+
+    private void fireParticipantStatusListeners(String methodName, String param) {
+        ParticipantStatusListener[] listeners = null;
+        synchronized (participantStatusListeners) {
+            listeners = new ParticipantStatusListener[participantStatusListeners.size()];
+            participantStatusListeners.toArray(listeners);
+        }
+        try {
+            // Get the method to execute based on the requested methodName and parameter
+            Method method =
+                ParticipantStatusListener.class.getDeclaredMethod(
+                    methodName,
+                    new Class[] { String.class });
+            for (int i = 0; i < listeners.length; i++) {
+                method.invoke(listeners[i], new Object[] {param});
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+    
     private void init() {
-        // Create a collector for all incoming messages.
+        // Create a collector for incoming messages.
         messageFilter =
             new AndFilter(
                 new FromContainsFilter(room),
@@ -1186,7 +1717,8 @@ public class MultiUserChat {
             }
         });
         messageCollector = connection.createPacketCollector(messageFilter);
-        // Create a listener for all subject updates.
+
+        // Create a listener for subject updates.
         subjectFilter =
             new AndFilter(
                 new FromContainsFilter(room),
@@ -1218,14 +1750,45 @@ public class MultiUserChat {
             public void processPacket(Packet packet) {
                 Presence presence = (Presence) packet;
                 String from = presence.getFrom();
+                String myRoomJID = room + "/" + nickname;
+                boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
                 if (presence.getType() == Presence.Type.AVAILABLE) {
+                    Presence oldPresence;
                     synchronized (participantsMap) {
+                        oldPresence = (Presence)participantsMap.get(from);
                         participantsMap.put(from, presence);
+                    }
+                    if (oldPresence != null) {
+                        // Get the previous participant's affiliation & role 
+                        MUCUser mucExtension = getMUCUserExtension(oldPresence);
+                        String oldAffiliation = mucExtension.getItem().getAffiliation(); 
+                        String oldRole = mucExtension.getItem().getRole();
+                        // Get the new participant's affiliation & role 
+                        mucExtension = getMUCUserExtension(presence);
+                        String newAffiliation = mucExtension.getItem().getAffiliation(); 
+                        String newRole = mucExtension.getItem().getRole();
+                        // Fire role modification events
+                        checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
+                        // Fire affiliation modification events
+                        checkAffiliationModifications(
+                            oldAffiliation,
+                            newAffiliation,
+                            isUserStatusModification,
+                            from);
                     }
                 }
                 else if (presence.getType() == Presence.Type.UNAVAILABLE) {
                     synchronized (participantsMap) {
                         participantsMap.remove(from);
+                    }
+                    MUCUser mucUser = getMUCUserExtension(presence);
+                    if (mucUser != null && mucUser.getStatus() != null) {
+                        // Fire events according to the received presence code
+                        checkPresenceCode(
+                            mucUser.getStatus().getCode(),
+                            presence.getFrom().equals(myRoomJID),
+                            mucUser,
+                            from);
                     }
                 }
             }
@@ -1250,7 +1813,281 @@ public class MultiUserChat {
         };
         connection.addPacketListener(declinesListener, declinesFilter);
     }
-    
+
+    /**
+     * Fires notification events if the role of a room occupant has changed. If the occupant that 
+     * changed his role is your occupant then the <code>UserStatusListeners</code> added to this 
+     * <code>MultiUserChat</code> will be fired. On the other hand, if the occupant that changed 
+     * his role is not yours then the <code>ParticipantStatusListeners</code> added to this 
+     * <code>MultiUserChat</code> will be fired. The following table shows the events that will 
+     * be fired depending on the previous and new role of the occupant.
+     * 
+     * <pre>
+     * <table border="1">
+     * <tr><td><b>Old</b></td><td><b>New</b></td><td><b>Events</b></td></tr>
+     * 
+     * <tr><td>None</td><td>Visitor</td><td>--</td></tr>
+     * <tr><td>Visitor</td><td>Participant</td><td>voiceGranted</td></tr>
+     * <tr><td>Participant</td><td>Moderator</td><td>moderatorGranted</td></tr>
+     *
+     * <tr><td>None</td><td>Participant</td><td>voiceGranted</td></tr>
+     * <tr><td>None</td><td>Moderator</td><td>voiceGranted + moderatorGranted</td></tr>
+     * <tr><td>Visitor</td><td>Moderator</td><td>voiceGranted + moderatorGranted</td></tr>
+     * 
+     * <tr><td>Moderator</td><td>Participant</td><td>moderatorRevoked</td></tr>
+     * <tr><td>Participant</td><td>Visitor</td><td>voiceRevoked</td></tr>
+     * <tr><td>Visitor</td><td>None</td><td>--</td></tr>
+     *
+     * <tr><td>Moderator</td><td>Visitor</td><td>voiceRevoked + moderatorRevoked</td></tr>
+     * <tr><td>Moderator</td><td>None</td><td>voiceRevoked + moderatorRevoked</td></tr>
+     * <tr><td>Participant</td><td>None</td><td>voiceRevoked</td></tr>
+     * </table>
+     * </pre>
+     * 
+     * @param oldRole the previous role of the user in the room before receiving the new presence
+     * @param newRole the new role of the user in the room after receiving the new presence
+     * @param isUserModification whether the received presence is about your user in the room or not
+     * @param from the participant whose role in the room has changed  
+     * (e.g. room@conference.jabber.org/nick).
+     */
+    private void checkRoleModifications(
+        String oldRole,
+        String newRole,
+        boolean isUserModification,
+        String from) {
+        // Voice was granted to a visitor
+        if (("visitor".equals(oldRole) || "none".equals(oldRole))
+            && "participant".equals(newRole)) {
+            if (isUserModification) {
+                fireUserStatusListeners("voiceGranted", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("voiceGranted", from);
+            }
+        }
+        // The participant's voice was revoked from the room
+        else if (
+            "participant".equals(oldRole)
+                && ("visitor".equals(newRole) || "none".equals(newRole))) {
+            if (isUserModification) {
+                fireUserStatusListeners("voiceRevoked", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("voiceRevoked", from);
+            }
+        }
+        // Moderator privileges were granted to a participant
+        if (!"moderator".equals(oldRole) && "moderator".equals(newRole)) {
+            if ("visitor".equals(oldRole) || "none".equals(oldRole)) {
+                if (isUserModification) {
+                    fireUserStatusListeners("voiceGranted", new Object[] {});
+                }
+                else {
+                    fireParticipantStatusListeners("voiceGranted", from);
+                }
+            }
+            if (isUserModification) {
+                fireUserStatusListeners("moderatorGranted", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("moderatorGranted", from);
+            }
+        }
+        // Moderator privileges were revoked from a participant
+        else if ("moderator".equals(oldRole) && !"moderator".equals(newRole)) {
+            if ("visitor".equals(newRole) || "none".equals(newRole)) {
+                if (isUserModification) {
+                    fireUserStatusListeners("voiceRevoked", new Object[] {});
+                }
+                else {
+                    fireParticipantStatusListeners("voiceRevoked", from);
+                }
+            }
+            if (isUserModification) {
+                fireUserStatusListeners("moderatorRevoked", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("moderatorRevoked", from);
+            }
+        }
+    }
+
+    /**
+     * Fires notification events if the affiliation of a room occupant has changed. If the 
+     * occupant that changed his affiliation is your occupant then the 
+     * <code>UserStatusListeners</code> added to this <code>MultiUserChat</code> will be fired. 
+     * On the other hand, if the occupant that changed his affiliation is not yours then the 
+     * <code>ParticipantStatusListeners</code> added to this <code>MultiUserChat</code> will be 
+     * fired. The following table shows the events that will be fired depending on the previous 
+     * and new affiliation of the occupant.
+     * 
+     * <pre>
+     * <table border="1">
+     * <tr><td><b>Old</b></td><td><b>New</b></td><td><b>Events</b></td></tr>
+     * 
+     * <tr><td>None</td><td>Member</td><td>membershipGranted</td></tr>
+     * <tr><td>Member</td><td>Admin</td><td>membershipRevoked + adminGranted</td></tr>
+     * <tr><td>Admin</td><td>Owner</td><td>adminRevoked + ownershipGranted</td></tr>
+     * 
+     * <tr><td>None</td><td>Admin</td><td>adminGranted</td></tr>
+     * <tr><td>None</td><td>Owner</td><td>ownershipGranted</td></tr>
+     * <tr><td>Member</td><td>Owner</td><td>membershipRevoked + ownershipGranted</td></tr>
+     *
+     * <tr><td>Owner</td><td>Admin</td><td>ownershipRevoked + adminGranted</td></tr>
+     * <tr><td>Admin</td><td>Member</td><td>adminRevoked + membershipGranted</td></tr>
+     * <tr><td>Member</td><td>None</td><td>membershipRevoked</td></tr>
+     * 
+     * <tr><td>Owner</td><td>Member</td><td>ownershipRevoked + membershipGranted</td></tr>
+     * <tr><td>Owner</td><td>None</td><td>ownershipRevoked</td></tr>
+     * <tr><td>Admin</td><td>None</td><td>adminRevoked</td></tr>
+     * </table>
+     * </pre>
+     * 
+     * @param oldAffiliation the previous affiliation of the user in the room before receiving the 
+     * new presence
+     * @param newAffiliation the new affiliation of the user in the room after receiving the new 
+     * presence
+     * @param isUserModification whether the received presence is about your user in the room or not
+     * @param from the participant whose role in the room has changed  
+     * (e.g. room@conference.jabber.org/nick).
+     */
+    private void checkAffiliationModifications(
+        String oldAffiliation,
+        String newAffiliation,
+        boolean isUserModification,
+        String from) {
+        // First check for revoked affiliation and then for granted affiliations. The idea is to
+        // first fire the "revoke" events and then fire the "grant" events.
+        
+        // The user's ownership to the room was revoked
+        if ("owner".equals(oldAffiliation) && !"owner".equals(newAffiliation)) {
+            if (isUserModification) {
+                fireUserStatusListeners("ownershipRevoked", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("ownershipRevoked", from);
+            }
+        }
+        // The user's administrative privileges to the room were revoked
+        else if ("admin".equals(oldAffiliation) && !"admin".equals(newAffiliation)) {
+            if (isUserModification) {
+                fireUserStatusListeners("adminRevoked", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("adminRevoked", from);
+            }
+        }
+        // The user's membership to the room was revoked
+        else if ("member".equals(oldAffiliation) && !"member".equals(newAffiliation)) {
+            if (isUserModification) {
+                fireUserStatusListeners("membershipRevoked", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("membershipRevoked", from);
+            }
+        }
+
+        // The user was granted ownership to the room
+        if (!"owner".equals(oldAffiliation) && "owner".equals(newAffiliation)) {
+            if (isUserModification) {
+                fireUserStatusListeners("ownershipGranted", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("ownershipGranted", from);
+            }
+        }
+        // The user was granted administrative privileges to the room
+        else if (!"admin".equals(oldAffiliation) && "admin".equals(newAffiliation)) {
+            if (isUserModification) {
+                fireUserStatusListeners("adminGranted", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("adminGranted", from);
+            }
+        }
+        // The user was granted membership to the room
+        else if (!"member".equals(oldAffiliation) && "member".equals(newAffiliation)) {
+            if (isUserModification) {
+                fireUserStatusListeners("membershipGranted", new Object[] {});
+            }
+            else {
+                fireParticipantStatusListeners("membershipGranted", from);
+            }
+        }
+    }
+
+    /**
+     * Fires events according to the received presence code.
+     * 
+     * @param code
+     * @param isUserModification
+     * @param mucUser
+     * @param from
+     */
+    private void checkPresenceCode(
+        String code,
+        boolean isUserModification,
+        MUCUser mucUser,
+        String from) {
+        // Check if a participant was kicked from the room
+        if ("307".equals(code)) {
+            // Check if this participant was kicked
+            if (isUserModification) {
+                joined = false;
+
+                fireUserStatusListeners(
+                    "kicked",
+                    new Object[] { mucUser.getItem().getActor(), mucUser.getItem().getReason()});
+
+                // Reset participant information.
+                participantsMap = new HashMap();
+                nickname = null;
+                userHasLeft();
+            }
+            else {
+                fireParticipantStatusListeners("kicked", from);
+            }
+        }
+        // A user was banned from the room 
+        else if ("301".equals(code)) {
+            // Check if this participant was banned
+            if (isUserModification) {
+                joined = false;
+
+                fireUserStatusListeners(
+                    "banned",
+                    new Object[] { mucUser.getItem().getActor(), mucUser.getItem().getReason()});
+
+                // Reset participant information.
+                participantsMap = new HashMap();
+                nickname = null;
+                userHasLeft();
+            }
+            else {
+                // TODO Check is we have to send the JID of the banned user
+                fireParticipantStatusListeners("banned", from);
+            }
+        }
+        // A user's membership was revoked from the room 
+        else if ("321".equals(code)) {
+            // Check if this participant's membership was revoked
+            if (isUserModification) {
+                joined = false;
+
+                fireUserStatusListeners("membershipRevoked", new Object[] {});
+
+                // Reset participant information.
+                participantsMap = new HashMap();
+                nickname = null;
+                userHasLeft();
+            }
+        }
+        // A participant has changed his nickname in the room 
+        else if ("303".equals(code)) {
+            fireParticipantStatusListeners("nicknameChanged", mucUser.getItem().getNick());
+        }
+    }
+
     public void finalize() {
         if (connection != null) {
             messageCollector.cancel();
