@@ -58,6 +58,10 @@ import org.jivesoftware.smack.filter.*;
 import javax.swing.*;
 import java.net.*;
 import java.io.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Clipboard;
 import java.awt.*;
 
 /**
@@ -586,7 +590,55 @@ public class XMPPConnection {
         allPane.add(new JScrollPane(interpretedText1));
         tabbedPane.add("Interpreted Packets", new JScrollPane(interpretedText2));
 
-        debugFrame.getContentPane().add(tabbedPane);
+        JPanel cPane = new JPanel();
+        cPane.setLayout(new BoxLayout(cPane, BoxLayout.Y_AXIS));
+        cPane.add(tabbedPane);
+
+        JPanel buttonPane = new JPanel();
+        Dimension rigidSpaceDim = new Dimension(15, 1);
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
+        JButton jb = new JButton("client->clipboard");
+        jb.addActionListener(new ActionListener() {
+                                public void actionPerformed (ActionEvent ae) {
+                                    Clipboard clipboard
+                                            = debugFrame.getToolkit().getSystemClipboard();
+                                    StringSelection ss = new StringSelection(sentText1.getText());
+
+                                    clipboard.setContents(ss, ss);
+                                }
+                             });
+        buttonPane.add(jb);
+        jb = new JButton("server->clipboard");
+        jb.addActionListener(new ActionListener() {
+                                public void actionPerformed (ActionEvent ae) {
+                                    Clipboard clipboard
+                                            = debugFrame.getToolkit().getSystemClipboard();
+                                    StringSelection ss
+                                            = new StringSelection(receivedText1.getText());
+
+                                    clipboard.setContents(ss, ss);
+                                }
+                             });
+        buttonPane.add(Box.createRigidArea(rigidSpaceDim));
+        buttonPane.add(jb);
+        jb = new JButton("interpreted->clipboard");
+        jb.addActionListener(new ActionListener() {
+                                public void actionPerformed (ActionEvent ae) {
+                                    Clipboard clipboard
+                                            = debugFrame.getToolkit().getSystemClipboard();
+                                    StringSelection ss
+                                            = new StringSelection(interpretedText1.getText());
+
+                                    clipboard.setContents(ss, ss);
+                                }
+                             });
+        buttonPane.add(Box.createRigidArea(rigidSpaceDim));
+        buttonPane.add(jb);
+
+        cPane.add(buttonPane);
+
+        debugFrame.getContentPane().add(cPane);
+        debugFrame.pack();
 
         debugFrame.setSize(550, 400);
         debugFrame.setVisible(true);
