@@ -55,6 +55,7 @@ package org.jivesoftware.smackx;
 import java.util.Iterator;
 
 import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
@@ -95,6 +96,28 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
             assertEquals("Type in identity is wrong", ServiceDiscoveryManager.getIdentityType(),
                     identity.getType());
             assertFalse("More identities were found", identities.hasNext());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * Tests that ensures that Smack answers a 404 error when the disco#info includes a node.
+     */
+    public void testInfoWithNode() {
+
+        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager
+                .getInstanceFor(getConnection(0));
+        try {
+            // Discover the information of another Smack client
+            discoManager.discoverInfo(getFullJID(1), "some node");
+            // Check the identity of the Smack client
+            fail("Unexpected identities were returned instead of a 404 error");
+        }
+        catch (XMPPException e) {
+            assertEquals("Incorrect error", 404, e.getXMPPError().getCode());
         }
         catch (Exception e) {
             e.printStackTrace();
