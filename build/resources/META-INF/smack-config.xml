@@ -15,4 +15,10 @@
     <!-- Keep-alive interval in milleseconds -->
     <keepAliveInterval>30000</keepAliveInterval>
 
+    <!-- Name of the client to provide as the client's identity -->
+    <identityName>Smack</identityName>
+    <!-- Type of client within the categoty "client". For other valid types refer to
+    http://www.jabber.org/registrar/disco-categories.html#client -->
+    <identityType>pc</identityType>
+	
 </smack>
