@@ -101,6 +101,8 @@ public class XMPPConnection {
     protected Socket socket;
 
     String connectionID;
+    private String username = null;
+    private String resource = null;
     private boolean connected = false;
     private boolean authenticated = false;
 
@@ -184,6 +186,31 @@ public class XMPPConnection {
     }
 
     /**
+     * Returns the username that was used to login or <tt>null</tt> if not logged in yet.
+     *
+     * @return the username used to login.
+     */
+    public String getUsername() {
+        if (!isAuthenticated()) {
+            return null;
+        }
+        return username;
+    }
+
+    /**
+     * Returns the resource that was used to login or <tt>null</tt> if not logged in yet.
+     * If no resource was used to login, the default resource "Smack" will be returned.
+     *
+     * @return the resource used to login.
+     */
+    public String getResource() {
+        if (!isAuthenticated()) {
+            return null;
+        }
+        return resource;
+    }
+
+    /**
      * Logs in to the server using the strongest authentication mode supported by
      * the server, then set our presence to available. If more than five seconds
      * elapses in each step of the authentication process without a response from
@@ -219,6 +246,8 @@ public class XMPPConnection {
         if (authenticated) {
             throw new IllegalStateException("Already logged in to server.");
         }
+        this.username = username;
+        this.resource = resource;
         // If we send an authentication packet in "get" mode with just the username,
         // the server will return the list of authentication protocols it supports.
         Authentication discoveryAuth = new Authentication();
@@ -302,8 +331,9 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns an account manager instance for this
-     * @return
+     * Returns an account manager instance for this connection.
+     *
+     * @return an account manager for this connection.
      */
     public synchronized AccountManager getAccountManager() {
         if (accountManager == null) {
