@@ -51,10 +51,12 @@
         <copy todir="${release.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
         </copy>
         <copy todir="${release-dev.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
         </copy>
         <!-- Copy build dir -->
         <copy todir="${release-dev.dir}/build">
@@ -92,6 +94,12 @@
         <!-- Copy resources -->
         <copy todir="${release-dev.dir}/build/resources">
             <fileset dir="${basedir}/build/resources" includes="META-INF/smack.providers" />
+            <fileset dir="${basedir}/build/resources" includes="META-INF/smack-config.xml" />
+        </copy>
+        <copy todir="${release-dev.dir}/build/resources/images">
+            <fileset dir="${basedir}/build/resources/images">
+                <include name="*.png"/>
+            </fileset>
         </copy>
         <!-- Copy readme.html and changelog.html -->
         <copy todir="${release.dir}">
