@@ -62,7 +62,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
  * opposite approach to the functionality provided by a {@link PacketCollector}
  * which lets you block while waiting for results.
  *
- * @see PacketReader#addPacketListener(PacketListener, PacketFilter)
+ * @see XMPPConnection#addPacketListener(PacketListener, PacketFilter)
  * @author Matt Tucker
  */
 public interface PacketListener {
