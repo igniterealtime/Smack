@@ -75,16 +75,13 @@ public class MUCOwnerProvider implements IQProvider {
                 if (parser.getName().equals("item")) {
                     mucOwner.addItem(parseItem(parser));
                 }
-                if (parser.getName().equals("destroy")) {
+                else if (parser.getName().equals("destroy")) {
                     mucOwner.setDestroy(parseDestroy(parser));
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    mucOwner.addExtension(
-                        PacketParserUtils.parsePacketExtension(
-                            parser.getName(),
-                            parser.getNamespace(),
-                            parser));
+                    mucOwner.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
+                            parser.getNamespace(), parser));
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
