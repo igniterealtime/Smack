@@ -21,6 +21,7 @@
 package org.jivesoftware.smack;
 
 import org.xmlpull.v1.*;
+import org.xmlpull.mxp1.MXParser;
 
 import java.util.*;
 import java.util.List;
@@ -74,10 +75,8 @@ class PacketReader {
         listenerThread.setDaemon(true);
 
         try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance(
-                    "org.xmlpull.mxp1.MXParserFactory", null);
-            factory.setNamespaceAware(true);
-            parser = factory.newPullParser();
+            parser = new MXParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(connection.reader);
         }
         catch (XmlPullParserException xppe) {

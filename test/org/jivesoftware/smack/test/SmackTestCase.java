@@ -59,6 +59,7 @@ import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.xmlpull.v1.*;
+import org.xmlpull.mxp1.MXParser;
 
 import junit.framework.TestCase;
 
@@ -292,10 +293,8 @@ public abstract class SmackTestCase extends TestCase {
         InputStream systemStream = null;
         try {
             systemStream = url.openStream();
-            XmlPullParserFactory factory =
-                XmlPullParserFactory.newInstance("org.xmlpull.mxp1.MXParserFactory", null);
-            factory.setNamespaceAware(true);
-            XmlPullParser parser = factory.newPullParser();
+            XmlPullParser parser = new MXParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(systemStream, "UTF-8");
             int eventType = parser.getEventType();
             do {

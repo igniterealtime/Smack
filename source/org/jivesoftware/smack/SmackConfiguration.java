@@ -25,6 +25,7 @@ import java.net.*;
 import java.util.*;
 
 import org.xmlpull.v1.*;
+import org.xmlpull.mxp1.MXParser;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -69,11 +70,8 @@ public final class SmackConfiguration {
                     InputStream systemStream = null;
                     try {
                         systemStream = url.openStream();
-                        XmlPullParserFactory factory =
-                            XmlPullParserFactory.newInstance(
-                                "org.xmlpull.mxp1.MXParserFactory", null);
-                        factory.setNamespaceAware(true);
-                        XmlPullParser parser = factory.newPullParser();
+                        XmlPullParser parser = new MXParser();
+                        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
                         parser.setInput(systemStream, "UTF-8");
                         int eventType = parser.getEventType();
                         do {
