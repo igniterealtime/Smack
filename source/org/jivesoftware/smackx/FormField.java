@@ -92,6 +92,15 @@ public class FormField {
     }
     
     /**
+     * Creates a new FormField of type FIXED. The fields of type FIXED do not define a variable 
+     * name. 
+     *  
+     */
+    public FormField() {
+        this.type = FormField.TYPE_FIXED; 
+    }
+    
+    /**
      * Returns a description that provides extra clarification about the question. This information
      * could be presented to the user either in tool-tip, help button, or as a section of text 
      * before the question.<p> 
