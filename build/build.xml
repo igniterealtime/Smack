@@ -130,7 +130,11 @@
         <jar destfile="${jar.dest.dir}/smackx.jar"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smackx/**/*.class, **/*.providers"
-        />
+        >
+            <manifest>
+                <attribute name="Class-Path" value="smack.jar" />
+            </manifest>
+        </jar>
         <delete file="${compile.dir}/META-INF/smack.providers" />
     </target>
 
