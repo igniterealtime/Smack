@@ -1,0 +1,96 @@
+<html>
+<head>
+	<title>Smack: Getting Started - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /
+</head>
+
+<body>
+
+<div class="header">
+Getting Started With Smack
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p>
+This document will introduce you to the Smack API and provide an overview of 
+important classes and concepts.
+</p>
+
+<p class="subheader">
+Requirements
+</p>
+
+The only requirement for Smack is JDK 1.2 or later. An XML parser is embedded in the smack.jar
+file and no other third party libraries are required.
+
+<p class="subheader">
+Establishing a Connection
+</p>
+
+The <tt>XMPPConnection</tt> class is used to create a connection to an 
+XMPP server. To create an SSL connection, use the SSLXMPPConnection class.
+Below are code examples for making a connection:<p>
+
+<div class="code">
+<pre>
+<font color="gray"><i>// Create a connection to the jabber.org server.</i></font>
+XMPPConnection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+
+<font color="gray"><i>// Create a connection to the jabber.org server on a specific port.</i></font>
+XMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>, 5222);
+
+<font color="gray"><i>// Create an SSL connection to jabber.org.</i></font>
+XMPPConnection connection = <font color="navy"><b>new</b></font> SSLXMPPConnection(<font color="green">"jabber.org"</font>); 
+</pre></div>
+
+<p>Once you've created a connection, you should login using a username and password
+with the <tt>XMPPConnection.login(String username, String password)</tt> method.
+Once you've logged in, you can being chatting with other users by creating
+new <tt>Chat</tt> or <tt>GroupChat</tt> objects.
+
+<p class="subheader">
+Working with the Roster
+</p>
+
+CONTENT COMING SOON
+
+<p class="subheader">
+Packets, the PacketReader, and the PacketWriter
+</p>
+
+Each message to the XMPP server from a client is called a packet and is
+sent as XML. The <tt>org.jivesoftware.smack.packet</tt> package contains
+classes that encapsulate the different packet types allowed by XMPP (message, 
+presence, and IQ). Classes such as <tt>Chat</tt> and <tt>GroupChat</tt>
+provide higher-level constructs that manage creating and sending packets
+automatically, but you can also create and send packets directly. Below
+is a code example for changing the presence to let people we're unavailable
+because we're out fishing:<p>
+
+<div class="code">
+<pre>
+<font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
+Presence presence = new Presence(false);
+presence.setStatus(<font color="green">"Gone fishing"</font>);
+<font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
+con.getPacketWriter().sendPacket(presence);
+</pre></div>
+<p>
+
+Every connection has a <tt>PacketReader</tt> and <tt>PacketWriter</tt>. The
+packet reader listens for XML data from the server and parses it into
+individual packets. You can listen for incoming packets by registering
+<tt>PacketWatcher</tt> objects with the packet reader. The packet writer
+is responsible for writing packets to the server. It takes <tt>Packet</tt>
+objects and converts them to XML before sending them over the network.
+
+
+<p><div class="footer">
+Copyright &copy; Jive Software 2002-2003
+</div>
+
+</body>
+</html>
