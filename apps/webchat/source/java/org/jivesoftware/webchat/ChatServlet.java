@@ -33,9 +33,9 @@ import java.util.*;
  */
 public class ChatServlet extends HttpServlet implements HttpSessionListener {
 
-    private Map chatData = new HashMap();
-    private EmoticonFilter emoticonFilter = new EmoticonFilter();
-    private URLFilter urlFilter = new URLFilter();
+    private static Map chatData = new HashMap();
+    private static EmoticonFilter emoticonFilter = new EmoticonFilter();
+    private static URLFilter urlFilter = new URLFilter();
 
     private String host;
     private int port = -1;
