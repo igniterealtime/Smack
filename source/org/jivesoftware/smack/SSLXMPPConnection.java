@@ -59,6 +59,7 @@ import java.security.KeyManagementException;
 import java.security.cert.*;
 import javax.net.ssl.*;
 import javax.net.*;
+import com.sun.net.ssl.*;
 
 /**
  * Creates an SSL connection to a XMPP (Jabber) server.
@@ -76,7 +77,7 @@ public class SSLXMPPConnection extends XMPPConnection {
         this.port = port;
         try {
             SSLSocketFactory sslFactory = new DummySSLSocketFactory();
-            this.socket = (SSLSocket)sslFactory.createSocket(host, port);
+            this.socket = sslFactory.createSocket(host, port);
         }
         catch (UnknownHostException uhe) {
             throw new XMPPException("Could not connect to " + host + ":" + port + ".", uhe);
@@ -155,17 +156,20 @@ public class SSLXMPPConnection extends XMPPConnection {
      */
     private static class DummyTrustManager implements X509TrustManager {
 
-        public void checkClientTrusted(X509Certificate[] chain, String authType) {
-
+        public boolean isClientTrusted(X509Certificate[] cert) {
+            return true;
         }
 
-        public void checkServerTrusted(X509Certificate[] chain, String authType)  {
-             try {
-                chain[0].checkValidity();
+        public boolean isServerTrusted(X509Certificate[] cert) {
+            try {
+                cert[0].checkValidity();
+                return true;
             }
             catch (CertificateExpiredException e) {
+                return false;
             }
             catch (CertificateNotYetValidException e) {
+                return false;
             }
         }
 

@@ -52,8 +52,18 @@
 
 package org.jivesoftware.smack;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
+/**
+ * A generic exception that is thrown when an error occurs performing an
+ * XMPP operation.
+ *
+ * @author Matt Tucker
+ */
 public class XMPPException extends Exception {
+
+    private Throwable cause;
 
     public XMPPException() {
         super();
@@ -64,10 +74,30 @@ public class XMPPException extends Exception {
     }
 
     public XMPPException(Throwable cause) {
-        super(cause);
+        super();
+        this.cause = cause;
     }
 
     public XMPPException(String message, Throwable cause) {
-        super(message, cause);
+        super(message);
+        this.cause = cause;
+    }
+
+    public void printStackTrace() {
+        super.printStackTrace();
+        System.err.println("Nested Exception: ");
+        cause.printStackTrace();
+    }
+
+    public void printStackTrace(PrintStream out) {
+        super.printStackTrace(out);
+        out.println("Nested Exception: ");
+        cause.printStackTrace(out);
+    }
+
+    public void printStackTrace(PrintWriter out) {
+        super.printStackTrace(out);
+        out.println("Nested Exception: ");
+        cause.printStackTrace(out);
     }
 }
