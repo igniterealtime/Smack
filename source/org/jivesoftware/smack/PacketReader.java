@@ -436,8 +436,15 @@ class PacketReader {
                     String jid = parser.getAttributeValue("", "jid");
                     String name = parser.getAttributeValue("", "name");
                     String subscription = parser.getAttributeValue("", "subscription");
+                    String ask = parser.getAttributeValue("", "ask");
                     item = new RosterPacket.Item(jid, name);
-                    item.setItemType(RosterPacket.ItemType.fromString(subscription));
+                    RosterPacket.ItemType type = RosterPacket.ItemType.fromString(subscription);
+                    if (type == RosterPacket.ItemType.NONE && "subscribe".equals(ask)) {
+                        item.setItemType(RosterPacket.ItemType.PENDING);
+                    }
+                    else {
+                        item.setItemType(type);
+                    }
                 }
                 if (parser.getName().equals("group")) {
                     String groupName = parser.nextText();
@@ -590,12 +597,6 @@ class PacketReader {
      */
     private static Packet parsePresence(XmlPullParser parser) throws Exception {
         Presence.Type type = Presence.Type.fromString(parser.getAttributeValue("", "type"));
-        // We only handle "available" or "unavailable" packets for now.
-        if (!(type == Presence.Type.AVAILABLE || type == Presence.Type.UNAVAILABLE)) {
-            System.out.println("FOUND OTHER PRESENCE TYPE: " + type);
-        }
-
-        // Otherwise, it's a presence packet that has nothing to do with roster items.
 
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
