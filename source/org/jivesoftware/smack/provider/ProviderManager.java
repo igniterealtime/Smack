@@ -107,7 +107,7 @@ import java.net.URL;
  *
  * In order for this packet to be automatically mapped to the Time object listed in the
  * providers file above, it must have the methods setUtc(String), setTz(String), and
- * setDisplay(tz). The introspection service will automatically try to convert the String
+ * setDisplay(String). The introspection service will automatically try to convert the String
  * value from the XML into a boolean, int, long, float, double, or Class depending on the
  * type the IQ instance expects.<p>
  *
