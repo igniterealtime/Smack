@@ -58,4 +58,32 @@
         <className>org.jivesoftware.smackx.provider.DiscoverInfoProvider</className> 
     </iqProvider>
 
+    <!-- Data Forms-->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:data</namespace>
+        <className>org.jivesoftware.smackx.provider.DataFormProvider</className>
+    </extensionProvider>
+
+    <!-- MUC User -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>http://jabber.org/protocol/muc#user</namespace>
+        <className>org.jivesoftware.smackx.provider.MUCUserProvider</className>
+    </extensionProvider>
+
+    <!-- MUC Admin -->
+    <iqProvider> 
+        <elementName>query</elementName> 
+        <namespace>http://jabber.org/protocol/muc#admin</namespace> 
+        <className>org.jivesoftware.smackx.provider.MUCAdminProvider</className> 
+    </iqProvider>
+
+    <!-- MUC Owner -->
+    <iqProvider> 
+        <elementName>query</elementName> 
+        <namespace>http://jabber.org/protocol/muc#owner</namespace> 
+        <className>org.jivesoftware.smackx.provider.MUCOwnerProvider</className> 
+    </iqProvider>
+
 </smackProviders>
