@@ -172,7 +172,7 @@ class PacketReader {
         synchronized (listeners) {
             for (int i=0; i<listeners.size(); i++) {
                 ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
-                if (wrapper.packetListener.equals(packetListener)) {
+                if (wrapper != null && wrapper.packetListener.equals(packetListener)) {
                     listeners.set(i, null);
                 }
             }
