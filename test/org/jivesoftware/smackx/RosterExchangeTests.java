@@ -50,65 +50,27 @@
  * ====================================================================
  */
 
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smackx.packet.*;
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smackx.packet.RosterExchangeTest;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  *
- * The RosterExchangeProvider parses RosterExchange packets.
+ * Test suite that runs all the Roster Exchange extension tests
  *
  * @author Gaston Dombiak
  */
-public class RosterExchangeProvider implements PacketExtensionProvider {
+public class RosterExchangeTests {
 
-    /**
-     * Creates a new RosterExchangeProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument constructor
-     */
-    public RosterExchangeProvider() {
+    public static Test suite() {
+        TestSuite suite = new TestSuite("High and low level API tests for roster exchange extension");
+        //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(RosterExchangeManagerTest.class));
+        suite.addTest(new TestSuite(RosterExchangeTest.class));
+        //$JUnit-END$
+        return suite;
     }
-
-    /**
-     * Parses a RosterExchange packet (extension sub-packet).
-     *
-     * @param parser the XML parser, positioned at the starting element of the extension.
-     * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
-     */
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-
-        RosterExchange rosterExchange = new RosterExchange();
-        boolean done = false;
-        RemoteRosterEntry remoteRosterEntry = null;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("item")) {
-                    String jid = parser.getAttributeValue("", "jid");
-                    String name = parser.getAttributeValue("", "name");
-                    // Create packet.
-                    remoteRosterEntry = new RemoteRosterEntry(jid, name);
-                }
-                if (parser.getName().equals("group")) {
-                    String groupName = parser.nextText();
-                    remoteRosterEntry.addGroupName(groupName);
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    rosterExchange.addRosterEntry(remoteRosterEntry);
-                }
-                if (parser.getName().equals("x")) {
-                    done = true;
-                }
-            }
-        }
-
-        return rosterExchange;
-
-    }
-
 }

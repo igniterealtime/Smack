@@ -114,15 +114,18 @@ entries to his roster.
       RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
       <font color="#3f7f5f">// Create a RosterExchangeListener that will iterate over the received roster entries</font>
       RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
-          public void entriesReceived(String from, Iterator rosterEntries) {
-              for (Iterator it = rosterEntries; it.hasNext();) {
+          public void entriesReceived(String from, Iterator remoteRosterEntries) {
+              while (remoteRosterEntries.hasNext()) {
                   try {
                       <font color="#3f7f5f">// Get the received entry</font>
-                      RosterEntry entry = (RosterEntry) it.next();
-                      <font color="#3f7f5f">// Display the entry on the console</font>
-                      System.out.println(entry);
+                      RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) remoteRosterEntries.next();
+                      <font color="#3f7f5f">// Display the remote entry on the console</font>
+                      System.out.println(remoteRosterEntry);
                       <font color="#3f7f5f">// Add the entry to the user2's roster</font>
-                      user2_roster.createEntry(entry);
+                      user2_roster.createEntry(
+                          remoteRosterEntry.getUser(),
+                          remoteRosterEntry.getName(),
+                          remoteRosterEntry.getGroupArrayNames());
                   }
                   catch (XMPPException e) {
                       e.printStackTrace();
