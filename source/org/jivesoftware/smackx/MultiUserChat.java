@@ -71,6 +71,11 @@ import org.jivesoftware.smackx.packet.*;
  */
 public class MultiUserChat {
 
+    private final static String discoNamespace = "http://jabber.org/protocol/muc";
+    private final static String discoNode = "http://jabber.org/protocol/muc#rooms";
+    
+    private static Map joinedRooms = new WeakHashMap();
+
     private XMPPConnection connection;
     private String room;
     private String nickname = null;
@@ -86,15 +91,22 @@ public class MultiUserChat {
     private PacketListener declinesListener;
     private PacketCollector messageCollector;
 
-    // Set on every established connection that this client supports the Multi-User Chat protocol.
-    // This information will be used when another client tries to discover whether this client
-    // supports MUC or not.
-    // Note: The ServiceDiscoveryManager class should have been already initialized
     static {
         XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
-            public void connectionEstablished(XMPPConnection connection) {
-                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(
-                    "http://jabber.org/protocol/muc");
+            public void connectionEstablished(final XMPPConnection connection) {
+                // Set on every established connection that this client supports the Multi-User 
+                // Chat protocol. This information will be used when another client tries to 
+                // discover whether this client supports MUC or not.
+                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(discoNamespace);
+                // Set the NodeInformationProvider that will provide information about the
+                // joined rooms whenever a disco request is received 
+                ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
+                    discoNode,
+                    new NodeInformationProvider() {
+                        public Iterator getNodeItems() {
+                            return MultiUserChat.getJoinedRooms(connection);
+                        }
+                    });
             }
         });
     }
@@ -136,9 +148,7 @@ public class MultiUserChat {
                 String from = presence.getFrom();
                 if (presence.getType() == Presence.Type.AVAILABLE) {
                     synchronized (participantsMap) {
-                        if (!participantsMap.containsKey(from)) {
-                            participantsMap.put(from, presence);
-                        }
+                        participantsMap.put(from, presence);
                     }
                 }
                 else if (presence.getType() == Presence.Type.UNAVAILABLE) {
@@ -170,6 +180,69 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns true if the specified user supports the Multi-User Chat protocol.
+     *
+     * @param connection the connection to use to perform the service discovery.
+     * @param user the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com.
+     * @return a boolean indicating whether the specified user supports the MUC protocol.
+     */
+    public static boolean isServiceEnabled(XMPPConnection connection, String user) {
+        try {
+            DiscoverInfo result =
+                ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(user);
+            return result.containsFeature(discoNamespace);
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Returns an Iterator on the rooms where the user has joined using a given connection.
+     * The Iterator will contain Strings where each String represents a room 
+     * (e.g. room@muc.jabber.org).
+     * 
+     * @param connection the connection used to join the rooms.
+     * @return an Iterator on the rooms where the user has joined using a given connection.
+     */
+    private static Iterator getJoinedRooms(XMPPConnection connection) {
+        ArrayList rooms = (ArrayList)joinedRooms.get(connection);
+        if (rooms != null) {
+            return rooms.iterator();
+        }
+        // Return an iterator on an empty collection (i.e. the user never joined a room) 
+        return new ArrayList().iterator();
+    }
+    
+    /**
+     * Returns an Iterator on the rooms where the requested user has joined. The Iterator will 
+     * contain Strings where each String represents a room (e.g. room@muc.jabber.org).
+     * 
+     * @param connection the connection to use to perform the service discovery.
+     * @param user the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com.
+     * @return an Iterator on the rooms where the requested user has joined.
+     */
+    public static Iterator getJoinedRooms(XMPPConnection connection, String user) {
+        try {
+            ArrayList answer = new ArrayList();
+            // Send the disco packet to the user
+            DiscoverItems result =
+                ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(user, discoNode);
+            // Collect the entityID for each returned item
+            for (Iterator items=result.getItems(); items.hasNext();) {
+                answer.add(((DiscoverItems.Item)items.next()).getEntityID());
+            }
+            return answer.iterator();
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            // Return an iterator on an empty collection 
+            return new ArrayList().iterator();
+        }
+    }
+
+    /**
      * Returns the name of the room this GroupChat object represents.
      *
      * @return the groupchat room name.
@@ -198,7 +271,7 @@ public class MultiUserChat {
      *          (e.g. room already exists; user already joined to an existant room or
      *          405 error if the user is not allowed to create the room) 
      */
-    public void create(String nickname) throws XMPPException {
+    public synchronized void create(String nickname) throws XMPPException {
         if (nickname == null || nickname.equals("")) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
@@ -234,6 +307,7 @@ public class MultiUserChat {
         // Whether the room existed before or was created, the user has joined the room
         this.nickname = nickname;
         joined = true;
+        userHasJoined();
 
         // Look for confirmation of room creation from the server
         MUCUser mucUser = getMUCUserExtension(presence);
@@ -393,6 +467,7 @@ public class MultiUserChat {
         }
         this.nickname = nickname;
         joined = true;
+        userHasJoined();
     }
 
     /**
@@ -422,6 +497,7 @@ public class MultiUserChat {
         participantsMap = new HashMap();
         nickname = null;
         joined = false;
+        userHasLeft();
     }
 
     /**
@@ -716,12 +792,10 @@ public class MultiUserChat {
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
                     room,
                     "x-roomuser-item");
-            // Look for the Identity whose category is "client" and return its name 
+            // Look for an Identity that holds the reserved nickname and return its name 
             for (Iterator identities = result.getIdentities(); identities.hasNext();) {
                 DiscoverInfo.Identity identity = (DiscoverInfo.Identity) identities.next();
-                if ("client".equals(identity.getCategory())) {
-                    return identity.getName();
-                }
+                return identity.getName();
             }
             // If no Identity was found then the user does not have a reserved room nickname
             return null;
@@ -850,6 +924,19 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns the presence info for a particular participant, or <tt>null</tt> if the participant
+     * is not in the room.<p>
+     * 
+     * @param participant the room occupant to search for his presence. The format of participant must
+     * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).
+     * @return the participant's current presence, or <tt>null</tt> if the user is unavailable
+     *      or if no presence information is available.
+     */
+    public Presence getParticipantPresence(String participant) {
+        return (Presence) participantsMap.get(participant);
+    }
+
+    /**
      * Returns the participant's full JID when joining a Non-Anonymous room or <tt>null</tt>
      * if the room is of type anonymous. If the room is of type semi-anonymous only the 
      * moderators will have access to the participants full JID.    
@@ -861,7 +948,7 @@ public class MultiUserChat {
      */
     public String getParticipantJID(String participant) {
         // Get the participant's presence
-        Presence presence = (Presence) participantsMap.get(participant);
+        Presence presence = getParticipantPresence(participant);
         // Get the MUC User extension
         MUCUser mucUser = getMUCUserExtension(presence);
         if (mucUser != null) {
@@ -978,6 +1065,31 @@ public class MultiUserChat {
         connection.addPacketListener(listener, messageFilter);
     }
 
+    /**
+     * Notification message that the user has joined the room. 
+     */
+    private synchronized void userHasJoined() {
+        // Update the list of joined rooms through this connection
+        ArrayList rooms = (ArrayList)joinedRooms.get(connection);
+        if (rooms == null) {
+            rooms = new ArrayList();
+            joinedRooms.put(connection, rooms);
+        }
+        rooms.add(room);
+    }
+    
+    /**
+     * Notification message that the user has left the room. 
+     */
+    private synchronized void userHasLeft() {
+        // Update the list of joined rooms through this connection
+        ArrayList rooms = (ArrayList)joinedRooms.get(connection);
+        if (rooms == null) {
+            return;
+        }
+        rooms.remove(room);
+    }
+    
     /**
      * Returns the MUCUser packet extension included in the packet or <tt>null</tt> if none.
      * 
