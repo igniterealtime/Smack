@@ -245,6 +245,50 @@ public class Roster {
     }
 
     /**
+     * Returns a count of the entries in the roster.
+     *
+     * @return the number of entries in the roster.
+     */
+    public int getEntryCount() {
+        HashMap entryMap = new HashMap();
+        // Loop through all roster groups.
+        for (Iterator groups = getGroups(); groups.hasNext(); ) {
+            RosterGroup rosterGroup = (RosterGroup) groups.next();
+            for (Iterator entries = rosterGroup.getEntries(); entries.hasNext(); ) {
+                entryMap.put(entries.next(), "");
+            }
+        }
+        synchronized (unfiledEntries) {
+            return entryMap.size() + unfiledEntries.size();
+        }
+    }
+
+    /**
+     * Returns all entries in the roster, including entries that don't belong to
+     * any groups.
+     *
+     * @return all entries in the roster.
+     */
+    public Iterator getEntries() {
+        ArrayList allEntries = new ArrayList();
+        // Loop through all roster groups and add their entries to the new RosterExchange
+        for (Iterator groups = getGroups(); groups.hasNext(); ) {
+            RosterGroup rosterGroup = (RosterGroup) groups.next();
+            for (Iterator entries = rosterGroup.getEntries(); entries.hasNext(); ) {
+                RosterEntry entry = (RosterEntry)entries.next();
+                if (!allEntries.contains(entry)) {
+                    allEntries.add(entry);
+                }
+            }
+        }
+        // Add the roster unfiled entries to the new RosterExchange
+        synchronized (unfiledEntries) {
+            allEntries.add(unfiledEntries);
+        }
+        return allEntries.iterator();
+    }
+
+    /**
      * Returns an Iterator for the roster entries that haven't been assigned to any groups.
      *
      * @return an iterator the roster entries that haven't been filed into groups.

@@ -96,6 +96,24 @@ public class RosterEntry {
         return type;
     }
 
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(user);
+        Iterator groups = getGroups();
+        if (groups.hasNext()) {
+            buf.append(" [");
+            RosterGroup group = (RosterGroup)groups.next();
+            buf.append(group.getName());
+            while (groups.hasNext()) {
+            buf.append(", ");
+                group = (RosterGroup)groups.next();
+                buf.append(group.getName());
+            }
+            buf.append("]");
+        }
+        return buf.toString();
+    }
+
     public boolean equals(Object object) {
         if (this == object) {
             return true;
