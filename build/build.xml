@@ -130,6 +130,15 @@
         <jar destfile="${jar.dest.dir}/smackx.jar"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smackx/**/*.class, **/*.providers"
+            excludes="org/jivesoftware/smackx/debugger/*.class"
+        >
+            <manifest>
+                <attribute name="Class-Path" value="smack.jar" />
+            </manifest>
+        </jar>
+        <jar destfile="${jar.dest.dir}/smackx-debug.jar"
+            basedir="${compile.dir}"
+            includes="org/jivesoftware/smackx/debugger/*.class"
         >
             <manifest>
                 <attribute name="Class-Path" value="smack.jar" />
@@ -278,6 +287,7 @@
         <delete dir="${compile.test.dir}" />
         <delete file="${basedir}/smack.jar" />
         <delete file="${basedir}/smackx.jar" />
+        <delete file="${basedir}/smackx-debug.jar" />
         <delete file="${basedir}/smack-test.jar" />
         <delete dir="${basedir}/release" />
     </target>
