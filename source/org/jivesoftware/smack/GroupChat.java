@@ -42,6 +42,7 @@ public class GroupChat {
     private String nickname = null;
     private boolean joined = false;
     private List participants = new ArrayList();
+    private List connectionListeners = new ArrayList();
 
     private PacketFilter presenceFilter;
     private PacketFilter messageFilter;
@@ -249,6 +250,7 @@ public class GroupChat {
      */
     public void addParticipantListener(PacketListener listener) {
         connection.addPacketListener(listener, presenceFilter);
+        connectionListeners.add(listener);
     }
 
     /**
@@ -332,6 +334,7 @@ public class GroupChat {
      */
     public void addMessageListener(PacketListener listener) {
         connection.addPacketListener(listener, messageFilter);
+        connectionListeners.add(listener);
     }
 
     public void finalize() throws Throwable {
@@ -339,6 +342,10 @@ public class GroupChat {
         try {
             if (messageCollector != null) {
                 messageCollector.cancel();
+            }
+            // Remove all the PacketListeners added to the connection by this GroupChat
+            for (Iterator it=connectionListeners.iterator(); it.hasNext();) {
+                connection.removePacketListener((PacketListener) it.next());
             }
         }
         catch (Exception e) {}

@@ -69,6 +69,7 @@ public class MultiUserChat {
     private PacketFilter declinesFilter;
     private PacketListener declinesListener;
     private PacketCollector messageCollector;
+    private List connectionListeners = new ArrayList();
 
     static {
         XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
@@ -1510,6 +1511,7 @@ public class MultiUserChat {
      */
     public void addParticipantListener(PacketListener listener) {
         connection.addPacketListener(listener, presenceFilter);
+        connectionListeners.add(listener);
     }
 
     /**
@@ -1521,6 +1523,7 @@ public class MultiUserChat {
      */
     public void removeParticipantListener(PacketListener listener) {
         connection.removePacketListener(listener);
+        connectionListeners.remove(listener);
     }
 
     /**
@@ -1805,6 +1808,7 @@ public class MultiUserChat {
      */
     public void addMessageListener(PacketListener listener) {
         connection.addPacketListener(listener, messageFilter);
+        connectionListeners.add(listener);
     }
 
     /**
@@ -1816,6 +1820,7 @@ public class MultiUserChat {
      */
     public void removeMessageListener(PacketListener listener) {
         connection.removePacketListener(listener);
+        connectionListeners.remove(listener);
     }
 
     /**
@@ -2403,6 +2408,10 @@ public class MultiUserChat {
                 connection.removePacketListener(subjectListener);
                 connection.removePacketListener(presenceListener);
                 connection.removePacketListener(declinesListener);
+                // Remove all the PacketListeners added to the connection by this chat
+                for (Iterator it=connectionListeners.iterator(); it.hasNext();) {
+                    connection.removePacketListener((PacketListener) it.next());
+                }
             }
         }
         catch (Exception e) {}
