@@ -189,7 +189,7 @@ public class ServiceDiscoveryManager {
 
     /**
      * Returns the NodeInformationProvider responsible for providing information 
-     * (i.e. items) related to a given node or <tt>null</null> if none.<p>
+     * (ie items) related to a given node or <tt>null</null> if none.<p>
      * 
      * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
      * NodeInformationProvider will provide information about the rooms where the user has joined.
@@ -204,7 +204,7 @@ public class ServiceDiscoveryManager {
 
     /**
      * Sets the NodeInformationProvider responsible for providing information 
-     * (i.e. items) related to a given node. Every time this client receives a disco request
+     * (ie items) related to a given node. Every time this client receives a disco request
      * regarding the items of a given node, the provider associated to that node will be the 
      * responsible for providing the requested information.<p>
      * 
@@ -212,8 +212,8 @@ public class ServiceDiscoveryManager {
      * NodeInformationProvider will provide information about the rooms where the user has joined. 
      * 
      * @param node the node whose items will be provided by the NodeInformationProvider.
-     * @return the NodeInformationProvider responsible for providing items related 
-     * to the node.
+     * @param listener the NodeInformationProvider responsible for providing items related
+     *      to the node.
      */
     public void setNodeInformationProvider(String node, NodeInformationProvider listener) {
         nodeInformationProviders.put(node, listener);
@@ -221,7 +221,7 @@ public class ServiceDiscoveryManager {
 
     /**
      * Removes the NodeInformationProvider responsible for providing information 
-     * (i.e. items) related to a given node. This means that no more information will be 
+     * (ie items) related to a given node. This means that no more information will be
      * available for the specified node.
      * 
      * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
