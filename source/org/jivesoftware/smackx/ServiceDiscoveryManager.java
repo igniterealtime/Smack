@@ -71,12 +71,13 @@ import org.jivesoftware.smackx.packet.*;
  * @author Gaston Dombiak
  */
 public class ServiceDiscoveryManager {
-    
+
     private static Map instances = new Hashtable();
-    
+
     private XMPPConnection connection;
     private List features = new ArrayList();
-    
+    private Map nodeInformationProviders = new Hashtable();
+
     // Create a new ServiceDiscoveryManager on every established connection
     static {
         XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
@@ -105,9 +106,9 @@ public class ServiceDiscoveryManager {
      * @return the ServiceDiscoveryManager associated with a given XMPPConnection
      */
     public static ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
-        return (ServiceDiscoveryManager)instances.get(connection);
+        return (ServiceDiscoveryManager) instances.get(connection);
     }
-    
+
     /**
      * Initializes the packet listeners of the connection that will answer to any
      * service discovery request. 
@@ -122,25 +123,34 @@ public class ServiceDiscoveryManager {
                 // Unregister this instance since the connection has been closed
                 instances.remove(connection);
             }
-            
+
             public void connectionClosedOnError(Exception e) {
                 // Unregister this instance since the connection has been closed
                 instances.remove(connection);
             }
         });
-        
+
         // Listen for disco#items requests and answer with an empty result        
         PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
         PacketListener packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 DiscoverItems discoverItems = (DiscoverItems) packet;
-                // Answer an empty result if the request is of the GET type
-                // Note: In a future version Smack will enable to have items defined in the client 
+                // Send back the items defined in the client if the request is of type GET
                 if (discoverItems != null && discoverItems.getType() == IQ.Type.GET) {
                     DiscoverItems response = new DiscoverItems();
                     response.setType(IQ.Type.RESULT);
                     response.setTo(discoverItems.getFrom());
                     response.setPacketID(discoverItems.getPacketID());
+
+                    // Add the defined items related to the requested node. Look for 
+                    // the NodeInformationProvider associated with the requested node.  
+                    if (getNodeInformationProvider(discoverItems.getNode()) != null) {
+                        Iterator items =
+                            getNodeInformationProvider(discoverItems.getNode()).getNodeItems();
+                        while (items.hasNext()) {
+                            response.addItem((DiscoverItems.Item) items.next());
+                        }
+                    }
                     connection.sendPacket(response);
                 }
             }
@@ -161,7 +171,7 @@ public class ServiceDiscoveryManager {
                     response.setPacketID(discoverInfo.getPacketID());
                     // Add the registered features to the response
                     synchronized (features) {
-                        for (Iterator it=getFeatures(); it.hasNext();) {
+                        for (Iterator it = getFeatures(); it.hasNext();) {
                             response.addFeature((String) it.next());
                         }
                     }
@@ -170,6 +180,52 @@ public class ServiceDiscoveryManager {
             }
         };
         connection.addPacketListener(packetListener, packetFilter);
+    }
+
+    /**
+     * Returns the NodeInformationProvider responsible for providing information 
+     * (i.e. items) related to a given node or <tt>null</null> if none.<p>
+     * 
+     * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
+     * NodeInformationProvider will provide information about the rooms where the user has joined.
+     * 
+     * @param node the node that contains items associated with an entity not addressable as a JID
+     * @return the NodeInformationProvider responsible for providing information related 
+     * to a given node
+     */
+    private NodeInformationProvider getNodeInformationProvider(String node) {
+        return (NodeInformationProvider) nodeInformationProviders.get(node);
+    }
+
+    /**
+     * Sets the NodeInformationProvider responsible for providing information 
+     * (i.e. items) related to a given node. Every time this client receives a disco request
+     * regarding the items of a given node, the provider associated to that node will be the 
+     * responsible for providing the requested information.<p>
+     * 
+     * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
+     * NodeInformationProvider will provide information about the rooms where the user has joined. 
+     * 
+     * @param node the node whose items will be provided by the NodeInformationProvider  
+     * @return the NodeInformationProvider responsible for providing items related 
+     * to the node
+     */
+    public void setNodeInformationProvider(String node, NodeInformationProvider listener) {
+        nodeInformationProviders.put(node, listener);
+    }
+
+    /**
+     * Removes the NodeInformationProvider responsible for providing information 
+     * (i.e. items) related to a given node. This means that no more information will be 
+     * available for the specified node.
+     * 
+     * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
+     * NodeInformationProvider will provide information about the rooms where the user has joined. 
+     * 
+     * @param node the node to remove the associated NodeInformationProvider  
+     */
+    public void removeNodeInformationProvider(String node) {
+        nodeInformationProviders.remove(node);
     }
 
     /**
@@ -182,7 +238,7 @@ public class ServiceDiscoveryManager {
             return Collections.unmodifiableList(new ArrayList(features)).iterator();
         }
     }
-    
+
     /**
      * Registers that a new feature is supported by this XMPP entity. When this client is 
      * queried for its information the registered features will be answered. 
@@ -228,7 +284,7 @@ public class ServiceDiscoveryManager {
     public DiscoverInfo discoverInfo(String entityID) throws XMPPException {
         return discoverInfo(entityID, null);
     }
-    
+
     /**
      * Returns the discovered information of a given XMPP entity addressed by its JID and
      * note attribute. Use this message only when trying to query information which is not 
@@ -273,7 +329,7 @@ public class ServiceDiscoveryManager {
     public DiscoverItems discoverItems(String entityID) throws XMPPException {
         return discoverItems(entityID, null);
     }
-    
+
     /**
      * Returns the discovered items of a given XMPP entity addressed by its JID and
      * note attribute. Use this message only when trying to query information which is not 
@@ -321,7 +377,7 @@ public class ServiceDiscoveryManager {
     public void publishItems(String entityID, DiscoverItems discoverItems) throws XMPPException {
         discoverItems.setType(IQ.Type.SET);
         discoverItems.setTo(entityID);
-        
+
         // Create a packet collector to listen for a response.
         PacketCollector collector =
             connection.createPacketCollector(new PacketIDFilter(discoverItems.getPacketID()));
