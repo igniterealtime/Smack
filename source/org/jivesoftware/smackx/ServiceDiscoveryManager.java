@@ -274,7 +274,12 @@ public class ServiceDiscoveryManager {
 
     /**
      * Registers that a new feature is supported by this XMPP entity. When this client is 
-     * queried for its information the registered features will be answered. 
+     * queried for its information the registered features will be answered.<p>
+     *
+     * Since no packet is actually sent to the server it is safe to perform this operation
+     * before logging to the server. In fact, you may want to configure the supported features
+     * before logging to the server so that the information is already available if it is required
+     * upon login.
      *
      * @param feature the feature to register as supported.
      */
@@ -285,7 +290,10 @@ public class ServiceDiscoveryManager {
     }
 
     /**
-     * Removes the specified feature from the supported features by this XMPP entity.
+     * Removes the specified feature from the supported features by this XMPP entity.<p>
+     *
+     * Since no packet is actually sent to the server it is safe to perform this operation
+     * before logging to the server.
      *
      * @param feature the feature to remove from the supported features.
      */
