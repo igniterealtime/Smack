@@ -132,6 +132,31 @@ public class RosterGroup {
     }
 
     /**
+     * Returns the roster entry associated with the given XMPP address or
+     * <tt>null</tt> if the user is not an entry in the group.
+     *
+     * @param user the XMPP address of the user (eg "jsmith@example.com").
+     * @return the roster entry or <tt>null</tt> if it does not exist in the group.
+     */
+    public RosterEntry getEntry(String user) {
+        if (user == null) {
+            return null;
+        }
+        // Roster entries never include a resource so remove the resource
+        // if it's a part of the XMPP address.
+        user = StringUtils.parseBareAddress(user);
+        synchronized (entries) {
+            for (Iterator i=entries.iterator(); i.hasNext(); ) {
+                RosterEntry entry = (RosterEntry)i.next();
+                if (entry.getUser().equals(user)) {
+                    return entry;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns true if the specified entry is part of this group.
      *
      * @param entry a roster entry.
