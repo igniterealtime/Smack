@@ -195,18 +195,18 @@ public class Presence extends Packet {
 
     public String toXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<presence ");
+        buf.append("<presence");
         if (getPacketID() != null) {
-            buf.append("id=\"").append(getPacketID()).append("\" ");
+            buf.append(" id=\"").append(getPacketID()).append("\"");
         }
         if (getTo() != null) {
-            buf.append("to=\"").append(getTo()).append("\" ");
+            buf.append(" to=\"").append(getTo()).append("\"");
         }
         if (getFrom() != null) {
-            buf.append("from=\"").append(getFrom()).append("\" ");
+            buf.append(" from=\"").append(getFrom()).append("\"");
         }
         if (type != Type.AVAILABLE) {
-            buf.append("type=\"").append(type).append("\"");
+            buf.append(" type=\"").append(type).append("\"");
         }
         buf.append(">");
         if (status != null) {
