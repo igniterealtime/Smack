@@ -218,16 +218,24 @@ public class ServiceDiscoveryManager {
                     response.setType(IQ.Type.RESULT);
                     response.setTo(discoverInfo.getFrom());
                     response.setPacketID(discoverInfo.getPacketID());
-                    // Set this client identity
-                    DiscoverInfo.Identity identity = new DiscoverInfo.Identity("client",
-                            getIdentityName());
-                    identity.setType(getIdentityType());
-                    response.addIdentity(identity);
-                    // Add the registered features to the response
-                    synchronized (features) {
-                        for (Iterator it = getFeatures(); it.hasNext();) {
-                            response.addFeature((String) it.next());
+                    // Add the client's identity and features only if "node" is null
+                    if (discoverInfo.getNode() == null) {
+                        // Set this client identity
+                        DiscoverInfo.Identity identity = new DiscoverInfo.Identity("client",
+                                getIdentityName());
+                        identity.setType(getIdentityType());
+                        response.addIdentity(identity);
+                        // Add the registered features to the response
+                        synchronized (features) {
+                            for (Iterator it = getFeatures(); it.hasNext();) {
+                                response.addFeature((String) it.next());
+                            }
                         }
+                    }
+                    else {
+                        // Return an <item-not-found/> error since a client doesn't have nodes
+                        response.setType(IQ.Type.ERROR);
+                        response.setError(new XMPPError(404, "item-not-found"));
                     }
                     connection.sendPacket(response);
                 }
