@@ -8,6 +8,7 @@
 
 <project name="WebChat" default="all" basedir="..">
 
+    <property file="${basedir}/build/webchat-build.properties" />
     <property name="smack.home" value="${basedir}/../../../smack" />
     <property name="compile.dir" value="${basedir}/build/temp" />
     <property name="jar.dest.dir" value="${basedir}/build/WEB-INF/lib" />
@@ -77,6 +78,13 @@
                 <patternset refid="web.filetypes" />
             </zipfileset>
         </war>
+    </target>
+
+
+    <target name="deploywar" depends="war">
+        <copy todir="${deploy.war.dir}" overwrite="${overwrite}">
+            <fileset dir="${war.dest.dir}" includes="${war.name}.war" />
+        </copy>
     </target>
 
 </project>
