@@ -91,7 +91,9 @@
 
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" if="release.exists" depends="release-exists, jar, javadoc">
+    <target name="release" if="release.exists" depends="release-exists">
+        <antcall target="jar" />
+        <antcall target="javadoc" />
         <ant antfile="${basedir}/build/release.xml" />
     </target>
 
