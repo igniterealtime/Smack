@@ -61,7 +61,7 @@ package org.jivesoftware.smack.packet;
  *
  * @author Matt Tucker
  */
-public class IQ extends Packet {
+public abstract class IQ extends Packet {
 
     private Type type = Type.GET;
 
@@ -125,9 +125,7 @@ public class IQ extends Packet {
      *
      * @return the query section of the IQ XML.
      */
-    public String getChildElementXML() {
-        return null;
-    }
+    public abstract String getChildElementXML();
 
     /**
      * A class to represent the type of the IQ packet. The types are:
