@@ -247,6 +247,8 @@ public class ProviderManager {
      *     &lt;/query&gt;
      * &lt;/iq&gt;</pre>
      *
+     * <p>Note: this method is generally only called by the internal Smack classes.
+     *
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
      * @return
@@ -268,6 +270,8 @@ public class ProviderManager {
      *         &lt;composing/&gt;
      *     &lt;/x&gt;
      * &lt;/message&gt;</pre>
+     *
+     * <p>Note: this method is generally only called by the internal Smack classes.
      *
      * @param elementName
      * @param namespace

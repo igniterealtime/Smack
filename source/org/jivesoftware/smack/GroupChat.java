@@ -312,7 +312,11 @@ public class GroupChat {
 
     /**
      * Adds a packet listener that will be notified of any new messages in the
-     * group chat.
+     * group chat. Only "group chat" messages addressed to this group chat will
+     * be delivered to the listener. If you wish to listen for other packets
+     * that may be associated with this group chat, you should register a
+     * PacketListener directly with the XMPPConnection with the appropriate
+     * PacketListener.
      *
      * @param listener a packet listener.
      */
