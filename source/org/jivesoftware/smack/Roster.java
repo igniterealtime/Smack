@@ -62,6 +62,12 @@ import java.util.*;
  * Represents a user's roster, which is the collection of users a person receives
  * presence updates for. Roster items are categorized into groups for easier management.<p>
  *
+ * Others users may attempt to subscribe to this user using a subscription request. Three
+ * modes are supported for handling these requests: <ul>
+ *      <li> SUBSCRIPTION_ACCEPT_ALL -- accept all subscription requests.
+ *      <li> SUBCRIPTION_REJECT_ALL -- reject all subscription requests.
+ *      <li> SUBSCRIPTION_MANUAL -- manually process all subscription requests. </ul>
+ *
  * All presence subscription requests are automatically approved to this client
  * are automatically approved. This logic will be updated in the future to allow for
  * pluggable behavior.
@@ -71,6 +77,25 @@ import java.util.*;
  */
 public class Roster {
 
+    /**
+     * Automatically accept all subscription requests. This is the default mode
+     * and is suitable for simple client. More complex client will likely wish to
+     * handle subscription requests manually.
+     */
+    public static final int SUBCRIPTION_ACCEPT_ALL = 0;
+
+    /**
+     * Automatically reject all subscription requests.
+     */
+    public static final int SUBCRIPTION_REJECT_ALL = 1;
+
+    /**
+     * Subscription requests are ignored, which means they must be manually
+     * processed by registering a listener for presence packets and then looking
+     * for any presence requests that have the type Presence.Type.SUBSCRIBE.
+     */
+    public static final int SUBSCRIPTION_MANUAL = 2;
+
     private XMPPConnection connection;
     private Map groups;
     private List unfiledEntries;
@@ -79,6 +104,8 @@ public class Roster {
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
     boolean rosterInitialized = false;
+
+    private int subscriptionMode = SUBCRIPTION_ACCEPT_ALL;
 
     /**
      * Creates a new roster.
@@ -97,6 +124,32 @@ public class Roster {
         // Listen for any presence packets.
         PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
         connection.addPacketListener(new PresencePacketListener(), presenceFilter);
+    }
+
+    /**
+     * Returns the subscription processing mode, which dictates what action
+     * Smack will take when subscription requests from other users are made.
+     *
+     * @return the subscription mode.
+     */
+    public int getSubscriptionMode() {
+        return subscriptionMode;
+    }
+
+    /**
+     * Sets the subscription processing mode, which dictates what action
+     * Smack will take when subscription requests from other users are made.
+     *
+     * @param subscriptionMode the subscription mode.
+     */
+    public void setSubscriptionMode(int subscriptionMode) {
+        if (subscriptionMode != SUBCRIPTION_ACCEPT_ALL &&
+                subscriptionMode != SUBCRIPTION_REJECT_ALL &&
+                subscriptionMode != SUBSCRIPTION_MANUAL)
+        {
+            throw new IllegalArgumentException("Invalid mode.");
+        }
+        this.subscriptionMode = subscriptionMode;
     }
 
     /**
@@ -285,10 +338,19 @@ public class Roster {
             }
 
             else if (presence.getType() == Presence.Type.SUBSCRIBE) {
-                // Accept all subscription requests.
-                Presence response = new Presence(Presence.Type.SUBSCRIBED);
-                response.setTo(presence.getFrom());
-                connection.sendPacket(response);
+                if (subscriptionMode == SUBCRIPTION_ACCEPT_ALL) {
+                    // Accept all subscription requests.
+                    Presence response = new Presence(Presence.Type.SUBSCRIBED);
+                    response.setTo(presence.getFrom());
+                    connection.sendPacket(response);
+                }
+                else if (subscriptionMode == SUBCRIPTION_REJECT_ALL) {
+                    // Reject all subscription requests.
+                    Presence response = new Presence(Presence.Type.UNSUBSCRIBED);
+                    response.setTo(presence.getFrom());
+                    connection.sendPacket(response);
+                }
+                // Otherwise, in manual mode so ignore.
             }
         }
     }
@@ -303,8 +365,7 @@ public class Roster {
             for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
                 if (item.getItemType() == RosterPacket.ItemType.TO ||
-                        item.getItemType() == RosterPacket.ItemType.BOTH ||
-                        item.getItemType() == RosterPacket.ItemType.PENDING)
+                        item.getItemType() == RosterPacket.ItemType.BOTH)
                 {
 
                 }
