@@ -123,13 +123,24 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
     }
 
     /**
-     * Tests publishing items to another entity. 
+     * Tests support for publishing items to another entity.
+     */
+    public void testDiscoverPublishItemsSupport() {
+        try {
+            boolean canPublish = ServiceDiscoveryManager.getInstanceFor(getConnection(0))
+                    .canPublishItems(getHost());
+            assertFalse("Messenger does not support publishing...so far!!", canPublish);
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+    }
+
+    /**
+     * Tests publishing items to another entity.
      */
     /*public void testPublishItems() {
-        // TODO Remove this line when the "additional services for extensions" are 
-        // implemented 
-        new ServiceDiscoveryManager(getConnection(0));
-
         DiscoverItems itemsToPublish = new DiscoverItems();
         DiscoverItems.Item itemToPublish = new DiscoverItems.Item("pubsub.shakespeare.lit");
         itemToPublish.setName("Avatar");
@@ -138,9 +149,10 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         itemsToPublish.addItem(itemToPublish);
         
         try {
-            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems("host", itemsToPublish);
+            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems(getHost(),
+                    itemsToPublish);
         }
-        catch (XMPPException e) {
+        catch (Exception e) {
             fail(e.getMessage());
         }
         
