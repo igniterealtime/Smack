@@ -37,7 +37,7 @@
                 <property name="release.name" value="smack-${build.date}" />
             </then>
             <else>
-                <property name="release.name" value="smack-${version.major}.${version.minor}-${version.string}" />
+                <property name="release.name" value="smack-${version.name}" />
             </else>
         </if> 
         <property name="release.dir" value="${basedir}/release/${release.name}" />
