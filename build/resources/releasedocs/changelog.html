@@ -56,6 +56,23 @@ Smack Changelog
 </div>
 
 <p>
+<b>1.4.1</b> - November 8, 2004
+<p>
+<ul>
+    <li><font color="#777777">(SMACK-21)</font> The reader and listener threads in PacketReader are now stopped if an error occurs while starting up PacketReader. Thanks to Steve Reichert.
+    <li><font color="#777777">(SMACK-22)</font> XMPP addresses are now treated as case insensitive.
+    <li><font color="#777777">(SMACK-3)</font> Fixed possible NullPointerException when parsing invalid XHTML text.
+    <li><font color="#777777">(SMACK-8)</font> Answer an item-not-found error when Smack receives a service discovery for information and node is not null.
+    <li><font color="#777777">(SMACK-17)</font> An incorrect namespace was being used for granting and revoking admin/owner privileges.
+    <li><font color="#777777">(SMACK-19)</font> The roster should be able to hold any valid JID format. Thanks to Adam Olsen.
+    <li><font color="#777777">(SMACK-20</font> Parsing MUCOwner packets could freeze the client.
+    <li><font color="#777777">(SMACK-18)</font> Implemented JEP-128. A service discovery for information can now include a dataform or any possible packet extension.
+    <li><font color="#777777">(SMACK-15)</font> Allow registration entries with blank values.
+    <li><font color="#777777">(SMACK-16)</font> Added <tt>String getAccountAttribute(String)</tt> method to AccountManager class.
+    <li><font color="#777777">(SMACK-23)</font> Connection listeners can now be removed while notifying that the connection is being closed. Fixes ConcurrentModificationException triggered on close.
+</ul>
+
+<p>
 <b>1.4.0</b> - August 10, 2004
 <p>
 <ul>
