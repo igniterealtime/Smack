@@ -54,8 +54,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.filter.ThreadFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.*;
 
 /**
  * A chat is a series of messages sent between two users. Each chat has
@@ -70,7 +69,14 @@ public class Chat {
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
     private static String prefix = StringUtils.randomString(5);
-
+    
+    /**
+     * Value that indicates the message filter type to use. When true, only the messages with 
+     * the Chat's id will be filtered, otherwise the messages of type "chat" and from the Chat´s 
+     * participant will be filtered.
+     */
+    public static boolean FILTER_ONLY_BY_THREAD = true;
+    
     /**
      * Keeps track of the current increment, which is appended to the prefix to
      * forum a unique ID.
@@ -100,13 +106,8 @@ public class Chat {
      * @param participant the user to chat with.
      */
     public Chat(XMPPConnection connection, String participant) {
-        this.connection = connection;
-        this.participant = participant;
         // Automatically assign the next chat ID.
-        chatID = nextID();
-
-        messageFilter = new ThreadFilter(chatID);
-        messageCollector = connection.createPacketCollector(messageFilter);
+        this(connection, participant, nextID());
     }
 
     /**
@@ -121,7 +122,19 @@ public class Chat {
         this.participant = participant;
         this.chatID = chatID;
 
-        messageFilter = new ThreadFilter(chatID);
+        if (FILTER_ONLY_BY_THREAD) {
+            // Filter the messages whose thread equals Chat's id
+            messageFilter = new ThreadFilter(chatID);
+        }
+        else {
+            // Filter the messages of type "chat" and sender equals Chat's participant
+            messageFilter =
+                new OrFilter(
+                    new AndFilter(
+                        new MessageTypeFilter(Message.Type.CHAT),
+                        new FromContainsFilter(participant)),
+                    new ThreadFilter(chatID));
+        }
         messageCollector = connection.createPacketCollector(messageFilter);
     }
 
