@@ -403,7 +403,7 @@ public class MUCUser implements PacketExtension {
          * @return the reason for the item child.
          */
         public String getReason() {
-            return reason;
+            return reason == null ? "" : reason;
         }
 
         /**
