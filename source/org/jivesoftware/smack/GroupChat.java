@@ -153,10 +153,12 @@ public class GroupChat {
      * another nickname, will leave as that name first before joining under the new
      * name.
      *
-     * @param nickname the nicknam to use.
+     * @param nickname the nickname to use.
      * @param timeout the number of milleseconds to wait for a reply from the
      *      group chat that joining the room succeeded.
-     * @throws XMPPException if an error occurs joining the room.
+     * @throws XMPPException if an error occurs joining the room. In particular, a
+     *      409 error can occur if someone is already in the group chat with the same
+     *      nickname.
      */
     public synchronized void join(String nickname, long timeout) throws XMPPException {
         if (nickname == null || nickname.equals("")) {
@@ -184,8 +186,7 @@ public class GroupChat {
             throw new XMPPException("No response from server.");
         }
         else if (presence.getError() != null) {
-            throw new XMPPException(presence.getError().getMessage());
-
+            throw new XMPPException(presence.getError());
         }
         this.nickname = nickname;
         joined = true;
