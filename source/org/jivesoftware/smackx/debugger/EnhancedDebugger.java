@@ -783,6 +783,15 @@ public class EnhancedDebugger implements SmackDebugger {
         }
         return str;
     }
+    
+    /**
+     * Returns true if the debugger's connection with the server is up and running.
+     *
+     * @return true if the connection with the server is active.
+     */
+    boolean isConnectionActive() {
+        return connection.isConnected();
+    }
 
     /**
      * Stops debugging the connection. Removes any listener on the connection.
