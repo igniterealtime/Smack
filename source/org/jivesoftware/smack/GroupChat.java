@@ -69,16 +69,6 @@ import java.util.*;
  */
 public class GroupChat {
 
-    /**
-     * Value that indicates the number of milliseconds to wait for a response from
-     * the server. 
-     *
-     * The reply timeout value can be assigned by setting this field to the required 
-     * timeout, or by modifying the smack.configuration file that holds the default value
-     * to use.
-     */
-    public static int REPLY_TIMEOUT = 5000;
-
     private XMPPConnection connection;
     private String room;
     private String nickname = null;
@@ -161,7 +151,7 @@ public class GroupChat {
      *      nickname.
      */
     public synchronized void join(String nickname) throws XMPPException {
-        join(nickname, REPLY_TIMEOUT);
+        join(nickname, SmackConfiguration.getPacketReplyTimeout());
     }
 
     /**

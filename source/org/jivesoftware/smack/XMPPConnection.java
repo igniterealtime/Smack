@@ -93,16 +93,6 @@ public class XMPPConnection {
      */
     public static boolean DEBUG_ENABLED = false;
 
-    /**
-     * Value that indicates the number of milliseconds to wait for a response from
-     * the server. 
-     *
-     * The reply timeout value can be assigned by setting this field to the required 
-     * timeout, or by modifying the smack.configuration file that holds the default value
-     * to use.
-     */
-    public static int REPLY_TIMEOUT = 5000;
-    
     private static List connectionEstablishedListeners = new ArrayList();
     static {
         // Use try block since we may not have permission to get a system
@@ -280,7 +270,7 @@ public class XMPPConnection {
         // Send the packet
         packetWriter.sendPacket(discoveryAuth);
         // Wait up to a certain number of seconds for a response from the server.
-        IQ response = (IQ) collector.nextResult(REPLY_TIMEOUT);
+        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -313,7 +303,7 @@ public class XMPPConnection {
         // Send the packet.
         packetWriter.sendPacket(auth);
         // Wait up to a certain number of seconds for a response from the server.
-        response = (IQ) collector.nextResult(REPLY_TIMEOUT);
+        response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {
             throw new XMPPException("Authentication failed.");
         }
@@ -377,7 +367,7 @@ public class XMPPConnection {
         // Send the packet.
         packetWriter.sendPacket(auth);
         // Wait up to a certain number of seconds for a response from the server.
-        IQ response = (IQ) collector.nextResult(REPLY_TIMEOUT);
+        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {
             throw new XMPPException("Anonymous login failed.");
         }
