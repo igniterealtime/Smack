@@ -34,8 +34,8 @@
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
 
     <property name="version.major" value="1" />
-    <property name="version.minor" value="2" />
-    <property name="version.revision" value="1" />
+    <property name="version.minor" value="3" />
+    <property name="version.revision" value="0" />
     <property name="version.name" value="${version.major}.${version.minor}.${version.revision}" />
 
     <!-- Test props - override these defaults in the properties file or in command line -->
