@@ -87,6 +87,16 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class GroupChatInvitation implements PacketExtension {
 
+    /**
+     * Element name of the packet extension.
+     */
+    public static final String ELEMENT_NAME = "x";
+
+    /**
+     * Namespace of the packet extension.
+     */
+    public static final String NAMESPACE = "jabber:x:conference";
+
     private String roomAddress;
 
     /**
@@ -113,11 +123,11 @@ public class GroupChatInvitation implements PacketExtension {
     }
 
     public String getElementName() {
-        return "x";
+        return ELEMENT_NAME;
     }
 
     public String getNamespace() {
-        return "jabber:x:conference";
+        return NAMESPACE;
     }
 
     public String toXML() {
