@@ -15,7 +15,6 @@
     <!-- ======================================================================================= -->
 
     <property name="compile.dir" value="${basedir}/classes" />
-    <property name="compile_wg.dir" value="${basedir}/apps/workgroup/classes" />
     <property name="jar.dest.dir" value="${basedir}" />
     <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
     <property name="build.lib.dir" value="${basedir}/build/lib" />
@@ -64,41 +63,6 @@
             includes="**/*.class"
          >
              <zipfileset src="${merge.lib.dir}/xpp.jar"/>
-         </jar>
-    </target>
-
-    <!-- compile workgroup -->
-    <!-- ======================================================================================= -->
-    <target name="compile_wg" depends="jar" description="Compiles workgroup source.">
-        <!-- make target dir -->
-        <mkdir dir="${compile_wg.dir}" />
-        <javac
-            destdir="${compile_wg.dir}"
-            includeAntRuntime="no"
-            debug="on">
-            <src path="${basedir}/apps/workgroup/source" />
-            <classpath>
-                <fileset dir="${jar.dest.dir}">
-                    <include name="smack.jar"/>
-                </fileset>
-                <fileset dir="${build.lib.dir}">
-                    <include name="*.jar"/>
-                </fileset>
-                <fileset dir="${merge.lib.dir}">
-                    <include name="*.jar"/>
-                </fileset>
-            </classpath>
-        </javac>
-    </target>
-
-    <!-- jar workgroup -->
-    <!-- ======================================================================================= -->
-    <target name="jar_wg" depends="compile_wg" unless="jar.uptodate"
-        description="Produces workgroup.jar">
-        <jar destfile="${jar.dest.dir}/workgroup.jar"
-            basedir="${compile_wg.dir}"
-            includes="**/*.class"
-         >
          </jar>
     </target>
 
@@ -153,9 +117,7 @@
     <target name="clean" description="Deletes all generated content.">
     	<delete dir="${javadoc.dest.dir}" />
         <delete dir="${compile.dir}" />
-        <delete dir="${compile_wg.dir}" />
         <delete file="${basedir}/smack.jar" />
-        <delete file="${basedir}/workgroup.jar" />
         <delete dir="${basedir}/release" />
     </target>
 
