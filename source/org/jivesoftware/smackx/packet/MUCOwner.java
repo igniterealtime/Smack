@@ -56,7 +56,9 @@ import java.util.*;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
- * Represents .....
+ * IQ packet that serves for granting and revoking ownership privileges, granting 
+ * and revoking administrative privileges and destroying a room. All these operations 
+ * are scoped by the 'http://jabber.org/protocol/muc#owner' namespace.
  * 
  * @author Gaston Dombiak
  */
@@ -65,20 +67,46 @@ public class MUCOwner extends IQ {
     private List items = new ArrayList();
     private Destroy destroy;
 
+    /**
+     * Returns an Iterator for item childs that holds information about affiliation, 
+     * jids and nicks.
+     * 
+     * @return an Iterator for item childs that holds information about affiliation,
+     *          jids and nicks.
+     */
     public Iterator getItems() {
         synchronized (items) {
             return Collections.unmodifiableList(new ArrayList(items)).iterator();
         }
     }
 
+    /**
+     * Returns a request to the server to destroy a room. The sender of the request
+     * should be the room's owner. If the sender of the destroy request is not the room's owner
+     * then the server will answer a "Forbidden" error.
+     * 
+     * @return a request to the server to destroy a room.
+     */
     public Destroy getDestroy() {
         return destroy;
     }
 
+    /**
+     * Sets a request to the server to destroy a room. The sender of the request
+     * should be the room's owner. If the sender of the destroy request is not the room's owner
+     * then the server will answer a "Forbidden" error.
+     * 
+     * @param destroy the request to the server to destroy a room.
+     */
     public void setDestroy(Destroy destroy) {
         this.destroy = destroy;
     }
 
+    /**
+     * Adds an item child that holds information about affiliation, jids and nicks.
+     * 
+     * @param item the item child that holds information about affiliation, jids and nicks.
+     */
     public void addItem(Item item) {
         synchronized (items) {
             items.add(item);
@@ -104,14 +132,11 @@ public class MUCOwner extends IQ {
     }
 
     /**
-     * 
      * Item child that holds information about affiliation, jids and nicks.
      *
      * @author Gaston Dombiak
      */
     public static class Item {
-        
-        // TODO repasar si los comentarios estan OK porque son copy&paste
         
         private String actor;
         private String reason;
@@ -247,34 +272,49 @@ public class MUCOwner extends IQ {
         }
     };
 
+    /**
+     * Represents a request to the server to destroy a room. The sender of the request
+     * should be the room's owner. If the sender of the destroy request is not the room's owner
+     * then the server will answer a "Forbidden" error.
+     * 
+     * @author Gaston Dombiak
+     */
     public static class Destroy {
         private String reason;
         private String jid;
         
         
         /**
-         * @return
+         * Returns the JID of an alternate location since the current room is being destroyed.
+         * 
+         * @return the JID of an alternate location.
          */
         public String getJid() {
             return jid;
         }
 
         /**
-         * @return
+         * Returns the reason for the room destruction.
+         * 
+         * @return the reason for the room destruction.
          */
         public String getReason() {
             return reason;
         }
 
         /**
-         * @param jid
+         * Sets the JID of an alternate location since the current room is being destroyed.
+         * 
+         * @param jid the JID of an alternate location.
          */
         public void setJid(String jid) {
             this.jid = jid;
         }
 
         /**
-         * @param reason
+         * Sets the reason for the room destruction.
+         * 
+         * @param reason the reason for the room destruction.
          */
         public void setReason(String reason) {
             this.reason = reason;
