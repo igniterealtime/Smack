@@ -687,9 +687,15 @@ public class XMPPConnection {
 
         // If debugging is enabled, we open a window and write out all network traffic.
         if (DEBUG_ENABLED) {
-
-            // Detect the debugger class to use.             
-            String className = System.getProperty("smack.debuggerClass");
+            // Detect the debugger class to use.
+            String className = null;
+            // Use try block since we may not have permission to get a system
+            // property (for example, when an applet).
+            try {
+                System.getProperty("smack.debuggerClass");
+            }
+            catch (Throwable t) {
+            }
             Class debuggerClass = null;
             if (className != null) {
                 try {
