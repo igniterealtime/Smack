@@ -55,6 +55,7 @@ package org.jivesoftware.smack;
 import org.xmlpull.v1.*;
 import java.util.*;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Error;
 import org.jivesoftware.smack.filter.PacketFilter;
 
 /**
@@ -156,6 +157,9 @@ public class PacketReader {
         done = true;
     }
 
+    /**
+     * Process listeners.
+     */
     private void processListeners() {
         boolean processedPacket = false;
         while (true) {
@@ -236,6 +240,9 @@ public class PacketReader {
      * @param packet the packet to process.
      */
     private void processPacket(Packet packet) {
+        if (packet == null) {
+            return;
+        }
         // Loop through all collectors and notify the appropriate ones.
         synchronized (collectors) {
             // Loop through packet collectors backwards.
@@ -258,36 +265,26 @@ public class PacketReader {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     private static Packet parseIQ(XmlPullParser parser) throws Exception {
-        String id = null;
-        String to = null;
-        String from = null;
-        IQ.Type type = null;
-        // Parse attributes of the opening iq tag.
-        for (int i=0; i<parser.getAttributeCount(); i++) {
-            String name = parser.getAttributeName(i);
-            if (name.equals("id")) {
-                id = parser.getAttributeValue(i);
-            }
-            else if (name.equals("type")) {
-                type = IQ.Type.fromString(parser.getAttributeValue(i));
-            }
-            else if (name.equals("to")) {
-                to = parser.getAttributeValue(i);
-            }
-            else if (name.equals("from")) {
-                from = parser.getAttributeValue(i);
-            }
-        }
+        IQ iqPacket = null;
+
+        String id = parser.getAttributeValue("", "id");
+        String to = parser.getAttributeValue("", "to");
+        String from = parser.getAttributeValue("", "from");
+        IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
+        Error error = null;
+
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
             if (eventType == parser.START_TAG) {
                 if (parser.getName().equals("query")) {
                     String namespace = parser.getNamespace();
-
+                    if (namespace.equals("jabber:iq:auth")) {
+                        iqPacket = parseAuthentication(parser);
+                    }
                 }
                 if (parser.getName().equals("error")) {
-                    // TODO: parse error here
+                    error = parseError(parser);
                 }
             }
             else if (eventType == parser.END_TAG) {
@@ -296,7 +293,62 @@ public class PacketReader {
                 }
             }
         }
-        return null;
+        // Set basic values on the iq packet.
+        if (iqPacket == null) {
+            iqPacket = new IQ();
+        }
+        iqPacket.setPacketID(id);
+        iqPacket.setTo(to);
+        iqPacket.setFrom(from);
+        iqPacket.setType(type);
+        iqPacket.setError(error);
+        // Return the packet.
+        return iqPacket;
+    }
+
+    private static Authentication parseAuthentication(XmlPullParser parser) throws Exception {
+        Authentication authentication = new Authentication();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == parser.START_TAG) {
+                if (parser.getName().equals("username")) {
+                    authentication.setUsername(parser.nextText());
+                }
+                else if (parser.getName().equals("password")) {
+                    authentication.setPassword(parser.nextText());
+                }
+                else if (parser.getName().equals("digest")) {
+                    authentication.setDigest(parser.nextText());
+                }
+                else if (parser.getName().equals("resource")) {
+                    authentication.setResource(parser.nextText());
+                }
+            }
+            else if (eventType == parser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+        return authentication;
+    }
+
+    private static Error parseError(XmlPullParser parser) throws Exception {
+        String errorCode = null;
+        for (int i=0; i<parser.getAttributeCount(); i++) {
+            if (parser.getAttributeName(i).equals("code")) {
+                errorCode = parser.getAttributeValue("", "code");
+            }
+        }
+        String message = parser.nextText();
+        while (true) {
+            if (parser.getEventType() == parser.END_TAG && parser.getName().equals("error")) {
+                break;
+            }
+            parser.next();
+        }
+        return new Error(Integer.parseInt(errorCode), message);
     }
 
     /**
@@ -308,20 +360,13 @@ public class PacketReader {
      */
     private static Packet parseMessage(XmlPullParser parser) throws Exception {
         Message message = new Message();
-        // Parse attributes of the opening message tag.
-        for (int i=0; i<parser.getAttributeCount(); i++) {
-            String name = parser.getAttributeName(i);
-            if (name.equals("to")) {
-                message.setRecipient(parser.getAttributeValue(i));
-            }
-            else if (name.equals("from")) {
-                message.setSender(parser.getAttributeValue(i));
-            }
-            else if (name.equals("type")) {
-                message.setType(Message.Type.fromString(parser.getAttributeValue(i)));
-            }
-        }
-        // Parse sub-elements
+        message.setTo(parser.getAttributeValue("", "to"));
+        message.setFrom(parser.getAttributeValue("", "from"));
+        message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
+
+        // Parse sub-elements. We include extra logic to make sure the values
+        // are only read once. This is because it's possible for the names to appear
+        // in arbitrary sub-elements.
         boolean done = false;
         String subject = null;
         String body = null;
@@ -365,35 +410,19 @@ public class PacketReader {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     private static Packet parsePresence(XmlPullParser parser) throws Exception {
-        String type = "available";
-        String to = null;
-        String from = null;
-        String id = null;
-        // Parse attributes of the opening message tag.
-        for (int i=0; i<parser.getAttributeCount(); i++) {
-            String name = parser.getAttributeName(i);
-            if (name.equals("type")) {
-                type = parser.getAttributeValue(i);
-            }
-            else if (name.equals("to")) {
-                to = parser.getAttributeValue(i);
-            }
-            else if (name.equals("from")) {
-                from = parser.getAttributeValue(i);
-            }
-            else if (name.equals("id")) {
-                id =  parser.getAttributeValue(i);
-            }
+        String type = parser.getAttributeValue("", "type");
+        // If the type value isn't set, it should default to available.
+        if (type == null) {
+            type = "available";
         }
-
         // We only handle "available" or "unavailable" packets for now.
         if (!(type.equals("available") || type.equals("unavailable"))) {
             System.out.println("FOUND OTHER PRESENCE TYPE: " + type);
         }
-        Presence presence = new Presence(type.equals("available"));
-        presence.setTo(to);
-        presence.setFrom(from);
-        presence.setPacketID(id);
+        Presence presence = new Presence("available".equals(type));
+        presence.setTo(parser.getAttributeValue("", "to"));
+        presence.setFrom(parser.getAttributeValue("", "from"));
+        presence.setPacketID(parser.getAttributeValue("", "id"));
 
         // Parse sub-elements
         boolean done = false;
@@ -445,6 +474,9 @@ public class PacketReader {
         }
     }
 
+    /**
+     * A wrapper class to associate a packet collector with a listener.
+     */
     private static class PacketListenerWrapper {
 
         private PacketListener packetListener;
