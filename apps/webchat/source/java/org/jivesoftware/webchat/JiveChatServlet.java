@@ -84,7 +84,7 @@ public class JiveChatServlet
     static protected Map PACKET_ROOT_CHATDATA_MAP = new HashMap();
 
     static protected EmoticonFilter EMOTICONFILTER = new EmoticonFilter();
-    static protected URLFilter URLFILTER = new URLFilter();
+    static protected URLTranscoder URLTRANSCODER = new URLTranscoder();
 
 
     protected String host;
@@ -196,7 +196,7 @@ public class JiveChatServlet
                 body = this.replace(body, "\"", "&quot;");
 
                 // encode the embedded urls
-                body = URLFILTER.applyFilter(body);
+                body = URLTRANSCODER.encodeURLsInText(body);
 
                 // Apply emoticons
                 body = EMOTICONFILTER.applyFilter(body);
