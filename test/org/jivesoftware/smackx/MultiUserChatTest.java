@@ -51,12 +51,15 @@
  */
 package org.jivesoftware.smackx;
 
+import java.util.*;
+
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.packet.Presence;
 
 import junit.framework.TestCase;
 
 /**
- * Represents...
+ * Tests the new MUC functionalities.
  *
  * @author Gaston Dombiak
  */
@@ -76,12 +79,21 @@ public class MultiUserChatTest extends TestCase {
      * Tests joining and leaving a room.
      *
      */
-    public void testJoin() {
+    public void testJoinAndInvite() {
         MultiUserChat muc = new MultiUserChat(conn1, "dpspanish@muc.jabber.org");
 
-        // Join the room
+        
         try {
+            // Join the room
             muc.join("testbot", SmackConfiguration.getPacketReplyTimeout(), null, 0, -1, -1, null);
+            
+            // Invite another user to join to the room
+            muc.invite("gdombiak@jabber.org","Meet me in this excellent room");
+            
+            muc.changeAvailabilityStatus("Gone to have lunch", Presence.Mode.AWAY);
+            
+            muc.changeNickname("testbot2");
+            
         }
         catch (XMPPException e) {
             fail(e.getMessage());
@@ -92,25 +104,62 @@ public class MultiUserChatTest extends TestCase {
     }
 
     /**
-     * Tests joining a non-existant room.
-     *
+     * Tests creating a new "Reserved Room".
      */
-    public void testCreateRoom() {
+    public void testCreateReservedRoom() {
         MultiUserChat muc = new MultiUserChat(conn1, "fruta124@muc.jabber.org");
 
-        // Join the room
         try {
-            muc.join("testbot", SmackConfiguration.getPacketReplyTimeout(), null, 0, -1, -1, null);
-            // TODO Check that the returned presence contains the status code 201
-            
+            // Create the room
+            muc.create("testbot");
+
+            // Get the the room's configuration form
             Form form = muc.getConfigurationForm();
             assertNotNull("No room configuration form", form);
+            // Create a new form to submit based on the original form
             Form submitForm = form.createAnswerForm();
-            muc.submitConfigurationForm(submitForm);
-            
+            // Add default answers to the form to submit
+            for (Iterator fields=form.getFields();fields.hasNext();) {
+                FormField field = (FormField) fields.next();
+                if (!FormField.TYPE_HIDDEN.equals(field.getType()) && field.getVariable() != null) {
+                    // Add the field values to a List
+                    List values = new ArrayList();
+                    for (Iterator it=field.getValues();it.hasNext();) {
+                        values.add((String)it.next());
+                    }
+                    // Add a new answer to form to submit
+                    submitForm.addAnswer(field.getVariable(), values);
+                }
+            }
+            // Update the new room's configuration
+            muc.sendConfigurationForm(submitForm);
+         
+            // Destroy the new room
+            muc.destroy("The room has almost no activity...", null);   
         }
         catch (XMPPException e) {
-            // TODO Check for the error code 404
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Tests creating a new "Instant Room".
+     */
+    public void testCreateInstantRoom() {
+        MultiUserChat muc = new MultiUserChat(conn1, "fruta124@muc.jabber.org");
+
+        try {
+            // Create the room
+            muc.create("testbot");
+
+            // Send an empty room configuration form which indicates that we want
+            // an instant room
+            muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+         
+            // Destroy the new room
+            muc.destroy("The room has almost no activity...", null);   
+        }
+        catch (XMPPException e) {
             System.out.println(e.getMessage());
         }
     }
