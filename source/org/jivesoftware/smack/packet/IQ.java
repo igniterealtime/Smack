@@ -106,12 +106,12 @@ public abstract class IQ extends Packet {
         if (queryXML != null) {
             buf.append(queryXML);
         }
-        buf.append("</iq>");
         // Add the error sub-packet, if there is one.
         XMPPError error = getError();
         if (error != null) {
             buf.append(error.toXML());
         }
+        buf.append("</iq>");
         return buf.toString();
     }
 
