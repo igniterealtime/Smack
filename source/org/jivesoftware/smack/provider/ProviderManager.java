@@ -149,10 +149,10 @@ public class ProviderManager {
             // Get an array of class loaders to try loading the providers files from.
             ClassLoader[] classLoaders = getClassLoaders();
             for (int i=0; i<classLoaders.length; i++) {
-                Enumeration enum = classLoaders[i].getResources(
+                Enumeration providerEnum = classLoaders[i].getResources(
                         "META-INF/smack.providers");
-                while (enum.hasMoreElements()) {
-                    URL url = (URL)enum.nextElement();
+                while (providerEnum.hasMoreElements()) {
+                    URL url = (URL)providerEnum.nextElement();
                     java.io.InputStream providerStream = null;
                     try {
                         providerStream = url.openStream();
