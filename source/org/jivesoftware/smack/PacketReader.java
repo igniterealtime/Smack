@@ -144,7 +144,6 @@ class PacketReader {
      */
     public PacketCollector createPacketCollector(PacketFilter packetFilter) {
         PacketCollector packetCollector = new PacketCollector(this, packetFilter);
-
         return packetCollector;
     }
 
@@ -164,14 +163,18 @@ class PacketReader {
     }
 
     /**
-     * Removes a packet listener from this reader.
+     * Removes a packet listener.
      *
      * @param packetListener the packet listener to remove.
      */
     public void removePacketListener(PacketListener packetListener) {
         synchronized (listeners) {
-            int index = listeners.indexOf(packetListener);
-            listeners.set(index, null);
+            for (int i=0; i<listeners.size(); i++) {
+                ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
+                if (wrapper.packetListener.equals(packetListener)) {
+                    listeners.set(i, null);
+                }
+            }
         }
     }
 
@@ -216,8 +219,13 @@ class PacketReader {
         boolean processedPacket = false;
         while (!done) {
             synchronized (listeners) {
-                // TODO: need to loop through lists and remove null elements. Should loop through
-                // TODO: list backwards so that index values stay correct.
+                if (listeners.size() > 0) {
+                    for (int i=listeners.size()-1; i>=0; i--) {
+                        if (listeners.get(i) == null) {
+                            listeners.remove(i);
+                        }
+                    }
+                }
             }
             processedPacket = false;
             int size = listeners.size();
@@ -300,7 +308,14 @@ class PacketReader {
             return;
         }
 
-        // TODO: loop through collectors and remove null values.
+        // Remove all null values from the collectors list.
+        synchronized (collectors) {
+            for (int i=collectors.size()-1; i<=0; i--) {
+                    if (collectors.get(i) == null) {
+                        collectors.remove(i);
+                    }
+                }
+        }
 
         // Loop through all collectors and notify the appropriate ones.
         int size = collectors.size();
