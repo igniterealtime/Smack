@@ -65,11 +65,11 @@ import org.xmlpull.v1.XmlPullParser;
 public interface IQProvider {
 
     /**
-     * Parse the IQ sub-document and create an IQ instance. Each IQ must have a single
-     * sub-element  At
-     * the beginning of the method call, the xml parser will be positioned directly
-     * after the opening &lt;query&gt; tag of the IQ packet. At the end of the method call,
-     * the parser <b>must</b> be positioned directly after the closing &lt;query/&gt; tag.
+     * Parse the IQ sub-document and create an IQ instance. Each IQ must have a
+     * single child element. At the beginning of the method call, the xml parser
+     * will be positioned at the opening tag of the IQ child element. At the end
+     * of the method call, the parser <b>must</b> be positioned on the closing tag
+     * of the child element.
      *
      * @param parser an XML parser.
      * @return a new IQ instance.
