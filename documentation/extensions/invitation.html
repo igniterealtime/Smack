@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Group Chat Invitations</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">Group Chat Invitations</div><p>
+
+The group chat invitation packet extension is used to invite other
+users to a group chat room. 
+
+<ul>
+  <li><a href="#send">Inviting Other Users</a></li>
+  <li><a href="#listen">Listen for Invitations</a></li>
+</ul>
+
+<p>
+<b>JEP related:</b> N/A -- this protocol is outdated now that the Multi-User Chat (MUC) JEP is available
+(<a href="http://www.jabber.org/jeps/jep-0045.html">JEP-45</a>). However, most
+existing clients still use this older protocol. Once MUC support becomes more
+widespread, this API may be deprecated. 
+
+<hr>
+
+<p><div class="subheader"><a name="send">Inviting Other Users</a></div><p>
+
+To use the GroupChatInvitation packet extension
+to invite another user to a group chat room, address a new message to the 
+user and set the room name appropriately, as in the following code example:
+
+<pre>
+Message message = new Message(<font color="#0000FF">"user@chat.example.com"</font>);
+message.setBody(<font color="#0000FF">"Join me for a group chat!"</font>);
+message.addExtension(new GroupChatInvitation(<font color="#0000FF">"room@chat.example.com"</font>));
+con.sendPacket(message);
+</pre>
+
+The XML generated for the invitation portion of the code above would be:
+
+<pre>
+&lt;x xmlns="jabber:x:conference" jid="room@chat.example.com"/&gt;
+</pre><p>
+
+<hr>
+<div class="subheader"><a name="listen">Listening for Invitations</a></div><p>
+
+To listen for group chat invitations, use a PacketExtensionFilter for the
+<tt>x</tt> element name and <tt>jabber:x:conference</tt> namespace, as in the
+following code example:
+
+<pre>
+PacketFilter filter = new PacketExtensionFilter(<font color="#0000FF">"x"</font>, <font color="#0000FF">"jabber:x:conference"</font>);
+<font color="#3f7f5f">// Create a packet collector or packet listeners using the filter...</font>
+</pre>
+
+</body>
+
+</html>
