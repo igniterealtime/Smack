@@ -18,6 +18,7 @@
     <property name="jar.dest.dir" value="${basedir}" />
     <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
     <property name="build.lib.dir" value="${basedir}/build/lib" />
+    <property name="merge.lib.dir" value="${basedir}/build/merge" />
 
     <property name="version.major" value="1" />
     <property name="version.minor" value="0" />
@@ -45,7 +46,10 @@
             <src path="${basedir}/source" />
             <classpath>
                 <fileset dir="${build.lib.dir}">
-                    <include name="**/*.jar"/>
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
                 </fileset>
             </classpath>
         </javac>
@@ -59,7 +63,7 @@
             basedir="${compile.dir}"
             includes="**/*.class"
          >
-             <zipfileset src="${build.lib.dir}/xpp.jar"/>
+             <zipfileset src="${merge.lib.dir}/xpp.jar"/>
          </jar>
     </target>
 
@@ -77,7 +81,10 @@
         >
             <classpath>
                 <fileset dir="${build.lib.dir}">
-                    <include name="**/*.jar"/>
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
                 </fileset>
             </classpath>
             <doctitle><![CDATA[<font face="arial,helvetica">Smack ${version.name}</font>]]></doctitle>

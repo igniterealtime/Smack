@@ -25,6 +25,10 @@
         <property name="release.dir" value="${basedir}/release/${release.name}" />
         <!-- create release dirs -->
         <mkdir dir="${release.dir}" />
+        <!-- Copy smack.jar -->
+        <copy todir="${release.dir}">
+            <fileset dir="${jar.dest.dir}" includes="smack.jar" /> 
+        </copy>
         <!-- Copy build dir -->
         <copy todir="${release.dir}/build">
             <fileset dir="${basedir}/build">
