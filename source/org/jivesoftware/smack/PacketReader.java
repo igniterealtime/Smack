@@ -114,7 +114,8 @@ class PacketReader {
         listenerThread.setDaemon(true);
 
         try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance(
+                    "org.xmlpull.mxp1.MXParserFactory", null);
             factory.setNamespaceAware(true);
             parser = factory.newPullParser();
             parser.setInput(connection.reader);

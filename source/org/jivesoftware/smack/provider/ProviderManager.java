@@ -153,7 +153,8 @@ public class ProviderManager {
                 java.io.InputStream providerStream = null;
                 try {
                     providerStream = url.openStream();
-                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance(
+                            "org.xmlpull.mxp1.MXParserFactory", null);
                     factory.setNamespaceAware(true);
                     XmlPullParser parser = factory.newPullParser();
                     parser.setInput(providerStream, "UTF-8");
