@@ -102,7 +102,7 @@ public class StringUtils {
         }
         int atIndex = XMPPAddress.indexOf("@");
         // If the String ends with '@', return the empty string.
-        if (atIndex + 1 > XMPPAddress.length() || atIndex < 0) {
+        if (atIndex + 1 > XMPPAddress.length()) {
             return "";
         }
         int slashIndex = XMPPAddress.indexOf("/");
