@@ -386,16 +386,14 @@ public class Roster {
      * Returns the roster entry associated with the given XMPP address or
      * <tt>null</tt> if the user is not an entry in the roster.
      *
-     * @param user the XMPP address of the user (eg "jsmith@example.com").
+     * @param user the XMPP address of the user (eg "jsmith@example.com"). The address could be
+     * in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
      * @return the roster entry or <tt>null</tt> if it does not exist.
      */
     public RosterEntry getEntry(String user) {
         if (user == null) {
             return null;
         }
-        // Roster entries never include a resource so remove the resource
-        // if it's a part of the XMPP address.
-        user = StringUtils.parseBareAddress(user);
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
@@ -410,16 +408,14 @@ public class Roster {
     /**
      * Returns true if the specified XMPP address is an entry in the roster.
      *
-     * @param user the XMPP address of the user (eg "jsmith@example.com").
+     * @param user the XMPP address of the user (eg "jsmith@example.com"). The address could be
+     * in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
      * @return true if the XMPP address is an entry in the roster.
      */
     public boolean contains(String user) {
         if (user == null) {
             return false;
         }
-        // Roster entries never include a resource so remove the resource
-        // if it's a part of the XMPP address.
-        user = StringUtils.parseBareAddress(user);
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
@@ -475,12 +471,13 @@ public class Roster {
      * If the user has several presences (one for each resource) then answer the presence
      * with the highest priority.
      *
-     * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
+     * @param user a fully qualified xmpp ID. The address could be in any valid format (e.g.
+     * "domain/resource", "user@domain" or "user@domain/resource").
      * @return the user's current presence, or <tt>null</tt> if the user is unavailable
      *      or if no presence information is available..
      */
     public Presence getPresence(String user) {
-        String key = StringUtils.parseName(user) + "@" + StringUtils.parseServer(user);
+        String key = getPresenceMapKey(user);
         Map userPresences = (Map) presenceMap.get(key);
         if (userPresences == null) {
             return null;
@@ -512,13 +509,12 @@ public class Roster {
      * is unavailable (offline) or if no presence information is available, such as
      * when you are not subscribed to the user's presence updates.
      *
-     * @param userResource a fully qualified xmpp ID including a resource, e.g. jdoe@example.com/Home
+     * @param userResource a fully qualified xmpp ID including a resource.
      * @return the user's current presence, or <tt>null</tt> if the user is unavailable 
      * or if no presence information is available.
      */
     public Presence getPresenceResource(String userResource) {
-        String key =
-            StringUtils.parseName(userResource) + "@" + StringUtils.parseServer(userResource);
+        String key = getPresenceMapKey(userResource);
         String resource = StringUtils.parseResource(userResource);
         Map userPresences = (Map) presenceMap.get(key);
         if (userPresences == null) {
@@ -539,7 +535,7 @@ public class Roster {
      * unavailable or if no presence information is available.
      */
     public Iterator getPresences(String user) {
-        String key = StringUtils.parseName(user) + "@" + StringUtils.parseServer(user);
+        String key = getPresenceMapKey(user);
         Map userPresences = (Map) presenceMap.get(key);
         if (userPresences == null) {
             return null;
@@ -547,6 +543,25 @@ public class Roster {
         else {
             return userPresences.values().iterator();
         }
+    }
+
+    /**
+     * Returns the key to use in the presenceMap for a fully qualified xmpp ID. The roster
+     * can contain any valid address format such us "domain/resource", "user@domain" or
+     * "user@domain/resource". If the roster contains an entry associated with the fully qualified
+     * xmpp ID then use the fully qualified xmpp ID as the key in presenceMap, otherwise use the
+     * bare address. Note: When the key in presenceMap is a fully qualified xmpp ID, the
+     * userPresences is useless since it will always contain one entry for the user.
+     *
+     * @param user the fully qualified xmpp ID, e.g. jdoe@example.com/Work.
+     * @return the key to use in the presenceMap for the fully qualified xmpp ID.
+     */
+    private String getPresenceMapKey(String user) {
+        String key = user;
+        if (!contains(user)) {
+            key = StringUtils.parseBareAddress(user);
+        }
+        return key;
     }
 
     /**
@@ -584,7 +599,8 @@ public class Roster {
         public void processPacket(Packet packet) {
             Presence presence = (Presence)packet;
             String from = presence.getFrom();
-            String key = StringUtils.parseBareAddress(from);
+            String key = getPresenceMapKey(from);
+
             // If an "available" packet, add it to the presence map. Each presence map will hold
             // for a particular user a map with the presence packets saved for each resource.
             if (presence.getType() == Presence.Type.AVAILABLE) {
