@@ -3,7 +3,7 @@
 <smack>
 
     <!-- Classes that will be loaded when Smack starts -->
-    <startupClasss>
+    <startupClasses>
         <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
         <className>org.jivesoftware.smackx.XHTMLManager</className>
     </startupClasses>
@@ -12,6 +12,6 @@
     <packetReplyTimeout>5000</packetReplyTimeout>
 
     <!-- Keep-alive interval in milleseconds -->
-    <keepAliveTimeout>30000</keepAliveTimeout>
+    <keepAliveInterval>30000</keepAliveInterval>
 
 </smack>
