@@ -111,6 +111,7 @@ class EnhancedDebuggerWindow {
 
     private JFrame frame = null;
     private JTabbedPane tabbedPane = null;
+    private java.util.List debuggers = new ArrayList();
 
     private EnhancedDebuggerWindow() {
     }
@@ -150,6 +151,8 @@ class EnhancedDebuggerWindow {
         tabbedPane.setIconAt(tabbedPane.indexOfComponent(debugger.tabbedPane), connectionCreatedIcon);
         frame.setTitle(
             "Smack Debug Window -- Total connections: " + (tabbedPane.getComponentCount() - 1));
+        // Keep the added debugger for later access
+        debuggers.add(debugger);
     }
 
     /**
@@ -204,6 +207,13 @@ class EnhancedDebuggerWindow {
 
         frame = new JFrame("Smack Debug Window");
 
+        // Add listener for window closing event 
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                rootWindowClosing(evt);
+            }
+        });
+
         // We'll arrange the UI into tabs. The last tab contains Smack's information.
         // All the connection debugger tabs will be shown before the Smack info tab. 
         tabbedPane = new JTabbedPane();
@@ -255,7 +265,14 @@ class EnhancedDebuggerWindow {
             public void actionPerformed(ActionEvent e) {
                 // Remove the selected tab pane if it's not the Smack info pane
                 if (tabbedPane.getSelectedIndex() < tabbedPane.getComponentCount() - 1) {
-                    tabbedPane.remove(tabbedPane.getSelectedComponent());
+                    int index = tabbedPane.getSelectedIndex();
+                    // Notify to the debugger to stop debugging
+                    EnhancedDebugger debugger = (EnhancedDebugger)debuggers.get(index);
+                    debugger.cancel();
+                    // Remove the debugger from the root window
+                    tabbedPane.remove(debugger.tabbedPane);
+                    debuggers.remove(debugger);
+                    // Update the root window title
                     frame.setTitle(
                         "Smack Debug Window -- Total connections: "
                             + (tabbedPane.getComponentCount() - 1));
@@ -271,6 +288,24 @@ class EnhancedDebuggerWindow {
         frame.setSize(650, 400);
         frame.setVisible(true);
 
+    }
+
+    /**
+     * Notification that the root window is closing. Stop listening for received and 
+     * transmitted packets in all the debugged connections.
+     * 
+     * @param evt the event that indicates that the root window is closing 
+     */
+    public void rootWindowClosing(WindowEvent evt) {
+        // Notify to all the debuggers to stop debugging
+        for (Iterator it = debuggers.iterator(); it.hasNext();) {
+            EnhancedDebugger debugger = (EnhancedDebugger)it.next();
+            debugger.cancel();
+        }
+        // Release any reference to the debuggers
+        debuggers.removeAll(debuggers);
+        // Release the default instance
+        instance = null;
     }
 
     /**
