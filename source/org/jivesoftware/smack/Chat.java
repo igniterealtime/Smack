@@ -103,8 +103,7 @@ public class Chat {
         // Automatically assign the next chat ID.
         chatID = nextID();
 
-        messageCollector = connection.getPacketReader().createPacketCollector(
-                new ThreadFilter(chatID));
+        messageCollector = connection.createPacketCollector(new ThreadFilter(chatID));
     }
 
     /**
@@ -119,8 +118,7 @@ public class Chat {
         this.participant = participant;
         this.chatID = chatID;
 
-        messageCollector = connection.getPacketReader().createPacketCollector(
-                new ThreadFilter(chatID));
+        messageCollector = connection.createPacketCollector(new ThreadFilter(chatID));
     }
 
     /**
@@ -158,7 +156,7 @@ public class Chat {
     public void sendMessage(String text) throws XMPPException {
         Message message = createMessage();
         message.setBody(text);
-        connection.getPacketWriter().sendPacket(message);
+        connection.sendPacket(message);
     }
 
     /**
@@ -187,7 +185,7 @@ public class Chat {
         // Force the chatID since the user elected to send the message
         // through this chat object.
         message.setThread(chatID);
-        connection.getPacketWriter().sendPacket(message);
+        connection.sendPacket(message);
     }
 
     /**
@@ -206,8 +204,8 @@ public class Chat {
     }
 
     /**
-     * Returns the next available message in the chat. The method will block
-     * indefinitely (won't return) until a message is available.
+     * Returns the next available message in the chat. The method call will block
+     * (not return) until a message is available.
      *
      * @return the next message.
      */
@@ -216,9 +214,9 @@ public class Chat {
     }
 
     /**
-     * Returns the next available message in the chat. The method will block
-     * for up to the timeout. If a message still isn't available then, <tt>null</tt>
-     * will be returned.
+     * Returns the next available message in the chat. The method call will block
+     * (not return) until a packet is available or the <tt>timeout</tt> has elapased.
+     * If the timeout elapses without a result, <tt>null</tt> will be returned.
      *
      * @param timeout the maximum amount of time to wait for the next message.
      * @return the next message, or <tt>null</tt> if the timeout elapses without a
