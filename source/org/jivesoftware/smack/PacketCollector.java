@@ -62,12 +62,22 @@ import java.util.LinkedList;
  * specified filter. The collector lets you perform blocking and polling
  * operations on the result queue. So, a PacketCollector is more suitable to
  * use than a {@link PacketListener} when you need to wait for a specific
- * result.
+ * result.<p>
+ *
+ * Each packet collector will queue up to 2^16 packets for processing before
+ * older packets are automatically dropped.
  *
  * @see XMPPConnection#createPacketCollector(PacketFilter)
  * @author Matt Tucker
  */
 public class PacketCollector {
+
+    /**
+     * Max number of packets that any one collector can hold. After the max is
+     * reached, older packets will be automatically dropped from the queue as
+     * new packets are added.
+     */
+    private static final int MAX_PACKETS = 65536;
 
     private PacketFilter packetFilter;
     private LinkedList resultQueue;
@@ -193,6 +203,11 @@ public class PacketCollector {
             return;
         }
         if (packetFilter == null || packetFilter.accept(packet)) {
+            // If the max number of packets has been reached, remove the oldest one.
+            if (resultQueue.size() == MAX_PACKETS) {
+                resultQueue.removeLast();
+            }
+            // Add the new packet.
             resultQueue.addFirst(packet);
             // Notify waiting threads a result is available.
             notifyAll();
