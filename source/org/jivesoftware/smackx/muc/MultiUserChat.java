@@ -2118,13 +2118,17 @@ public class MultiUserChat {
         }
     }
 
-    public void finalize() {
-        if (connection != null) {
-            messageCollector.cancel();
-            connection.removePacketListener(subjectListener);
-            connection.removePacketListener(presenceListener);
-            connection.removePacketListener(declinesListener);
+    public void finalize() throws Throwable {
+        super.finalize();
+        try {
+            if (connection != null) {
+                messageCollector.cancel();
+                connection.removePacketListener(subjectListener);
+                connection.removePacketListener(presenceListener);
+                connection.removePacketListener(declinesListener);
+            }
         }
+        catch (Exception e) {}
     }
 
     /**
