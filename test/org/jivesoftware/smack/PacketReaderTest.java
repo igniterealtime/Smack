@@ -91,8 +91,8 @@ public class PacketReaderTest extends SmackTestCase {
         if (response == null) {
             fail("No response from the other user.");
         }
-        assertEquals("The received IQ is not of type ERROR", response.getType(),IQ.Type.ERROR);
-        assertEquals("The error code is not 501", response.getError().getCode(),501);
+        assertEquals("The received IQ is not of type ERROR", IQ.Type.ERROR, response.getType());
+        assertEquals("The error code is not 501", 501, response.getError().getCode());
         collector.cancel();
     }
 
