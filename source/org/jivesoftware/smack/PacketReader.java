@@ -142,7 +142,21 @@ class PacketReader {
         // giving up and throwing an error.
         try {
             synchronized(connectionIDLock) {
-                connectionIDLock.wait(SmackConfiguration.getPacketReplyTimeout());
+                if (connectionID == null) {
+                    // A waiting thread may be woken up before the wait time or a notify
+                    // (although this is a rare thing). Therefore, we continue waiting
+                    // until either a connectionID has been set (and hence a notify was
+                    // made) or the total wait time has elapsed.
+                    long waitTime = SmackConfiguration.getPacketReplyTimeout();
+                    long start = System.currentTimeMillis();
+                    while (connectionID == null && !done) {
+                        if (waitTime <= 0) {
+                            break;
+                        }
+                        connectionIDLock.wait(waitTime);
+                        waitTime -= System.currentTimeMillis() - start;
+                    }
+                }
             }
         }
         catch (InterruptedException ie) { }
@@ -252,8 +266,8 @@ class PacketReader {
                             for (int i=0; i<parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals("id")) {
                                     // Save the connectionID and notify that we've gotten it.
-                                    connectionID = parser.getAttributeValue(i);
                                     synchronized(connectionIDLock) {
+                                        connectionID = parser.getAttributeValue(i);
                                         connectionIDLock.notifyAll();
                                     }
                                 }
