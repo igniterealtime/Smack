@@ -59,41 +59,98 @@ import java.io.PrintWriter;
 
 /**
  * A generic exception that is thrown when an error occurs performing an
- * XMPP operation.
+ * XMPP operation. XMPP servers can respond to error conditions with an error code
+ * and textual description of the problem, which are encapsulated in the XMPPError
+ * class. When appropriate, an XMPPError instance is attached instances of this exception.
  *
+ * @see XMPPError
  * @author Matt Tucker
  */
 public class XMPPException extends Exception {
 
     private XMPPError error = null;
-    private Throwable cause = null;
+    private Throwable wrappedThrowable = null;
 
+    /**
+     * Creates a new XMPPException.
+     */
     public XMPPException() {
         super();
     }
 
+    /**
+     * Creates a new XMPPException with a description of the exception.
+     *
+     * @param message description of the exception.
+     */
     public XMPPException(String message) {
         super(message);
     }
 
-    public XMPPException(Throwable cause) {
+    /**
+     * Creates a new XMPPException with the Throwable that was the root cause of the
+     * exception.
+     *
+     * @param wrappedThrowable the root cause of the exception.
+     */
+    public XMPPException(Throwable wrappedThrowable) {
         super();
-        this.cause = cause;
+        this.wrappedThrowable = wrappedThrowable;
     }
 
+    /**
+     * Cretaes a new XMPPException with the XMPPError that was the root case of the
+     * exception.
+     *
+     * @param error the root cause of the exception.
+     */
     public XMPPException(XMPPError error) {
         super();
         this.error = error;
     }
 
-    public XMPPException(String message, Throwable cause) {
+    /**
+     * Creates a new XMPPException with a description of the exception and the
+     * Throwable that was the root cause of the exception.
+     *
+     * @param message a description of the exception.
+     * @param wrappedThrowable the root cause of the exception.
+     */
+    public XMPPException(String message, Throwable wrappedThrowable) {
         super(message);
-        this.cause = cause;
+        this.wrappedThrowable = wrappedThrowable;
     }
 
+    /**
+     * Creates a new XMPPException with a description of the exception and the
+     * XMPPException that was the root cause of the exception.
+     *
+     * @param message a description of the exception.
+     * @param error the root cause of the exception.
+     */
     public XMPPException(String message, XMPPError error) {
         super(message);
         this.error = error;
+    }
+
+    /**
+     * Returns the XMPPError asscociated with this exception, or <tt>null</tt> if there
+     * isn't one.
+     *
+     * @return the XMPPError asscociated with this exception.
+     */
+    public XMPPError getXMPPError() {
+        return error;
+    }
+
+    /**
+     * Returns the Throwable asscociated with this exception, or <tt>null</tt> if there
+     * isn't one.
+     *
+     * @return the Throwable asscociated with this exception.
+     */
+    public Throwable getWrappedThrowable() {
+        return wrappedThrowable;
     }
 
     public void printStackTrace() {
@@ -105,9 +162,9 @@ public class XMPPException extends Exception {
             System.err.print(error + " -- ");
         }
         super.printStackTrace(out);
-        if (cause != null) {
+        if (wrappedThrowable != null) {
             out.println("Nested Exception: ");
-            cause.printStackTrace(out);
+            wrappedThrowable.printStackTrace(out);
         }
     }
 
@@ -116,9 +173,9 @@ public class XMPPException extends Exception {
             System.err.print(error + " -- ");
         }
         super.printStackTrace(out);
-        if (cause != null) {
+        if (wrappedThrowable != null) {
             out.println("Nested Exception: ");
-            cause.printStackTrace(out);
+            wrappedThrowable.printStackTrace(out);
         }
     }
 }
