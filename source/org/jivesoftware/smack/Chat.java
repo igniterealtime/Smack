@@ -68,7 +68,7 @@ public class Chat {
     /**
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
-    private static String prefix = StringUtils.randomString(3);
+    private static String prefix = StringUtils.randomString(5);
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to
