@@ -253,7 +253,7 @@ public class Roster {
      * Creates a new roster entry and presence subscription. The server will asynchronously
      * update the roster with the subscription status.
      *
-     * @param user the user.
+     * @param user the user. (e.g. johndoe@jabber.org)
      * @param name the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *      the roster entry won't belong to a group.
