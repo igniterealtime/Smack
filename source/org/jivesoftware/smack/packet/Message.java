@@ -227,7 +227,7 @@ public class Message extends Packet {
             }
         }
         // Add packet extensions, if any are defined.
-        buf.append(getExtentionsXML());
+        buf.append(getExtensionsXML());
         buf.append("</message>");
         return buf.toString();
     }

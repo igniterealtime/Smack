@@ -369,7 +369,7 @@ public abstract class Packet {
      * @return the extension sub-packets as XML or the Empty String if there
      * are no packet extensions.
      */
-    protected synchronized String getExtentionsXML() {
+    protected synchronized String getExtensionsXML() {
         StringBuffer buf = new StringBuffer();
         // Add in all standard extension sub-packets.
         Iterator extensions = getExtensions();
