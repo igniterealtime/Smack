@@ -400,7 +400,7 @@ public class Roster {
         public void processPacket(Packet packet) {
             Presence presence = (Presence)packet;
             String from = presence.getFrom();
-            String key = StringUtils.parseName(from) + "@" + StringUtils.parseServer(from);
+            String key = StringUtils.parseBareAddress(from);
             // If an "available" packet, add it to the presence map. This means that for
             // a particular user, we'll only ever have a single presence packet saved.
             // Because this ignores resources, this is not an ideal solution, so will
