@@ -323,7 +323,8 @@ public class XMPPConnection {
         // We're done with the collector, so explicitly cancel it.
         collector.cancel();
 
-        // Load the entire roster from the server.
+        // Create the roster.
+        this.roster = new Roster(this);
         roster.reload();
 
         // Set presence to online.
@@ -402,16 +403,30 @@ public class XMPPConnection {
 
     /**
      * Returns the roster for the user logged into the server. If the user has not yet
-     * logged into the server this method will return a non-loaded roster that the user can 
-     * configure. If the user is logged in anonymously, this method will return
+     * logged into the server (or if the user is logged in anonymously), this method will return
      * <tt>null</tt>.
      *
-     * @return the user's roster, a non-loaded roster if the user has not yet
-     * logged in, or <tt>null</tt> if the user is logged in anonymously.
+     * @return the user's roster, or <tt>null</tt> if the user has not logged in yet.
      */
     public Roster getRoster() {
         if (roster == null) {
             return null;
+        }
+        // If this is the first time the user has asked for the roster after calling
+        // login, we want to wait up to 2 seconds for the server to send back the
+        // user's roster. This behavior shields API users from having to worry about the
+        // fact that roster operations are asynchronous, although they'll still have to
+        // listen for changes to the roster. Note: because of this waiting logic, internal
+        // Smack code should be wary about calling the getRoster method, and may need to
+        // access the roster object directly.
+        int elapsed = 0;
+        while (!roster.rosterInitialized && elapsed <= 2000) {
+            try {
+                Thread.sleep(500);
+            }
+            catch (Exception e) {
+            }
+            elapsed += 500;
         }
         return roster;
     }
@@ -720,9 +735,6 @@ public class XMPPConnection {
         // Make note of the fact that we're now connected.
         connected = true;
         
-        // Create the roster.
-        this.roster = new Roster(this);
-
         // Notify that a new connection has been established
         connectionEstablished(this);
     }
