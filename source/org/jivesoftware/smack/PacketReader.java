@@ -82,7 +82,7 @@ class PacketReader {
     private XmlPullParser parser;
     private boolean done = false;
     protected List collectors = new ArrayList();
-    private List listeners = Collections.synchronizedList(new ArrayList());
+    private List listeners = new ArrayList();
 
     private String connectionID = null;
     private Object connectionIDLock = new Object();
@@ -119,16 +119,44 @@ class PacketReader {
         }
     }
 
+    /**
+     * Creates a new packet collector for this reader. A packet filter determines
+     * which packets will be accumulated by the collector.
+     *
+     * @param packetFilter the packet filter to use.
+     * @return a new packet collector.
+     */
     public PacketCollector createPacketCollector(PacketFilter packetFilter) {
-        return new PacketCollector(this, packetFilter);
+        PacketCollector packetCollector = new PacketCollector(this, packetFilter);
+
+        return packetCollector;
     }
 
+    /**
+     * Registers a packet listener with this reader. A packet filter determines
+     * which packets will be delivered to the listener.
+     *
+     * @param packetListener the packet listener to notify of new packets.
+     * @param packetFilter the packet filter to use.
+     */
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
-        // TODO: implement
+        ListenerWrapper wrapper = new ListenerWrapper(this, packetListener,
+                packetFilter);
+        synchronized (listeners) {
+            listeners.add(wrapper);
+        }
     }
 
+    /**
+     * Removes a packet listener from this reader.
+     *
+     * @param packetListener the packet listener to remove.
+     */
     public void removePacketListener(PacketListener packetListener) {
-        // TODO: implement
+        synchronized (listeners) {
+            int index = listeners.indexOf(packetListener);
+            listeners.set(index, null);
+        }
     }
 
     /**
@@ -170,11 +198,17 @@ class PacketReader {
      */
     private void processListeners() {
         boolean processedPacket = false;
-        while (true) {
-            synchronized(listeners) {
-                int size = listeners.size();
-                for (int i=0; i<size; i++) {
-
+        while (!done) {
+            synchronized (listeners) {
+                // TODO: need to loop through lists and remove null elements. Should loop through
+                // TODO: list backwards so that index values stay correct.
+            }
+            processedPacket = false;
+            int size = listeners.size();
+            for (int i=0; i<size; i++) {
+                ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
+                if (wrapper != null) {
+                    processedPacket = processedPacket || wrapper.notifyListener();
                 }
             }
             if (!processedPacket) {
@@ -240,7 +274,8 @@ class PacketReader {
 
     /**
      * Processes a packet after it's been fully parsed by looping through the installed
-     * packet collectors and letting them examine the packet to see if they are a match.
+     * packet collectors and listeners and letting them examine the packet to see if
+     * they are a match with the filter.
      *
      * @param packet the packet to process.
      */
@@ -248,16 +283,16 @@ class PacketReader {
         if (packet == null) {
             return;
         }
+
+        // TODO: loop through collectors and remove null values.
+
         // Loop through all collectors and notify the appropriate ones.
-        synchronized (collectors) {
-            // Loop through packet collectors backwards.
-            int size = collectors.size();
-            for (int i=0; i<size; i++) {
-                PacketCollector collector = (PacketCollector)collectors.get(i);
-                if (collector != null) {
-                    // Have the collector process the packet to see if it wants to handle it.
-                    collector.processPacket(packet);
-                }
+        int size = collectors.size();
+        for (int i=0; i<size; i++) {
+            PacketCollector collector = (PacketCollector)collectors.get(i);
+            if (collector != null) {
+                // Have the collector process the packet to see if it wants to handle it.
+                collector.processPacket(packet);
             }
         }
     }
@@ -555,16 +590,50 @@ class PacketReader {
     /**
      * A wrapper class to associate a packet collector with a listener.
      */
-    private static class PacketListenerWrapper {
+    private static class ListenerWrapper {
 
         private PacketListener packetListener;
         private PacketCollector packetCollector;
 
-        public PacketListenerWrapper(PacketReader packetReader, PacketListener packetListener,
+        public ListenerWrapper(PacketReader packetReader, PacketListener packetListener,
                 PacketFilter packetFilter)
         {
             this.packetListener = packetListener;
             this.packetCollector = new PacketCollector(packetReader, packetFilter);
+        }
+
+        public boolean equals(Object object) {
+            if (object == null) {
+                return false;
+            }
+            if (object instanceof ListenerWrapper) {
+                return ((ListenerWrapper)object).packetListener.equals(this.packetListener);
+            }
+            else if (object instanceof PacketListener) {
+                return object.equals(this.packetListener);
+            }
+            return false;
+        }
+
+        public void processPacket(Packet packet) {
+            packetCollector.processPacket(packet);
+        }
+
+        public boolean notifyListener() {
+            Packet packet = packetCollector.pollResult();
+            if (packet != null) {
+                packetListener.processPacket(packet);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        public void cancel() {
+            packetCollector.cancel();
+            packetCollector = null;
+            packetListener = null;
         }
     }
 }
