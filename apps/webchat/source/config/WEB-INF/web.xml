@@ -7,10 +7,15 @@
     <display-name>WebChat</display-name>
     <description>Smack-powered WebChat Application</description>
       
-   <context-param>
+    <context-param>
         <param-name>host</param-name>
         <param-value>jivesoftware.com</param-value>
-   </context-param>
+    </context-param>
+
+    <!-- Session listener -->
+    <listener>
+        <listener-class>org.jivesoftware.webchat.ChatServlet</listener-class>
+    </listener>
 
     <!-- Servlets -->
     <servlet>
@@ -29,5 +34,5 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
+    </welcome-file-list>    
 </web-app>
