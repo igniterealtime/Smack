@@ -11,23 +11,6 @@
 
 <project name="Smack" default="all" basedir="..">
 
-    <!-- TASKDEFS -->
-    <!-- ======================================================================================= -->
-
-    <!-- org.apache.tools.ant.taskdefs.optional.junit.JUnitTask -->
-<!--    <taskdef resource="junit.properties">-->
-<!--        <classpath>-->
-<!--            <pathelement location="${basedir}/build/ant.jar"/>-->
-<!--            <pathelement location="${basedir}/build/junit.jar"/>-->
-<!--        </classpath>-->
-<!--    </taskdef>-->
-<!--    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">-->
-<!--        <classpath>-->
-<!--            <pathelement location="${basedir}/build/ant.jar"/>-->
-<!--            <pathelement location="${basedir}/build/junit.jar"/>-->
-<!--        </classpath>-->
-<!--    </taskdef>-->
-
     <!-- PROPERTIES -->
     <!-- ======================================================================================= -->
 
@@ -107,13 +90,13 @@
             includes="org/jivesoftware/smack/**/*.class"
          >
              <zipfileset src="${merge.lib.dir}/xpp.jar"/>
-         </jar>
+        </jar>
+        <copy todir="${compile.dir}/resources/WEB-INF" file="${basedir}/resources/META-INF/smack.providers" />
         <jar destfile="${jar.dest.dir}/smackx.jar"
             basedir="${compile.dir}"
-            includes="org/jivesoftware/smackx/**/*.class"
-         >
-            <metainf dir="${basedir}/resources" includes="smack.providers" />
-         </jar>
+            includes="org/jivesoftware/smackx/**/*.class, **/*.providers"
+        />
+        <delete file="${compile.dir}/resources/WEB-INF/smack.properties" />
     </target>
 
     <!-- jar -->
@@ -127,7 +110,7 @@
 
     <!-- javadoc -->
     <!-- ======================================================================================= -->
-    <target name="javadoc" description="JavaDocs the Jive Forums source code">
+    <target name="javadoc" description="JavaDocs the Smack source code">
 
         <mkdir dir="${javadoc.dest.dir}" />
         <javadoc
