@@ -56,6 +56,41 @@ Smack Changelog
 </div>
 
 <p>
+<b>1.4.0</b> - August 10, 2004
+<p>
+<ul>
+    <li><font color="#777777">(SMACK-99)</font> Added support for Multi User Chat (JEP 45) as a Smack Extension.
+    <li><font color="#777777">(SMACK-125)</font> Added support for Data Forms (JEP 04) as a Smack Extension.
+    <li><font color="#777777">(SMACK-143)</font> Fixed memory leak problem by closing ObjectOutputStream while writing out Object properties.
+    <li><font color="#777777">(SMACK-145)</font> Fixed memory leak problem by cancelling unused collectors.
+    <li><font color="#777777">(SMACK-138)</font> Fixed error parsing properties of Messages.
+    <li><font color="#777777">(SMACK-135)</font> Invalid characters in the TO and FROM fields of any packet were escaped in order to 
+	prevent the connection from closing. Thanks to Ian Sollars.
+    <li><font color="#777777">(SMACK-140)</font> Added new constructor to XMPPConnection <tt>XMPPConnection(String host, int port, 
+	SocketFactory socketFactory)</tt> that allows a user to pass in the SocketFactory to use.
+    <li><font color="#777777">(SMACK-131)</font> Remove cached presence info when user was deleted from roster.
+    <li><font color="#777777">(SMACK-123)</font> TimerTask was removed to make Smack JDK 1.2 compatible again.
+    <li><font color="#777777">(SMACK-130)</font> Use notifyAll() instead of notify() in PacketWriter.
+    <li><font color="#777777">(SMACK-137)</font> Fixed security exception with unsigned applets using try/catch around System.getProperty.
+    <li><font color="#777777">(SMACK-127)</font> IQ packets can now have extensions.
+    <li><font color="#777777">(SMACK-128)</font> Registration can now include a registration data form.
+    <li><font color="#777777">(SMACK-136)</font> Keep-alive process should flush stream.
+    <li><font color="#777777">(SMACK-121)</font> Delay of keep-alive is now configurable.
+    <li><font color="#777777">(SMACK-149)</font> A disco info request directed to a Smack client didn't answer the client's identity.
+    <li><font color="#777777">(SMACK-150)</font> Added <tt>canPublishItems(String entityID)</tt> method to ServiceDiscoveryManager in 
+	order to discover whether a server supports publishing of items or not.
+    <li><font color="#777777">(SMACK-133)</font> Node attribute was missing in DiscoverInfo and DiscoverItems XML representations.
+    <li><font color="#777777">(SMACK-134)</font> Added <tt>setNodeInformationProvider(String node, NodeInformationProvider listener)</tt> 
+	method to ServiceDiscoveryManager and created new <tt>NodeInformationProvider</tt> interface in order to provide information about 
+	nodes defined in the client.
+    <li><font color="#777777">(SMACK-139)</font> Added new menu option to the enhanced debugger in order to close all the tabs of which 
+	their connections are not active anymore.
+    <li><font color="#777777">(SMACK-124)</font> Don't set L&F in debuggers.
+    <li><font color="#777777">(SMACK-122)</font> Added documentation about the new enhanced debugger.
+    <li><font color="#777777">(SMACK-142)</font> Base class for existing test cases was created.
+</ul>
+
+<p>
 <b>1.3.0</b> - March 11, 2004
 <p>
 <ul>
