@@ -547,6 +547,11 @@ public class Roster {
                     // Make sure the entry is in the entry list.
                     if (!entries.contains(entry)) {
                         entries.add(entry);
+                    } else {
+                        // If the entry was in then list then update its state with the new values
+                        RosterEntry existingEntry =
+                            (RosterEntry) entries.get(entries.indexOf(entry));
+                        existingEntry.updateState(entry.getName(), entry.getType());
                     }
                     // If the roster entry belongs to any groups, remove it from the
                     // list of unfiled entries.

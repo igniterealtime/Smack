@@ -69,6 +69,17 @@ public class RosterEntry {
     }
 
     /**
+     * Updates the state of the entry with the new values.
+     *
+     * @param name the nickname for the entry.
+     * @param type the subscription type.
+     */
+    void updateState(String name, RosterPacket.ItemType type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    /**
      * Returns an iterator for all the roster groups that this entry belongs to.
      *
      * @return an iterator for the groups this entry belongs to.
