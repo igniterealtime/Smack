@@ -2014,6 +2014,12 @@ public class MultiUserChat {
                             isUserStatusModification,
                             from);
                     }
+                    else {
+                        // A new occupant has joined the room
+                        if (!isUserStatusModification) {
+                            fireParticipantStatusListeners("joined", from);
+                        }
+                    }
                 }
                 else if (presence.getType() == Presence.Type.UNAVAILABLE) {
                     synchronized (occupantsMap) {
@@ -2027,6 +2033,11 @@ public class MultiUserChat {
                             presence.getFrom().equals(myRoomJID),
                             mucUser,
                             from);
+                    } else {
+                        // An occupant has left the room
+                        if (!isUserStatusModification) {
+                            fireParticipantStatusListeners("left", from);
+                        }
                     }
                 }
             }

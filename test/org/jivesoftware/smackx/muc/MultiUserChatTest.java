@@ -1503,6 +1503,107 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
+    /**
+     * Check that ParticipantStatusListener is receiving joining and leaving events correctly. 
+     */
+    public void testJoinLeftEvents() {
+        final String[] answer = new String[8];
+        try {
+            // User1 will listen for occupants joining and leaving the room
+            muc.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void joined(String participant) {
+                    super.joined(participant);
+                    if ((room + "/testbot2").equals(participant)) {
+                        answer[0] = participant;
+                    }
+                    else {
+                        answer[1] = participant;
+                    }
+                }
+                public void left(String participant) {
+                    super.left(participant);
+                    if ((room + "/testbot2").equals(participant)) {
+                        answer[2] = participant;
+                    }
+                    else {
+                        answer[3] = participant;
+                    }
+                }
+            });
+
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
+            // User2 will listen for User3 joining and leaving the room
+            muc2.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+                public void joined(String participant) {
+                    super.joined(participant);
+                    if ((room + "/testbot").equals(participant)) {
+                        answer[4] = participant;
+                    }
+                    else {
+                        answer[5] = participant;
+                    }
+                }
+                public void left(String participant) {
+                    super.left(participant);
+                    if ((room + "/testbot").equals(participant)) {
+                        answer[6] = participant;
+                    }
+                    else {
+                        answer[7] = participant;
+                    }
+                }
+            });
+            muc2.join("testbot2");
+
+            // User3 joins the new room
+            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
+            muc3.join("testbot3");
+
+            // User3 leaves the room
+            muc3.leave();
+            // User2 leaves the room
+            muc2.leave();
+
+            // Check that ParticipantStatusListener is working OK
+            assertEquals(
+                "User1 didn't receive the event of User2 joining the room",
+                room + "/testbot2",
+                answer[0]);
+            assertEquals(
+                "User1 didn't receive the event of User3 joining the room",
+                room + "/testbot3",
+                answer[1]);
+            assertEquals(
+                "User1 didn't receive the event of User2 leaving the room",
+                room + "/testbot2",
+                answer[2]);
+            assertEquals(
+                "User1 didn't receive the event of User3 leaving the room",
+                room + "/testbot3",
+                answer[3]);
+            assertEquals(
+                "User2 didn't receive the event of User1 joining the room",
+                room + "/testbot",
+                answer[4]);
+            assertEquals(
+                "User2 didn't receive the event of User3 joining the room",
+                room + "/testbot3",
+                answer[5]);
+            assertNull(
+                "User2 received the event of User1 leaving the room",
+                answer[6]);
+            assertEquals(
+                "User2 didn't receive the event of User3 leaving the room",
+                room + "/testbot3",
+                answer[7]);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
     private void makeRoomModerated() throws XMPPException {
         // User1 (which is the room owner) converts the instant room into a moderated room
         Form form = muc.getConfigurationForm();

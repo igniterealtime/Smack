@@ -31,6 +31,12 @@ package org.jivesoftware.smackx.muc;
  */
 public class DefaultParticipantStatusListener implements ParticipantStatusListener {
 
+    public void joined(String participant) {
+    }
+
+    public void left(String participant) {
+    }
+
     public void kicked(String participant) {
     }
 

@@ -29,6 +29,23 @@ package org.jivesoftware.smackx.muc;
 public interface ParticipantStatusListener {
 
     /**
+     * Called when a new room occupant has joined the room.
+     *
+     * @param participant the participant that has just joined the room
+     * (e.g. room@conference.jabber.org/nick).
+     */
+    public abstract void joined(String participant);
+
+    /**
+     * Called when a room occupant has left the room on its own. This means that the occupant was
+     * neither kicked nor banned from the room.
+     *
+     * @param participant the participant that has left the room on its own.
+     * (e.g. room@conference.jabber.org/nick).
+     */
+    public abstract void left(String participant);
+
+    /**
      * Called when a room participant has been kicked from the room. This means that the kicked 
      * participant is no longer participating in the room.
      * 
