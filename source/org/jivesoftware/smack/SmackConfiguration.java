@@ -167,6 +167,10 @@ public final class SmackConfiguration {
      * @return the milliseconds to wait for a response from the server
      */
     public static int getPacketReplyTimeout() {
+        // Return a default value if packetReplyTimeout has not been initialized yet
+        if (packetReplyTimeout == -1) {
+            return 5000;
+        }
         return packetReplyTimeout;
     }
 
