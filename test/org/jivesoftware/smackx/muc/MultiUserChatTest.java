@@ -141,9 +141,7 @@ public class MultiUserChatTest extends SmackTestCase {
             muc2.join("testbot2", null, history, SmackConfiguration.getPacketReplyTimeout());
     
             Message msg;
-            // Get welcome message
-            muc2.nextMessage(1000);
-            // Get first historic message 
+            // Get first historic message
             msg = muc2.nextMessage(1000);
             assertNotNull("First message is null", msg);
             assertEquals("Body of first message is incorrect", "Message 3", msg.getBody());
@@ -158,8 +156,6 @@ public class MultiUserChatTest extends SmackTestCase {
             history.setMaxStanzas(2);
             muc3.join("testbot3", null, history, SmackConfiguration.getPacketReplyTimeout());
 
-            // Get welcome message
-            muc3.nextMessage(1000);
             // Get first historic message 
             msg = muc3.nextMessage(1000);
             assertNotNull("First message is null", msg);
