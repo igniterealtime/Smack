@@ -76,6 +76,11 @@ public class FromContainsFilter implements PacketFilter {
     }
 
     public boolean accept(Packet packet) {
-        return packet.getFrom().indexOf(from) != -1;
+        if (packet.getFrom() != null) {
+            return packet.getFrom().indexOf(from) != -1;
+        }
+        else {
+            return false;
+        }
     }
 }
