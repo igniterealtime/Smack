@@ -56,6 +56,7 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.*;
 import java.text.*;
 import java.util.Date;
 
@@ -80,6 +81,42 @@ import org.jivesoftware.smack.util.*;
 public class EnhancedDebugger implements SmackDebugger {
 
     private static final String NEWLINE = "\n";
+
+    private static ImageIcon packetReceivedIcon;
+    private static ImageIcon packetSentIcon;
+    private static ImageIcon presencePacketIcon;
+    private static ImageIcon iqPacketIcon;
+    private static ImageIcon messagePacketIcon;
+    private static ImageIcon unknownPacketTypeIcon;
+    
+    {
+        URL url;
+        // Load the image icons 
+        url = ClassLoader.getSystemClassLoader().getResource("images/nav_left_blue.png");
+        if (url != null) {
+            packetReceivedIcon = new ImageIcon(url);
+        }            
+        url = ClassLoader.getSystemClassLoader().getResource("images/nav_right_red.png");
+        if (url != null) {
+            packetSentIcon = new ImageIcon(url);
+        }
+        url = ClassLoader.getSystemClassLoader().getResource("images/photo_portrait.png");
+        if (url != null) {
+            presencePacketIcon = new ImageIcon(url);
+        }
+        url = ClassLoader.getSystemClassLoader().getResource("images/question_and_answer.png");
+        if (url != null) {
+            iqPacketIcon = new ImageIcon(url);
+        }
+        url = ClassLoader.getSystemClassLoader().getResource("images/message.png");
+        if (url != null) {
+            messagePacketIcon = new ImageIcon(url);
+        }
+        url = ClassLoader.getSystemClassLoader().getResource("images/unknown.png");
+        if (url != null) {
+            unknownPacketTypeIcon = new ImageIcon(url);
+        }
+    }
 
     private JFrame frame = null;
     private DefaultTableModel messagesTable = null;
@@ -170,6 +207,7 @@ public class EnhancedDebugger implements SmackDebugger {
         connListener = new ConnectionListener() {
             public void connectionClosed() {
                 statusField.setValue("Closed");
+                EnhancedDebuggerWindow.connectionClosed(EnhancedDebugger.this);
             }
 
             public void connectionClosedOnError(Exception e) {
@@ -185,10 +223,17 @@ public class EnhancedDebugger implements SmackDebugger {
         tabbedPane.add("All Packets", allPane);
         tabbedPane.setToolTipTextAt(0, "Sent and received packets processed by Smack");
 
-        messagesTable = new DefaultTableModel(new Object[] { "Hide", "Timestamp", "Message", "Type", "To", "From" }, 0) {
+        messagesTable = new DefaultTableModel(new Object[] { "Hide", "Timestamp", "", "", "Message", "Type", "To", "From" }, 0) {
             public boolean isCellEditable(int rowIndex, int mColIndex) {
                 return false;
             }
+            public Class getColumnClass(int columnIndex) {
+                if (columnIndex == 2 || columnIndex == 3) {
+                    return Icon.class;
+                }
+                return super.getColumnClass(columnIndex);
+            }
+
         };
         JTable table = new JTable(messagesTable);
         // Allow only single a selection
@@ -201,15 +246,21 @@ public class EnhancedDebugger implements SmackDebugger {
         // Set the column "timestamp" size
         table.getColumnModel().getColumn(1).setMaxWidth(300);
         table.getColumnModel().getColumn(1).setPreferredWidth(70);
+        // Set the column "direction" icon size
+        table.getColumnModel().getColumn(2).setMaxWidth(50);
+        table.getColumnModel().getColumn(2).setPreferredWidth(30);
+        // Set the column "packet type" icon size
+        table.getColumnModel().getColumn(3).setMaxWidth(50);
+        table.getColumnModel().getColumn(3).setPreferredWidth(30);
         // Set the column "type" size
-        table.getColumnModel().getColumn(3).setMaxWidth(200);
-        table.getColumnModel().getColumn(3).setPreferredWidth(50);
+        table.getColumnModel().getColumn(5).setMaxWidth(200);
+        table.getColumnModel().getColumn(5).setPreferredWidth(50);
         // Set the column "to" size
-        table.getColumnModel().getColumn(4).setMaxWidth(300);
-        table.getColumnModel().getColumn(4).setPreferredWidth(90);
+        table.getColumnModel().getColumn(6).setMaxWidth(300);
+        table.getColumnModel().getColumn(6).setPreferredWidth(90);
         // Set the column "from" size
-        table.getColumnModel().getColumn(5).setMaxWidth(300);
-        table.getColumnModel().getColumn(5).setPreferredWidth(90);
+        table.getColumnModel().getColumn(7).setMaxWidth(300);
+        table.getColumnModel().getColumn(7).setPreferredWidth(90);
         // Create a table listener that listen for row selection events
         SelectionListener selectionListener = new SelectionListener(table);
         table.getSelectionModel().addListSelectionListener(selectionListener);
@@ -662,23 +713,28 @@ public class EnhancedDebugger implements SmackDebugger {
         String messageType = null;
         String from = packet.getFrom();
         String type = "";
+        Icon packetTypeIcon;
         receivedPackets++;
         if (packet instanceof IQ) {
+            packetTypeIcon = iqPacketIcon;
             messageType = "IQ Received (class=" + packet.getClass().getName() + ")";
             type = ((IQ) packet).getType().toString();
             receivedIQPackets++;
         }
         else if (packet instanceof Message) {
+            packetTypeIcon = messagePacketIcon;
             messageType = "Message Received";
             type = ((Message) packet).getType().toString();
             receivedMessagePackets++;
         }
         else if (packet instanceof Presence) {
+            packetTypeIcon = presencePacketIcon;
             messageType = "Presence Received";
             type = ((Presence) packet).getType().toString();
             receivedPresencePackets++;
         }
         else {
+            packetTypeIcon = unknownPacketTypeIcon;
             messageType = packet.getClass().getName()+ " Received";
             receivedOtherPackets++;
         }
@@ -687,6 +743,8 @@ public class EnhancedDebugger implements SmackDebugger {
             new Object[] {
                 packet.toXML(),
                 dateFormatter.format(new Date()),
+                packetReceivedIcon,
+                packetTypeIcon,
                 messageType,
                 type,
                 "",
@@ -705,23 +763,28 @@ public class EnhancedDebugger implements SmackDebugger {
         String messageType = null;
         String to = packet.getTo();
         String type = "";
+        Icon packetTypeIcon;
         sentPackets++;
         if (packet instanceof IQ) {
+            packetTypeIcon = iqPacketIcon;
             messageType = "IQ Sent (class=" + packet.getClass().getName() + ")";
             type = ((IQ) packet).getType().toString();
             sentIQPackets++;
         }
         else if (packet instanceof Message) {
+            packetTypeIcon = messagePacketIcon;
             messageType = "Message Sent";
             type = ((Message) packet).getType().toString();
             sentMessagePackets++;
         }
         else if (packet instanceof Presence) {
+            packetTypeIcon = presencePacketIcon;
             messageType = "Presence Sent";
             type = ((Presence) packet).getType().toString();
             sentPresencePackets++;
         }
         else {
+            packetTypeIcon = unknownPacketTypeIcon;
             messageType = packet.getClass().getName()+ " Sent";
             sentOtherPackets++;
         }
@@ -730,10 +793,13 @@ public class EnhancedDebugger implements SmackDebugger {
             new Object[] {
                 packet.toXML(),
                 dateFormatter.format(new Date()),
+                packetSentIcon,
+                packetTypeIcon,
                 messageType,
                 type,
                 to,
                 ""});
+        
         // Update the statistics table
         updateStatistics();
     }

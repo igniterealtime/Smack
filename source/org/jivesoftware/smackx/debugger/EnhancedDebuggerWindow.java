@@ -54,6 +54,7 @@ package org.jivesoftware.smackx.debugger;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.*;
 import java.util.*;
 
 import javax.swing.*;
@@ -74,6 +75,33 @@ import org.jivesoftware.smack.provider.ProviderManager;
 class EnhancedDebuggerWindow {
 
     private static EnhancedDebuggerWindow instance;
+
+    private static ImageIcon connectionCreatedIcon;
+    private static ImageIcon connectionActiveIcon;
+    private static ImageIcon connectionClosedIcon;
+    private static ImageIcon connectionClosedOnErrorIcon;
+    
+    {
+        URL url;
+        
+        url = ClassLoader.getSystemClassLoader().getResource("images/trafficlight_off.png");
+        if (url != null) {
+            connectionCreatedIcon = new ImageIcon(url);
+        }            
+        url = ClassLoader.getSystemClassLoader().getResource("images/trafficlight_green.png");
+        if (url != null) {
+            connectionActiveIcon = new ImageIcon(url);
+        }
+        url = ClassLoader.getSystemClassLoader().getResource("images/trafficlight_red.png");
+        if (url != null) {
+            connectionClosedIcon = new ImageIcon(url);
+        }
+        url = ClassLoader.getSystemClassLoader().getResource("images/warning.png");
+        if (url != null) {
+            connectionClosedOnErrorIcon = new ImageIcon(url);
+        }
+
+    }
 
     private JFrame frame = null;
     private JTabbedPane tabbedPane = null;
@@ -113,6 +141,7 @@ class EnhancedDebuggerWindow {
         }
         debugger.tabbedPane.setName("Connection_" + tabbedPane.getComponentCount());
         tabbedPane.add(debugger.tabbedPane, tabbedPane.getComponentCount() - 1);
+        tabbedPane.setIconAt(tabbedPane.indexOfComponent(debugger.tabbedPane), connectionCreatedIcon);
         frame.setTitle(
             "Smack Debug Window -- Total connections: " + (tabbedPane.getComponentCount() - 1));
     }
@@ -125,9 +154,24 @@ class EnhancedDebuggerWindow {
      * @param user the user@host/resource that has just logged in
      */
     synchronized static void userHasLogged(EnhancedDebugger debugger, String user) {
+        int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
         getInstance().tabbedPane.setTitleAt(
-            getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
+            index,
             user);
+        getInstance().tabbedPane.setIconAt(
+            index,
+            connectionActiveIcon);
+    }
+
+    /**
+     * Notification that the connection was properly closed.
+     *
+     * @param debugger the debugger whose connection was properly closed.
+     */
+    synchronized static void connectionClosed(EnhancedDebugger debugger) {
+        getInstance().tabbedPane.setIconAt(
+            getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
+            connectionClosedIcon);
     }
 
     /**
@@ -138,11 +182,12 @@ class EnhancedDebuggerWindow {
      */
     synchronized static void connectionClosedOnError(EnhancedDebugger debugger, Exception e) {
         int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
-        String label = getInstance().tabbedPane.getTitleAt(index);
-        getInstance().tabbedPane.setTitleAt(index, "(!)" + label);
         getInstance().tabbedPane.setToolTipTextAt(
             index,
             "Connection closed due to the exception: " + e.getMessage());
+        getInstance().tabbedPane.setIconAt(
+            index,
+            connectionClosedOnErrorIcon);
     }
 
     /**
