@@ -309,12 +309,13 @@ public class XMPPConnection {
         }
         // We're done with the collector, so explicitly cancel it.
         collector.cancel();
-        // Set presence to online.
-        packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
 
-        // Finally, create the roster.
+        // Create the roster.
         this.roster = new Roster(this);
         roster.reload();
+
+        // Set presence to online.
+        packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
 
         // Indicate that we're now authenticated.
         authenticated = true;
