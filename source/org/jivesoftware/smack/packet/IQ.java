@@ -113,7 +113,7 @@ public class IQ extends Packet {
             buf.append(propertiesXML);
         }
         // Add the error sub-packet, if there is one.
-        Error error = getError();
+        XMPPError error = getError();
         if (error != null) {
             buf.append(error.toXML());
         }

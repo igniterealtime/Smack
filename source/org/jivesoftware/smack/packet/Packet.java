@@ -96,7 +96,7 @@ public abstract class Packet {
     private String to = null;
     private String from = null;
     private Map properties = null;
-    private Error error = null;
+    private XMPPError error = null;
 
     /**
      * Returns the unique ID of the packet.
@@ -167,7 +167,7 @@ public abstract class Packet {
      *
      * @return the error sub-packet or <tt>null</tt> if there isn't an error.
      */
-    public Error getError() {
+    public XMPPError getError() {
         return error;
     }
 
@@ -176,7 +176,7 @@ public abstract class Packet {
      *
      * @param error the error to associate with this packet.
      */
-    public void setError(Error error) {
+    public void setError(XMPPError error) {
         this.error = error;
     }
 
