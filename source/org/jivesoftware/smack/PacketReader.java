@@ -407,15 +407,36 @@ class PacketReader {
                 }
             }
         }
-        // Set basic values on the iq packet.
+        // Decide what to do when an IQ packet was not understood 
         if (iqPacket == null) {
-            // If an IQ packet wasn't created above, create an empty IQ packet.
-            iqPacket = new IQ() {
-                public String getChildElementXML() {
-                    return null;
-                }
-            };
+            if (IQ.Type.GET == type || IQ.Type.SET == type ) {
+                // If the IQ stanza is of type "get" or "set" containing a child element 
+                // qualified by a namespace it does not understand, then answer an IQ of 
+                // type "error" with code 501 ("feature-not-implemented")
+                iqPacket = new IQ() {
+                    public String getChildElementXML() {
+                        return null;
+                    }
+                };
+                iqPacket.setPacketID(id);
+                iqPacket.setTo(from);
+                iqPacket.setFrom(to);
+                iqPacket.setType(IQ.Type.ERROR);
+                iqPacket.setError(new XMPPError(501, "feature-not-implemented"));
+                connection.sendPacket(iqPacket);
+                return null;
+            }
+            else {
+                // If an IQ packet wasn't created above, create an empty IQ packet.
+                iqPacket = new IQ() {
+                    public String getChildElementXML() {
+                        return null;
+                    }
+                };
+            }
         }
+        
+        // Set basic values on the iq packet.
         iqPacket.setPacketID(id);
         iqPacket.setTo(to);
         iqPacket.setFrom(from);
