@@ -348,6 +348,34 @@ public class Form {
     }
 
     /**
+     * Sets the default value as the value of a given form's field. The field whose variable matches
+     * the requested variable will be completed with its default value. If no field could be found
+     * for the specified variable then an exception will be raised.
+     *
+     * @param variable the variable to complete with its default value.
+     * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
+     */
+    public void setDefaultAnswer(String variable) {
+        if (!isSubmitType()) {
+            throw new IllegalStateException("Cannot set an answer if the form is not of type " +
+            "\"submit\"");
+        }
+        FormField field = getField(variable);
+        if (field != null) {
+            // Clear the old values
+            field.resetValues();
+            // Set the default value
+            for (Iterator it = field.getValues(); it.hasNext();) {
+                field.addValue((String) it.next());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Couldn't find a field for the specified variable.");
+        }
+    }
+
+    /**
      * Returns an Iterator for the fields that are part of the form.
      *
      * @return an Iterator for the fields that are part of the form.
