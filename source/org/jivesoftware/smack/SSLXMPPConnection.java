@@ -74,10 +74,24 @@ import java.security.cert.CertificateNotYetValidException;
  */
 public class SSLXMPPConnection extends XMPPConnection {
 
+    /**
+     * Creates a new SSL connection to the specified host on the default
+     * SSL port (5223).
+     *
+     * @param host the XMPP host.
+     * @throws XMPPException if an error occurs making the connection.
+     */
     public SSLXMPPConnection(String host) throws XMPPException {
         this(host, 5223);
     }
 
+    /**
+     * Creates a new SSL connection to the specified host on the specified port.
+     *
+     * @param host the XMPP host.
+     * @param port the port to use for the connection (default XMPP SSL port is 5223).
+     * @throws XMPPException if an error occurs making the connection.
+     */
     public SSLXMPPConnection(String host, int port) throws XMPPException {
         this.host = host;
         this.port = port;
