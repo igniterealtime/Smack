@@ -94,15 +94,14 @@ public class MultiUserChatCreationTest extends SmackTestCase {
                 FormField field = (FormField) fields.next();
                 if (!FormField.TYPE_HIDDEN.equals(field.getType())
                     && field.getVariable() != null) {
-                    // Add the field values to a List
-                    List values = new ArrayList();
-                    for (Iterator it = field.getValues(); it.hasNext();) {
-                        values.add((String) it.next());
-                    }
-                    // Sets the new answer to form to submit
-                    submitForm.setAnswer(field.getVariable(), values);
+                    // Sets the default value as the answer
+                    submitForm.setDefaultAnswer(field.getVariable());
                 }
             }
+            List owners = new ArrayList();
+            owners.add(getBareJID(0));
+            submitForm.setAnswer("muc#owner_roomowners", owners);
+
             // Update the new room's configuration
             muc.sendConfigurationForm(submitForm);
 
@@ -111,6 +110,7 @@ public class MultiUserChatCreationTest extends SmackTestCase {
 
         }
         catch (XMPPException e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
     }
@@ -133,6 +133,7 @@ public class MultiUserChatCreationTest extends SmackTestCase {
             muc.destroy("The room has almost no activity...", null);
         }
         catch (XMPPException e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
     }
