@@ -617,16 +617,22 @@ class PacketReader {
      */
     private XMPPError parseError(XmlPullParser parser) throws Exception {
         String errorCode = null;
+        String message = null;
         for (int i=0; i<parser.getAttributeCount(); i++) {
             if (parser.getAttributeName(i).equals("code")) {
                 errorCode = parser.getAttributeValue("", "code");
             }
         }
-        String message = parser.nextText();
+        // Get the error text in a safe way since we are not sure about the error message format
+        try {
+            message = parser.nextText();
+        }
+        catch (XmlPullParserException ex) {}
         while (true) {
             if (parser.getEventType() == XmlPullParser.END_TAG && parser.getName().equals("error")) {
                 break;
             }
+            parser.next();
         }
         return new XMPPError(Integer.parseInt(errorCode), message);
     }
