@@ -53,6 +53,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Error;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 
 import javax.swing.*;
@@ -181,9 +182,10 @@ public class XMPPConnection {
     }
 
     /**
-     * Login to the server using the server's preferred authentication mechanism and set
-     * our presence to available. If more than five seconds elapses without a response from
-     * the server, or if an error occurs, a XMPPException will be thrown.<p>
+     * Login to the server using the strongest authentication mode supported by
+     * the server, then set our presence to available. If more than five seconds
+     * elapses in each step of the authentication process without a response from
+     * the server, or if an error occurs, a XMPPException will be thrown.
      *
      * @param username the username.
      * @param password the password.
@@ -193,14 +195,57 @@ public class XMPPConnection {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
-        Authentication auth = new Authentication(username, password, "Smack");
-        packetWriter.sendPacket(auth);
+        // If we send an authentication packet in "get" mode with just the username,
+        // the server will return the list of authentication protocols it supports.
+        Authentication discoveryAuth = new Authentication();
+        discoveryAuth.setType(IQ.Type.GET);
+        discoveryAuth.setUsername(username);
+        packetWriter.sendPacket(discoveryAuth);
         // Wait up to five seconds for a response from the server.
         PacketCollector collector = packetReader.createPacketCollector(
+                new PacketIDFilter(discoveryAuth.getPacketID()));
+        Authentication authTypes = (Authentication)collector.nextResult(5000);
+        collector.cancel();
+        if (authTypes == null || authTypes.getType().equals(IQ.Type.ERROR)) {
+            throw new XMPPException("No response from the server.");
+        }
+
+        // Now, create the authentication packet we'll send to the server.
+        Authentication auth = new Authentication();
+        auth.setUsername(username);
+
+        // Figure out if we should use digest or plain text authentication.
+        if (authTypes.getDigest() != null) {
+            auth.setDigest(connectionID, password);
+        }
+        else if (authTypes.getPassword() != null) {
+            auth.setPassword(password);
+        }
+        else {
+            throw new XMPPException("Server does not support compatible authentication mechanism.");
+        }
+
+        auth.setResource("Smack");
+        packetWriter.sendPacket(auth);
+        // Wait up to five seconds for a response from the server.
+        collector = packetReader.createPacketCollector(
                 new PacketIDFilter(auth.getPacketID()));
         IQ response = (IQ)collector.nextResult(5000);
-        if (response == null || response.getType() == IQ.Type.ERROR) {
+        if (response == null) {
             throw new XMPPException("Authentication failed.");
+        }
+        else if (response.getType() == IQ.Type.ERROR) {
+            if (response.getError() == null) {
+                throw new XMPPException("Authentication failed.");
+            }
+            else {
+                Error error = response.getError();
+                String msg = "Authentication failed -- " + error.getCode();
+                if (error.getMessage() != null) {
+                    msg += ": " + error.getMessage();
+                }
+                throw new XMPPException(msg);
+            }
         }
         // We're done with the collector, so explicitly cancel it.
         collector.cancel();
@@ -322,7 +367,7 @@ public class XMPPConnection {
             allPacketListener.start();
         }
         // Start the packet writer. This will open a Jabber stream to the server
-        packetWriter.start();
+        packetWriter.startup();
         // Start the packet reader. The startup() method will block until we
         // get an opening stream packet back from server.
         packetReader.startup();
@@ -403,12 +448,14 @@ public class XMPPConnection {
 
             public int read(char cbuf[], int off, int len) throws IOException {
                 int count = myReader.read(cbuf, off, len);
-                String str = new String(cbuf, off, count);
-                receivedText1.append(str);
-                receivedText2.append(str);
-                if (str.endsWith(">")) {
-                    receivedText1.append(NEWLINE);
-                    receivedText2.append(NEWLINE);
+                if (count > 0) {
+                    String str = new String(cbuf, off, count);
+                    receivedText1.append(str);
+                    receivedText2.append(str);
+                    if (str.endsWith(">")) {
+                        receivedText1.append(NEWLINE);
+                        receivedText2.append(NEWLINE);
+                    }
                 }
                 return count;
             }
