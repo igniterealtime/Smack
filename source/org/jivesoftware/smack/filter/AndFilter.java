@@ -29,7 +29,7 @@
  * 4. The names "Smack" and "Jive Software" must not be used to
  *    endorse or promote products derived from this software without
  *    prior written permission. For written permission, please
- *    contact webmaster@coolservlets.com.
+ *    contact webmaster@jivesoftware.com.
  *
  * 5. Products derived from this software may not be called "Smack",
  *    nor may "Smack" appear in their name, without prior written
