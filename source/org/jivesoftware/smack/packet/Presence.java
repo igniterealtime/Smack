@@ -269,7 +269,7 @@ public class Presence extends Packet {
     }
 
     /**
-     * A typsafe enum class to represent the presecence mode.
+     * A typsafe enum class to represent the presence mode.
      */
     public static class Mode {
 
