@@ -26,6 +26,7 @@
 
     <patternset id="web.filetypes">
         <include name="**/*.jsp" />
+        <include name="**/*.js" />
         <include name="**/*.html" />
         <include name="**/*.gif" />
         <include name="**/*.css" />
