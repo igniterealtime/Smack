@@ -1,7 +1,7 @@
 <%--
-  - $$RCSfile$$
-  - $$Revision$$
-  - $$Date$$
+  - $RCSfile$
+  - $Revision$
+  - $Date$
   -
   - Copyright (C) 2002-2003 Jive Software. All rights reserved.
   - 
@@ -67,11 +67,12 @@
     String group1 = getParameter(request, "group1");
     String group2 = getParameter(request, "group2");
 
-	if (user != null) {
-		roster.createEntry(user, nickname, new String[] {group1, group2});
-		response.sendRedirect("viewRoster.jsp");
-		return;
-	}
+    // Create a new entry in the roster that belongs to a certain groups
+    if (user != null) {
+        roster.createEntry(user, nickname, new String[] {group1, group2});
+        response.sendRedirect("viewRoster.jsp");
+        return;
+    }
 %>
 <html>
 <head>
@@ -83,7 +84,7 @@
 <table width="100%" border="0">
   <tr> 
     <td><span id="bigBlack">Add contact to roster</span></td>
-    <td width="24"><a href="viewRoster.jsp"><img src="images/address_book.png" alt="View roster" border="0"></a></td>
+    <td align="right"><a href="viewRoster.jsp"><img src="images/address_book.png" alt="View roster" border="0"></a></td>
   </tr>
   <tr> 
     <td colspan="2">&nbsp;</td>
