@@ -264,6 +264,16 @@ public class FormField {
     }
 
     /**
+     * Removes all the values of the field.
+     *
+     */
+    protected void resetValues() {
+        synchronized (values) {
+            values.removeAll(new ArrayList(values));
+        }
+    }
+    
+    /**
      * Adss an available options to the question that the user has in order to answer 
      * the question.
      *  
