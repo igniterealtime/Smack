@@ -250,6 +250,27 @@ public class Roster {
     }
 
     /**
+     * Removes a roster entry from the roster.
+     *
+     * @param entry a roster entry.
+     */
+    public void removeEntry(RosterEntry entry) {
+        // Only remove the entry if it's in the entry list.
+        // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
+        synchronized (entries) {
+            if (entries.contains(entry)) {
+                RosterPacket packet = new RosterPacket();
+                packet.setType(IQ.Type.SET);
+                RosterPacket.Item item = RosterEntry.toRosterItem(entry);
+                // Set the item type as REMOVE so that the server will delete the entry
+                item.setItemType(RosterPacket.ItemType.REMOVE);
+                packet.addRosterItem(item);
+                connection.sendPacket(packet);
+            }
+        }
+    }
+
+    /**
      * Returns a count of the entries in the roster.
      *
      * @return the number of entries in the roster.
@@ -509,54 +530,75 @@ public class Roster {
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), connection);
 
-                // Make sure the entry is in the entry list.
-                if (!entries.contains(entry)) {
-                    entries.add(entry);
-                }
-                // If the roster entry belongs to any groups, remove it from the
-                // list of unfiled entries.
-                if (item.getGroupNames().hasNext()) {
-                    synchronized (unfiledEntries) {
-                        unfiledEntries.remove(entry);
+                // If the packet is of the type REMOVE then remove the entry
+                if (RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
+                    // Remove the entry from the entry list.
+                    if (entries.contains(entry)) {
+                        entries.remove(entry);
                     }
-                }
-                // Otherwise add it to the list of unfiled entries.
-                else {
+                    // Remove the entry from the unfiled entry list.
                     synchronized (unfiledEntries) {
-                        if (!unfiledEntries.contains(entry)) {
-                            unfiledEntries.add(entry);
+                        if (unfiledEntries.contains(entry)) {
+                            unfiledEntries.remove(entry);
                         }
                     }
                 }
+                else {
+                    // Make sure the entry is in the entry list.
+                    if (!entries.contains(entry)) {
+                        entries.add(entry);
+                    }
+                    // If the roster entry belongs to any groups, remove it from the
+                    // list of unfiled entries.
+                    if (item.getGroupNames().hasNext()) {
+                        synchronized (unfiledEntries) {
+                            unfiledEntries.remove(entry);
+                        }
+                    }
+                    // Otherwise add it to the list of unfiled entries.
+                    else {
+                        synchronized (unfiledEntries) {
+                            if (!unfiledEntries.contains(entry)) {
+                                unfiledEntries.add(entry);
+                            }
+                        }
+                    }
+                }
+                
                 // Find the list of groups that the user currently belongs to.
                 List currentGroupNames = new ArrayList();
                 for (Iterator j = entry.getGroups(); j.hasNext();  ) {
                     RosterGroup group = (RosterGroup)j.next();
                     currentGroupNames.add(group.getName());
                 }
-                // Create the new list of groups the user belongs to.
-                List newGroupNames = new ArrayList();
-                for (Iterator k = item.getGroupNames(); k.hasNext();  ) {
-                    String groupName = (String)k.next();
-                    // Add the group name to the list.
-                    newGroupNames.add(groupName);
-
-                    // Add the entry to the group.
-                    RosterGroup group = getGroup(groupName);
-                    if (group == null) {
-                        group = createGroup(groupName);
-                        groups.put(groupName, group);
+                
+                // If the packet is not of the type REMOVE then add the entry to the groups
+                if (!RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
+                    // Create the new list of groups the user belongs to.
+                    List newGroupNames = new ArrayList();
+                    for (Iterator k = item.getGroupNames(); k.hasNext();  ) {
+                        String groupName = (String)k.next();
+                        // Add the group name to the list.
+                        newGroupNames.add(groupName);
+    
+                        // Add the entry to the group.
+                        RosterGroup group = getGroup(groupName);
+                        if (group == null) {
+                            group = createGroup(groupName);
+                            groups.put(groupName, group);
+                        }
+                        // Add the entry.
+                        group.addEntryLocal(entry);
                     }
-                    // Add the entry.
-                    group.addEntryLocal(entry);
+
+                    // We have the list of old and new group names. We now need to
+                    // remove the entry from the all the groups it may no longer belong
+                    // to. We do this by subracting the new group set from the old.
+                    for (int m=0; m<newGroupNames.size(); m++) {
+                        currentGroupNames.remove(newGroupNames.get(m));
+                    }
                 }
 
-                // We have the list of old and new group names. We now need to
-                // remove the entry from the all the groups it may no longer belong
-                // to. We do this by subracting the new group set from the old.
-                for (int m=0; m<newGroupNames.size(); m++) {
-                    currentGroupNames.remove(newGroupNames.get(m));
-                }
                 // Loop through any groups that remain and remove the entries.
                 for (int n=0; n<currentGroupNames.size(); n++) {
                     String groupName = (String)currentGroupNames.get(n);
