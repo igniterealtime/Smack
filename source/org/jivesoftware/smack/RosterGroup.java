@@ -92,18 +92,23 @@ public class RosterGroup {
     }
 
     /**
-     * Sets the name of the group.
+     * Sets the name of the group. Changing the group's name is like moving all the group entries
+     * of the group to a new group specified by the new name. Since this group won't have entries 
+     * it will be removed from the roster. This means that all the references to this object will 
+     * be invalid and will need to be updated to the new group specified by the new name.
      *
      * @param name the name of the group.
      */
     public void setName(String name) {
-        this.name = name;
         synchronized (entries) {
             for (int i=0; i<entries.size(); i++) {
                 RosterPacket packet = new RosterPacket();
                 packet.setType(IQ.Type.SET);
                 RosterEntry entry = (RosterEntry)entries.get(i);
-                packet.addRosterItem(RosterEntry.toRosterItem(entry));
+                RosterPacket.Item item = RosterEntry.toRosterItem(entry);
+                item.removeGroupName(this.name);
+                item.addGroupName(name);
+                packet.addRosterItem(item);
                 connection.sendPacket(packet);
             }
         }
