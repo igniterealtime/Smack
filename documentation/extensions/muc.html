@@ -16,6 +16,7 @@ Allows configuration of, participation in, and administration of individual text
   <li><a href="#invite">Manage room invitations</a></li>
   <li><a href="#discomuc">Discover MUC support</a></li>
   <li><a href="#discojoin">Discover joined rooms</a></li>
+  <li><a href="#discoroom">Discover room information</a></li>
   <li><a href="#privchat">Start a private chat</a></li>
   <li><a href="#subject">Manage changes on room subject</a></li>
   <li><a href="#role">Manage role modifications</a></li>
@@ -246,8 +247,8 @@ A user may also want to query a contact regarding which rooms the contact is in.
 
 <b>Usage</b><p>
 
-In order to get the rooms where a user is in just send 
-<b>getJoinedRooms(XMPPConnection connection, String user)</b> to the <i><b>MultiUserChat</b></i> 
+In order to get the rooms where a user is in just send
+<b>getJoinedRooms(XMPPConnection connection, String user)</b> to the <i><b>MultiUserChat</b></i>
 class where user is a fully qualified XMPP ID, e.g. jdoe@example.com. You will get an Iterator
 of Strings as an answer where each String represents a room name.</p>
 
@@ -257,6 +258,33 @@ In this example we can see how to get the rooms where a user is in: <br>
 <blockquote>
 <pre>      <font color="#3f7f5f">// Get the rooms where user3@host.org has joined</font>
       Iterator joinedRooms = MultiUserChat.getJoinedRooms(conn, <font color="#0000FF">"user3@host.org/Smack"</font>);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="discoroom">Discover room information</a></div><p>
+
+<b>Description</b><p>
+
+A user may need to discover information about a room without having to actually join the room. The server
+will provide information only for public rooms.</p>
+
+<b>Usage</b><p>
+
+In order to discover information about a room just send <b>getRoomInfo(XMPPConnection connection, String room)</b>
+to the <i><b>MultiUserChat</b></i> class where room is the XMPP ID of the room, e.g.
+roomName@conference.myserver. You will get a RoomInfo object that contains the discovered room
+information.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to discover information about a room: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Discover information about the room roomName@conference.myserver</font>
+      RoomInfo info = MultiUserChat.getRoomInfo(conn, <font color="#0000FF">"roomName@conference.myserver"</font>);
+      System.out.println("Number of occupants:" + info.getOccupantsCount());
+      System.out.println("Room Subject:" + info.getSubject());
 </pre>
 </blockquote>
 
