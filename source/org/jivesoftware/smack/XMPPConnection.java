@@ -596,7 +596,7 @@ public class XMPPConnection {
         sentText1.setForeground(new Color(112, 3, 3));
         sentText2.setForeground(new Color(112, 3, 3));
         allPane.add(new JScrollPane(sentText1));
-        tabbedPane.add("Client", new JScrollPane(sentText2));
+        tabbedPane.add("Sent", new JScrollPane(sentText2));
 
         // Add pop-up menu.
         JPopupMenu menu = new JPopupMenu();
@@ -635,7 +635,7 @@ public class XMPPConnection {
         receivedText1.setForeground(new Color(6, 76, 133));
         receivedText2.setForeground(new Color(6, 76, 133));
         allPane.add(new JScrollPane(receivedText1));
-        tabbedPane.add("Server", new JScrollPane(receivedText2));
+        tabbedPane.add("Received", new JScrollPane(receivedText2));
 
         // Add pop-up menu.
         menu = new JPopupMenu();
@@ -674,7 +674,7 @@ public class XMPPConnection {
         interpretedText1.setForeground(new Color(1, 94, 35));
         interpretedText2.setForeground(new Color(1, 94, 35));
         allPane.add(new JScrollPane(interpretedText1));
-        tabbedPane.add("Interpreted Packets", new JScrollPane(interpretedText2));
+        tabbedPane.add("Interpreted", new JScrollPane(interpretedText2));
 
         // Add pop-up menu.
         menu = new JPopupMenu();
