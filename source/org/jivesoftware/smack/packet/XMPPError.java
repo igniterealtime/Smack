@@ -72,7 +72,7 @@ package org.jivesoftware.smack.packet;
  *      <tr><td> 409 </td><td> Conflict </td></tr>
  *      <tr><td> 500 </td><td> Internal Server XMPPError </td></tr>
  *      <tr><td> 501 </td><td> Not Implemented </td></tr>
- *      <tr><td> 502 </td><td> Remote Server XMPPError </td></tr>
+ *      <tr><td> 502 </td><td> Remote Server Error </td></tr>
  *      <tr><td> 503 </td><td> Service Unavailable </td></tr>
  *      <tr><td> 504 </td><td> Remote Server Timeout </td></tr>
  * </table>
