@@ -155,12 +155,14 @@ public class ProviderManager {
                         if (eventType == XmlPullParser.START_TAG) {
                             if (parser.getName().equals("iqProvider")) {
                                 parser.next();
+                                parser.next();
                                 String elementName = parser.nextText();
+                                parser.next();
                                 parser.next();
                                 String namespace = parser.nextText();
                                 parser.next();
-                                String className = parser.nextText();
                                 parser.next();
+                                String className = parser.nextText();
                                 // Only add the provider for the namespace if one isn't
                                 // already registered.
                                 String key = getProviderKey(elementName, namespace);
@@ -186,12 +188,14 @@ public class ProviderManager {
                             }
                             else if (parser.getName().equals("extensionProvider")) {
                                 parser.next();
+                                parser.next();
                                 String elementName = parser.nextText();
+                                parser.next();
                                 parser.next();
                                 String namespace = parser.nextText();
                                 parser.next();
-                                String className = parser.nextText();
                                 parser.next();
+                                String className = parser.nextText();
                                 // Only add the provider for the namespace if one isn't
                                 // already registered.
                                 String key = getProviderKey(elementName, namespace);
