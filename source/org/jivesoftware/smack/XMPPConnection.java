@@ -418,20 +418,27 @@ public class XMPPConnection {
             return null;
         }
         // If this is the first time the user has asked for the roster after calling
-        // login, we want to wait up to 2 seconds for the server to send back the
-        // user's roster. This behavior shields API users from having to worry about the
-        // fact that roster operations are asynchronous, although they'll still have to
-        // listen for changes to the roster. Note: because of this waiting logic, internal
+        // login, we want to wait for the server to send back the user's roster. This
+        // behavior shields API users from having to worry about the fact that roster
+        // operations are asynchronous, although they'll still have to listen for
+        // changes to the roster. Note: because of this waiting logic, internal
         // Smack code should be wary about calling the getRoster method, and may need to
         // access the roster object directly.
-        int elapsed = 0;
-        while (!roster.rosterInitialized && elapsed <= 2000) {
+        if (!roster.rosterInitialized) {
             try {
-                Thread.sleep(500);
+                synchronized (roster) {
+                    long waitTime = SmackConfiguration.getPacketReplyTimeout();
+                    long start = System.currentTimeMillis();
+                    while (!roster.rosterInitialized) {
+                        if (waitTime <= 0) {
+                            break;
+                        }
+                        roster.wait(waitTime);
+                        waitTime -= System.currentTimeMillis() - start;
+                    }
+                }
             }
-            catch (Exception e) {
-            }
-            elapsed += 500;
+            catch (InterruptedException ie) { }
         }
         return roster;
     }
@@ -724,7 +731,12 @@ public class XMPPConnection {
                             Class.forName("org.jivesoftware.smackx.debugger.EnhancedDebugger");
                 }
                 catch (Exception ex) {
-                    debuggerClass = LiteDebugger.class;
+                    try {
+                        debuggerClass = Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
+                    }
+                    catch (Exception ex2) {
+                        ex2.printStackTrace();
+                    }
                 }
             }
             // Create a new debugger instance. If an exception occurs then disable the debugging 

@@ -36,10 +36,6 @@ import java.util.*;
  *      <li> SUBSCRIPTION_REJECT_ALL -- reject all subscription requests.
  *      <li> SUBSCRIPTION_MANUAL -- manually process all subscription requests. </ul>
  *
- * All presence subscription requests are automatically approved to this client
- * are automatically approved. This logic will be updated in the future to allow for
- * pluggable behavior.
- *
  * @see XMPPConnection#getRoster()
  * @author Matt Tucker
  */
@@ -244,6 +240,7 @@ public class Roster {
                 new PacketIDFilter(rosterPacket.getPacketID()));
         connection.sendPacket(rosterPacket);
         IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        collector.cancel();
         if (response == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -251,7 +248,6 @@ public class Roster {
         else if (response.getType() == IQ.Type.ERROR) {
             throw new XMPPException(response.getError());
         }
-        collector.cancel();
 
         // Create a presence subscription packet and send.
         Presence presencePacket = new Presence(Presence.Type.SUBSCRIBE);
@@ -262,23 +258,39 @@ public class Roster {
     /**
      * Removes a roster entry from the roster. The roster entry will also be removed from the 
      * unfiled entries or from any roster group where it could belong and will no longer be part
-     * of the roster.
+     * of the roster. Note that this is an asynchronous call -- Smack must wait for the server
+     * to send an updated subscription status.
      *
      * @param entry a roster entry.
      */
-    public void removeEntry(RosterEntry entry) {
+    public void removeEntry(RosterEntry entry) throws XMPPException {
         // Only remove the entry if it's in the entry list.
         // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
         synchronized (entries) {
-            if (entries.contains(entry)) {
-                RosterPacket packet = new RosterPacket();
-                packet.setType(IQ.Type.SET);
-                RosterPacket.Item item = RosterEntry.toRosterItem(entry);
-                // Set the item type as REMOVE so that the server will delete the entry
-                item.setItemType(RosterPacket.ItemType.REMOVE);
-                packet.addRosterItem(item);
-                connection.sendPacket(packet);
+            if (!entries.contains(entry)) {
+                return;
             }
+        }
+        RosterPacket packet = new RosterPacket();
+        packet.setType(IQ.Type.SET);
+        RosterPacket.Item item = RosterEntry.toRosterItem(entry);
+        // Set the item type as REMOVE so that the server will delete the entry
+        item.setItemType(RosterPacket.ItemType.REMOVE);
+        packet.addRosterItem(item);
+        PacketCollector collector = connection.createPacketCollector(
+        new PacketIDFilter(packet.getPacketID()));
+        connection.sendPacket(packet);
+        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        collector.cancel();
+        if (response == null) {
+            throw new XMPPException("No response from the server.");
+        }
+        // If the server replied with an error, throw an exception.
+        else if (response.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(response.getError());
+        }
+        else {
+            
         }
     }
 
@@ -756,7 +768,10 @@ public class Roster {
             }
 
             // Mark the roster as initialized.
-            rosterInitialized = true;
+            synchronized (this) {
+                rosterInitialized = true;
+                notifyAll();
+            }
 
             // Fire event for roster listeners.
             fireRosterChangedEvent();
