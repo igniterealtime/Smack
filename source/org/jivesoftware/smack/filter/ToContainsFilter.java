@@ -77,6 +77,11 @@ public class ToContainsFilter implements PacketFilter {
     }
 
     public boolean accept(Packet packet) {
-        return packet.getTo().indexOf(to) != -1;
+        if (packet.getTo() == null) {
+            return false;
+        }
+        else {
+            return packet.getTo().indexOf(to) != -1;
+        }
     }
 }
