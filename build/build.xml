@@ -68,7 +68,6 @@
 
         <mkdir dir="${javadoc.dest.dir}" />
         <javadoc
-            additionalparam="-linksource -quiet"
             packagenames="org.jivesoftware.smack.*"
             sourcepath="${basedir}/source"
             destdir="${javadoc.dest.dir}"
