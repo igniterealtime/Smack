@@ -198,7 +198,7 @@ public class DataForm implements PacketExtension {
     /**
      * Adds a new item returned from a search.
      * 
-     * @param field the item returned from a search.
+     * @param item the item returned from a search.
      */
     public void addItem(Item item) {
         synchronized (items) {

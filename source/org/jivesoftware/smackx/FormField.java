@@ -255,7 +255,7 @@ public class FormField {
      * Adds a default values to the question if the question is part of a form to fill out. 
      * Otherwise, adds an answered values to the question.
      *  
-     * @param values default values or an answered values of the question.
+     * @param newValues default values or an answered values of the question.
      */
     public void addValues(List newValues) {
         synchronized (values) {
