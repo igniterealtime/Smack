@@ -6,8 +6,10 @@
 
 <body>
 
-<div class="header">XHTML Support</div><p>
-This extension is an XHTML subset for use in exchanging formatted messages.  
+<div class="header">XHTML Messages</div><p>
+
+Provdides the ability to send and receive formatted messages using XHTML.
+
 <p>Follow these links to learn how to compose, send and receive XHTML messages:</p>
 <ul>
   <li><a href="#xhtmlcompose">Compose an XHTML Message</a></li>
@@ -27,6 +29,12 @@ class that helps to build valid XHTML messages hiding any low level complexity.
 For special situations, advanced users may decide not to use the helper class and generate 
 the XHTML by themselves. Even for these situations Smack provides a well defined entry point 
 in order to add the generated XHTML content to a given message.</p>
+
+<p>
+Note: not all clients are able to view XHTML formatted messages. Therefore,
+it's recommended that you include a normal body in that message that is either an
+unformatted version of the text or a note that XHTML support is required
+to view the message contents.</p> 
 
 <b>Usage</b><p>
 
