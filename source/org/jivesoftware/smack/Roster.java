@@ -167,13 +167,8 @@ public class Roster {
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
      * 
-     * @throws IllegalStateException if the roster has not been initialized. The roster gets 
-     * initialized when the user has logged in a a roster packet was received.
      */
     public void reload() {
-        if (!rosterInitialized) {
-            throw new IllegalStateException("Roster not initialized yet.");
-        }
         connection.sendPacket(new RosterPacket());
     }
 
@@ -210,13 +205,11 @@ public class Roster {
      * after a logout/login. This is due to the way that XMPP stores group information.
      *
      * @param name the name of the group.
-     * @throws IllegalStateException if the roster has not been initialized. The roster gets 
-     * initialized when the user has logged in a a roster packet was received.
      * @return a new group.
      */
     public RosterGroup createGroup(String name) {
         if (!rosterInitialized) {
-            throw new IllegalStateException("Roster not initialized yet.");
+            waitUntilInitialized();
         }
         synchronized (groups) {
             if (groups.containsKey(name)) {
@@ -236,12 +229,10 @@ public class Roster {
      * @param name the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *      the roster entry won't belong to a group.
-     * @throws IllegalStateException if the roster has not been initialized. The roster gets 
-     * initialized when the user has logged in a a roster packet was received.
      */
     public void createEntry(String user, String name, String [] groups) throws XMPPException {
         if (!rosterInitialized) {
-            throw new IllegalStateException("Roster not initialized yet.");
+            waitUntilInitialized();
         }
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
@@ -379,7 +370,7 @@ public class Roster {
         // if it's a part of the XMPP address.
         user = StringUtils.parseBareAddress(user);
         synchronized (entries) {
-            for (Iterator i=entries.iterator(); i.hasNext(); ) {
+            for (Iterator i=getFiledEntriesList().iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
                 if (entry.getUser().equals(user)) {
                     return entry;
@@ -403,7 +394,7 @@ public class Roster {
         // if it's a part of the XMPP address.
         user = StringUtils.parseBareAddress(user);
         synchronized (entries) {
-            for (Iterator i=entries.iterator(); i.hasNext(); ) {
+            for (Iterator i=getFiledEntriesList().iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
                 if (entry.getUser().equals(user)) {
                     return true;
@@ -444,8 +435,60 @@ public class Roster {
      */
     public Iterator getGroups() {
         synchronized (groups) {
-            List groupsList = Collections.unmodifiableList(new ArrayList(groups.values()));
+            List groupsList = Collections.unmodifiableList(new ArrayList(getGroupsMap().values()));
             return groupsList.iterator();
+        }
+    }
+
+    /**
+     * Returns entries in the roster that belong to at least one group.<p>
+     * 
+     * Since the user can ask for the entries after calling login, it's possible that the 
+     * entries were not received yet. Therefore, the method call won't return until the 
+     * roster has been initialized or two seconds has elapsed.
+     *
+     * @return filed entries in the roster.
+     */
+    private List getFiledEntriesList() {
+        waitUntilInitialized();
+        return entries;
+    }
+
+    /**
+     * Returns the roster groups.<p>
+     * 
+     * Since the user can ask for the groups after calling login, it's possible that the 
+     * groups were not received yet. Therefore, the method call won't return until the 
+     * roster has been initialized or two seconds has elapsed.
+     *
+     * @return filed entries in the roster.
+     */
+    private Map getGroupsMap() {
+        waitUntilInitialized();
+        return groups;
+    }
+
+    /**
+     * Waits until the roster has been initialized or 2 seconds has elapsed. It is required to 
+     * wait before the user can make use of the roster when for example this is the first time 
+     * the user has asked for the entries after calling login and we want to wait up to 2 seconds 
+     * for the server to send back the user's roster.<p>
+     * 
+     * This behavior shields API users from having to worry about the fact that roster operations 
+     * are asynchronous, although they'll still have to listen for changes to the roster.
+     * 
+     */
+    private void waitUntilInitialized() {
+        if (!rosterInitialized) {
+            int elapsed = 0;
+            while (!rosterInitialized && elapsed <= 2000) {
+                try {
+                    Thread.sleep(500);
+                }
+                catch (Exception e) {
+                }
+                elapsed += 500;
+            }
         }
     }
 
