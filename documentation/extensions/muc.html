@@ -62,7 +62,7 @@ In this example we can see how to create an instant room: <br>
 </pre>
 </blockquote>
 
-In this example we can see how to create a reserved room: <br>
+In this example we can see how to create a reserved room. The form is completed with default values: <br>
 <blockquote>
 <pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
       MultiUserChat muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
@@ -78,15 +78,14 @@ In this example we can see how to create a reserved room: <br>
       for (Iterator fields = form.getFields(); fields.hasNext();) {
           FormField field = (FormField) fields.next();
           if (!FormField.TYPE_HIDDEN.equals(field.getType()) && field.getVariable() != null) {
-              <font color="#3f7f5f">// Add the field values to a List</font>
-              List values = new ArrayList();
-              for (Iterator it = field.getValues(); it.hasNext();) {
-                  values.add((String) it.next());
-              }
-              <font color="#3f7f5f">// Sets the new answer to the form to submit</font>
-              submitForm.setAnswer(field.getVariable(), values);
+              <font color="#3f7f5f">// Sets the default value as the answer</font>
+              submitForm.setDefaultAnswer(field.getVariable());
           }
       }
+      <font color="#3f7f5f">// Sets the new owner of the room</font>
+      List owners = new ArrayList();
+      owners.add(<font color="#0000FF">"johndoe@jabber.org"</font>);
+      submitForm.setAnswer(<font color="#0000FF">"muc#roomconfig_roomowners"</font>, owners);
       <font color="#3f7f5f">// Send the completed form (with default values) to the server to configure the room</font>
       muc.sendConfigurationForm(submitForm);
 </pre>
