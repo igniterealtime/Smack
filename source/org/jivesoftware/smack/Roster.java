@@ -96,6 +96,12 @@ public class Roster {
      */
     public static final int SUBSCRIPTION_MANUAL = 2;
 
+    /**
+     * The default subscription processing mode to use when a Roster is created. By default 
+     * all subscription requests are automatically accepted. 
+     */
+    private static int defaulSubscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
+
     private XMPPConnection connection;
     private Map groups;
     private List entries;
@@ -106,7 +112,31 @@ public class Roster {
     // has been recieved and processed.
     boolean rosterInitialized = false;
 
-    private int subscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
+    private int subscriptionMode = getDefaulSubscriptionMode();
+
+    /**
+     * Returns the default subscription processing mode to use when a new Roster is created. The 
+     * subscription processing mode dictates what action Smack will take when subscription 
+     * requests from other users are made. The default subscription mode 
+     * is {@link #SUBSCRIPTION_ACCEPT_ALL}.
+     * 
+     * @return the default subscription mode to use for new Rosters
+     */
+    public static int getDefaulSubscriptionMode() {
+        return defaulSubscriptionMode;
+    }
+
+    /**
+     * Sets the default subscription processing mode to use when a new Roster is created. The 
+     * subscription processing mode dictates what action Smack will take when subscription 
+     * requests from other users are made. The default subscription mode 
+     * is {@link #SUBSCRIPTION_ACCEPT_ALL}.
+     *
+     * @param subscriptionMode the default subscription mode to use for new Rosters.
+     */
+    public static void setDefaulSubscriptionMode(int subscriptionMode) {
+        defaulSubscriptionMode = subscriptionMode;
+    }
 
     /**
      * Creates a new roster.
@@ -166,7 +196,6 @@ public class Roster {
      * Reloads the entire roster from the server. This is an asynchronous operation,
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
-     * 
      */
     public void reload() {
         connection.sendPacket(new RosterPacket());
@@ -228,9 +257,6 @@ public class Roster {
      *      the roster entry won't belong to a group.
      */
     public void createEntry(String user, String name, String [] groups) throws XMPPException {
-        if (!rosterInitialized) {
-            waitUntilInitialized();
-        }
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
         rosterPacket.setType(IQ.Type.SET);
@@ -335,9 +361,6 @@ public class Roster {
      * @return the number of unfiled entries in the roster.
      */
     public int getUnfiledEntryCount() {
-        if (!rosterInitialized) {
-            waitUntilInitialized();
-        }
         synchronized (unfiledEntries) {
             return unfiledEntries.size();
         }
@@ -350,9 +373,6 @@ public class Roster {
      * @return an iterator the unfiled roster entries.
      */
     public Iterator getUnfiledEntries() {
-        if (!rosterInitialized) {
-            waitUntilInitialized();
-        }
         synchronized (unfiledEntries) {
             return Collections.unmodifiableList(new ArrayList(unfiledEntries)).iterator();
         }
@@ -368,9 +388,6 @@ public class Roster {
     public RosterEntry getEntry(String user) {
         if (user == null) {
             return null;
-        }
-        if (!rosterInitialized) {
-            waitUntilInitialized();
         }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
@@ -395,9 +412,6 @@ public class Roster {
     public boolean contains(String user) {
         if (user == null) {
             return false;
-        }
-        if (!rosterInitialized) {
-            waitUntilInitialized();
         }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
@@ -443,36 +457,9 @@ public class Roster {
      * @return an iterator for all roster groups.
      */
     public Iterator getGroups() {
-        if (!rosterInitialized) {
-            waitUntilInitialized();
-        }
         synchronized (groups) {
             List groupsList = Collections.unmodifiableList(new ArrayList(groups.values()));
             return groupsList.iterator();
-        }
-    }
-
-    /**
-     * Waits until the roster has been initialized or 2 seconds has elapsed. It is required to 
-     * wait before the user can make use of the roster when for example this is the first time 
-     * the user has asked for the entries after calling login and we want to wait up to 2 seconds 
-     * for the server to send back the user's roster.<p>
-     * 
-     * This behavior shields API users from having to worry about the fact that roster operations 
-     * are asynchronous, although they'll still have to listen for changes to the roster.
-     * 
-     */
-    private void waitUntilInitialized() {
-        if (!rosterInitialized) {
-            int elapsed = 0;
-            while (!rosterInitialized && elapsed <= 2000) {
-                try {
-                    Thread.sleep(500);
-                }
-                catch (Exception e) {
-                }
-                elapsed += 500;
-            }
         }
     }
 
@@ -708,11 +695,9 @@ public class Roster {
 
                 // Find the list of groups that the user currently belongs to.
                 List currentGroupNames = new ArrayList();
-                if (rosterInitialized) {
-                    for (Iterator j = entry.getGroups(); j.hasNext();  ) {
-                        RosterGroup group = (RosterGroup)j.next();
-                        currentGroupNames.add(group.getName());
-                    }
+                for (Iterator j = entry.getGroups(); j.hasNext();  ) {
+                    RosterGroup group = (RosterGroup)j.next();
+                    currentGroupNames.add(group.getName());
                 }
 
                 // If the packet is not of the type REMOVE then add the entry to the groups
@@ -743,16 +728,27 @@ public class Roster {
                 }
 
                 // Loop through any groups that remain and remove the entries.
-                if (rosterInitialized) {
-                    for (int n=0; n<currentGroupNames.size(); n++) {
-                        String groupName = (String)currentGroupNames.get(n);
-                        RosterGroup group = getGroup(groupName);
-                        group.removeEntryLocal(entry);
-                        if (group.getEntryCount() == 0) {
-                            synchronized (groups) {
-                                groups.remove(groupName);
-                            }
+                // This is neccessary for the case of remote entry removals.
+                for (int n=0; n<currentGroupNames.size(); n++) {
+                    String groupName = (String)currentGroupNames.get(n);
+                    RosterGroup group = getGroup(groupName);
+                    group.removeEntryLocal(entry);
+                    if (group.getEntryCount() == 0) {
+                        synchronized (groups) {
+                            groups.remove(groupName);
                         }
+                    }
+                }
+                // Remove all the groups with no entries. We have to do this because 
+                // RosterGroup.removeEntry removes the entry immediately (locally) and the 
+                // group could remain empty. 
+                // TODO Check the performance/logic for rosters with large number of groups 
+                for (Iterator it = getGroups(); it.hasNext();) {
+                    RosterGroup group = (RosterGroup)it.next();
+                    if (group.getEntryCount() == 0) {
+                        synchronized (groups) {
+                            groups.remove(group.getName());
+                        }                            
                     }
                 }
             }
