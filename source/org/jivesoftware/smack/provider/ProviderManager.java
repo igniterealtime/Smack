@@ -381,7 +381,7 @@ public class ProviderManager {
         ClassLoader[] classLoaders = new ClassLoader[3];
         classLoaders[0] = new ProviderManager().getClass().getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        classLoaders[2] = Object.class.getClassLoader();
+        classLoaders[2] = ClassLoader.getSystemClassLoader();
         return classLoaders;
     }
 
