@@ -96,14 +96,12 @@ public class XMPPConnection {
      */
     public static boolean DEBUG_ENABLED = false;
     static {
+        // Use try block since we may not have permission to get a system
+        // property (for example, when an applet).
         try {
-            // See if we're allowed to access the debug flag system property. This will
-            // not be allowed on applets, so we need to do a special check.
-            AccessController.checkPermission(new PropertyPermission("smack.debugEnabled", "read"));
-            // Passed permission check, so must be allowed. Get the value of the flag.
             DEBUG_ENABLED = Boolean.getBoolean("smack.debugEnabled");
         }
-        catch (AccessControlException ace) { }
+        catch (Exception e) { }
     }
     private JFrame debugFrame = null;
 
