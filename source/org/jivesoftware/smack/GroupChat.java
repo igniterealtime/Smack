@@ -127,6 +127,15 @@ public class GroupChat {
     }
 
     /**
+     * Returns the name of the room this GroupChat object represents.
+     *
+     * @return the groupchat room name.
+     */
+    public String getRoom() {
+        return room;
+    }
+
+    /**
      * Joins the chat room using the specified nickname. If already joined as
      * another nickname, will leave as that name first before joining under the new
      * name. The default timeout of 5 seconds for a reply from the group chat server
