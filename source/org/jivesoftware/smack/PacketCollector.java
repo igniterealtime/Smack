@@ -123,7 +123,7 @@ public class PacketCollector {
     }
 
     /**
-     * Polls to see if a result is currently available and returns it, or
+     * Polls to see if a packet is currently available and returns it, or
      * immediately returns <tt>null</tt> if no packets are currently in the
      * result queue.
      *
@@ -139,6 +139,12 @@ public class PacketCollector {
         }
     }
 
+    /**
+     * Returns the next available packet. The method call will block (not return)
+     * until a packet is available.
+     *
+     * @return the next available packet.
+     */
     public synchronized Packet nextResult() {
         // Wait indefinitely until there is a result to return.
         while (resultQueue.isEmpty()) {
@@ -150,6 +156,14 @@ public class PacketCollector {
         return (Packet)resultQueue.removeLast();
     }
 
+    /**
+     * Returns the next available packet. The method call will block (not return)
+     * until a packet is available or the <tt>timeout</tt> has elapased. If the
+     * timeout elapses without a result, <tt>null</tt> will be returned.
+     *
+     * @param timeout the amount of time to wait for the next packet (in milleseconds).
+     * @return the next available packet.
+     */
     public synchronized Packet nextResult(long timeout) {
         // Wait up to the specified amount of time for a result.
         if (resultQueue.isEmpty()) {

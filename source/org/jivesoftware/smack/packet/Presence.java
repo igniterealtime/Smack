@@ -55,8 +55,22 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.*;
 
 /**
- * Represents XMPP presence packets. Every presence packet has a type, while a
- * number of attributes are optional:
+ * Represents XMPP presence packets. Every presence packet has a type, which is one of
+ * the following values:
+ * <ul>
+ *      <li><tt>Presence.Type.AVAILABLE</tt> -- (Default) indicates the user is available to
+ *          receive messages.
+ *      <li><tt>Presence.Type.UNAVAILABLE</tt> -- the user is unavailable to receive messages.
+ *      <li><tt>Presence.Type.SUBSCRIBE</tt> -- request subscription to recipient's presence.
+ *      <li><tt>Presence.Type.SUBSCRIBED</tt> -- grant subscription to sender's presence.
+ *      <li><tt>Presence.Type.UNSUBSCRIBE</tt> -- request removal of subscription to sender's
+ *          presence.
+ *      <li><tt>Presence.Type.UNSUBSCRIBED</tt> -- grant removal of subscription to sender's
+ *          presence.
+ *      <li><tt>Presence.Type.ERROR</tt> -- the presence packet contains an error message.
+ * </ul><p>
+ *
+ * A number of attributes are optional:
  * <ul>
  *      <li>Status -- free-form text describing a user's presence (i.e., gone to lunch).
  *      <li>Priority -- non-negative numerical priority of a sender's resource. The
@@ -64,7 +78,7 @@ import org.jivesoftware.smack.*;
  *          to a particular resource.
  *      <li>Mode -- one of four presence modes: chat, away, xa (extended away, and
  *          dnd (do not disturb).
- * </ul>
+ * </ul><p>
  *
  * Presence packets are used for two purposes. First, to notify the server of our
  * the clients current presence status. Second, they are used to subscribe and
@@ -104,10 +118,20 @@ public class Presence extends Packet {
         this.mode = mode;
     }
 
+    /**
+     * Returns the type of this presence packet.
+     *
+     * @return the type of the presence packet.
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * Sets the type of the presence packet.
+     *
+     * @param type the type of the presence packet.
+     */
     public void setType(Type type) {
         this.type = type;
     }
@@ -181,7 +205,10 @@ public class Presence extends Packet {
         if (getFrom() != null) {
             buf.append("from=\"").append(getFrom()).append("\" ");
         }
-        buf.append("type=\"").append(type).append("\">");
+        if (type != Type.AVAILABLE) {
+            buf.append("type=\"").append(type).append("\"");
+        }
+        buf.append(">");
         if (status != null) {
             buf.append("<status>").append(status).append("</status>");
         }
@@ -206,6 +233,7 @@ public class Presence extends Packet {
         public static final Type SUBSCRIBED = new Type("subscribed");
         public static final Type UNSUBSCRIBE = new Type("unsubscribe");
         public static final Type UNSUBSCRIBED = new Type("unsubscribed");
+        public static final Type ERROR = new Type("error");
 
         private String value;
 
@@ -221,10 +249,7 @@ public class Presence extends Packet {
          * Returns the type constant associated with the String value.
          */
         public static Type fromString(String value) {
-            if ("available".equals(value)) {
-                return AVAILABLE;
-            }
-            else if ("unavailable".equals(value)) {
+            if ("unavailable".equals(value)) {
                 return UNAVAILABLE;
             }
             else if ("subscribe".equals(value)) {
@@ -238,6 +263,9 @@ public class Presence extends Packet {
             }
             else if ("unsubscribed".equals(value)) {
                 return UNSUBSCRIBED;
+            }
+            else if ("error".equals(value)) {
+                return ERROR;
             }
             // Default to available.
             else {
