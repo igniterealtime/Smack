@@ -59,7 +59,7 @@ public class RosterExchange implements PacketExtension {
     /**
      * Adds a roster entry to the packet.
      *
-     * @param item a roster item.
+     * @param rosterEntry a roster item.
      */
     public void addRosterItem(RosterEntry rosterEntry) {
         RosterGroup rosterGroup = null;  
@@ -118,7 +118,8 @@ public class RosterExchange implements PacketExtension {
     }
 
     /**
-     * Returns the XML representation of a Roster Item Exchange according the specification
+     * Returns the XML representation of a Roster Item Exchange according the specification.
+     *
      * Usually the XML representation will be inside of a Message XML representation like
      * in the following example:
      * <message id="MlIpV-4" to="gato1@gato.home" from="gato3@gato.home/Smack">
