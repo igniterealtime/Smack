@@ -73,19 +73,23 @@ public class MultiUserChat {
 
     private final static String discoNamespace = "http://jabber.org/protocol/muc";
     private final static String discoNode = "http://jabber.org/protocol/muc#rooms";
-    
+
     private static Map joinedRooms = new WeakHashMap();
 
     private XMPPConnection connection;
     private String room;
+    private String subject;
     private String nickname = null;
     private boolean joined = false;
     private Map participantsMap = new HashMap();
 
     private List invitationRejectionListeners = new ArrayList();
+    private List subjectUpdatedListeners = new ArrayList();
 
     private PacketFilter presenceFilter;
     private PacketListener presenceListener;
+    private PacketFilter subjectFilter;
+    private PacketListener subjectListener;
     private PacketFilter messageFilter;
     private PacketFilter declinesFilter;
     private PacketListener declinesListener;
@@ -129,54 +133,7 @@ public class MultiUserChat {
     public MultiUserChat(XMPPConnection connection, String room) {
         this.connection = connection;
         this.room = room;
-        // Create a collector for all incoming messages.
-        messageFilter =
-            new AndFilter(new FromContainsFilter(room), new PacketTypeFilter(Message.class));
-        messageFilter = new AndFilter(messageFilter, new PacketFilter() {
-            public boolean accept(Packet packet) {
-                Message msg = (Message) packet;
-                return msg.getType() == Message.Type.GROUP_CHAT;
-            }
-        });
-        messageCollector = connection.createPacketCollector(messageFilter);
-        // Create a listener for all presence updates.
-        presenceFilter =
-            new AndFilter(new FromContainsFilter(room), new PacketTypeFilter(Presence.class));
-        presenceListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Presence presence = (Presence) packet;
-                String from = presence.getFrom();
-                if (presence.getType() == Presence.Type.AVAILABLE) {
-                    synchronized (participantsMap) {
-                        participantsMap.put(from, presence);
-                    }
-                }
-                else if (presence.getType() == Presence.Type.UNAVAILABLE) {
-                    synchronized (participantsMap) {
-                        participantsMap.remove(from);
-                    }
-                }
-            }
-        };
-        connection.addPacketListener(presenceListener, presenceFilter);
-
-        // Listens for all messages that include a MUCUser extension and fire the invitation 
-        // rejection listeners if the message includes an invitation rejection.
-        declinesFilter = new PacketExtensionFilter("x", "http://jabber.org/protocol/muc#user");
-        declinesListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                // Get the MUC User extension
-                MUCUser mucUser = getMUCUserExtension(packet);
-                // Check if the MUCUser informs that the invitee has declined the invitation
-                if (mucUser.getDecline() != null) {
-                    // Fire event for invitation rejection listeners
-                    fireInvitationRejectionListeners(
-                        mucUser.getDecline().getFrom(),
-                        mucUser.getDecline().getReason());
-                }
-            };
-        };
-        connection.addPacketListener(declinesListener, declinesFilter);
+        init();
     }
 
     /**
@@ -298,6 +255,9 @@ public class MultiUserChat {
         // Wait up to a certain number of seconds for a reply.
         Presence presence =
             (Presence) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
         if (presence == null) {
             throw new XMPPException("No response from server.");
         }
@@ -459,6 +419,9 @@ public class MultiUserChat {
         connection.sendPacket(joinPresence);
         // Wait up to a certain number of seconds for a reply.
         Presence presence = (Presence) response.nextResult(timeout);
+        // Stop queuing results
+        response.cancel();
+
         if (presence == null) {
             throw new XMPPException("No response from server.");
         }
@@ -663,6 +626,11 @@ public class MultiUserChat {
         else if (answer.getError() != null) {
             throw new XMPPException(answer.getError());
         }
+        // Reset participant information.
+        participantsMap = new HashMap();
+        nickname = null;
+        joined = false;
+        userHasLeft();
     }
 
     /**
@@ -777,6 +745,63 @@ public class MultiUserChat {
             listeners[i].invitationDeclined(invitee, reason);
         }
     }
+    
+    /**
+     * Adds a listener to subject change notifications. The listener will be fired anytime 
+     * the room's subject changes.
+     *
+     * @param listener a subject updated listener.
+     */
+    public void addSubjectUpdatedListener(SubjectUpdatedListener listener) {
+        synchronized (subjectUpdatedListeners) {
+            if (!subjectUpdatedListeners.contains(listener)) {
+                subjectUpdatedListeners.add(listener);
+            }
+        }
+    }
+
+    /**
+     * Removes a listener from subject change notifications. The listener will be fired 
+     * anytime the room's subject changes.
+     *
+     * @param listener a subject updated listener.
+     */
+    public void removeSubjectUpdatedListener(SubjectUpdatedListener listener) {
+        synchronized (subjectUpdatedListeners) {
+            subjectUpdatedListeners.remove(listener);
+        }
+    }
+
+    /**
+     * Fires subject updated listeners.
+     */
+    private void fireSubjectUpdatedListeners(String subject, String from) {
+        SubjectUpdatedListener[] listeners = null;
+        synchronized (subjectUpdatedListeners) {
+            listeners = new SubjectUpdatedListener[subjectUpdatedListeners.size()];
+            subjectUpdatedListeners.toArray(listeners);
+        }
+        for (int i = 0; i < listeners.length; i++) {
+            listeners[i].subjectUpdated(subject, from);
+        }
+    }
+
+    /**
+     * Returns the last known room's subject or <tt>null</tt> if the user hasn't joined the room 
+     * or the room does not have a subject yet. In case the room has a subject, as soon as the 
+     * user joins the room a message with the current room's subject will be received.<p>
+     * 
+     * To be notified every time the room's subject change you should add a listener
+     * to this room. (@see addSubjectUpdatedListener(SubjectUpdatedListener))<p>
+     * 
+     * To change the room's subject use <code>changeSubject(String)</code>.
+     *
+     * @return the room's subject or <tt>null</tt> if the user hasn't joined the room or the 
+     * room does not have a subject yet.
+     */
+    public String getSubject() {
+        return subject;
+    }
 
     /**
      * Returns the reserved room nickname for the user in the room. A user may have a reserved 
@@ -852,6 +877,9 @@ public class MultiUserChat {
         // Wait up to a certain number of seconds for a reply.
         Presence presence =
             (Presence) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
         if (presence == null) {
             throw new XMPPException("No response from server.");
         }
@@ -1066,6 +1094,47 @@ public class MultiUserChat {
     }
 
     /**
+     * Changes the subject within the room. As a default, only users with a role of "moderator" 
+     * are allowed to change the subject in a room. Although some rooms may be configured to 
+     * allow a mere participant or even a visitor to change the subject.
+     * 
+     * @param subject the new room's subject to set. 
+     * @throws XMPPException if someone without appropriate privileges attempts to change the 
+     *          room subject will throw an error with code 403 (i.e. Forbidden)
+     */
+    public void changeSubject(final String subject) throws XMPPException {
+        // TODO Implement way to listen to changes of subject made by other users
+        Message message = new Message(room, Message.Type.GROUP_CHAT);
+        message.setSubject(subject);
+        // Wait for an error or confirmation message back from the server.
+        PacketFilter responseFilter =
+            new AndFilter(
+                new FromContainsFilter(room),
+                new PacketTypeFilter(Message.class));
+        responseFilter = new AndFilter(responseFilter, new PacketFilter() {
+            public boolean accept(Packet packet) {
+                Message msg = (Message) packet;
+                return subject.equals(msg.getSubject());
+            }
+        });
+        PacketCollector response = connection.createPacketCollector(responseFilter);
+        // Send change subject packet.
+        connection.sendPacket(message);
+        // Wait up to a certain number of seconds for a reply.
+        Message answer =
+            (Message) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        response.cancel();
+
+        if (answer == null) {
+            throw new XMPPException("No response from server.");
+        }
+        else if (answer.getError() != null) {
+            throw new XMPPException(answer.getError());
+        }
+    }
+
+    /**
      * Notification message that the user has joined the room. 
      */
     private synchronized void userHasJoined() {
@@ -1104,8 +1173,88 @@ public class MultiUserChat {
         return null;
     }
 
+    private void init() {
+        // Create a collector for all incoming messages.
+        messageFilter =
+            new AndFilter(
+                new FromContainsFilter(room),
+                new MessageTypeFilter(Message.Type.GROUP_CHAT));
+        messageFilter = new AndFilter(messageFilter, new PacketFilter() {
+            public boolean accept(Packet packet) {
+                Message msg = (Message) packet;
+                return msg.getBody() != null;
+            }
+        });
+        messageCollector = connection.createPacketCollector(messageFilter);
+        // Create a listener for all subject updates.
+        subjectFilter =
+            new AndFilter(
+                new FromContainsFilter(room),
+                new MessageTypeFilter(Message.Type.GROUP_CHAT));
+        subjectFilter = new AndFilter(subjectFilter, new PacketFilter() {
+            public boolean accept(Packet packet) {
+                Message msg = (Message) packet;
+                return msg.getSubject() != null;
+            }
+        });
+        subjectListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Message msg = (Message) packet;
+                // Update the room subject
+                subject = msg.getSubject();
+                // Fire event for subject updated listeners
+                fireSubjectUpdatedListeners(
+                    msg.getSubject(),
+                    msg.getFrom());
+                
+            }
+        };
+        connection.addPacketListener(subjectListener, subjectFilter);
+
+        // Create a listener for all presence updates.
+        presenceFilter =
+            new AndFilter(new FromContainsFilter(room), new PacketTypeFilter(Presence.class));
+        presenceListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Presence presence = (Presence) packet;
+                String from = presence.getFrom();
+                if (presence.getType() == Presence.Type.AVAILABLE) {
+                    synchronized (participantsMap) {
+                        participantsMap.put(from, presence);
+                    }
+                }
+                else if (presence.getType() == Presence.Type.UNAVAILABLE) {
+                    synchronized (participantsMap) {
+                        participantsMap.remove(from);
+                    }
+                }
+            }
+        };
+        connection.addPacketListener(presenceListener, presenceFilter);
+
+        // Listens for all messages that include a MUCUser extension and fire the invitation 
+        // rejection listeners if the message includes an invitation rejection.
+        declinesFilter = new PacketExtensionFilter("x", "http://jabber.org/protocol/muc#user");
+        declinesListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                // Get the MUC User extension
+                MUCUser mucUser = getMUCUserExtension(packet);
+                // Check if the MUCUser informs that the invitee has declined the invitation
+                if (mucUser.getDecline() != null) {
+                    // Fire event for invitation rejection listeners
+                    fireInvitationRejectionListeners(
+                        mucUser.getDecline().getFrom(),
+                        mucUser.getDecline().getReason());
+                }
+            };
+        };
+        connection.addPacketListener(declinesListener, declinesFilter);
+    }
+    
     public void finalize() {
         if (connection != null) {
+            messageCollector.cancel();
+            connection.removePacketListener(subjectListener);
             connection.removePacketListener(presenceListener);
             connection.removePacketListener(declinesListener);
         }
