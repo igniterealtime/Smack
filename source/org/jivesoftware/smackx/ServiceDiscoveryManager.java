@@ -77,6 +77,15 @@ public class ServiceDiscoveryManager {
     private XMPPConnection connection;
     private List features = new ArrayList();
     
+    // Create a new ServiceDiscoveryManager on every established connection
+    static {
+        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+            public void connectionEstablished(XMPPConnection connection) {
+                new ServiceDiscoveryManager(connection);
+            }
+        });
+    }
+
     /**
      * Creates a new ServiceDiscoveryManager for a given XMPPConnection. This means that the 
      * service manager will respond to any service discovery request that the connection may
