@@ -54,7 +54,10 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.filter.*;
+
+import java.util.*;
 
 /**
  * A GroupChat is a conversation that takes plaaces among many users in a virtual
@@ -70,6 +73,7 @@ public class GroupChat {
     private String room;
     private String nickname = null;
     private boolean joined = false;
+    private List participants = new ArrayList();
 
     private PacketCollector messageCollector;
 
@@ -84,9 +88,31 @@ public class GroupChat {
     public GroupChat(XMPPConnection connection, String room) {
         this.connection = connection;
         this.room = room;
+        // Create a collector for all incoming messages.
         PacketFilter messageFilter = new AndFilter(new FromContainsFilter(room),
                 new PacketTypeFilter(Message.class));
         messageCollector = connection.createPacketCollector(messageFilter);
+        // Create a listener for all presence updates.
+        PacketFilter presenceFilter = new AndFilter(new FromContainsFilter(room),
+                new PacketTypeFilter(Presence.class));
+        connection.addPacketListener(new PacketListener() {
+            public void processPacket(Packet packet) {
+                Presence presence = (Presence)packet;
+                String from = presence.getFrom();
+                if (presence.getType() == Presence.Type.AVAILABLE) {
+                    synchronized (participants) {
+                        if (!participants.contains(from)) {
+                            participants.add(from);
+                        }
+                    }
+                }
+                else if (presence.getType() == Presence.Type.UNAVAILABLE) {
+                    synchronized (participants) {
+                        participants.remove(from);
+                    }
+                }
+            }
+        }, presenceFilter);
     }
 
     /**
@@ -142,6 +168,8 @@ public class GroupChat {
         Presence leavePresence = new Presence(Presence.Type.UNAVAILABLE);
         leavePresence.setTo(room + "/" + nickname);
         connection.sendPacket(leavePresence);
+        // Reset participant information.
+        participants = new ArrayList();
         nickname = null;
         joined = false;
     }
@@ -150,10 +178,39 @@ public class GroupChat {
      * Returns the nickname that was used to join the room, or <tt>null</tt> if not
      * currently joined.
      *
-     * @return the nickname currently being used..
+     * @return the nickname currently being used.
      */
     public String getNickname() {
         return nickname;
+    }
+
+    /**
+     * Returns the number of participants in the group chat. Note: this value will only
+     * be accurate after joining the group chat, and may fluctuate over time.
+     *
+     * @return the number of participants in the group chat.
+     */
+    public int getParticipantCount() {
+        synchronized (participants) {
+            return participants.size();
+        }
+    }
+
+    /**
+     * Returns an Iterator (of Strings) for the list of fully qualified participants
+     * in the group chat. For example, "conference@chat.jivesoftware.com/SomeUser".
+     * Typically, a client would only display the nickname of the participant. To
+     * get the nickname from the fully qualified name, use the
+     * {@link org.jivesoftware.smack.util.StringUtils#parseResource(String)} method.
+     * Note: this value will only be accurate after joining the group chat, and may
+     * fluctuate over time.
+     *
+     * @return an Iterator for the participants in the group chat.
+     */
+    public Iterator getParticipants() {
+        synchronized (participants) {
+            return Collections.unmodifiableList(new ArrayList(participants)).iterator();
+        }
     }
 
     /**
