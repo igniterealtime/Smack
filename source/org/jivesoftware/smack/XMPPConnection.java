@@ -562,6 +562,19 @@ public class XMPPConnection {
         }
         catch (Exception e) {
         }
+
+		// Close down the readers and writers.
+		if (reader != null)
+		{
+			try { reader.close(); } catch (Throwable ignore) { }
+			reader = null;
+		}
+		if (writer != null)
+		{
+			try { writer.close(); } catch (Throwable ignore) { }
+			writer = null;
+		}
+
         try {
             socket.close();
         }
@@ -761,28 +774,66 @@ public class XMPPConnection {
             }
         }
 
-        packetWriter = new PacketWriter(this);
-        packetReader = new PacketReader(this);
+		try
+		{
+            packetWriter = new PacketWriter(this);
+            packetReader = new PacketReader(this);
 
-        // If debugging is enabled, we should start the thread that will listen for
-        // all packets and then log them.
-        if (DEBUG_ENABLED) {
-            packetReader.addPacketListener(debugger.getReaderListener(), null);
-            if (debugger.getWriterListener() != null) {
-                packetWriter.addPacketListener(debugger.getWriterListener(), null);
+            // If debugging is enabled, we should start the thread that will listen for
+            // all packets and then log them.
+            if (DEBUG_ENABLED) {
+                packetReader.addPacketListener(debugger.getReaderListener(), null);
+                if (debugger.getWriterListener() != null) {
+                    packetWriter.addPacketListener(debugger.getWriterListener(), null);
+                }
             }
-        }
-        // Start the packet writer. This will open a XMPP stream to the server
-        packetWriter.startup();
-        // Start the packet reader. The startup() method will block until we
-        // get an opening stream packet back from server.
-        packetReader.startup();
+            // Start the packet writer. This will open a XMPP stream to the server
+            packetWriter.startup();
+            // Start the packet reader. The startup() method will block until we
+            // get an opening stream packet back from server.
+            packetReader.startup();
 
-        // Make note of the fact that we're now connected.
-        connected = true;
-        
-        // Notify that a new connection has been established
-        connectionEstablished(this);
+            // Make note of the fact that we're now connected.
+            connected = true;
+
+            // Notify that a new connection has been established
+            connectionEstablished(this);
+        }
+		catch (XMPPException ex)
+		{
+			// An exception occurred in setting up the connection. Make sure we shut down the
+			// readers and writers and close the socket.
+
+			if (packetWriter != null)
+			{
+				try { packetWriter.shutdown(); } catch (Throwable ignore) { }
+				packetWriter = null;
+			}
+			if (packetReader != null)
+			{
+				try { packetReader.shutdown(); } catch (Throwable ignore) { }
+				packetReader = null;
+			}
+			if (reader != null)
+			{
+				try { reader.close(); } catch (Throwable ignore) { }
+				reader = null;
+			}
+			if (writer != null)
+			{
+				try { writer.close(); } catch (Throwable ignore) { }
+				writer = null;
+			}
+			if (socket != null)
+			{
+				try { socket.close(); } catch (Exception e) { }
+				socket = null;
+			}
+			authenticated = false;
+			connected = false;
+	
+			throw ex;		// Everything stoppped. Now throw the exception.
+		}
     }
 
     /**
