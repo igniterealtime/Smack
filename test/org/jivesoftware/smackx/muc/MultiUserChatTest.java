@@ -62,6 +62,7 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.packet.XHTMLExtension;
 
 /**
  * Tests the new MUC functionalities.
@@ -306,6 +307,55 @@ public class MultiUserChatTest extends SmackTestCase {
                 "Meet me in this excellent room",
                 answer[0]);
             assertEquals("Rejection was not received", "I'm busy right now", answer[1]);
+
+            // User2 leaves the room
+            muc2.leave();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testInvitationWithMessage() {
+        final String[] answer = new String[2];
+        try {
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
+            muc2.join("testbot2");
+
+            // User3 is listening to MUC invitations
+            MultiUserChat.addInvitationListener(getConnection(2), new InvitationListener() {
+                public void invitationReceived(
+                    XMPPConnection conn,
+                    String room,
+                    String inviter,
+                    String reason,
+                    String password,
+                    Message message) {
+                    // Indicate that the invitation was received
+                    answer[0] = reason;
+                    XHTMLExtension extension = (XHTMLExtension) message.getExtension("html",
+                            "http://jabber.org/protocol/xhtml-im");
+                    assertNotNull("An extension was not found in the invitation", extension);                    
+                    answer[1] = (String) extension.getBodies().next();
+                }
+            });
+
+            // User2 invites user3 to join to the room
+            Message msg = new Message();
+            XHTMLExtension xhtmlExtension = new XHTMLExtension();
+            xhtmlExtension.addBody("<body>Meet me in this excellent room</body>");
+            msg.addExtension(xhtmlExtension);
+            muc2.invite(msg , getFullJID(2), "Meet me in this excellent room");
+            Thread.sleep(350);
+
+            assertEquals(
+                "Invitation was not received",
+                "Meet me in this excellent room",
+                answer[0]);
+            assertEquals("Rejection was not received",
+                    "<body>Meet me in this excellent room</body>", answer[1]);
 
             // User2 leaves the room
             muc2.leave();
