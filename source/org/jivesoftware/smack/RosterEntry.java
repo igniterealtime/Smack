@@ -15,11 +15,21 @@ public class RosterEntry {
 
     private String user;
     private String name;
+    private RosterPacket.ItemType type;
     private XMPPConnection connection;
 
-    RosterEntry(String user, String name, XMPPConnection connection) {
+    /**
+     * Creates a new roster entry.
+     *
+     * @param user the user.
+     * @param name the nickname for the entry.
+     * @param type the subscription type.
+     * @param connection a connection to the XMPP server.
+     */
+    RosterEntry(String user, String name, RosterPacket.ItemType type, XMPPConnection connection) {
         this.user = user;
         this.name = name;
+        this.type = type;
         this.connection = connection;
     }
 
@@ -41,7 +51,16 @@ public class RosterEntry {
         return name;
     }
 
+    /**
+     * Sets the name associated with this entry.
+     *
+     * @param name the name.
+     */
     public void setName(String name) {
+        // Do nothing if the name hasn't changed.
+        if (this.name.equals(name)) {
+            return;
+        }
         this.name = name;
         RosterPacket packet = new RosterPacket();
         packet.setType(IQ.Type.SET);
@@ -67,6 +86,16 @@ public class RosterEntry {
         return results.iterator();
     }
 
+    /**
+     * Returns the roster subscription type of the entry. When the type is
+     * {@link RosterPacket.ItemType#NONE}, the subscription request is pending.
+     *
+     * @return the type.
+     */
+    public RosterPacket.ItemType getType() {
+        return type;
+    }
+
     public boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -81,7 +110,7 @@ public class RosterEntry {
 
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
-        item.setItemType(RosterPacket.ItemType.BOTH);
+        item.setItemType(entry.getType());
         // Set the correct group names for the item.
         for (Iterator j=entry.getGroups(); j.hasNext(); ) {
             RosterGroup group = (RosterGroup)j.next();
