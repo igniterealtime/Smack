@@ -149,7 +149,7 @@ public class RosterGroup {
      * @param user the XMPP address of the user.
      * @return true if the XMPP address is an entry in this group.
      */
-    public boolean conatins(String user) {
+    public boolean contains(String user) {
         if (user == null) {
             return false;
         }
