@@ -86,6 +86,19 @@ public class MultiUserChat {
     private PacketListener declinesListener;
     private PacketCollector messageCollector;
 
+    // Set on every established connection that this client supports the Multi-User Chat protocol.
+    // This information will be used when another client tries to discover whether this client
+    // supports MUC or not.
+    // Note: The ServiceDiscoveryManager class should have been already initialized
+    static {
+        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+            public void connectionEstablished(XMPPConnection connection) {
+                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(
+                    "http://jabber.org/protocol/muc");
+            }
+        });
+    }
+
     /**
      * Creates a new multi user chat with the specified connection and room name. Note: no
      * information is sent to or received from the server until you attempt to
@@ -690,6 +703,36 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns the reserved room nickname for the user in the room. A user may have a reserved 
+     * nickname, for example through explicit room registration or database integration. In such 
+     * cases it may be desirable for the user to discover the reserved nickname before attempting 
+     * to enter the room.
+     *
+     * @return the reserved room nickname or <tt>null</tt> if none.
+     */
+    public String getReservedNickname() {
+        try {
+            DiscoverInfo result =
+                ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
+                    room,
+                    "x-roomuser-item");
+            // Look for the Identity whose category is "client" and return its name 
+            for (Iterator identities = result.getIdentities(); identities.hasNext();) {
+                DiscoverInfo.Identity identity = (DiscoverInfo.Identity) identities.next();
+                if ("client".equals(identity.getCategory())) {
+                    return identity.getName();
+                }
+            }
+            // If no Identity was found then the user does not have a reserved room nickname
+            return null;
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Returns the nickname that was used to join the room, or <tt>null</tt> if not
      * currently joined.
      *
@@ -1086,7 +1129,7 @@ public class MultiUserChat {
             invitationPacketListener = new PacketListener() {
                 public void processPacket(Packet packet) {
                     // Get the MUCUser extension
-                    MUCUser mucUser =
+                    MUCUser mucUser = 
                         (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
                     // Check if the MUCUser extension includes an invitation
                     if (mucUser.getInvite() != null) {
