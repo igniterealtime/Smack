@@ -211,7 +211,7 @@ public class MUCInitialPresence implements PacketExtension {
          * In other words, only the messages received in the last "X" seconds will be included in 
          * the history.
          * 
-         * @param seconds he number of seconds to use to filter the messages received during 
+         * @param seconds the number of seconds to use to filter the messages received during 
          * that time.
          */
         public void setSeconds(int seconds) {
