@@ -80,7 +80,7 @@ public class PacketReaderTest extends SmackTestCase {
                 return "<query xmlns=\"my:ns:test\"/>";
             }
         };
-        iqPacket.setTo(getBareJID(1));
+        iqPacket.setTo(getFullJID(1));
         iqPacket.setType(IQ.Type.GET);
 
         // Send the IQ and wait for the answer

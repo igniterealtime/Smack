@@ -110,8 +110,11 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         // By default the XHTML service support is enabled in all the connections
         assertTrue(XHTMLManager.isServiceEnabled(getConnection(0)));
         assertTrue(XHTMLManager.isServiceEnabled(getConnection(1)));
-        // Check for XHTML support in connection1 from connection2 
-        assertTrue(XHTMLManager.isServiceEnabled(getConnection(1), getBareJID(0)));
+        // Check for XHTML support in connection1 from connection2
+        // Must specify a full JID and not a bare JID. Ensure that the server is working ok. 
+        assertFalse(XHTMLManager.isServiceEnabled(getConnection(1), getBareJID(0)));
+        // Using a full JID check that the other client supports XHTML. 
+        assertTrue(XHTMLManager.isServiceEnabled(getConnection(1), getFullJID(0)));
         
         // Disable the XHTML Message support in connection1
         XHTMLManager.setServiceEnabled(getConnection(0), false);
