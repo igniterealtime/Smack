@@ -114,7 +114,7 @@ public class Roster {
      *
      * @param rosterListener a roster listener.
      */
-    public void addRosterListner(RosterListener rosterListener) {
+    public void addRosterListener(RosterListener rosterListener) {
         synchronized (rosterListeners) {
             if (!rosterListeners.contains(rosterListener)) {
                 rosterListeners.add(rosterListener);
