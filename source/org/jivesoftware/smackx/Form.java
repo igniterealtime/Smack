@@ -149,7 +149,8 @@ public class Form {
      */
     public void setAnswer(String variable, String value) {
         if (!isSubmitType()) {
-            throw new IllegalStateException("Cannot add fields if the form is not of type \"submit\"");
+            throw new IllegalStateException("Cannot set an answer if the form is not of type " +
+            "\"submit\"");
         }
         FormField field = getField(variable);
         if (field != null) {
@@ -173,7 +174,8 @@ public class Form {
      */
     public void setAnswer(String variable, List values) {
         if (!isSubmitType()) {
-            throw new IllegalStateException("Cannot add fields if the form is not of type \"submit\"");
+            throw new IllegalStateException("Cannot set an answer if the form is not of type " +
+            "\"submit\"");
         }
         FormField field = getField(variable);
         if (field != null) {
