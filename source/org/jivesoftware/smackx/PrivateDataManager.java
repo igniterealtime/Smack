@@ -52,14 +52,11 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.packet.PrivateData;
-import org.jivesoftware.smackx.packet.DefaultPrivateData;
+import org.jivesoftware.smackx.packet.*;
 import org.jivesoftware.smackx.provider.*;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -77,7 +74,6 @@ public class PrivateDataManager {
     private static Map privateDataProviders = new Hashtable();
 
     private XMPPConnection con;
-    private String user;
 
     /**
      * Returns the private data provider registered to the specified XML element name and namespace.
@@ -128,7 +124,6 @@ public class PrivateDataManager {
      */
     public PrivateDataManager(XMPPConnection con) {
         this.con = con;
-        this.user = con.getUser();
     }
 
     /**
