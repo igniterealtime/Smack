@@ -89,7 +89,10 @@ public class RosterTest extends TestCase {
             conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", new String[] {"Friends", "Family"});
             conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", new String[] {"Family"});
 
-            Thread.sleep(200);
+            // Wait until the server confirms the new entries
+            while (conn1.getRoster().getEntryCount() != 2) {
+                Thread.sleep(50);
+            }
 
             Iterator it = conn1.getRoster().getEntries();
             while (it.hasNext()) {
@@ -98,18 +101,18 @@ public class RosterTest extends TestCase {
                 while (groups.hasNext()) {
                     RosterGroup rosterGroup = (RosterGroup) groups.next();
                     rosterGroup.removeEntry(entry);
-                    Thread.sleep(250);
                 }
             }
-
-            assertEquals("The number of entries in conn1 should be 2", 2, conn1.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn1 should be 0", 0, conn1.getRoster().getGroupCount());
+            Thread.sleep(750);
 
             assertEquals("The number of entries in conn2 should be 1", 1, conn2.getRoster().getEntryCount());
             assertEquals("The number of groups in conn2 should be 0", 0, conn2.getRoster().getGroupCount());
 
             assertEquals("The number of entries in conn3 should be 1", 1, conn3.getRoster().getEntryCount());
             assertEquals("The number of groups in conn3 should be 0", 0, conn3.getRoster().getGroupCount());
+
+            assertEquals("The number of entries in conn1 should be 2", 2, conn1.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn1 should be 0", 0, conn1.getRoster().getGroupCount());
 
             cleanUpRoster();
         }
@@ -218,6 +221,39 @@ public class RosterTest extends TestCase {
     }
 
     /**
+     * Test if renaming a roster group works fine.
+     *
+     */
+    public void testRenameRosterGroup() {
+        try {
+            // Add a new roster entry
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", new String[] {"Friends"});
+            conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", new String[] {"Friends"});
+
+            Thread.sleep(200);
+
+            conn1.getRoster().getGroup("Friends").setName("Amigos");
+            Thread.sleep(200);
+            assertNull("The group Friends still exists", conn1.getRoster().getGroup("Friends"));
+            assertNotNull("The group Amigos does not exist", conn1.getRoster().getGroup("Amigos"));
+            assertEquals("Wrong number of entries in the group Amigos ", 2, conn1.getRoster().getGroup("Amigos").getEntryCount());
+
+            
+            conn1.getRoster().getGroup("Amigos").setName("");
+            Thread.sleep(200);
+            assertNull("The group Amigos still exists", conn1.getRoster().getGroup("Amigos"));
+            assertNotNull("The group with no name does not exist", conn1.getRoster().getGroup(""));
+            assertEquals("Wrong number of entries in the group \"\" ", 2, conn1.getRoster().getGroup("").getEntryCount());
+
+            cleanUpRoster();
+            Thread.sleep(200);
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
      * Test presence management.
      */
     public void testRosterPresences() {
@@ -269,40 +305,9 @@ public class RosterTest extends TestCase {
             }
             assertEquals("Wrong number of returned presences", count, 1);
 
+            Thread.sleep(200);
             cleanUpRoster();
 
-        }
-        catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    /**
-     * Test if renaming a roster group works fine.
-     *
-     */
-    public void testRenameRosterGroup() {
-        try {
-            // Add a new roster entry
-            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", new String[] {"Friends"});
-            conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", new String[] {"Friends"});
-
-            Thread.sleep(200);
-
-            conn1.getRoster().getGroup("Friends").setName("Amigos");
-            Thread.sleep(200);
-            assertNull("The group Friends still exists", conn1.getRoster().getGroup("Friends"));
-            assertNotNull("The group Amigos does not exist", conn1.getRoster().getGroup("Amigos"));
-            assertEquals("Wrong number of entries in the group Amigos ", 2, conn1.getRoster().getGroup("Amigos").getEntryCount());
-
-            
-            conn1.getRoster().getGroup("Amigos").setName("");
-            Thread.sleep(200);
-            assertNull("The group Amigos still exists", conn1.getRoster().getGroup("Amigos"));
-            assertNotNull("The group with no name does not exist", conn1.getRoster().getGroup(""));
-            assertEquals("Wrong number of entries in the group \"\" ", 2, conn1.getRoster().getGroup("").getEntryCount());
-
-            cleanUpRoster();
         }
         catch (Exception e) {
             fail(e.getMessage());
