@@ -27,6 +27,7 @@
         <include name="**/*.jsp" />
         <include name="**/*.html" />
         <include name="**/*.gif" />
+        <include name="**/*.css" />
     </patternset>
 
 
