@@ -119,6 +119,7 @@ public class RosterPacket extends IQ {
         private String user;
         private String name;
         private ItemType itemType;
+        private ItemStatus itemStatus;
         private List groupNames;
 
         /**
@@ -131,6 +132,7 @@ public class RosterPacket extends IQ {
             this.user = user;
             this.name = name;
             itemType = null;
+            itemStatus = null;
             groupNames = new ArrayList();
         }
 
@@ -224,6 +226,9 @@ public class RosterPacket extends IQ {
             if (itemType != null) {
                 buf.append(" subscription=\"").append(itemType).append("\"");
             }
+            if (itemStatus != null) {
+                buf.append(" ask=\"").append(itemStatus).append("\"");
+            }
             buf.append(">");
             synchronized (groupNames) {
                 for (int i=0; i<groupNames.size(); i++) {
@@ -237,23 +242,30 @@ public class RosterPacket extends IQ {
     }
 
     /**
-     * The subscription status of a roster item.
+     * The subscription status of a roster item. An optional element that indicates
+     * the subscription status if a change request is pending.
      */
     public static class ItemStatus {
 
-        public static final ItemStatus SUBSCRIBED = new ItemStatus("subscribed");
+        /**
+         * Request to subcribe.
+         */
         public static final ItemStatus SUBSCRIPTION_PENDING = new ItemStatus("subscribe");
+
+        /**
+         * Request to unsubscribe.
+         */
         public static final ItemStatus UNSUBCRIPTION_PENDING = new ItemStatus("unsubscribe");
 
         public static ItemStatus fromString(String value) {
-            if ("subscribed".equals(value)) {
-                return SUBSCRIBED;
+            if ("unsubscribe".equals(value)) {
+                return SUBSCRIPTION_PENDING;
             }
             else if ("subscribe".equals(value)) {
                 return SUBSCRIPTION_PENDING;
             }
             else {
-                return SUBSCRIBED;
+                return null;
             }
         }
 
@@ -271,7 +283,6 @@ public class RosterPacket extends IQ {
         public String toString() {
             return value;
         }
-
     }
 
     /**
@@ -279,10 +290,29 @@ public class RosterPacket extends IQ {
      */
     public static class ItemType {
 
+        /**
+         * The user and subscriber have no interest in each other's presence.
+         */
         public static final ItemType NONE = new ItemType("none");
+
+        /**
+         * The subscription request is pending.
+         */
         public static final ItemType PENDING = new ItemType("pending");
+
+        /**
+         * The user is interested in receiving presence updates from the subscriber.
+         */
         public static final ItemType TO = new ItemType("to");
+
+        /**
+         * The subscriber is interested in receiving presence updates from the user.
+         */
         public static final ItemType FROM = new ItemType("from");
+
+        /**
+         * The user and subscriber have a mutual interest in each other's presence.
+         */
         public static final ItemType BOTH = new ItemType("both");
 
         public static ItemType fromString(String value) {
