@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  *
  * @author Gaston Dombiak
  */
-public class MessageEventTests extends RosterExchangeTests {
+public class MessageEventTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("High and low level API tests for message event extension");
