@@ -54,11 +54,9 @@ package org.jivesoftware.smackx;
 
 import java.util.Iterator;
 
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.XHTMLExtension;
+import org.jivesoftware.smackx.packet.*;
 
 /**
  * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to 
@@ -70,6 +68,16 @@ import org.jivesoftware.smackx.packet.XHTMLExtension;
 public class XHTMLManager {
 
     private final static String namespace = "http://jabber.org/protocol/xhtml-im";
+
+    // Enable the XHTML support on every established connection
+    // The ServiceDiscoveryManager class should have been already initialized
+    static {
+        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+            public void connectionEstablished(XMPPConnection connection) {
+                XHTMLManager.setServiceEnabled(connection, true);
+            }
+        });
+    }
 
     /**
      * Returns an Iterator for the XHTML bodies in the message. Returns null if 
@@ -128,7 +136,8 @@ public class XHTMLManager {
 
         if (enabled) {
             ServiceDiscoveryManager.getInstanceFor(connection).addFeature(namespace);
-        } else {
+        }
+        else {
             ServiceDiscoveryManager.getInstanceFor(connection).removeFeature(namespace);
         }
     }
@@ -155,7 +164,8 @@ public class XHTMLManager {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(userID);
             return result.containsFeature(namespace);
-        } catch (XMPPException e) {
+        }
+        catch (XMPPException e) {
             e.printStackTrace();
             return false;
         }
