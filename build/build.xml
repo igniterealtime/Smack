@@ -56,9 +56,7 @@
             basedir="${compile.dir}"
             includes="**/*.class"
          >
-             <zipfileset src="${build.lib.dir}/xpp.jar">
-                <patternset includes="**/*.class"/>
-             </zipfileset>
+             <zipfileset src="${build.lib.dir}/xpp.jar"/>
          </jar>
     </target>
 
