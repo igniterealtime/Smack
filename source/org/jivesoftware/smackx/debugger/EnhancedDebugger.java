@@ -89,8 +89,8 @@ public class EnhancedDebugger implements SmackDebugger {
 
     private XMPPConnection connection = null;
 
-    private PacketListener listener = null;
-    private PacketWriterListener writerListener = null;
+    private PacketListener readerListener = null;
+    private PacketListener writerListener = null;
     private ConnectionListener connListener = null;
 
     private Writer writer;
@@ -150,7 +150,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // Create a thread that will listen for all incoming packets and write them to
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
-        listener = new PacketListener() {
+        readerListener = new PacketListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
             public void processPacket(Packet packet) {
                 addReadPacketToTable(dateFormatter, packet);
@@ -159,7 +159,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
         // Create a thread that will listen for all outgoing packets and write them to
         // the GUI.
-        writerListener = new PacketWriterListener() {
+        writerListener = new PacketListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
             public void processPacket(Packet packet) {
                 addSentPacketToTable(dateFormatter, packet);
@@ -624,11 +624,11 @@ public class EnhancedDebugger implements SmackDebugger {
         return writer;
     }
 
-    public PacketListener getListener() {
-        return listener;
+    public PacketListener getReaderListener() {
+        return readerListener;
     }
 
-    public PacketWriterListener getWriterListener() {
+    public PacketListener getWriterListener() {
         return writerListener;
     }
     

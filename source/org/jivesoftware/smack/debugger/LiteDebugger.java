@@ -415,11 +415,11 @@ public class LiteDebugger implements SmackDebugger {
         return writer;
     }
 
-    public PacketListener getListener() {
+    public PacketListener getReaderListener() {
         return listener;
     }
 
-    public PacketWriterListener getWriterListener() {
+    public PacketListener getWriterListener() {
         return null;
     }
 }

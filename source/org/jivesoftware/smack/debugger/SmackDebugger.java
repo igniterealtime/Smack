@@ -98,13 +98,13 @@ public interface SmackDebugger {
      * @return the PacketListener that will listen for all incoming packets and write them to 
      * the GUI
      */
-    public abstract PacketListener getListener();
+    public abstract PacketListener getReaderListener();
 
     /**
      * Returns the thread that will listen for all outgoing packets and write them to the GUI. 
      * 
-     * @return the PacketWriterListener that will listen for all sent packets and write them to 
+     * @return the PacketListener that will listen for all sent packets and write them to 
      * the GUI
      */
-    public abstract PacketWriterListener getWriterListener();
+    public abstract PacketListener getWriterListener();
 }

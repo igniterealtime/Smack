@@ -570,25 +570,27 @@ public class XMPPConnection {
     }
 
     /**
-     * Registers a packet writer listener with this connection. The listener will be
-     * notified of every packet that this connection sends.
+     * Registers a packet listener with this connection. The listener will be
+     * notified of every packet that this connection sends. A packet filter determines
+     * which packets will be delivered to the listener.
      *
-     * @param packetWriterListener the packet writer listener to notify of sent packets.
+     * @param packetListener the packet listener to notify of sent packets.
+     * @param packetFilter the packet filter to use.
      */
-    public void addPacketListener(PacketWriterListener packetWriterListener) {
+    public void addPacketWriterListener(PacketListener packetListener, PacketFilter packetFilter) {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
-        packetWriter.addPacketListener(packetWriterListener);
+        packetWriter.addPacketListener(packetListener, packetFilter);
     }
 
     /**
-     * Removes a packet writer listener from this connection.
+     * Removes a packet listener from this connection.
      *
-     * @param packetWriterListener the packet writer listener to remove.
+     * @param packetListener the packet listener to remove.
      */
-    public void removePacketListener(PacketWriterListener packetWriterListener) {
-        packetWriter.removePacketListener(packetWriterListener);
+    public void removePacketWriterListener(PacketListener packetListener) {
+        packetWriter.removePacketListener(packetListener);
     }
 
     /**
@@ -689,9 +691,9 @@ public class XMPPConnection {
         // If debugging is enabled, we should start the thread that will listen for
         // all packets and then log them.
         if (DEBUG_ENABLED) {
-            packetReader.addPacketListener(debugger.getListener(), null);
+            packetReader.addPacketListener(debugger.getReaderListener(), null);
             if (debugger.getWriterListener() != null) {
-                packetWriter.addPacketListener(debugger.getWriterListener());
+                packetWriter.addPacketListener(debugger.getWriterListener(), null);
             }
         }
         // Start the packet writer. This will open a XMPP stream to the server

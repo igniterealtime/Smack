@@ -55,6 +55,7 @@ package org.jivesoftware.smack;
 import java.util.*;
 import java.io.*;
 
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
@@ -122,25 +123,27 @@ class PacketWriter {
     }
 
     /**
-     * Registers a packet writer listener with this writer. The listener will be
-     * notified of every packet that this writer sends.
+     * Registers a packet listener with this writer. The listener will be
+     * notified of every packet that this writer sends. A packet filter determines
+     * which packets will be delivered to the listener.
      *
-     * @param packetWriterListener the packet writer listener to notify of sent packets.
+     * @param packetListener the packet listener to notify of sent packets.
+     * @param packetFilter the packet filter to use.
      */
-    public void addPacketListener(PacketWriterListener packetWriterListener) {
+    public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
         synchronized (listeners) {
-            listeners.add(packetWriterListener);
+            listeners.add(new ListenerWrapper(packetListener, packetFilter));
         }
     }
 
     /**
-     * Removes a packet writer listener.
+     * Removes a packet listener.
      *
-     * @param packetWriterListener the packet writer listener to remove.
+     * @param packetListener the packet listener to remove.
      */
-    public void removePacketListener(PacketWriterListener packetWriterListener) {
+    public void removePacketListener(PacketListener packetListener) {
         synchronized (listeners) {
-            listeners.remove(packetWriterListener);
+            listeners.remove(packetListener);
         }
     }
 
@@ -236,10 +239,45 @@ class PacketWriter {
             // Notify the listeners of the new sent packet
             int size = listeners.size();
             for (int i=0; i<size; i++) {
-                PacketWriterListener packetWriterListener = (PacketWriterListener)listeners.get(i);
-                if (packetWriterListener != null) {
-                    packetWriterListener.processPacket(sentPacket);
+                ListenerWrapper listenerWrapper = (ListenerWrapper)listeners.get(i);
+                if (listenerWrapper != null) {
+                    listenerWrapper.notifyListener(sentPacket);
                 }
+            }
+        }
+    }
+
+    /**
+     * A wrapper class to associate a packet filter with a listener.
+     */
+    private static class ListenerWrapper {
+
+        private PacketListener packetListener;
+        private PacketFilter packetFilter;
+
+        public ListenerWrapper(PacketListener packetListener,
+                PacketFilter packetFilter)
+        {
+            this.packetListener = packetListener;
+            this.packetFilter = packetFilter;
+        }
+
+        public boolean equals(Object object) {
+            if (object == null) {
+                return false;
+            }
+            if (object instanceof ListenerWrapper) {
+                return ((ListenerWrapper)object).packetListener.equals(this.packetListener);
+            }
+            else if (object instanceof PacketListener) {
+                return object.equals(this.packetListener);
+            }
+            return false;
+        }
+
+        public void notifyListener(Packet packet) {
+            if (packetFilter == null || packetFilter.accept(packet)) {
+                packetListener.processPacket(packet);
             }
         }
     }
