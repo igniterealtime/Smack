@@ -120,9 +120,10 @@
     <!-- ======================================================================================= -->
     <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
 
+        <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
         <jar destfile="${jar.dest.dir}/smack.jar"
             basedir="${compile.dir}"
-            includes="org/jivesoftware/smack/**/*.class"
+            includes="org/jivesoftware/smack/**/*.class, **/smack-config.xml"
          >
              <zipfileset src="${merge.lib.dir}/xpp.jar"/>
         </jar>
@@ -136,15 +137,26 @@
                 <attribute name="Class-Path" value="smack.jar" />
             </manifest>
         </jar>
+        <copy todir="${compile.dir}/images">
+            <fileset dir="${basedir}/build/resources/images">
+                <include name="*.png"/>
+            </fileset>
+        </copy>
         <jar destfile="${jar.dest.dir}/smackx-debug.jar"
             basedir="${compile.dir}"
-            includes="org/jivesoftware/smackx/debugger/*.class"
+            includes="org/jivesoftware/smackx/debugger/*.class, **/*.png"
         >
             <manifest>
                 <attribute name="Class-Path" value="smack.jar" />
             </manifest>
         </jar>
+        <delete file="${compile.dir}/META-INF/smack-config.xml" />
         <delete file="${compile.dir}/META-INF/smack.providers" />
+        <delete>
+            <fileset dir="${compile.dir}/images">
+                <include name="*.png"/>
+            </fileset>
+        </delete>
     </target>
 
     <!-- jar -->
