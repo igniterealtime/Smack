@@ -475,6 +475,13 @@ class PacketReader {
         return registration;
     }
 
+    /**
+     * Parses error sub-packets.
+     *
+     * @param parser the XML parser.
+     * @return an error sub-packet.
+     * @throws Exception if an exception occurs while parsing the packet.
+     */
     private static XMPPError parseError(XmlPullParser parser) throws Exception {
         String errorCode = null;
         for (int i=0; i<parser.getAttributeCount(); i++) {
@@ -495,7 +502,7 @@ class PacketReader {
      * Parses a message packet.
      *
      * @param parser the XML parser, positioned at the start of a message packet.
-     * @return an Message object.
+     * @return a Message object.
      * @throws Exception if an exception occurs while parsing the packet.
      */
     private static Packet parseMessage(XmlPullParser parser) throws Exception {
