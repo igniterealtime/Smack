@@ -55,8 +55,8 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.*;
 
 /**
- * Represents XMPP presence packets. Each packet will either be an "available" or
- * "unavailable" message. A number of attributes are optional:
+ * Represents XMPP presence packets. Every presence packet has a type, while a
+ * number of attributes are optional:
  * <ul>
  *      <li>Status -- free-form text describing a user's presence (i.e., gone to lunch).
  *      <li>Priority -- non-negative numerical priority of a sender's resource. The
@@ -66,21 +66,16 @@ import org.jivesoftware.smack.*;
  *          dnd (do not disturb).
  * </ul>
  *
- * Note: XMPP presence packets are also used to subscribe and unsubscribe users from
- * rosters. However, that functionality is controlled by the Roster object rather
- * than Presence objects.
+ * Presence packets are used for two purposes. First, to notify the server of our
+ * the clients current presence status. Second, they are used to subscribe and
+ * unsubscribe users from the roster.
  *
+ * @see Roster
  * @author Matt Tucker
  */
 public class Presence extends Packet {
 
-    public static final Mode CHAT = new Mode("chat");
-    public static final Mode AWAY =  new Mode("away");
-    public static final Mode EXTENDED_AWAY = new Mode("xa");
-    public static final Mode DO_NOT_DISTURB = new Mode("dnd");
-    public static final Mode INVISIBLE = new Mode("invisible");
-
-    private boolean available = true;
+    private Type type = Type.AVAILABLE;
     private String status = null;
     private int priority = -1;
     private Mode mode = null;
@@ -88,46 +83,33 @@ public class Presence extends Packet {
     /**
      * Creates a new presence update. Status, priority, and mode are left un-set.
      *
-     * @param available true if this is an "available" presence packet, or false for
-     *      "unavailable".
+     * @param type the type.
      */
-    public Presence(boolean available) {
-        this.available = available;
+    public Presence(Type type) {
+        this.type = type;
     }
 
     /**
      * Creates a new presence update with a specified status, priority, and mode.
      *
-     * @param available true if this is an "available" presence update, or false for
-     *      "unavailable".
+     * @param type the type.
      * @param status a text message describing the presence update.
      * @param priority the priority of this presence update.
      * @param mode the mode type for this presence update.
      */
-    public Presence(boolean available, String status, int priority, Mode mode) {
-        this.available = available;
+    public Presence(Type type, String status, int priority, Mode mode) {
+        this.type = type;
         this.status = status;
         this.priority = priority;
         this.mode = mode;
     }
 
-    /**
-     * Returns true if this is an "available" presence update and false if "unavailable".
-     *
-     * @return true if an "available" presence update, false otherwise.
-     */
-    public boolean isAvailable() {
-        return available;
+    public Type getType() {
+        return type;
     }
 
-    /**
-     * Toggles the presence update between "available" and "unavailable".
-     *
-     * @param available true to make this an "available" presence update, or false
-     *      for "unavailable".
-     */
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     /**
@@ -199,12 +181,7 @@ public class Presence extends Packet {
         if (getFrom() != null) {
             buf.append("from=\"").append(getFrom()).append("\" ");
         }
-        if (available) {
-            buf.append("type=\"available\">");
-        }
-        else {
-            buf.append("type=\"unavailable\">");
-        }
+        buf.append("type=\"").append(type).append("\">");
         if (status != null) {
             buf.append("<status>").append(status).append("</status>");
         }
@@ -219,9 +196,66 @@ public class Presence extends Packet {
     }
 
     /**
+     * A typsafe enum class to represent the presecence type.
+     */
+    public static class Type {
+
+        public static final Type AVAILABLE = new Type("available");
+        public static final Type UNAVAILABLE = new Type("unavailable");
+        public static final Type SUBSCRIBE = new Type("subscribe");
+        public static final Type SUBSCRIBED = new Type("subscribed");
+        public static final Type UNSUBSCRIBE = new Type("unsubscribe");
+        public static final Type UNSUBSCRIBED = new Type("unsubscribed");
+
+        private String value;
+
+        private Type(String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        /**
+         * Returns the type constant associated with the String value.
+         */
+        public static Type fromString(String value) {
+            if ("available".equals(value)) {
+                return AVAILABLE;
+            }
+            else if ("unavailable".equals(value)) {
+                return UNAVAILABLE;
+            }
+            else if ("subscribe".equals(value)) {
+                return SUBSCRIBE;
+            }
+            else if ("subscribed".equals(value)) {
+                return SUBSCRIBED;
+            }
+            else if ("unsubscribe".equals(value)) {
+                return UNSUBSCRIBE;
+            }
+            else if ("unsubscribed".equals(value)) {
+                return UNSUBSCRIBED;
+            }
+            // Default to available.
+            else {
+                return AVAILABLE;
+            }
+        }
+    }
+
+    /**
      * A typsafe enum class to represent the presecence mode.
      */
     public static class Mode {
+
+        public static final Mode CHAT = new Mode("chat");
+        public static final Mode AWAY =  new Mode("away");
+        public static final Mode EXTENDED_AWAY = new Mode("xa");
+        public static final Mode DO_NOT_DISTURB = new Mode("dnd");
+        public static final Mode INVISIBLE = new Mode("invisible");
 
         private String value;
 
@@ -234,7 +268,7 @@ public class Presence extends Packet {
         }
 
         /**
-         * Returns the Mode constant
+         * Returns the mode constant associated with the String value.
          */
         public static Mode fromString(String value) {
             if (value == null) {
