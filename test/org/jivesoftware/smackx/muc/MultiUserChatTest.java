@@ -365,6 +365,17 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
+    public void testDiscoverMUCService() {
+        try {
+            Collection services = MultiUserChat.getServiceNames(getConnection(1));
+            assertFalse("No MUC service was found", services.isEmpty());
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
     public void testPrivateChat() {
         try {
             // User2 joins the new room

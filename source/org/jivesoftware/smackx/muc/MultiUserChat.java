@@ -196,6 +196,27 @@ public class MultiUserChat {
     }
 
     /**
+     * Returns a collection with the XMPP addresses of the Multi-User Chat services.
+     *
+     * @param connection the XMPP connection to use for discovering Multi-User Chat services.
+     * @return a collection with the XMPP addresses of the Multi-User Chat services.
+     * @throws XMPPException if an error occured while trying to discover MUC services.
+     */
+    public static Collection getServiceNames(XMPPConnection connection) throws XMPPException {
+        List answer = new ArrayList();
+        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        DiscoverItems items = discoManager.discoverItems(connection.getHost());
+        for (Iterator it = items.getItems(); it.hasNext();) {
+            DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+            DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
+            if (info.containsFeature("http://jabber.org/protocol/muc")) {
+                answer.add(item.getEntityID());
+            }
+        }
+        return answer;
+    }
+
+    /**
      * Returns the name of the room this MultiUserChat object represents.
      *
      * @return the multi user chat room name.
