@@ -341,12 +341,12 @@ class PacketWriter {
                         writer.write(" ");
                     }
                     catch (Exception e) { }
-                    try {
-                        // Sleep 30 seconds.
-                        Thread.sleep(delay);
-                    }
-                    catch (InterruptedException ie) { }
                 }
+                try {
+                    // Sleep 30 seconds.
+                    Thread.sleep(delay);
+                }
+                catch (InterruptedException ie) { }
             }
         }
     }
