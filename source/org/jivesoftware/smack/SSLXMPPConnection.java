@@ -52,14 +52,20 @@
 
 package org.jivesoftware.smack;
 
-import java.io.*;
+import javax.net.ssl.SSLSocketFactory;
+import com.sun.net.ssl.*;
+
+import java.io.IOException;
 import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.KeyManagementException;
-import java.security.cert.*;
-import javax.net.ssl.*;
-import javax.net.*;
-import com.sun.net.ssl.*;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
+import com.sun.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+
 
 /**
  * Creates an SSL connection to a XMPP (Jabber) server.
@@ -101,8 +107,8 @@ public class SSLXMPPConnection extends XMPPConnection {
             try {
                 SSLContext sslcontent = SSLContext.getInstance("TLS");
                 sslcontent.init(null, // KeyManager not required
-                                new TrustManager[] { new DummyTrustManager() },
-                                new java.security.SecureRandom());
+                            new TrustManager[] { new DummyTrustManager() },
+                            new java.security.SecureRandom());
                 factory = sslcontent.getSocketFactory();
             }
             catch (NoSuchAlgorithmException e) {
