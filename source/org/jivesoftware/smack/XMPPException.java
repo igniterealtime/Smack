@@ -172,9 +172,6 @@ public class XMPPException extends Exception {
     }
 
     public void printStackTrace(PrintStream out) {
-        if (error != null) {
-            System.err.print(error + " -- ");
-        }
         super.printStackTrace(out);
         if (wrappedThrowable != null) {
             out.println("Nested Exception: ");
@@ -183,9 +180,6 @@ public class XMPPException extends Exception {
     }
 
     public void printStackTrace(PrintWriter out) {
-        if (error != null) {
-            System.err.print(error + " -- ");
-        }
         super.printStackTrace(out);
         if (wrappedThrowable != null) {
             out.println("Nested Exception: ");
@@ -193,11 +187,24 @@ public class XMPPException extends Exception {
         }
     }
 
+    public String getMessage() {
+        String msg = super.getMessage();
+        // If the message was not set, but there is an XMPPError, return the
+        // XMPPError as the message.
+        if (msg == null && error != null) {
+            return error.toString();
+        }
+        return msg;
+    }
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append(super.toString());
+        String message = super.getMessage();
+        if (message != null) {
+            buf.append(message).append(": ");
+        }
         if (error != null) {
-            buf.append(": ").append(error);
+            buf.append(error);
         }
         if (wrappedThrowable != null) {
             buf.append("\n  -- caused by: ").append(wrappedThrowable);
