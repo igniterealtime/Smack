@@ -58,31 +58,67 @@ import java.io.*;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
- * Writes packets to a Jabber server.
+ * Writes packets to an XMPP server.
  *
  * @see XMPPConnection#getPacketWriter()
  * @author Matt Tucker
  */
-public class PacketWriter extends Thread {
+public class PacketWriter {
 
+    private Thread writerThread;
     private Writer writer;
     private XMPPConnection connection;
     private LinkedList queue;
     private boolean done = false;
 
+    /**
+     * Creates a new packet writer with the specified connection.
+     *
+     * @param connection the connection.
+     */
     protected PacketWriter(XMPPConnection connection) {
         this.connection = connection;
         this.writer = connection.writer;
         this.queue = new LinkedList();
-        // This should be a daemon thread.
-        setDaemon(true);
+
+        writerThread = new Thread() {
+            public void run() {
+                writePackets();
+            }
+        };
+        writerThread.setName("Smack Packet Writer");
+        writerThread.setDaemon(true);
     }
 
+    /**
+     * Sends the specified packet to the server.
+     *
+     * @param packet the packet to send.
+     */
     public void sendPacket(Packet packet) {
-        synchronized(queue) {
-            queue.addFirst(packet);
-            queue.notify();
+        if (!done) {
+            synchronized(queue) {
+                queue.addFirst(packet);
+                queue.notify();
+            }
         }
+    }
+
+    /**
+     * Starts the packet writer thread and opens a connection to the server. The
+     * packet writer will continue writing packets until {@link #shutdown} or an
+     * error occurs.
+     */
+    public void startup() {
+        writerThread.start();
+    }
+
+    /**
+     * Shuts down the packet writer. Once this method has been called, no further
+     * packets will be written to the server.
+     */
+    public void shutdown() {
+        done = true;
     }
 
     /**
@@ -102,15 +138,15 @@ public class PacketWriter extends Thread {
         }
     }
 
-    public void run() {
+    private void writePackets() {
         try {
             // Open the stream.
             StringBuffer stream = new StringBuffer();
-            stream.append("<stream:stream ");
-            stream.append("xmlns=\"jabber:client\" ");
-            stream.append("xmlns:stream=\"http://etherx.jabber.org/streams\" ");
-            stream.append("xmlns:sasl=\"http://www.iana.org/assignments/sasl-mechanisms\" ");
-            stream.append("to=\"" + connection.getHost() + "\">");
+            stream.append("<stream:stream");
+            stream.append(" to=\"" + connection.getHost() + "\"");
+            stream.append(" xmlns=\"jabber:client\"");
+            stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\">");
+//            stream.append("xmlns:sasl=\"http://www.iana.org/assignments/sasl-mechanisms\" ");
             writer.write(stream.toString());
             writer.flush();
             // Write out packets from the queue.
@@ -134,11 +170,8 @@ public class PacketWriter extends Thread {
         }
         catch (IOException ioe){
             ioe.printStackTrace();
+            connection.close();
         }
-    }
-
-    public void shutdown() {
-        done = true;
     }
 }
 
