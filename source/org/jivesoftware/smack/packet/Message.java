@@ -58,11 +58,11 @@ import org.jivesoftware.smack.util.StringUtils;
  * Represents XMPP message packets. A message can be one of several types:
  *
  * <ul>
- *      <li>NORMAL -- (Default) a normal text message used in email like interface.
- *      <li>CHAT -- a typically short text message used in line-by-line chat interfaces.
- *      <li>GROUP_CHAT -- a chat message sent to a groupchat server for group chats.
- *      <li>HEADLINE -- a text message to be displayed in scrolling marquee displays.
- *      <li>ERROR -- indicates a messaging error.
+ *      <li>Message.Type.NORMAL -- (Default) a normal text message used in email like interface.
+ *      <li>Message.Type.CHAT -- a typically short text message used in line-by-line chat interfaces.
+ *      <li>Message.Type.GROUP_CHAT -- a chat message sent to a groupchat server for group chats.
+ *      <li>Message.Type.HEADLINE -- a text message to be displayed in scrolling marquee displays.
+ *      <li>Message.Type.ERROR -- indicates a messaging error.
  * </ul>
  *
  * For each message type, different message fields are typically used as follows:
