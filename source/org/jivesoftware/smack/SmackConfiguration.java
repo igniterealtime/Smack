@@ -75,7 +75,7 @@ import org.xmlpull.v1.*;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "1.3.1";
+    private static final String SMACK_VERSION = "1.4.0";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
@@ -151,7 +151,7 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Returns the Smack version information, e.g. "1.3.0".
+     * Returns the Smack version information, eg "1.3.0".
      * 
      * @return the Smack version information.
      */
