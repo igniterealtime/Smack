@@ -197,8 +197,12 @@ public class GroupChat {
     }
 
     /**
-     * Returns the number of participants in the group chat. Note: this value will only
-     * be accurate after joining the group chat, and may fluctuate over time.
+     * Returns the number of participants in the group chat.<p>
+     *
+     * Note: this value will only be accurate after joining the group chat, and
+     * may fluctuate over time. If you query this value directly after joining the
+     * group chat it may not be accurate, as it takes a certain amount of time for
+     * the server to send all presence packets to this client.
      *
      * @return the number of participants in the group chat.
      */
