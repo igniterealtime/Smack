@@ -546,7 +546,7 @@ class PacketReader {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     private XMPPError parseError(XmlPullParser parser) throws Exception {
-        String errorCode = null;
+        String errorCode = "-1";
         String message = null;
         for (int i=0; i<parser.getAttributeCount(); i++) {
             if (parser.getAttributeName(i).equals("code")) {
