@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<!-- Smack Build Script ========================================== -->
+<!-- Jive Software      ============================================== -->
+
+<!--
+    $RCSfile$
+    $Revision$
+    $Date$
+-->
+
+<project name="Smack" default="all" basedir="..">
+    
+    <property name="version" value="1.0 Beta 1" />
+    <property name="compile.dir" value="${basedir}/classes" />
+    <property name="jar.dest.dir" value="${basedir}" />
+    <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
+    <property name="build.lib.dir" value="${basedir}/build/lib" />   
+
+    <!-- TARGETS -->
+    <!-- ======================================================================================= -->
+
+    <!-- all -->
+    <!-- ======================================================================================= -->
+    <target name="all" depends="jar" description="Calls 'jar' target by default">
+    </target>
+
+    <!-- compile -->
+    <!-- ======================================================================================= -->
+    <target name="compile" 
+            description="Compiles all source to ${compile.dir}."
+        >
+        <!-- make target dir -->
+        <mkdir dir="${compile.dir}" />
+        <javac
+            destdir="${compile.dir}"
+            includeAntRuntime="no"
+            debug="on"
+        >
+            <src path="${basedir}/source" />
+            <classpath>
+                <fileset dir="${build.lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+
+    <!-- jar -->
+    <!-- ======================================================================================= -->
+    <target name="jar" depends="compile" unless="jar.uptodate"
+            description="Produces smack.jar"
+    >
+        <jar destfile="${jar.dest.dir}/smack.jar"
+            basedir="${compile.dir}"
+            includes="**/*.class"
+         >
+             <zipfileset src="${build.lib.dir}/xpp.jar">
+                <patternset includes="**/*.class"/>
+             </zipfileset>
+         </jar>
+    </target>
+
+    <!-- javadoc -->
+    <!-- ======================================================================================= -->
+    <target name="javadoc" description="JavaDocs the Jive Forums source code">
+
+        <mkdir dir="${javadoc.dest.dir}" />
+        <javadoc
+            packagenames="org.jivesoftware.smack.*"
+            sourcepath="${basedir}/source"
+            destdir="${javadoc.dest.dir}"
+            author="true"
+            windowtitle="Smack ${version} Documentation"
+        >
+            <classpath>
+                <fileset dir="${build.lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <doctitle><![CDATA[<font face="arial,helvetica">Smack ${version}</font>]]></doctitle>
+            <header><![CDATA[<b>JSmack ${version}</b>]]></header>
+            <bottom><![CDATA[<i>Copyright &copy; 2003 Jive Software. </i>]]></bottom>
+            <link href="http://java.sun.com/j2se/1.3/docs/api/" />
+            <link href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" />
+        </javadoc>
+    </target>
+
+
+    <!-- clean -->
+    <!-- ======================================================================================= -->
+    <target name="clean" description="Deletes all generated content.">
+    	<delete dir="${javadoc.dest.dir}" />
+      <delete dir="${compile.dir}" />
+	<delete file="${basedir}/smack.jar" />
+    </target>
+
+</project>
