@@ -68,16 +68,16 @@ import java.net.URL;
  *
  * <b>IQProvider</b><p>
  *
- * By default, Smack only knows how to process IQ packets with query sub-packets that
- * are in a few namespaces:<ul>
+ * By default, Smack only knows how to process IQ packets with sub-packets that
+ * are in a few namespaces such as:<ul>
  *      <li>jabber:iq:auth
  *      <li>jabber:iq:roster
  *      <li>jabber:iq:register</ul>
  *
  * Because many more IQ types are part of XMPP and its extensions, a pluggable IQ parsing
- * mechanism is provided. IQ providers are registered by creating a smack.providers file
- * in the WEB-INF directory of your JAR file. The file is an XML document that contains
- * one or more iqProvider entries, as in the following example:
+ * mechanism is provided. IQ providers are registered programatically or by creating a
+ * smack.providers file in the META-INF directory of your JAR file. The file is an XML
+ * document that contains one or more iqProvider entries, as in the following example:
  *
  * <pre>
  * &lt;?xml version="1.0"?&gt;
@@ -89,12 +89,12 @@ import java.net.URL;
  *     &lt;/iqProvider&gt;
  * &lt;/smackProviders&gt;</pre>
  *
- * Each IQ provider is associated with an element name and a namespace. If multiple provider entries attempt to
- * register to handle the same namespace, the first entry loaded from the classpath will
- * take precedence. The IQ provider class can either implement the IQProvider interface,
- * or extend the IQ class. In the former case, each IQProvider is responsible for parsing
- * the raw XML stream to create an IQ instance. In the latter case, bean introspection is
- * used to try to automatically set properties of the IQ instance using the values found
+ * Each IQ provider is associated with an element name and a namespace. If multiple provider
+ * entries attempt to register to handle the same namespace, the first entry loaded from the
+ * classpath will take precedence. The IQ provider class can either implement the IQProvider
+ * interface, or extend the IQ class. In the former case, each IQProvider is responsible for
+ * parsing the raw XML stream to create an IQ instance. In the latter case, bean introspection
+ * is used to try to automatically set properties of the IQ instance using the values found
  * in the IQ packet XML. For example, an XMPP time packet resembles the following:
  * <pre>
  * &lt;iq type='result' to='joe@example.com' from='mary@example.com' id='time_1'&gt;
@@ -147,7 +147,7 @@ public class ProviderManager {
         // Load IQ processing providers.
         try {
             Enumeration enum = ProviderManager.class.getClassLoader().getResources(
-                    "WEB-INF/smack.providers");
+                    "META-INF/smack.providers");
             while (enum.hasMoreElements()) {
                 URL url = (URL)enum.nextElement();
                 java.io.InputStream providerStream = null;
@@ -267,6 +267,21 @@ public class ProviderManager {
     }
 
     /**
+     * Adds an IQ provider with the specified element name and name space. The provider
+     * will override any providers loaded through the classpath.
+     *
+     * @param elementName the XML element name.
+     * @param namespace the XML namespace.
+     * @param provider the IQ provider.
+     */
+    public synchronized static void addIQProvider(String elementName, String namespace,
+            IQProvider provider)
+    {
+        String key = getProviderKey(elementName, namespace);
+        iqProviders.put(key, provider);
+    }
+
+    /**
      * Returns the packet extension provider registered to the specified XML element name
      * and namespace. For example, if a provider was registered to the element name "x" and the
      * namespace "jabber:x:event", then the following packet would trigger the provider:
@@ -288,6 +303,26 @@ public class ProviderManager {
     public synchronized static Object getExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return extensionProviders.get(key);
+    }
+
+    /**
+     * Adds an extension provider with the specified element name and name space. The provider
+     * will override any providers loaded through the classpath. The provider must be either
+     * a PacketExtensionProvider instance, or a Class object of a Javabean.
+     *
+     * @param elementName the XML element name.
+     * @param namespace the XML namespace.
+     * @param provider the extension provider.
+     */
+    public synchronized static void addExtensionProvider(String elementName, String namespace,
+            Object provider)
+    {
+        if (!(provider instanceof PacketExtensionProvider || provider instanceof Class)) {
+            throw new IllegalArgumentException("Provider must be a PacketExtensionProvider " +
+                    "or a Class instance.");
+        }
+        String key = getProviderKey(elementName, namespace);
+        extensionProviders.put(key, provider);
     }
 
     /**
