@@ -8,13 +8,15 @@
 
 <div class="header">XHTML Messages</div><p>
 
-Provdides the ability to send and receive formatted messages using XHTML.
+Provides the ability to send and receive formatted messages using XHTML.
 
-<p>Follow these links to learn how to compose, send and receive XHTML messages:</p>
+<p>Follow these links to learn how to compose, send, receive and discover support for 
+XHTML messages:</p>
 <ul>
   <li><a href="#xhtmlcompose">Compose an XHTML Message</a></li>
   <li><a href="#xhtmlsend">Send an XHTML Message</a></li>
   <li><a href="#xhtmlreceive">Receive an XHTML Message</a></li>
+  <li><a href="#xhtmldiscover">Discover support for XHTML Messages</a></li>
 </ul>
 <b>JEP related:</b> <a href="http://www.jabber.org/jeps/jep-0071.html">JEP-71</a>
 
@@ -150,6 +152,47 @@ In this example we can see how to create a PacketListener that obtains the XHTML
             };
       chat.addMessageListener(packetListener);
 
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="xhtmldiscover">Discover support for XHTML Messages</a></div><p>
+
+<b>Description</b><p>
+
+Before you start to send XHTML messages to a user you should discover if the user supports XHTML messages.
+There are two ways to achieve the discovery, explicitly and implicitly. Explicit is when you first try
+to discover if the user supports XHTML before sending any XHTML message. Implicit is when you send 
+XHTML messages without first discovering if the conversation partner's client supports XHTML and depenging on
+the answer (normal message or XHTML message) you find out if the user supports XHTML messages or not. This 
+section explains how to explicitly discover for XHTML support.</p>
+
+<b>Usage</b><p>
+
+In order to discover if a remote user supports XHTML messages send <b>#isServiceEnabled(XMPPConnection 
+connection, String userID)</b> to the class <i><b>XHTMLManager</b></i> where connection is the connection 
+to use to perform the service discovery and userID is the user to check (A fully qualified xmpp ID, 
+e.g. jdoe@example.com). This message will return true if the specified user handles XHTML messages.</p>
+
+<b>Example</b><p>
+
+In this example we can see how to discover if a remote user supports XHTML Messages. 
+<blockquote>
+<pre>      Message msg = chat.createMessage();
+      <font color="#3f7f5f">// Include a normal body in the message</font>
+      msg.setBody(getTextToSend());
+      <font color="#3f7f5f">// Check if the other user supports XHTML messages</font>
+      if (XHTMLManager.isServiceEnabled(connection, chat.getParticipant())) {
+          <font color="#3f7f5f">// Obtain the XHTML text to send from somewhere</font>
+          String xhtmlBody = getXHTMLTextToSend();
+
+          <font color="#3f7f5f">// Include an XHTML body in the message</font>
+          XHTMLManager.addBody(msg, xhtmlBody);
+      }
+
+      <font color="#3f7f5f">// Send the message</font>
+      chat.sendMessage(msg);
 </pre>
 </blockquote>
 </body>
