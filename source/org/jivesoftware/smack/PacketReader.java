@@ -201,6 +201,13 @@ class PacketReader {
      */
     public void shutdown() {
         done = true;
+        // Notify connection listeners of the connection closing.
+        synchronized (connectionListeners) {
+            for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+                ConnectionListener listener = (ConnectionListener)i.next();
+                listener.connectionClosed();
+            }
+        }
     }
 
     /**
@@ -271,18 +278,12 @@ class PacketReader {
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("stream")) {
+                        // Close the connection.
                         connection.close();
-                        done = true;
                     }
                 }
                 eventType = parser.next();
-            } while (eventType != XmlPullParser.END_DOCUMENT && !done);
-            synchronized (connectionListeners) {
-                for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
-                    ConnectionListener listener = (ConnectionListener)i.next();
-                    listener.connectionClosed();
-                }
-            }
+            } while (!done && eventType != XmlPullParser.END_DOCUMENT);
         }
         catch (Exception e) {
             if (!done) {
