@@ -62,8 +62,7 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.packet.*;
 
 /**
- *
- * Manages message events requests and notifications. A MessageEventManager provides a high 
+ * Manages message events requests and notifications. A MessageEventManager provides a high
  * level access to request for notifications and send event notifications. It also provides 
  * an easy way to hook up custom logic when requests or notifications are received. 
  *
@@ -80,7 +79,7 @@ public class MessageEventManager {
     private PacketListener packetListener;
 
     /**
-     * Creates a new roster exchange manager.
+     * Creates a new message event manager.
      *
      * @param con an XMPPConnection.
      */
@@ -90,20 +89,19 @@ public class MessageEventManager {
     }
 
     /**
-     * Adds to the message the requests to notify to the sender of the message for certain events.
+     * Adds event notification requests to a message. For each event type that
+     * the user wishes event notifications from the message recepient for, <tt>true</tt>
+     * should be passed in to this method.
      * 
-     * @param message the message to add the requested notifications
-     * @param offline specifies if the offline event is requested
-     * @param delivered specifies if the delivered event is requested
-     * @param displayed specifies if the displayed event is requested
-     * @param composing specifies if the composing event is requested
+     * @param message the message to add the requested notifications.
+     * @param offline specifies if the offline event is requested.
+     * @param delivered specifies if the delivered event is requested.
+     * @param displayed specifies if the displayed event is requested.
+     * @param composing specifies if the composing event is requested.
      */
-    public static void addNotificationsRequests(
-        Message message,
-        boolean offline,
-        boolean delivered,
-        boolean displayed,
-        boolean composing) {
+    public static void addNotificationsRequests(Message message, boolean offline,
+            boolean delivered, boolean displayed, boolean composing)
+    {
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setOffline(offline);
@@ -258,7 +256,7 @@ public class MessageEventManager {
      * Sends the notification that the message was delivered to the sender of the original message
      * 
      * @param to the recipient of the notification.
-     * @param packetId the id of the message to send.
+     * @param packetID the id of the message to send.
      */
     public void sendDeliveredNotification(String to, String packetID) {
         // Create the message to send
@@ -276,7 +274,7 @@ public class MessageEventManager {
      * Sends the notification that the message was displayed to the sender of the original message
      * 
      * @param to the recipient of the notification.
-     * @param packetId the id of the message to send.
+     * @param packetID the id of the message to send.
      */
     public void sendDisplayedNotification(String to, String packetID) {
         // Create the message to send
@@ -294,7 +292,7 @@ public class MessageEventManager {
      * Sends the notification that the receiver of the message is composing a reply
      * 
      * @param to the recipient of the notification.
-     * @param packetId the id of the message to send.
+     * @param packetID the id of the message to send.
      */
     public void sendComposingNotification(String to, String packetID) {
         // Create the message to send
@@ -309,10 +307,10 @@ public class MessageEventManager {
     }
 
     /**
-     * Sends the notification that the receiver of the message has cancelled composing a reply
+     * Sends the notification that the receiver of the message has cancelled composing a reply.
      * 
      * @param to the recipient of the notification.
-     * @param packetId the id of the message to send.
+     * @param packetID the id of the message to send.
      */
     public void sendCancelledNotification(String to, String packetID) {
         // Create the message to send
@@ -327,12 +325,12 @@ public class MessageEventManager {
     }
 
     public void destroy() {
-        if (con != null)
+        if (con != null) {
             con.removePacketListener(packetListener);
-
+        }
     }
+
     public void finalize() {
         destroy();
     }
-
 }
