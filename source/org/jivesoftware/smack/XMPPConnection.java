@@ -486,6 +486,34 @@ public class XMPPConnection {
     }
 
     /**
+     * Adds a connection listener to this connection that will be notified when
+     * the connection closes or fails.
+     *
+     * @param connectionListener a connection listener.
+     */
+    public void addConnectionListener(ConnectionListener connectionListener) {
+        if (connectionListener == null) {
+            return;
+        }
+        synchronized (packetReader.connectionListeners) {
+            if (!packetReader.connectionListeners.contains(connectionListener)) {
+                packetReader.connectionListeners.add(connectionListener);
+            }
+        }
+    }
+
+    /**
+     * Removes a connection listener from this connection.
+     *
+     * @param connectionListener a connection listener.
+     */
+    public void removeConnectionListener(ConnectionListener connectionListener) {
+        synchronized (packetReader.connectionListeners) {
+            packetReader.connectionListeners.remove(connectionListener);
+        }
+    }
+
+    /**
      * Initializes the connection by creating a packet reader and writer and opening a
      * XMPP stream to the server.
      *

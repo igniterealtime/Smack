@@ -90,6 +90,7 @@ class PacketReader {
     private boolean done = false;
     protected List collectors = new ArrayList();
     private List listeners = new ArrayList();
+    protected List connectionListeners = new ArrayList();
 
     private String connectionID = null;
     private Object connectionIDLock = new Object();
@@ -271,17 +272,29 @@ class PacketReader {
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("stream")) {
                         connection.close();
+                        done = true;
                     }
                 }
                 eventType = parser.next();
             } while (eventType != XmlPullParser.END_DOCUMENT && !done);
+            synchronized (connectionListeners) {
+                for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+                    ConnectionListener listener = (ConnectionListener)i.next();
+                    listener.connectionClosed();
+                }
+            }
         }
         catch (Exception e) {
             if (!done) {
-                // An exception occurred while parsing. Print the error an close the
-                // connection.
-                e.printStackTrace();
+                // An exception occurred while parsing. Notify connection listeners of
+                // the error and close the connection.
                 connection.close();
+                synchronized (connectionListeners) {
+                    for (Iterator i=connectionListeners.iterator(); i.hasNext(); ) {
+                        ConnectionListener listener = (ConnectionListener)i.next();
+                        listener.connectionClosedOnError(e);
+                    }
+                }
             }
         }
     }
