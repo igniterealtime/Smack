@@ -53,11 +53,19 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * A generic IQ (Info/Query) packet. IQ packets are used to get and set information
+ * The base IQ (Info/Query) packet. IQ packets are used to get and set information
  * on the server, including authentication, roster operations, and creating
  * accounts. Each IQ packet has a specific type that indicates what type of action
- * is being taken: "get", "set", "result", or "error". The actual data of an IQ
- * packet is normally enclosed in the query section with a specific namespace.
+ * is being taken: "get", "set", "result", or "error".<p>
+ *
+ * IQ packets can contain a single child element that exists in a specific XML
+ * namespace. The combination of the element name and namespace determines what
+ * type of IQ packet it is. Some example IQ subpacket snippets:<ul>
+ *
+ *  <li>&lt;query xmlns="jabber:iq:auth"&gt; -- an authentication IQ.
+ *  <li>&lt;query xmlns="jabber:iq:private"&gt; -- a private storage IQ.
+ *  <li>&lt;pubsub xmlns="http://jabber.org/protocol/pubsub"&gt; -- a pubsub IQ.
+ * </ul>
  *
  * @author Matt Tucker
  */
