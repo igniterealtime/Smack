@@ -74,7 +74,7 @@ public abstract class Packet {
     /**
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
-    private static String prefix = StringUtils.randomString(3);
+    private static String prefix = StringUtils.randomString(5);
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to
@@ -95,7 +95,7 @@ public abstract class Packet {
     private String packetID = nextID();
     private String to = null;
     private String from = null;
-    private Map properties = new HashMap();
+    private Map properties = null;
     private Error error = null;
 
     /**
@@ -190,6 +190,9 @@ public abstract class Packet {
      * @return the property, or <tt>null</tt> if the property doesn't exist.
      */
     public synchronized Object getProperty(String name) {
+        if (properties == null) {
+            return null;
+        }
         return properties.get(name);
     }
 
@@ -254,6 +257,9 @@ public abstract class Packet {
         if (!(value instanceof Serializable)) {
             throw new IllegalArgumentException("Value must be serialiazble");
         }
+        if (properties == null) {
+            properties = new HashMap();
+        }
         properties.put(name, value);
     }
 
@@ -263,6 +269,9 @@ public abstract class Packet {
      * @param name the name of the property to delete.
      */
     public synchronized void deleteProperty(String name) {
+        if (properties == null) {
+            return;
+        }
         properties.remove(name);
     }
 
@@ -272,6 +281,9 @@ public abstract class Packet {
      * @return an Iterator for all property names.
      */
     public synchronized Iterator getPropertyNames() {
+        if (properties == null) {
+            return Collections.EMPTY_LIST.iterator();
+        }
         return properties.keySet().iterator();
     }
 
@@ -292,7 +304,7 @@ public abstract class Packet {
      */
     protected synchronized String getPropertiesXML() {
         // Return null if there are no properties.
-        if (properties.isEmpty()) {
+        if (properties == null || properties.isEmpty()) {
             return null;
         }
         StringBuffer buf = new StringBuffer();
