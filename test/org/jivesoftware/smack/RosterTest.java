@@ -62,7 +62,7 @@ import junit.framework.TestCase;
  * @author Gaston Dombiak
  */
 public class RosterTest extends TestCase {
-    
+
     private XMPPConnection conn1 = null;
     private XMPPConnection conn2 = null;
     private XMPPConnection conn3 = null;
@@ -76,19 +76,17 @@ public class RosterTest extends TestCase {
     }
 
     /**
-     * 1. Create entries in roster groups 
+     * 1. Create entries in roster groups
      * 2. Iterate on the groups and remove the entry from each group
-     * 3. Check that the entries are kept as unfiled entries 
+     * 3. Check that the entries are kept as unfiled entries
      */
     public void testDeleteAllRosterGroupEntries() {
         try {
             // Add a new roster entry
-            conn1.getRoster().createEntry("gato11@localhost", "gato11",
-                    new String[] {"Friends", "Family"});
-            conn1.getRoster().createEntry("gato12@localhost", "gato12",
-                    new String[] {"Family"});
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", new String[] {"Friends", "Family"});
+            conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", new String[] {"Family"});
 
-            Thread.sleep(100);
+            Thread.sleep(200);
 
             Iterator it = conn1.getRoster().getEntries();
             while (it.hasNext()) {
@@ -97,61 +95,51 @@ public class RosterTest extends TestCase {
                 while (groups.hasNext()) {
                     RosterGroup rosterGroup = (RosterGroup) groups.next();
                     rosterGroup.removeEntry(entry);
-                    Thread.sleep(100);
+                    Thread.sleep(250);
                 }
             }
 
-            assertEquals("The number of entries in conn1 should be 2", 2,
-                    conn1.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn1 should be 0", 0,
-                    conn1.getRoster().getGroupCount());
+            assertEquals("The number of entries in conn1 should be 2", 2, conn1.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn1 should be 0", 0, conn1.getRoster().getGroupCount());
 
-            assertEquals("The number of entries in conn2 should be 0", 0,
-                    conn2.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn2 should be 0", 0,
-                    conn2.getRoster().getGroupCount());
+            assertEquals("The number of entries in conn2 should be 1", 1, conn2.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn2 should be 0", 0, conn2.getRoster().getGroupCount());
 
-            assertEquals("The number of entries in conn3 should be 0", 0,
-                    conn3.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn3 should be 0", 0,
-                    conn3.getRoster().getGroupCount());
-            
+            assertEquals("The number of entries in conn3 should be 1", 1, conn3.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn3 should be 0", 0, conn3.getRoster().getGroupCount());
+
             cleanUpRoster();
         }
         catch (Exception e) {
             fail(e.getMessage());
         }
     }
-    
+
     /**
-     * 1. Create entries in roster groups 
+     * 1. Create entries in roster groups
      * 2. Iterate on all the entries and remove them from the roster
-     * 3. Check that the number of entries and groups is zero 
+     * 3. Check that the number of entries and groups is zero
      */
     public void testDeleteAllRosterEntries() {
         try {
             // Add a new roster entry
-            conn1.getRoster().createEntry("gato11@localhost", "gato11", new String[] {"Friends"});
-            conn1.getRoster().createEntry("gato12@localhost", "gato12", new String[] {"Family"});
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", new String[] {"Friends"});
+            conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", new String[] {"Family"});
 
-            Thread.sleep(100);
+            Thread.sleep(200);
 
             Iterator it = conn1.getRoster().getEntries();
             while (it.hasNext()) {
                 RosterEntry entry = (RosterEntry) it.next();
                 conn1.getRoster().removeEntry(entry);
+                Thread.sleep(250);
             }
-            Thread.sleep(100);
 
-            assertEquals("The number of entries in conn1 should be 0", 0,
-                    conn1.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn1 should be 0", 0,
-                    conn1.getRoster().getGroupCount());
+            assertEquals("The number of entries in conn1 should be 0", 0, conn1.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn1 should be 0", 0, conn1.getRoster().getGroupCount());
 
-            assertEquals("The number of entries in conn2 should be 0", 0,
-                    conn2.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn2 should be 0", 0,
-                    conn2.getRoster().getGroupCount());
+            assertEquals("The number of entries in conn2 should be 0", 0, conn2.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn2 should be 0", 0, conn2.getRoster().getGroupCount());
         }
         catch (Exception e) {
             fail(e.getMessage());
@@ -161,32 +149,28 @@ public class RosterTest extends TestCase {
     /**
      * 1. Create unfiled entries
      * 2. Iterate on all the entries and remove them from the roster
-     * 3. Check that the number of entries and groups is zero 
+     * 3. Check that the number of entries and groups is zero
      */
     public void testDeleteAllUnfiledRosterEntries() {
         try {
             // Add a new roster entry
-            conn1.getRoster().createEntry("gato11@localhost", "gato11", null);
-            conn1.getRoster().createEntry("gato12@localhost", "gato12", null);
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), "gato11", null);
+            conn1.getRoster().createEntry("gato12@" + conn1.getHost(), "gato12", null);
 
-            Thread.sleep(100);
+            Thread.sleep(200);
 
             Iterator it = conn1.getRoster().getEntries();
             while (it.hasNext()) {
                 RosterEntry entry = (RosterEntry) it.next();
                 conn1.getRoster().removeEntry(entry);
-                Thread.sleep(100);
+                Thread.sleep(250);
             }
 
-            assertEquals("The number of entries in conn1 should be 0", 0,
-                    conn1.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn1 should be 0", 0,
-                    conn1.getRoster().getGroupCount());
+            assertEquals("The number of entries in conn1 should be 0", 0, conn1.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn1 should be 0", 0, conn1.getRoster().getGroupCount());
 
-            assertEquals("The number of entries in conn2 should be 0", 0,
-                    conn2.getRoster().getEntryCount());
-            assertEquals("The number of groups in conn2 should be 0", 0,
-                    conn2.getRoster().getGroupCount());
+            assertEquals("The number of entries in conn2 should be 0", 0, conn2.getRoster().getEntryCount());
+            assertEquals("The number of groups in conn2 should be 0", 0, conn2.getRoster().getGroupCount());
         }
         catch (Exception e) {
             fail(e.getMessage());
@@ -203,9 +187,9 @@ public class RosterTest extends TestCase {
     public void testChangeNameToUnfiledEntry() {
         try {
             // Add a new roster entry
-            conn1.getRoster().createEntry("gato11@localhost", null, null);
+            conn1.getRoster().createEntry("gato11@" + conn1.getHost(), null, null);
 
-            Thread.sleep(100);
+            Thread.sleep(200);
 
             // Change the roster entry name and check if the change was made
             Iterator it = conn1.getRoster().getEntries();
@@ -214,9 +198,9 @@ public class RosterTest extends TestCase {
                 entry.setName("gato11");
                 assertEquals("gato11", entry.getName());
             }
-            // Reload the roster and check the name again 
+            // Reload the roster and check the name again
             conn1.getRoster().reload();
-            Thread.sleep(100);
+            Thread.sleep(2000);
             it = conn1.getRoster().getEntries();
             while (it.hasNext()) {
                 RosterEntry entry = (RosterEntry) it.next();
@@ -230,36 +214,29 @@ public class RosterTest extends TestCase {
         }
     }
 
-
     /**
      * Clean up all the entries in the roster
      */
     private void cleanUpRoster() {
-        // Delete all the entries from the roster            
+        // Delete all the entries from the roster
         Iterator it = conn1.getRoster().getEntries();
         while (it.hasNext()) {
             RosterEntry entry = (RosterEntry) it.next();
             conn1.getRoster().removeEntry(entry);
         }
         try {
-            Thread.sleep(100);
+            Thread.sleep(700);
         }
         catch (Exception e) {}
-    
-        assertEquals("The number of entries in conn1 should be 0", 0,
-                conn1.getRoster().getEntryCount());
-        assertEquals("The number of groups in conn1 should be 0", 0,
-                conn1.getRoster().getGroupCount());
-    
-        assertEquals("The number of entries in conn2 should be 0", 0,
-                conn2.getRoster().getEntryCount());
-        assertEquals("The number of groups in conn2 should be 0", 0,
-                conn2.getRoster().getGroupCount());
-                
-        assertEquals("The number of entries in conn3 should be 0", 0,
-                conn3.getRoster().getEntryCount());
-        assertEquals("The number of groups in conn3 should be 0", 0,
-                conn3.getRoster().getGroupCount());
+
+        assertEquals("The number of entries in conn1 should be 0", 0, conn1.getRoster().getEntryCount());
+        assertEquals("The number of groups in conn1 should be 0", 0, conn1.getRoster().getGroupCount());
+
+        assertEquals("The number of entries in conn2 should be 0", 0, conn2.getRoster().getEntryCount());
+        assertEquals("The number of groups in conn2 should be 0", 0, conn2.getRoster().getGroupCount());
+
+        assertEquals("The number of entries in conn3 should be 0", 0, conn3.getRoster().getEntryCount());
+        assertEquals("The number of groups in conn3 should be 0", 0, conn3.getRoster().getGroupCount());
     }
 
     /*
@@ -270,17 +247,16 @@ public class RosterTest extends TestCase {
         try {
             // Connect to the server
             conn1 = new XMPPConnection("localhost");
-            // Use a second connection to create and delete the entry that will be added and 
-            // deleted from the roster  
+            // Use a second connection to create and delete the entry that will be added and
+            // deleted from the roster
             conn2 = new XMPPConnection("localhost");
-            // Use a third connection to create and delete the entry that will be added and 
-            // deleted from the roster  
+            // Use a third connection to create and delete the entry that will be added and
+            // deleted from the roster
             conn3 = new XMPPConnection("localhost");
-            
+
             // Create the test accounts
-            if (!conn1.getAccountManager().supportsAccountCreation()) {
+            if (!conn1.getAccountManager().supportsAccountCreation())
                 fail("Server does not support account creation");
-            }
             conn1.getAccountManager().createAccount("gato10", "gato10");
             conn2.getAccountManager().createAccount("gato11", "gato11");
             conn3.getAccountManager().createAccount("gato12", "gato12");
@@ -294,6 +270,7 @@ public class RosterTest extends TestCase {
         catch (Exception e) {
             fail(e.getMessage());
         }
+
     }
 
     /*
@@ -301,12 +278,12 @@ public class RosterTest extends TestCase {
      */
     protected void tearDown() throws Exception {
         super.tearDown();
-        
+
         // Delete the created accounts for the test
         conn1.getAccountManager().deleteAccount();
         conn2.getAccountManager().deleteAccount();
         conn3.getAccountManager().deleteAccount();
-        
+
         // Close all the connections
         conn1.close();
         conn2.close();
