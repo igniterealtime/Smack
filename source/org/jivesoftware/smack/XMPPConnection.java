@@ -92,6 +92,8 @@ public class XMPPConnection {
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".
      */
     public static boolean DEBUG_ENABLED = false;
+
+    private static List connectionEstablishedListeners = new ArrayList();
     static {
         // Use try block since we may not have permission to get a system
         // property (for example, when an applet).
@@ -103,9 +105,6 @@ public class XMPPConnection {
         // Initialize Smack with the parameterized configuration
         SmackConfiguration.init();
     }
-    
-    private static List connectionEstablishedListeners = new ArrayList();
-
     private SmackDebugger debugger = null;
 
     String host;
