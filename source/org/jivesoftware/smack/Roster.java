@@ -55,12 +55,13 @@ package org.jivesoftware.smack;
 import java.util.*;
 
 /**
+ * NOTE: this class is not yet implemented.
  *
  * @author Matt Tucker
  */
 public class Roster {
 
-    public Map presenceMap = new HashMap();
+    private Map presenceMap = new HashMap();
 
     private XMPPConnection connection;
 
