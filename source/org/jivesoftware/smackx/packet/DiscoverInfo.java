@@ -161,7 +161,12 @@ public class DiscoverInfo extends IQ {
 
     public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<query xmlns=\"http://jabber.org/protocol/disco#info\">");
+        buf.append("<query xmlns=\"http://jabber.org/protocol/disco#info");
+        if (getNode() != null) {
+            buf.append(" node=");
+            buf.append(getNode());
+        }
+        buf.append("\">");
         synchronized (identities) {
             for (int i = 0; i < identities.size(); i++) {
                 Identity identity = (Identity) identities.get(i);
