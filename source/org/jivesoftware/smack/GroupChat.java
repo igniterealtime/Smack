@@ -60,7 +60,7 @@ import org.jivesoftware.smack.filter.*;
 import java.util.*;
 
 /**
- * A GroupChat is a conversation that takes plaaces among many users in a virtual
+ * A GroupChat is a conversation that takes place among many users in a virtual
  * room. When joining a group chat, you specify a nickname, which is the identity
  * that other chat room users see.
  *
@@ -81,11 +81,15 @@ public class GroupChat {
 
     /**
      * Creates a new group chat with the specified connection and room name. Note: no
-     * information is sent to or received from the server until you attempt to join the
-     * chat room. On some server implementations, the room will not be created until the
-     * first person joins it.
+     * information is sent to or received from the server until you attempt to
+     * {@link #join(String) join} the chat room. On some server implementations,
+     * the room will not be created until the first person joins it.<p>
      *
-     * @param connection the XMPP Connection.
+     *  Most XMPP servers use a sub-domain for the chat service (eg chat.example.com
+     * for the XMPP server example.com). You must ensure that the room address you're
+     * trying to connect to includes the proper chat sub-domain.
+     *
+     * @param connection the XMPP connection.
      * @param room the name of the room in the form "roomName@service", where
      *      "service" is the hostname at which the multi-user chat
      *      service is running.
@@ -136,26 +140,18 @@ public class GroupChat {
     }
 
     /**
-     * Joins the chat room using the specified nickname. If already joined as
-     * another nickname, will leave as that name first before joining under the new
-     * name. The default timeout of 5 seconds for a reply from the group chat server
-     * that the join succeeded will be used.
+     * Joins the chat room using the specified nickname. If already joined
+     * using another nickname, this method will first leave the room and then
+     * re-join using the new nickname. The default timeout of 5 seconds for a reply
+     * from the group chat server that the join succeeded will be used.
      *
-     * @param nickname the nicknam to use.
-     * @throws XMPPException if an error occurs joining the room.
+     * @param nickname the nickname to use.
+     * @throws XMPPException if an error occurs joining the room. In particular, a
+     *      409 error can occur if someone is already in the group chat with the same
+     *      nickname.
      */
     public synchronized void join(String nickname) throws XMPPException {
         join(nickname, 5000);
-    }
-
-    /**
-     * Returns true if currently in the group chat (after calling the {@link
-     * #join(String)} method.
-     *
-     * @return true if currently in the group chat room.
-     */
-    public boolean isJoined() {
-        return joined;
     }
 
     /**

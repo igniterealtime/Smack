@@ -462,9 +462,13 @@ public class XMPPConnection {
 
     /**
      * Creates a new group chat connected to the specified room. The room name
-     * should be a valid conference id, such as <tt>chatroom@jivesoftware.com</tt>.
+     * should be full address, such as <tt>room@chat.example.com</tt>.
+     * <p>
+     * Most XMPP servers use a sub-domain for the chat service (eg chat.example.com
+     * for the XMPP server example.com). You must ensure that the room address you're
+     * trying to connect to includes the proper chat sub-domain.
      *
-     * @param room the name of the room.
+     * @param room the fully qualifed name of the room.
      * @return a new GroupChat object.
      */
     public GroupChat createGroupChat(String room) {
