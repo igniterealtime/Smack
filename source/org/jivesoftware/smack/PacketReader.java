@@ -24,14 +24,11 @@ import org.xmlpull.v1.*;
 
 import java.util.*;
 import java.util.List;
-import java.io.ObjectInputStream;
-import java.io.ByteArrayInputStream;
 
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.util.*;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.provider.*;
 
 /**
@@ -43,12 +40,6 @@ import org.jivesoftware.smack.provider.*;
  * @author Matt Tucker
  */
 class PacketReader {
-
-    /**
-     * Namespace used to store packet properties.
-     */
-    private static final String PROPERTIES_NAMESPACE =
-            "http://www.jivesoftware.com/xmlns/xmpp/properties";
 
     private Thread readerThread;
     private Thread listenerThread;
@@ -245,13 +236,13 @@ class PacketReader {
             do {
                 if (eventType == XmlPullParser.START_TAG) {
                     if (parser.getName().equals("message")) {
-                        processPacket(parseMessage(parser));
+                        processPacket(PacketParserUtils.parseMessage(parser));
                     }
                     else if (parser.getName().equals("iq")) {
                         processPacket(parseIQ(parser));
                     }
                     else if (parser.getName().equals("presence")) {
-                        processPacket(parsePresence(parser));
+                        processPacket(PacketParserUtils.parsePresence(parser));
                     }
                     // We found an opening stream. Record information about it, then notify
                     // the connectionID lock so that the packet reader startup can finish.
@@ -349,7 +340,7 @@ class PacketReader {
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
                 if (elementName.equals("error")) {
-                    error = parseError(parser);
+                    error = PacketParserUtils.parseError(parser);
                 }
                 else if (elementName.equals("query") && namespace.equals("jabber:iq:auth")) {
                     iqPacket = parseAuthentication(parser);
@@ -381,11 +372,11 @@ class PacketReader {
                 }
             }
         }
-        // Decide what to do when an IQ packet was not understood 
+        // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
             if (IQ.Type.GET == type || IQ.Type.SET == type ) {
-                // If the IQ stanza is of type "get" or "set" containing a child element 
-                // qualified by a namespace it does not understand, then answer an IQ of 
+                // If the IQ stanza is of type "get" or "set" containing a child element
+                // qualified by a namespace it does not understand, then answer an IQ of
                 // type "error" with code 501 ("feature-not-implemented")
                 iqPacket = new IQ() {
                     public String getChildElementXML() {
@@ -409,7 +400,7 @@ class PacketReader {
                 };
             }
         }
-        
+
         // Set basic values on the iq packet.
         iqPacket.setPacketID(id);
         iqPacket.setTo(to);
@@ -536,257 +527,6 @@ class PacketReader {
         }
         registration.setAttributes(fields);
         return registration;
-    }
-
-    /**
-     * Parses error sub-packets.
-     *
-     * @param parser the XML parser.
-     * @return an error sub-packet.
-     * @throws Exception if an exception occurs while parsing the packet.
-     */
-    private XMPPError parseError(XmlPullParser parser) throws Exception {
-        String errorCode = "-1";
-        String message = null;
-        for (int i=0; i<parser.getAttributeCount(); i++) {
-            if (parser.getAttributeName(i).equals("code")) {
-                errorCode = parser.getAttributeValue("", "code");
-            }
-        }
-        // Get the error text in a safe way since we are not sure about the error message format
-        try {
-            message = parser.nextText();
-        }
-        catch (XmlPullParserException ex) {}
-        while (true) {
-            if (parser.getEventType() == XmlPullParser.END_TAG && parser.getName().equals("error")) {
-                break;
-            }
-            parser.next();
-        }
-        return new XMPPError(Integer.parseInt(errorCode), message);
-    }
-
-    /**
-     * Parses a message packet.
-     *
-     * @param parser the XML parser, positioned at the start of a message packet.
-     * @return a Message packet.
-     * @throws Exception if an exception occurs while parsing the packet.
-     */
-    private Packet parseMessage(XmlPullParser parser) throws Exception {
-        Message message = new Message();
-        String id = parser.getAttributeValue("", "id");
-        message.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
-        message.setTo(parser.getAttributeValue("", "to"));
-        message.setFrom(parser.getAttributeValue("", "from"));
-        message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
-
-        // Parse sub-elements. We include extra logic to make sure the values
-        // are only read once. This is because it's possible for the names to appear
-        // in arbitrary sub-elements.
-        boolean done = false;
-        String subject = null;
-        String body = null;
-        String thread = null;
-        Map properties = null;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String elementName = parser.getName();
-                String namespace = parser.getNamespace();
-                if (elementName.equals("subject")) {
-                    if (subject == null) {
-                        subject = parser.nextText();
-                    }
-                }
-                else if (elementName.equals("body")) {
-                    if (body == null) {
-                        body = parser.nextText();
-                    }
-                }
-                else if (elementName.equals("thread")) {
-                    if (thread == null) {
-                        thread = parser.nextText();
-                    }
-                }
-                else if (elementName.equals("error")) {
-                    message.setError(parseError(parser));
-                }
-                else if (elementName.equals("properties") &&
-                        namespace.equals(PROPERTIES_NAMESPACE))
-                {
-                    properties = parseProperties(parser);
-                }
-                // Otherwise, it must be a packet extension.
-                else {
-                    message.addExtension(
-                    PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("message")) {
-                    done = true;
-                }
-            }
-        }
-        message.setSubject(subject);
-        message.setBody(body);
-        message.setThread(thread);
-        // Set packet properties.
-        if (properties != null) {
-            for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
-                String name = (String)i.next();
-                message.setProperty(name, properties.get(name));
-            }
-        }
-        return message;
-    }
-
-    /**
-     * Parses a presence packet.
-     *
-     * @param parser the XML parser, positioned at the start of a presence packet.
-     * @return a Presence packet.
-     * @throws Exception if an exception occurs while parsing the packet.
-     */
-    private Presence parsePresence(XmlPullParser parser) throws Exception {
-        Presence.Type type = Presence.Type.fromString(parser.getAttributeValue("", "type"));
-
-        Presence presence = new Presence(type);
-        presence.setTo(parser.getAttributeValue("", "to"));
-        presence.setFrom(parser.getAttributeValue("", "from"));
-        String id = parser.getAttributeValue("", "id");
-        presence.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
-
-        // Parse sub-elements
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String elementName = parser.getName();
-                String namespace = parser.getNamespace();
-                if (elementName.equals("status")) {
-                    presence.setStatus(parser.nextText());
-                }
-                else if (elementName.equals("priority")) {
-                    try {
-                        int priority = Integer.parseInt(parser.nextText());
-                        presence.setPriority(priority);
-                    }
-                    catch (NumberFormatException nfe) { }
-                }
-                else if (elementName.equals("show")) {
-                    presence.setMode(Presence.Mode.fromString(parser.nextText()));
-                }
-                else if (elementName.equals("error")) {
-                    presence.setError(parseError(parser));
-                }
-                else if (elementName.equals("properties") &&
-                        namespace.equals(PROPERTIES_NAMESPACE))
-                {
-                    Map properties = parseProperties(parser);
-                    // Set packet properties.
-                    for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
-                        String name = (String)i.next();
-                        presence.setProperty(name, properties.get(name));
-                    }
-                }
-                // Otherwise, it must be a packet extension.
-                else {
-                    presence.addExtension(
-                        PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("presence")) {
-                    done = true;
-                }
-            }
-        }
-        return presence;
-    }
-
-    /**
-     * Parse a properties sub-packet. If any errors occur while de-serializing Java object
-     * properties, an exception will be printed and not thrown since a thrown
-     * exception will shut down the entire connection. ClassCastExceptions will occur
-     * when both the sender and receiver of the packet don't have identical versions
-     * of the same class.
-     *
-     * @param parser the XML parser, positioned at the start of a properties sub-packet.
-     * @return a map of the properties.
-     * @throws Exception if an error occurs while parsing the properties.
-     */
-    private Map parseProperties(XmlPullParser parser) throws Exception {
-        Map properties = new HashMap();
-        while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
-                // Parse a property
-                boolean done = false;
-                String name = null;
-                String type = null;
-                String valueText = null;
-                Object value = null;
-                while (!done) {
-                    eventType = parser.next();
-                    if (eventType == XmlPullParser.START_TAG) {
-                        String elementName = parser.getName();
-                        String namespace = parser.getNamespace();
-                        if (elementName.equals("name")) {
-                            name = parser.nextText();
-                        }
-                        else if (elementName.equals("value")) {
-                            type = parser.getAttributeValue("", "type");
-                            valueText = parser.nextText();
-                        }
-                    }
-                    else if (eventType == XmlPullParser.END_TAG) {
-                        if (parser.getName().equals("property")) {
-                            if ("integer".equals(type)) {
-                                value = new Integer(valueText);
-                            }
-                            else if ("long".equals(type))  {
-                                value = new Long(valueText);
-                            }
-                            else if ("float".equals(type)) {
-                                value = new Float(valueText);
-                            }
-                            else if ("double".equals(type)) {
-                                value = new Double(valueText);
-                            }
-                            else if ("boolean".equals(type)) {
-                                value = new Boolean(valueText);
-                            }
-                            else if ("string".equals(type)) {
-                                value = valueText;
-                            }
-                            else if ("java-object".equals(type)) {
-                                try {
-                                    byte [] bytes = StringUtils.decodeBase64(valueText);
-                                    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-                                    value = in.readObject();
-                                }
-                                catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            if (name != null && value != null) {
-                                properties.put(name, value);
-                            }
-                            done = true;
-                        }
-                    }
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("properties")) {
-                    break;
-                }
-            }
-        }
-        return properties;
     }
 
     /**
