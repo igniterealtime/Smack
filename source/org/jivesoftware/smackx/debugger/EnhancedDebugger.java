@@ -712,6 +712,12 @@ public class EnhancedDebugger implements SmackDebugger {
         try {
             // Use a Transformer for output
             TransformerFactory tFactory = TransformerFactory.newInstance();
+            // Surround this setting in a try/catch for compatibility with Java 1.4. This setting is required
+            // for Java 1.5
+            try {
+                tFactory.setAttribute("indent-number", new Integer(2));
+            }
+            catch (IllegalArgumentException e) {}
             Transformer transformer = tFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
