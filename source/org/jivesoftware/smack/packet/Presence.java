@@ -74,8 +74,8 @@ package org.jivesoftware.smack.packet;
  *      <li>Priority -- non-negative numerical priority of a sender's resource. The
  *          highest resource priority is the default recipient of packets not addressed
  *          to a particular resource.
- *      <li>Mode -- one of four presence modes: chat, away, xa (extended away, and
- *          dnd (do not disturb).
+ *      <li>Mode -- one of five presence modes: available (the default), chat, away,
+ *          xa (extended away, and dnd (do not disturb).
  * </ul><p>
  *
  * Presence packets are used for two purposes. First, to notify the server of our
@@ -90,7 +90,7 @@ public class Presence extends Packet {
     private Type type = Type.AVAILABLE;
     private String status = null;
     private int priority = -1;
-    private Mode mode = null;
+    private Mode mode = Mode.AVAILABLE;
 
     /**
      * Creates a new presence update. Status, priority, and mode are left un-set.
@@ -174,8 +174,7 @@ public class Presence extends Packet {
     }
 
     /**
-     * Returns the mode of the presence update, or <tt>null</tt> if no mode has been set.
-     * A <tt>null</tt> value for mode means the client is in the standard "available" state.
+     * Returns the mode of the presence update.
      *
      * @return the mode.
      */
@@ -215,7 +214,7 @@ public class Presence extends Packet {
         if (priority != -1) {
             buf.append("<priority>").append(priority).append("</priority>");
         }
-        if (mode != null) {
+        if (mode != null && mode != Mode.AVAILABLE) {
             buf.append("<show>").append(mode).append("</show>");
         }
         buf.append("</presence>");
@@ -279,6 +278,7 @@ public class Presence extends Packet {
      */
     public static class Mode {
 
+        public static final Mode AVAILABLE = new Mode("available");
         public static final Mode CHAT = new Mode("chat");
         public static final Mode AWAY =  new Mode("away");
         public static final Mode EXTENDED_AWAY = new Mode("xa");
@@ -300,7 +300,7 @@ public class Presence extends Packet {
          */
         public static Mode fromString(String value) {
             if (value == null) {
-                return null;
+                return AVAILABLE;
             }
             else if (value.equals("chat")) {
                 return CHAT;
@@ -318,7 +318,7 @@ public class Presence extends Packet {
                 return INVISIBLE;
             }
             else {
-                return null;
+                return AVAILABLE;
             }
         }
     }
