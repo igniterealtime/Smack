@@ -64,7 +64,7 @@ import java.util.LinkedList;
  * use than a {@link PacketListener} when you need to wait for a specific
  * result.
  *
- * @see PacketReader#createPacketCollector(PacketFilter)
+ * @see XMPPConnection#createPacketCollector(PacketFilter)
  * @author Matt Tucker
  */
 public class PacketCollector {
@@ -85,8 +85,7 @@ public class PacketCollector {
         this.packetReader = packetReader;
         this.packetFilter = packetFilter;
         this.resultQueue = new LinkedList();
-
-        // Add the collector to the packet reader's list of active collector.
+         // Add the collector to the packet reader's list of active collector.
         synchronized (packetReader.collectors) {
             packetReader.collectors.add(this);
         }
@@ -107,8 +106,10 @@ public class PacketCollector {
             // Remove object from collectors list by setting the value in the
             // list at the correct index to null. The collector thread will
             // automatically remove the actual list entry when it can.
-            int index = packetReader.collectors.indexOf(this);
-            packetReader.collectors.set(index, null);
+            synchronized (packetReader.collectors) {
+                int index = packetReader.collectors.indexOf(this);
+                packetReader.collectors.set(index, null);
+            }
         }
     }
 
