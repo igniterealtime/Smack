@@ -234,6 +234,38 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
+    public void testAnonymousParticipant() {
+        try {
+            // Anonymous user joins the new room
+            XMPPConnection anonConnection = new XMPPConnection(getHost(), getPort());
+            anonConnection.loginAnonymously();
+            MultiUserChat muc2 = new MultiUserChat(anonConnection, room);
+            muc2.join("testbot2");
+            Thread.sleep(400);
+
+            // User1 checks the presence of Anonymous user in the room
+            Presence presence = muc.getOccupantPresence(room + "/testbot2");
+            assertNotNull("Presence of user2 in room is missing", presence);
+            assertEquals(
+                "Presence mode of user2 is wrong",
+                Presence.Mode.AVAILABLE,
+                presence.getMode());
+
+            // Anonymous user leaves the room
+            muc2.leave();
+            anonConnection.close();
+            Thread.sleep(250);
+            // User1 checks the presence of Anonymous user in the room
+            presence = muc.getOccupantPresence(room + "/testbot2");
+            assertNull("Presence of participant testbotII still exists", presence);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
     public void testInvitation() {
         final String[] answer = new String[2];
         try {
