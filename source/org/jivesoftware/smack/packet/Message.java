@@ -199,7 +199,9 @@ public class Message extends Packet {
     public String toXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<message");
-        buf.append(" id=\"").append(getPacketID()).append("\"");
+        if (getPacketID() != null) {
+            buf.append(" id=\"").append(getPacketID()).append("\"");
+        }
         if (getTo() != null) {
             buf.append(" to=\"").append(getTo()).append("\"");
         }
