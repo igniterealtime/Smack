@@ -82,7 +82,7 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
         throws Exception {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
         boolean done = false;
-        StringBuffer buffer = null;
+        StringBuffer buffer = new StringBuffer();;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
