@@ -275,6 +275,15 @@ public class ProviderManager {
     }
 
     /**
+     * Returns an Iterator for all IQProvider instances.
+     *
+     * @return an Iterator for all IQProvider instances.
+     */
+    public static Iterator getIQProviders() {
+        return Collections.unmodifiableCollection(new HashMap(iqProviders).values()).iterator();
+    }
+
+    /**
      * Adds an IQ provider (must be an instance of IQProvider or Class object that is an IQ)
      * with the specified element name and name space. The provider will override any providers
      * loaded through the classpath.
@@ -341,6 +350,16 @@ public class ProviderManager {
     }
 
     /**
+     * Returns an Iterator for all PacketExtensionProvider instances.
+     *
+     * @return an Iterator for all PacketExtensionProvider instances.
+     */
+    public static Iterator getExtensionProviders() {
+        return Collections.unmodifiableCollection(
+                new HashMap(extensionProviders).values()).iterator();
+    }
+
+    /**
      * Returns a String key for a given element name and namespace.
      *
      * @param elementName the element name.
@@ -353,6 +372,11 @@ public class ProviderManager {
         return buf.toString();
     }
 
+    /**
+     * Returns an array of class loaders to load resources from.
+     *
+     * @return an array of ClassLoader instances.
+     */
     private static ClassLoader[] getClassLoaders() {
         ClassLoader[] classLoaders = new ClassLoader[3];
         classLoaders[0] = new ProviderManager().getClass().getClassLoader();
