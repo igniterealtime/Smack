@@ -334,7 +334,7 @@ public abstract class Packet {
                     out.writeObject(value);
                     String encodedVal = StringUtils.encodeBase64(byteStream.toByteArray());
                     buf.append("java-object\">");
-                    buf.append(encodedVal).append("</value");
+                    buf.append(encodedVal).append("</value>");
                 }
                 catch (Exception e) {
 
