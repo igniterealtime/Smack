@@ -484,7 +484,7 @@ public class Roster {
     public Presence getPresenceResource(String userResource) {
         String key = getPresenceMapKey(userResource);
         String resource = StringUtils.parseResource(userResource);
-        Map userPresences = (Map) presenceMap.get(key);
+        Map userPresences = (Map)presenceMap.get(key);
         if (userPresences == null) {
             return null;
         }
@@ -494,22 +494,25 @@ public class Roster {
     }
 
     /**
-     * Returns an iterator for all the user's current presences or <tt>null</tt> if the user
-     * is unavailable (offline) or if no presence information is available, such as
-     * when you are not subscribed to the user's presence updates.
+     * Returns an iterator (of Presence objects) for all the user's current presences
+     * or <tt>null</tt> if the user is unavailable (offline) or if no presence information
+     * is available, such as when you are not subscribed to the user's presence updates.
      *
      * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
-     * @return an iterator for all the user's current presences, or <tt>null</tt> if the user is 
-     * unavailable or if no presence information is available.
+     * @return an iterator (of Presence objects) for all the user's current presences,
+     *      or <tt>null</tt> if the user is unavailable or if no presence information
+     *      is available.
      */
     public Iterator getPresences(String user) {
         String key = getPresenceMapKey(user);
-        Map userPresences = (Map) presenceMap.get(key);
+        Map userPresences = (Map)presenceMap.get(key);
         if (userPresences == null) {
             return null;
         }
         else {
-            return userPresences.values().iterator();
+            synchronized (userPresences) {
+                return new HashMap(userPresences).values().iterator();
+            }
         }
     }
 
@@ -577,11 +580,14 @@ public class Roster {
                 if (presenceMap.get(key) == null) {
                     userPresences = new HashMap();
                     presenceMap.put(key, userPresences);
-                } else {
-                    userPresences = (Map) presenceMap.get(key);
                 }
-                // Add the new presence taking in consideration the presence´s resource
-                userPresences.put(StringUtils.parseResource(from), presence);
+                else {
+                    userPresences = (Map)presenceMap.get(key);
+                }
+                // Add the new presence, using the resources as a key.
+                synchronized (userPresences) {
+                    userPresences.put(StringUtils.parseResource(from), presence);
+                }
                 // If the user is in the roster, fire an event.
                 synchronized (entries) {
                     for (Iterator i = entries.iterator(); i.hasNext();) {
@@ -596,7 +602,9 @@ public class Roster {
             else if (presence.getType() == Presence.Type.UNAVAILABLE) {
                 if (presenceMap.get(key) != null) {
                     Map userPresences = (Map) presenceMap.get(key);
-                    userPresences.remove(StringUtils.parseResource(from));
+                    synchronized (userPresences) {
+                        userPresences.remove(StringUtils.parseResource(from));
+                    }
                     if (userPresences.isEmpty()) {
                         presenceMap.remove(key);
                     }
@@ -663,7 +671,8 @@ public class Roster {
                     // Make sure the entry is in the entry list.
                     if (!entries.contains(entry)) {
                         entries.add(entry);
-                    } else {
+                    }
+                    else {
                         // If the entry was in then list then update its state with the new values
                         RosterEntry existingEntry =
                             (RosterEntry) entries.get(entries.indexOf(entry));
