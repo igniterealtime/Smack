@@ -125,12 +125,12 @@
          >
              <zipfileset src="${merge.lib.dir}/xpp.jar"/>
         </jar>
-        <copy todir="${compile.dir}/resources/WEB-INF" file="${basedir}/resources/META-INF/smack.providers" />
+        <copy todir="${compile.dir}/META-INF" file="${basedir}/resources/META-INF/smack.providers" />
         <jar destfile="${jar.dest.dir}/smackx.jar"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smackx/**/*.class, **/*.providers"
         />
-        <delete file="${compile.dir}/resources/WEB-INF/smack.properties" />
+        <delete file="${compile.dir}/META-INF/smack.providers" />
     </target>
 
     <!-- jar -->
