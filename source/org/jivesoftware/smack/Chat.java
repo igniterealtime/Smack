@@ -171,7 +171,7 @@ public class Chat {
      * @see #sendMessage(Message)
      */
     public Message createMessage() {
-        Message message = new Message(participant, Message.CHAT);
+        Message message = new Message(participant, Message.Type.CHAT);
         message.setThread(chatID);
         return message;
     }
