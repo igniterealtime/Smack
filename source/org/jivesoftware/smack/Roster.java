@@ -276,7 +276,7 @@ public class Roster {
      */
     public Iterator getEntries() {
         ArrayList allEntries = new ArrayList();
-        // Loop through all roster groups and add their entries to the new RosterExchange
+        // Loop through all roster groups and add their entries to the answer
         for (Iterator groups = getGroups(); groups.hasNext(); ) {
             RosterGroup rosterGroup = (RosterGroup) groups.next();
             for (Iterator entries = rosterGroup.getEntries(); entries.hasNext(); ) {
@@ -286,7 +286,7 @@ public class Roster {
                 }
             }
         }
-        // Add the roster unfiled entries to the new RosterExchange
+        // Add the roster unfiled entries to the answer
         synchronized (unfiledEntries) {
             allEntries.addAll(unfiledEntries);
         }
