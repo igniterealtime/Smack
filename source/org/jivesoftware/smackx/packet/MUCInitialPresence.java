@@ -86,7 +86,7 @@ public class MUCInitialPresence implements PacketExtension {
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         if (getPassword() != null) {
-            buf.append(" password=\"").append(getPassword()).append("\"");
+            buf.append("<password>").append(getPassword()).append("</password>");
         }
         if (getHistory() != null) {
             buf.append(getHistory().toXML());
