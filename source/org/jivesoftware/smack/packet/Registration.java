@@ -138,7 +138,7 @@ public class Registration extends IQ {
         this.attributes = attributes;
     }
 
-    public String getQueryXML() {
+    public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<query xmlns=\"jabber:iq:register\">");
         if (username != null) {

@@ -102,7 +102,7 @@ public class IQ extends Packet {
             buf.append("type=\"").append(getType()).append("\">");
         }
         // Add the query section if there is one.
-        String queryXML = getQueryXML();
+        String queryXML = getChildElementXML();
         if (queryXML != null) {
             buf.append(queryXML);
         }
@@ -116,7 +116,7 @@ public class IQ extends Packet {
     }
 
     /**
-     * Returns the "query" XML section of the IQ packet, or <tt>null</tt> if there
+     * Returns the sub-element XML section of the IQ packet, or <tt>null</tt> if there
      * isn't one.<p>
      *
      * Generally, extensions of this class should override this method. This lets
@@ -125,7 +125,7 @@ public class IQ extends Packet {
      *
      * @return the query section of the IQ XML.
      */
-    public String getQueryXML() {
+    public String getChildElementXML() {
         return null;
     }
 

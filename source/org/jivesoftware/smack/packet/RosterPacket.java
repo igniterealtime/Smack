@@ -86,7 +86,7 @@ public class RosterPacket extends IQ {
         }
     }
 
-    public String getQueryXML() {
+    public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<query xmlns=\"jabber:iq:roster\">");
         synchronized (rosterItems) {
