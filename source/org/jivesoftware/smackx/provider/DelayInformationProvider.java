@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.provider;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
@@ -42,6 +43,7 @@ public class DelayInformationProvider implements PacketExtensionProvider {
     }
 
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        DelayInformation.UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         Date stamp = DelayInformation.UTC_FORMAT.parse(parser.getAttributeValue("", "stamp"));
         DelayInformation delayInformation = new DelayInformation(stamp);
         delayInformation.setFrom(parser.getAttributeValue("", "from"));
