@@ -68,7 +68,7 @@ import java.security.cert.CertificateNotYetValidException;
 
 
 /**
- * Creates an SSL connection to a XMPP (Jabber) server.
+ * Creates an SSL connection to a XMPP server.
  *
  * @author Matt Tucker
  */

@@ -68,71 +68,71 @@ public class StringUtils {
     private static final char[] GT_ENCODE = "&gt;".toCharArray();
 
     /**
-     * Returns the name portion of a Jabber ID (JID). For example, for the
-     * JID "matt@jivesoftware.com/Smack", "matt" would be returned. If no
-     * username is present in the JID, the empty string will be returned.
+     * Returns the name portion of a XMPP ID. For example, for the
+     * ID "matt@jivesoftware.com/Smack", "matt" would be returned. If no
+     * username is present in the ID, the empty string will be returned.
      *
-     * @param JID the Jabber ID.
-     * @return the name portion of the JID.
+     * @param ID the XMPP ID.
+     * @return the name portion of the XMPP ID.
      */
-    public static String parseName(String JID) {
-        if (JID == null) {
+    public static String parseName(String ID) {
+        if (ID == null) {
             return null;
         }
-        int atIndex = JID.indexOf("@");
+        int atIndex = ID.indexOf("@");
         if (atIndex < 0) {
-            return JID.substring(0);
+            return ID.substring(0);
         }
         else {
-            return JID.substring(0, atIndex);
+            return ID.substring(0, atIndex);
 
         }
     }
 
     /**
-     * Returns the name portion of a Jabber ID (JID). For example, for the
-     * JID "matt@jivesoftware.com/Smack", "jivesoftware.com" would be returned.
-     * If no server is present in the JID, the empty string will be returned.
+     * Returns the name portion of a XMPP ID. For example, for the
+     * ID "matt@jivesoftware.com/Smack", "jivesoftware.com" would be returned.
+     * If no server is present in the ID, the empty string will be returned.
      *
-     * @param JID the Jabber ID.
-     * @return the resource portion of the JID.
+     * @param ID the XMPP ID.
+     * @return the resource portion of the XMPP ID.
      */
-    public static String parseServer(String JID) {
-        if (JID == null) {
+    public static String parseServer(String ID) {
+        if (ID == null) {
             return null;
         }
-        int atIndex = JID.indexOf("@");
+        int atIndex = ID.indexOf("@");
         // If the String ends with '@', return the empty string.
-        if (atIndex + 1 > JID.length() || atIndex < 0) {
+        if (atIndex + 1 > ID.length() || atIndex < 0) {
             return "";
         }
-        int slashIndex = JID.indexOf("/");
+        int slashIndex = ID.indexOf("/");
         if (slashIndex > 0) {
-            return JID.substring(atIndex + 1, slashIndex);
+            return ID.substring(atIndex + 1, slashIndex);
         }
         else {
-            return JID.substring(atIndex + 1);
+            return ID.substring(atIndex + 1);
         }
     }
 
     /**
-     * Returns the name portion of a Jabber ID (JID). For example, for the
-     * JID "matt@jivesoftware.com/Smack", "Smack" would be returned. If no
-     * resource is present in the JID, the empty string will be returned.
+     * Returns the name portion of a XMPP ID. For example, for the
+     * ID "matt@jivesoftware.com/Smack", "Smack" would be returned. If no
+     * resource is present in the ID, the empty string will be returned.
      *
-     * @param JID the Jabber ID.
-     * @return the resource portion of the JID.
+     * @param ID the XMPP ID.
+     * @return the resource portion of the XMPP ID.
      */
-    public static String parseResource(String JID) {
-        if (JID == null) {
+    public static String parseResource(String ID) {
+        if (ID == null) {
             return null;
         }
-        int slashIndex = JID.indexOf("/");
-        if (slashIndex + 1 > JID.length() || slashIndex < 0) {
+        int slashIndex = ID.indexOf("/");
+        if (slashIndex + 1 > ID.length() || slashIndex < 0) {
             return "";
         }
         else {
-            return JID.substring(slashIndex + 1);
+            return ID.substring(slashIndex + 1);
         }
     }
 

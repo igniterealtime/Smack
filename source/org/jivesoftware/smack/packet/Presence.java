@@ -136,7 +136,7 @@ public class Presence extends Packet {
 
     /**
      * Returns the status message of the presence update, or <tt>null</tt> if there
-     * is not status. The status is free-form text describing a user's presence
+     * is not a status. The status is free-form text describing a user's presence
      * (i.e., "gone to lunch").
      *
      * @return the status message.
@@ -147,7 +147,7 @@ public class Presence extends Packet {
 
     /**
      * Sets the status message of the presence update. The status is free-form text
-     * describing a user's presence (i.e., gone to lunch).
+     * describing a user's presence (i.e., "gone to lunch").
      *
      * @param status the status message.
      */
@@ -175,6 +175,7 @@ public class Presence extends Packet {
 
     /**
      * Returns the mode of the presence update, or <tt>null</tt> if no mode has been set.
+     * A <tt>null</tt> value for mode means the client is in the standard "available" state.
      *
      * @return the mode.
      */
@@ -183,7 +184,8 @@ public class Presence extends Packet {
     }
 
     /**
-     * Sets the mode of the presence update.
+     * Sets the mode of the presence update. For the standard "available" state, set
+     * the mode to <tt>null</tt>.
      *
      * @param mode the mode.
      */

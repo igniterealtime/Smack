@@ -61,7 +61,7 @@ import java.io.*;
 import java.awt.*;
 
 /**
- * Creates a connection to a XMPP (Jabber) server. A simple use of this API might
+ * Creates a connection to a XMPP server. A simple use of this API might
  * look like the following:
  * <pre>
  * // Create a connection to the jivesoftware.com XMPP server.
@@ -122,10 +122,10 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new connection to the specified Jabber server. The default port of 5222 will
+     * Creates a new connection to the specified XMPP server. The default port of 5222 will
      * be used.
      *
-     * @param host the name of the jabber server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @throws XMPPException if an error occurs while trying to establish a connection.
      */
     public XMPPConnection(String host) throws XMPPException {
@@ -133,9 +133,9 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new connection to the  to the specified Jabber server on the given port.
+     * Creates a new connection to the  to the specified XMPP server on the given port.
      *
-     * @param host the name of the jabber server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
      * @throws XMPPException if an error occurs while trying to establish a connection.
      */
@@ -156,19 +156,19 @@ public class XMPPConnection {
 
     /**
      * Returns the connection ID for this connection, which is the value set by the server
-     * when opening a Jabber stream. If the server does not set a connection ID, this value
+     * when opening a XMPP stream. If the server does not set a connection ID, this value
      * will be null.
      *
-     * @return the ID of this connection returned from the Jabber server.
+     * @return the ID of this connection returned from the XMPP server.
      */
     public String getConnectionID() {
         return connectionID;
     }
 
     /**
-     * Returns the host name of the Jabber server for this connection.
+     * Returns the host name of the XMPP server for this connection.
      *
-     * @return the host name of the Jabber server.
+     * @return the host name of the XMPP server.
      */
     public String getHost() {
         return host;
@@ -178,7 +178,7 @@ public class XMPPConnection {
      * Returns the port number of the XMPP server for this connection. The default port
      * for normal connections is 5222. The default port for SSL connections is 5223.
      *
-     * @return the port number of the Jabber server.
+     * @return the port number of the XMPP server.
      */
     public int getPort() {
         return port;
@@ -364,7 +364,7 @@ public class XMPPConnection {
 
     /**
      * Creates a new chat with the specified participant. The participant should
-     * be a valid Jabber user such as <tt>jdoe@jivesoftware.com</tt> or
+     * be a valid XMPP user such as <tt>jdoe@jivesoftware.com</tt> or
      * <tt>jdoe@jivesoftware.com/work</tt>.
      *
      * @param participant the person to start the conversation with.
@@ -479,7 +479,7 @@ public class XMPPConnection {
 
     /**
      * Initializes the connection by creating a packet reader and writer and opening a
-     * Jabber stream to the server.
+     * XMPP stream to the server.
      *
      * @throws XMPPException if establishing a connection to the server fails.
      */
@@ -508,7 +508,7 @@ public class XMPPConnection {
         if (DEBUG_ENABLED) {
             packetReader.addPacketListener(debugListener, null);
         }
-        // Start the packet writer. This will open a Jabber stream to the server
+        // Start the packet writer. This will open a XMPP stream to the server
         packetWriter.startup();
         // Start the packet reader. The startup() method will block until we
         // get an opening stream packet back from server.
