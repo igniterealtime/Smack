@@ -225,7 +225,9 @@ public class RosterGroup {
      */
     public void removeEntry(RosterEntry entry) {
         // Only remove the entry if it's in the entry list.
-        // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
+        // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)
+        // to take place the entry will exist in the group until a packet is received from the 
+        // server.
         synchronized (entries) {
             if (entries.contains(entry)) {
                 RosterPacket packet = new RosterPacket();
@@ -234,6 +236,8 @@ public class RosterGroup {
                 item.removeGroupName(this.getName());
                 packet.addRosterItem(item);
                 connection.sendPacket(packet);
+                // Remove the entry locally
+                entries.remove(entry);
             }
         }
     }
