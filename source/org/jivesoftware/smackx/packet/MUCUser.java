@@ -61,12 +61,12 @@ import org.jivesoftware.smack.packet.PacketExtension;
  */
 public class MUCUser implements PacketExtension {
 
-    private String alt;
     private Invite invite;
     private Decline decline;
     private Item item;
     private String password;
     private Status status;
+    private Destroy destroy;
 
     public String getElementName() {
         return "x";
@@ -80,9 +80,6 @@ public class MUCUser implements PacketExtension {
         StringBuffer buf = new StringBuffer();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
-        if (getAlt() != null) {
-            buf.append("<alt>").append(getAlt()).append("</alt>");
-        }
         if (getInvite() != null) {
             buf.append(getInvite().toXML());
         }
@@ -98,96 +95,135 @@ public class MUCUser implements PacketExtension {
         if (getStatus() != null) {
             buf.append(getStatus().toXML());
         }
+        if (getDestroy() != null) {
+            buf.append(getDestroy().toXML());
+        }
         buf.append("</").append(getElementName()).append(">");
         return buf.toString();
     }
 
     /**
-     * @return
-     */
-    public String getAlt() {
-        return alt;
-    }
-
-    /**
-     * @return
+     * Returns the invitation for another user to a room. The sender of the invitation
+     * must be an occupant of the room. The invitation will be sent to the room which in turn
+     * will forward the invitation to the invitee.
+     *  
+     * @return an invitation for another user to a room.
      */
     public Invite getInvite() {
         return invite;
     }
 
     /**
-     * @return
+     * Returns the rejection to an invitation from another user to a room. The rejection will be 
+     * sent to the room which in turn will forward the refusal to the inviter.
+     *  
+     * @return a rejection to an invitation from another user to a room.
      */
     public Decline getDecline() {
         return decline;
     }
 
     /**
-     * @return
+     * Returns the item child that holds information about roles, affiliation, jids and nicks.
+     * 
+     * @return an item child that holds information about roles, affiliation, jids and nicks.
      */
     public Item getItem() {
         return item;
     }
 
     /**
-     * @return
+     * Returns the password to use to enter Password-Protected Room. A Password-Protected Room is 
+     * a room that a user cannot enter without first providing the correct password.
+     * 
+     * @return the password to use to enter Password-Protected Room.
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * @return
+     * Returns the status which holds a code that assists in presenting notification messages.
+     * 
+     * @return the status which holds a code that assists in presenting notification messages.
      */
     public Status getStatus() {
         return status;
     }
 
     /**
-     * @param string
+     * Returns the notification that the room has been destroyed. After a room has been destroyed,
+     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for 
+     * the room destruction if provided by the room owner.
+     *  
+     * @return a notification that the room has been destroyed.
      */
-    public void setAlt(String string) {
-        alt = string;
+    public Destroy getDestroy() {
+        return destroy;
     }
-
+    
     /**
-     * @param invite
+     * Sets the invitation for another user to a room. The sender of the invitation
+     * must be an occupant of the room. The invitation will be sent to the room which in turn
+     * will forward the invitation to the invitee.
+     * 
+     * @param invite the invitation for another user to a room.
      */
     public void setInvite(Invite invite) {
         this.invite = invite;
     }
 
     /**
-     * @param decline
+     * Sets the rejection to an invitation from another user to a room. The rejection will be 
+     * sent to the room which in turn will forward the refusal to the inviter.
+     *  
+     * @param decline the rejection to an invitation from another user to a room.
      */
     public void setDecline(Decline decline) {
         this.decline = decline;
     }
 
     /**
-     * @param item
+     * Sets the item child that holds information about roles, affiliation, jids and nicks.
+     * 
+     * @param item the item child that holds information about roles, affiliation, jids and nicks.
      */
     public void setItem(Item item) {
         this.item = item;
     }
 
     /**
-     * @param string
+     * Sets the password to use to enter Password-Protected Room. A Password-Protected Room is 
+     * a room that a user cannot enter without first providing the correct password.
+     * 
+     * @param string the password to use to enter Password-Protected Room.
      */
     public void setPassword(String string) {
         password = string;
     }
 
     /**
-     * @param status
+     * Sets the status which holds a code that assists in presenting notification messages.
+     * 
+     * @param status the status which holds a code that assists in presenting notification 
+     * messages.
      */
     public void setStatus(Status status) {
         this.status = status;
     }
 
     /**
-     * 
+     * Sets the notification that the room has been destroyed. After a room has been destroyed,
+     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for 
+     * the room destruction if provided by the room owner.
+     *  
+     * @param destroy the notification that the room has been destroyed.
+     */
+    public void setDestroy(Destroy destroy) {
+        this.destroy = destroy;
+    }
+
+    /**
      * Represents an invitation for another user to a room. The sender of the invitation
      * must be an occupant of the room. The invitation will be sent to the room which in turn
      * will forward the invitation to the invitee. 
@@ -200,45 +236,59 @@ public class MUCUser implements PacketExtension {
         private String to;
         
         /**
-         * @return
+         * Returns the bare JID of the inviter or, optionally, the room JID. (e.g. 
+         * 'crone1@shakespeare.lit/desktop'). 
+         * 
+         * @return the room's occupant that sent the invitation.
          */
         public String getFrom() {
             return from;
         }
 
         /**
-         * @return
+         * Returns the message explaining the invitation.
+         * 
+         * @return the message explaining the invitation.
          */
         public String getReason() {
             return reason;
         }
 
         /**
-         * @return
+         * Returns the bare JID of the invitee. (e.g. 'hecate@shakespeare.lit')
+         * 
+         * @return the bare JID of the invitee.
          */
         public String getTo() {
             return to;
         }
 
         /**
-         * @param string
+         * Sets the bare JID of the inviter or, optionally, the room JID. (e.g. 
+         * 'crone1@shakespeare.lit/desktop')
+         * 
+         * @param from the bare JID of the inviter or, optionally, the room JID.
          */
-        public void setFrom(String string) {
-            from = string;
+        public void setFrom(String from) {
+            this.from = from;
         }
 
         /**
-         * @param string
+         * Sets the message explaining the invitation.
+         * 
+         * @param reason the message explaining the invitation.
          */
-        public void setReason(String string) {
-            reason = string;
+        public void setReason(String reason) {
+            this.reason = reason;
         }
 
         /**
-         * @param string
+         * Sets the bare JID of the invitee. (e.g. 'hecate@shakespeare.lit')
+         * 
+         * @param to the bare JID of the invitee.
          */
-        public void setTo(String string) {
-            to = string;
+        public void setTo(String to) {
+            this.to = to;
         }
 
         public String toXML() {
@@ -260,7 +310,6 @@ public class MUCUser implements PacketExtension {
     };
 
     /**
-     * 
      * Represents a rejection to an invitation from another user to a room. The rejection will be 
      * sent to the room which in turn will forward the refusal to the inviter. 
      *
@@ -272,45 +321,59 @@ public class MUCUser implements PacketExtension {
         private String to;
         
         /**
-         * @return
+         * Returns the bare JID of the invitee that rejected the invitation. (e.g. 
+         * 'crone1@shakespeare.lit/desktop'). 
+         * 
+         * @return the bare JID of the invitee that rejected the invitation.
          */
         public String getFrom() {
             return from;
         }
 
         /**
-         * @return
+         * Returns the message explaining why the invitation was rejected.
+         * 
+         * @return the message explaining the reason for the rejection.
          */
         public String getReason() {
             return reason;
         }
 
         /**
-         * @return
+         * Returns the bare JID of the inviter. (e.g. 'hecate@shakespeare.lit')
+         * 
+         * @return the bare JID of the inviter.
          */
         public String getTo() {
             return to;
         }
 
         /**
-         * @param string
+         * Sets the bare JID of the invitee that rejected the invitation. (e.g. 
+         * 'crone1@shakespeare.lit/desktop'). 
+         * 
+         * @param from the bare JID of the invitee that rejected the invitation.
          */
-        public void setFrom(String string) {
-            from = string;
+        public void setFrom(String from) {
+            this.from = from;
         }
 
         /**
-         * @param string
+         * Sets the message explaining why the invitation was rejected.
+         * 
+         * @param reason the message explaining the reason for the rejection.
          */
-        public void setReason(String string) {
-            reason = string;
+        public void setReason(String reason) {
+            this.reason = reason;
         }
 
         /**
-         * @param string
+         * Sets the bare JID of the inviter. (e.g. 'hecate@shakespeare.lit')
+         * 
+         * @param to the bare JID of the inviter.
          */
-        public void setTo(String string) {
-            to = string;
+        public void setTo(String to) {
+            this.to = to;
         }
 
         public String toXML() {
@@ -332,7 +395,6 @@ public class MUCUser implements PacketExtension {
     };
 
     /**
-     * 
      * Item child that holds information about roles, affiliation, jids and nicks.
      *
      * @author Gaston Dombiak
@@ -491,8 +553,8 @@ public class MUCUser implements PacketExtension {
     };
 
     /**
-     * 
-     * Status code assists in presenting notification messages.
+     * Status code assists in presenting notification messages. The following link provides the 
+     * list of existing error codes (@link http://www.jabber.org/jeps/jep-0045.html#errorstatus).
      *
      * @author Gaston Dombiak
      */
@@ -500,15 +562,19 @@ public class MUCUser implements PacketExtension {
         private String code; 
 
         /**
+         * Creates a new instance of Status with the specified code.  
          * 
-         * @param code
+         * @param code the code that uniquely identifies the reason of the error.
          */
         public Status(String code) {
             this.code = code;
         }
                 
         /**
-         * @return
+         * Returns the code that uniquely identifies the reason of the error. The code 
+         * assists in presenting notification messages. 
+         * 
+         * @return the code that uniquely identifies the reason of the error.
          */
         public String getCode() {
             return code;
@@ -520,4 +586,73 @@ public class MUCUser implements PacketExtension {
             return buf.toString();
         }
     };
+
+    /**
+     * Represents a notification that the room has been destroyed. After a room has been destroyed,
+     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for 
+     * the room destruction if provided by the room owner. 
+     * 
+     * @author Gaston Dombiak
+     */
+    public static class Destroy {
+        private String reason;
+        private String jid;
+        
+        
+        /**
+         * Returns the JID of an alternate location since the current room is being destroyed.
+         * 
+         * @return the JID of an alternate location.
+         */
+        public String getJid() {
+            return jid;
+        }
+
+        /**
+         * Returns the reason for the room destruction.
+         * 
+         * @return the reason for the room destruction.
+         */
+        public String getReason() {
+            return reason;
+        }
+
+        /**
+         * Sets the JID of an alternate location since the current room is being destroyed.
+         * 
+         * @param jid the JID of an alternate location.
+         */
+        public void setJid(String jid) {
+            this.jid = jid;
+        }
+
+        /**
+         * Sets the reason for the room destruction.
+         * 
+         * @param reason the reason for the room destruction.
+         */
+        public void setReason(String reason) {
+            this.reason = reason;
+        }
+
+        public String toXML() {
+            StringBuffer buf = new StringBuffer();
+            buf.append("<destroy");
+            if (getJid() != null) {
+                buf.append(" jid=\"").append(getJid()).append("\"");
+            }
+            if (getReason() == null) {
+                buf.append("/>");
+            }
+            else {
+                buf.append(">");
+                if (getReason() != null) {
+                    buf.append("<reason>").append(getReason()).append("</reason>");
+                }
+                buf.append("</destroy>");
+            }
+            return buf.toString();
+        }
+
+    }
 }
