@@ -114,7 +114,7 @@ public class PrivateDataManager {
      * @param namespace the XML namespace.
      * @param provider the IQ provider.
      */
-    public static void addIQProvider(String elementName, String namespace,
+    public static void addPrivateDataProvider(String elementName, String namespace,
             IQProvider provider)
     {
         String key = getProviderKey(elementName, namespace);
