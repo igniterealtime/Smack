@@ -253,7 +253,7 @@ public class ServiceDiscoveryManager {
         connection.sendPacket(disco);
 
         // Wait up to 5 seconds for a result.
-        IQ result = (IQ) collector.nextResult(5000);
+        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (result == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -298,7 +298,7 @@ public class ServiceDiscoveryManager {
         connection.sendPacket(disco);
 
         // Wait up to 5 seconds for a result.
-        IQ result = (IQ) collector.nextResult(5000);
+        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (result == null) {
             throw new XMPPException("No response from the server.");
         }
@@ -329,7 +329,7 @@ public class ServiceDiscoveryManager {
         connection.sendPacket(discoverItems);
 
         // Wait up to 5 seconds for a result.
-        IQ result = (IQ) collector.nextResult(5000);
+        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (result == null) {
             throw new XMPPException("No response from the server.");
         }
