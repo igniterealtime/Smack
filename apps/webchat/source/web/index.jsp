@@ -37,7 +37,6 @@
 
 <form action="<%= request.getContextPath() %>/servlet/ChatServlet" method="post" name="loginform">
 <input type="hidden" name="command" value="login">
-<input type="hidden" name="garbage" value="<%= Math.random() %>">
 
 <table cellpadding="2" cellspacing="0" border="0">
 <tr>
