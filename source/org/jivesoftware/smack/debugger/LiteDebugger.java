@@ -61,7 +61,7 @@ import javax.swing.*;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.*;
 
 /**
  * The LiteDebugger is a very simple debugger that allows to debug sent, received and 
@@ -80,6 +80,8 @@ public class LiteDebugger implements SmackDebugger {
 
     private Writer writer;
     private Reader reader;
+    private ReaderListener readerListener;
+    private WriterListener writerListener;
 
     public LiteDebugger(XMPPConnection connection, Writer writer, Reader reader) {
         this.connection = connection;
@@ -103,6 +105,13 @@ public class LiteDebugger implements SmackDebugger {
         frame =
             new JFrame(
                 "Smack Debug Window -- " + connection.getHost() + ":" + connection.getPort());
+
+        // Add listener for window closing event 
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                rootWindowClosing(evt);
+            }
+        });
 
         // We'll arrange the UI into four tabs. The first tab contains all data, the second
         // client generated XML, the third server generated XML, and the fourth is packet
@@ -230,126 +239,41 @@ public class LiteDebugger implements SmackDebugger {
         frame.setVisible(true);
 
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
-        Reader debugReader = new Reader() {
-
-            Reader myReader = reader;
-
-            public int read(char cbuf[], int off, int len) throws IOException {
-                int count = myReader.read(cbuf, off, len);
-                if (count > 0) {
-                    String str = new String(cbuf, off, count);
-                    int index = str.lastIndexOf(">");
-                    if (index != -1) {
-                        receivedText1.append(str.substring(0, index + 1));
-                        receivedText2.append(str.substring(0, index + 1));
-                        receivedText1.append(NEWLINE);
-                        receivedText2.append(NEWLINE);
-                        if (str.length() > index) {
-                            receivedText1.append(str.substring(index + 1));
-                            receivedText2.append(str.substring(index + 1));
+        ObservableReader debugReader = new ObservableReader(reader);
+        readerListener = new ReaderListener() {
+                    public void read(String str) {
+                        int index = str.lastIndexOf(">");
+                        if (index != -1) {
+                            receivedText1.append(str.substring(0, index + 1));
+                            receivedText2.append(str.substring(0, index + 1));
+                            receivedText1.append(NEWLINE);
+                            receivedText2.append(NEWLINE);
+                            if (str.length() > index) {
+                                receivedText1.append(str.substring(index + 1));
+                                receivedText2.append(str.substring(index + 1));
+                            }
+                        }
+                        else {
+                            receivedText1.append(str);
+                            receivedText2.append(str);
                         }
                     }
-                    else {
-                        receivedText1.append(str);
-                        receivedText2.append(str);
-                    }
-                }
-                return count;
-            }
-
-            public void close() throws IOException {
-                myReader.close();
-            }
-
-            public int read() throws IOException {
-                return myReader.read();
-            }
-
-            public int read(char cbuf[]) throws IOException {
-                return myReader.read(cbuf);
-            }
-
-            public long skip(long n) throws IOException {
-                return myReader.skip(n);
-            }
-
-            public boolean ready() throws IOException {
-                return myReader.ready();
-            }
-
-            public boolean markSupported() {
-                return myReader.markSupported();
-            }
-
-            public void mark(int readAheadLimit) throws IOException {
-                myReader.mark(readAheadLimit);
-            }
-
-            public void reset() throws IOException {
-                myReader.reset();
-            }
-        };
+                };
+        debugReader.addReaderListener(readerListener);
 
         // Create a special Writer that wraps the main Writer and logs data to the GUI.
-        Writer debugWriter = new Writer() {
-
-            Writer myWriter = writer;
-
-            public void write(char cbuf[], int off, int len) throws IOException {
-                myWriter.write(cbuf, off, len);
-                String str = new String(cbuf, off, len);
-                sentText1.append(str);
-                sentText2.append(str);
-                if (str.endsWith(">")) {
-                    sentText1.append(NEWLINE);
-                    sentText2.append(NEWLINE);
-                }
-            }
-
-            public void flush() throws IOException {
-                myWriter.flush();
-            }
-
-            public void close() throws IOException {
-                myWriter.close();
-            }
-
-            public void write(int c) throws IOException {
-                myWriter.write(c);
-            }
-
-            public void write(char cbuf[]) throws IOException {
-                myWriter.write(cbuf);
-                String str = new String(cbuf);
-                sentText1.append(str);
-                sentText2.append(str);
-                if (str.endsWith(">")) {
-                    sentText1.append(NEWLINE);
-                    sentText2.append(NEWLINE);
-                }
-            }
-
-            public void write(String str) throws IOException {
-                myWriter.write(str);
-                sentText1.append(str);
-                sentText2.append(str);
-                if (str.endsWith(">")) {
-                    sentText1.append(NEWLINE);
-                    sentText2.append(NEWLINE);
-                }
-            }
-
-            public void write(String str, int off, int len) throws IOException {
-                myWriter.write(str, off, len);
-                str = str.substring(off, off + len);
-                sentText1.append(str);
-                sentText2.append(str);
-                if (str.endsWith(">")) {
-                    sentText1.append(NEWLINE);
-                    sentText2.append(NEWLINE);
-                }
-            }
-        };
+        ObservableWriter debugWriter = new ObservableWriter(writer);
+        writerListener = new WriterListener() {
+                    public void write(String str) {
+                        sentText1.append(str);
+                        sentText2.append(str);
+                        if (str.endsWith(">")) {
+                            sentText1.append(NEWLINE);
+                            sentText2.append(NEWLINE);
+                        }
+                    }
+                };
+        debugWriter.addWriterListener(writerListener);
 
         // Assign the reader/writer objects to use the debug versions. The packet reader
         // and writer will use the debug versions when they are created.
@@ -367,6 +291,18 @@ public class LiteDebugger implements SmackDebugger {
                 interpretedText2.append(NEWLINE);
             }
         };
+    }
+
+    /**
+     * Notification that the root window is closing. Stop listening for received and 
+     * transmitted packets.
+     * 
+     * @param evt the event that indicates that the root window is closing 
+     */
+    public void rootWindowClosing(WindowEvent evt) {
+        connection.removePacketListener(listener);
+        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ((ObservableWriter)writer).removeWriterListener(writerListener);
     }
 
     /**
