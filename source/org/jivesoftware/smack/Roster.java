@@ -248,7 +248,7 @@ public class Roster {
     }
 
     /**
-     * Cretaes a new roster entry and prsence subscription. The server will asynchronously
+     * Creates a new roster entry and presence subscription. The server will asynchronously
      * update the roster with the subscription status.
      *
      * @param user the user.
@@ -263,7 +263,9 @@ public class Roster {
         RosterPacket.Item item = new RosterPacket.Item(user, name);
         if (groups != null) {
             for (int i=0; i<groups.length; i++) {
-                item.addGroupName(groups[i]);
+                if (groups[i] != null) {
+                    item.addGroupName(groups[i]);
+                }
             }
         }
         rosterPacket.addRosterItem(item);
