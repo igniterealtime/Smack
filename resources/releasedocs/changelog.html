@@ -53,6 +53,29 @@ Smack Changelog
 </div>
 
 <p>
+<b>1.1.0</b> - June 19, 2003
+<p>
+<ul>
+    <li>New system to handle custom IQ packets and custom packet extensions through
+	    the new provider sub-package.
+	<li>Added packet filters for packet extensions.
+    <li>Added additional options for responding to subscription requests.
+    <li>Added method to retrieve the roster item count from roster packets.
+	<li>Added ability to set the ItemStatus on a roster packet.
+	<li>Added remove option to roster packet.
+	<li>Various documentation fixes/improvements.
+	<li>Fixed NullPointer exception on the setName method of the RosterEntry class.
+	<li>Groupchat class was listening for wrong message types -- fixed.
+    <li>Changed properties element name to "properties" instead of "x". <b>Note:</b> this will
+	    break compatability between earlier versions if they are trying to send packet
+		properties back and forth. However, we thought it was best to make this change now.
+    <li>Turning on debugging via a system property wasn't working.
+	<li>Fixed spelling error in Roster class method name.
+	<li>Fixed stream not being closed properly.
+	<li>The "to contains" and "from contains" filters now ignore case.
+</ul>
+
+<p>
 <b>1.0.1</b> - April 30, 2003
 <p>
 <ul>
@@ -63,68 +86,8 @@ Smack Changelog
 <b>1.0.0</b> - April 25, 2003
 <p>
 <ul>
-    <li>Fixed bug when removing packet listeners.     
-    <li>Many improvements to the roster class, include presence support,
-		the ability to add new roster entries, subscription handling, ability
-		to see list of entries not in groups, and many bug fixes.     
-    <li>Fixed ClassCastException in login method.       
-    <li>Add roster listener feature.      
-    <li>Added ability to get the list of users in a group chat.      
-    <li>Default presence mode now has a specific type instead of being null.      
-    <li>Packet collectors now have a xax number of packets they will queue up.      
-    <li>The getRoster() method now waits for the roster from the server before returning.      
-    <li>Registration operations now use the "to" field for packets.      
-    <li>Improved XMPPException class.      
-    <li>Added support for easily creating listeners for chat and group chats.      
-    <li>Fixed NullPointer in ToFilter.      
-    <li>Added XMPP ID parsing methods to StringUtils class.  
+    <li>Initial official release.
 </ul>
-
-<p>
-<b>1.0 Beta 3</b> - March 9, 2003
-<p>
-<ul>
-	<li>Add new AccountManager class which can be used to create accounts, delete accounts,
-		and update passwords of existing accounts.
-	<li>Fixed bug reading packet properties.
-	<li>Fixed NullPointer in the FromContainsFilter.
-	<li>Improved XMPPException class, which includes bug fixes and XMPP error codes.
-	<li>Improved error handling and messages on the login operation.
-	<li>Added ability to the XMPPConnection class find if the user has authenticated,
-		and if so, under which username and resource.
-	<li>Debug window title now adjusts based on who authenticated user is.
-	<li>Improved Javadocs.
-</ul>
-
-<p>
-<b>1.0 Beta 2</b> - February 10, 2003
-<p>
-<ul>
-    <li>Source now compiles under JDK 1.2/1.3.
-	<li>Added initial roster support. A lot of functionality is still
-	missing, however, and will be added for subsequent beta releases.
-	<li>The smack.jar file was not included in the distribution.
-	<li>SSL cerficate check is now more strict.
-	<li>The XML parser used is now smaller.
-	<li>Fixed XMPPConnection.close() errors.
-	<li>The XML library should now load correctly in J2EE environments.
-</ul>
-
-<p>
-<b>1.0 Beta 1.1</b> - January 20, 2003
-<p>
-<ul>
-    <li>XML JAR was not being merged correctly with smack.jar by build process, which
-		caused XML parsing to fail.
-</ul>
-
-<p>
-<b>1.0 Beta 1</b> - January 17, 2003
-<p>
-<ul>
-    <li>Initial release.
-</ul>
-
 
 </body>
 </html>
