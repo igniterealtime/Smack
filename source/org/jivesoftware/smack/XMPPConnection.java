@@ -369,8 +369,8 @@ public class XMPPConnection {
      * Creates a new packet collector for this connection. A packet filter determines
      * which packets will be accumulated by the collector.
      *
-     * @param packetFilter
-     * @return
+     * @param packetFilter the packet filter to use.
+     * @return a new packet collector.
      */
     public PacketCollector createPacketCollector(PacketFilter packetFilter) {
         return packetReader.createPacketCollector(packetFilter);
@@ -392,11 +392,11 @@ public class XMPPConnection {
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.
-        // The method that creates the debug GUI returns a thread that we must start after
-        // the packet reader and writer are created.
-        Thread allPacketListener = null;
+        // The method that creates the debug GUI returns PacketListener that we must add
+        // after the packet reader and writer are created.
+        PacketListener debugListener = null;
         if (DEBUG_ENABLED) {
-            allPacketListener = createDebug();
+            debugListener = createDebug();
         }
 
         packetWriter = new PacketWriter(this);
@@ -405,7 +405,7 @@ public class XMPPConnection {
         // If debugging is enabled, we should start the thread that will listen for
         // all packets and then log them.
         if (DEBUG_ENABLED) {
-            allPacketListener.start();
+            packetReader.addPacketListener(debugListener, null);
         }
         // Start the packet writer. This will open a Jabber stream to the server
         packetWriter.startup();
@@ -419,15 +419,15 @@ public class XMPPConnection {
 
     /**
      * Creates the debug process, which is a GUI window that displays XML traffic.
-     * This method must be called before the packet reader and writer are called because
+     * This method must be called before the packet reader and writer are created because
      * it wraps the reader and writer objects with special logging implementations.
-     * The method returns a Thread that must be started after the packet reader and writer
-     * are started.
+     * The method returns a PacketListner that must be added after the packet reader is
+     * created.
      *
-     * @return a Thread used by the debugging process that must be started after the packet
-     *      reader and writer are created.
+     * @return a PacketListener used by the debugging process that must be added after the packet
+     *      reader is created.
      */
-    private Thread createDebug() {
+    private PacketListener createDebug() {
         // Use the native look and feel.
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -603,18 +603,14 @@ public class XMPPConnection {
         // Create a thread that will listen for all incoming packets and write them to
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
-        Thread allPacketListener = new Thread() {
-            public void run() {
-                PacketCollector collector = packetReader.createPacketCollector(null);
-                while (true) {
-                    Packet packet = collector.nextResult();
-                    interpretedText1.append(packet.toXML());
-                    interpretedText2.append(packet.toXML());
-                    interpretedText1.append(NEWLINE);
-                    interpretedText2.append(NEWLINE);
-                }
+        PacketListener debugListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                interpretedText1.append(packet.toXML());
+                interpretedText2.append(packet.toXML());
+                interpretedText1.append(NEWLINE);
+                interpretedText2.append(NEWLINE);
             }
         };
-        return allPacketListener;
+        return debugListener;
     }
 }
