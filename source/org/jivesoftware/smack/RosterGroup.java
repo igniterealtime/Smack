@@ -217,12 +217,14 @@ public class RosterGroup {
      */
     public void removeEntry(RosterEntry entry) {
         // Only remove the entry if it's in the entry list.
+        // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
         synchronized (entries) {
             if (entries.contains(entry)) {
-                entries.remove(entry);
                 RosterPacket packet = new RosterPacket();
                 packet.setType(IQ.Type.SET);
-                packet.addRosterItem(RosterEntry.toRosterItem(entry));
+                RosterPacket.Item item = RosterEntry.toRosterItem(entry);
+                item.removeGroupName(this.getName());
+                packet.addRosterItem(item);
                 connection.sendPacket(packet);
             }
         }
