@@ -92,7 +92,7 @@ public class ServiceDiscoveryManager {
      * service manager will respond to any service discovery request that the connection may
      * receive. 
      * 
-     * @param connection the connection to which a ServiceDiscoveryManager is going to be created
+     * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
     public ServiceDiscoveryManager(XMPPConnection connection) {
         this.connection = connection;
@@ -102,8 +102,8 @@ public class ServiceDiscoveryManager {
     /**
      * Returns the ServiceDiscoveryManager instance associated with a given XMPPConnection.
      * 
-     * @param connection the connection used to look for the proper ServiceDiscoveryManager
-     * @return the ServiceDiscoveryManager associated with a given XMPPConnection
+     * @param connection the connection used to look for the proper ServiceDiscoveryManager.
+     * @return the ServiceDiscoveryManager associated with a given XMPPConnection.
      */
     public static ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
         return (ServiceDiscoveryManager) instances.get(connection);
@@ -194,9 +194,9 @@ public class ServiceDiscoveryManager {
      * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
      * NodeInformationProvider will provide information about the rooms where the user has joined.
      * 
-     * @param node the node that contains items associated with an entity not addressable as a JID
+     * @param node the node that contains items associated with an entity not addressable as a JID.
      * @return the NodeInformationProvider responsible for providing information related 
-     * to a given node
+     * to a given node.
      */
     private NodeInformationProvider getNodeInformationProvider(String node) {
         return (NodeInformationProvider) nodeInformationProviders.get(node);
@@ -211,9 +211,9 @@ public class ServiceDiscoveryManager {
      * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
      * NodeInformationProvider will provide information about the rooms where the user has joined. 
      * 
-     * @param node the node whose items will be provided by the NodeInformationProvider  
+     * @param node the node whose items will be provided by the NodeInformationProvider.
      * @return the NodeInformationProvider responsible for providing items related 
-     * to the node
+     * to the node.
      */
     public void setNodeInformationProvider(String node, NodeInformationProvider listener) {
         nodeInformationProviders.put(node, listener);
@@ -227,7 +227,7 @@ public class ServiceDiscoveryManager {
      * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
      * NodeInformationProvider will provide information about the rooms where the user has joined. 
      * 
-     * @param node the node to remove the associated NodeInformationProvider  
+     * @param node the node to remove the associated NodeInformationProvider.
      */
     public void removeNodeInformationProvider(String node) {
         nodeInformationProviders.remove(node);
@@ -236,7 +236,7 @@ public class ServiceDiscoveryManager {
     /**
      * Returns the supported features by this XMPP entity.
      * 
-     * @return an Iterator on the supported features by this XMPP entity
+     * @return an Iterator on the supported features by this XMPP entity.
      */
     public Iterator getFeatures() {
         synchronized (features) {
@@ -248,7 +248,7 @@ public class ServiceDiscoveryManager {
      * Registers that a new feature is supported by this XMPP entity. When this client is 
      * queried for its information the registered features will be answered. 
      *
-     * @param feature the feature to register as supported
+     * @param feature the feature to register as supported.
      */
     public void addFeature(String feature) {
         synchronized (features) {
@@ -259,7 +259,7 @@ public class ServiceDiscoveryManager {
     /**
      * Removes the specified feature from the supported features by this XMPP entity.
      *
-     * @param feature the feature to remove from the supported features
+     * @param feature the feature to remove from the supported features.
      */
     public void removeFeature(String feature) {
         synchronized (features) {
@@ -270,8 +270,8 @@ public class ServiceDiscoveryManager {
     /**
      * Returns true if the specified feature is registered in the ServiceDiscoveryManager.
      *
-     * @param feature the feature to look for
-     * @return a boolean indicating if the specified featured is registered or not
+     * @param feature the feature to look for.
+     * @return a boolean indicating if the specified featured is registered or not.
      */
     public boolean includesFeature(String feature) {
         synchronized (features) {
@@ -282,9 +282,9 @@ public class ServiceDiscoveryManager {
     /**
      * Returns the discovered information of a given XMPP entity addressed by its JID.
      * 
-     * @param entityID the address of the XMPP entity
-     * @return the discovered information
-     * @throws XMPPException if the operation failed for some reason
+     * @param entityID the address of the XMPP entity.
+     * @return the discovered information.
+     * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverInfo discoverInfo(String entityID) throws XMPPException {
         return discoverInfo(entityID, null);
@@ -295,10 +295,10 @@ public class ServiceDiscoveryManager {
      * note attribute. Use this message only when trying to query information which is not 
      * directly addressable.
      * 
-     * @param entityID the address of the XMPP entity
-     * @param node the attribute that supplements the 'jid' attribute
-     * @return the discovered information
-     * @throws XMPPException if the operation failed for some reason
+     * @param entityID the address of the XMPP entity.
+     * @param node the attribute that supplements the 'jid' attribute.
+     * @return the discovered information.
+     * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverInfo discoverInfo(String entityID, String node) throws XMPPException {
         // Discover the entity's info
@@ -329,9 +329,9 @@ public class ServiceDiscoveryManager {
     /**
      * Returns the discovered items of a given XMPP entity addressed by its JID.
      * 
-     * @param entityID the address of the XMPP entity
-     * @return the discovered information
-     * @throws XMPPException if the operation failed for some reason
+     * @param entityID the address of the XMPP entity.
+     * @return the discovered information.
+     * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverItems discoverItems(String entityID) throws XMPPException {
         return discoverItems(entityID, null);
@@ -342,10 +342,10 @@ public class ServiceDiscoveryManager {
      * note attribute. Use this message only when trying to query information which is not 
      * directly addressable.
      * 
-     * @param entityID the address of the XMPP entity
-     * @param node the attribute that supplements the 'jid' attribute
-     * @return the discovered items
-     * @throws XMPPException if the operation failed for some reason
+     * @param entityID the address of the XMPP entity.
+     * @param node the attribute that supplements the 'jid' attribute.
+     * @return the discovered items.
+     * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverItems discoverItems(String entityID, String node) throws XMPPException {
         // Discover the entity's items
@@ -374,18 +374,51 @@ public class ServiceDiscoveryManager {
     }
 
     /**
+     * Returns true if the server supports publishing of items. A client may wish to publish items
+     * to the server so that the server can provide items associated to the client. These items will
+     * be returned by the server whenever the server receives a disco request targeted to the bare
+     * address of the client (i.e. user@host.com).
+     * 
+     * @param entityID the address of the XMPP entity.
+     * @return true if the server supports publishing of items.
+     * @throws XMPPException if the operation failed for some reason.
+     */
+    public boolean canPublishItems(String entityID) throws XMPPException {
+        DiscoverInfo info = discoverInfo(entityID);
+        return info.containsFeature("http://jabber.org/protocol/disco#publish");
+    }
+
+    /**
      * Publishes new items to a parent entity. The item elements to publish MUST have at least 
      * a 'jid' attribute specifying the Entity ID of the item, and an action attribute which 
      * specifies the action being taken for that item. Possible action values are: "update" and 
      * "remove".
      * 
-     * @param entityID the address of the XMPP entity
-     * @param discoverItems the DiscoveryItems to publish
-     * @throws XMPPException if the operation failed for some reason
+     * @param entityID the address of the XMPP entity.
+     * @param discoverItems the DiscoveryItems to publish.
+     * @throws XMPPException if the operation failed for some reason.
      */
-    public void publishItems(String entityID, DiscoverItems discoverItems) throws XMPPException {
+    public void publishItems(String entityID, DiscoverItems discoverItems)
+            throws XMPPException {
+        publishItems(entityID, null, discoverItems);
+    }
+
+    /**
+     * Publishes new items to a parent entity and node. The item elements to publish MUST have at 
+     * least a 'jid' attribute specifying the Entity ID of the item, and an action attribute which 
+     * specifies the action being taken for that item. Possible action values are: "update" and 
+     * "remove".
+     * 
+     * @param entityID the address of the XMPP entity.
+     * @param node the attribute that supplements the 'jid' attribute.
+     * @param discoverItems the DiscoveryItems to publish.
+     * @throws XMPPException if the operation failed for some reason.
+     */
+    public void publishItems(String entityID, String node, DiscoverItems discoverItems)
+            throws XMPPException {
         discoverItems.setType(IQ.Type.SET);
         discoverItems.setTo(entityID);
+        discoverItems.setNode(node);
 
         // Create a packet collector to listen for a response.
         PacketCollector collector =
