@@ -88,7 +88,12 @@ public abstract class IQ extends Packet {
      * @param type the type of the IQ packet.
      */
     public void setType(Type type) {
-        this.type = type;
+        if (type == null) {
+            this.type = Type.GET;
+        }
+        else {
+            this.type = type;
+        }
     }
 
     public String toXML() {
