@@ -95,6 +95,8 @@ class PacketReader {
     private String connectionID = null;
     private Object connectionIDLock = new Object();
 
+    private int packetsRead = 0;
+
     protected PacketReader(XMPPConnection connection) {
         this.connection = connection;
 
@@ -167,6 +169,15 @@ class PacketReader {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the number of packets read by the packet reader.
+     *
+     * @return the number of packets read by the packet reader.
+     */
+    public int getPacketsRead() {
+        return packetsRead;
     }
 
     /**
@@ -331,6 +342,9 @@ class PacketReader {
             return;
         }
 
+        // Increment the number of packets read.
+        packetsRead++;
+
         // Remove all null values from the collectors list.
         synchronized (collectors) {
             for (int i=collectors.size()-1; i>=0; i--) {
@@ -358,7 +372,7 @@ class PacketReader {
      * @return an IQ object.
      * @throws Exception if an exception occurs while parsing the packet.
      */
-    private Packet parseIQ(XmlPullParser parser) throws Exception {
+    private IQ parseIQ(XmlPullParser parser) throws Exception {
         IQ iqPacket = null;
 
         String id = parser.getAttributeValue("", "id");
@@ -621,7 +635,7 @@ class PacketReader {
      * Parses a message packet.
      *
      * @param parser the XML parser, positioned at the start of a message packet.
-     * @return a Message object.
+     * @return a Message packet.
      * @throws Exception if an exception occurs while parsing the packet.
      */
     private Packet parseMessage(XmlPullParser parser) throws Exception {
@@ -694,10 +708,10 @@ class PacketReader {
      * Parses a presence packet.
      *
      * @param parser the XML parser, positioned at the start of a presence packet.
-     * @return an Presence object.
+     * @return a Presence packet.
      * @throws Exception if an exception occurs while parsing the packet.
      */
-    private Packet parsePresence(XmlPullParser parser) throws Exception {
+    private Presence parsePresence(XmlPullParser parser) throws Exception {
         Presence.Type type = Presence.Type.fromString(parser.getAttributeValue("", "type"));
 
         Presence presence = new Presence(type);
