@@ -653,6 +653,8 @@ class PacketReader {
      */
     private Packet parseMessage(XmlPullParser parser) throws Exception {
         Message message = new Message();
+        String id = parser.getAttributeValue("", "id");
+        message.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
         message.setTo(parser.getAttributeValue("", "to"));
         message.setFrom(parser.getAttributeValue("", "from"));
         message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
@@ -730,7 +732,8 @@ class PacketReader {
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
         presence.setFrom(parser.getAttributeValue("", "from"));
-        presence.setPacketID(parser.getAttributeValue("", "id"));
+        String id = parser.getAttributeValue("", "id");
+        presence.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
 
         // Parse sub-elements
         boolean done = false;
