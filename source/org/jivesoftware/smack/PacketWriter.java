@@ -143,7 +143,12 @@ class PacketWriter {
      */
     public void removePacketListener(PacketListener packetListener) {
         synchronized (listeners) {
-            listeners.remove(packetListener);
+            for (int i=0; i<listeners.size(); i++) {
+                ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
+                if (wrapper != null && wrapper.packetListener.equals(packetListener)) {
+                    listeners.set(i, null);
+                }
+            }
         }
     }
 
@@ -249,6 +254,16 @@ class PacketWriter {
                 }
             }
             if (sentPacket != null) {
+                // Clean up null entries in the listeners list
+                synchronized (listeners) {
+                    if (listeners.size() > 0) {
+                        for (int i=listeners.size()-1; i>=0; i--) {
+                            if (listeners.get(i) == null) {
+                                listeners.remove(i);
+                            }
+                        }
+                    }
+                }
                 // Notify the listeners of the new sent packet
                 int size = listeners.size();
                 for (int i=0; i<size; i++) {
