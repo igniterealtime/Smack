@@ -361,4 +361,8 @@ public class StringUtils {
         }
         return new String(randBuffer);
     }
+
+    private StringUtils() {
+        // Not instantiable.
+    }
 }
