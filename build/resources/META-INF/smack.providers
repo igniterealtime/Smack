@@ -142,4 +142,11 @@
         <className>org.jivesoftware.smackx.workgroup.packet.QueueOverview$Provider</className>
     </extensionProvider>
 
+    <!-- Delayed Delivery -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:delay</namespace>
+        <className>org.jivesoftware.smackx.provider.DelayInformationProvider</className>
+    </extensionProvider>
+    
 </smackProviders>
