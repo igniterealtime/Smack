@@ -745,10 +745,17 @@ class PacketReader {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 String name = parser.getName();
-                parser.next();
-                if (eventType == XmlPullParser.TEXT) {
-                    String value = parser.getText();
-                    extension.setValue(name, value);
+                // If an empty element, set the value with the empty string.
+                if (parser.isEmptyElementTag()) {
+                    extension.setValue(name,"");
+                }
+                // Otherwise, get the the element text.
+                else {
+                    eventType = parser.next();
+                    if (eventType == XmlPullParser.TEXT) {
+                        String value = parser.getText();
+	                    extension.setValue(name, value);
+                    }
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
