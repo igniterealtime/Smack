@@ -94,6 +94,7 @@ public class XMPPConnection {
     public static boolean DEBUG_ENABLED = false;
 
     private static List connectionEstablishedListeners = new ArrayList();
+
     static {
         // Use try block since we may not have permission to get a system
         // property (for example, when an applet).
@@ -102,8 +103,8 @@ public class XMPPConnection {
         }
         catch (Exception e) {
         }
-        // Initialize Smack with the parameterized configuration
-        SmackConfiguration.init();
+        // Ensure the SmackConfiguration class is loaded by calling a method in it.
+        SmackConfiguration.getVersion();
     }
     private SmackDebugger debugger = null;
 

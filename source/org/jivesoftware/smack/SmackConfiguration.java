@@ -63,7 +63,13 @@ import org.xmlpull.v1.*;
  * <ul>
  *      <li> Initializing classes by loading them at start-up.
  *      <li> Getting the current Smack version.
+ *      <li> Getting and setting global library behavior, such as the period of time
+ *          to wait for replies to packets from the server. Note: setting these values
+ *          via the API will override settings in the configuration file.
  * </ul>
+ *
+ * Configuration settings are stored in META-INF/smack-config.xml (typically inside the
+ * smack.jar file).
  * 
  * @author Gaston Dombiak
  */
@@ -78,14 +84,13 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Loads the configuration from the smack.configuration file.<p>
+     * Loads the configuration from the smack-config.xml file.<p>
      * 
      * So far this means that:
      * 1) a set of classes will be loaded in order to execute their static init block
      * 2) retrieve and set the current Smack release
-     *
      */
-    static void init() {
+    static {
         try {
             // Get an array of class loaders to try loading the providers files from.
             ClassLoader[] classLoaders = getClassLoaders();
@@ -98,8 +103,7 @@ public final class SmackConfiguration {
                         systemStream = url.openStream();
                         XmlPullParserFactory factory =
                             XmlPullParserFactory.newInstance(
-                                "org.xmlpull.mxp1.MXParserFactory",
-                                null);
+                                "org.xmlpull.mxp1.MXParserFactory", null);
                         factory.setNamespaceAware(true);
                         XmlPullParser parser = factory.newPullParser();
                         parser.setInput(systemStream, "UTF-8");
@@ -198,7 +202,7 @@ public final class SmackConfiguration {
             Class.forName(className);
         }
         catch (ClassNotFoundException cnfe) {
-            System.err.println("Error! a startup class specified in smack-config.xml could " +
+            System.err.println("Error! A startup class specified in smack-config.xml could " +
                     "not be loaded: " + className);
         }
     }
