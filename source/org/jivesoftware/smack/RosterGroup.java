@@ -54,6 +54,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
 
@@ -131,7 +132,7 @@ public class RosterGroup {
     }
 
     /**
-     * Returns true if an entry is part of this group.
+     * Returns true if the specified entry is part of this group.
      *
      * @param entry a roster entry.
      * @return true if the entry is part of this group.
@@ -140,6 +141,30 @@ public class RosterGroup {
         synchronized (entries) {
             return entries.contains(entry);
         }
+    }
+
+    /**
+     * Returns true if the specified XMPP address is an entry in this group.
+     *
+     * @param user the XMPP address of the user.
+     * @return true if the XMPP address is an entry in this group.
+     */
+    public boolean conatins(String user) {
+        if (user == null) {
+            return false;
+        }
+        // Roster entries never include a resource so remove the resource
+        // if it's a part of the XMPP address.
+        user = StringUtils.parseBareAddress(user);
+        synchronized (entries) {
+            for (Iterator i=entries.iterator(); i.hasNext(); ) {
+                RosterEntry entry = (RosterEntry)i.next();
+                if (entry.getUser().equals(user)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
