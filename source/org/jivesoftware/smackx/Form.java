@@ -67,8 +67,8 @@ import org.jivesoftware.smackx.packet.DataForm;
  *  <li>result -> Data results being returned from a search, or some other query.</li>
  * </ul>
  * 
- * Depending of the form's type different operations are available. For example, if the form
- * is of type "submit", it's not possible to add a new Field to the form.
+ * Depending of the form's type different operations are available. For example, it's only possible
+ * to set answers if the form is of type "submit".
  * 
  * @author Gaston Dombiak
  */
@@ -132,47 +132,57 @@ public class Form {
      * Adds a new field to complete as part of the form.
      * 
      * @param field the field to complete.
-     * @throws IllegalStateException if the form is not of type "form".
      */
     public void addField(FormField field) {
-        if (!isFormType()) {
-            throw new IllegalStateException("Cannot add fields if the form is not of type \"form\"");
-        }
         dataForm.addField(field);
     }
     
     /**
-     * Adds a new answer as part of the form. The answer to add is a FormField whose variable
-     * and value attributes are completed.
+     * Sets a new answer as part of a form's field. The field whose variable matches the requested 
+     * variable will be completed with the specified value. If no field could be found for 
+     * the specified variable then an exception will be raised.
      * 
      * @param variable the variable that was completed.
      * @param value the value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
      */
-    public void addAnswer(String variable, String value) {
+    public void setAnswer(String variable, String value) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot add fields if the form is not of type \"submit\"");
         }
-        FormField field = new FormField(variable);
-        field.addValue(value);
-        dataForm.addField(field);
+        FormField field = getField(variable);
+        if (field != null) {
+            field.resetValues();
+            field.addValue(value);
+        }
+        else {
+            throw new IllegalArgumentException("Couldn't find a field for the specified variable.");
+        }
     }
 
     /**
-     * Adds a new answer as part of the form. The answer to add is a FormField whose variable
-     * and values attributes are completed.
+     * Sets new answers as part of a form's field. The field whose variable matches the requested 
+     * variable will be completed with the specified values. If no field could be found for 
+     * the specified variable then an exception will be raised.
      * 
      * @param variable the variable that was completed.
      * @param values the values that were answered.
      * @throws IllegalStateException if the form is not of type "submit".
+     * @throws IllegalArgumentException if the form does not include the specified variable.
      */
-    public void addAnswer(String variable, List values) {
+    public void setAnswer(String variable, List values) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot add fields if the form is not of type \"submit\"");
         }
-        FormField field = new FormField(variable);
-        field.addValues(values);
-        dataForm.addField(field);
+        FormField field = getField(variable);
+        if (field != null) {
+            field.resetValues();
+            field.addValues(values);
+        }
+        else {
+            throw new IllegalArgumentException("Couldn't find a field for the specified variable.");
+        }
     }
 
     /**
@@ -184,6 +194,28 @@ public class Form {
         return dataForm.getFields();
     }
 
+    /**
+     * Returns the field of the form whose variable matches the specified variable.
+     * The fields of type FIXED will never be returned since they do not specify a 
+     * variable. 
+     * 
+     * @param variable the variable to look for in the form fields. 
+     * @return the field of the form whose variable matches the specified variable.
+     */
+    public FormField getField(String variable) {
+        if (variable == null || variable.equals("")) {
+            throw new IllegalArgumentException("Variable must not be null or blank.");
+        }
+        // Look for the field whose variable matches the requested variable
+        FormField field;
+        for (Iterator it=getFields();it.hasNext();) {
+            field = (FormField)it.next();
+            if (variable.equals(field.getVariable())) {
+                return field;
+            }
+        }
+        return null;
+    }
 
     /**
      * Returns the instructions that explain how to fill out the form and what the form is about.
@@ -247,11 +279,27 @@ public class Form {
     }
     
     /**
-     * Returns the wrapped DataForm.
+     * Returns a DataForm that serves to send this Form to the server. If the form is of type 
+     * submit, it may contain fields with no value. These fields will be remove since they only 
+     * exist to assist the user while editing/completing the form in a UI. 
      * 
      * @return the wrapped DataForm.
      */
-    DataForm getDataForm() {
+    DataForm getDataFormToSend() {
+        if (isSubmitType()) {
+            // Answer a new form based on the values of this form
+            DataForm dataFormToSend = new DataForm(getType());
+            dataFormToSend.setInstructions(getInstructions());
+            dataFormToSend.setTitle(getTitle());
+            // Remove all the fields that have no answer
+            for(Iterator it=getFields();it.hasNext();) {
+                FormField field = (FormField)it.next();
+                if (field.getValues().hasNext()) {
+                    dataFormToSend.addField(field);
+                }
+            }
+            return dataFormToSend;
+        }
         return dataForm;
     }
     
@@ -274,8 +322,16 @@ public class Form {
     }
 
     /**
-     * Returns a new Form to submit the completed values. The new Form will include the hidden
-     * fields of the original form.
+     * Returns a new Form to submit the completed values. The new Form will include all the fields
+     * of the original form except for the fields of type FIXED. Only the HIDDEN fields will 
+     * include the same value of the original form. The other fields of the new form MUST be 
+     * completed. If a field remains with no answer when sending the completed form, then it won't 
+     * be included as part of the completed form.<p>
+     * 
+     * The reason why the fields with variables are included in the new form is to provide a model 
+     * for binding with any UI. This means that the UIs will use the original form (of type 
+     * "form") to learn how to render the form, but the UIs will bind the fields to the form of
+     * type submit.
      * 
      * @return a Form to submit the completed values.
      */
@@ -285,16 +341,22 @@ public class Form {
         }
         // Create a new Form
         Form form = new Form(TYPE_SUBMIT);
-        // Copy the hidden fields to the new form
         for (Iterator fields=getFields(); fields.hasNext();) {
             FormField field = (FormField)fields.next();
-            if (FormField.TYPE_HIDDEN.equals(field.getType())) {
-                // Since a hidden field could have many values we need to collect them in a list
-                List values = new ArrayList();
-                for (Iterator it=field.getValues();it.hasNext();) {
-                    values.add((String)it.next());
-                }
-                form.addAnswer(field.getVariable(), values);
+            // Add to the new form any type of field that includes a variable.
+            // Note: The fields of type FIXED are the only ones that don't specify a variable
+            if (field.getVariable() != null) {
+                form.addField(new FormField(field.getVariable()));
+                // Set the answer ONLY to the hidden fields 
+                if (FormField.TYPE_HIDDEN.equals(field.getType())) {
+                    // Since a hidden field could have many values we need to collect them 
+                    // in a list
+                    List values = new ArrayList();
+                    for (Iterator it=field.getValues();it.hasNext();) {
+                        values.add((String)it.next());
+                    }
+                    form.setAnswer(field.getVariable(), values);
+                }                
             }
         }
         return form;
