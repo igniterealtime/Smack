@@ -107,11 +107,6 @@ public class IQ extends Packet {
             buf.append(queryXML);
         }
         buf.append("</iq>");
-        // Add packet properties, if any are defined.
-        String propertiesXML = getPropertiesXML();
-        if (propertiesXML != null) {
-            buf.append(propertiesXML);
-        }
         // Add the error sub-packet, if there is one.
         XMPPError error = getError();
         if (error != null) {
