@@ -77,7 +77,7 @@ public class PrivateDataManager {
     private static Map privateDataProviders = new Hashtable();
 
     private XMPPConnection con;
-    private String userID;
+    private String user;
 
     /**
      * Returns the private data provider registered to the specified XML element name and namespace.
@@ -128,7 +128,7 @@ public class PrivateDataManager {
      */
     public PrivateDataManager(XMPPConnection con) {
         this.con = con;
-        this.userID = con.getUsername() + "@" + con.getHost();
+        this.user = con.getUser();
     }
 
     /**
