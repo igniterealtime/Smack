@@ -89,7 +89,7 @@ public class XMPPError {
      *
      * @param code the error code.
      */
-    public XMPPError (int code) {
+    public XMPPError(int code) {
         this.code = code;
         this.message = null;
     }
