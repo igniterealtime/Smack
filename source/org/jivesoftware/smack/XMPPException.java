@@ -52,6 +52,8 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.XMPPError;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -63,7 +65,7 @@ import java.io.PrintWriter;
  */
 public class XMPPException extends Exception {
 
-    private Error error = null;
+    private XMPPError error = null;
     private Throwable cause = null;
 
     public XMPPException() {
@@ -79,7 +81,7 @@ public class XMPPException extends Exception {
         this.cause = cause;
     }
 
-    public XMPPException(Error error) {
+    public XMPPException(XMPPError error) {
         super();
         this.error = error;
     }
@@ -89,7 +91,7 @@ public class XMPPException extends Exception {
         this.cause = cause;
     }
 
-    public XMPPException(String message, Error error) {
+    public XMPPException(String message, XMPPError error) {
         super(message);
         this.error = error;
     }
