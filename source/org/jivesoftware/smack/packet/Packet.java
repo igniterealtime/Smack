@@ -95,6 +95,7 @@ public abstract class Packet {
     private String packetID = null;
     private String to = null;
     private String from = null;
+    private List packetExtensions = null;
     private Map properties = null;
     private XMPPError error = null;
 
@@ -181,6 +182,68 @@ public abstract class Packet {
      */
     public void setError(XMPPError error) {
         this.error = error;
+    }
+
+    /**
+     * Returns an Iterator for the packet extensions attached to the packet.
+     *
+     * @return an Iterator for the packet extensions.
+     */
+    public synchronized Iterator getExtensions() {
+        if (packetExtensions == null) {
+            return Collections.EMPTY_LIST.iterator();
+        }
+        return Collections.unmodifiableList(new ArrayList(packetExtensions)).iterator();
+    }
+
+    /**
+     * Returns the first packet extension that matches the specified element name and
+     * namespace, or <tt>null</tt> if it doesn't exist. Packet extensions are
+     * are arbitrary XML sub-documents in standard XMPP packets (except for IQ packets,
+     * which don't allow extensions). By default, a DefaultPacketExtension instance will
+     * be returned for each extension. However, PacketExtensionProvider instances can be
+     * registered with the {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager}
+     * class to handle custom parsing. In that case, the type of the Object
+     * will be determined by the provider.
+     *
+     * @param elementName the XML element name of the packet extension.
+     * @param namespace the XML element namespace of the packet extension.
+     * @return the extension, or <tt>null</tt> if it doesn't exist.
+     */
+    public synchronized PacketExtension getExtension(String elementName, String namespace) {
+        if (packetExtensions == null || elementName == null || namespace == null) {
+            return null;
+        }
+        for (Iterator i=packetExtensions.iterator(); i.hasNext(); ) {
+            PacketExtension ext = (PacketExtension)i.next();
+            if (elementName.equals(ext.getElementName()) && namespace.equals(ext.getNamespace())) {
+                return ext;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adds a packet extension to the packet.
+     *
+     * @param extension a packet extension.
+     */
+    public synchronized void addExtension(PacketExtension extension) {
+        if (packetExtensions == null) {
+            packetExtensions = new ArrayList();
+        }
+        packetExtensions.add(extension);
+    }
+
+    /**
+     * Removes a packet extension from the packet.
+     *
+     * @param extension the packet extension to remove.
+     */
+    public synchronized void removeExtension(PacketExtension extension)  {
+        if (packetExtensions != null) {
+            packetExtensions.remove(extension);
+        }
     }
 
     /**
@@ -292,72 +355,78 @@ public abstract class Packet {
 
     /**
      * Returns the packet as XML. Every concrete extension of Packet must implement
-     * this method. In addition to writing out packet-specific data, each extension should
-     * also write out the error and the properties data if they are defined.
+     * this method. In addition to writing out packet-specific data, every sub-class
+     * should also write out the error and the extensions data if they are defined.
      *
      * @return the XML format of the packet as a String.
      */
     public abstract String toXML();
 
     /**
-     * Returns the properties portion of the packet as XML or <tt>null</tt> if there are
-     * no properties.
+     * Returns the extension sub-packets (including properties data) as an XML
+     * String, or the Empty String if there are no packet extensions.
      *
-     * @return the properties data as XML or <tt>null</tt> if there are no properties.
+     * @return the extension sub-packets as XML or the Empty String if there
+     * are no packet extensions.
      */
-    protected synchronized String getPropertiesXML() {
-        // Return null if there are no properties.
-        if (properties == null || properties.isEmpty()) {
-            return null;
-        }
+    protected synchronized String getExtentionsXML() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<x xmlns=\"http://www.jivesoftware.com/xmlns/xmpp/properties\">");
-        // Loop through all properties and write them out.
-        for (Iterator i=getPropertyNames(); i.hasNext(); ) {
-            String name = (String)i.next();
-            Object value = getProperty(name);
-            buf.append("<property>");
-            buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
-            buf.append("<value type=\"");
-            if (value instanceof Integer) {
-                buf.append("integer\">").append(value).append("</value>");
-            }
-            else if (value instanceof Long) {
-                buf.append("long\">").append(value).append("</value>");
-            }
-            else if (value instanceof Float) {
-                buf.append("float\">").append(value).append("</value>");
-            }
-            else if (value instanceof Double) {
-                buf.append("double\">").append(value).append("</value>");
-            }
-            else if (value instanceof Boolean) {
-                buf.append("boolean\">").append(value).append("</value>");
-            }
-            else if (value instanceof String) {
-                buf.append("string\">");
-                buf.append(StringUtils.escapeForXML((String)value));
-                buf.append("</value>");
-            }
-            // Otherwise, it's a generic Serializable object. Serialized objects are in
-            // a binary format, which won't work well inside of XML. Therefore, we base-64
-            // encode the binary data before adding it to the SOAP payload.
-            else {
-                try {
-                    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                    ObjectOutputStream out = new ObjectOutputStream(byteStream);
-                    out.writeObject(value);
-                    String encodedVal = StringUtils.encodeBase64(byteStream.toByteArray());
-                    buf.append("java-object\">");
-                    buf.append(encodedVal).append("</value>");
-                }
-                catch (Exception e) {
-
-                }
-            }
-            buf.append("</property>");
+        // Add in all standard extension sub-packets.
+        Iterator extensions = getExtensions();
+        while (extensions.hasNext()) {
+            PacketExtension extension = (PacketExtension)extensions.next();
+            buf.append(extension.toXML());
         }
-        buf.append("</x>");
+        // Add in packet properties.
+        if (properties != null && !properties.isEmpty()) {
+            buf.append("<properties xmlns=\"http://www.jivesoftware.com/xmlns/xmpp/properties\">");
+            // Loop through all properties and write them out.
+            for (Iterator i=getPropertyNames(); i.hasNext(); ) {
+                String name = (String)i.next();
+                Object value = getProperty(name);
+                buf.append("<property>");
+                buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
+                buf.append("<value type=\"");
+                if (value instanceof Integer) {
+                    buf.append("integer\">").append(value).append("</value>");
+                }
+                else if (value instanceof Long) {
+                    buf.append("long\">").append(value).append("</value>");
+                }
+                else if (value instanceof Float) {
+                    buf.append("float\">").append(value).append("</value>");
+                }
+                else if (value instanceof Double) {
+                    buf.append("double\">").append(value).append("</value>");
+                }
+                else if (value instanceof Boolean) {
+                    buf.append("boolean\">").append(value).append("</value>");
+                }
+                else if (value instanceof String) {
+                    buf.append("string\">");
+                    buf.append(StringUtils.escapeForXML((String)value));
+                    buf.append("</value>");
+                }
+                // Otherwise, it's a generic Serializable object. Serialized objects are in
+                // a binary format, which won't work well inside of XML. Therefore, we base-64
+                // encode the binary data before adding it.
+                else {
+                    try {
+                        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                        ObjectOutputStream out = new ObjectOutputStream(byteStream);
+                        out.writeObject(value);
+                        String encodedVal = StringUtils.encodeBase64(byteStream.toByteArray());
+                        buf.append("java-object\">");
+                        buf.append(encodedVal).append("</value>");
+                    }
+                    catch (Exception e) {
+
+                    }
+                }
+                buf.append("</property>");
+            }
+            buf.append("</properties>");
+        }
         return buf.toString();
     }
 }

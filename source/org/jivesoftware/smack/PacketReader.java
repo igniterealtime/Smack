@@ -58,55 +58,17 @@ import java.util.*;
 import java.util.List;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.beans.PropertyDescriptor;
 
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.provider.*;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
  * The packet reader also manages all packet listeners and collectors.<p>
- *
- * By default, this class only knows how to process IQ packets with query sub-packets that
- * are in a few namespaces:<ul>
- *      <li>jabber:iq:auth
- *      <li>jabber:iq:roster
- *      <li>jabber:iq:register</ul>
- *
- * Because many more IQ types are part of XMPP and its extensions, a pluggable IQ parsing
- * mechanism is provided. IQ providers are registered by creating a smack.providers file
- * in the WEB-INF directory of your JAR file. The file is an XML document that contains
- * one or more iqProvider entries, as in the following example:
- * <pre>
- * &lt;?xml version="1.0"?&gt;
- * &lt;smackProviders&gt;
- *     &lt;iqProvider namespace="jabber:iq:time" className="org.jivesoftware.smack.packet.Time"/&gt;
- * &lt;/smackProviders&gt;</pre>
- *
- * Each IQ provider is associated with a namespace. If multiple provider entries attempt to
- * register to handle the same namespace, the first entry loaded from the classpath will
- * take precedence. The IQ provider class can either implement the IQProvider interface,
- * or extend the IQ class. In the former case, each IQProvider is responsible for parsing
- * the raw XML stream to create an IQ instance. In the latter case, bean introspection is
- * used to try to automatically set properties of the IQ instance using the values found
- * in the IQ packet XML. For example, an XMPP time packet resembles the following:
- * <pre>
- * &lt;iq type='get' to='joe@example.com' from='mary@example.com' id='time_1'&gt;
- *     &lt;query xmlns='jabber:iq:time'&gt;
- *         &lt;utc&gt;20020910T17:58:35&lt;/utc&gt;
- *         &lt;tz&gt;MDT&lt;/tz&gt;
- *         &lt;display&gt;Tue Sep 10 12:58:35 2002&lt;/display&gt;
- *     &lt;/query&gt;
- * &lt;/iq&gt;</pre>
- *
- * In order for this packet to be automatically mapped to the Time object listed in the
- * providers file above, it must have the methods setUtc(String), setTz(String), and
- * setDisplay(tz). The introspection service will automatically try to convert the String
- * value from the XML into a boolean, int, long, float, double, or Class depending on the
- * type the IQ instance expects.
  *
  * @see PacketCollector
  * @see PacketListener
@@ -119,61 +81,6 @@ class PacketReader {
      */
     private static final String PROPERTIES_NAMESPACE =
             "http://www.jivesoftware.com/xmlns/xmpp/properties";
-
-    private static Map iqProviders = new Hashtable();
-
-    static {
-        // Load IQ processing providers.
-        try {
-            Enumeration enum = PacketReader.class.getClassLoader().getResources(
-                    "WEB-INF/smack.providers");
-            while (enum.hasMoreElements()) {
-                URL url = (URL)enum.nextElement();
-                java.io.InputStream providerStream = null;
-                try {
-                    providerStream = url.openStream();
-                    XmlPullParser parser = getParserInstance();
-                    parser.setInput(providerStream, "UTF-8");
-                    int eventType = parser.getEventType();
-                    do {
-                        if (eventType == XmlPullParser.START_TAG) {
-                            if (parser.getName().equals("iqProvider")) {
-                                String namespace = parser.getAttributeValue(0);
-                                // Only add the provider for the namespace if one isn't
-                                // already registered.
-                                if (!iqProviders.containsKey(namespace)) {
-                                    String providerClass = parser.getAttributeValue(1);
-                                    // Attempt to load the provider class and then create
-                                    // a new instance if it's an IQProvider. Otherwise, if it's
-                                    // an IQ class, add the class object itself, then we'll use
-                                    // reflection later to create instances of the class.
-                                    try {
-                                        // Add the provider to the map.
-                                        Class provider = Class.forName(providerClass);
-                                        if (IQProvider.class.isAssignableFrom(provider)) {
-                                            iqProviders.put(namespace, provider.newInstance());
-                                        }
-                                        else if (IQ.class.isAssignableFrom(provider)) {
-                                            iqProviders.put(namespace, provider);
-                                        }
-                                    }
-                                    catch (ClassNotFoundException cnfe) {
-                                        cnfe.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                        eventType = parser.next();
-                    } while (eventType != XmlPullParser.END_DOCUMENT);
-                }
-                finally {
-                    try { providerStream.close(); }
-                    catch (Exception e) { }
-                }
-            }
-        }
-        catch (Exception e) { }
-    }
 
     private Thread readerThread;
     private Thread listenerThread;
@@ -428,39 +335,34 @@ class PacketReader {
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
+
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("query")) {
-                    String namespace = parser.getNamespace();
-                    if (namespace.equals("jabber:iq:auth")) {
-                        iqPacket = parseAuthentication(parser);
-                    }
-                    else if (namespace.equals("jabber:iq:roster")) {
-                        iqPacket = parseRoster(parser);
-                    }
-                    else if (namespace.equals("jabber:iq:register")) {
-                        iqPacket = parseRegistration(parser);
-                    }
-                    // Otherwise, see if there is a registered provider for
-                    // this namespace.
-                    else {
-                        Object provider = iqProviders.get(namespace);
-                        if (provider != null) {
-                            if (provider instanceof IQProvider) {
-                                iqPacket = ((IQProvider)provider).parseIQ(parser);
-                            }
-                            else if (provider instanceof Class) {
-                                iqPacket = parseIQWithIntrospection((Class)provider, parser);
-                            }
-                        }
-                    }
-                }
-                else if (parser.getName().equals("error")) {
+                String elementName = parser.getName();
+                String namespace = parser.getNamespace();
+                if (elementName.equals("error")) {
                     error = parseError(parser);
                 }
-                else if (parser.getName().equals("x") &&
-                        parser.getNamespace().equals(PROPERTIES_NAMESPACE))
-                {
-                    properties = parseProperties(parser);
+                else if (elementName.equals("query") && namespace.equals("jabber:iq:auth")) {
+                    iqPacket = parseAuthentication(parser);
+                }
+                else if (elementName.equals("query") && namespace.equals("jabber:iq:roster")) {
+                    iqPacket = parseRoster(parser);
+                }
+                else if (elementName.equals("query") && namespace.equals("jabber:iq:register")) {
+                    iqPacket = parseRegistration(parser);
+                }
+                // Otherwise, see if there is a registered provider for
+                // this element name and namespace.
+                else {
+                    Object provider = ProviderManager.getIQProvider(elementName, namespace);
+                    if (provider != null) {
+                        if (provider instanceof IQProvider) {
+                            iqPacket = ((IQProvider)provider).parseIQ(parser);
+                        }
+                        else if (provider instanceof Class) {
+                            iqPacket = parseIQWithIntrospection((Class)provider, parser);
+                        }
+                    }
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -696,28 +598,43 @@ class PacketReader {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("subject")) {
+                String elementName = parser.getName();
+                String namespace = parser.getNamespace();
+                if (elementName.equals("subject")) {
                     if (subject == null) {
                         subject = parser.nextText();
                     }
                 }
-                else if (parser.getName().equals("body")) {
+                else if (elementName.equals("body")) {
                     if (body == null) {
                         body = parser.nextText();
                     }
                 }
-                else if (parser.getName().equals("thread")) {
+                else if (elementName.equals("thread")) {
                     if (thread == null) {
                         thread = parser.nextText();
                     }
                 }
-                else if (parser.getName().equals("error")) {
+                else if (elementName.equals("error")) {
                     message.setError(parseError(parser));
                 }
-                else if (parser.getName().equals("x") &&
-                        parser.getNamespace().equals(PROPERTIES_NAMESPACE))
+                else if (elementName.equals("properties") &&
+                        namespace.equals(PROPERTIES_NAMESPACE))
                 {
                     properties = parseProperties(parser);
+                }
+                // Otherwise, see if there is a registered provider for
+                // this element name and namespace.
+                else {
+                    Object provider = ProviderManager.getExtensionProvider(elementName, namespace);
+                    if (provider != null) {
+                        if (provider instanceof PacketExtensionProvider) {
+                            iqPacket = ((IQProvider)provider).parseIQ(parser);
+                        }
+                        else if (provider instanceof Class) {
+                            iqPacket = parseIQWithIntrospection((Class)provider, parser);
+                        }
+                    }
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -775,7 +692,7 @@ class PacketReader {
                 else if (parser.getName().equals("error")) {
                     presence.setError(parseError(parser));
                 }
-                else if (parser.getName().equals("x") &&
+                else if (parser.getName().equals("properties") &&
                         parser.getNamespace().equals(PROPERTIES_NAMESPACE))
                 {
                     Map properties = parseProperties(parser);
@@ -851,7 +768,7 @@ class PacketReader {
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("x")) {
+                if (parser.getName().equals("properties")) {
                     break;
                 }
             }
