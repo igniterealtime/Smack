@@ -56,6 +56,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.jivesoftware.smackx.packet.PrivateData;
 
 /**
+ * An interface for parsing custom private data. Each PrivateDataProvider must
+ * be registered with the PrivateDataManager class for it to be used. Every implementation
+ * of this interface <b>must</b> have a public, no-argument constructor.
  *
  * @author Matt Tucker
  */

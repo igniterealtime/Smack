@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Hashtable;
 
 /**
+ * Manages private data.
  *
  * @author Matt Tucker
  */
@@ -145,7 +146,9 @@ public class PrivateDataManager {
         IQ privateDataGet = new IQ() {
             public String getChildElementXML() {
                 StringBuffer buf = new StringBuffer();
+                buf.append("<query xmlns=\"jabber:iq:private\">");
                 buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\"/>");
+                buf.append("</query>");
                 return buf.toString();
             }
         };
@@ -174,7 +177,11 @@ public class PrivateDataManager {
         // Create an IQ packet to set the private data.
         IQ privateDataSet = new IQ() {
             public String getChildElementXML() {
-                return privateData.toXML();
+                StringBuffer buf = new StringBuffer();
+                buf.append("<query xmlns=\"jabber:iq:private\">");
+                buf.append(privateData.toXML());
+                buf.append("</query>");
+                return buf.toString();
             }
         };
         privateDataSet.setType(IQ.Type.SET);
@@ -215,7 +222,7 @@ public class PrivateDataManager {
      */
     public static class PrivateDataIQProvider implements IQProvider {
         public IQ parseIQ(XmlPullParser parser) throws Exception {
-            PrivateData privateData = null;;
+            PrivateData privateData = null;
             boolean done = false;
             while (!done) {
                 int eventType = parser.next();
@@ -266,12 +273,13 @@ public class PrivateDataManager {
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
-                    if (parser.getName().equals("</query>")) {
+                    if (parser.getName().equals("query")) {
                         done = true;
                     }
                 }
             }
-            return new PrivateDataResult(privateData);
+            IQ result = new PrivateDataResult(privateData);
+            return result;
         }
     }
 
@@ -352,7 +360,13 @@ public class PrivateDataManager {
         }
 
         public String getChildElementXML() {
-            return privateData.toXML();
+            StringBuffer buf = new StringBuffer();
+            buf.append("<query xmlns=\"jabber:iq:private\">");
+            if (privateData != null) {
+                privateData.toXML();
+            }
+            buf.append("</query>");
+            return buf.toString();
         }
     }
 }
