@@ -6,4 +6,9 @@
         <namespace>jabber:iq:private</namespace> 
         <className>org.jivesoftware.smackx.packet.PrivateDataManager.PrivateDataIQProvider</className> 
     </iqProvider>
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:roster</namespace>
+        <className>org.jivesoftware.smackx.provider.RosterExchangeProvider</className>
+    </extensionProvider>
 </smackProviders>
