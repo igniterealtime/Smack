@@ -59,6 +59,9 @@ import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.*;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -595,6 +598,35 @@ public class XMPPConnection {
         allPane.add(new JScrollPane(sentText1));
         tabbedPane.add("Client", new JScrollPane(sentText2));
 
+        // Add pop-up menu.
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem menuItem1 = new JMenuItem("Copy");
+		menuItem1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                // Get the clipboard
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                // Set the sent text as the new content of the clipboard
+                clipboard.setContents(new StringSelection(sentText1.getText()), null);
+            }
+        });
+
+        JMenuItem menuItem2 = new JMenuItem("Clear");
+        menuItem2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                sentText1.setText("");
+                sentText2.setText("");
+            }
+        });
+
+		// Add listener to the text area so the popup menu can come up.
+		MouseListener popupListener = new PopupListener(menu);
+		sentText1.addMouseListener(popupListener);
+		sentText2.addMouseListener(popupListener);
+		menu.add(menuItem1);
+		menu.add(menuItem2);
+
         // Create UI elements for server generated XML traffic.
         final JTextArea receivedText1 = new JTextArea();
         final JTextArea receivedText2 = new JTextArea();
@@ -605,6 +637,35 @@ public class XMPPConnection {
         allPane.add(new JScrollPane(receivedText1));
         tabbedPane.add("Server", new JScrollPane(receivedText2));
 
+        // Add pop-up menu.
+        menu = new JPopupMenu();
+        menuItem1 = new JMenuItem("Copy");
+		menuItem1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                // Get the clipboard
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                // Set the sent text as the new content of the clipboard
+                clipboard.setContents(new StringSelection(receivedText1.getText()), null);
+            }
+        });
+
+        menuItem2 = new JMenuItem("Clear");
+        menuItem2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                receivedText1.setText("");
+                receivedText2.setText("");
+            }
+        });
+
+		// Add listener to the text area so the popup menu can come up.
+		popupListener = new PopupListener(menu);
+		receivedText1.addMouseListener(popupListener);
+		receivedText2.addMouseListener(popupListener);
+		menu.add(menuItem1);
+		menu.add(menuItem2);
+
         // Create UI elements for interpreted XML traffic.
         final JTextArea interpretedText1 = new JTextArea();
         final JTextArea interpretedText2 = new JTextArea();
@@ -614,6 +675,35 @@ public class XMPPConnection {
         interpretedText2.setForeground(new Color(1, 94, 35));
         allPane.add(new JScrollPane(interpretedText1));
         tabbedPane.add("Interpreted Packets", new JScrollPane(interpretedText2));
+
+        // Add pop-up menu.
+        menu = new JPopupMenu();
+        menuItem1 = new JMenuItem("Copy");
+		menuItem1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                // Get the clipboard
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                // Set the sent text as the new content of the clipboard
+                clipboard.setContents(new StringSelection(interpretedText1.getText()), null);
+            }
+        });
+
+        menuItem2 = new JMenuItem("Clear");
+        menuItem2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                interpretedText1.setText("");
+                interpretedText2.setText("");
+            }
+        });
+
+		// Add listener to the text area so the popup menu can come up.
+		popupListener = new PopupListener(menu);
+		interpretedText1.addMouseListener(popupListener);
+		interpretedText2.addMouseListener(popupListener);
+		menu.add(menuItem1);
+		menu.add(menuItem2);
 
         debugFrame.getContentPane().add(tabbedPane);
 
@@ -759,5 +849,30 @@ public class XMPPConnection {
             }
         };
         return debugListener;
+    }
+
+    /**
+     * Listens for debug window popup dialog events.
+     */
+    private class PopupListener extends MouseAdapter {
+        JPopupMenu popup;
+
+        PopupListener(JPopupMenu popupMenu) {
+            popup = popupMenu;
+        }
+
+        public void mousePressed(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
     }
 }
