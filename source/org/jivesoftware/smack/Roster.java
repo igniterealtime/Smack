@@ -100,7 +100,7 @@ public class Roster {
      * The default subscription processing mode to use when a Roster is created. By default 
      * all subscription requests are automatically accepted. 
      */
-    private static int defaulSubscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
+    private static int defaultSubscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
 
     private XMPPConnection connection;
     private Map groups;
@@ -112,7 +112,7 @@ public class Roster {
     // has been recieved and processed.
     boolean rosterInitialized = false;
 
-    private int subscriptionMode = getDefaulSubscriptionMode();
+    private int subscriptionMode = getDefaultSubscriptionMode();
 
     /**
      * Returns the default subscription processing mode to use when a new Roster is created. The 
@@ -122,8 +122,8 @@ public class Roster {
      * 
      * @return the default subscription mode to use for new Rosters
      */
-    public static int getDefaulSubscriptionMode() {
-        return defaulSubscriptionMode;
+    public static int getDefaultSubscriptionMode() {
+        return defaultSubscriptionMode;
     }
 
     /**
@@ -134,8 +134,8 @@ public class Roster {
      *
      * @param subscriptionMode the default subscription mode to use for new Rosters.
      */
-    public static void setDefaulSubscriptionMode(int subscriptionMode) {
-        defaulSubscriptionMode = subscriptionMode;
+    public static void setDefaultSubscriptionMode(int subscriptionMode) {
+        defaultSubscriptionMode = subscriptionMode;
     }
 
     /**
