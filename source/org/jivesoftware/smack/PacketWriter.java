@@ -120,13 +120,13 @@ class PacketWriter {
         if (!done) {
             synchronized(queue) {
                 queue.addFirst(packet);
-                queue.notify();
+                queue.notifyAll();
             }
             // Add the sent packet to the list of sent packets
             // The PacketWriterListeners will be notified of the new packet
             synchronized(sentPackets) {
                 sentPackets.addFirst(packet);
-                sentPackets.notify();
+                sentPackets.notifyAll();
             }
         }
     }
