@@ -72,6 +72,7 @@ class PacketWriter {
     private boolean done = false;
     
     private List listeners = new ArrayList();
+    private boolean listenersUpdated = false;
     private Thread listenerThread;
     private LinkedList sentPackets = new LinkedList();
 
@@ -122,8 +123,8 @@ class PacketWriter {
                 queue.addFirst(packet);
                 queue.notifyAll();
             }
-            // Add the sent packet to the list of sent packets
-            // The PacketWriterListeners will be notified of the new packet
+            // Add the sent packet to the list of sent packets. The
+            // PacketWriterListeners will be notified of the new packet.
             synchronized(sentPackets) {
                 sentPackets.addFirst(packet);
                 sentPackets.notifyAll();
@@ -156,8 +157,22 @@ class PacketWriter {
                 ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
                 if (wrapper != null && wrapper.packetListener.equals(packetListener)) {
                     listeners.set(i, null);
+                    // Set the flag to indicate that the listener list needs
+                    // to be cleaned up.
+                    listenersUpdated = true;
                 }
             }
+        }
+    }
+
+    /**
+     * Returns the number of registered packet listeners.
+     *
+     * @return the count of packet listeners.
+     */
+    public int getPacketListenerCount() {
+        synchronized (listeners) {
+            return listeners.size();
         }
     }
 
@@ -250,7 +265,7 @@ class PacketWriter {
         while (!done) {
             Packet sentPacket;
             // Wait until a new packet has been sent
-            synchronized(sentPackets) {
+            synchronized (sentPackets) {
                 while (!done && sentPackets.size() == 0) {
                     try {
                         sentPackets.wait(2000);
@@ -265,14 +280,17 @@ class PacketWriter {
                 }
             }
             if (sentPacket != null) {
-                // Clean up null entries in the listeners list
+                // Clean up null entries in the listeners list if the flag is set. List
+                // removes are done seperately so that the main notification process doesn't
+                // need to synchronize on the list.
                 synchronized (listeners) {
-                    if (listeners.size() > 0) {
+                    if (listenersUpdated) {
                         for (int i=listeners.size()-1; i>=0; i--) {
                             if (listeners.get(i) == null) {
                                 listeners.remove(i);
                             }
                         }
+                        listenersUpdated = false;
                     }
                 }
                 // Notify the listeners of the new sent packet
@@ -324,7 +342,7 @@ class PacketWriter {
 
     /**
      * A TimerTask that keeps connections to the server alive by sending a space
-     * character. The
+     * character on an interval.
      */
     private class KeepAliveTask implements Runnable {
 
@@ -344,7 +362,7 @@ class PacketWriter {
                     catch (Exception e) { }
                 }
                 try {
-                    // Sleep 30 seconds.
+                    // Sleep until we should write the next keep-alive.
                     Thread.sleep(delay);
                 }
                 catch (InterruptedException ie) { }
