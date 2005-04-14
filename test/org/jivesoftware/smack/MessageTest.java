@@ -72,7 +72,45 @@ public class MessageTest extends SmackTestCase {
         }
     }
 
+    /**
+     * Check that two clients are able to send messages with a body of 4K characters and their
+     * connections are not being closed.
+     */
+    public void testHugeMessage() {
+        // User2 becomes available again
+        PacketCollector collector = getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.CHAT));
+
+        // Create message with a body of 4K characters
+        Message msg = new Message(getFullJID(1), Message.Type.CHAT);
+        StringBuffer sb = new StringBuffer(5000);
+        for (int i=0; i<=4000; i++) {
+            sb.append("X");
+        }
+        msg.setBody(sb.toString());
+
+        // Send the first message
+        getConnection(0).sendPacket(msg);
+        // Check that the connection that sent the message is still connected
+        assertTrue("Connection was closed", getConnection(0).isConnected());
+        // Check that the message was received
+        Message rcv = (Message) collector.nextResult(1000);
+        assertNotNull("No Message was received", rcv);
+
+        // Send the second message
+        getConnection(0).sendPacket(msg);
+        // Check that the connection that sent the message is still connected
+        assertTrue("Connection was closed", getConnection(0).isConnected());
+        // Check that the second message was received
+        rcv = (Message) collector.nextResult(1000);
+        assertNotNull("No Message was received", rcv);
+    }
+
     protected int getMaxConnections() {
         return 2;
+    }
+
+    protected void setUp() throws Exception {
+        XMPPConnection.DEBUG_ENABLED = false;
+        super.setUp();
     }
 }
