@@ -76,6 +76,27 @@ public class LoginTest extends SmackTestCase {
         }
     }
 
+    /**
+     * Check that the server does not allow to log in without specifying a resource.
+     */
+    public void testLoginWithNoResource() {
+        try {
+            XMPPConnection conn = new XMPPConnection(getHost(), getPort());
+            try {
+                conn.getAccountManager().createAccount("user_1", "user_1");
+            } catch (XMPPException e) {
+                // Do nothing if the accout already exists
+                if (e.getXMPPError().getCode() != 409) {
+                    throw e;
+                }
+            }
+            conn.login("user_1", "user_1", null);
+            fail("User with no resource was able to log into the server");
+
+        } catch (XMPPException e) {
+            assertEquals("Wrong error code returned", 406, e.getXMPPError().getCode());
+        }
+    }
 
     protected int getMaxConnections() {
         return 0;
