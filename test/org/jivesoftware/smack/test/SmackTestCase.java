@@ -58,6 +58,7 @@ import java.util.Enumeration;
 import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.xmlpull.v1.*;
 import org.xmlpull.mxp1.MXParser;
 
@@ -227,7 +228,14 @@ public abstract class SmackTestCase extends TestCase {
 
             for (int i = 0; i < getMaxConnections(); i++) {
                 // Create the test account
-                getConnection(i).getAccountManager().createAccount("user" + i, "user" + i);
+                try {
+                    getConnection(i).getAccountManager().createAccount("user" + i, "user" + i);
+                } catch (XMPPException e) {
+                    // Do nothing if the accout already exists
+                    if (e.getXMPPError().getCode() != 409) {
+                        throw e;
+                    }
+                }
                 // Login with the new test account
                 getConnection(i).login("user" + i, "user" + i);
             }
