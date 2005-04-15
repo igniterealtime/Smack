@@ -65,22 +65,34 @@ public class StringUtilsTest extends TestCase {
         assertNull(StringUtils.escapeForXML(null));
 
         input = "<b>";
-        assertEquals(StringUtils.escapeForXML(input), "&lt;b&gt;");
+        assertEquals("&lt;b&gt;", StringUtils.escapeForXML(input));
 
         input = "\"";
-        assertEquals(StringUtils.escapeForXML(input), "&quot;");
+        assertEquals("&quot;", StringUtils.escapeForXML(input));
 
         input = "&";
-        assertEquals(StringUtils.escapeForXML(input), "&amp;");
+        assertEquals("&amp;", StringUtils.escapeForXML(input));
 
         input = "<b>\n\t\r</b>";
-        assertEquals(StringUtils.escapeForXML(input), "&lt;b&gt;\n\t\r&lt;/b&gt;");
+        assertEquals("&lt;b&gt;\n\t\r&lt;/b&gt;", StringUtils.escapeForXML(input));
 
         input = "   &   ";
-        assertEquals(StringUtils.escapeForXML(input), "   &amp;   ");
+        assertEquals("   &amp;   ", StringUtils.escapeForXML(input));
 
         input = "   \"   ";
-        assertEquals(StringUtils.escapeForXML(input), "   &quot;   ");
+        assertEquals("   &quot;   ", StringUtils.escapeForXML(input));
+
+        input = "> of me <";
+        assertEquals("&gt; of me &lt;", StringUtils.escapeForXML(input));
+
+        input = "> of me & you<";
+        assertEquals("&gt; of me &amp; you&lt;", StringUtils.escapeForXML(input));
+
+        input = "& <";
+        assertEquals("&amp; &lt;", StringUtils.escapeForXML(input));
+
+        input = "&";
+        assertEquals("&amp;", StringUtils.escapeForXML(input));
     }
 
     public void testHash() {
