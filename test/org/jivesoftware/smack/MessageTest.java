@@ -59,7 +59,7 @@ public class MessageTest extends SmackTestCase {
             getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE));
 
             // Check that offline messages are retrieved by user2 which is now available
-            Message message = (Message) collector.nextResult(2000);
+            Message message = (Message) collector.nextResult(2500);
             assertNotNull(message);
             message = (Message) collector.nextResult(2000);
             assertNotNull(message);
@@ -108,7 +108,7 @@ public class MessageTest extends SmackTestCase {
         XMPPConnection conn = null;
         try {
             conn = new SSLXMPPConnection(getHost());
-            conn.login(getUsername(0), getUsername(0));
+            conn.login(getUsername(0), getUsername(0), "Other resource");
 
             // Send the first message
             conn.sendPacket(msg);
@@ -133,7 +133,7 @@ public class MessageTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = true;
+        XMPPConnection.DEBUG_ENABLED = false;
         super.setUp();
     }
 }

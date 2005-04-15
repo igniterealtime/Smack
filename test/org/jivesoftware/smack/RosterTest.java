@@ -147,13 +147,35 @@ public class RosterTest extends SmackTestCase {
             roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
             roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
 
-            Thread.sleep(200);
+            // Wait up to 2 seconds to receive new roster contacts
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 2) {
+                Thread.sleep(100);
+            }
+
+            assertEquals("Wrong number of entries in connection 0", 2, roster.getEntryCount());
+
+            // Wait up to 2 seconds to receive presences of the new roster contacts
+            initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 5000 &&
+                    (roster.getPresence(getBareJID(1)) == null ||
+                    roster.getPresence(getBareJID(2)) == null)) {
+                Thread.sleep(100);
+            }
+            assertNotNull("Presence not received", roster.getPresence(getBareJID(1)));
+            assertNotNull("Presence not received", roster.getPresence(getBareJID(2)));
 
             Iterator it = roster.getEntries();
             while (it.hasNext()) {
                 RosterEntry entry = (RosterEntry) it.next();
                 roster.removeEntry(entry);
                 Thread.sleep(250);
+            }
+
+            // Wait up to 2 seconds to receive roster removal notifications
+            initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 0) {
+                Thread.sleep(100);
             }
 
             assertEquals("Wrong number of entries in connection 0", 0, roster.getEntryCount());
@@ -261,11 +283,17 @@ public class RosterTest extends SmackTestCase {
             Roster roster = getConnection(0).getRoster();
             roster.createEntry(getBareJID(1), null, null);
 
-            Thread.sleep(200);
+            Thread.sleep(500);
 
             getConnection(1).getRoster().createEntry(getBareJID(0), null, null);
 
-            Thread.sleep(200);
+            // Wait up to 5 seconds to receive presences of the new roster contacts
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 5000 &&
+                    roster.getPresence(getBareJID(0)) == null) {
+                Thread.sleep(100);
+            }
+            //assertNotNull("Presence not received", roster.getPresence(getBareJID(0)));
 
             Iterator it = roster.getEntries();
             while (it.hasNext()) {
@@ -285,6 +313,13 @@ public class RosterTest extends SmackTestCase {
                 assertTrue("The roster entry does not belong to any group", entry.getGroups()
                         .hasNext());
             }
+            // Wait up to 5 seconds to receive presences of the new roster contacts
+            initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 5000 &&
+                    roster.getPresence(getBareJID(1)) == null) {
+                Thread.sleep(100);
+            }
+            assertNotNull("Presence not received", roster.getPresence(getBareJID(1)));
 
             cleanUpRoster();
         } catch (Exception e) {
@@ -306,7 +341,9 @@ public class RosterTest extends SmackTestCase {
             Thread.sleep(200);
 
             roster.getGroup("Friends").setName("Amigos");
-            Thread.sleep(200);
+
+            Thread.sleep(500);
+
             assertNull("The group Friends still exists", roster.getGroup("Friends"));
             assertNotNull("The group Amigos does not exist", roster.getGroup("Amigos"));
             assertEquals(
@@ -315,7 +352,9 @@ public class RosterTest extends SmackTestCase {
                 roster.getGroup("Amigos").getEntryCount());
 
             roster.getGroup("Amigos").setName("");
-            Thread.sleep(200);
+
+            Thread.sleep(500);
+
             assertNull("The group Amigos still exists", roster.getGroup("Amigos"));
             assertNotNull("The group with no name does not exist", roster.getGroup(""));
             assertEquals(
@@ -346,7 +385,7 @@ public class RosterTest extends SmackTestCase {
             Roster roster = getConnection(0).getRoster();
             roster.createEntry(getBareJID(1), "gato11", null);
 
-            Thread.sleep(250);
+            Thread.sleep(500);
 
             // Check that a presence is returned for a user
             presence = roster.getPresence(getBareJID(1));
@@ -415,10 +454,22 @@ public class RosterTest extends SmackTestCase {
                 fail(e.getMessage());
             }
         }
-        try {
-            Thread.sleep(700);
+        // Wait up to 2 seconds to receive roster removal notifications
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 &&
+                getConnection(0).getRoster().getEntryCount() != 0) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {}
         }
-        catch (Exception e) {
+
+        // Wait up to 2 seconds to receive roster removal notifications
+        initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 &&
+                getConnection(1).getRoster().getEntryCount() != 0) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {}
         }
 
         assertEquals(
@@ -451,5 +502,10 @@ public class RosterTest extends SmackTestCase {
 
     protected int getMaxConnections() {
         return 3;
+    }
+
+    protected void setUp() throws Exception {
+        XMPPConnection.DEBUG_ENABLED = false;
+        super.setUp();
     }
 }

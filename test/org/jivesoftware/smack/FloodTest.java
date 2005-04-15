@@ -61,6 +61,41 @@ public class FloodTest extends SmackTestCase {
         }
     }
 
+    /*public void testMUCFlood() {
+        try {
+            int floodNumber = 50000;
+            MultiUserChat chat = new MultiUserChat(getConnection(0), "myroom@" + getMUCDomain());
+            chat.create("phatom");
+            chat.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+
+            MultiUserChat chat2 = new MultiUserChat(getConnection(1), "myroom@" + getMUCDomain());
+            chat2.join("christine");
+
+            for (int i=0; i<floodNumber; i++)
+            {
+                chat.sendMessage("hi");
+            }
+
+            Thread.sleep(200);
+
+            for (int i=0; i<floodNumber; i++)
+            {
+                if (i % 100 == 0) {
+                    System.out.println(i);
+                }
+                assertNotNull("Received " + i + " of " + floodNumber + " messages",
+                        chat2.nextMessage(SmackConfiguration.getPacketReplyTimeout()));
+            }
+
+            chat.leave();
+            //chat2.leave();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }*/
+
     protected int getMaxConnections() {
         return 4;
     }

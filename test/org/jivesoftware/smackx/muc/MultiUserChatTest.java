@@ -52,10 +52,8 @@
 
 package org.jivesoftware.smackx.muc;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
@@ -63,6 +61,7 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.packet.XHTMLExtension;
+import org.jivesoftware.smackx.packet.DelayInformation;
 
 /**
  * Tests the new MUC functionalities.
@@ -144,6 +143,11 @@ public class MultiUserChatTest extends SmackTestCase {
             Message msg;
             // Get first historic message
             msg = muc2.nextMessage(1000);
+            DelayInformation delay = (DelayInformation) msg.getExtension("x", "jabber:x:delay");
+            SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
+            UTC_FORMAT.setTimeZone(TimeZone.getDefault());
+            System.out.println(UTC_FORMAT.format(delay.getStamp()));
+            
             assertNotNull("First message is null", msg);
             assertEquals("Body of first message is incorrect", "Message 3", msg.getBody());
             // Try to get second historic message 
@@ -1712,6 +1716,44 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
+    public void testManyResources() {
+        try {
+            // Create 20 more connections for user2
+            XMPPConnection[] conns = new XMPPConnection[20];
+            for (int i = 0; i < conns.length; i++) {
+                conns[i] = new XMPPConnection(getHost());
+                conns[i].login(getUsername(1), getUsername(1), "resource-" + i);
+            }
+
+            // Join the 20 connections to the same room
+            MultiUserChat[] mucs = new MultiUserChat[20];
+            for (int i = 0; i < mucs.length; i++) {
+                mucs[i] = new MultiUserChat(conns[i], room);
+                mucs[i].join("resource-" + i);
+            }
+
+            Thread.sleep(200);
+
+            // Each connection has something to say
+            for (int i = 0; i < mucs.length; i++) {
+                mucs[i].sendMessage("I'm resource-" + i);
+            }
+
+            Thread.sleep(200);
+
+            // Each connection leaves the room and closes the connection
+            for (int i = 0; i < mucs.length; i++) {
+                mucs[i].leave();
+                conns[i].close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+    }
+
     private void makeRoomModerated() throws XMPPException {
         // User1 (which is the room owner) converts the instant room into a moderated room
         Form form = muc.getConfigurationForm();
@@ -1736,6 +1778,7 @@ public class MultiUserChatTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
+        XMPPConnection.DEBUG_ENABLED = false;
         super.setUp();
         try {
             // User1 creates the room
