@@ -103,6 +103,29 @@ public class MessageTest extends SmackTestCase {
         // Check that the second message was received
         rcv = (Message) collector.nextResult(1000);
         assertNotNull("No Message was received", rcv);
+
+        // Try now sending huge messages over an SSL connection
+        XMPPConnection conn = null;
+        try {
+            conn = new SSLXMPPConnection(getHost());
+            conn.login(getUsername(0), getUsername(0));
+
+            // Send the first message
+            conn.sendPacket(msg);
+            // Check that the connection that sent the message is still connected
+            assertTrue("Connection was closed", conn.isConnected());
+            // Check that the message was received
+            rcv = (Message) collector.nextResult(1000);
+            assertNotNull("No Message was received", rcv);
+        } catch (XMPPException e) {
+            fail(e.getMessage());
+        }
+        finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
     }
 
     protected int getMaxConnections() {
@@ -110,7 +133,7 @@ public class MessageTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = false;
+        XMPPConnection.DEBUG_ENABLED = true;
         super.setUp();
     }
 }
