@@ -93,4 +93,11 @@
         <className>org.jivesoftware.smackx.provider.DelayInformationProvider</className>
     </extensionProvider>
     
+    <!-- Version -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:version</namespace>
+        <className>org.jivesoftware.smackx.packet.Version</className> 
+    </iqProvider>
+
 </smackProviders>
