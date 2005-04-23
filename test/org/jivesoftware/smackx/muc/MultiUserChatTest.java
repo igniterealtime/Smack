@@ -1632,7 +1632,8 @@ public class MultiUserChatTest extends SmackTestCase {
                     if ((room + "/testbot2").equals(participant)) {
                         answer[2] = participant;
                     }
-                    else {
+                    // Skip unavailable presences of the same user
+                    else if (!(room + "/testbot").equals(participant)) {
                         answer[3] = participant;
                     }
                 }
@@ -1656,7 +1657,8 @@ public class MultiUserChatTest extends SmackTestCase {
                     if ((room + "/testbot").equals(participant)) {
                         answer[6] = participant;
                     }
-                    else {
+                    // Skip unavailable presences of the same user
+                    else if (!(room + "/testbot2").equals(participant)){
                         answer[7] = participant;
                     }
                 }
