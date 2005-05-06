@@ -109,11 +109,11 @@ public class MultiUserChat {
      * @param connection the XMPP connection.
      * @param room the name of the room in the form "roomName@service", where
      *      "service" is the hostname at which the multi-user chat
-     *      service is running.
+     *      service is running. Make sure to provide a valid JID.
      */
     public MultiUserChat(XMPPConnection connection, String room) {
         this.connection = connection;
-        this.room = room;
+        this.room = room.toLowerCase();
         init();
     }
 
