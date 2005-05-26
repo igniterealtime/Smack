@@ -64,7 +64,7 @@ import org.jivesoftware.smackx.*;
  */
 public class MultiUserChatCreationTest extends SmackTestCase {
 
-    private String room = "fruta124@" + getMUCDomain();
+    private String room;
 
     /**
      * Constructor for MultiUserChatCreationTest.
@@ -140,5 +140,10 @@ public class MultiUserChatCreationTest extends SmackTestCase {
 
     protected int getMaxConnections() {
         return 2;
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        room = "fruta124@" + getMUCDomain();
     }
 }

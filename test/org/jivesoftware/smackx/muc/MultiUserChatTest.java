@@ -70,7 +70,7 @@ import org.jivesoftware.smackx.packet.DelayInformation;
  */
 public class MultiUserChatTest extends SmackTestCase {
 
-    private String room = "fruta124@" + getMUCDomain();
+    private String room;
 
     private MultiUserChat muc;
 
@@ -1782,6 +1782,7 @@ public class MultiUserChatTest extends SmackTestCase {
     protected void setUp() throws Exception {
         XMPPConnection.DEBUG_ENABLED = false;
         super.setUp();
+        room = "fruta124@" + getMUCDomain();
         try {
             // User1 creates the room
             muc = new MultiUserChat(getConnection(0), room);
