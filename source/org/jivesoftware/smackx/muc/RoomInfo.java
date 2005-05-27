@@ -33,6 +33,10 @@ import org.jivesoftware.smackx.Form;
 public class RoomInfo {
 
     /**
+     * JID of the room. The node of the JID is commonly used as the ID of the room or name.
+     */
+    private String room;
+    /**
      * Description of the room.
      */
     private String description = "";
@@ -72,6 +76,7 @@ public class RoomInfo {
 
     RoomInfo(DiscoverInfo info) {
         super();
+        this.room = info.getFrom();
         // Get the information based on the discovered features
         this.membersOnly = info.containsFeature("muc_membersonly");
         this.moderated = info.containsFeature("muc_moderated");
@@ -88,6 +93,15 @@ public class RoomInfo {
                     Integer.parseInt((String) form.getField("muc#roominfo_occupants").getValues()
                     .next());
         }
+    }
+
+    /**
+     * Returns the JID of the room whose information was discovered.
+     *
+     * @return the JID of the room whose information was discovered.
+     */
+    public String getRoom() {
+        return room;
     }
 
     /**
