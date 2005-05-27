@@ -37,7 +37,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
  */
 public class DelayInformation implements PacketExtension {
 
-    public static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
+    public static SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
 
     private Date stamp;
     private String from;
