@@ -77,8 +77,12 @@ public class ReportedData {
             FormField field;
             for (Iterator fields = item.getFields(); fields.hasNext();) {
                 field = (FormField) fields.next();
-                // Note: The field is created based on the FIRST value of the data form's field  
-                fieldList.add(new Field(field.getVariable(), (String)field.getValues().next()));
+                // The field is created with all the values of the data form's field
+                List values = new ArrayList();
+                for (Iterator it=field.getValues(); it.hasNext();) {
+                    values.add(it.next());
+                }
+                fieldList.add(new Field(field.getVariable(), values));
             }
             rows.add(new Row(fieldList));
         }
@@ -196,16 +200,16 @@ public class ReportedData {
         }
         
         /**
-         * Returns the value of the field whose variable matches the requested variable.
+         * Returns the values of the field whose variable matches the requested variable.
          * 
          * @param variable the variable to match.
-         * @return the value of the field whose variable matches the requested variable.
+         * @return the values of the field whose variable matches the requested variable.
          */
-        public String getValue(String variable) {
+        public Iterator getValues(String variable) {
             for(Iterator it=getFields();it.hasNext();) {
                 Field field = (Field) it.next();
                 if (variable.equals(field.getVariable())) {
-                    return field.getValue();
+                    return field.getValues();
                 }
             }
             return null;
@@ -223,11 +227,11 @@ public class ReportedData {
     
     private static class Field {
         private String variable;
-        private String value;
+        private List values;
 
-        private Field(String variable, String value) {
+        private Field(String variable, List values) {
             this.variable = variable;
-            this.value = value;
+            this.values = values;
         }
 
         /**
@@ -240,12 +244,12 @@ public class ReportedData {
         }
 
         /**
-         * Returns the value reported as part of the search.
+         * Returns an iterator on the values reported as part of the search.
          * 
-         * @return the returned value of the search.
+         * @return the returned values of the search.
          */
-        public String getValue() {
-            return value;
+        public Iterator getValues() {
+            return Collections.unmodifiableList(values).iterator();
         }
     }
 }
