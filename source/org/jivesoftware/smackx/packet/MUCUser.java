@@ -393,7 +393,7 @@ public class MUCUser implements PacketExtension {
          * @return the JID of an occupant in the room that was kicked or banned.
          */
         public String getActor() {
-            return actor;
+            return actor == null ? "" : actor;
         }
 
         /**
