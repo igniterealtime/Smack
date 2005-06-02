@@ -226,8 +226,8 @@ public class XMPPConnection {
     /**
      * Logs in to the server using the strongest authentication mode supported by
      * the server, then set our presence to available. If more than five seconds
-     * elapses in each step of the authentication process without a response from
-     * the server, or if an error occurs, a XMPPException will be thrown.
+     * (default timeout) elapses in each step of the authentication process without
+     * a response from the server, or if an error occurs, a XMPPException will be thrown.
      *
      * @param username the username.
      * @param password the password.
@@ -240,8 +240,8 @@ public class XMPPConnection {
     /**
      * Logs in to the server using the strongest authentication mode supported by
      * the server, then sets presence to available. If more than five seconds
-     * elapses in each step of the authentication process without a response from
-     * the server, or if an error occurs, a XMPPException will be thrown.
+     * (default timeout) elapses in each step of the authentication process without
+     * a response from the server, or if an error occurs, a XMPPException will be thrown.
      *
      * @param username the username.
      * @param password the password.
@@ -251,7 +251,30 @@ public class XMPPConnection {
      *      to the serrver.
      */
     public synchronized void login(String username, String password, String resource)
-        throws XMPPException {
+            throws XMPPException
+    {
+        login(username, password, resource, true);
+    }
+
+    /**
+     * Logs in to the server using the strongest authentication mode supported by
+     * the server, and optionally sends an available presence. if <tt>sendPresence</tt>
+     * is false, a presence packet must be sent manually later. If more than five seconds
+     * (default timeout) elapses in each step of the authentication process without a
+     * response from the server, or if an error occurs, a XMPPException will be thrown.
+     *
+     * @param username the username.
+     * @param password the password.
+     * @param resource the resource.
+     * @param sendPresence if <tt>true</tt> an available presence will be sent automatically
+     *      after login is completed.
+     * @throws XMPPException if an error occurs.
+     * @throws IllegalStateException if not connected to the server, or already logged in
+     *      to the serrver.
+     */
+    public synchronized void login(String username, String password, String resource,
+            boolean sendPresence) throws XMPPException
+    {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
@@ -329,7 +352,9 @@ public class XMPPConnection {
         roster.reload();
 
         // Set presence to online.
-        packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
+        if (sendPresence) {
+            packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
+        }
 
         // Indicate that we're now authenticated.
         authenticated = true;
@@ -739,8 +764,8 @@ public class XMPPConnection {
                     }
                 }
             }
-            // Create a new debugger instance. If an exception occurs then disable the debugging 
-            // option 
+            // Create a new debugger instance. If an exception occurs then disable the debugging
+            // option
             try {
                 Constructor constructor =
                     debuggerClass.getConstructor(
@@ -808,7 +833,7 @@ public class XMPPConnection {
 			}
 			authenticated = false;
 			connected = false;
-	
+
 			throw ex;		// Everything stoppped. Now throw the exception.
 		}
     }
