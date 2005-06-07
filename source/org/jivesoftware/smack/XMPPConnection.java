@@ -737,7 +737,7 @@ public class XMPPConnection {
             // Use try block since we may not have permission to get a system
             // property (for example, when an applet).
             try {
-                System.getProperty("smack.debuggerClass");
+                className = System.getProperty("smack.debuggerClass");
             }
             catch (Throwable t) {
             }
