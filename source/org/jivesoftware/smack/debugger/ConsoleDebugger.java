@@ -1,5 +1,6 @@
 package org.jivesoftware.smack.debugger;
 
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Packet;
@@ -26,6 +27,7 @@ public class ConsoleDebugger implements SmackDebugger {
     private XMPPConnection connection = null;
 
     private PacketListener listener = null;
+    private ConnectionListener connListener = null;
 
     private Writer writer;
     private Reader reader;
@@ -76,6 +78,17 @@ public class ConsoleDebugger implements SmackDebugger {
                 }
             }
         };
+
+        connListener = new ConnectionListener() {
+            public void connectionClosed() {
+                System.out.println("Connection closed (" + connection.hashCode() + ")");
+            }
+
+            public void connectionClosedOnError(Exception e) {
+                System.out.println("Connection closed due to an exception (" + connection.hashCode() + ")");
+                e.printStackTrace();
+            }
+        };
     }
 
     public void userHasLogged(String user) {
@@ -89,6 +102,9 @@ public class ConsoleDebugger implements SmackDebugger {
                 + connection.getPort();
         title += "/" + StringUtils.parseResource(user);
         System.out.println(title);
+        // Add the connection listener to the connection so that the debugger can be notified
+        // whenever the connection is closed.
+        connection.addConnectionListener(connListener);
     }
 
     public Reader getReader() {
