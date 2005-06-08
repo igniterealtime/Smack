@@ -8,12 +8,14 @@ import org.jivesoftware.smack.util.*;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use
  * this debugger with caution since printing to the console is an expensive operation that may
  * even block the thread since only one thread may print at a time.<p>
- *
+ * <p/>
  * It is possible to not only print the raw sent and received stanzas but also the interpreted
  * packets by Smack. By default interpreted packets won't be printed. To enable this feature
  * just change the <tt>printInterpreted</tt> static variable to <tt>true</tt>.
@@ -23,6 +25,7 @@ import java.io.Writer;
 public class ConsoleDebugger implements SmackDebugger {
 
     public static boolean printInterpreted = false;
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
 
     private XMPPConnection connection = null;
 
@@ -48,19 +51,25 @@ public class ConsoleDebugger implements SmackDebugger {
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
         ObservableReader debugReader = new ObservableReader(reader);
         readerListener = new ReaderListener() {
-                    public void read(String str) {
-                        System.out.println("RCV (" + connection.hashCode() + "): " + str);
-                    }
-                };
+            public void read(String str) {
+                System.out.println(
+                        dateFormatter.format(new Date()) + " RCV  (" + connection.hashCode() +
+                        "): " +
+                        str);
+            }
+        };
         debugReader.addReaderListener(readerListener);
 
         // Create a special Writer that wraps the main Writer and logs data to the GUI.
         ObservableWriter debugWriter = new ObservableWriter(writer);
         writerListener = new WriterListener() {
-                    public void write(String str) {
-                        System.out.println("SENT (" + connection.hashCode() + "): " + str);
-                    }
-                };
+            public void write(String str) {
+                System.out.println(
+                        dateFormatter.format(new Date()) + " SENT (" + connection.hashCode() +
+                        "): " +
+                        str);
+            }
+        };
         debugWriter.addWriterListener(writerListener);
 
         // Assign the reader/writer objects to use the debug versions. The packet reader
@@ -74,18 +83,29 @@ public class ConsoleDebugger implements SmackDebugger {
         listener = new PacketListener() {
             public void processPacket(Packet packet) {
                 if (printInterpreted) {
-                    System.out.println("RCV PKT (" + connection.hashCode() + "): " + packet.toXML());
+                    System.out.println(
+                            dateFormatter.format(new Date()) + " RCV PKT (" +
+                            connection.hashCode() +
+                            "): " +
+                            packet.toXML());
                 }
             }
         };
 
         connListener = new ConnectionListener() {
             public void connectionClosed() {
-                System.out.println("Connection closed (" + connection.hashCode() + ")");
+                System.out.println(
+                        dateFormatter.format(new Date()) + " Connection closed (" +
+                        connection.hashCode() +
+                        ")");
             }
 
             public void connectionClosedOnError(Exception e) {
-                System.out.println("Connection closed due to an exception (" + connection.hashCode() + ")");
+                System.out.println(
+                        dateFormatter.format(new Date()) +
+                        " Connection closed due to an exception (" +
+                        connection.hashCode() +
+                        ")");
                 e.printStackTrace();
             }
         };
@@ -94,7 +114,7 @@ public class ConsoleDebugger implements SmackDebugger {
     public void userHasLogged(String user) {
         boolean isAnonymous = "".equals(StringUtils.parseName(user));
         String title =
-            "User logged (" + connection.hashCode() + "): "
+                "User logged (" + connection.hashCode() + "): "
                 + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
                 + "@"
                 + connection.getHost()
