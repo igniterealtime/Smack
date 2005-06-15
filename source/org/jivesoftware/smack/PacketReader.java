@@ -154,7 +154,9 @@ class PacketReader {
                             break;
                         }
                         connectionIDLock.wait(waitTime);
-                        waitTime -= System.currentTimeMillis() - start;
+                        long now = System.currentTimeMillis();
+                        waitTime -= now - start;
+                        start = now;
                     }
                 }
             }

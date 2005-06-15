@@ -459,7 +459,9 @@ public class XMPPConnection {
                             break;
                         }
                         roster.wait(waitTime);
-                        waitTime -= System.currentTimeMillis() - start;
+                        long now = System.currentTimeMillis();
+                        waitTime -= now - start;
+                        start = now;
                     }
                 }
             }
