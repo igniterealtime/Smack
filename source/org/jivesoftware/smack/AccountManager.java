@@ -187,8 +187,8 @@ public class AccountManager {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getHost());
-        reg.setUsername(username);
-        reg.setPassword(password);
+        attributes.put("username",username);
+        attributes.put("password",password);
         reg.setAttributes(attributes);
         PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
                 new PacketTypeFilter(IQ.class));
@@ -217,8 +217,10 @@ public class AccountManager {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getHost());
-        reg.setUsername(StringUtils.parseName(connection.getUser()));
-        reg.setPassword(newPassword);
+        HashMap map = new HashMap();
+        map.put("username",StringUtils.parseName(connection.getUser()));
+        map.put("password",newPassword);
+        reg.setAttributes(map);
         PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);

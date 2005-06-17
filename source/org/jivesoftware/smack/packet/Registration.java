@@ -48,46 +48,8 @@ import java.util.Iterator;
  */
 public class Registration extends IQ {
 
-    private String username = null;
-    private String password = null;
     private String instructions = null;
     private Map attributes = null;
-
-    /**
-     * Returns the username, or <tt>null</tt> if no username has ben set.
-     *
-     * @return the username.
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Sets the username.
-     *
-     * @param username the username.
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Returns the password, or <tt>null</tt> if no password has been set.
-     *
-     * @return the password.
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the password.
-     *
-     * @param password the password.
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     /**
      * Returns the registration instructions, or <tt>null</tt> if no instructions
@@ -130,12 +92,6 @@ public class Registration extends IQ {
     public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<query xmlns=\"jabber:iq:register\">");
-        if (username != null) {
-            buf.append("<username>").append(username).append("</username>");
-        }
-        if (password != null) {
-            buf.append("<password>").append(password).append("</password>");
-        }
         if (instructions != null) {
             buf.append("<instructions>").append(instructions).append("</instructions>");
         }
