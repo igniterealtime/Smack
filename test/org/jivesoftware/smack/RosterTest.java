@@ -99,7 +99,13 @@ public class RosterTest extends SmackTestCase {
                     rosterGroup.removeEntry(entry);
                 }
             }
-            Thread.sleep(750);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (roster.getGroupCount() != 0 &&
+                    getConnection(2).getRoster().getEntryCount() != 2)) {
+                Thread.sleep(100);
+            }
 
             assertEquals(
                 "The number of entries in connection 1 should be 1",
@@ -342,7 +348,12 @@ public class RosterTest extends SmackTestCase {
 
             roster.getGroup("Friends").setName("Amigos");
 
-            Thread.sleep(500);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (roster.getGroup("Friends") != null)) {
+                Thread.sleep(100);
+            }
 
             assertNull("The group Friends still exists", roster.getGroup("Friends"));
             assertNotNull("The group Amigos does not exist", roster.getGroup("Amigos"));
@@ -385,7 +396,12 @@ public class RosterTest extends SmackTestCase {
             Roster roster = getConnection(0).getRoster();
             roster.createEntry(getBareJID(1), "gato11", null);
 
-            Thread.sleep(500);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (roster.getPresence(getBareJID(1)) == null)) {
+                Thread.sleep(100);
+            }
 
             // Check that a presence is returned for a user
             presence = roster.getPresence(getBareJID(1));
@@ -505,7 +521,7 @@ public class RosterTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = false;
+        //XMPPConnection.DEBUG_ENABLED = false;
         super.setUp();
     }
 }

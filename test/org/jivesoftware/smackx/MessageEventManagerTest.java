@@ -254,8 +254,12 @@ public class MessageEventManagerTest extends SmackTestCase {
             messageEventManager2.sendDisplayedNotification(getBareJID(0), msg.getPacketID());
             messageEventManager2.sendComposingNotification(getBareJID(0), msg.getPacketID());
             messageEventManager2.sendCancelledNotification(getBareJID(0), msg.getPacketID());
-            // Wait half second so that the complete test can run
-            Thread.sleep(500);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (!results.containsAll(resultsExpected))) {
+                Thread.sleep(100);
+            }
             assertTrue(
                 "Test failed due to bad results (1)" + resultsExpected,
                 resultsExpected.containsAll(results));

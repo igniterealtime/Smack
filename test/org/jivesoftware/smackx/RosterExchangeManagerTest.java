@@ -148,8 +148,12 @@ public class RosterExchangeManagerTest extends SmackTestCase {
             entriesSent = getConnection(0).getRoster().getEntryCount();
             entriesReceived = 0;
             rosterExchangeManager1.send(getConnection(0).getRoster(), getBareJID(1));
-            // Wait for 1 second
-            Thread.sleep(300);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (entriesSent != entriesReceived)) {
+                Thread.sleep(100);
+            }
         }
         catch (Exception e) {
             fail("An error occured sending the message with the roster");
@@ -203,8 +207,12 @@ public class RosterExchangeManagerTest extends SmackTestCase {
             entriesSent = getConnection(0).getRoster().getEntryCount();
             entriesReceived = 0;
             rosterExchangeManager1.send(getConnection(0).getRoster(), getBareJID(1));
-            // Wait for 1 seconds
-            Thread.sleep(700);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (entriesSent != entriesReceived)) {
+                Thread.sleep(100);
+            }
         }
         catch (Exception e) {
             fail("An error occured sending the message with the roster");
