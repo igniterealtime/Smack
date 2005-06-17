@@ -68,7 +68,12 @@ class PacketReader {
 
         listenerThread = new Thread() {
             public void run() {
-                processListeners();
+                try {
+                    processListeners();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
         listenerThread.setName("Smack Listener Processor");
@@ -499,15 +504,9 @@ class PacketReader {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("username")) {
-                    registration.setUsername(parser.nextText());
-                }
-                else if (parser.getName().equals("password")) {
-                    registration.setPassword(parser.nextText());
-                }
-                // Else if any other element that's in the jabber:iq:register namespace,
+                // Any element that's in the jabber:iq:register namespace,
                 // attempt to parse it if it's in the form <name>value</name>.
-                else if (parser.getNamespace().equals("jabber:iq:register")) {
+                if (parser.getNamespace().equals("jabber:iq:register")) {
                     String name = parser.getName();
                     String value = "";
                     if (fields == null) {
