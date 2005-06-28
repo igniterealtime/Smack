@@ -768,9 +768,9 @@ public class Roster {
             }
 
             // Mark the roster as initialized.
-            synchronized (this) {
+            synchronized (Roster.this) {
                 rosterInitialized = true;
-                notifyAll();
+                Roster.this.notifyAll();
             }
 
             // Fire event for roster listeners.
