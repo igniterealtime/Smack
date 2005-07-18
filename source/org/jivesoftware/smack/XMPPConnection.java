@@ -144,10 +144,12 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new connection to the specified XMPP server on the given port using the specified SocketFactory.
+     * Creates a new connection to the specified XMPP server on the given port using the
+     * specified SocketFactory.<p>
      *
-     * <p>A custom SocketFactory allows fine-grained control of the actual connection to the XMPP server. A typical
-     * use for a custom SocketFactory is when connecting through a SOCKS proxy.
+     * A custom SocketFactory allows fine-grained control of the actual connection to the
+     * XMPP server. A typical use for a custom SocketFactory is when connecting through a
+     * SOCKS proxy.
      *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
@@ -177,6 +179,15 @@ public class XMPPConnection {
                 ioe);
         }
         init();
+    }
+
+    /**
+     * Package-private default constructor. This constructor is only intended
+     * for unit testing. Normal classes extending XMPPConnection should override
+     * one of the other constructors.
+     */
+    XMPPConnection() {
+
     }
 
     /**
