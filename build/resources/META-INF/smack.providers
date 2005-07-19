@@ -100,4 +100,11 @@
         <className>org.jivesoftware.smackx.packet.Version</className> 
     </iqProvider>
 
+    <!-- VCard -->
+    <iqProvider>
+        <elementName>vCard</elementName>
+        <namespace>vcard-temp</namespace>
+        <className>org.jivesoftware.smackx.provider.VCardProvider</className> 
+    </iqProvider>
+
 </smackProviders>
