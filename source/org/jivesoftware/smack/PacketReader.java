@@ -203,6 +203,8 @@ class PacketReader {
     void notifyConnectionError(Exception e) {
         done = true;
         connection.close();
+        // Print the stack trace to help catch the problem
+        e.printStackTrace();
         // Notify connection listeners of the error.
         ArrayList listenersCopy;
         synchronized (connectionListeners) {
