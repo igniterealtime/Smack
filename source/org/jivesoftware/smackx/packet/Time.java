@@ -75,7 +75,7 @@ public class Time extends IQ {
     }
 
     /**
-     * Cretaes a new Time instance using the specified calendar instance as
+     * Creates a new Time instance using the specified calendar instance as
      * the time value to send.
      *
      * @param cal the time value.
