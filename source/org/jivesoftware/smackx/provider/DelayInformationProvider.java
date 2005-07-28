@@ -20,13 +20,13 @@
 
 package org.jivesoftware.smackx.provider;
 
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * The DelayInformationProvider parses DelayInformation packets.
@@ -43,8 +43,14 @@ public class DelayInformationProvider implements PacketExtensionProvider {
     }
 
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-        DelayInformation.UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-        Date stamp = DelayInformation.UTC_FORMAT.parse(parser.getAttributeValue("", "stamp"));
+        Date stamp = null;
+        try {
+            stamp = DelayInformation.UTC_FORMAT.parse(parser.getAttributeValue("", "stamp"));
+        } catch (ParseException e) {
+            // Try again but assuming that the date follows JEP-82 format
+            // (Jabber Date and Time Profiles) 
+            stamp = DelayInformation.NEW_UTC_FORMAT.parse(parser.getAttributeValue("", "stamp"));
+        }
         DelayInformation delayInformation = new DelayInformation(stamp);
         delayInformation.setFrom(parser.getAttributeValue("", "from"));
         delayInformation.setReason(parser.nextText());

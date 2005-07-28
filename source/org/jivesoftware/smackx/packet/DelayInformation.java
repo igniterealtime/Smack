@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.packet;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 
@@ -38,6 +39,18 @@ import org.jivesoftware.smack.packet.PacketExtension;
 public class DelayInformation implements PacketExtension {
 
     public static SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
+    /**
+     * New date format based on JEP-82 that some clients may use when sending delayed dates.
+     * JEP-91 is using a SHOULD other servers or clients may be using this format instead of the
+     * old UTC format.
+     */
+    public static SimpleDateFormat NEW_UTC_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+    static {
+        UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        NEW_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     private Date stamp;
     private String from;
