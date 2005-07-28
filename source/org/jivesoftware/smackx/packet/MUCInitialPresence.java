@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.packet;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 
@@ -211,8 +212,9 @@ public class MUCInitialPresence implements PacketExtension {
                 buf.append(" seconds=\"").append(getSeconds()).append("\"");
             }
             if (getSince() != null) {
-                SimpleDateFormat utcFormat = new SimpleDateFormat("yyyyMMdd'T'hh:mm:ss");
-                buf.append(" seconds=\"").append(utcFormat.format(getSince())).append("\"");
+                SimpleDateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                buf.append(" since=\"").append(utcFormat.format(getSince())).append("\"");
             }
             buf.append("/>");
             return buf.toString();
