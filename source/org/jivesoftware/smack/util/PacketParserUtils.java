@@ -155,6 +155,10 @@ public class PacketParserUtils {
                         presence.setPriority(priority);
                     }
                     catch (NumberFormatException nfe) { }
+                    catch (IllegalArgumentException iae) {
+                        // Presence priority is out of range so assume priority to be zero
+                        presence.setPriority(0);
+                    }
                 }
                 else if (elementName.equals("show")) {
                     presence.setMode(Presence.Mode.fromString(parser.nextText()));
