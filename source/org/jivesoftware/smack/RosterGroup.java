@@ -23,6 +23,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.filter.PacketIDFilter;
 
 import java.util.*;
 
@@ -170,8 +171,10 @@ public class RosterGroup {
      * the unfiled list and will be added to this group.
      *
      * @param entry a roster entry.
+     * @throws XMPPException if an error occured while trying to add the entry to the group.
      */
-    public void addEntry(RosterEntry entry) {
+    public void addEntry(RosterEntry entry) throws XMPPException {
+        PacketCollector collector = null;
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
             if (!entries.contains(entry)) {
@@ -179,7 +182,21 @@ public class RosterGroup {
                 RosterPacket packet = new RosterPacket();
                 packet.setType(IQ.Type.SET);
                 packet.addRosterItem(RosterEntry.toRosterItem(entry));
+                // Wait up to a certain number of seconds for a reply from the server.
+                collector = connection
+                        .createPacketCollector(new PacketIDFilter(packet.getPacketID()));
                 connection.sendPacket(packet);
+            }
+        }
+        if (collector != null) {
+            IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+            collector.cancel();
+            if (response == null) {
+                throw new XMPPException("No response from the server.");
+            }
+            // If the server replied with an error, throw an exception.
+            else if (response.getType() == IQ.Type.ERROR) {
+                throw new XMPPException(response.getError());
             }
         }
     }
@@ -190,8 +207,10 @@ public class RosterGroup {
      * entries.
      *
      * @param entry a roster entry.
+     * @throws XMPPException if an error occured while trying to remove the entry from the group. 
      */
-    public void removeEntry(RosterEntry entry) {
+    public void removeEntry(RosterEntry entry) throws XMPPException {
+        PacketCollector collector = null;
         // Only remove the entry if it's in the entry list.
         // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)
         // to take place the entry will exist in the group until a packet is received from the 
@@ -203,9 +222,23 @@ public class RosterGroup {
                 RosterPacket.Item item = RosterEntry.toRosterItem(entry);
                 item.removeGroupName(this.getName());
                 packet.addRosterItem(item);
+                // Wait up to a certain number of seconds for a reply from the server.
+                collector = connection
+                        .createPacketCollector(new PacketIDFilter(packet.getPacketID()));
                 connection.sendPacket(packet);
                 // Remove the entry locally
                 entries.remove(entry);
+            }
+        }
+        if (collector != null) {
+            IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+            collector.cancel();
+            if (response == null) {
+                throw new XMPPException("No response from the server.");
+            }
+            // If the server replied with an error, throw an exception.
+            else if (response.getType() == IQ.Type.ERROR) {
+                throw new XMPPException(response.getError());
             }
         }
     }
