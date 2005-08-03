@@ -198,7 +198,7 @@ public class PacketParserUtils {
      * @return a map of the properties.
      * @throws Exception if an error occurs while parsing the properties.
      */
-    private static Map parseProperties(XmlPullParser parser) throws Exception {
+    public static Map parseProperties(XmlPullParser parser) throws Exception {
         Map properties = new HashMap();
         while (true) {
             int eventType = parser.next();
