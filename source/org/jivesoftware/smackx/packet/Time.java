@@ -60,7 +60,7 @@ import java.text.DateFormat;
  */
 public class Time extends IQ {
 
-    private static SimpleDateFormat utcFormat = new SimpleDateFormat("yyyyMMdd'T'hh:mm:ss");
+    private static SimpleDateFormat utcFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     private static DateFormat displayFormat = DateFormat.getDateTimeInstance();
 
     private String utc = null;
