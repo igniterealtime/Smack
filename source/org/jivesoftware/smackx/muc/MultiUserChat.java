@@ -287,7 +287,7 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromContainsFilter(room + "/" + nickname),
+                new FromMatchesFilter(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send create & join packet.
@@ -421,7 +421,7 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromContainsFilter(room + "/" + nickname),
+                new FromMatchesFilter(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send join packet.
@@ -901,7 +901,7 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromContainsFilter(room + "/" + nickname),
+                new FromMatchesFilter(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send join packet.
@@ -1838,7 +1838,7 @@ public class MultiUserChat {
         // Wait for an error or confirmation message back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromContainsFilter(room),
+                new FromMatchesFilter(room),
                 new PacketTypeFilter(Message.class));
         responseFilter = new AndFilter(responseFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -2008,7 +2008,7 @@ public class MultiUserChat {
         // Create a collector for incoming messages.
         messageFilter =
             new AndFilter(
-                new FromContainsFilter(room),
+                new FromMatchesFilter(room),
                 new MessageTypeFilter(Message.Type.GROUP_CHAT));
         messageFilter = new AndFilter(messageFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -2021,7 +2021,7 @@ public class MultiUserChat {
         // Create a listener for subject updates.
         subjectFilter =
             new AndFilter(
-                new FromContainsFilter(room),
+                new FromMatchesFilter(room),
                 new MessageTypeFilter(Message.Type.GROUP_CHAT));
         subjectFilter = new AndFilter(subjectFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -2045,7 +2045,7 @@ public class MultiUserChat {
 
         // Create a listener for all presence updates.
         presenceFilter =
-            new AndFilter(new FromContainsFilter(room), new PacketTypeFilter(Presence.class));
+            new AndFilter(new FromMatchesFilter(room), new PacketTypeFilter(Presence.class));
         presenceListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 Presence presence = (Presence) packet;
