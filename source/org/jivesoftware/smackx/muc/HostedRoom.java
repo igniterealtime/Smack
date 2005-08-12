@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.packet.DiscoverItems;
  * name. The address of the room may be used for obtaining more detailed information
  * {@link org.jivesoftware.smackx.muc.MultiUserChat#getRoomInfo(org.jivesoftware.smack.XMPPConnection, String)}
  * or could be used for joining the room
- * {@link org.jivesoftware.smackx.muc.MultiUserChat(org.jivesoftware.smack.XMPPConnection, String)}
+ * {@link org.jivesoftware.smackx.muc.MultiUserChat#MultiUserChat(org.jivesoftware.smack.XMPPConnection, String)}
  * and {@link org.jivesoftware.smackx.muc.MultiUserChat#join(String)}.
  *
  * @author Gaston Dombiak

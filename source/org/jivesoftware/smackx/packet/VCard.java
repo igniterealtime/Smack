@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * A VCard class for use with the
- * <a href="http://www.jivesoftware.com/xmpp/smack/" target="_blank">SMACK jabber library</a>.<p>
+ * <a href="http://www.jivesoftware.org/smack/" target="_blank">SMACK jabber library</a>.<p>
  *
  * You should refer to the
  * <a href="http://www.jabber.org/jeps/jep-0054.html" target="_blank">JEP-54 documentation</a>.<p>
@@ -113,10 +113,8 @@ public class VCard extends IQ {
     /**
      * Set generic VCard field.
      *
-     * @param field value of field
-     * @param field NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ, GEO, TITLE, ROLE, LOGO,
-     *              NOTE, PRODID, REV,
-     *              SORT-STRING, SOUND, UID, URL, DESC
+     * @param field value of field. Possible values: NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
+     *        GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
      */
     public String getField(String field) {
         return (String) otherSimpleFields.get(field);
