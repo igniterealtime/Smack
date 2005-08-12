@@ -1,0 +1,179 @@
+<html>
+<head>
+<title>Roster Item Exchange</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">Roster Item Exchange</div><p>
+This extension is used to send rosters, roster groups and roster entries from one XMPP 
+Entity to another. It also provides an easy way to hook up custom logic when entries 
+are received from other XMPP clients.
+<p>Follow these links to learn how to send and receive roster items:</p>
+<ul>
+  <li><a href="#riesendroster">Send a complete roster</a></li>
+  <li><a href="#riesendgroup">Send a roster's group</a></li>
+  <li><a href="#riesendentry">Send a roster's entry</a></li>
+  <li><a href="#riercventry">Receive roster entries</a></li>
+</ul>
+<b>JEP related:</b> <a href="http://www.jabber.org/jeps/jep-0093.html">JEP-93</a>
+
+<hr>
+
+<div class="subheader"><a name="riesendroster">Send a entire roster</a></div><p>
+
+<b>Description</b><p>
+
+Sometimes it is useful to send a whole roster to another user. Smack provides a 
+very easy way to send a complete roster to another XMPP client.</p>
+
+<b>Usage</b><p>
+
+Create an instance of <i><b>RosterExchangeManager</b></i> and use the <b>#send(Roster, String)</b>
+message to send a roster to a given user. The first parameter is the roster to send and 
+the second parameter is the id of the user that will receive the roster entries.</p>
+
+<b>Example</b><p>
+
+In this example we can see how user1 sends his roster to user2. 
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+    
+      <font color="#3f7f5f">// Create a new roster exchange manager on conn1</font>
+      RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
+      <font color="#3f7f5f">// Send user1's roster to user2</font>
+      rosterExchangeManager.send(conn1.getRoster(), user2);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="riesendgroup">Send a roster group</a></div><p>
+
+<b>Description</b><p>
+
+It is also possible to send a roster group to another XMPP client. A roster group groups 
+a set of roster entries under a name.</p>
+
+<b>Usage</b><p>
+
+Create an instance of <i><b>RosterExchangeManager</b></i> and use the <b>#send(RosterGroup, String)</b>
+message to send a roster group to a given user. The first parameter is the roster group to send and 
+the second parameter is the id of the user that will receive the roster entries.</p>
+
+<b>Example</b><p>
+
+In this example we can see how user1 sends his roster groups to user2. 
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+    
+      <font color="#3f7f5f">// Create a new roster exchange manager on conn1</font>
+      RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
+      <font color="#3f7f5f">// Send user1's RosterGroups to user2</font>
+      for (Iterator it = conn1.getRoster().getGroups(); it.hasNext(); )
+          rosterExchangeManager.send((RosterGroup)it.next(), user2);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="riesendentry">Send a roster entry</a></div><p>
+
+<b>Description</b><p>
+
+Sometimes you may need to send a single roster entry to another XMPP client. Smack also lets you send
+items at this granularity level.</p>
+
+<b>Usage</b><p>
+
+Create an instance of <i><b>RosterExchangeManager</b></i> and use the <b>#send(RosterEntry, String)</b>
+message to send a roster entry to a given user. The first parameter is the roster entry to send and 
+the second parameter is the id of the user that will receive the roster entries.</p>
+
+<b>Example</b><p>
+
+In this example we can see how user1 sends a roster entry to user2. 
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+    
+      <font color="#3f7f5f">// Create a new roster exchange manager on conn1</font>
+      RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
+      <font color="#3f7f5f">// Send a roster entry (any) to user2</font>
+      rosterExchangeManager1.send((RosterEntry)conn1.getRoster().getEntries().next(), user2);
+ </pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="riercventry">Receive roster entries</a></div><p>
+
+<b>Description</b><p>
+
+Since roster items are sent between XMPP clients, it is necessary to listen to possible roster entries 
+receptions. Smack provides a mechanism that you can use to execute custom logic when roster entries are
+received.</p>
+
+<b>Usage</b><p>
+
+<ol>
+  <li>Create a class that implements the <i><b>RosterExchangeListener</b></i> interface.</li>
+  <li>Implement the method <b>entriesReceived(String, Iterator)</b> that will be called when new entries 
+  are received with custom logic.</li>
+  <li>Add the listener to the <i>RosterExchangeManager</i> that works on the desired <i>XMPPConnection</i>.</li>
+</ol></p>
+
+<b>Example</b><p>
+
+In this example we can see how user1 sends a roster entry to user2 and user2 adds the received 
+entries to his roster. 
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in the users</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+      conn2 = new XMPPConnection(host);
+      conn2.login(server_user2, pass2);
+      final Roster user2_roster = conn2.getRoster();
+    
+      <font color="#3f7f5f">// Create a RosterExchangeManager that will help user2 to listen and accept
+      the entries received</font>
+      RosterExchangeManager rosterExchangeManager2 = new RosterExchangeManager(conn2);
+      <font color="#3f7f5f">// Create a RosterExchangeListener that will iterate over the received roster entries</font>
+      RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
+          public void entriesReceived(String from, Iterator remoteRosterEntries) {
+              while (remoteRosterEntries.hasNext()) {
+                  try {
+                      <font color="#3f7f5f">// Get the received entry</font>
+                      RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) remoteRosterEntries.next();
+                      <font color="#3f7f5f">// Display the remote entry on the console</font>
+                      System.out.println(remoteRosterEntry);
+                      <font color="#3f7f5f">// Add the entry to the user2's roster</font>
+                      user2_roster.createEntry(
+                          remoteRosterEntry.getUser(),
+                          remoteRosterEntry.getName(),
+                          remoteRosterEntry.getGroupArrayNames());
+                  }
+                  catch (XMPPException e) {
+                      e.printStackTrace();
+                  }
+              }
+          }
+      };
+      <font color="#3f7f5f">// Add the RosterExchangeListener to the RosterExchangeManager that user2 is using</font>
+      rosterExchangeManager2.addRosterListener(rosterExchangeListener);
+    
+      <font color="#3f7f5f">// Create a RosterExchangeManager that will help user1 to send his roster</font>
+      RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
+      <font color="#3f7f5f">// Send user1's roster to user2</font>
+      rosterExchangeManager1.send(conn1.getRoster(), user2);
+</pre>
+</blockquote>
+</body>
+
+</html>

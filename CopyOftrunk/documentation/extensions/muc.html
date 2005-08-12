@@ -1,0 +1,619 @@
+<html>
+<head>
+<title>Multi User Chat</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">Multi User Chat</div><p>
+
+Allows configuration of, participation in, and administration of individual text-based conference rooms.<p>
+
+<ul>
+  <li><a href="#create">Create a new Room</a></li>
+  <li><a href="#join">Join a room</a></li>
+  <li><a href="#invite">Manage room invitations</a></li>
+  <li><a href="#discomuc">Discover MUC support</a></li>
+  <li><a href="#discojoin">Discover joined rooms</a></li>
+  <li><a href="#discoroom">Discover room information</a></li>
+  <li><a href="#privchat">Start a private chat</a></li>
+  <li><a href="#subject">Manage changes on room subject</a></li>
+  <li><a href="#role">Manage role modifications</a></li>
+  <li><a href="#afiliation">Manage affiliation modifications</a></li>
+</ul>
+<b>JEP related:</b> <a href="http://www.jabber.org/jeps/jep-0045.html">JEP-45</a>
+
+<hr>
+
+<div class="subheader"><a name="create">Create a new Room</a></div><p>
+
+<b>Description</b><p>
+
+Allowed users may create new rooms. There are two types of rooms that you can create. <b>Instant rooms</b>
+which are available for immediate access and are automatically created based on some default 
+configuration and <b>Reserved rooms</b> which are manually configured by the room creator before 
+anyone is allowed to enter.</p>
+
+<b>Usage</b><p>
+
+In order to create a room you will need to first create an instance of <i><b>MultiUserChat</b></i>. The 
+room name passed to the constructor will be the name of the room to create. The next step is to send 
+<b>create(String nickname)</b> to the <i><b>MultiUserChat</b></i> instance where nickname is the nickname 
+to use when joining the room.</p><p>
+
+Depending on the type of room that you want to create you will have to use different configuration forms. In
+order to create an Instant room just send <b>sendConfigurationForm(Form form)</b> where form is an empty form.
+But if you want to create a Reserved room then you should first get the room's configuration form, complete
+the form and finally send it back to the server.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to create an instant room: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+      MultiUserChat muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+
+      <font color="#3f7f5f">// Create the room</font>
+      muc.create(<font color="#0000FF">"testbot"</font>);
+
+      <font color="#3f7f5f">// Send an empty room configuration form which indicates that we want</font>
+      <font color="#3f7f5f">// an instant room</font>
+      muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+</pre>
+</blockquote>
+
+In this example we can see how to create a reserved room. The form is completed with default values: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+      MultiUserChat muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+
+      <font color="#3f7f5f">// Create the room</font>
+      muc.create(<font color="#0000FF">"testbot"</font>);
+
+      <font color="#3f7f5f">// Get the the room's configuration form</font>
+      Form form = muc.getConfigurationForm();
+      <font color="#3f7f5f">// Create a new form to submit based on the original form</font>
+      Form submitForm = form.createAnswerForm();
+      <font color="#3f7f5f">// Add default answers to the form to submit</font>
+      for (Iterator fields = form.getFields(); fields.hasNext();) {
+          FormField field = (FormField) fields.next();
+          if (!FormField.TYPE_HIDDEN.equals(field.getType()) && field.getVariable() != null) {
+              <font color="#3f7f5f">// Sets the default value as the answer</font>
+              submitForm.setDefaultAnswer(field.getVariable());
+          }
+      }
+      <font color="#3f7f5f">// Sets the new owner of the room</font>
+      List owners = new ArrayList();
+      owners.add(<font color="#0000FF">"johndoe@jabber.org"</font>);
+      submitForm.setAnswer(<font color="#0000FF">"muc#roomconfig_roomowners"</font>, owners);
+      <font color="#3f7f5f">// Send the completed form (with default values) to the server to configure the room</font>
+      muc.sendConfigurationForm(submitForm);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="join">Join a room</a></div><p>
+
+<b>Description</b><p>
+
+Your usual first step in order to send messages to a room is to join the room. Multi User Chat allows
+to specify several parameter while joining a room. Basically you can control the amount of history to
+receive after joining the room as well as provide your nickname within the room and a password if the 
+room is password protected.</p>
+
+<b>Usage</b><p>
+
+In order to join a room you will need to first create an instance of <i><b>MultiUserChat</b></i>. The 
+room name passed to the constructor will be the name of the room to join. The next step is to send 
+<b>join(...)</b> to the <i><b>MultiUserChat</b></i> instance. But first you will have to decide which
+join message to send. If you want to just join the room without a password and without specifying the amount
+of history to receive then you could use <b>join(String nickname)</b> where nickname if your nickname in
+the room. In case the room requires a password in order to join you could then use 
+<b>join(String nickname, String password)</b>. And finally, the most complete way to join a room is to send 
+<b>join(String nickname, String password, DiscussionHistory history, long timeout)</b>
+where nickname is your nickname in the room, , password is your password to join the room, history is
+an object that specifies the amount of history to receive and timeout is the milliseconds to wait
+for a response from the server.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to join a room with a given nickname: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+      MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+
+      <font color="#3f7f5f">// User2 joins the new room</font>
+      <font color="#3f7f5f">// The room service will decide the amount of history to send</font>
+      muc2.join(<font color="#0000FF">"testbot2"</font>);
+</pre>
+</blockquote>
+
+In this example we can see how to join a room with a given nickname and password: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+      MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+
+      <font color="#3f7f5f">// User2 joins the new room using a password</font>
+      <font color="#3f7f5f">// The room service will decide the amount of history to send</font>
+      muc2.join(<font color="#0000FF">"testbot2"</font>, <font color="#0000FF">"password"</font>);
+</pre>
+</blockquote>
+
+In this example we can see how to join a room with a given nickname specifying the amount of history
+to receive: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+      MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+
+      <font color="#3f7f5f">// User2 joins the new room using a password and specifying</font>
+      <font color="#3f7f5f">// the amount of history to receive. In this example we are requesting the last 5 messages.</font>
+      DiscussionHistory history = new DiscussionHistory();
+      history.setMaxStanzas(5);
+      muc2.join(<font color="#0000FF">"testbot2"</font>, <font color="#0000FF">"password"</font>, history, SmackConfiguration.getPacketReplyTimeout());
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="invite">Manage room invitations</a></div><p>
+
+<b>Description</b><p>
+
+It can be useful to invite another user to a room in which one is an occupant. Depending on the
+room's type the invitee could receive a password to use to join the room and/or be added to the 
+member list if the room is of type members-only. Smack allows to send room invitations and let 
+potential invitees to listening for room invitations and inviters to listen for invitees' 
+rejections.</p>
+
+<b>Usage</b><p>
+
+In order to invite another user to a room you must be already joined to the room. Once you are 
+joined just send <b>invite(String participant, String reason)</b> to the <i><b>MultiUserChat</b></i>
+where participant is the user to invite to the room (e.g. hecate@shakespeare.lit) and reason is
+the reason why the user is being invited.</p><p>
+
+If potential invitees want to listen for room invitations then the invitee must add an <i><b>InvitationListener</b></i>
+to the <i><b>MultiUserChat</b></i> class. Since the <i><b>InvitationListener</b></i> is an <i>interface</i>,
+it is necessary to create a class that implements this <i>interface</i>. If an inviter wants to
+listen for room invitation rejections, just add an <i><b>InvitationRejectionListener</b></i>
+to the <i><b>MultiUserChat</b></i>. <i><b>InvitationRejectionListener</b></i> is also an
+interface so you will need to create a class that implements this interface.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to invite another user to the room and lister for possible rejections: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// User2 joins the room</font>
+      MultiUserChat muc2 = new MultiUserChat(conn2, room);
+      muc2.join(<font color="#0000FF">"testbot2"</font>);
+
+      <font color="#3f7f5f">// User2 listens for invitation rejections</font>
+      muc2.addInvitationRejectionListener(new InvitationRejectionListener() {
+          public void invitationDeclined(String invitee, String reason) {
+              <font color="#3f7f5f">// Do whatever you need here...</font>
+          }
+      });
+
+      <font color="#3f7f5f">// User2 invites user3 to join to the room</font>
+      muc2.invite(<font color="#0000FF">"user3@host.org/Smack"</font>, <font color="#0000FF">"Meet me in this excellent room"</font>);
+</pre>
+</blockquote>
+
+In this example we can see how to listen for room invitations and decline invitations: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// User3 listens for MUC invitations</font>
+      MultiUserChat.addInvitationListener(conn3, new InvitationListener() {
+          public void invitationReceived(XMPPConnection conn, String room, String inviter, String reason, String password) {
+              <font color="#3f7f5f">// Reject the invitation</font>
+              MultiUserChat.decline(conn, room, inviter, <font color="#0000FF">"I'm busy right now"</font>);
+          }
+      });
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="discomuc">Discover MUC support</a></div><p>
+
+<b>Description</b><p>
+
+A user may want to discover if one of the user's contacts supports the Multi-User Chat protocol.</p>
+
+<b>Usage</b><p>
+
+In order to discover if one of the user's contacts supports MUC just send 
+<b>isServiceEnabled(XMPPConnection connection, String user)</b> to the <i><b>MultiUserChat</b></i> 
+class where user is a fully qualified XMPP ID, e.g. jdoe@example.com. You will receive
+a boolean indicating whether the user supports MUC or not.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to discover support of MUC: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Discover whether user3@host.org supports MUC or not</font>
+      boolean supports = MultiUserChat.isServiceEnabled(conn, <font color="#0000FF">"user3@host.org/Smack"</font>);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="discojoin">Discover joined rooms</a></div><p>
+
+<b>Description</b><p>
+
+A user may also want to query a contact regarding which rooms the contact is in.</p>
+
+<b>Usage</b><p>
+
+In order to get the rooms where a user is in just send
+<b>getJoinedRooms(XMPPConnection connection, String user)</b> to the <i><b>MultiUserChat</b></i>
+class where user is a fully qualified XMPP ID, e.g. jdoe@example.com. You will get an Iterator
+of Strings as an answer where each String represents a room name.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to get the rooms where a user is in: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Get the rooms where user3@host.org has joined</font>
+      Iterator joinedRooms = MultiUserChat.getJoinedRooms(conn, <font color="#0000FF">"user3@host.org/Smack"</font>);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="discoroom">Discover room information</a></div><p>
+
+<b>Description</b><p>
+
+A user may need to discover information about a room without having to actually join the room. The server
+will provide information only for public rooms.</p>
+
+<b>Usage</b><p>
+
+In order to discover information about a room just send <b>getRoomInfo(XMPPConnection connection, String room)</b>
+to the <i><b>MultiUserChat</b></i> class where room is the XMPP ID of the room, e.g.
+roomName@conference.myserver. You will get a RoomInfo object that contains the discovered room
+information.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to discover information about a room: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Discover information about the room roomName@conference.myserver</font>
+      RoomInfo info = MultiUserChat.getRoomInfo(conn, <font color="#0000FF">"roomName@conference.myserver"</font>);
+      System.out.println("Number of occupants:" + info.getOccupantsCount());
+      System.out.println("Room Subject:" + info.getSubject());
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="privchat">Start a private chat</a></div><p>
+
+<b>Description</b><p>
+
+A room occupant may want to start a private chat with another room occupant even though they 
+don't know the fully qualified XMPP ID (e.g. jdoe@example.com) of each other.</p>
+
+<b>Usage</b><p>
+
+To create a private chat with another room occupant just send <b>createPrivateChat(String participant)</b>
+to the <i><b>MultiUserChat</b></i> that you used to join the room. The parameter participant is the
+occupant unique room JID (e.g. 'darkcave@macbeth.shakespeare.lit/Paul'). You will receive
+a regular <i><b>Chat</b></i> object that you can use to chat with the other room occupant.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to start a private chat with another room occupant: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Start a private chat with another participant</font>
+      Chat chat = muc2.createPrivateChat(<font color="#0000FF">"myroom@conference.jabber.org/johndoe"</font>);
+      chat.sendMessage(<font color="#0000FF">"Hello there"</font>);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="subject">Manage changes on room subject</a></div><p>
+
+<b>Description</b><p>
+
+A common feature of multi-user chat rooms is the ability to change the subject within the room. As a 
+default, only users with a role of "moderator" are allowed to change the subject in a room. Although 
+some rooms may be configured to allow a mere participant or even a visitor to change the subject.</p><p>
+
+Every time the room's subject is changed you may want to be notified of the modification. The new subject
+could be used to display an in-room message.</p>
+
+<b>Usage</b><p>
+
+In order to modify the room's subject just send <b>changeSubject(String subject)</b> to the 
+<i><b>MultiUserChat</b></i> that you used to join the room where subject is the new room's subject. On
+the other hand, if you want to be notified whenever the room's subject is modified you should add a 
+<i><b>SubjectUpdatedListener</b></i> to the <i><b>MultiUserChat</b></i> by sending 
+<b>addSubjectUpdatedListener(SubjectUpdatedListener listener)</b> to the <i><b>MultiUserChat</b></i>.
+Since the <i><b>SubjectUpdatedListener</b></i> is an <i>interface</i>, it is necessary to create a class 
+that implements this <i>interface</i>.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to change the room's subject and react whenever the room's subject is 
+modified: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// An occupant wants to be notified every time the room's subject is changed</font>
+      muc3.addSubjectUpdatedListener(new SubjectUpdatedListener() {
+          public void subjectUpdated(String subject, String from) {
+              ....
+          }
+      });
+
+      <font color="#3f7f5f">// A room's owner changes the room's subject</font>
+      muc2.changeSubject(<font color="#0000FF">"New Subject"</font>);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="role">Manage role modifications</a></div><p>
+
+<b>Description</b><p>
+
+There are four defined roles that an occupant can have:</p>
+<ol start="" type="">
+   <li>Moderator</li>
+   <li>Participant</li>
+   <li>Visitor</li>
+   <li>None (the absence of a role)</li>
+</ol><p>
+
+These roles are temporary in that they do not persist across a user's visits to the room 
+and can change during the course of an occupant's visit to the room.</p><p>
+
+A moderator is the most powerful occupant within the context of the room, and can to some 
+extent manage other occupants' roles in the room. A participant has fewer privileges than a 
+moderator, although he or she always has the right to speak. A visitor is a more restricted 
+role within the context of a moderated room, since visitors are not allowed to send messages 
+to all occupants.</p><p>
+
+Roles are granted, revoked, and maintained based on the occupant's room nickname or full 
+JID. Whenever an occupant's role is changed Smack will trigger specific events.</p>
+
+<b>Usage</b><p>
+
+In order to grant voice (i.e. make someone a <i>participant</i>) just send the message 
+<b>grantVoice(String nickname)</b> to <i><b>MultiUserChat</b></i>. Use <b>revokeVoice(String nickname)</b>
+to revoke the occupant's voice (i.e. make the occupant a <i>visitor</i>).</p><p>
+
+In order to grant moderator privileges to a participant or visitor just send the message 
+<b>grantModerator(String nickname)</b> to <i><b>MultiUserChat</b></i>. Use <b>revokeModerator(String nickname)</b>
+to revoke the moderator privilege from the occupant thus making the occupant a participant.</p><p>
+
+Smack allows you to listen for role modification events. If you are interested in listening role modification
+events of any occupant then use the listener <b><i>ParticipantStatusListener</i></b>. But if you are interested 
+in listening for your own role modification events, use the listener <b><i>UserStatusListener</i></b>. Both listeners 
+should be added to the <i><b>MultiUserChat</b></i> by using 
+<b>addParticipantStatusListener(ParticipantStatusListener listener)</b> or 
+<b>addUserStatusListener(UserStatusListener listener)</b> respectively. These listeners include several notification
+events but you may be interested in just a few of them. Smack provides default implementations for these listeners
+avoiding you to implement all the interfaces' methods. The default implementations are <b><i>DefaultUserStatusListener</i></b>
+and <b><i>DefaultParticipantStatusListener</i></b>. Below you will find the sent messages to the listeners whenever 
+an occupant's role has changed.</p><p>
+
+These are the triggered events when the role has been upgraded:
+</p>
+<table border="1">
+<tr><td><b>Old</b></td><td><b>New</b></td><td><b>Events</b></td></tr>
+      
+<tr><td>None</td><td>Visitor</td><td>--</td></tr>
+<tr><td>Visitor</td><td>Participant</td><td>voiceGranted</td></tr>
+<tr><td>Participant</td><td>Moderator</td><td>moderatorGranted</td></tr>
+
+<tr><td>None</td><td>Participant</td><td>voiceGranted</td></tr>
+<tr><td>None</td><td>Moderator</td><td>voiceGranted + moderatorGranted</td></tr>
+<tr><td>Visitor</td><td>Moderator</td><td>voiceGranted + moderatorGranted</td></tr>
+</table><p>
+
+These are the triggered events when the role has been downgraded:
+</p>
+<table border="1">
+<tr><td><b>Old</b></td><td><b>New</b></td><td><b>Events</b></td></tr>
+      
+<tr><td>Moderator</td><td>Participant</td><td>moderatorRevoked</td></tr>
+<tr><td>Participant</td><td>Visitor</td><td>voiceRevoked</td></tr>
+<tr><td>Visitor</td><td>None</td><td>kicked</td></tr>
+
+<tr><td>Moderator</td><td>Visitor</td><td>voiceRevoked + moderatorRevoked</td></tr>
+<tr><td>Moderator</td><td>None</td><td>kicked</td></tr>
+<tr><td>Participant</td><td>None</td><td>kicked</td></tr>
+</table></p>
+
+<b>Examples</b><p>
+
+In this example we can see how to grant voice to a visitor and listen for the notification events: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// User1 creates a room</font>
+      muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+      muc.create(<font color="#0000FF">"testbot"</font>);
+
+      <font color="#3f7f5f">// User1 (which is the room owner) configures the room as a moderated room</font>
+      Form form = muc.getConfigurationForm();
+      Form answerForm = form.createAnswerForm();
+      answerForm.setAnswer(<font color="#0000FF">"muc#roomconfig_moderatedroom"</font>, <font color="#0000FF">"1"</font>);
+      muc.sendConfigurationForm(answerForm);
+
+      <font color="#3f7f5f">// User2 joins the new room (as a visitor)</font>
+      MultiUserChat muc2 = new MultiUserChat(conn2, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+      muc2.join(<font color="#0000FF">"testbot2"</font>);
+      <font color="#3f7f5f">// User2 will listen for his own "voice" notification events</font>
+      muc2.addUserStatusListener(new DefaultUserStatusListener() {
+          public void voiceGranted() {
+              super.voiceGranted();
+              ...
+          }
+          public void voiceRevoked() {
+              super.voiceRevoked();
+              ...
+          }
+      });
+
+      <font color="#3f7f5f">// User3 joins the new room (as a visitor)</font>
+      MultiUserChat muc3 = new MultiUserChat(conn3, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+      muc3.join(<font color="#0000FF">"testbot3"</font>);
+      <font color="#3f7f5f">// User3 will lister for other occupants "voice" notification events</font>
+      muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+          public void voiceGranted(String participant) {
+              super.voiceGranted(participant);
+              ...
+          }
+
+          public void voiceRevoked(String participant) {
+              super.voiceRevoked(participant);
+              ...
+          }
+      });
+
+      <font color="#3f7f5f">// The room's owner grants voice to user2</font>
+      muc.grantVoice(<font color="#0000FF">"testbot2"</font>);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="afiliation">Manage affiliation modifications</a></div><p>
+
+<b>Description</b><p>
+
+There are five defined affiliations that a user can have in relation to a room:</p>
+<ol start="" type="">
+  <li>Owner</li>
+  <li>Admin</li>
+  <li>Member</li>
+  <li>Outcast</li>
+  <li>None (the absence of an affiliation)</li>
+</ol><p>
+
+These affiliations are semi-permanent in that they persist across a user's visits to the room and 
+are not affected by happenings in the room. Affiliations are granted, revoked, and maintained 
+based on the user's bare JID.</p><p>
+
+If a user without a defined affiliation enters a room, the user's affiliation is defined as &quot;none&quot;; 
+however, this affiliation does not persist across visits.</p><p>
+
+Owners and admins are by definition immune from certain actions. Specifically, an owner or admin cannot 
+be kicked from a room and cannot be banned from a room. An admin must first lose his or her affiliation 
+(i.e., have an affiliation of &quot;none&quot; or &quot;member&quot;) before such actions could be performed 
+on them.</p><p>
+
+The member affiliation provides a way for a room owner or admin to specify a &quot;whitelist&quot; of users 
+who are allowed to enter a members-only room. When a member enters a members-only room, his or her affiliation 
+does not change, no matter what his or her role is. The member affiliation also provides a way for users to 
+effectively register with an open room and thus be permanently associated with that room in some way (one 
+result may be that the user's nickname is reserved in the room).</p><p>
+
+An outcast is a user who has been banned from a room and who is not allowed to enter the room. Whenever a 
+user's affiliation is changed Smack will trigger specific events.</p>
+
+<b>Usage</b><p>
+
+In order to grant membership to a room, administrator privileges or owner priveliges just send
+<b>grantMembership(String jid)</b>, <b>grantAdmin(String jid)</b> or <b>grantOwnership(String jid)</b> 
+to <i><b>MultiUserChat</b></i> respectively. Use <b>revokeMembership(String jid)</b>, <b>revokeAdmin(String jid)</b> 
+or <b>revokeOwnership(String jid)</b> to revoke the membership to a room, administrator privileges or 
+owner priveliges respectively.</p><p>
+
+In order to ban a user from the room just send the message <b>banUser(String jid, String reason)</b> to 
+<i><b>MultiUserChat</b></i>.</p><p>
+
+Smack allows you to listen for affiliation modification events. If you are interested in listening affiliation modification
+events of any user then use the listener <b><i>ParticipantStatusListener</i></b>. But if you are interested 
+in listening for your own affiliation modification events, use the listener <b><i>UserStatusListener</i></b>. Both listeners 
+should be added to the <i><b>MultiUserChat</b></i> by using 
+<b>addParticipantStatusListener(ParticipantStatusListener listener)</b> or 
+<b>addUserStatusListener(UserStatusListener listener)</b> respectively. These listeners include several notification
+events but you may be interested in just a few of them. Smack provides default implementations for these listeners
+avoiding you to implement all the interfaces' methods. The default implementations are <b><i>DefaultUserStatusListener</i></b>
+and <b><i>DefaultParticipantStatusListener</i></b>. Below you will find the sent messages to the listeners whenever 
+a user's affiliation has changed.</p><p>
+
+These are the triggered events when the affiliation has been upgraded:
+</p>
+<table border="1">
+<tr><td><b>Old</b></td><td><b>New</b></td><td><b>Events</b></td></tr>
+
+<tr><td>None</td><td>Member</td><td>membershipGranted</td></tr>
+<tr><td>Member</td><td>Admin</td><td>membershipRevoked + adminGranted</td></tr>
+<tr><td>Admin</td><td>Owner</td><td>adminRevoked + ownershipGranted</td></tr>
+
+<tr><td>None</td><td>Admin</td><td>adminGranted</td></tr>
+<tr><td>None</td><td>Owner</td><td>ownershipGranted</td></tr>
+<tr><td>Member</td><td>Owner</td><td>membershipRevoked + ownershipGranted</td></tr>
+</table><p>
+
+These are the triggered events when the affiliation has been downgraded:
+</p>
+<table border="1">
+<tr><td><b>Old</b></td><td><b>New</b></td><td><b>Events</b></td></tr>
+
+<tr><td>Owner</td><td>Admin</td><td>ownershipRevoked + adminGranted</td></tr>
+<tr><td>Admin</td><td>Member</td><td>adminRevoked + membershipGranted</td></tr>
+<tr><td>Member</td><td>None</td><td>membershipRevoked</td></tr>
+
+<tr><td>Owner</td><td>Member</td><td>ownershipRevoked + membershipGranted</td></tr>
+<tr><td>Owner</td><td>None</td><td>ownershipRevoked</td></tr>
+<tr><td>Admin</td><td>None</td><td>adminRevoked</td></tr>
+<tr><td><i>Anyone</i></td><td>Outcast</td><td>banned</td></tr>
+</table></p>
+
+<b>Examples</b><p>
+
+In this example we can see how to grant admin privileges to a user and listen for the notification events: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// User1 creates a room</font>
+      muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+      muc.create(<font color="#0000FF">"testbot"</font>);
+
+      <font color="#3f7f5f">// User1 (which is the room owner) configures the room as a moderated room</font>
+      Form form = muc.getConfigurationForm();
+      Form answerForm = form.createAnswerForm();
+      answerForm.setAnswer(<font color="#0000FF">"muc#roomconfig_moderatedroom"</font>, <font color="#0000FF">"1"</font>);
+      muc.sendConfigurationForm(answerForm);
+
+      <font color="#3f7f5f">// User2 joins the new room (as a visitor)</font>
+      MultiUserChat muc2 = new MultiUserChat(conn2, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+      muc2.join(<font color="#0000FF">"testbot2"</font>);
+      <font color="#3f7f5f">// User2 will listen for his own admin privileges</font>
+      muc2.addUserStatusListener(new DefaultUserStatusListener() {
+          public void membershipRevoked() {
+              super.membershipRevoked();
+              ...
+          }
+          public void adminGranted() {
+              super.adminGranted();
+              ...
+          }
+      });
+
+      <font color="#3f7f5f">// User3 joins the new room (as a visitor)</font>
+      MultiUserChat muc3 = new MultiUserChat(conn3, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
+      muc3.join(<font color="#0000FF">"testbot3"</font>);
+      <font color="#3f7f5f">// User3 will lister for other users admin privileges</font>
+      muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
+          public void membershipRevoked(String participant) {
+              super.membershipRevoked(participant);
+              ...
+          }
+          public void adminGranted(String participant) {
+              super.adminGranted(participant);
+              ...
+          }
+      });
+
+      <font color="#3f7f5f">// The room's owner grants admin privileges to user2</font>
+      muc.grantAdmin(<font color="#0000FF">"user2@jabber.org"</font>);
+</pre>
+</blockquote>
+</body>
+
+</html>

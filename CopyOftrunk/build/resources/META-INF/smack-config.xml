@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- Smack configuration file. -->
+<smack>
+
+    <!-- Classes that will be loaded when Smack starts -->
+    <startupClasses>
+        <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
+        <className>org.jivesoftware.smackx.XHTMLManager</className>
+        <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
+    </startupClasses>
+
+    <!-- Paket reply timeout in milliseconds -->
+    <packetReplyTimeout>5000</packetReplyTimeout>
+
+    <!-- Keep-alive interval in milleseconds -->
+    <keepAliveInterval>30000</keepAliveInterval>
+
+</smack>

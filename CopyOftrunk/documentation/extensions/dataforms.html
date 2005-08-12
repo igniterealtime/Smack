@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>Data Forms</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">Data Forms</div><p> 
+
+Allows to exchange structured data between users and applications for common 
+tasks such as registration and searching using Forms. 
+
+<ul>
+  <li><a href="#gather">Create a Form to fill out</a></li>
+  <li><a href="#fillout">Answer a Form</a></li>
+</ul>
+<b>JEP related:</b> <a href="http://www.jabber.org/jeps/jep-0004.html">JEP-4</a>
+
+<hr>
+
+<div class="subheader"><a name="gather">Create a Form to fill out</a></div><p>
+
+<b>Description</b><p>
+
+An XMPP entity may need to gather data from another XMPP entity. Therefore, the data-gathering 
+entity will need to create a new Form, specify the fields that will conform the Form and finally 
+send the Form to the data-providing entity.</p>
+
+<b>Usage</b><p>
+
+In order to create a Form to fill out use the <i><b>Form</b></i>'s constructor passing the constant 
+<b>Form.TYPE_FORM</b> as the parameter. The next step is to create the form fields and add them to 
+the form. In order to create and customize a <i><b>FormField</b></i> use the <i><b>FormField</b></i>'s 
+constructor specifying the variable name of the field as the parameter. Then use <b>setType(String type)</b> 
+to set the field's type (e.g. FormField.TYPE_HIDDEN, FormField.TYPE_TEXT_SINGLE). Once we have the 
+<i><b>Form</b></i> instance and the <i><b>FormFields</b></i> the last step is to send <b>addField(FormField field)</b> 
+for each field that we want to add to the form.</p><p>
+
+Once the form to fill out is finished we will want to send it in a message. Send <b>getDataFormToSend()</b> to 
+the form and add the answer as an extension to the message to send.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to create and send a form to fill out: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create a new form to gather data</font>
+        Form formToSend = new Form(Form.TYPE_FORM);
+        formToSend.setInstructions(
+            "Fill out this form to report your case.\nThe case will be created automatically.");
+        formToSend.setTitle("Case configurations");
+        <font color="#3f7f5f">// Add a hidden variable to the form</font>
+        FormField field = new FormField("hidden_var");
+        field.setType(FormField.TYPE_HIDDEN);
+        field.addValue("Some value for the hidden variable");
+        formToSend.addField(field);
+        <font color="#3f7f5f">// Add a fixed variable to the form</font>
+        field = new FormField();
+        field.addValue("Section 1: Case description");
+        formToSend.addField(field);
+        <font color="#3f7f5f">// Add a text-single variable to the form</font>
+        field = new FormField("name");
+        field.setLabel("Enter a name for the case");
+        field.setType(FormField.TYPE_TEXT_SINGLE);
+        formToSend.addField(field);
+        <font color="#3f7f5f">// Add a text-multi variable to the form</font>
+        field = new FormField("description");
+        field.setLabel("Enter a description");
+        field.setType(FormField.TYPE_TEXT_MULTI);
+        formToSend.addField(field);
+
+        <font color="#3f7f5f">// Create a chat with "user2@host.com"</font>
+        Chat chat = conn1.createChat("user2@host.com" );
+
+        Message msg = chat.createMessage();
+        msg.setBody("To enter a case please fill out this form and send it back to me");
+        <font color="#3f7f5f">// Add the form to fill out to the message to send</font>
+        msg.addExtension(formToSend.getDataFormToSend());
+
+        <font color="#3f7f5f">// Send the message with the form to fill out</font>
+        chat.sendMessage(msg);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="fillout">Answer a Form</a></div><p>
+
+<b>Description</b><p>
+
+Under many situations an XMPP entity could receive a form to fill out. For example, some hosts
+may require to fill out a form in order to register new users. Smack lets the data-providing entity 
+to complete the form in an easy way and send it back to the data-gathering entity.</p>
+
+<b>Usage</b><p>
+
+The form to fill out contains useful information that could be used for rendering the form. But it 
+cannot be used to actually complete it. Instead it's necessary to create a new form based on the original 
+form whose purpose is to hold all the answers.</p><p>
+
+In order to create a new <i><b>Form</b></i> to complete based on the original <i><b>Form</b></i> just send 
+<b>createAnswerForm()</b> to the original <i><b>Form</b></i>. Once you have a valid form that could be actually
+completed all you have to do is send <b>setAnswer(String variable, String value)</b> to the form where variable
+is the variable of the <i><b>FormField</b></i> that you want to answer and value is the String representation 
+of the answer. If the answer consist of several values you could then use <b>setAnswer(String variable, List values)</b> 
+where values is a List of Strings.</p><p>
+
+Once the form has been completed we will want to send it back in a message. Send <b>getDataFormToSend()</b> to 
+the form and add the answer as an extension to the message to send back.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to retrieve a form to fill out, complete the form and send it back: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Get the message with the form to fill out</font>
+        Message msg2 = chat2.nextMessage();
+        <font color="#3f7f5f">// Retrieve the form to fill out from the message</font>
+        Form formToRespond = Form.getFormFrom(msg2);
+        <font color="#3f7f5f">// Obtain the form to send with the replies</font>
+        Form completedForm = formToRespond.createAnswerForm();
+        <font color="#3f7f5f">// Add the answers to the form</font>
+        completedForm.setAnswer("name", "Credit card number invalid");
+        completedForm.setAnswer(
+            "description",
+            "The ATM says that my credit card number is invalid. What's going on?");
+			
+        msg2 = chat2.createMessage();
+        msg2.setBody("To enter a case please fill out this form and send it back to me");
+        <font color="#3f7f5f">// Add the completed form to the message to send back</font>
+        msg2.addExtension(completedForm.getDataFormToSend());
+        <font color="#3f7f5f">// Send the message with the completed form</font>
+        chat2.sendMessage(msg2);
+</pre>
+</blockquote>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+#! /bin/sh
+
+# //--------------------------------------------------------------------------//
+# // $RCSfile$
+# // $Revision$
+# // $Date$
+# //
+# // Standard Jive Software ant file. Do not change this file. If you do,
+# // you will have seven years of bad luck and bad builds.
+# //--------------------------------------------------------------------------//
+
+# //--------------------------------------------------------------------------//
+# // Uncomment the following lines if you wish to set JAVA_HOME in this script
+# //--------------------------------------------------------------------------//
+# JAVA_HOME=
+# EXPORT JAVA_HOME
+
+# //--------------------------------------------------------------------------//
+# // Check for the JAVA_HOME environment variable                             //
+# //--------------------------------------------------------------------------//
+if [ "$JAVA_HOME" != "" ] ; then
+    # //----------------------------------------------------------------------//
+    # // Create Ant's classpath                                               //
+    # //----------------------------------------------------------------------//
+    CP=$JAVA_HOME/lib/tools.jar:../../../build/ant.jar
+    
+    # //----------------------------------------------------------------------//
+    # // Run ant                                                              //
+    # //----------------------------------------------------------------------//
+    $JAVA_HOME/bin/java -classpath $CP -Dant.home=. org.apache.tools.ant.Main $@
+else
+    # //----------------------------------------------------------------------//
+    # // No JAVA_HOME error message                                           //
+    # //----------------------------------------------------------------------//
+    echo "Jive Forums Build Error:"
+    echo ""
+    echo "The JAVA_HOME environment variable is not set. JAVA_HOME should point"
+    echo "to your java directory, ie: /usr/local/bin/jdk1.3. You can set"
+    echo "this via the command line like so:"
+    echo "  export JAVA_HOME=/usr/local/bin/jdk1.3"
+fi
+

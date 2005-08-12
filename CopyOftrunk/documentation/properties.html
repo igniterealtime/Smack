@@ -1,0 +1,119 @@
+<html>
+<head>
+	<title>Smack: Packet Properties - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /
+</head>
+
+<body>
+
+<div class="header">
+Packet Properties
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p>
+Smack provides an easy mechanism for attaching arbitrary properties to packets. Each property
+has a String name, and a value that is a Java primitive (int, long, float, double, boolean) or
+any Serializable object (a Java object is Serializable when it implements the Serializable
+interface).
+</p>
+
+<p class="subheader">
+Using the API
+</p>
+
+<p>
+All major objects have property support, such as Message objects. The following code
+demonstrates how to set properties:
+</p>
+
+<div class="code"><pre>
+Message message = chat.createMessage();
+<font color="gray"></i>// Add a Color object as a property.</i></font>
+message.setProperty(<font color="blue">"favoriteColor"</font>, new Color(0, 0, 255));
+<font color="gray"></i>// Add an int as a property.</i></font>
+message.setProperty(<font color="blue">"favoriteNumber"</font>, 4);
+chat.sendMessage(message);
+</pre></div>
+
+<p>
+Getting those same properties would use the following code:
+</p>
+
+<div class="code"><pre>
+Message message = chat.nextMessage();
+<font color="gray"></i>// Get a Color object property.</i></font>
+Color favoriteColor = (Color)message.getProperty(<font color="blue">"favoriteColor"</font>);
+<font color="gray"></i>// Get an int property. Note that properties are always returned as
+// Objects, so we must cast the value to an Integer, then convert
+// it to an int.</i></font>
+int favoriteNumber = ((Integer)message.getProperty(<font color="blue">"favoriteNumber"</font>)).intValue();
+</pre></div>
+
+<p class="subheader">
+Objects as Properties
+</p>
+
+<p>
+Using objects as property values is a very powerful and easy way to exchange data. However,
+you should keep the following in mind:
+</p>
+
+<ul>
+ 	<li>Packet extensions are the more standard way to add extra data to XMPP stanzas. Using
+		properties may be more convenient in some cases, however, since Smack will do the
+		work of handling the XML.
+
+	<li>When you send a Java object as a property, only clients running Java will be able to 
+		interpret the data. So, consider using a series of primitive values to transfer data 
+		instead.
+
+	<li>Objects sent as property values must implement Serialiable. Additionally, both the sender
+		and receiver must have identical versions of the class, or a serialization exception
+		will occur when de-serializing the object.
+
+	<li>Serialized objects can potentially be quite large, which will use more bandwidth and
+		server resources.
+</ul>
+
+<p class="subheader">
+XML Format
+</p>
+
+<p>
+The current XML format used to send property data is not a standard, so will likely not be
+recognized by clients not using Smack. The XML looks like the following (comments added for
+clarity):
+</p>
+
+<div class="code"><pre>
+<font color="gray"><i>&lt;!-- All properties are in a x block. --&gt;</i></font> 
+&lt;properties xmlns="http://www.jivesoftware.com/xmlns/xmpp/properties"&gt;
+    <font color="gray"><i>&lt;!-- First, a property named "prop1" that's an integer. --&gt;</i></font> 
+    &lt;property&gt;
+        &lt;name&gt;prop1&lt;/name&gt;
+        &lt;value type="integer"&gt;123&lt;/value&gt;
+    &lt;property&gt;
+    <font color="gray"><i>&lt;!-- Next, a Java object that's been serialized and then converted
+         from binary data to base-64 encoded text. --&gt;</i></font>  
+    &lt;property&gt;
+        &lt;name&gt;blah2&lt;/name&gt;
+        &lt;value type="java-object"&gt;adf612fna9nab&lt;/value&gt;
+    &lt;property&gt;
+&lt;/properties&gt; 
+</pre></div>
+
+<p>
+The currently supported types are: <tt>integer</tt>, <tt>long</tt>, <tt>float</tt>, 
+<tt>double</tt>, <tt>boolean</tt>, <tt>string</tt>, and <tt>java-object</tt>.
+</p>
+
+<div class="footer">
+Copyright &copy; Jive Software 2002-2004
+</div>
+
+</body>
+</html>

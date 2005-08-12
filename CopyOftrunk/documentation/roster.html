@@ -1,0 +1,125 @@
+<html>
+<head>
+	<title>Smack: Roster and Presence - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">
+Roster and Presence
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p>
+
+The roster lets you keep track of the availability ("presence") of other users. 
+A roster also allows you to organize users into groups such as "Friends" and 
+"Co-workers". Other IM systems refer to the roster as the buddy list, contact list, 
+etc.<p>
+
+A <tt>Roster</tt> instance is obtained using the <tt>XMPPConnection.getRoster()</tt>
+method, but only after successfully logging into a server.
+
+<p class="subheader">Roster Entries</p>
+
+<p>
+Every user in a roster is represented by a RosterEntry, which consists of:<ul>
+    <li>An XMPP address (e.g. jsmith@example.com).
+    <li>A name you've assigned to the user (e.g. "Joe").
+    <li>The list of groups in the roster that the entry belongs to. If the roster
+        entry belongs to no groups, it's called an "unfiled entry".
+</ul>
+
+The following code snippet prints all entries in the roster:
+
+<pre>
+Roster roster = con.getRoster();
+<b>for</b> (Iterator i=roster.getEntries(); i.hasNext(); ) {
+    System.out.println(i.next());
+}
+</pre>
+
+Methods also exist to get individual entries, the list of unfiled entries, or to get one or
+all roster groups.
+
+<p class="subheader">Presence</p>
+
+<img src="images/roster.png" width="166" height="322" vspace="5" hspace="5" alt="Roster" border="0" align="right">
+
+<p>Every entry in the roster has presence associated with it. The 
+<tt>Roster.getPresence(String user)</tt> method will return a Presence object with
+the user's presence or <tt>null</tt> if the user is not online or you are not
+subscribed to the user's presence. <i>Note:</i> typically, presence
+subscription is always tied to the user being on the roster, but this is not
+true in all cases.</p>
+
+<p>A user either has a presence of online or offline. When a user is online, their
+presence may contain extended information such as what they are currently doing, whether
+they wish to be disturbed, etc. See the Presence class for further details.</p>
+
+<p class="subheader">Listening for Roster and Presence Changes</p>
+
+<p>The typical use of the roster class is to display a tree view of groups and entries
+along with the current presence value of each entry. As an example, see the image showing
+a Roster in the Exodus XMPP client to the right.</p>
+
+<p>The presence information will likely 
+change often, and it's also possible for the roster entries to change or be deleted. 
+To listen for changing roster and presence data, a RosterListener should be used. 
+The following code snippet registers a RosterListener with the Roster that prints
+any presence changes in the roster to standard out. A normal client would use
+similar code to update the roster UI with the changing information. 
+
+<br clear="all">
+
+<pre>
+final Roster roster = con.getRoster();
+roster.addRosterListener(new RosterListener() {
+    <b>public void</b> rosterModified() {
+        <font color="gray"><i>// Ignore event for this example.</i></font>
+    }
+
+    <b>public void</b> presenceChanged(String user) {
+        <font color="gray"><i>// If the presence is unavailable then "null" will be printed,
+        // which is fine for this example.</i></font>
+        System.out.println(<font color="green">"Presence changed: "</font> + roster.getPresence(user));
+    }
+});
+</pre> 
+
+<p class="subheader">Adding Entries to the Roster</p>
+
+<p>Rosters and presence use a permissions-based model where users must give permission before
+they are added to someone else's roster. This protects a user's privacy by
+making sure that only approved users are able to view their presence information.
+Therefore, when you add a new roster entry it will be in a pending state until
+the other user accepts your request.</p>
+
+If another user requests a presence subscription so they can add you to their roster,
+you must accept or reject that request. Smack handles presence subscription requests
+in one of three ways: <ul>
+
+    <li> Automatically accept all presence subscription requests.
+    <li> Automatically reject all presence subscription requests.
+    <li> Process presence subscription requests manually.
+</ul>
+
+The mode can be set using the <tt>Roster.setSubscriptionMode(int subscriptionMode)</tt>
+method. Simple clients normally use one of the automated subscription modes, while
+full-featured clients should manually process subscription requests and let the
+end-user accept or reject each request. If using the manual mode, a PacketListener 
+should be registered that listens for Presence packets that have a type of 
+<tt>Presence.Type.SUBSCRIBE</tt>. 
+
+<br clear="all" /><br><br>
+
+<div class="footer">
+Copyright &copy; Jive Software 2002-2004
+</div>
+
+</body>
+</html>

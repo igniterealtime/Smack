@@ -1,0 +1,87 @@
+<html>
+<head>
+	<title>Smack: Processing Incoming Packets - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">
+Processing Incoming Packets
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p>
+
+Smack provides a flexible framework for processing incoming packets using two constructs:
+<ul>
+	<li><tt>org.jivesoftware.smack.PacketCollector</tt> -- a class that lets you 
+		synchronously wait for new packets.
+	<li><tt>org.jivesoftware.smack.PacketListener</tt> -- an interface for asynchronously 
+		notifying you of incoming packets. 
+</ul>	
+A packet listener is used for event style programming, while a packet collector has a 
+result queue of packets that you can do polling and blocking operations on. So, a packet 
+listener is useful when you want to take some action whenever a packet happens to come in, 
+while a packet collector is useful when you want to wait for a specific packet to come 
+arrive. Packet collectors and listeners can be created using an <tt>XMPPConnection</tt> instance.<p>
+	
+The <tt>org.jivesoftware.smack.filter.PacketFilter</tt> interface determines which
+specific packets will be delivered to a <tt>PacketCollector</tt> or <tt>PacketListener</tt>.
+Many pre-defined filters can be found in the <tt>org.jivesoftware.smack.filter</tt> package.
+
+<p>
+The following code snippet demonstrates registering both a packet collector and a packet
+listener:<p> 
+ 
+<div class="code"><pre>
+<font color="gray"><i>// Create a packet filter to listen for new messages from a particular</i></font>
+<font color="gray"><i>// user. We use an AndFilter to combine two other filters.</i></font>
+PacketFilter filter = new AndFilter(new PacketTypeFilter(<b>Message.class</b>), 
+        new FromContainsFilter(<font color="green">"mary@jivesoftware.com"</font>));
+<font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
+
+<font color="gray"><i>// First, register a packet collector using the filter we created.</i></font>
+PacketCollector myCollector = connection.createPacketCollector(filter);
+<font color="gray"><i>// Normally, you'd do something with the collector, like wait for new packets.</i></font>
+
+<font color="gray"><i>// Next, create a packet listener. We use an anonymous inner class for brevity.</i></font>
+PacketListener myListener = new PacketListener() {
+        <b>public</b> <b>void</b> processPacket(Packet packet) {
+            <font color="gray"><i>// Do something with the incoming packet here.</i></font>
+        }
+    };
+<font color="gray"><i>// Register the listener.</i></font>
+connection.addPacketListener(myListener, filter);
+</pre></div><p>
+
+<p class="subheader">
+Standard Packet Filters
+</p>
+
+A rich set of packet filters are included with Smack, or you can create your own filters by coding
+to the <tt>PacketFilter</tt> interface. The default set of filters includes:
+<ul>
+	<li> <tt>PacketTypeFilter</tt> -- filters for packets that are a particular Class type.
+	<li> <tt>PacketIDFilter</tt> -- filters for packets with a particular packet ID.
+	<li> <tt>ThreadFilter</tt> -- filters for message packets with a particular thread ID.
+	<li> <tt>ToContainsFilter</tt> -- filters for packets that are sent to a particular address.
+	<li> <tt>FromContainsFilter</tt> -- filters for packets that are sent to a particular address.
+	<li> <tt>PacketExtensionFilter</tt> -- filters for packets that have a particular packet extension.
+	<li> <tt>AndFilter</tt> -- implements the logical AND operation over two filters.
+	<li> <tt>OrFilter</tt> -- implements the logical OR operation over two filters.
+	<li> <tt>NotFilter</tt> -- implements the logical NOT operation on a filter.
+</ul>
+
+
+
+<br clear="all" /><br><br>
+<div class="footer">
+Copyright &copy; Jive Software 2002-2005
+</div>
+
+</body>
+</html>

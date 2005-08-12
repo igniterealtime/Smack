@@ -1,0 +1,244 @@
+<html>
+<head>
+    <title>Message Events</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">Message Events</div><p>
+
+This extension is used to request and respond to events relating to the delivery, 
+display, and composition of messages. There are three stages in this extension:<ol>
+    <li>Request for event notifications,
+    <li>Receive the event notification requests and send event notifications, and
+    <li>Receive the event notifications.</ol> 
+<p>For more information on each stage please follow these links:</p>
+<ul>
+  <li><a href="#reqevnot">Requesting Event Notifications</a></li>
+  <li><a href="#lstevnotreq">Reacting to Event Notification Requests</a></li>
+  <li><a href="#lstevnot">Reacting to Event Notifications</a></li>
+</ul>
+<b>JEP related:</b> <a href="http://www.jabber.org/jeps/jep-0022.html">JEP-22</a>
+<hr>
+<div class="subheader"><a name="reqevnot">Requesting Event Notifications</a></div><p>
+<b>Description</b><p>
+
+In order to receive event notifications for a given message you first have to specify 
+which events are you interested in. Each message that you send has to request its own event 
+notifications. Therefore, every message that you send as part of a chat should request its own event 
+notifications.</p>
+
+<b>Usage</b><p>
+
+The class <i>MessageEventManager</i> provides an easy way for requesting event notifications. All you have to do is specify
+the message that requires the event notifications and the events that you are interested in.
+<p>Use the static method <i><b>MessageEventManager.addNotificationsRequests(Message message, boolean offline, boolean 
+delivered, boolean displayed, boolean composing)</b></i> for requesting event notifications.
+</p>
+
+<b>Example</b><p>
+Below you can find an example that logs in a user to the server, creates a message, adds the requests
+for notifications and sends the message.
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+    
+      <font color="#3f7f5f">// Create a chat with user2</font>
+      Chat chat1 = conn1.createChat(user2);
+    
+      <font color="#3f7f5f">// Create a message to send</font>
+      Message msg = chat1.createMessage();
+      msg.setSubject(<font color="#0000FF">"Any subject you want"</font>);
+      msg.setBody(<font color="#0000FF">"An interesting body comes here..."</font>);
+      <font color="#3f7f5f">// Add to the message all the notifications requests (offline, delivered, displayed,</font>
+      <font color="#3f7f5f">// composing)</font>
+      MessageEventManager.addNotificationsRequests(msg, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>);
+    
+      <font color="#3f7f5f">// Send the message that contains the notifications request</font>
+      chat1.sendMessage(msg);
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="lstevnotreq">Reacting to Event Notification Requests</a></div><p>
+
+<b>Description</b><p>
+
+You can receive notification requests for the following events: delivered, displayed, composing and offline. You 
+<b>must</b> listen for these requests and react accordingly.</p>
+
+<b>Usage</b><p>
+
+The general idea is to create a new <i>DefaultMessageEventRequestListener</i> that will listen to the event notifications 
+requests and react with custom logic.  Then you will have to add the listener to the 
+<i>MessageEventManager</i> that works on 
+the desired <i>XMPPConnection</i>.
+<p>Note that <i>DefaultMessageEventRequestListener</i> is a default implementation of the 
+<i>MessageEventRequestListener</i> interface.
+The class <i>DefaultMessageEventRequestListener</i> automatically sends a delivered notification to the sender of the message 
+if the sender has requested to be notified when the message is delivered. If you decide to create a new class that
+implements the <i>MessageEventRequestListener</i> interface, please remember to send the delivered notification.</p>
+<ul>
+  <li>To create a new <i>MessageEventManager</i> use the <i><b>MessageEventManager(XMPPConnection)</b></i> constructor. 
+  </li>
+  <li>To create an event notification requests listener create a subclass of <i><b>DefaultMessageEventRequestListener</b></i> or
+  create a class that implements the <i><b>MessageEventRequestListener</b></i> interface.
+  </li>
+  <li>To add a listener to the messageEventManager use the MessageEventManager's message 
+<i><b>addMessageEventRequestListener(MessageEventRequestListener)</b></i>.</li>
+</ul></p>
+
+<b>Example</b><p>
+
+Below you can find an example that connects two users to the server. One user will create a message, add the requests
+for notifications and will send the message to the other user. The other user will add a 
+<i>DefaultMessageEventRequestListener</i> 
+to a <i>MessageEventManager</i> that will listen and react to the event notification requested by the other user.
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in the users</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+      conn2 = new XMPPConnection(host);
+      conn2.login(server_user2, pass2);
+  
+      <font color="#3f7f5f">// User2 creates a MessageEventManager</font>
+      MessageEventManager messageEventManager = new MessageEventManager(conn2);
+      <font color="#3f7f5f">// User2 adds the listener that will react to the event notifications requests</font>
+      messageEventManager.addMessageEventRequestListener(new DefaultMessageEventRequestListener() {
+          public void deliveredNotificationRequested(
+              String from,
+              String packetID,
+              MessageEventManager messageEventManager) {
+              super.deliveredNotificationRequested(from, packetID, messageEventManager);
+              <font color="#3f7f5f">// DefaultMessageEventRequestListener automatically responds that the message was delivered when receives this request</font>
+              System.out.println(<font color="#0000FF">"Delivered Notification Requested (" + from + ", " + packetID + ")"</font>);
+          }
+
+          public void displayedNotificationRequested(
+              String from,
+              String packetID,
+              MessageEventManager messageEventManager) {
+              super.displayedNotificationRequested(from, packetID, messageEventManager);
+              <font color="#3f7f5f">// Send to the message's sender that the message was displayed</font>
+              messageEventManager.sendDisplayedNotification(from, packetID);
+          }
+
+          public void composingNotificationRequested(
+              String from,
+              String packetID,
+              MessageEventManager messageEventManager) {
+              super.composingNotificationRequested(from, packetID, messageEventManager);
+              <font color="#3f7f5f">// Send to the message's sender that the message's receiver is composing a reply</font>
+              messageEventManager.sendComposingNotification(from, packetID);
+          }
+
+          public void offlineNotificationRequested(
+              String from,
+              String packetID,
+              MessageEventManager messageEventManager) {
+              super.offlineNotificationRequested(from, packetID, messageEventManager);
+              <font color="#3f7f5f">// The XMPP server should take care of this request. Do nothing.</font>
+              System.out.println(<font color="#0000FF">"Offline Notification Requested (" + from + ", " + packetID + ")"</font>);
+          }
+      });
+
+      <font color="#3f7f5f">// User1 creates a chat with user2</font>
+      Chat chat1 = conn1.createChat(user2);
+    
+      <font color="#3f7f5f">// User1 creates a message to send to user2</font>
+      Message msg = chat1.createMessage();
+      msg.setSubject(<font color="#0000FF">"Any subject you want"</font>);
+      msg.setBody(<font color="#0000FF">"An interesting body comes here..."</font>);
+      <font color="#3f7f5f">// User1 adds to the message all the notifications requests (offline, delivered, displayed,</font>
+      <font color="#3f7f5f">// composing)</font>
+      MessageEventManager.addNotificationsRequests(msg, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>);
+    
+      <font color="#3f7f5f">// User1 sends the message that contains the notifications request</font>
+      chat1.sendMessage(msg);
+      Thread.sleep(500);
+      <font color="#3f7f5f">// User2 sends to the message's sender that the message's receiver cancelled composing a reply</font>
+      messageEventManager.sendCancelledNotification(user1, msg.getPacketID());
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="lstevnot">Reacting to Event Notifications</a></div><p>
+
+<b>Description</b><p>
+
+Once you have requested for event notifications you will start to receive notifications of events. You can 
+receive notifications of the following events: delivered, displayed, composing, offline and cancelled. You 
+will probably want to react to some or all of these events.</p>
+
+<b>Usage</b><p>
+
+The general idea is to create a new <i>MessageEventNotificationListener</i> that will listen to the event notifications 
+and react with custom logic.  Then you will have to add the listener to the <i>MessageEventManager</i> that works on 
+the desired <i>XMPPConnection</i>.
+<ul>
+  <li>To create a new <i>MessageEventManager</i> use the <i><b>MessageEventManager(XMPPConnection)</b></i> constructor. 
+  </li>
+  <li>To create an event notifications listener create a class that implements the <i><b>MessageEventNotificationListener</b></i> 
+  interface.
+  </li>
+  <li>To add a listener to the messageEventManager use the MessageEventManager's message 
+<i><b>addMessageEventNotificationListener(MessageEventNotificationListener)</b></i>.</li>
+</ul></p>
+
+<b>Example</b><p>
+Below you can find an example that logs in a user to the server, adds a <i>MessageEventNotificationListener</i>
+to a <i>MessageEventManager</i> that will listen and react to the event notifications, creates a message, adds 
+the requests for notifications and sends the message.
+<blockquote>
+<pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
+      conn1 = new XMPPConnection(host);
+      conn1.login(server_user1, pass1);
+  
+      <font color="#3f7f5f">// Create a MessageEventManager</font>
+      MessageEventManager messageEventManager = new MessageEventManager(conn1);
+      <font color="#3f7f5f">// Add the listener that will react to the event notifications</font>
+      messageEventManager.addMessageEventNotificationListener(new MessageEventNotificationListener() {
+          public void deliveredNotification(String from, String packetID) {
+              System.out.println(<font color="#0000FF">"The message has been delivered (" + from + ", " + packetID + ")"</font>);
+          }
+    
+          public void displayedNotification(String from, String packetID) {
+              System.out.println(<font color="#0000FF">"The message has been displayed (" + from + ", " + packetID + ")"</font>);
+          }
+    
+          public void composingNotification(String from, String packetID) {
+              System.out.println(<font color="#0000FF">"The message's receiver is composing a reply (" + from + ", " + packetID + ")"</font>);
+          }
+    
+          public void offlineNotification(String from, String packetID) {
+              System.out.println(<font color="#0000FF">"The message's receiver is offline (" + from + ", " + packetID + ")"</font>);
+          }
+    
+          public void cancelledNotification(String from, String packetID) {
+              System.out.println(<font color="#0000FF">"The message's receiver cancelled composing a reply (" + from + ", " + packetID + ")"</font>);
+          }
+      });
+
+      <font color="#3f7f5f">// Create a chat with user2</font>
+      Chat chat1 = conn1.createChat(user2);
+    
+      <font color="#3f7f5f">// Create a message to send</font>
+      Message msg = chat1.createMessage();
+      msg.setSubject(<font color="#0000FF">"Any subject you want"</font>);
+      msg.setBody(<font color="#0000FF">"An interesting body comes here..."</font>);
+      <font color="#3f7f5f">// Add to the message all the notifications requests (offline, delivered, displayed,</font>
+      <font color="#3f7f5f">// composing)</font>
+      MessageEventManager.addNotificationsRequests(msg, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>, <font COLOR="#7f0055"><b>true</b></font>);
+    
+      <font color="#3f7f5f">// Send the message that contains the notifications request</font>
+      chat1.sendMessage(msg);
+</pre>
+</blockquote>
+
+</body>
+
+</html>
