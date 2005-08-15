@@ -187,7 +187,7 @@ public class PrivateDataManager {
         connection.sendPacket(privateDataGet);
 
         // Wait up to five seconds for a response from the server.
-        IQ response = (IQ)collector.nextResult(5000);
+        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         // Stop queuing results
         collector.cancel();
         if (response == null) {
