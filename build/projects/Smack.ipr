@@ -2,6 +2,13 @@
 <project version="4" relativePaths="true">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
+    <buildFile url="file://$PROJECT_DIR$/../build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
   </component>
   <component name="CodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
@@ -28,6 +35,9 @@
     </resourceExtensions>
   </component>
   <component name="DataSourceManagerImpl" />
+  <component name="DependenciesAnalyzeManager">
+    <option name="myForwardDirection" value="false" />
+  </component>
   <component name="DependencyValidationManager" />
   <component name="EntryPointsManager">
     <entry_points />
@@ -44,7 +54,6 @@
     <option name="DEPRECATION" value="true" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
-    <option name="USE_GENERICS_COMPILER" value="false" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
@@ -179,7 +188,7 @@
       <module fileurl="file://$PROJECT_DIR$/Smack.iml" filepath="$PROJECT_DIR$/Smack.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="false" jdk-15="false" project-jdk-name="JDK 1.2.2" />
+  <component name="ProjectRootManager" version="2" assert-keyword="false" jdk-15="false" project-jdk-name="JDK 1.4.2" />
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
     <option name="DEBUGGING_INFO" value="true" />
@@ -203,5 +212,6 @@
     <option name="INSTRUMENT_CLASSES" value="true" />
     <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
   </component>
+  <UsedPathMacros />
 </project>
 
