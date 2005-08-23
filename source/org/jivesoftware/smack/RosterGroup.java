@@ -178,7 +178,6 @@ public class RosterGroup {
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
             if (!entries.contains(entry)) {
-                entries.add(entry);
                 RosterPacket packet = new RosterPacket();
                 packet.setType(IQ.Type.SET);
                 packet.addRosterItem(RosterEntry.toRosterItem(entry));
@@ -198,6 +197,8 @@ public class RosterGroup {
             else if (response.getType() == IQ.Type.ERROR) {
                 throw new XMPPException(response.getError());
             }
+            // Add the new entry to the group since the server processed the request successfully
+            entries.add(entry);
         }
     }
 
@@ -226,8 +227,6 @@ public class RosterGroup {
                 collector = connection
                         .createPacketCollector(new PacketIDFilter(packet.getPacketID()));
                 connection.sendPacket(packet);
-                // Remove the entry locally
-                entries.remove(entry);
             }
         }
         if (collector != null) {
@@ -240,6 +239,8 @@ public class RosterGroup {
             else if (response.getType() == IQ.Type.ERROR) {
                 throw new XMPPException(response.getError());
             }
+            // Remove the entry locally since the server processed the request successfully
+            entries.remove(entry);
         }
     }
 
