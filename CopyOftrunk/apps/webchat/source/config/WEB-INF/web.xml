@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+    
+<web-app>
+
+    <display-name>WebChat</display-name>
+    <description>Smack-powered WebChat Application</description>
+      
+    <context-param>
+        <param-name>host</param-name>
+        <param-value>jivesoftware.com</param-value>
+    </context-param>
+
+    <!--
+      *******************
+        ALL OF THE FOLLOWING context-params are optional, and are listed with their
+            default values. Since they are optional, they needn't be included in this
+            file if you're satisfied with the default values; they're listed here
+            for informational purposes.
+            *******************
+    -->
+
+    <!-- allow users to logon anonymously? -->
+    <context-param>
+        <param-name>allowAnonymous</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- allow users to create new accounts? -->
+    <context-param>
+        <param-name>allowAccountCreation</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- allow users to login using their username/password? -->
+    <context-param>
+        <param-name>allowLogin</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- the url for the logo image in the chat window (path relative to the .jsp files) -->
+    <context-param>
+        <param-name>logoFilename</param-name>
+        <param-value>images/logo.gif</param-value>
+    </context-param>
+
+    <!-- the color of the text for chat window room announcements -->
+    <context-param>
+        <param-name>chat.announcement-color</param-name>
+        <param-value>#009d00</param-value>
+    </context-param>
+
+    <!-- the color of the text for the dialog label associated with the user of the web client -->
+    <context-param>
+        <param-name>chat.owner-label-color</param-name>
+        <param-value>#aa0000</param-value>
+    </context-param>
+
+    <!-- the color of the text for the dialog label associated with other chat participants -->
+    <context-param>
+        <param-name>chat.participant-label-color</param-name>
+        <param-value>#0000aa</param-value>
+    </context-param>
+
+    <!-- the color of the text for the dialog in the chat window -->
+    <context-param>
+        <param-name>chat.text-color</param-name>
+        <param-value>#434343</param-value>
+    </context-param>
+
+    <!-- the color of error message text -->
+    <context-param>
+        <param-name>error.text-color</param-name>
+        <param-value>#ff0000</param-value>
+    </context-param>
+
+    <!-- the color of the text for unvisited links -->
+    <context-param>
+        <param-name>link.color</param-name>
+        <param-value>#045d30</param-value>
+    </context-param>
+
+    <!-- the color of the text for links with the pointer hovering over them -->
+    <context-param>
+        <param-name>link.hover-color</param-name>
+        <param-value>#350000</param-value>
+    </context-param>
+
+    <!-- the color of the text for already visited links -->
+    <context-param>
+        <param-name>link.visited-color</param-name>
+        <param-value>#3b3757</param-value>
+    </context-param>
+
+    <!-- the color of the background of all pages -->
+    <context-param>
+        <param-name>body.background-color</param-name>
+        <param-value>#ffffff</param-value>
+    </context-param>
+
+    <!-- the default color of the text on all pages -->
+    <context-param>
+        <param-name>body.text-color</param-name>
+        <param-value>#362f2d</param-value>
+    </context-param>
+
+    <!-- the color of the chat window divider between the participant listing and the chat -->
+    <context-param>
+        <param-name>frame.divider-color</param-name>
+        <param-value>#83272b</param-value>
+    </context-param>
+
+    <!-- the color of the form element buttons -->
+    <context-param>
+        <param-name>button.color</param-name>
+        <param-value>#d6dfdf</param-value>
+    </context-param>
+
+    <!-- the color of the text in the form element buttons -->
+    <context-param>
+        <param-name>button.text-color</param-name>
+        <param-value>#333333</param-value>
+    </context-param>
+
+    <!-- the color of the background in the form element text fields -->
+    <context-param>
+        <param-name>textfield.color</param-name>
+        <param-value>#f7f7fb</param-value>
+    </context-param>
+
+    <!-- the color of the text in the form element text fields and textareas -->
+    <context-param>
+        <param-name>textfield.text-color</param-name>
+        <param-value>#333333</param-value>
+    </context-param>
+
+
+    <!-- Session listener -->
+    <listener>
+        <listener-class>org.jivesoftware.webchat.JiveChatServlet</listener-class>
+    </listener>
+
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>ChatServlet</servlet-name>
+        <servlet-class>org.jivesoftware.webchat.JiveChatServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>        
+    </servlet>
+
+    <!-- Servlet mappings -->
+    <servlet-mapping>
+        <servlet-name>ChatServlet</servlet-name>
+        <url-pattern>/ChatServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+      <session-timeout>3</session-timeout>
+    </session-config>
+
+    <!-- Welcome file list -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>

@@ -1,0 +1,121 @@
+<html>
+<head>
+	<title>Smack: Provider Architecture - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">
+Provider Architecture: Packet Extensions and Custom IQ's
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p>
+
+The Smack provider architecture is a system for plugging in
+custom XML parsing of packet extensions and IQ packets. The 
+standard  <a href="extensions/index.html">Smack Extensions</a>
+are built using the provider architecture. Two types of
+providers exist:<ul>
+      <li><tt>IQProvider</tt> -- parses IQ requests into Java objects.
+      <li><tt>PacketExtension</tt> -- parses XML sub-documents attached to 
+      packets into PacketExtension instances.</ul>
+
+<p class="subheader">IQProvider</p>
+
+By default, Smack only knows how to process IQ packets with sub-packets that
+are in a few namespaces such as:<ul>
+      <li>jabber:iq:auth
+      <li>jabber:iq:roster
+      <li>jabber:iq:register</ul>
+
+Because many more IQ types are part of XMPP and its extensions, a pluggable IQ parsing
+mechanism is provided. IQ providers are registered programatically or by creating a
+smack.providers file in the META-INF directory of your JAR file. The file is an XML
+document that contains one or more iqProvider entries, as in the following example:
+
+<pre>
+ &lt;?xml version="1.0"?&gt;
+ &lt;smackProviders&gt;
+     &lt;iqProvider&gt;
+         &lt;elementName&gt;query&lt;/elementName&gt;
+         &lt;namespace&gt;jabber:iq:time&lt;/namespace&gt;
+         &lt;className&gt;org.jivesoftware.smack.packet.Time&lt/className&gt;
+     &lt;/iqProvider&gt;
+ &lt;/smackProviders&gt;</pre>
+
+Each IQ provider is associated with an element name and a namespace. In the
+example above, the element name is <tt>query</tt> and the namespace is
+<tt>abber:iq:time</tt>. If multiple provider entries attempt to register to 
+handle the same namespace, the first entry loaded from the classpath will 
+take precedence. <p>
+
+The IQ provider class can either implement the IQProvider
+interface, or extend the IQ class. In the former case, each IQProvider is 
+responsible for parsing the raw XML stream to create an IQ instance. In 
+the latter case, bean introspection is used to try to automatically set 
+properties of the IQ instance using the values found in the IQ packet XML. 
+For example, an XMPP time packet resembles the following:
+
+<pre>
+&lt;iq type='result' to='joe@example.com' from='mary@example.com' id='time_1'&gt;
+    &lt;query xmlns='jabber:iq:time'&gt;
+        &lt;utc&gt;20020910T17:58:35&lt;/utc&gt;
+        &lt;tz&gt;MDT&lt;/tz&gt;
+        &lt;display&gt;Tue Sep 10 12:58:35 2002&lt;/display&gt;
+    &lt;/query&gt;
+&lt;/iq&gt;</pre>
+
+In order for this packet to be automatically mapped to the Time object listed in the
+providers file above, it must have the methods setUtc(String), setTz(String), and
+setDisplay(String). The introspection service will automatically try to convert the String
+value from the XML into a boolean, int, long, float, double, or Class depending on the
+type the IQ instance expects.<p>
+
+<p class="subheader">PacketExtensionProvider</p>
+
+Packet extension providers provide a pluggable system for 
+packet extensions, which are child elements in a custom namespace 
+of IQ, message and presence packets.
+Each extension provider is registered with an element name and namespace 
+in the smack.providers file as in the following example:
+
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;smackProviders&gt;
+    &lt;extensionProvider&gt;
+        &lt;elementName&gt;x&lt;/elementName&gt;
+        &lt;namespace&gt;jabber:iq:event&lt;/namespace&gt;
+        &lt;className&gt;org.jivesoftware.smack.packet.MessageEvent&lt/className&gt;
+    &lt;/extensionProvider&gt;
+&lt;/smackProviders&gt;</pre>
+
+If multiple provider entries attempt to register to handle the same element 
+name and namespace, the first entry loaded from the classpath will take 
+precedence.<p>
+
+Whenever a packet extension is found in a packet, parsing will 
+be passed to the correct provider. Each provider can either implement the 
+PacketExtensionProvider interface or be a standard Java Bean. In the 
+former case, each extension provider is responsible for parsing the raw 
+XML stream to contruct an object. In the latter case, bean introspection 
+is used to try to automatically set the properties of the class using 
+the values in the packet extension sub-element.<p>
+
+When an extension provider is not registered for an element name and 
+namespace combination, Smack will store all top-level elements of the 
+sub-packet in DefaultPacketExtension object and then attach it to the packet.
+      
+
+<br clear="all" /><br><br>
+
+<div class="footer">
+Copyright &copy; Jive Software 2002-2004
+</div>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<html>
+<head>
+	<title>Smack: Getting Started - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /
+</head>
+
+<body>
+
+<div class="header">
+Getting Started With Smack
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p>
+This document will introduce you to the Smack API and provide an overview of 
+important classes and concepts.
+</p>
+
+<p class="subheader">
+Requirements
+</p>
+
+The only requirement for Smack is JDK 1.2 or later<sup>
+<a style="text-decoration:none;" href="#ssenote">1</a></sup>. 
+An XML parser is embedded in the smack.jar file and no other third party 
+libraries are required.<p>
+
+<sup>1</sup> <font size="-1"><i>JDK 1.2 and 1.3 users that wish to use SSL connections must have the 
+<a href="http://java.sun.com/products/jsse/index-103.html">JSSE</a> library in their classpath.</i></font>
+
+<p class="subheader">
+Establishing a Connection
+</p>
+
+The <tt>XMPPConnection</tt> class is used to create a connection to an 
+XMPP server. To create an SSL connection, use the SSLXMPPConnection class.
+Below are code examples for making a connection:<p>
+
+<div class="code">
+<pre>
+<font color="gray"><i>// Create a connection to the jabber.org server.</i></font>
+XMPPConnection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+
+<font color="gray"><i>// Create a connection to the jabber.org server on a specific port.</i></font>
+XMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>, 5222);
+
+<font color="gray"><i>// Create an SSL connection to jabber.org.</i></font>
+XMPPConnection connection = <font color="navy"><b>new</b></font> SSLXMPPConnection(<font color="green">"jabber.org"</font>); 
+</pre></div>
+
+<p>Once you've created a connection, you should login using a username and password
+with the <tt>XMPPConnection.login(String username, String password)</tt> method.
+Once you've logged in, you can being chatting with other users by creating
+new <tt>Chat</tt> or <tt>GroupChat</tt> objects.
+
+<p class="subheader">
+Working with the Roster
+</p>
+The roster lets you keep track of the availability (presence) of other users. Users
+can be organized into groups such as "Friends" and "Co-workers", and then you
+discover whether each user is online or offline.<p> 
+
+Retrieve the roster using the <tt>XMPPConnection.getRoster()</tt> method. The roster
+class allows you to find all the roster entries, the groups they belong to, and the
+current presence status of each entry.
+
+<p class="subheader">
+Reading and Writing Packets
+</p>
+
+Each message to the XMPP server from a client is called a packet and is
+sent as XML. The <tt>org.jivesoftware.smack.packet</tt> package contains
+classes that encapsulate the three different basic packet types allowed by 
+XMPP (message, presence, and IQ). Classes such as <tt>Chat</tt> and <tt>GroupChat</tt>
+provide higher-level constructs that manage creating and sending packets
+automatically, but you can also create and send packets directly. Below
+is a code example for changing your presence to let people know you're unavailable
+and "out fishing":<p>
+
+<div class="code">
+<pre>
+<font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
+Presence presence = new Presence(Presence.Type.UNAVAILABLE);
+presence.setStatus(<font color="green">"Gone fishing"</font>);
+<font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
+con.sendPacket(presence);
+</pre></div>
+<p>
+
+Smack provides two ways to read incoming packets: <tt>PacketListener</tt>, and 
+<tt>PacketCollector</tt>. Both use <tt>PacketFilter</tt> instances to determine 
+which packets should be processed. A packet listener is used for event style programming,
+while a packet collector has a result queue of packets that you can do
+polling and blocking operations on. So, a packet listener is useful when
+you want to take some action whenever a packet happens to come in, while a
+packet collector is useful when you want to wait for a specific packet
+to arrive. Packet collectors and listeners can be created using an
+XMPPConnection instance.
+
+
+<p><div class="footer">
+Copyright &copy; Jive Software 2002-2005
+</div>
+
+</body>
+</html>
