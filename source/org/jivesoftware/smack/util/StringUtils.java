@@ -134,7 +134,7 @@ public class StringUtils {
      * @param string the string to escape.
      * @return the string with appropriate characters escaped.
      */
-    public static final String escapeForXML(String string) {
+    public static String escapeForXML(String string) {
         if (string == null) {
             return null;
         }
@@ -217,7 +217,7 @@ public class StringUtils {
      * @param data the String to compute the hash of.
      * @return a hashed version of the passed-in String
      */
-    public synchronized static final String hash(String data) {
+    public synchronized static String hash(String data) {
         if (digest == null) {
             try {
                 digest = MessageDigest.getInstance("SHA-1");
@@ -238,27 +238,22 @@ public class StringUtils {
     }
 
     /**
-     * Turns an array of bytes into a String representing each byte as an
-     * unsigned hex number.
-     * <p>
-     * Method by Santeri Paavolainen, Helsinki Finland 1996<br>
-     * (c) Santeri Paavolainen, Helsinki Finland 1996<br>
-     * Distributed under LGPL.
+     * Encodes an array of bytes as String representation of hexadecimal.
      *
-     * @param bytes an array of bytes to convert to a hex-string
-     * @return generated hex string
+     * @param bytes an array of bytes to convert to a hex string.
+     * @return generated hex string.
      */
-    public static final String encodeHex(byte[] bytes) {
-        StringBuffer buf = new StringBuffer(bytes.length * 2);
-        int i;
+    public static String encodeHex(byte[] bytes) {
+        StringBuffer hex = new StringBuffer(bytes.length * 2);
 
-        for (i = 0; i < bytes.length; i++) {
+        for (int i=0; i<bytes.length; i++) {
             if (((int) bytes[i] & 0xff) < 0x10) {
-                buf.append("0");
+                hex.append("0");
             }
-            buf.append(Long.toString((int) bytes[i] & 0xff, 16));
+            hex.append(Integer.toString((int) bytes[i] & 0xff, 16));
         }
-        return buf.toString();
+        
+        return hex.toString();
     }
 
     //*********************************************************************
