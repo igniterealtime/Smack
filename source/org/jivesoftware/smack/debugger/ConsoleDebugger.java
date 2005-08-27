@@ -111,13 +111,29 @@ public class ConsoleDebugger implements SmackDebugger {
         };
     }
 
+    public Reader newConnectionReader(Reader newReader) {
+        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ObservableReader debugReader = new ObservableReader(newReader);
+        debugReader.addReaderListener(readerListener);
+        reader = debugReader;
+        return reader;
+    }
+
+    public Writer newConnectionWriter(Writer newWriter) {
+        ((ObservableWriter)writer).removeWriterListener(writerListener);
+        ObservableWriter debugWriter = new ObservableWriter(newWriter);
+        debugWriter.addWriterListener(writerListener);
+        writer = debugWriter;
+        return writer;
+    }
+
     public void userHasLogged(String user) {
         boolean isAnonymous = "".equals(StringUtils.parseName(user));
         String title =
                 "User logged (" + connection.hashCode() + "): "
                 + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
                 + "@"
-                + connection.getHost()
+                + connection.getServiceName()
                 + ":"
                 + connection.getPort();
         title += "/" + StringUtils.parseResource(user);

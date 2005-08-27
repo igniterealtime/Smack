@@ -62,7 +62,7 @@ public class LiteDebugger implements SmackDebugger {
      * Creates the debug process, which is a GUI window that displays XML traffic.
      */
     private void createDebug() {
-        frame = new JFrame("Smack Debug Window -- " + connection.getHost() + ":" +
+        frame = new JFrame("Smack Debug Window -- " + connection.getServiceName() + ":" +
                 connection.getPort());
 
         // Add listener for window closing event 
@@ -289,13 +289,29 @@ public class LiteDebugger implements SmackDebugger {
         }
     }
 
+    public Reader newConnectionReader(Reader newReader) {
+        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ObservableReader debugReader = new ObservableReader(newReader);
+        debugReader.addReaderListener(readerListener);
+        reader = debugReader;
+        return reader;
+    }
+
+    public Writer newConnectionWriter(Writer newWriter) {
+        ((ObservableWriter)writer).removeWriterListener(writerListener);
+        ObservableWriter debugWriter = new ObservableWriter(newWriter);
+        debugWriter.addWriterListener(writerListener);
+        writer = debugWriter;
+        return writer;
+    }
+
     public void userHasLogged(String user) {
         boolean isAnonymous = "".equals(StringUtils.parseName(user));
         String title =
             "Smack Debug Window -- "
                 + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
                 + "@"
-                + connection.getHost()
+                + connection.getServiceName()
                 + ":"
                 + connection.getPort();
         title += "/" + StringUtils.parseResource(user);

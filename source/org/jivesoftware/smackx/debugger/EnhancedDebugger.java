@@ -452,7 +452,7 @@ public class EnhancedDebugger implements SmackDebugger {
         connPanel.add(
             label,
             new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
-        JFormattedTextField field = new JFormattedTextField(connection.getHost());
+        JFormattedTextField field = new JFormattedTextField(connection.getServiceName());
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setEditable(false);
@@ -559,6 +559,22 @@ public class EnhancedDebugger implements SmackDebugger {
 
         tabbedPane.add("Information", new JScrollPane(informationPanel));
         tabbedPane.setToolTipTextAt(4, "Information and statistics about the debugged connection");
+    }
+
+    public Reader newConnectionReader(Reader newReader) {
+        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ObservableReader debugReader = new ObservableReader(newReader);
+        debugReader.addReaderListener(readerListener);
+        reader = debugReader;
+        return reader;
+    }
+
+    public Writer newConnectionWriter(Writer newWriter) {
+        ((ObservableWriter)writer).removeWriterListener(writerListener);
+        ObservableWriter debugWriter = new ObservableWriter(newWriter);
+        debugWriter.addWriterListener(writerListener);
+        writer = debugWriter;
+        return writer;
     }
 
     public void userHasLogged(String user) {

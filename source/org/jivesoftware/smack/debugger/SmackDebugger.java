@@ -59,6 +59,22 @@ public interface SmackDebugger {
     public abstract Writer getWriter();
 
     /**
+     * Returns a new special Reader that wraps the new connection Reader. The connection
+     * has been secured so he now have a new reader and writer.
+     *
+     * @return a new special Reader that wraps the new connection Reader.
+     */
+    public abstract Reader newConnectionReader(Reader reader);
+
+    /**
+     * Returns a new special Writer that wraps the new connection Writer. The connection
+     * has been secured so he now have a new reader and writer.
+     *
+     * @return a new special Writer that wraps the new connection Writer.
+     */
+    public abstract Writer newConnectionWriter(Writer writer);
+
+    /**
      * Returns the thread that will listen for all incoming packets and write them to the GUI. 
      * This is what we call "interpreted" packet data, since it's the packet data as Smack sees 
      * it and not as it's coming in as raw XML.
