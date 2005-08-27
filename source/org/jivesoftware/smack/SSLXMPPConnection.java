@@ -20,18 +20,15 @@
 
 package org.jivesoftware.smack;
 
-import javax.net.ssl.SSLSocketFactory;
-import com.sun.net.ssl.*;
-
-import java.io.IOException;
-import java.net.*;
-import java.security.NoSuchAlgorithmException;
-import java.security.KeyManagementException;
 import javax.net.SocketFactory;
-import com.sun.net.ssl.X509TrustManager;
-import java.security.cert.X509Certificate;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Creates an SSL connection to a XMPP server.
@@ -44,7 +41,8 @@ public class SSLXMPPConnection extends XMPPConnection {
 
     /**
      * Creates a new SSL connection to the specified host on the default
-     * SSL port (5223).
+     * SSL port (5223). The IP address of the server is assumed to match the
+     * service name.
      *
      * @param host the XMPP host.
      * @throws XMPPException if an error occurs while trying to establish the connection.
@@ -58,7 +56,8 @@ public class SSLXMPPConnection extends XMPPConnection {
     }
 
     /**
-     * Creates a new SSL connection to the specified host on the specified port.
+     * Creates a new SSL connection to the specified host on the specified port. The IP address
+     * of the server is assumed to match the service name.
      *
      * @param host the XMPP host.
      * @param port the port to use for the connection (default XMPP SSL port is 5223).
@@ -69,7 +68,23 @@ public class SSLXMPPConnection extends XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public SSLXMPPConnection(String host, int port) throws XMPPException {
-        super(host, port, socketFactory);
+        this(host, port, host);
+    }
+
+    /**
+     * Creates a new SSL connection to the specified XMPP server on the given host and port.
+     *
+     * @param host the host name, or null for the loopback address.
+     * @param port the port on the server that should be used (default XMPP SSL port is 5223).
+     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
+     */
+    public SSLXMPPConnection(String host, int port, String serviceName) throws XMPPException {
+        super(host, port, serviceName, socketFactory);
     }
 
     public boolean isSecureConnection() {
@@ -89,7 +104,7 @@ public class SSLXMPPConnection extends XMPPConnection {
             try {
                 SSLContext sslcontent = SSLContext.getInstance("TLS");
                 sslcontent.init(null, // KeyManager not required
-                            new TrustManager[] { new DummyTrustManager() },
+                            new TrustManager[] { new OpenTrustManager() },
                             new java.security.SecureRandom());
                 factory = sslcontent.getSocketFactory();
             }
@@ -135,34 +150,6 @@ public class SSLXMPPConnection extends XMPPConnection {
 
         public String[] getSupportedCipherSuites() {
             return factory.getSupportedCipherSuites();
-        }
-    }
-
-    /**
-     * Trust manager which accepts certificates without any validation
-     * except date validation.
-     */
-    private static class DummyTrustManager implements X509TrustManager {
-
-        public boolean isClientTrusted(X509Certificate[] cert) {
-            return true;
-        }
-
-        public boolean isServerTrusted(X509Certificate[] cert) {
-            try {
-                cert[0].checkValidity();
-                return true;
-            }
-            catch (CertificateExpiredException e) {
-                return false;
-            }
-            catch (CertificateNotYetValidException e) {
-                return false;
-            }
-        }
-
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[0];
         }
     }
 }
