@@ -121,4 +121,11 @@
         <className>org.jivesoftware.smackx.packet.OfflineMessageInfo$Provider</className>
     </extensionProvider>
 
+    <!-- Resource Binding -->
+    <iqProvider>
+        <elementName>bind</elementName>
+        <namespace>urn:ietf:params:xml:ns:xmpp-bind</namespace>
+        <className>org.jivesoftware.smack.packet.Bind$Provider</className>
+    </iqProvider>
+
 </smackProviders>
