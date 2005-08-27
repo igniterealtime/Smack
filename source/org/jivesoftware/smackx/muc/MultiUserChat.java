@@ -206,7 +206,7 @@ public class MultiUserChat {
     public static Collection getServiceNames(XMPPConnection connection) throws XMPPException {
         List answer = new ArrayList();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        DiscoverItems items = discoManager.discoverItems(connection.getHost());
+        DiscoverItems items = discoManager.discoverItems(connection.getServiceName());
         for (Iterator it = items.getItems(); it.hasNext();) {
             DiscoverItems.Item item = (DiscoverItems.Item) it.next();
             DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
