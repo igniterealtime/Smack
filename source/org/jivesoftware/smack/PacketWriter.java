@@ -154,6 +154,10 @@ class PacketWriter {
         listenerThread.start();
     }
 
+    void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
     /**
      * Shuts down the packet writer. Once this method has been called, no further
      * packets will be written to the server.
@@ -187,14 +191,7 @@ class PacketWriter {
     private void writePackets() {
         try {
             // Open the stream.
-            StringBuffer stream = new StringBuffer();
-            stream.append("<stream:stream");
-            stream.append(" to=\"" + connection.getHost() + "\"");
-            stream.append(" xmlns=\"jabber:client\"");
-            stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\">");
-            writer.write(stream.toString());
-            writer.flush();
-            stream = null;
+            openStream();
             // Write out packets from the queue.
             while (!done) {
                 Packet packet = nextPacket();
@@ -274,6 +271,24 @@ class PacketWriter {
     }
 
     /**
+     * Sends to the server a new stream element. This operation may be requested several times
+     * so we need to encapsulate the logic in one place. This message will be sent while doing
+     * TLS, SASL and resource binding.
+     *
+     * @throws IOException If an error occurs while sending the stanza to the server.
+     */
+    void openStream() throws IOException {
+        StringBuffer stream = new StringBuffer();
+        stream.append("<stream:stream");
+        stream.append(" to=\"").append(connection.serviceName).append("\"");
+        stream.append(" xmlns=\"jabber:client\"");
+        stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\"");
+        stream.append(" version=\"1.0\">");
+        writer.write(stream.toString());
+        writer.flush();
+    }
+
+    /**
      * A wrapper class to associate a packet filter with a listener.
      */
     private static class ListenerWrapper {
@@ -282,7 +297,7 @@ class PacketWriter {
         private PacketFilter packetFilter;
 
         public ListenerWrapper(PacketListener packetListener,
-                PacketFilter packetFilter)
+                               PacketFilter packetFilter)
         {
             this.packetListener = packetListener;
             this.packetFilter = packetFilter;

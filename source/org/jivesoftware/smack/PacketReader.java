@@ -20,17 +20,16 @@
 
 package org.jivesoftware.smack;
 
-import org.xmlpull.v1.*;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.*;
-import java.util.List;
-
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.util.*;
-import org.jivesoftware.smack.provider.*;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
@@ -97,8 +96,7 @@ class PacketReader {
      * @return a new packet collector.
      */
     public PacketCollector createPacketCollector(PacketFilter packetFilter) {
-        PacketCollector packetCollector = new PacketCollector(this, packetFilter);
-        return packetCollector;
+        return new PacketCollector(this, packetFilter);
     }
 
     /**
@@ -158,7 +156,8 @@ class PacketReader {
                         if (waitTime <= 0) {
                             break;
                         }
-                        connectionIDLock.wait(waitTime);
+                        // Wait 3 times the standard time since TLS may take a while
+                        connectionIDLock.wait(waitTime * 3);
                         long now = System.currentTimeMillis();
                         waitTime -= now - start;
                         start = now;
@@ -218,6 +217,15 @@ class PacketReader {
     }
 
     /**
+     * Resets the parser using the latest connection's reader. Reseting the parser is necessary
+     * when the plain connection has been secured or when a new opening stream element is going
+     * to be sent by the server.
+     */
+    private void resetParser() throws XmlPullParserException {
+        parser.setInput(connection.reader);
+    }
+
+    /**
      * Process listeners.
      */
     private void processListeners() {
@@ -274,18 +282,50 @@ class PacketReader {
                             // Get the connection id.
                             for (int i=0; i<parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals("id")) {
-                                    // Save the connectionID and notify that we've gotten it.
-                                    synchronized(connectionIDLock) {
-                                        connectionID = parser.getAttributeValue(i);
-                                        connectionIDLock.notifyAll();
+                                    if (("1.0".equals(parser.getAttributeValue("", "version")) &&
+                                            connection.isUsingTLS()) || (!"1.0".equals(
+                                            parser.getAttributeValue("", "version")))) {
+                                        // Save the connectionID and notify that we've gotten it.
+                                        // Only notify if TLS has been secured or if the server
+                                        // does not support TLS
+                                        synchronized(connectionIDLock) {
+                                            connectionID = parser.getAttributeValue(i);
+                                            connectionIDLock.notifyAll();
+                                        }
                                     }
                                 }
                                 else if (parser.getAttributeName(i).equals("from")) {
                                     // Use the server name that the server says that it is.
-                                    connection.host = parser.getAttributeValue(i);
+                                    connection.serviceName = parser.getAttributeValue(i);
                                 }
                             }
                         }
+                    }
+                    else if (parser.getName().equals("features")) {
+                    	parseFeatures(parser);
+                    }
+                    else if (parser.getName().equals("proceed")) {
+                        // Secure the connection by negotiating TLS
+                        connection.proceedTLSReceived();
+                        // Reset the state of the parser since a new stream element is going
+                        // to be sent by the server
+                        resetParser();
+                    }
+                    else if (parser.getName().equals("failure")) {
+                        // TLS negotiation has failed so close the connection.
+                        throw new Exception("TLS negotiation has failed");
+                    }
+                    else if (parser.getName().equals("challenge")) {
+                        // The server is challenging the SASL authentication made by the client
+                        connection.getSASLAuthentication().challengeReceived(parser.nextText());
+                    }
+                    else if (parser.getName().equals("success")) {
+                        // The SASL authentication with the server was successful. The next step
+                        // will be to bind the resource
+                        connection.getSASLAuthentication().authenticated();
+                        // Reset the state of the parser since a new stream element is going
+                        // to be sent by the server
+                        resetParser();
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
@@ -336,6 +376,68 @@ class PacketReader {
                 collector.processPacket(packet);
             }
         }
+    }
+
+    private void parseFeatures(XmlPullParser parser) throws Exception {
+    	boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("starttls")) {
+                    // Confirm the server that we want to use TLS
+                    connection.startTLSReceived();
+                }
+                else if (parser.getName().equals("mechanisms") && connection.isUsingTLS()) {
+                    // The server is reporting available SASL mechanism. Store this information
+                    // which will be used later while logging (i.e. authenticating) into
+                    // the server
+                    connection.getSASLAuthentication()
+                            .setAvailableSASLMethods(parseMechanisms(parser));
+                }
+                else if (parser.getName().equals("bind")) {
+                    // The server requires the client to bind a resource to the stream
+                    connection.getSASLAuthentication().bindingRequired();
+                }
+                else if (parser.getName().equals("session")) {
+                    // The server supports sessions
+                    connection.getSASLAuthentication().sessionsSupported();
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("features")) {
+                    done = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns a collection of Stings with the mechanisms included in the mechanisms stanza.
+     *
+     * @param parser the XML parser, positioned at the start of an IQ packet.
+     * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
+     * @throws Exception if an exception occurs while parsing the stanza.
+     */
+    private Collection parseMechanisms(XmlPullParser parser) throws Exception {
+        List mechanisms = new ArrayList();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                String elementName = parser.getName();
+                if (elementName.equals("mechanism")) {
+                    mechanisms.add(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("mechanisms")) {
+                    done = true;
+                }
+            }
+        }
+        return mechanisms;
     }
 
     /**
