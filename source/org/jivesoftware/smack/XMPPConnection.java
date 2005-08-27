@@ -20,15 +20,21 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.debugger.*;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.util.StringUtils;
 
 import javax.net.SocketFactory;
-import java.lang.reflect.Constructor;
-import java.net.*;
-import java.util.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -77,42 +83,56 @@ public class XMPPConnection {
     }
     private SmackDebugger debugger = null;
 
+    /**
+     * IP address or host name of the server. This information is only used when
+     * creating new socket connections to the server. If this information is not
+     * configured then it will be assumed that the host name matches the service name.
+     */
     String host;
     int port;
     Socket socket;
+    /**
+     * Hostname of the XMPP server. Usually servers use the same service name as the name
+     * of the server. However, there are some servers like google where host would be
+     * talk.google.com and the serviceName would be gmail.com.
+     */
+    String serviceName;
 
     String connectionID;
     private String user = null;
     private boolean connected = false;
     private boolean authenticated = false;
     private boolean anonymous = false;
+    private boolean usingTLS = false;
 
     PacketWriter packetWriter;
     PacketReader packetReader;
 
     Roster roster = null;
     private AccountManager accountManager = null;
+    private SASLAuthentication saslAuthentication = new SASLAuthentication(this);
 
     Writer writer;
     Reader reader;
 
     /**
      * Creates a new connection to the specified XMPP server. The default port of 5222 will
-     * be used.
+     * be used. The IP address of the server is assumed to match the service name.
      *
-     * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @throws XMPPException if an error occurs while trying to establish the connection.
      *      Two possible errors can occur which will be wrapped by an XMPPException --
      *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
      *      502). The error codes and wrapped exceptions can be used to present more
      *      appropiate error messages to end-users.
      */
-    public XMPPConnection(String host) throws XMPPException {
-        this(host, 5222);
+    public XMPPConnection(String serviceName) throws XMPPException {
+        this(serviceName, 5222, serviceName);
     }
 
     /**
-     * Creates a new connection to the specified XMPP server on the given port.
+     * Creates a new connection to the specified XMPP server on the given port. The IP address
+     * of the server is assumed to match the service name.
      *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
@@ -123,6 +143,22 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host, int port) throws XMPPException {
+        this(host, port, host);
+    }
+
+    /**
+     * Creates a new connection to the specified XMPP server on the given host and port.
+     *
+     * @param host the host name, or null for the loopback address.
+     * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
+     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
+     */
+    public XMPPConnection(String host, int port, String serviceName) throws XMPPException {
         this.host = host;
         this.port = port;
         try {
@@ -140,6 +176,7 @@ public class XMPPConnection {
                 new XMPPError(502),
                 ioe);
         }
+        this.serviceName = serviceName;
         init();
     }
 
@@ -151,16 +188,19 @@ public class XMPPConnection {
      * XMPP server. A typical use for a custom SocketFactory is when connecting through a
      * SOCKS proxy.
      *
-     * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @param host the host name, or null for the loopback address.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
-     * @param socketFactory a SocketFactory that will be used to create the socket to the XMPP server.
+     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * @param socketFactory a SocketFactory that will be used to create the socket to the XMPP
+     *        server.
      * @throws XMPPException if an error occurs while trying to establish the connection.
      *      Two possible errors can occur which will be wrapped by an XMPPException --
      *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
      *      502). The error codes and wrapped exceptions can be used to present more
      *      appropiate error messages to end-users.
      */
-    public XMPPConnection(String host, int port, SocketFactory socketFactory) throws XMPPException {
+    public XMPPConnection(String host, int port, String serviceName, SocketFactory socketFactory)
+            throws XMPPException {
         this.host = host;
         this.port = port;
         try {
@@ -178,6 +218,7 @@ public class XMPPConnection {
                 new XMPPError(502),
                 ioe);
         }
+        this.serviceName = serviceName;
         init();
     }
 
@@ -187,7 +228,6 @@ public class XMPPConnection {
      * one of the other constructors.
      */
     XMPPConnection() {
-
     }
 
     /**
@@ -202,9 +242,20 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns the host name of the XMPP server for this connection.
+     * Returns the name of the service provided by the XMPP server for this connection. After
+     * authenticating with the server the returned value may be different.
      *
-     * @return the host name of the XMPP server.
+     * @return the name of the service provided by the XMPP server.
+     */
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    /**
+     * Returns the host name of the server where the XMPP server is running. This would be the
+     * IP address of the server or a name that may be resolved by a DNS server.
+     *
+     * @return the host name of the server where the XMPP server is running.
      */
     public String getHost() {
         return host;
@@ -294,69 +345,29 @@ public class XMPPConnection {
         }
         // Do partial version of nameprep on the username.
         username = username.toLowerCase().trim();
-        // If we send an authentication packet in "get" mode with just the username,
-        // the server will return the list of authentication protocols it supports.
-        Authentication discoveryAuth = new Authentication();
-        discoveryAuth.setType(IQ.Type.GET);
-        discoveryAuth.setUsername(username);
 
-        PacketCollector collector =
-            packetReader.createPacketCollector(new PacketIDFilter(discoveryAuth.getPacketID()));
-        // Send the packet
-        packetWriter.sendPacket(discoveryAuth);
-        // Wait up to a certain number of seconds for a response from the server.
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
-        // Otherwise, no error so continue processing.
-        Authentication authTypes = (Authentication) response;
-        collector.cancel();
-
-        // Now, create the authentication packet we'll send to the server.
-        Authentication auth = new Authentication();
-        auth.setUsername(username);
-
-        // Figure out if we should use digest or plain text authentication.
-        if (authTypes.getDigest() != null) {
-            auth.setDigest(connectionID, password);
-        }
-        else if (authTypes.getPassword() != null) {
-            auth.setPassword(password);
+        String response = null;
+        if (usingTLS) {
+            // Authenticate using SASL
+            response = saslAuthentication.authenticate(username, password, resource);
         }
         else {
-            throw new XMPPException("Server does not support compatible authentication mechanism.");
+            // Authenticate using Non-SASL
+            response = new NonSASLAuthentication(this).authenticate(username, password, resource);
         }
 
-        auth.setResource(resource);
-
-        collector = packetReader.createPacketCollector(new PacketIDFilter(auth.getPacketID()));
-        // Send the packet.
-        packetWriter.sendPacket(auth);
-        // Wait up to a certain number of seconds for a response from the server.
-        response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (response == null) {
-            throw new XMPPException("Authentication failed.");
-        }
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
         // Set the user.
-        if (response.getTo() != null) {
-            this.user = response.getTo();
+        if (response != null) {
+            this.user = response;
+            // Update the serviceName with the one returned by the server
+            this.serviceName = StringUtils.parseServer(response);
         }
         else {
-            this.user = username + "@" + this.host;
+            this.user = username + "@" + this.serviceName;
             if (resource != null) {
                 this.user += "/" + resource;
             }
         }
-        // We're done with the collector, so explicitly cancel it.
-        collector.cancel();
 
         // Create the roster.
         this.roster = new Roster(this);
@@ -383,8 +394,8 @@ public class XMPPConnection {
     /**
      * Logs in to the server anonymously. Very few servers are configured to support anonymous
      * authentication, so it's fairly likely logging in anonymously will fail. If anonymous login
-     * does succeed, your XMPP address will likely be in the form "server/123ABC" (where "123ABC" is a
-     * random value generated by the server).
+     * does succeed, your XMPP address will likely be in the form "server/123ABC" (where "123ABC"
+     * is a random value generated by the server).
      *
      * @throws XMPPException if an error occurs or anonymous logins are not supported by the server.
      * @throws IllegalStateException if not connected to the server, or already logged in
@@ -418,7 +429,7 @@ public class XMPPConnection {
             this.user = response.getTo();
         }
         else {
-            this.user = this.host + "/" + ((Authentication) response).getResource();
+            this.user = this.serviceName + "/" + ((Authentication) response).getResource();
         }
         // We're done with the collector, so explicitly cancel it.
         collector.cancel();
@@ -732,70 +743,11 @@ public class XMPPConnection {
      * @throws XMPPException if establishing a connection to the server fails.
      */
     private void init() throws XMPPException {
-        try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-        }
-        catch (IOException ioe) {
-            throw new XMPPException(
-                "XMPPError establishing connection with server.",
-                new XMPPError(502),
-                ioe);
-        }
+        // Set the reader and writer instance variables
+        initReaderAndWriter();
 
-        // If debugging is enabled, we open a window and write out all network traffic.
-        if (DEBUG_ENABLED) {
-            // Detect the debugger class to use.
-            String className = null;
-            // Use try block since we may not have permission to get a system
-            // property (for example, when an applet).
-            try {
-                className = System.getProperty("smack.debuggerClass");
-            }
-            catch (Throwable t) {
-            }
-            Class debuggerClass = null;
-            if (className != null) {
-                try {
-                    debuggerClass = Class.forName(className);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (debuggerClass == null) {
-                try {
-                    debuggerClass =
-                            Class.forName("org.jivesoftware.smackx.debugger.EnhancedDebugger");
-                }
-                catch (Exception ex) {
-                    try {
-                        debuggerClass = Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
-                    }
-                    catch (Exception ex2) {
-                        ex2.printStackTrace();
-                    }
-                }
-            }
-            // Create a new debugger instance. If an exception occurs then disable the debugging
-            // option
-            try {
-                Constructor constructor =
-                    debuggerClass.getConstructor(
-                        new Class[] { XMPPConnection.class, Writer.class, Reader.class });
-                debugger =
-                    (SmackDebugger) constructor.newInstance(new Object[] { this, writer, reader });
-                reader = debugger.getReader();
-                writer = debugger.getWriter();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                DEBUG_ENABLED = false;
-            }
-        }
-
-		try
-		{
+        try
+        {
             packetWriter = new PacketWriter(this);
             packetReader = new PacketReader(this);
 
@@ -819,36 +771,107 @@ public class XMPPConnection {
             // Notify that a new connection has been established
             connectionEstablished(this);
         }
-		catch (XMPPException ex)
-		{
-			// An exception occurred in setting up the connection. Make sure we shut down the
-			// readers and writers and close the socket.
+        catch (XMPPException ex)
+        {
+            // An exception occurred in setting up the connection. Make sure we shut down the
+            // readers and writers and close the socket.
 
-			if (packetWriter != null) {
-				try { packetWriter.shutdown(); } catch (Throwable ignore) { }
-				packetWriter = null;
-			}
-			if (packetReader != null) {
-				try { packetReader.shutdown(); } catch (Throwable ignore) { }
-				packetReader = null;
-			}
-			if (reader != null) {
-				try { reader.close(); } catch (Throwable ignore) { }
-				reader = null;
-			}
-			if (writer != null) {
-				try { writer.close(); } catch (Throwable ignore) { }
-				writer = null;
-			}
-			if (socket != null) {
-				try { socket.close(); } catch (Exception e) { }
-				socket = null;
-			}
-			authenticated = false;
-			connected = false;
+            if (packetWriter != null) {
+                try { packetWriter.shutdown(); } catch (Throwable ignore) { }
+                packetWriter = null;
+            }
+            if (packetReader != null) {
+                try { packetReader.shutdown(); } catch (Throwable ignore) { }
+                packetReader = null;
+            }
+            if (reader != null) {
+                try { reader.close(); } catch (Throwable ignore) { }
+                reader = null;
+            }
+            if (writer != null) {
+                try { writer.close(); } catch (Throwable ignore) { }
+                writer = null;
+            }
+            if (socket != null) {
+                try { socket.close(); } catch (Exception e) { }
+                socket = null;
+            }
+            authenticated = false;
+            connected = false;
 
-			throw ex;		// Everything stoppped. Now throw the exception.
-		}
+            throw ex;		// Everything stoppped. Now throw the exception.
+        }
+    }
+
+    private void initReaderAndWriter() throws XMPPException {
+        try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+        }
+        catch (IOException ioe) {
+            throw new XMPPException(
+                "XMPPError establishing connection with server.",
+                new XMPPError(502),
+                ioe);
+        }
+
+        // If debugging is enabled, we open a window and write out all network traffic.
+        if (DEBUG_ENABLED) {
+            if (debugger == null) {
+                // Detect the debugger class to use.
+                String className = null;
+                // Use try block since we may not have permission to get a system
+                // property (for example, when an applet).
+                try {
+                    className = System.getProperty("smack.debuggerClass");
+                }
+                catch (Throwable t) {
+                }
+                Class debuggerClass = null;
+                if (className != null) {
+                    try {
+                        debuggerClass = Class.forName(className);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (debuggerClass == null) {
+                    try {
+                        debuggerClass =
+                                Class.forName("org.jivesoftware.smackx.debugger.EnhancedDebugger");
+                    }
+                    catch (Exception ex) {
+                        try {
+                            debuggerClass = Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
+                        }
+                        catch (Exception ex2) {
+                            ex2.printStackTrace();
+                        }
+                    }
+                }
+                // Create a new debugger instance. If an exception occurs then disable the debugging
+                // option
+                try {
+                    Constructor constructor =
+                        debuggerClass.getConstructor(
+                            new Class[] { XMPPConnection.class, Writer.class, Reader.class });
+                    debugger = (SmackDebugger) constructor
+                            .newInstance(new Object[]{this, writer, reader});
+                    reader = debugger.getReader();
+                    writer = debugger.getWriter();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    DEBUG_ENABLED = false;
+                }
+            }
+            else {
+                // Obtain new reader and writer from the existing debugger
+                reader = debugger.newConnectionReader(reader);
+                writer = debugger.newConnectionWriter(writer);
+            }
+        }
     }
 
     /**
@@ -864,4 +887,79 @@ public class XMPPConnection {
             listeners[i].connectionEstablished(connection);
         }
     }
+
+    /***********************************************
+     * TLS code below
+     **********************************************/
+
+    /**
+     * Returns true if the connection to the server has successfully negotiated TLS. Once TLS
+     * has been negotiatied the connection has been secured.
+     *
+     * @return true if the connection to the server has successfully negotiated TLS.
+     */
+    public boolean isUsingTLS() {
+        return usingTLS;
+    }
+
+    /**
+     * Returns the SASLAuthentication manager that is responsible for authenticating with
+     * the server.
+     *
+     * @return the SASLAuthentication manager that is responsible for authenticating with
+     *         the server.
+     */
+    public SASLAuthentication getSASLAuthentication() {
+        return saslAuthentication;
+    }
+
+    /**
+     * Notification message saying that the server supports TLS so confirm the server that we
+     * want to secure the connection.
+     */
+    void startTLSReceived() {
+        try {
+            writer.write("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"/>");
+            writer.flush();
+        } catch (IOException e) {
+            packetReader.notifyConnectionError(e);
+        }
+    }
+
+    /**
+     * The server has indicated that TLS negotiation can start. We now need to secure the
+     * existing plain connection and perform a handshake. This method won't return until the
+     * connection has finished the handshake or an error occured while securing the connection.
+     */
+    void proceedTLSReceived() {
+        try {
+            SSLContext context = SSLContext.getInstance("TLS");
+            // Accept any certificate presented by the server
+            context.init(null, // KeyManager not required
+                    new javax.net.ssl.TrustManager[] { new OpenTrustManager() },
+                    new java.security.SecureRandom());
+            Socket plain = socket;
+            // Secure the plain connection
+            socket = context.getSocketFactory().createSocket(plain,
+                    plain.getInetAddress().getHostName(), plain.getPort(), true);
+            socket.setSoTimeout(0);
+            socket.setKeepAlive(true);
+            // Initialize the reader and writer with the new secured version
+            initReaderAndWriter();
+            // Proceed to do the handshake
+            ((SSLSocket)socket).startHandshake();
+
+            // Set that TLS was successful
+            usingTLS = true;
+
+            // Set the new  writer to use
+            packetWriter.setWriter(writer);
+            // Send a new opening stream to the server
+            packetWriter.openStream();
+        }
+        catch (Exception e) {
+            packetReader.notifyConnectionError(e);
+        }
+    }
+
 }
