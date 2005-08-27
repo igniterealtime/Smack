@@ -320,7 +320,7 @@ public class XMPPConnection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server, and optionally sends an available presence. if <tt>sendPresence</tt>
+     * the server. An available presence may optionally be sent. If <tt>sendPresence</tt>
      * is false, a presence packet must be sent manually later. If more than five seconds
      * (default timeout) elapses in each step of the authentication process without a
      * response from the server, or if an error occurs, a XMPPException will be thrown.
