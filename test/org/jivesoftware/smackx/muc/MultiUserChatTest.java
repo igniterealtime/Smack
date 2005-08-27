@@ -1723,7 +1723,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // Create 20 more connections for user2
             XMPPConnection[] conns = new XMPPConnection[20];
             for (int i = 0; i < conns.length; i++) {
-                conns[i] = new XMPPConnection(getHost());
+                conns[i] = new XMPPConnection(getServiceName());
                 conns[i].login(getUsername(1), getUsername(1), "resource-" + i);
             }
 

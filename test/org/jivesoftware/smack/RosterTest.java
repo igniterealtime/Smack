@@ -389,7 +389,7 @@ public class RosterTest extends SmackTestCase {
             Presence presence = null;
 
             // Create another connection for the same user of connection 1
-            XMPPConnection conn4 = new XMPPConnection(getHost());
+            XMPPConnection conn4 = new XMPPConnection(getServiceName());
             conn4.login(getUsername(1), getUsername(1), "Home");
 
             // Add a new roster entry
@@ -408,7 +408,7 @@ public class RosterTest extends SmackTestCase {
             assertNotNull("Returned a null Presence for an existing user", presence);
 
             // Check that the right presence is returned for a user+resource
-            presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getHost() + "/Home");
+            presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
             assertEquals(
                 "Returned the wrong Presence",
                 StringUtils.parseResource(presence.getFrom()),
@@ -422,7 +422,7 @@ public class RosterTest extends SmackTestCase {
                 "Smack");
 
             // Check that the no presence is returned for a non-existent user+resource
-            presence = roster.getPresenceResource("noname@" + getHost() + "/Smack");
+            presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
             assertNull("Returned a Presence for a non-existing user", presence);
 
             // Check that the returned presences are correct

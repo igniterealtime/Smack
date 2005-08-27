@@ -107,7 +107,7 @@ public class MessageTest extends SmackTestCase {
         // Try now sending huge messages over an SSL connection
         XMPPConnection conn = null;
         try {
-            conn = new SSLXMPPConnection(getHost());
+            conn = new SSLXMPPConnection(getServiceName());
             conn.login(getUsername(0), getUsername(0), "Other resource");
 
             // Send the first message

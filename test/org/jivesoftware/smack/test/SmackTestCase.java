@@ -83,6 +83,7 @@ import junit.framework.TestCase;
 public abstract class SmackTestCase extends TestCase {
 
     private String host = "localhost";
+    private String serviceName = "localhost";
     private int port = 5222;
 
     private String chatDomain = "chat.localhost";
@@ -161,7 +162,7 @@ public abstract class SmackTestCase extends TestCase {
      * @return the bare XMPP address of the user (e.g. johndoe@jabber.org).
      */
     protected String getBareJID(int index) {
-        return getUsername(index) + "@" + getConnection(index).getHost();
+        return getUsername(index) + "@" + getConnection(index).getServiceName();
     }
 
     /**
@@ -181,6 +182,10 @@ public abstract class SmackTestCase extends TestCase {
 
     protected int getPort() {
         return port;
+    }
+
+    protected String getServiceName() {
+        return serviceName;
     }
 
     /**
@@ -215,13 +220,14 @@ public abstract class SmackTestCase extends TestCase {
                     connections[i] = new XMPPConnection(host, port);
                 }
                 else {
-                    connections[i] = new XMPPConnection(host, port, getSocketFactory());
+                    connections[i] = new XMPPConnection(host, port, host, getSocketFactory());
                 }
             }
             // Use the host name that the server reports. This is a good idea in most
             // cases, but could fail if the user set a hostname in their XMPP server
             // that will not resolve as a network connection.
             host = connections[0].getHost();
+            serviceName = connections[0].getServiceName();
             // Create the test accounts
             if (!getConnection(0).getAccountManager().supportsAccountCreation())
                 fail("Server does not support account creation");
@@ -316,7 +322,9 @@ public abstract class SmackTestCase extends TestCase {
                     }
                     else if (parser.getName().equals("port")) {
                         port = parseIntProperty(parser, port);
-                        ;
+                    }
+                    else if (parser.getName().equals("serviceName")) {
+                        serviceName = parser.nextText();
                     }
                     else if (parser.getName().equals("chat")) {
                         chatDomain = parser.nextText();

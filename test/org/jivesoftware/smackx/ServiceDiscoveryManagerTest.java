@@ -54,11 +54,9 @@ package org.jivesoftware.smackx;
 
 import java.util.Iterator;
 
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.DiscoverItems;
 
 
 /**
@@ -138,7 +136,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         assertFalse(XHTMLManager.isServiceEnabled(getConnection(1), getBareJID(0)));
         // Using a full JID check that the other client supports XHTML. 
         assertTrue(XHTMLManager.isServiceEnabled(getConnection(1), getFullJID(0)));
-        
+
         // Disable the XHTML Message support in connection1
         XHTMLManager.setServiceEnabled(getConnection(0), false);
         // Check for local XHTML service support 
@@ -154,7 +152,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
     public void testDiscoverPublishItemsSupport() {
         try {
             boolean canPublish = ServiceDiscoveryManager.getInstanceFor(getConnection(0))
-                    .canPublishItems(getHost());
+                    .canPublishItems(getServiceName());
             assertFalse("Messenger does not support publishing...so far!!", canPublish);
         }
         catch (Exception e) {
@@ -175,7 +173,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         itemsToPublish.addItem(itemToPublish);
         
         try {
-            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems(getHost(),
+            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems(getServiceName(),
                     itemsToPublish);
         }
         catch (Exception e) {

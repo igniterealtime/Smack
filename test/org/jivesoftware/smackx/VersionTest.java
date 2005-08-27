@@ -46,7 +46,7 @@ public class VersionTest extends SmackTestCase {
     public void testGetServerVersion() {
         Version version = new Version();
         version.setType(IQ.Type.GET);
-        version.setTo(getHost());
+        version.setTo(getServiceName());
 
         // Create a packet collector to listen for a response.
         PacketCollector collector = getConnection(0).createPacketCollector(new PacketIDFilter(version.getPacketID()));
