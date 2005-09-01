@@ -21,9 +21,12 @@
 package org.jivesoftware.smack;
 
 /**
- * Convenience class to make it easier to connect to GoogleTalk. You can also use
- * XMPPConnection to connect to Google Talk by specifying the server name,
- * service name, and port.
+ * Convenience class to make it easier to connect to the Google Talk IM service.
+ * You can also use {@link XMPPConnection} to connect to Google Talk by specifying
+ * the server name, service name, and port.<p>
+ *
+ * After creating the connection, log in in using a Gmail username and password.
+ * For the Gmail address "jsmith@gmail.com", the username is "jsmith".
  *
  * @author Matt Tucker
  */
