@@ -60,7 +60,9 @@ public interface SmackDebugger {
 
     /**
      * Returns a new special Reader that wraps the new connection Reader. The connection
-     * has been secured so he now have a new reader and writer.
+     * has been secured so the connection is using a new reader and writer. The debugger
+     * needs to wrap the new reader and writer to keep being notified of the connection
+     * traffic.
      *
      * @return a new special Reader that wraps the new connection Reader.
      */
@@ -68,7 +70,9 @@ public interface SmackDebugger {
 
     /**
      * Returns a new special Writer that wraps the new connection Writer. The connection
-     * has been secured so he now have a new reader and writer.
+     * has been secured so the connection is using a new reader and writer. The debugger
+     * needs to wrap the new reader and writer to keep being notified of the connection
+     * traffic.
      *
      * @return a new special Writer that wraps the new connection Writer.
      */
