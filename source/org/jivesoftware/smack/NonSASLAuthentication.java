@@ -98,4 +98,31 @@ class NonSASLAuthentication implements UserAuthentication {
 
         return response.getTo();
     }
+
+    public String authenticateAnonymously() throws XMPPException {
+        // Create the authentication packet we'll send to the server.
+        Authentication auth = new Authentication();
+
+        PacketCollector collector =
+            connection.createPacketCollector(new PacketIDFilter(auth.getPacketID()));
+        // Send the packet.
+        connection.sendPacket(auth);
+        // Wait up to a certain number of seconds for a response from the server.
+        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        if (response == null) {
+            throw new XMPPException("Anonymous login failed.");
+        }
+        else if (response.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(response.getError());
+        }
+        // We're done with the collector, so explicitly cancel it.
+        collector.cancel();
+
+        if (response.getTo() != null) {
+            return response.getTo();
+        }
+        else {
+            return connection.serviceName + "/" + ((Authentication) response).getResource();
+        }
+    }
 }

@@ -29,6 +29,27 @@ package org.jivesoftware.smack;
  */
 interface UserAuthentication {
 
+    /**
+     * Authenticates the user with the server. This method will return the full JID provided by
+     * the server. The server may assign a full JID with a username and resource different than
+     * the requested by this method.
+     *
+     * @param username the username that is authenticating with the server.
+     * @param password the password to send to the server.
+     * @param resource the desired resource.
+     * @return the full JID provided by the server while binding a resource for the connection.
+     * @throws XMPPException if an error occures while authenticating.
+     */
     String authenticate(String username, String password, String resource) throws
             XMPPException;
+
+    /**
+     * Performs an anonymous authentication with the server. The server will created a new full JID
+     * for this connection. An exception will be thrown if the server does not support anonymous
+     * authentication.
+     *
+     * @return the full JID provided by the server while binding a resource for the connection.
+     * @throws XMPPException if an error occures while authenticating.
+     */
+    String authenticateAnonymously() throws XMPPException;
 }
