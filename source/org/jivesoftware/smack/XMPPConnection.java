@@ -23,6 +23,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -31,10 +32,13 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -77,6 +81,7 @@ public class XMPPConnection {
             DEBUG_ENABLED = Boolean.getBoolean("smack.debugEnabled");
         }
         catch (Exception e) {
+            // Ignore.
         }
         // Ensure the SmackConfiguration class is loaded by calling a method in it.
         SmackConfiguration.getVersion();
@@ -91,6 +96,7 @@ public class XMPPConnection {
     String host;
     int port;
     Socket socket;
+
     /**
      * Hostname of the XMPP server. Usually servers use the same service name as the name
      * of the server. However, there are some servers like google where host would be
@@ -114,6 +120,14 @@ public class XMPPConnection {
 
     Writer writer;
     Reader reader;
+
+    /**
+     * A map between JIDs and the most recently created Chat object with that JID.
+     * Reference to the Chat is stored via a WeakReference so that the map
+     * does not interfere with garbage collection. The map of chats must be stored
+     * with each connection.
+     */
+    Map chats = new HashMap();
 
     /**
      * Creates a new connection to the specified XMPP server. The default port of 5222 will
@@ -487,7 +501,9 @@ public class XMPPConnection {
                     }
                 }
             }
-            catch (InterruptedException ie) { }
+            catch (InterruptedException ie) {
+                // Ignore.
+            }
         }
         return roster;
     }
@@ -587,24 +603,26 @@ public class XMPPConnection {
             Thread.sleep(150);
         }
         catch (Exception e) {
+            // Ignore.
         }
 
-		// Close down the readers and writers.
-		if (reader != null)
-		{
-			try { reader.close(); } catch (Throwable ignore) { }
-			reader = null;
-		}
-		if (writer != null)
-		{
-			try { writer.close(); } catch (Throwable ignore) { }
-			writer = null;
-		}
+        // Close down the readers and writers.
+        if (reader != null)
+        {
+            try { reader.close(); } catch (Throwable ignore) { /* ignore */ }
+            reader = null;
+        }
+        if (writer != null)
+        {
+            try { writer.close(); } catch (Throwable ignore) { /* ignore */ }
+            writer = null;
+        }
 
         try {
             socket.close();
         }
         catch (Exception e) {
+            // Ignore.
         }
         authenticated = false;
         connected = false;
@@ -770,30 +788,55 @@ public class XMPPConnection {
 
             // Notify that a new connection has been established
             connectionEstablished(this);
+
+            // Add a listener for all message packets so that we can deliver errant
+            // messages to the best Chat instance available.
+            addPacketListener(new PacketListener() {
+                public void processPacket(Packet packet) {
+                    Message message = (Message)packet;
+                    // Ignore any messages with a thread ID, as they will likely
+                    // already be associated with a Chat. This will miss messages
+                    // with new thread ID values, but we can only assume that a
+                    // listener is registered to deal with this case.
+                    if (message.getThread() == null) {
+                        WeakReference chatRef = (WeakReference)chats.get(
+                                StringUtils.parseBareAddress(message.getFrom()));
+                        if (chatRef != null) {
+                            // Do some extra clean-up if the reference was cleared.
+                            Chat chat;
+                            if ((chat = (Chat)chatRef.get()) == null) {
+                                chats.remove(message.getFrom());
+                            }
+                            else {
+                                chat.deliver(message);
+                            }
+                        }
+                    }
+                }
+            }, new PacketTypeFilter(Message.class));
         }
-        catch (XMPPException ex)
-        {
+        catch (XMPPException ex) {
             // An exception occurred in setting up the connection. Make sure we shut down the
             // readers and writers and close the socket.
 
             if (packetWriter != null) {
-                try { packetWriter.shutdown(); } catch (Throwable ignore) { }
+                try { packetWriter.shutdown(); } catch (Throwable ignore) { /* ignore */ }
                 packetWriter = null;
             }
             if (packetReader != null) {
-                try { packetReader.shutdown(); } catch (Throwable ignore) { }
+                try { packetReader.shutdown(); } catch (Throwable ignore) { /* ignore */ }
                 packetReader = null;
             }
             if (reader != null) {
-                try { reader.close(); } catch (Throwable ignore) { }
+                try { reader.close(); } catch (Throwable ignore) { /* ignore */ }
                 reader = null;
             }
             if (writer != null) {
-                try { writer.close(); } catch (Throwable ignore) { }
+                try { writer.close(); } catch (Throwable ignore) {  /* ignore */}
                 writer = null;
             }
             if (socket != null) {
-                try { socket.close(); } catch (Exception e) { }
+                try { socket.close(); } catch (Exception e) { /* ignore */ }
                 socket = null;
             }
             authenticated = false;
@@ -921,7 +964,8 @@ public class XMPPConnection {
         try {
             writer.write("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"/>");
             writer.flush();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             packetReader.notifyConnectionError(e);
         }
     }

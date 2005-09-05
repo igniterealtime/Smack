@@ -76,10 +76,7 @@ public class PacketCollector {
      */
     public void cancel() {
         // If the packet collector has already been cancelled, do nothing.
-        if (cancelled) {
-            return;
-        }
-        else {
+        if (!cancelled) {
             cancelled = true;
             // Remove object from collectors list by setting the value in the
             // list at the correct index to null. The collector thread will
@@ -130,7 +127,9 @@ public class PacketCollector {
             try {
                 wait();
             }
-            catch (InterruptedException ie) { }
+            catch (InterruptedException ie) {
+                // Ignore.
+            }
         }
         return (Packet)resultQueue.removeLast();
     }
@@ -149,7 +148,9 @@ public class PacketCollector {
             try {
                 wait(timeout);
             }
-            catch (InterruptedException ie) { }
+            catch (InterruptedException ie) {
+                // Ignore.
+            }
         }
         // If still no result, return null.
         if (resultQueue.isEmpty()) {

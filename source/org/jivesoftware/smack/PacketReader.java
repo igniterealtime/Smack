@@ -165,7 +165,9 @@ class PacketReader {
                 }
             }
         }
-        catch (InterruptedException ie) { }
+        catch (InterruptedException ie) {
+            // Ignore.
+        }
         if (connectionID == null) {
             throw new XMPPException("Connection failed. No response from server.");
         }
@@ -229,7 +231,6 @@ class PacketReader {
      * Process listeners.
      */
     private void processListeners() {
-        boolean processedPacket = false;
         while (!done) {
             synchronized (listeners) {
                 if (listeners.size() > 0) {
@@ -240,7 +241,7 @@ class PacketReader {
                     }
                 }
             }
-            processedPacket = false;
+            boolean processedPacket = false;
             int size = listeners.size();
             for (int i=0; i<size; i++) {
                 ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
@@ -250,9 +251,14 @@ class PacketReader {
             }
             if (!processedPacket) {
                 try {
-                    Thread.sleep(100);
+                    // Wait until more packets are ready to be processed.
+                    synchronized (listenerThread) {
+                        listenerThread.wait();
+                    }
                 }
-                catch (InterruptedException ie) { }
+                catch (InterruptedException ie) {
+                    // Ignore.
+                }
             }
         }
     }
@@ -375,6 +381,11 @@ class PacketReader {
                 // Have the collector process the packet to see if it wants to handle it.
                 collector.processPacket(packet);
             }
+        }
+
+        // Notify the listener thread that packets are waiting.
+        synchronized (listenerThread) {
+            listenerThread.notifyAll();
         }
     }
 
@@ -584,9 +595,8 @@ class PacketReader {
                     RosterPacket.ItemType type = RosterPacket.ItemType.fromString(subscription);
                     item.setItemType(type);
                 }
-                if (parser.getName().equals("group")) {
-                    String groupName = parser.nextText();
-                    item.addGroupName(groupName);
+                if (parser.getName().equals("group") && item!= null) {
+                    item.addGroupName(parser.nextText());
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

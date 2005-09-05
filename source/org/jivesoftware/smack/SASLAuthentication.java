@@ -172,8 +172,8 @@ public class SASLAuthentication implements UserAuthentication {
                     // Send the packet
                     connection.sendPacket(bindResource);
                     // Wait up to a certain number of seconds for a response from the server.
-                    Bind response = (Bind) collector
-                            .nextResult(SmackConfiguration.getPacketReplyTimeout());
+                    Bind response = (Bind)collector.nextResult(
+                            SmackConfiguration.getPacketReplyTimeout());
                     collector.cancel();
                     if (response == null) {
                         throw new XMPPException("No response from the server.");

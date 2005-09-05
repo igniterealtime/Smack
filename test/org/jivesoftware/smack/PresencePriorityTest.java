@@ -31,8 +31,6 @@ public class PresencePriorityTest extends SmackTestCase {
      * Connection(1) has logged from two different places with different presence priorities.
      */
     public void testMessageToHighestPriority() {
-        boolean wasFiltering = Chat.isFilteredOnThreadID();
-        Chat.setFilteredOnThreadID(false);
         XMPPConnection conn = null;
         try {
             // User_1 will log in again using another resource
@@ -118,8 +116,6 @@ public class PresencePriorityTest extends SmackTestCase {
             fail(e.getMessage());
         }
         finally {
-            // Restore the previous filtering value so we don't affect other test cases
-            Chat.setFilteredOnThreadID(wasFiltering);
             if (conn != null) {
                 conn.close();
             }

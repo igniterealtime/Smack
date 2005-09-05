@@ -24,15 +24,16 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.filter.*;
 
+import java.util.*;
+import java.lang.ref.WeakReference;
+
 /**
- * A chat is a series of messages sent between two users. Each chat can have
- * a unique thread ID, which is used to track which messages are part of a particular
- * conversation.<p>
- *
- * In some situations, it is better to have all messages from the other user delivered
- * to a Chat rather than just the messages that have a particular thread ID. To
- * enable this behavior, call {@link #setFilteredOnThreadID(boolean)} with
- * <tt>false</tt> as the parameter.
+ * A chat is a series of messages sent between two users. Each chat has a unique
+ * thread ID, which is used to track which messages are part of a particular
+ * conversation. Some messages are sent without a thread ID, and some clients
+ * don't send thread IDs at all. Therefore, if a message without a thread ID
+ * arrives it is routed to the most recently created Chat with the message
+ * sender.
  *
  * @see XMPPConnection#createChat(String)
  * @author Matt Tucker
@@ -43,13 +44,7 @@ public class Chat {
      * A prefix helps to make sure that ID's are unique across mutliple instances.
      */
     private static String prefix = StringUtils.randomString(5);
-    
-    /**
-     * True if only messages that have a matching threadID will be delivered to a Chat. When
-     * false, any message from the other participant will be delivered to a Chat.
-     */
-    private static boolean filteredOnThreadID = true;
-    
+
     /**
      * Keeps track of the current increment, which is appended to the prefix to
      * forum a unique ID.
@@ -71,6 +66,7 @@ public class Chat {
     private String participant;
     private PacketFilter messageFilter;
     private PacketCollector messageCollector;
+    private Set listeners = new HashSet();
 
     /**
      * Creates a new chat with the specified user.
@@ -81,10 +77,6 @@ public class Chat {
     public Chat(XMPPConnection connection, String participant) {
         // Automatically assign the next chat ID.
         this(connection, participant, nextID());
-        // If not filtering on thread ID, force the thread ID for this Chat to be null.
-        if (!filteredOnThreadID) {
-            this.threadID = null;
-        }
     }
 
     /**
@@ -99,40 +91,15 @@ public class Chat {
         this.participant = participant;
         this.threadID = threadID;
 
-        if (filteredOnThreadID) {
-            // Filter the messages whose thread equals Chat's id
-            messageFilter = new ThreadFilter(threadID);
-        }
-        else {
-            // Filter the messages of type "chat" and sender equals Chat's participant
-            messageFilter =
-                new OrFilter(
-                    new AndFilter(
-                        new MessageTypeFilter(Message.Type.CHAT),
-                        new FromContainsFilter(participant)),
-                    new ThreadFilter(threadID));
-        }
+        // Register with the map of chats so that messages with no thread ID
+        // set will be delivered to this Chat.
+        connection.chats.put(StringUtils.parseBareAddress(participant),
+                new WeakReference(this));
+
+        // Filter the messages whose thread equals Chat's id
+        messageFilter = new ThreadFilter(threadID);
+
         messageCollector = connection.createPacketCollector(messageFilter);
-    }
-
-    /**
-     * Returns true if only messages that have a matching threadID will be delivered to Chat
-     * instances. When false, any message from the other participant will be delivered to Chat instances.
-     *
-     * @return true if messages delivered to Chat instances are filtered on thread ID.
-     */
-    public static boolean isFilteredOnThreadID() {
-        return filteredOnThreadID;
-    }
-
-    /**
-     * Sets whether only messages that have a matching threadID will be delivered to Chat instances.
-     * When false, any message from the other participant will be delivered to a Chat instances.
-     *
-     * @param value true if messages delivered to Chat instances are filtered on thread ID.
-     */
-    public static void setFilteredOnThreadID(boolean value) {
-        filteredOnThreadID = value;
     }
 
     /**
@@ -252,6 +219,41 @@ public class Chat {
      */
     public void addMessageListener(PacketListener listener) {
         connection.addPacketListener(listener, messageFilter);
+        // Keep track of the listener so that we can manually deliver extra
+        // messages to it later if needed.
+        synchronized (listeners) {
+            listeners.add(new WeakReference(listener));
+        }
+    }
+
+    /**
+     * Delivers a message directly to this chat, which will add the message
+     * to the collector and deliver it to all listeners registered with the
+     * Chat. This is used by the XMPPConnection class to deliver messages
+     * without a thread ID.
+     *
+     * @param message the message.
+     */
+    void deliver(Message message) {
+        // Because the collector and listeners are expecting a thread ID with
+        // a specific value, set the thread ID on the message even though it
+        // probably never had one.
+        message.setThread(threadID);
+
+        messageCollector.processPacket(message);
+        synchronized (listeners) {
+            for (Iterator i=listeners.iterator(); i.hasNext(); ) {
+                WeakReference listenerRef = (WeakReference)i.next();
+                PacketListener listener;
+                if ((listener = (PacketListener)listenerRef.get()) != null) {
+                    listener.processPacket(message);
+                }
+                // If the reference was cleared, remove it from the set.
+                else {
+                   i.remove();
+                }
+            }
+        }
     }
 
     public void finalize() throws Throwable {
@@ -261,6 +263,8 @@ public class Chat {
                 messageCollector.cancel();
             }
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            // Ignore.
+        }
     }
 }
