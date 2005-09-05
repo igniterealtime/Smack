@@ -24,6 +24,7 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Session;
+import org.jivesoftware.smack.sasl.SASLAnonymous;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.SASLPlainMechanism;
 
@@ -68,6 +69,7 @@ public class SASLAuthentication implements UserAuthentication {
      * Boolean indicating if SASL negotiation has finished and was successful.
      */
     private boolean saslNegotiated = false;
+    private boolean resourceBinded = false;
     private boolean sessionSupported = false;
 
     static {
@@ -121,6 +123,45 @@ public class SASLAuthentication implements UserAuthentication {
         this.connection = connection;
     }
 
+    /**
+     * Returns true if the server offered ANONYMOUS SASL as a way to authenticate users.
+     *
+     * @return true if the server offered ANONYMOUS SASL as a way to authenticate users.
+     */
+    public boolean hasAnonymousAuthentication() {
+        return serverMechanisms.contains("ANONYMOUS");
+    }
+
+    /**
+     * Returns true if the server offered SASL authentication besides ANONYMOUS SASL.
+     *
+     * @return true if the server offered SASL authentication besides ANONYMOUS SASL.
+     */
+    public boolean hasNonAnonymousAuthentication() {
+        if (!serverMechanisms.isEmpty()) {
+            // Check that anonymous sasl is not the only supported mechanism
+            if (serverMechanisms.size() == 1) {
+                return !hasAnonymousAuthentication();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Performs SASL authentication of the specified user. If SASL authentication was successful
+     * then resource binding and session establishment will be performed. This method will return
+     * the full JID provided by the server while binding a resource to the connection.<p>
+     *
+     * The server may assign a full JID with a username or resource different than the requested
+     * by this method.
+     *
+     * @param username the username that is authenticating with the server.
+     * @param password the password to send to the server.
+     * @param resource the desired resource.
+     * @return the full JID provided by the server while binding a resource to the connection.
+     * @throws XMPPException if an error occures while authenticating.
+     */
     public String authenticate(String username, String password, String resource)
             throws XMPPException {
         // Locate the SASLMechanism to use
@@ -222,6 +263,98 @@ public class SASLAuthentication implements UserAuthentication {
     }
 
     /**
+     * Performs ANONYMOUS SASL authentication. If SASL authentication was successful
+     * then resource binding and session establishment will be performed. This method will return
+     * the full JID provided by the server while binding a resource to the connection.<p>
+     *
+     * The server will assign a full JID with a randomly generated resource and possibly with
+     * no username.
+     *
+     * @return the full JID provided by the server while binding a resource to the connection.
+     * @throws XMPPException if an error occures while authenticating.
+     */
+    public String authenticateAnonymously() throws XMPPException {
+        try {
+            currentMechanism = new SASLAnonymous(this);
+            currentMechanism.authenticate(null, null, null);
+
+            // Wait until SASL negotiation finishes
+            synchronized (this) {
+                if (!saslNegotiated) {
+                    try {
+                        wait(5000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+
+            if (saslNegotiated) {
+                // Bind a resource for this connection and
+                return bindResourceAndEstablishSession(null);
+            }
+            else {
+                return new NonSASLAuthentication(connection).authenticateAnonymously();
+            }
+        } catch (IOException e) {
+            return new NonSASLAuthentication(connection).authenticateAnonymously();
+        }
+    }
+
+    private String bindResourceAndEstablishSession(String resource) throws IOException,
+            XMPPException {
+        // We now need to bind a resource for the connection
+        // Open a new stream and wait for the response
+        connection.packetWriter.openStream();
+
+        // Wait until server sends response containing the <bind> element
+        synchronized (this) {
+            if (!resourceBinded) {
+                try {
+                    wait(30000);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+
+        Bind bindResource = new Bind();
+        bindResource.setResource(resource);
+
+        PacketCollector collector = connection
+                .createPacketCollector(new PacketIDFilter(bindResource.getPacketID()));
+        // Send the packet
+        connection.sendPacket(bindResource);
+        // Wait up to a certain number of seconds for a response from the server.
+        Bind response = (Bind) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        collector.cancel();
+        if (response == null) {
+            throw new XMPPException("No response from the server.");
+        }
+        // If the server replied with an error, throw an exception.
+        else if (response.getType() == IQ.Type.ERROR) {
+            throw new XMPPException(response.getError());
+        }
+        String userJID = response.getJid();
+
+        if (sessionSupported) {
+            Session session = new Session();
+            collector = connection.createPacketCollector(new PacketIDFilter(session.getPacketID()));
+            // Send the packet
+            connection.sendPacket(session);
+            // Wait up to a certain number of seconds for a response from the server.
+            IQ ack = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+            collector.cancel();
+            if (ack == null) {
+                throw new XMPPException("No response from the server.");
+            }
+            // If the server replied with an error, throw an exception.
+            else if (ack.getType() == IQ.Type.ERROR) {
+                throw new XMPPException(ack.getError());
+            }
+        }
+        return userJID;
+    }
+
+    /**
      * Sets the available SASL mechanism reported by the server. The server will report the
      * available SASL mechanism once the TLS negotiation was successful. This information is
      * stored and will be used when doing the authentication for logging in the user.
@@ -251,8 +384,8 @@ public class SASLAuthentication implements UserAuthentication {
      * would be to bind the resource.
      */
     void authenticated() {
-        saslNegotiated = true;
         synchronized (this) {
+            saslNegotiated = true;
             // Wake up the thread that is waiting in the #authenticate method
             notify();
         }
@@ -264,6 +397,7 @@ public class SASLAuthentication implements UserAuthentication {
      */
     void bindingRequired() {
         synchronized (this) {
+            resourceBinded = true;
             // Wake up the thread that is waiting in the #authenticate method
             notify();
         }
