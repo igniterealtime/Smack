@@ -288,16 +288,14 @@ class PacketReader {
                             // Get the connection id.
                             for (int i=0; i<parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals("id")) {
-                                    if (("1.0".equals(parser.getAttributeValue("", "version")) &&
-                                            connection.isUsingTLS()) || (!"1.0".equals(
-                                            parser.getAttributeValue("", "version")))) {
-                                        // Save the connectionID and notify that we've gotten it.
-                                        // Only notify if TLS has been secured or if the server
-                                        // does not support TLS
-                                        synchronized(connectionIDLock) {
-                                            connectionID = parser.getAttributeValue(i);
-                                            connectionIDLock.notifyAll();
-                                        }
+                                    // Save the connectionID
+                                    connectionID = parser.getAttributeValue(i);
+                                    if (!"1.0".equals(parser.getAttributeValue("", "version"))) {
+                                        // Notify that a stream has been opened if the
+                                        // server is not XMPP 1.0 compliant otherwise make the
+                                        // notification after TLS has been negotiated or if TLS
+                                        // is not supported
+                                        releaseConnectionIDLock();
                                     }
                                 }
                                 else if (parser.getAttributeName(i).equals("from")) {
@@ -353,6 +351,21 @@ class PacketReader {
     }
 
     /**
+     * Releases the connection ID lock so that the thread that was waiting can resume. The
+     * lock will be released when one of the following three conditions is met:<p>
+     *
+     * 1) An opening stream was sent from a non XMPP 1.0 compliant server
+     * 2) Stream features were received from an XMPP 1.0 compliant server that does not support TLS
+     * 3) TLS negotiation was successful
+     *
+     */
+    private void releaseConnectionIDLock() {
+        synchronized(connectionIDLock) {
+            connectionIDLock.notifyAll();
+        }
+    }
+
+    /**
      * Processes a packet after it's been fully parsed by looping through the installed
      * packet collectors and listeners and letting them examine the packet to see if
      * they are a match with the filter.
@@ -390,17 +403,19 @@ class PacketReader {
     }
 
     private void parseFeatures(XmlPullParser parser) throws Exception {
-    	boolean done = false;
+        boolean startTLSReceived = false;
+        boolean done = false;
         while (!done) {
             int eventType = parser.next();
 
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("starttls")) {
+                    startTLSReceived = true;
                     // Confirm the server that we want to use TLS
                     connection.startTLSReceived();
                 }
-                else if (parser.getName().equals("mechanisms") && connection.isUsingTLS()) {
-                    // The server is reporting available SASL mechanism. Store this information
+                else if (parser.getName().equals("mechanisms")) {
+                    // The server is reporting available SASL mechanisms. Store this information
                     // which will be used later while logging (i.e. authenticating) into
                     // the server
                     connection.getSASLAuthentication()
@@ -420,6 +435,9 @@ class PacketReader {
                     done = true;
                 }
             }
+        }
+        if (!startTLSReceived) {
+            releaseConnectionIDLock();
         }
     }
 
