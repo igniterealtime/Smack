@@ -22,23 +22,25 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -334,7 +336,9 @@ public class XMPPConnection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server. An available presence may optionally be sent. If <tt>sendPresence</tt>
+     * the server. If the server supports SASL authentication then the user will be
+     * authenticated using SASL if not Non-SASL authentication will be tried. An available
+     * presence may optionally be sent. If <tt>sendPresence</tt>
      * is false, a presence packet must be sent manually later. If more than five seconds
      * (default timeout) elapses in each step of the authentication process without a
      * response from the server, or if an error occurs, a XMPPException will be thrown.
@@ -361,7 +365,7 @@ public class XMPPConnection {
         username = username.toLowerCase().trim();
 
         String response = null;
-        if (usingTLS) {
+        if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             response = saslAuthentication.authenticate(username, password, resource);
         }
@@ -398,7 +402,7 @@ public class XMPPConnection {
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
-        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger 
+        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
         // will be null
         if (DEBUG_ENABLED && debugger != null) {
             debugger.userHasLogged(user);
@@ -423,30 +427,19 @@ public class XMPPConnection {
             throw new IllegalStateException("Already logged in to server.");
         }
 
-        // Create the authentication packet we'll send to the server.
-        Authentication auth = new Authentication();
-
-        PacketCollector collector =
-            packetReader.createPacketCollector(new PacketIDFilter(auth.getPacketID()));
-        // Send the packet.
-        packetWriter.sendPacket(auth);
-        // Wait up to a certain number of seconds for a response from the server.
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (response == null) {
-            throw new XMPPException("Anonymous login failed.");
-        }
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
-        // Set the user value.
-        if (response.getTo() != null) {
-            this.user = response.getTo();
+        String response = null;
+        if (saslAuthentication.hasAnonymousAuthentication()) {
+            response = saslAuthentication.authenticateAnonymously();
         }
         else {
-            this.user = this.serviceName + "/" + ((Authentication) response).getResource();
+            // Authenticate using Non-SASL
+            response = new NonSASLAuthentication(this).authenticateAnonymously();
         }
-        // We're done with the collector, so explicitly cancel it.
-        collector.cancel();
+
+        // Set the user value.
+        this.user = response;
+        // Update the serviceName with the one returned by the server
+        this.serviceName = StringUtils.parseServer(response);
 
         // Anonymous users can't have a roster.
         roster = null;
@@ -460,7 +453,7 @@ public class XMPPConnection {
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
-        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger 
+        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
         // will be null
         if (DEBUG_ENABLED && debugger != null) {
             debugger.userHasLogged(user);
@@ -563,12 +556,13 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns true if the connection is a secured one, such as an SSL connection.
+     * Returns true if the connection is a secured one, such as an SSL connection or
+     * if TLS was negotiated successfully.
      *
      * @return true if a secure connection to the server.
      */
     public boolean isSecureConnection() {
-        return false;
+        return isUsingTLS();
     }
 
     /**
@@ -730,7 +724,7 @@ public class XMPPConnection {
     }
 
     /**
-     * Adds a connection established listener that will be notified when a new connection 
+     * Adds a connection established listener that will be notified when a new connection
      * is established.
      *
      * @param connectionEstablishedListener a listener interested on connection established events.
@@ -975,35 +969,30 @@ public class XMPPConnection {
      * existing plain connection and perform a handshake. This method won't return until the
      * connection has finished the handshake or an error occured while securing the connection.
      */
-    void proceedTLSReceived() {
-        try {
-            SSLContext context = SSLContext.getInstance("TLS");
-            // Accept any certificate presented by the server
-            context.init(null, // KeyManager not required
-                    new javax.net.ssl.TrustManager[] { new OpenTrustManager() },
-                    new java.security.SecureRandom());
-            Socket plain = socket;
-            // Secure the plain connection
-            socket = context.getSocketFactory().createSocket(plain,
-                    plain.getInetAddress().getHostName(), plain.getPort(), true);
-            socket.setSoTimeout(0);
-            socket.setKeepAlive(true);
-            // Initialize the reader and writer with the new secured version
-            initReaderAndWriter();
-            // Proceed to do the handshake
-            ((SSLSocket)socket).startHandshake();
+    void proceedTLSReceived() throws Exception {
+        SSLContext context = SSLContext.getInstance("TLS");
+        // Accept any certificate presented by the server
+        context.init(null, // KeyManager not required
+                new javax.net.ssl.TrustManager[]{new OpenTrustManager()},
+                new java.security.SecureRandom());
+        Socket plain = socket;
+        // Secure the plain connection
+        socket = context.getSocketFactory().createSocket(plain,
+                plain.getInetAddress().getHostName(), plain.getPort(), true);
+        socket.setSoTimeout(0);
+        socket.setKeepAlive(true);
+        // Initialize the reader and writer with the new secured version
+        initReaderAndWriter();
+        // Proceed to do the handshake
+        ((SSLSocket) socket).startHandshake();
 
-            // Set that TLS was successful
-            usingTLS = true;
+        // Set that TLS was successful
+        usingTLS = true;
 
-            // Set the new  writer to use
-            packetWriter.setWriter(writer);
-            // Send a new opening stream to the server
-            packetWriter.openStream();
-        }
-        catch (Exception e) {
-            packetReader.notifyConnectionError(e);
-        }
+        // Set the new  writer to use
+        packetWriter.setWriter(writer);
+        // Send a new opening stream to the server
+        packetWriter.openStream();
     }
 
 }
