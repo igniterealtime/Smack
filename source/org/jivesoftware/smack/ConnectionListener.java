@@ -22,7 +22,7 @@ package org.jivesoftware.smack;
 
 /**
  * Interface that allows for implementing classes to listen for connection closing
- * events. Listeners are reigstered with XMPPConnection objects.
+ * events. Listeners are registered with XMPPConnection objects.
  *
  * @see XMPPConnection#addConnectionListener
  * @see XMPPConnection#removeConnectionListener
