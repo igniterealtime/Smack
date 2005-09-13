@@ -98,6 +98,7 @@ public class VCardProvider implements IQProvider {
             vCard.setFirstName(getTagContents("GIVEN"));
             vCard.setLastName(getTagContents("FAMILY"));
             vCard.setMiddleName(getTagContents("MIDDLE"));
+            vCard.setEncodedImage(getTagContents("BINVAL"));
 
             setupEmails();
 

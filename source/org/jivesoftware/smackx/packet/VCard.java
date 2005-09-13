@@ -27,9 +27,13 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,19 +41,19 @@ import java.util.Map;
 /**
  * A VCard class for use with the
  * <a href="http://www.jivesoftware.org/smack/" target="_blank">SMACK jabber library</a>.<p>
- *
+ * <p/>
  * You should refer to the
  * <a href="http://www.jabber.org/jeps/jep-0054.html" target="_blank">JEP-54 documentation</a>.<p>
- *
+ * <p/>
  * Please note that this class is incomplete but it does provide the most commonly found
  * information in vCards. Also remember that VCard transfer is not a standard, and the protocol
  * may change or be replaced.<p>
- *
+ * <p/>
  * <b>Usage:</b>
  * <pre>
- *
+ * <p/>
  * // To save VCard:
- *
+ * <p/>
  * VCard vCard = new VCard();
  * vCard.setFirstName("kir");
  * vCard.setLastName("max");
@@ -57,16 +61,16 @@ import java.util.Map;
  * vCard.setJabberId("jabber@id.org");
  * vCard.setOrganization("Jetbrains, s.r.o");
  * vCard.setNickName("KIR");
- *
+ * <p/>
  * vCard.setField("TITLE", "Mr");
  * vCard.setAddressFieldHome("STREET", "Some street");
  * vCard.setAddressFieldWork("CTRY", "US");
  * vCard.setPhoneWork("FAX", "3443233");
- *
+ * <p/>
  * vCard.save(connection);
- *
+ * <p/>
  * // To load VCard:
- *
+ * <p/>
  * VCard vCard = new VCard();
  * vCard.load(conn); // load own VCard
  * vCard.load(conn, "joe@foo.bar"); // load someone's VCard
@@ -102,6 +106,8 @@ public class VCard extends IQ {
     private String organization;
     private String organizationUnit;
 
+    private String avatar;
+
     /**
      * Such as DESC ROLE GEO etc.. see JEP-0054
      */
@@ -114,7 +120,7 @@ public class VCard extends IQ {
      * Set generic VCard field.
      *
      * @param field value of field. Possible values: NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
-     *        GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
+     *              GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
      */
     public String getField(String field) {
         return (String) otherSimpleFields.get(field);
@@ -283,6 +289,95 @@ public class VCard extends IQ {
     }
 
     /**
+     * Set the avatar for the VCard by specifying the url to the image.
+     *
+     * @param avatarURL the url to the image(png,jpeg,gif,bmp)
+     */
+    public void setAvatar(URL avatarURL) {
+        byte[] bytes = new byte[0];
+        try {
+            bytes = getBytes(avatarURL);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String encodedImage = StringUtils.encodeBase64(bytes);
+
+        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>");
+    }
+
+    /**
+     * Specify the bytes for the avatar to use.
+     * @param bytes the bytes of the avatar.
+     */
+    public void setAvatar(byte[] bytes) {
+        String encodedImage = StringUtils.encodeBase64(bytes);
+
+        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>");
+    }
+
+    /**
+     * Set the encoded avatar string. This is used by the provider.
+     *
+     * @param encodedAvatar the encoded avatar string.
+     */
+    public void setEncodedImage(String encodedAvatar) {
+        //TODO Move VCard and VCardProvider into a vCard package.
+        this.avatar = encodedAvatar;
+    }
+
+    /**
+     * Return the byte representation of the avatar(if one exists), otherwise returns null if
+     * no avatar could be found.
+     * <b>Example 1</b>
+     * <pre>
+     * // Load Avatar from VCard
+     * byte[] avatarBytes = vCard.getAvatar();
+     * <p/>
+     * // To create an ImageIcon for Swing applications
+     * ImageIcon icon = new ImageIcon(avatar);
+     * <p/>
+     * // To create just an image object from the bytes
+     * ByteArrayInputStream bais = new ByteArrayInputStream(avatar);
+     * try {
+     *   Image image = ImageIO.read(bais);
+     *  }
+     *  catch (IOException e) {
+     *    e.printStackTrace();
+     * }
+     * </pre>
+     *
+     * @return byte representation of avatar.
+     */
+    public byte[] getAvatar() {
+        if (avatar == null) {
+            return null;
+        }
+        if (avatar != null) {
+            return StringUtils.decodeBase64(avatar);
+        }
+        return null;
+    }
+
+    /**
+     * Common code for getting the bytes of a url.
+     *
+     * @param url the url to read.
+     */
+    public static byte[] getBytes(URL url) throws IOException {
+        InputStream in = url.openStream();
+        final byte[] buffer = new byte[4096];
+        while (true) {
+            final int bytesRead = in.read(buffer);
+            if (bytesRead < 0) {
+                break;
+            }
+        }
+        return buffer;
+    }
+
+    /**
      * Save this vCard for the user connected by 'connection'. Connection should be authenticated
      * and not anonymous.<p>
      * <p/>
@@ -333,7 +428,8 @@ public class VCard extends IQ {
             if (result.getError() != null) {
                 throw new XMPPException(result.getError());
             }
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             System.out.println("No VCard for " + user);
         }
 
@@ -357,7 +453,8 @@ public class VCard extends IQ {
                 try {
                     field.setAccessible(true);
                     field.set(this, field.get(result));
-                } catch (IllegalAccessException e) {
+                }
+                catch (IllegalAccessException e) {
                     throw new RuntimeException("This cannot happen:" + field, e);
                 }
             }
@@ -472,6 +569,7 @@ public class VCard extends IQ {
     //==============================================================
 
     private class VCardWriter {
+
         private final StringBuffer sb;
 
         VCardWriter(StringBuffer sb) {
@@ -604,7 +702,7 @@ public class VCard extends IQ {
         }
 
         private void appendTag(String tag, String attr, String attrValue, boolean hasContent,
-                               ContentBuilder builder) {
+                ContentBuilder builder) {
             sb.append('<').append(tag);
             if (attr != null) {
                 sb.append(' ').append(attr).append('=').append('\'').append(attrValue).append('\'');
@@ -614,7 +712,8 @@ public class VCard extends IQ {
                 sb.append('>');
                 builder.addTagContent();
                 sb.append("</").append(tag).append(">\n");
-            } else {
+            }
+            else {
                 sb.append("/>\n");
             }
         }
@@ -638,6 +737,7 @@ public class VCard extends IQ {
     //==============================================================
 
     private interface ContentBuilder {
+
         void addTagContent();
     }
 
