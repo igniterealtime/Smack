@@ -45,7 +45,8 @@ public class SASLAnonymous extends SASLMechanism {
     }
 
     protected String getChallengeResponse(byte[] bytes) {
-        // Return null since this mechanism will never get a challenge from the server
-        return null;
+        // Some servers may send a challenge to gather more information such as
+        // email address. Return any string value.
+        return "anything";
     }
 }
