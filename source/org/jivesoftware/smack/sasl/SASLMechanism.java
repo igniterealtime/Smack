@@ -79,7 +79,9 @@ public abstract class SASLMechanism {
         StringBuffer stanza = new StringBuffer();
         stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         String authenticationText = getChallengeResponse(StringUtils.decodeBase64(challenge));
-        stanza.append(StringUtils.encodeBase64(authenticationText));
+        if (authenticationText != null) {
+            stanza.append(StringUtils.encodeBase64(authenticationText));
+        }
         stanza.append("</response>");
 
         // Send the authentication to the server
