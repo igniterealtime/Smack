@@ -69,6 +69,11 @@ public class SASLAuthentication implements UserAuthentication {
      * Boolean indicating if SASL negotiation has finished and was successful.
      */
     private boolean saslNegotiated = false;
+    /**
+     * Boolean indication if SASL authentication has failed. When failed the server may end
+     * the connection.
+     */
+    private boolean saslFailed = false;
     private boolean resourceBinded = false;
     private boolean sessionSupported = false;
 
@@ -186,10 +191,18 @@ public class SASLAuthentication implements UserAuthentication {
 
                 // Wait until SASL negotiation finishes
                 synchronized (this) {
-                    try {
-                        wait(30000);
-                    } catch (InterruptedException e) {
+                    if (!saslNegotiated && !saslFailed) {
+                        try {
+                            wait(30000);
+                        } catch (InterruptedException e) {
+                        }
                     }
+                }
+
+                if (saslFailed) {
+                    // SASL authentication failed and the server may have closed the connection
+                    // so throw an exception
+                    throw new XMPPException("SASL authentication failed");
                 }
 
                 if (saslNegotiated) {
@@ -249,8 +262,11 @@ public class SASLAuthentication implements UserAuthentication {
                     return new NonSASLAuthentication(connection)
                             .authenticate(username, password, resource);
                 }
-
-            } catch (Exception e) {
+            }
+            catch (XMPPException e) {
+                throw e;
+            }
+            catch (Exception e) {
                 e.printStackTrace();
                 // SASL authentication failed so try a Non-SASL authentication
                 return new NonSASLAuthentication(connection)
@@ -280,12 +296,18 @@ public class SASLAuthentication implements UserAuthentication {
 
             // Wait until SASL negotiation finishes
             synchronized (this) {
-                if (!saslNegotiated) {
+                if (!saslNegotiated && !saslFailed) {
                     try {
                         wait(5000);
                     } catch (InterruptedException e) {
                     }
                 }
+            }
+
+            if (saslFailed) {
+                // SASL authentication failed and the server may have closed the connection
+                // so throw an exception
+                throw new XMPPException("SASL authentication failed");
             }
 
             if (saslNegotiated) {
@@ -367,6 +389,15 @@ public class SASLAuthentication implements UserAuthentication {
     }
 
     /**
+     * Returns true if the user was able to authenticate with the server usins SASL.
+     *
+     * @return true if the user was able to authenticate with the server usins SASL.
+     */
+    public boolean isAuthenticated() {
+        return saslNegotiated;
+    }
+
+    /**
      * The server is challenging the SASL authentication we just sent. Forward the challenge
      * to the current SASLMechanism we are using. The SASLMechanism will send a response to
      * the server. The length of the challenge-response sequence varies according to the
@@ -386,6 +417,18 @@ public class SASLAuthentication implements UserAuthentication {
     void authenticated() {
         synchronized (this) {
             saslNegotiated = true;
+            // Wake up the thread that is waiting in the #authenticate method
+            notify();
+        }
+    }
+
+    /**
+     * Notification message saying that SASL authentication has failed. The server may have
+     * closed the connection depending on the number of possible retries.
+     */
+    void authenticationFailed() {
+        synchronized (this) {
+            saslFailed = true;
             // Wake up the thread that is waiting in the #authenticate method
             notify();
         }

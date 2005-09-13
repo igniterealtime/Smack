@@ -12,6 +12,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Includes set of login tests. 
@@ -38,8 +39,10 @@ public class LoginTest extends SmackTestCase {
                 fail("Invalid user was able to log into the server");
             }
             catch (XMPPException e) {
-                assertEquals("Incorrect error code while login with an invalid user", 401,
-                        e.getXMPPError().getCode());
+                if (e.getXMPPError() != null) {
+                    assertEquals("Incorrect error code while login with an invalid user", 401,
+                            e.getXMPPError().getCode());
+                }
             }
             // Wait here while trying tests with exodus
             //Thread.sleep(300);
@@ -91,7 +94,16 @@ public class LoginTest extends SmackTestCase {
                 }
             }
             conn.login("user_1", "user_1", null);
-            fail("User with no resource was able to log into the server");
+            if (conn.getSASLAuthentication().isAuthenticated()) {
+                // Check that the server assigned a resource
+                assertNotNull("JID assigned by server is missing", conn.getUser());
+                assertNotNull("JID assigned by server does not have a resource",
+                        StringUtils.parseResource(conn.getUser()));
+                conn.close();
+            }
+            else {
+                fail("User with no resource was able to log into the server");
+            }
 
         } catch (XMPPException e) {
             assertEquals("Wrong error code returned", 406, e.getXMPPError().getCode());

@@ -316,8 +316,15 @@ class PacketReader {
                         resetParser();
                     }
                     else if (parser.getName().equals("failure")) {
-                        // TLS negotiation has failed so close the connection.
-                        throw new Exception("TLS negotiation has failed");
+                        if ("urn:ietf:params:xml:ns:xmpp-tls".equals(parser.getNamespace(null))) {
+                            // TLS negotiation has failed. The server will close the connection
+                            throw new Exception("TLS negotiation has failed");
+                        }
+                        else {
+                            // SASL authentication has failed. The server may close the connection
+                            // depending on the number of retries
+                            connection.getSASLAuthentication().authenticationFailed();
+                        }
                     }
                     else if (parser.getName().equals("challenge")) {
                         // The server is challenging the SASL authentication made by the client
