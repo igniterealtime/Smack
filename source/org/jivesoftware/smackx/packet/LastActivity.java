@@ -25,6 +25,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -76,7 +77,7 @@ public class LastActivity extends IQ {
      *
      * @return the number of seconds that have passed since the user last logged out.
      */
-    public long getLastActivity() {
+    public long getIdleTime() {
         return lastActivity;
     }
 
@@ -135,6 +136,7 @@ public class LastActivity extends IQ {
      */
     public static LastActivity getLastActivity(XMPPConnection con, String jid) throws XMPPException {
         LastActivity activity = new LastActivity();
+        jid = StringUtils.parseBareAddress(jid);
         activity.setTo(jid);
 
         PacketCollector collector = con.createPacketCollector(new PacketIDFilter(activity.getPacketID()));
@@ -151,5 +153,13 @@ public class LastActivity extends IQ {
             throw new XMPPException(response.getError());
         }
         return response;
+    }
+
+    public static void main(String args[]) throws Exception{
+        XMPPConnection con = new XMPPConnection("jivesoftware.com");
+        con.login("derek", "test");
+
+        LastActivity active = LastActivity.getLastActivity(con, "bruce@jivesoftware.com/Home");
+        System.out.println(active);
     }
 }
