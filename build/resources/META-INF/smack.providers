@@ -128,4 +128,11 @@
         <className>org.jivesoftware.smack.packet.Bind$Provider</className>
     </iqProvider>
 
+     <!-- Last Activity -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:last</namespace>
+        <className>org.jivesoftware.smackx.packet.LastActivity$Provider</className> 
+    </iqProvider>
+
 </smackProviders>
