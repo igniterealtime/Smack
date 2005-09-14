@@ -154,12 +154,4 @@ public class LastActivity extends IQ {
         }
         return response;
     }
-
-    public static void main(String args[]) throws Exception{
-        XMPPConnection con = new XMPPConnection("jivesoftware.com");
-        con.login("derek", "test");
-
-        LastActivity active = LastActivity.getLastActivity(con, "bruce@jivesoftware.com/Home");
-        System.out.println(active);
-    }
 }
