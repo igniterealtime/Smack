@@ -1,15 +1,14 @@
 /**
  * $RCSfile: ,v $
- * $Revision: 1.0 $
- * $Date: 2005/05/25 04:20:03 $
+ * $Revision: $
+ * $Date:  $
  *
  * Copyright (C) 1999-2005 Jive Software. All rights reserved.
  *
- * This software is the proprietary information of Jive Software. Use is
- subject to license terms.
+ * This software is the proprietary information of Jive Software.
+ * Use is subject to license terms.
  */
-
-package org.jivesoftware.smackx.packet;
+package org.jivesoftware.smackx.search;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -20,7 +19,9 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.ReportedData;
+import org.jivesoftware.smackx.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -39,7 +40,6 @@ public class UserSearch extends IQ {
 
     }
 
-
     public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<query xmlns=\"jabber:iq:search\">");
@@ -47,7 +47,6 @@ public class UserSearch extends IQ {
         buf.append("</query>");
         return buf.toString();
     }
-
 
     /**
      * Returns the form for all search fields supported by the search service.
@@ -106,6 +105,39 @@ public class UserSearch extends IQ {
             throw new XMPPException("No response from server on status set.");
         }
         if (response.getError() != null) {
+            return sendSimpleSearchForm(con, searchForm, searchService);
+        }
+        return ReportedData.getReportedDataFrom(response);
+    }
+
+    /**
+     * Sends the filled out answer form to be sent and queried by the search service.
+     *
+     * @param con           the current XMPPConnection.
+     * @param searchForm    the <code>Form</code> to send for querying.
+     * @param searchService the search service to use. (ex. search.jivesoftware.com)
+     * @return ReportedData the data found from the query.
+     * @throws org.jivesoftware.smack.XMPPException
+     *          thrown if a server error has occured.
+     */
+    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws XMPPException {
+        SimpleUserSearch search = new SimpleUserSearch();
+        search.setForm(searchForm);
+        search.setType(IQ.Type.SET);
+        search.setTo(searchService);
+
+        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(search.getPacketID()));
+
+        con.sendPacket(search);
+
+        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+
+        // Cancel the collector.
+        collector.cancel();
+        if (response == null) {
+            throw new XMPPException("No response from server on status set.");
+        }
+        if (response.getError() != null) {
             throw new XMPPException(response.getError());
         }
         return ReportedData.getReportedDataFrom(response);
@@ -122,10 +154,16 @@ public class UserSearch extends IQ {
 
         public IQ parseIQ(XmlPullParser parser) throws Exception {
             UserSearch search = new UserSearch();
+            SimpleUserSearch simpleUserSearch = new SimpleUserSearch();
+
             boolean done = false;
             while (!done) {
                 int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == XmlPullParser.START_TAG && parser.getName().equals("instructions")) {
+                    buildDataForm(simpleUserSearch, parser.getText(), parser);
+                    return simpleUserSearch;
+                }
+                else if (eventType == XmlPullParser.START_TAG) {
                     // Otherwise, it must be a packet extension.
                     search.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
                             parser.getNamespace(), parser));
@@ -141,5 +179,30 @@ public class UserSearch extends IQ {
             return search;
         }
     }
+
+    private static void buildDataForm(SimpleUserSearch search, String instructions, XmlPullParser parser) throws Exception {
+        DataForm dataForm = new DataForm(Form.TYPE_FORM);
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            dataForm.setTitle("User Search");
+            dataForm.addInstruction(instructions);
+            if (eventType == XmlPullParser.START_TAG) {
+                String name = parser.getName();
+                FormField field = new FormField(name);
+                field.setType(FormField.TYPE_TEXT_SINGLE);
+                dataForm.addField(field);
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+
+        search.addExtension(dataForm);
+    }
+
 
 }

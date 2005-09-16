@@ -139,7 +139,7 @@
     <iqProvider>
         <elementName>query</elementName>
         <namespace>jabber:iq:search</namespace>
-        <className>org.jivesoftware.smackx.packet.UserSearch$Provider</className>
+        <className>org.jivesoftware.smackx.search.UserSearch$Provider</className>
     </iqProvider>
 
 </smackProviders>
