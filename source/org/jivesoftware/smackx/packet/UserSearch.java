@@ -50,7 +50,7 @@ public class UserSearch extends IQ {
 
 
     /**
-     * Retrieve the last activity of a particular jid.
+     * Returns the form for all search fields supported by the search service.
      *
      * @param con           the current XMPPConnection.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
@@ -79,11 +79,12 @@ public class UserSearch extends IQ {
     }
 
     /**
-     * Retrieve the last activity of a particular jid.
+     * Sends the filled out answer form to be sent and queried by the search service.
      *
      * @param con           the current XMPPConnection.
      * @param searchForm    the <code>Form</code> to send for querying.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
+     * @return ReportedData the data found from the query.
      * @throws org.jivesoftware.smack.XMPPException
      *          thrown if a server error has occured.
      */
@@ -140,4 +141,5 @@ public class UserSearch extends IQ {
             return search;
         }
     }
+
 }
