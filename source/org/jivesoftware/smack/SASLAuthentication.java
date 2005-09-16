@@ -206,57 +206,8 @@ public class SASLAuthentication implements UserAuthentication {
                 }
 
                 if (saslNegotiated) {
-                    // We now need to bind a resource for the connection
-                    // Open a new stream and wait for the response
-                    connection.packetWriter.openStream();
-
-                    // Wait until server sends response containing the <bind> element
-                    synchronized (this) {
-                        try {
-                            wait(30000);
-                        } catch (InterruptedException e) {
-                        }
-                    }
-
-                    Bind bindResource = new Bind();
-                    bindResource.setResource(resource);
-
-                    PacketCollector collector = connection
-                            .createPacketCollector(new PacketIDFilter(bindResource.getPacketID()));
-                    // Send the packet
-                    connection.sendPacket(bindResource);
-                    // Wait up to a certain number of seconds for a response from the server.
-                    Bind response = (Bind)collector.nextResult(
-                            SmackConfiguration.getPacketReplyTimeout());
-                    collector.cancel();
-                    if (response == null) {
-                        throw new XMPPException("No response from the server.");
-                    }
-                    // If the server replied with an error, throw an exception.
-                    else if (response.getType() == IQ.Type.ERROR) {
-                        throw new XMPPException(response.getError());
-                    }
-                    String userJID = response.getJid();
-
-                    if (sessionSupported) {
-                        Session session = new Session();
-                        collector = connection
-                                .createPacketCollector(new PacketIDFilter(session.getPacketID()));
-                        // Send the packet
-                        connection.sendPacket(session);
-                        // Wait up to a certain number of seconds for a response from the server.
-                        IQ ack = (IQ) collector
-                                .nextResult(SmackConfiguration.getPacketReplyTimeout());
-                        collector.cancel();
-                        if (ack == null) {
-                            throw new XMPPException("No response from the server.");
-                        }
-                        // If the server replied with an error, throw an exception.
-                        else if (ack.getType() == IQ.Type.ERROR) {
-                            throw new XMPPException(ack.getError());
-                        }
-                    }
-                    return userJID;
+                    // Bind a resource for this connection and
+                    return bindResourceAndEstablishSession(resource);
                 } else {
                     // SASL authentication failed so try a Non-SASL authentication
                     return new NonSASLAuthentication(connection)
