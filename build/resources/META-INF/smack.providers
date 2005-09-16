@@ -135,4 +135,11 @@
         <className>org.jivesoftware.smackx.packet.LastActivity$Provider</className> 
     </iqProvider>
 
+    <!-- User Search -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:search</namespace>
+        <className>org.jivesoftware.smackx.packet.UserSearch$Provider</className>
+    </iqProvider>
+
 </smackProviders>
