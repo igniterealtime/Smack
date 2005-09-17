@@ -49,22 +49,4 @@ public class UserSearchManager {
 
         return data;
     }
-
-    public static void main(String args[]) throws Exception {
-        XMPPConnection.DEBUG_ENABLED = true;
-        XMPPConnection con = new XMPPConnection("jabber.org");
-        con.login("ddman", "whocares");
-
-        UserSearchManager manager = new UserSearchManager(con, "users.jabber.org");
-        Form f = manager.getSearchForm();
-
-        Form answers = f.createAnswerForm();
-        answers.setAnswer("first", "Matt");
-
-        ReportedData data = manager.sendSearchForm(answers);
-        System.out.println(data);
-
-    }
-
-
 }
