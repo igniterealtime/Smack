@@ -28,6 +28,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.DNSUtil;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
@@ -132,8 +133,11 @@ public class XMPPConnection {
     Map chats = new HashMap();
 
     /**
-     * Creates a new connection to the specified XMPP server. The default port of 5222 will
-     * be used. The IP address of the server is assumed to match the service name.
+     * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
+     * performed to try to determine the IP address and port corresponding to the
+     * serviceName; if that lookup fails, it's assumed that server resides at serviceName
+     * with the default port of 5222. This is the preferred constructor for connecting
+     * to an XMPP server.
      *
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @throws XMPPException if an error occurs while trying to establish the connection.
@@ -143,7 +147,27 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String serviceName) throws XMPPException {
-        this(serviceName, 5222, serviceName);
+        DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
+
+        this.host = address.getHost();
+        this.port = address.getPort();
+        try {
+            this.socket = new Socket(host, port);
+        }
+        catch (UnknownHostException uhe) {
+            throw new XMPPException(
+                "Could not connect to " + host + ":" + port + ".",
+                new XMPPError(504),
+                uhe);
+        }
+        catch (IOException ioe) {
+            throw new XMPPException(
+                "XMPPError connecting to " + host + ":" + port + ".",
+                new XMPPError(502),
+                ioe);
+        }
+        this.serviceName = serviceName;
+        init();
     }
 
     /**
@@ -159,7 +183,25 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host, int port) throws XMPPException {
-        this(host, port, host);
+        this.host = host;
+        this.port = port;
+        try {
+            this.socket = new Socket(host, port);
+        }
+        catch (UnknownHostException uhe) {
+            throw new XMPPException(
+                "Could not connect to " + host + ":" + port + ".",
+                new XMPPError(504),
+                uhe);
+        }
+        catch (IOException ioe) {
+            throw new XMPPException(
+                "XMPPError connecting to " + host + ":" + port + ".",
+                new XMPPError(502),
+                ioe);
+        }
+        this.serviceName = host;
+        init();
     }
 
     /**
@@ -216,7 +258,8 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host, int port, String serviceName, SocketFactory socketFactory)
-            throws XMPPException {
+            throws XMPPException
+    {
         this.host = host;
         this.port = port;
         try {
@@ -994,5 +1037,4 @@ public class XMPPConnection {
         // Send a new opening stream to the server
         packetWriter.openStream();
     }
-
 }
