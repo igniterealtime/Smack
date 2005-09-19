@@ -230,7 +230,7 @@ public class ReportedData {
         public Iterator getValues(String variable) {
             for(Iterator it=getFields();it.hasNext();) {
                 Field field = (Field) it.next();
-                if (variable.equals(field.getVariable())) {
+                if (variable.equalsIgnoreCase(field.getVariable())) {
                     return field.getValues();
                 }
             }

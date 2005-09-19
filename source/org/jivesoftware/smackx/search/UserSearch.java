@@ -172,7 +172,7 @@ public class UserSearch extends IQ {
             while (!done) {
                 int eventType = parser.next();
                 if (eventType == XmlPullParser.START_TAG && parser.getName().equals("instructions")) {
-                    buildDataForm(simpleUserSearch, parser.getText(), parser);
+                    buildDataForm(simpleUserSearch, parser.nextText(), parser);
                     return simpleUserSearch;
                 }
                 else if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
@@ -203,14 +203,15 @@ public class UserSearch extends IQ {
     private static void buildDataForm(SimpleUserSearch search, String instructions, XmlPullParser parser) throws Exception {
         DataForm dataForm = new DataForm(Form.TYPE_FORM);
         boolean done = false;
+        dataForm.setTitle("User Search");
+        dataForm.addInstruction(instructions);
         while (!done) {
             int eventType = parser.next();
 
-            dataForm.setTitle("User Search");
-            dataForm.addInstruction(instructions);
             if (eventType == XmlPullParser.START_TAG && !parser.getNamespace().equals("jabber:x:data")) {
                 String name = parser.getName();
                 FormField field = new FormField(name);
+                field.setLabel(name);
                 field.setType(FormField.TYPE_TEXT_SINGLE);
                 dataForm.addField(field);
             }

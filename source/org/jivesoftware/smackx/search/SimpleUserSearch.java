@@ -28,6 +28,7 @@ import java.util.List;
  * @author Derek DeMoro
  */
 class SimpleUserSearch extends IQ {
+
     private Form form;
     private ReportedData data;
 
@@ -55,7 +56,7 @@ class SimpleUserSearch extends IQ {
             form = Form.getFormFrom(this);
         }
 
-        if(form == null){
+        if (form == null) {
             return "";
         }
 
@@ -87,13 +88,14 @@ class SimpleUserSearch extends IQ {
 
         List fields = new ArrayList();
         while (!done) {
-            if(parser.getAttributeCount() > 0){
+            if (parser.getAttributeCount() > 0) {
                 String jid = parser.getAttributeValue("", "jid");
                 List valueList = new ArrayList();
                 valueList.add(jid);
                 ReportedData.Field field = new ReportedData.Field("jid", valueList);
                 fields.add(field);
             }
+
             int eventType = parser.next();
 
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
@@ -112,9 +114,20 @@ class SimpleUserSearch extends IQ {
                 ReportedData.Field field = new ReportedData.Field(name, valueList);
                 fields.add(field);
 
+                boolean exists = false;
+                Iterator cols = data.getColumns();
+                while (cols.hasNext()) {
+                    ReportedData.Column column = (ReportedData.Column) cols.next();
+                    if (column.getVariable().equals(name)) {
+                        exists = true;
+                    }
+                }
+
                 // Column name should be the same
-                ReportedData.Column column = new ReportedData.Column(name, name, "text-single");
-                data.addColumn(column);
+                if (!exists) {
+                    ReportedData.Column column = new ReportedData.Column(name, name, "text-single");
+                    data.addColumn(column);
+                }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("query")) {
