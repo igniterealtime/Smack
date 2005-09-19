@@ -13,41 +13,57 @@ package org.jivesoftware.smackx.search;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.FormField;
+import org.jivesoftware.smackx.ReportedData;
+import org.xmlpull.v1.XmlPullParser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-public class SimpleUserSearch extends IQ {
-
+/**
+ * SimpleUserSearch is used to support the non-dataform type of JEP 55. This provides
+ * the mechanism for allowing always type ReportedData to be returned by any search result,
+ * regardless of the form of the data returned from the server.
+ *
+ * @author Derek DeMoro
+ */
+class SimpleUserSearch extends IQ {
     private Form form;
-
-    public Form getForm() {
-        return form;
-    }
+    private ReportedData data;
 
     public void setForm(Form form) {
         this.form = form;
     }
 
+    public ReportedData getReportedData() {
+        return data;
+    }
+
+
     public String getChildElementXML() {
         StringBuffer buf = new StringBuffer();
         buf.append("<query xmlns=\"jabber:iq:search\">");
-        buf.append(getConvertedPacket());
+        buf.append(getItemsToSearch());
         buf.append("</query>");
-        System.out.println(buf.toString());
         return buf.toString();
     }
 
-    public String getConvertedPacket() {
+    private String getItemsToSearch() {
         StringBuffer buf = new StringBuffer();
 
         if (form == null) {
             form = Form.getFormFrom(this);
         }
+
+        if(form == null){
+            return "";
+        }
+
         Iterator fields = form.getFields();
         while (fields.hasNext()) {
             FormField field = (FormField) fields.next();
             String name = field.getVariable();
-            String value = getValue(field);
+            String value = getSingleValue(field);
             if (value.trim().length() > 0) {
                 buf.append("<").append(name).append(">").append(value).append("</").append(name).append(">");
             }
@@ -56,12 +72,59 @@ public class SimpleUserSearch extends IQ {
         return buf.toString();
     }
 
-    public String getValue(FormField formField) {
+    private static String getSingleValue(FormField formField) {
         Iterator values = formField.getValues();
         while (values.hasNext()) {
             return (String) values.next();
         }
         return "";
+    }
+
+    protected void parseItems(XmlPullParser parser) throws Exception {
+        ReportedData data = new ReportedData();
+
+        boolean done = false;
+
+        List fields = new ArrayList();
+        while (!done) {
+            if(parser.getAttributeCount() > 0){
+                String jid = parser.getAttributeValue("", "jid");
+                List valueList = new ArrayList();
+                valueList.add(jid);
+                ReportedData.Field field = new ReportedData.Field("jid", valueList);
+                fields.add(field);
+            }
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
+                fields = new ArrayList();
+            }
+            else if (eventType == XmlPullParser.END_TAG && parser.getName().equals("item")) {
+                ReportedData.Row row = new ReportedData.Row(fields);
+                data.addRow(row);
+            }
+            else if (eventType == XmlPullParser.START_TAG) {
+                String name = parser.getName();
+                String value = parser.nextText();
+
+                List valueList = new ArrayList();
+                valueList.add(value);
+                ReportedData.Field field = new ReportedData.Field(name, valueList);
+                fields.add(field);
+
+                // Column name should be the same
+                ReportedData.Column column = new ReportedData.Column(name, name, "text-single");
+                data.addColumn(column);
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+
+        }
+
+        this.data = data;
     }
 
 

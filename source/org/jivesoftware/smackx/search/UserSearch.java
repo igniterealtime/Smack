@@ -36,8 +36,10 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class UserSearch extends IQ {
 
+    /**
+     * Creates a new instance of UserSearch.
+     */
     public UserSearch() {
-
     }
 
     public String getChildElementXML() {
@@ -53,8 +55,9 @@ public class UserSearch extends IQ {
      *
      * @param con           the current XMPPConnection.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
+     * @return the search form received by the server.
      * @throws org.jivesoftware.smack.XMPPException
-     *          thrown if a server error has occured.
+     *          thrown if a server error has occurred.
      */
     public Form getSearchForm(XMPPConnection con, String searchService) throws XMPPException {
         UserSearch search = new UserSearch();
@@ -85,7 +88,7 @@ public class UserSearch extends IQ {
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return ReportedData the data found from the query.
      * @throws org.jivesoftware.smack.XMPPException
-     *          thrown if a server error has occured.
+     *          thrown if a server error has occurred.
      */
     public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws XMPPException {
         UserSearch search = new UserSearch();
@@ -107,6 +110,8 @@ public class UserSearch extends IQ {
         if (response.getError() != null) {
             return sendSimpleSearchForm(con, searchForm, searchService);
         }
+
+
         return ReportedData.getReportedDataFrom(response);
     }
 
@@ -118,7 +123,7 @@ public class UserSearch extends IQ {
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return ReportedData the data found from the query.
      * @throws org.jivesoftware.smack.XMPPException
-     *          thrown if a server error has occured.
+     *          thrown if a server error has occurred.
      */
     public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws XMPPException {
         SimpleUserSearch search = new SimpleUserSearch();
@@ -140,7 +145,11 @@ public class UserSearch extends IQ {
         if (response.getError() != null) {
             throw new XMPPException(response.getError());
         }
-        return ReportedData.getReportedDataFrom(response);
+
+        if (response instanceof SimpleUserSearch) {
+            return ((SimpleUserSearch) response).getReportedData();
+        }
+        return null;
     }
 
     /**
@@ -148,12 +157,15 @@ public class UserSearch extends IQ {
      */
     public static class Provider implements IQProvider {
 
+        /**
+         * Provider Constructor.
+         */
         public Provider() {
             super();
         }
 
         public IQ parseIQ(XmlPullParser parser) throws Exception {
-            UserSearch search = new UserSearch();
+            UserSearch search = null;
             SimpleUserSearch simpleUserSearch = new SimpleUserSearch();
 
             boolean done = false;
@@ -163,8 +175,13 @@ public class UserSearch extends IQ {
                     buildDataForm(simpleUserSearch, parser.getText(), parser);
                     return simpleUserSearch;
                 }
-                else if (eventType == XmlPullParser.START_TAG) {
+                else if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
+                    simpleUserSearch.parseItems(parser);
+                    return simpleUserSearch;
+                }
+                else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
                     // Otherwise, it must be a packet extension.
+                    search = new UserSearch();
                     search.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
                             parser.getNamespace(), parser));
 
@@ -176,7 +193,10 @@ public class UserSearch extends IQ {
                 }
             }
 
-            return search;
+            if (search != null) {
+                return search;
+            }
+            return simpleUserSearch;
         }
     }
 
@@ -188,7 +208,7 @@ public class UserSearch extends IQ {
 
             dataForm.setTitle("User Search");
             dataForm.addInstruction(instructions);
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.START_TAG && !parser.getNamespace().equals("jabber:x:data")) {
                 String name = parser.getName();
                 FormField field = new FormField(name);
                 field.setType(FormField.TYPE_TEXT_SINGLE);
@@ -199,9 +219,15 @@ public class UserSearch extends IQ {
                     done = true;
                 }
             }
+            else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
+                search.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
+                        parser.getNamespace(), parser));
+                done = true;
+            }
         }
-
-        search.addExtension(dataForm);
+        if (search.getExtension("x", "jabber:x:data") == null) {
+            search.addExtension(dataForm);
+        }
     }
 
 

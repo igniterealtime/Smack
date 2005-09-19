@@ -14,39 +14,90 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.ReportedData;
+import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.packet.DiscoverItems;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * The UserSearchManager is a facade built upon Jabber Search Services (JEP-055) to allow for searching
+ * repositories on a Jabber Server. This implementation allows for transparency of implementation of
+ * searching (DataForms or No DataForms), but allows the user to simply use the DataForm model for both
+ * types of support.
+ * <pre>
+ * XMPPConnection con = new XMPPConnection("jabber.org");
+ * con.login("john", "doe");
+ * UserSearchManager search = new UserSearchManager(con, "users.jabber.org");
+ * Form searchForm = search.getSearchForm();
+ * Form answerForm = searchForm.createAnswerForm();
+ * answerForm.setAnswer("last", "DeMoro");
+ * ReportedData data = search.getSearchResults(answerForm);
+ * // Use Returned Data
+ * </pre>
+ *
+ * @author Derek DeMoro
+ */
 public class UserSearchManager {
 
     private XMPPConnection con;
-    private String serviceName;
+    private String searchService;
     private UserSearch userSearch;
 
-    public UserSearchManager(XMPPConnection con, String serviceName) {
+    /**
+     * Creates a new UserSearchManager.
+     *
+     * @param con           the XMPPConnection to use.
+     * @param searchService the name of the search service. (ex. search.jivesoftware.com)
+     */
+    public UserSearchManager(XMPPConnection con, String searchService) {
         this.con = con;
-        this.serviceName = serviceName;
-
+        this.searchService = searchService;
         userSearch = new UserSearch();
     }
 
-    public Form getSearchForm() {
-        try {
-            return userSearch.getSearchForm(con, serviceName);
-        }
-        catch (XMPPException e) {
-            e.printStackTrace();
-        }
-        return null;
+    /**
+     * Returns the form to fill out to perform a search.
+     *
+     * @return the form to fill out to perform a search.
+     * @throws XMPPException thrown if a server error has occurred.
+     */
+    public Form getSearchForm() throws XMPPException {
+        return userSearch.getSearchForm(con, searchService);
     }
 
-    public ReportedData sendSearchForm(Form searchForm) {
-        ReportedData data = null;
-        try {
-            data = userSearch.sendSearchForm(con, searchForm, serviceName);
-        }
-        catch (XMPPException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Submits a search form to the server and returns the resulting information
+     * in the form of <code>ReportedData</code>
+     *
+     * @param searchForm the <code>Form</code> to submit for searching.
+     * @return the ReportedData returned by the server.
+     * @throws XMPPException thrown if a server error has occurred.
+     */
+    public ReportedData getSearchResults(Form searchForm) throws XMPPException {
+        return userSearch.sendSearchForm(con, searchForm, searchService);
+    }
 
-        return data;
+    /**
+     * Returns a collection of search services found on the server.
+     *
+     * @return a Collection of search services found on the server.
+     * @throws XMPPException thrown if a server error has occurred.
+     */
+    public Collection getSearchServices() throws XMPPException {
+        List searchServices = new ArrayList();
+        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
+        DiscoverItems items = discoManager.discoverItems(con.getServiceName());
+        for (Iterator it = items.getItems(); it.hasNext();) {
+            DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+            DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
+            if (info.containsFeature("jabber:iq:search")) {
+                searchServices.add(item.getEntityID());
+            }
+        }
+        return searchServices;
     }
 }
