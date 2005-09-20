@@ -83,6 +83,7 @@ class SimpleUserSearch extends IQ {
 
     protected void parseItems(XmlPullParser parser) throws Exception {
         ReportedData data = new ReportedData();
+        data.addColumn(new ReportedData.Column("JID", "jid", "text-single"));
 
         boolean done = false;
 

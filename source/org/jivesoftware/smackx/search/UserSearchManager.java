@@ -44,28 +44,26 @@ import java.util.List;
 public class UserSearchManager {
 
     private XMPPConnection con;
-    private String searchService;
     private UserSearch userSearch;
 
     /**
      * Creates a new UserSearchManager.
      *
      * @param con           the XMPPConnection to use.
-     * @param searchService the name of the search service. (ex. search.jivesoftware.com)
      */
-    public UserSearchManager(XMPPConnection con, String searchService) {
+    public UserSearchManager(XMPPConnection con) {
         this.con = con;
-        this.searchService = searchService;
         userSearch = new UserSearch();
     }
 
     /**
      * Returns the form to fill out to perform a search.
      *
+     * @param searchService the search service to query.
      * @return the form to fill out to perform a search.
      * @throws XMPPException thrown if a server error has occurred.
      */
-    public Form getSearchForm() throws XMPPException {
+    public Form getSearchForm(String searchService) throws XMPPException {
         return userSearch.getSearchForm(con, searchService);
     }
 
@@ -74,12 +72,14 @@ public class UserSearchManager {
      * in the form of <code>ReportedData</code>
      *
      * @param searchForm the <code>Form</code> to submit for searching.
+     * @param searchService the name of the search service to use.
      * @return the ReportedData returned by the server.
      * @throws XMPPException thrown if a server error has occurred.
      */
-    public ReportedData getSearchResults(Form searchForm) throws XMPPException {
+    public ReportedData getSearchResults(Form searchForm, String searchService) throws XMPPException {
         return userSearch.sendSearchForm(con, searchForm, searchService);
     }
+
 
     /**
      * Returns a collection of search services found on the server.
@@ -100,4 +100,5 @@ public class UserSearchManager {
         }
         return searchServices;
     }
+
 }

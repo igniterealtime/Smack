@@ -211,7 +211,21 @@ public class UserSearch extends IQ {
             if (eventType == XmlPullParser.START_TAG && !parser.getNamespace().equals("jabber:x:data")) {
                 String name = parser.getName();
                 FormField field = new FormField(name);
-                field.setLabel(name);
+
+                // Handle hard coded values.
+                if(name.equals("first")){
+                    field.setLabel("First Name");
+                }
+                else if(name.equals("last")){
+                    field.setLabel("Last Name");
+                }
+                else if(name.equals("email")){
+                    field.setLabel("Email Address");
+                }
+                else if(name.equals("nick")){
+                    field.setLabel("Nickname");
+                }
+
                 field.setType(FormField.TYPE_TEXT_SINGLE);
                 dataForm.addField(field);
             }

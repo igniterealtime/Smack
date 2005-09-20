@@ -46,7 +46,7 @@ import java.util.*;
  *
  * @author Matt Tucker
  */
-class Cache implements Map {
+public class Cache implements Map {
 
     /**
      * The map the keys and values are stored in.
