@@ -53,6 +53,7 @@
 package org.jivesoftware.smack;
 
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -329,6 +330,59 @@ public class RosterTest extends SmackTestCase {
 
             cleanUpRoster();
         } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * Tests that adding an existing roster entry that belongs to a group to another group
+     * works fine.
+     */
+    public void testAddEntryToNewGroup() {
+        try {
+            // Add a new roster entry
+            Roster roster = getConnection(0).getRoster();
+            roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
+            roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
+
+            // Wait up to 2 seconds to receive new roster contacts
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 2) {
+                Thread.sleep(100);
+            }
+
+            assertEquals("Wrong number of entries in connection 0", 2, roster.getEntryCount());
+
+            // Add "gato11" to a new group called NewGroup
+            roster.createGroup("NewGroup").addEntry(roster.getEntry(getBareJID(1)));
+
+
+            // Log in from another resource so we can test the roster
+            XMPPConnection con2 = new XMPPConnection(getHost(), getPort());
+            con2.login(getUsername(0), getUsername(0), "MyNewResource");
+
+            Roster roster2 = con2.getRoster();
+
+            assertEquals("Wrong number of entries in new connection", 2, roster2.getEntryCount());
+            assertEquals("Wrong number of groups in new connection", 3, roster2.getGroupCount());
+
+
+            RosterEntry entry = roster2.getEntry(getBareJID(1));
+            assertNotNull("No entry for user 1 was found", entry);
+
+            ArrayList groups = new ArrayList();
+            Iterator groupsItr = entry.getGroups();
+            groups.add(((RosterGroup)groupsItr.next()).getName());
+            groups.add(((RosterGroup)groupsItr.next()).getName());
+            assertTrue("Friends group was not found", groups.contains("Friends"));
+            assertTrue("NewGroup group was not found", groups.contains("NewGroup"));
+
+            // Close the new connection
+            con2.close();
+
+            cleanUpRoster();
+        }
+        catch (Exception e) {
             fail(e.getMessage());
         }
     }
