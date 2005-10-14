@@ -180,7 +180,9 @@ public class RosterGroup {
             if (!entries.contains(entry)) {
                 RosterPacket packet = new RosterPacket();
                 packet.setType(IQ.Type.SET);
-                packet.addRosterItem(RosterEntry.toRosterItem(entry));
+                RosterPacket.Item item = RosterEntry.toRosterItem(entry);
+                item.addGroupName(getName());
+                packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
                 collector = connection
                         .createPacketCollector(new PacketIDFilter(packet.getPacketID()));
