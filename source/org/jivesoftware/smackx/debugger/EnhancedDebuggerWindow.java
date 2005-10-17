@@ -20,27 +20,29 @@
 
 package org.jivesoftware.smackx.debugger;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.util.*;
-
-import javax.swing.*;
-
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.provider.ProviderManager;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Vector;
+
 /**
- * The EnhancedDebuggerWindow is the main debug window that will show all the EnhancedDebuggers. 
- * For each connection to debug there will be an EnhancedDebugger that will be shown in the 
+ * The EnhancedDebuggerWindow is the main debug window that will show all the EnhancedDebuggers.
+ * For each connection to debug there will be an EnhancedDebugger that will be shown in the
  * EnhancedDebuggerWindow.<p>
- * 
+ * <p/>
  * This class also provides information about Smack like for example the Smack version and the
- * installed providers. 
- * 
+ * installed providers.
+ *
  * @author Gaston Dombiak
  */
-class EnhancedDebuggerWindow {
+public class EnhancedDebuggerWindow {
 
     private static EnhancedDebuggerWindow instance;
 
@@ -48,25 +50,27 @@ class EnhancedDebuggerWindow {
     private static ImageIcon connectionActiveIcon;
     private static ImageIcon connectionClosedIcon;
     private static ImageIcon connectionClosedOnErrorIcon;
-    
+
+    public static boolean PERSISTED_DEBUGGER = false;
+
     {
         URL url;
-        
+
         url =
-            Thread.currentThread().getContextClassLoader().getResource(
-                "images/trafficlight_off.png");
+                Thread.currentThread().getContextClassLoader().getResource(
+                        "images/trafficlight_off.png");
         if (url != null) {
             connectionCreatedIcon = new ImageIcon(url);
         }
         url =
-            Thread.currentThread().getContextClassLoader().getResource(
-                "images/trafficlight_green.png");
+                Thread.currentThread().getContextClassLoader().getResource(
+                        "images/trafficlight_green.png");
         if (url != null) {
             connectionActiveIcon = new ImageIcon(url);
         }
         url =
-            Thread.currentThread().getContextClassLoader().getResource(
-                "images/trafficlight_red.png");
+                Thread.currentThread().getContextClassLoader().getResource(
+                        "images/trafficlight_red.png");
         if (url != null) {
             connectionClosedIcon = new ImageIcon(url);
         }
@@ -85,11 +89,11 @@ class EnhancedDebuggerWindow {
     }
 
     /**
-     * Returns the unique EnhancedDebuggerWindow instance available in the system. 
-     * 
-     * @return the unique EnhancedDebuggerWindow instance 
+     * Returns the unique EnhancedDebuggerWindow instance available in the system.
+     *
+     * @return the unique EnhancedDebuggerWindow instance
      */
-    private static EnhancedDebuggerWindow getInstance() {
+    public static EnhancedDebuggerWindow getInstance() {
         if (instance == null) {
             instance = new EnhancedDebuggerWindow();
         }
@@ -98,7 +102,7 @@ class EnhancedDebuggerWindow {
 
     /**
      * Adds the new specified debugger to the list of debuggers to show in the main window.
-     * 
+     *
      * @param debugger the new debugger to show in the debug window
      */
     synchronized static void addDebugger(EnhancedDebugger debugger) {
@@ -106,8 +110,8 @@ class EnhancedDebuggerWindow {
     }
 
     /**
-     * Shows the new debugger in the debug window. 
-     * 
+     * Shows the new debugger in the debug window.
+     *
      * @param debugger the new debugger to show
      */
     private void showNewDebugger(EnhancedDebugger debugger) {
@@ -118,26 +122,26 @@ class EnhancedDebuggerWindow {
         tabbedPane.add(debugger.tabbedPane, tabbedPane.getComponentCount() - 1);
         tabbedPane.setIconAt(tabbedPane.indexOfComponent(debugger.tabbedPane), connectionCreatedIcon);
         frame.setTitle(
-            "Smack Debug Window -- Total connections: " + (tabbedPane.getComponentCount() - 1));
+                "Smack Debug Window -- Total connections: " + (tabbedPane.getComponentCount() - 1));
         // Keep the added debugger for later access
         debuggers.add(debugger);
     }
 
     /**
-     * Notification that a user has logged in to the server. A new title will be set 
-     * to the tab of the given debugger. 
-     * 
+     * Notification that a user has logged in to the server. A new title will be set
+     * to the tab of the given debugger.
+     *
      * @param debugger the debugger whose connection logged in to the server
-     * @param user the user@host/resource that has just logged in
+     * @param user     the user@host/resource that has just logged in
      */
     synchronized static void userHasLogged(EnhancedDebugger debugger, String user) {
         int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
         getInstance().tabbedPane.setTitleAt(
-            index,
-            user);
+                index,
+                user);
         getInstance().tabbedPane.setIconAt(
-            index,
-            connectionActiveIcon);
+                index,
+                connectionActiveIcon);
     }
 
     /**
@@ -147,40 +151,42 @@ class EnhancedDebuggerWindow {
      */
     synchronized static void connectionClosed(EnhancedDebugger debugger) {
         getInstance().tabbedPane.setIconAt(
-            getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
-            connectionClosedIcon);
+                getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
+                connectionClosedIcon);
     }
 
     /**
      * Notification that the connection was closed due to an exception.
      *
      * @param debugger the debugger whose connection was closed due to an exception.
-     * @param e the exception.
+     * @param e        the exception.
      */
     synchronized static void connectionClosedOnError(EnhancedDebugger debugger, Exception e) {
         int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
         getInstance().tabbedPane.setToolTipTextAt(
-            index,
-            "Connection closed due to the exception: " + e.getMessage());
+                index,
+                "Connection closed due to the exception: " + e.getMessage());
         getInstance().tabbedPane.setIconAt(
-            index,
-            connectionClosedOnErrorIcon);
+                index,
+                connectionClosedOnErrorIcon);
     }
 
     /**
      * Creates the main debug window that provides information about Smack and also shows
-     * a tab panel for each connection that is being debugged. 
+     * a tab panel for each connection that is being debugged.
      */
     private void createDebug() {
 
         frame = new JFrame("Smack Debug Window");
 
-        // Add listener for window closing event 
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent evt) {
-                rootWindowClosing(evt);
-            }
-        });
+        if (!PERSISTED_DEBUGGER) {
+            // Add listener for window closing event
+            frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent evt) {
+                    rootWindowClosing(evt);
+                }
+            });
+        }
 
         // We'll arrange the UI into tabs. The last tab contains Smack's information.
         // All the connection debugger tabs will be shown before the Smack info tab. 
@@ -253,15 +259,15 @@ class EnhancedDebuggerWindow {
                 if (tabbedPane.getSelectedIndex() < tabbedPane.getComponentCount() - 1) {
                     int index = tabbedPane.getSelectedIndex();
                     // Notify to the debugger to stop debugging
-                    EnhancedDebugger debugger = (EnhancedDebugger)debuggers.get(index);
+                    EnhancedDebugger debugger = (EnhancedDebugger) debuggers.get(index);
                     debugger.cancel();
                     // Remove the debugger from the root window
                     tabbedPane.remove(debugger.tabbedPane);
                     debuggers.remove(debugger);
                     // Update the root window title
                     frame.setTitle(
-                        "Smack Debug Window -- Total connections: "
-                            + (tabbedPane.getComponentCount() - 1));
+                            "Smack Debug Window -- Total connections: "
+                                    + (tabbedPane.getComponentCount() - 1));
                 }
             }
         });
@@ -272,24 +278,24 @@ class EnhancedDebuggerWindow {
             public void actionPerformed(ActionEvent e) {
                 ArrayList debuggersToRemove = new ArrayList();
                 // Remove all the debuggers of which their connections are no longer valid
-                for (int index=0; index < tabbedPane.getComponentCount()-1; index++) {
-                    EnhancedDebugger debugger = (EnhancedDebugger)debuggers.get(index);
+                for (int index = 0; index < tabbedPane.getComponentCount() - 1; index++) {
+                    EnhancedDebugger debugger = (EnhancedDebugger) debuggers.get(index);
                     if (!debugger.isConnectionActive()) {
                         // Notify to the debugger to stop debugging
                         debugger.cancel();
                         debuggersToRemove.add(debugger);
                     }
                 }
-                for (Iterator it=debuggersToRemove.iterator(); it.hasNext();) {
-                    EnhancedDebugger debugger = (EnhancedDebugger)it.next();
+                for (Iterator it = debuggersToRemove.iterator(); it.hasNext();) {
+                    EnhancedDebugger debugger = (EnhancedDebugger) it.next();
                     // Remove the debugger from the root window
                     tabbedPane.remove(debugger.tabbedPane);
                     debuggers.remove(debugger);
                 }
                 // Update the root window title
                 frame.setTitle(
-                    "Smack Debug Window -- Total connections: "
-                        + (tabbedPane.getComponentCount() - 1));
+                        "Smack Debug Window -- Total connections: "
+                                + (tabbedPane.getComponentCount() - 1));
             }
         });
         menu.add(menuItem);
@@ -299,20 +305,22 @@ class EnhancedDebuggerWindow {
         frame.getContentPane().add(tabbedPane);
 
         frame.setSize(650, 400);
-        frame.setVisible(true);
 
+        if (!PERSISTED_DEBUGGER) {
+            frame.setVisible(true);
+        }
     }
 
     /**
-     * Notification that the root window is closing. Stop listening for received and 
+     * Notification that the root window is closing. Stop listening for received and
      * transmitted packets in all the debugged connections.
-     * 
-     * @param evt the event that indicates that the root window is closing 
+     *
+     * @param evt the event that indicates that the root window is closing
      */
     public void rootWindowClosing(WindowEvent evt) {
         // Notify to all the debuggers to stop debugging
         for (Iterator it = debuggers.iterator(); it.hasNext();) {
-            EnhancedDebugger debugger = (EnhancedDebugger)it.next();
+            EnhancedDebugger debugger = (EnhancedDebugger) it.next();
             debugger.cancel();
         }
         // Release any reference to the debuggers
@@ -325,6 +333,7 @@ class EnhancedDebuggerWindow {
      * Listens for debug window popup dialog events.
      */
     private class PopupListener extends MouseAdapter {
+
         JPopupMenu popup;
 
         PopupListener(JPopupMenu popupMenu) {
@@ -345,4 +354,11 @@ class EnhancedDebuggerWindow {
             }
         }
     }
+
+    public void setVisible(boolean visible) {
+        if (frame != null) {
+            frame.setVisible(visible);
+        }
+    }
+
 }
