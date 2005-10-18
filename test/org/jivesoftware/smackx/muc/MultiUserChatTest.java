@@ -52,16 +52,20 @@
 
 package org.jivesoftware.smackx.muc;
 
-import java.util.*;
-import java.text.SimpleDateFormat;
-
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.packet.XHTMLExtension;
+import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DelayInformation;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.packet.XHTMLExtension;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Tests the new MUC functionalities.
@@ -89,7 +93,7 @@ public class MultiUserChatTest extends SmackTestCase {
     public void testGroupchatCompatibility() {
         try {
             Message message;
-            
+
             GroupChat groupchat = new GroupChat(getConnection(1), room);
             groupchat.join("testbot2");
             Thread.sleep(400);
@@ -101,7 +105,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 "Presence mode of user2 is wrong",
                 Presence.Mode.AVAILABLE,
                 presence.getMode());
-            
+
             // User using old client send a message
             groupchat.sendMessage("Hello");
             // Check that the rest of the occupants (that are support MUC) received the message
@@ -139,7 +143,7 @@ public class MultiUserChatTest extends SmackTestCase {
             DiscussionHistory history = new DiscussionHistory();
             history.setSeconds(2);
             muc2.join("testbot2", null, history, SmackConfiguration.getPacketReplyTimeout());
-    
+
             Message msg;
             // Get first historic message
             msg = muc2.nextMessage(1000);
@@ -147,7 +151,7 @@ public class MultiUserChatTest extends SmackTestCase {
             SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
             UTC_FORMAT.setTimeZone(TimeZone.getDefault());
             System.out.println(UTC_FORMAT.format(delay.getStamp()));
-            
+
             assertNotNull("First message is null", msg);
             assertEquals("Body of first message is incorrect", "Message 3", msg.getBody());
             // Try to get second historic message 
@@ -172,12 +176,12 @@ public class MultiUserChatTest extends SmackTestCase {
             // Try to get third historic message 
             msg = muc3.nextMessage(1000);
             assertNull("Third message is not null", msg);
-    
+
             // User2 leaves the room
             muc2.leave();
             // User3 leaves the room
             muc3.leave();
-    
+
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -341,7 +345,7 @@ public class MultiUserChatTest extends SmackTestCase {
                     answer[0] = reason;
                     XHTMLExtension extension = (XHTMLExtension) message.getExtension("html",
                             "http://jabber.org/protocol/xhtml-im");
-                    assertNotNull("An extension was not found in the invitation", extension);                    
+                    assertNotNull("An extension was not found in the invitation", extension);
                     answer[1] = (String) extension.getBodies().next();
                 }
             });
@@ -482,13 +486,40 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
+    /**
+     * Tests that IQ packets can be sent to/from room occupants. This case will try to discover
+     * information about other room occupants.
+     */
+    public void testPrivateIQ() {
+        try {
+            // User2 joins the new room
+            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
+            muc2.join("testbot2");
+
+            // User2 discovers information about User1
+            DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(getConnection(1))
+                    .discoverInfo(room + "/testbot", null);
+
+            assertNotNull("No info was discovered from room occupant", info);
+            assertEquals("Wrong IQ type", IQ.Type.RESULT, info.getType());
+            assertEquals("Wrong IQ sender", room + "/testbot", info.getFrom());
+
+            // User2 leaves the room
+            muc2.leave();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
     public void testReservedNickname() {
         try {
             MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             // Check that user2 doesn't have a reserved nickname yet
             String reservedNickname = muc2.getReservedNickname();
             assertNull("Reserved nickname is not null", reservedNickname);
-            
+
             // User2 registers with the room and reserves a nickname
             Form registrationForm = muc2.getRegistrationForm();
             Form answerForm = registrationForm.createAnswerForm();
@@ -496,15 +527,15 @@ public class MultiUserChatTest extends SmackTestCase {
             answerForm.setAnswer("muc#register_last", "MyLastName");
             answerForm.setAnswer("muc#register_roomnick", "MyNick");
             muc2.sendRegistrationForm(answerForm);
-            
+
             // Check that user2 has a reserved nickname
             reservedNickname = muc2.getReservedNickname();
             assertEquals("Reserved nickname is wrong", "MyNick", reservedNickname);
-            
+
             // Check that user2 can join the room using his reserved nickname
             muc2.join("MyNick");
             muc2.leave();
-            
+
             // Check that other users cannot join the room with user2's reserved nickname
             MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
             try {
@@ -521,11 +552,11 @@ public class MultiUserChatTest extends SmackTestCase {
                     409,
                     xmppError.getCode());
             }
-            
+
             // Check that user3 can join the room using his own nickname (not reserved)
             muc3.join("MyNotReservedNick");
             muc3.leave();
-            
+
             // Check that another user cannot reserve an already reserved nickname
             registrationForm = muc3.getRegistrationForm();
             answerForm = registrationForm.createAnswerForm();
@@ -545,7 +576,7 @@ public class MultiUserChatTest extends SmackTestCase {
                     409,
                     xmppError.getCode());
             }
-            
+
             // Check that another user can reserve a new nickname
             registrationForm = muc3.getRegistrationForm();
             answerForm = registrationForm.createAnswerForm();
@@ -553,7 +584,7 @@ public class MultiUserChatTest extends SmackTestCase {
             answerForm.setAnswer("muc#register_last", "MyLastName 2");
             answerForm.setAnswer("muc#register_roomnick", "MyNick 2");
             muc3.sendRegistrationForm(answerForm);
-            
+
         }
         catch (XMPPException e) {
             e.printStackTrace();
@@ -1581,14 +1612,14 @@ public class MultiUserChatTest extends SmackTestCase {
             assertEquals("Wrong participant jid", getFullJID(1), occupant.getJid());
 
             Thread.sleep(500);
-            
+
             // Check that we can retrieve Occupant information of a given user
             occupant = muc.getOccupant(room + "/testbot2");
             assertNotNull("Occupant was not found", occupant);
             assertEquals("Wrong occupant jid", getFullJID(1), occupant.getJid());
             assertEquals("Wrong occupant affiliation", "member", occupant.getAffiliation());
             assertEquals("Wrong occupant role", "participant", occupant.getRole());
-            assertEquals("Wrong occupant nick", "testbot2", occupant.getNick());            
+            assertEquals("Wrong occupant nick", "testbot2", occupant.getNick());
 
             try {
                 // Check whether a member can get the list of owners
@@ -1673,7 +1704,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
             // User3 leaves the room
             muc3.leave();
-            
+
             Thread.sleep(150);
             // User2 leaves the room
             muc2.leave();
@@ -1780,7 +1811,7 @@ public class MultiUserChatTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = false;
+        //XMPPConnection.DEBUG_ENABLED = false;
         super.setUp();
         room = "fruta124@" + getMUCDomain();
         try {
