@@ -326,6 +326,12 @@ public class EnhancedDebugger implements SmackDebugger {
         ObservableReader debugReader = new ObservableReader(reader);
         readerListener = new ReaderListener() {
                     public void read(String str) {
+                        if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER &&
+                                !EnhancedDebuggerWindow.getInstance().isVisible()) {
+                            // Do not add content if the parent is not visible
+                            return;
+                        }
+
                         int index = str.lastIndexOf(">");
                         if (index != -1) {
                             receivedText.append(str.substring(0, index + 1));
@@ -345,6 +351,12 @@ public class EnhancedDebugger implements SmackDebugger {
         ObservableWriter debugWriter = new ObservableWriter(writer);
         writerListener = new WriterListener() {
                     public void write(String str) {
+                        if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER &&
+                                !EnhancedDebuggerWindow.getInstance().isVisible()) {
+                            // Do not add content if the parent is not visible
+                            return;
+                        }
+
                         sentText.append(str);
                         if (str.endsWith(">")) {
                             sentText.append(NEWLINE);
@@ -627,49 +639,61 @@ public class EnhancedDebugger implements SmackDebugger {
      * @param dateFormatter the SimpleDateFormat to use to format Dates
      * @param packet the read packet to add to the table
      */
-    private void addReadPacketToTable(SimpleDateFormat dateFormatter, Packet packet) {
-        String messageType = null;
-        String from = packet.getFrom();
-        String type = "";
-        Icon packetTypeIcon;
-        receivedPackets++;
-        if (packet instanceof IQ) {
-            packetTypeIcon = iqPacketIcon;
-            messageType = "IQ Received (class=" + packet.getClass().getName() + ")";
-            type = ((IQ) packet).getType().toString();
-            receivedIQPackets++;
-        }
-        else if (packet instanceof Message) {
-            packetTypeIcon = messagePacketIcon;
-            messageType = "Message Received";
-            type = ((Message) packet).getType().toString();
-            receivedMessagePackets++;
-        }
-        else if (packet instanceof Presence) {
-            packetTypeIcon = presencePacketIcon;
-            messageType = "Presence Received";
-            type = ((Presence) packet).getType().toString();
-            receivedPresencePackets++;
-        }
-        else {
-            packetTypeIcon = unknownPacketTypeIcon;
-            messageType = packet.getClass().getName() + " Received";
-            receivedOtherPackets++;
-        }
+    private void addReadPacketToTable(final SimpleDateFormat dateFormatter, final Packet packet) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                String messageType = null;
+                String from = packet.getFrom();
+                String type = "";
+                Icon packetTypeIcon;
+                receivedPackets++;
+                if (packet instanceof IQ) {
+                    packetTypeIcon = iqPacketIcon;
+                    messageType = "IQ Received (class=" + packet.getClass().getName() + ")";
+                    type = ((IQ) packet).getType().toString();
+                    receivedIQPackets++;
+                }
+                else if (packet instanceof Message) {
+                    packetTypeIcon = messagePacketIcon;
+                    messageType = "Message Received";
+                    type = ((Message) packet).getType().toString();
+                    receivedMessagePackets++;
+                }
+                else if (packet instanceof Presence) {
+                    packetTypeIcon = presencePacketIcon;
+                    messageType = "Presence Received";
+                    type = ((Presence) packet).getType().toString();
+                    receivedPresencePackets++;
+                }
+                else {
+                    packetTypeIcon = unknownPacketTypeIcon;
+                    messageType = packet.getClass().getName() + " Received";
+                    receivedOtherPackets++;
+                }
 
-        messagesTable.addRow(
-            new Object[] {
-                formatXML(packet.toXML()),
-                dateFormatter.format(new Date()),
-                packetReceivedIcon,
-                packetTypeIcon,
-                messageType,
-                packet.getPacketID(),
-                type,
-                "",
-                from });
-        // Update the statistics table
-        updateStatistics();
+                // Check if we need to remove old rows from the table to keep memory consumption low
+                if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER) {
+                    if (EnhancedDebuggerWindow.MAX_TABLE_ROWS > 0 &&
+                            messagesTable.getRowCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
+                        messagesTable.removeRow(0);
+                    }
+                }
+
+                messagesTable.addRow(
+                    new Object[] {
+                        formatXML(packet.toXML()),
+                        dateFormatter.format(new Date()),
+                        packetReceivedIcon,
+                        packetTypeIcon,
+                        messageType,
+                        packet.getPacketID(),
+                        type,
+                        "",
+                        from });
+                // Update the statistics table
+                updateStatistics();
+            }
+        });
     }
 
     /**
@@ -678,50 +702,62 @@ public class EnhancedDebugger implements SmackDebugger {
      * @param dateFormatter the SimpleDateFormat to use to format Dates
      * @param packet the sent packet to add to the table
      */
-    private void addSentPacketToTable(SimpleDateFormat dateFormatter, Packet packet) {
-        String messageType = null;
-        String to = packet.getTo();
-        String type = "";
-        Icon packetTypeIcon;
-        sentPackets++;
-        if (packet instanceof IQ) {
-            packetTypeIcon = iqPacketIcon;
-            messageType = "IQ Sent (class=" + packet.getClass().getName() + ")";
-            type = ((IQ) packet).getType().toString();
-            sentIQPackets++;
-        }
-        else if (packet instanceof Message) {
-            packetTypeIcon = messagePacketIcon;
-            messageType = "Message Sent";
-            type = ((Message) packet).getType().toString();
-            sentMessagePackets++;
-        }
-        else if (packet instanceof Presence) {
-            packetTypeIcon = presencePacketIcon;
-            messageType = "Presence Sent";
-            type = ((Presence) packet).getType().toString();
-            sentPresencePackets++;
-        }
-        else {
-            packetTypeIcon = unknownPacketTypeIcon;
-            messageType = packet.getClass().getName() + " Sent";
-            sentOtherPackets++;
-        }
+    private void addSentPacketToTable(final SimpleDateFormat dateFormatter, final Packet packet) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                String messageType = null;
+                String to = packet.getTo();
+                String type = "";
+                Icon packetTypeIcon;
+                sentPackets++;
+                if (packet instanceof IQ) {
+                    packetTypeIcon = iqPacketIcon;
+                    messageType = "IQ Sent (class=" + packet.getClass().getName() + ")";
+                    type = ((IQ) packet).getType().toString();
+                    sentIQPackets++;
+                }
+                else if (packet instanceof Message) {
+                    packetTypeIcon = messagePacketIcon;
+                    messageType = "Message Sent";
+                    type = ((Message) packet).getType().toString();
+                    sentMessagePackets++;
+                }
+                else if (packet instanceof Presence) {
+                    packetTypeIcon = presencePacketIcon;
+                    messageType = "Presence Sent";
+                    type = ((Presence) packet).getType().toString();
+                    sentPresencePackets++;
+                }
+                else {
+                    packetTypeIcon = unknownPacketTypeIcon;
+                    messageType = packet.getClass().getName() + " Sent";
+                    sentOtherPackets++;
+                }
 
-        messagesTable.addRow(
-            new Object[] {
-                formatXML(packet.toXML()),
-                dateFormatter.format(new Date()),
-                packetSentIcon,
-                packetTypeIcon,
-                messageType,
-                packet.getPacketID(),
-                type,
-                to,
-                "" });
+                // Check if we need to remove old rows from the table to keep memory consumption low
+                if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER) {
+                    if (EnhancedDebuggerWindow.MAX_TABLE_ROWS > 0 &&
+                            messagesTable.getRowCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
+                        messagesTable.removeRow(0);
+                    }
+                }
 
-        // Update the statistics table
-        updateStatistics();
+                messagesTable.addRow(
+                    new Object[] {
+                        formatXML(packet.toXML()),
+                        dateFormatter.format(new Date()),
+                        packetSentIcon,
+                        packetTypeIcon,
+                        messageType,
+                        packet.getPacketID(),
+                        type,
+                        to,
+                        "" });
+
+                // Update the statistics table
+                updateStatistics();
+            }
+        });
     }
 
     private String formatXML(String str) {
