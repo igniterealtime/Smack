@@ -34,6 +34,8 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -309,6 +311,7 @@ public class VCard extends IQ {
 
     /**
      * Specify the bytes for the avatar to use.
+     *
      * @param bytes the bytes of the avatar.
      */
     public void setAvatar(byte[] bytes) {
@@ -375,6 +378,28 @@ public class VCard extends IQ {
             }
         }
         return buffer;
+    }
+
+    /**
+     * Returns the SHA-1 Hash of the Avatar image.
+     * @return the SHA-1 Hash of the Avatar image.
+     */
+    public String getAvatarHash() {
+        byte[] bytes = getAvatar();
+        if (bytes == null) {
+            return null;
+        }
+
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        digest.update(bytes);
+        return StringUtils.encodeHex(digest.digest());
     }
 
     /**
