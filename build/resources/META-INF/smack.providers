@@ -142,4 +142,11 @@
         <className>org.jivesoftware.smackx.search.UserSearch$Provider</className>
     </iqProvider>
 
+    <!-- SharedGroupsInfo -->
+    <iqProvider>
+        <elementName>sharedgroup</elementName>
+        <namespace>http://www.jivesoftware.org/protocol/sharedgroup</namespace>
+        <className>org.jivesoftware.smackx.packet.SharedGroupsInfo$Provider</className>
+    </iqProvider>
+
 </smackProviders>
