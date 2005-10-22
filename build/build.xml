@@ -32,6 +32,8 @@
     <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
     <property name="build.lib.dir" value="${basedir}/build/lib" />
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
+    <property name="test.dir" value="${basedir}/test" />
+    <property name="resources.dir" value="${basedir}/build/resources" />
 
     <property name="version.major" value="2" />
     <property name="version.minor" value="0" />
@@ -103,7 +105,7 @@
             source="1.3"
             target="1.2"
         >
-            <src path="${basedir}/test" />
+            <src path="${test.dir}" />
             <classpath>
                 <fileset dir="${build.lib.dir}">
                     <include name="*.jar"/>
@@ -224,7 +226,7 @@
         </if>
 
         <junit printsummary="on"
-            fork="false"
+            fork="true"
             haltonfailure="false"
             failureproperty="tests.failed"
             showoutput="true">
@@ -250,6 +252,8 @@
                     <include name="smack-test.jar"/>
                 </fileset>
                 <pathelement location="${compile.dir}" />
+                <pathelement location="${test.dir}" />
+                <pathelement location="${resources.dir}" />
             </classpath>
 
             <formatter type="brief" usefile="false"/>
