@@ -38,10 +38,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -130,7 +127,7 @@ public class XMPPConnection {
      * does not interfere with garbage collection. The map of chats must be stored
      * with each connection.
      */
-    Map chats = new HashMap();
+    Map chats = Collections.synchronizedMap(new HashMap());
 
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
