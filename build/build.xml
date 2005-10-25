@@ -206,6 +206,14 @@
 
     <!-- test -->
     <!-- ======================================================================================= -->
+    <target name="func-test" depends="compile, jar-test" unless="no.test">
+        <antcall target="test.messenger"/>
+        <antcall target="test"/>
+    </target>
+
+
+    <!-- test -->
+    <!-- ======================================================================================= -->
     <target name="test" depends="compile, jar-test" unless="no.test">
 
         <echo>

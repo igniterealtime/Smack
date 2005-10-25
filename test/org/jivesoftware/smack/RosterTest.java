@@ -531,6 +531,13 @@ public class RosterTest extends SmackTestCase {
                 fail(e.getMessage());
             }
         }
+
+        try  {
+            Thread.sleep(1500);
+        }
+        catch (InterruptedException e) {
+            fail(e.getMessage());
+        }
         // Wait up to 2 seconds to receive roster removal notifications
         long initial = System.currentTimeMillis();
         while (System.currentTimeMillis() - initial < 2000 &&
@@ -597,7 +604,7 @@ public class RosterTest extends SmackTestCase {
         try  {
             Thread.sleep(500);
         }
-        catch (Exception e) {
+        catch (InterruptedException e) {
             fail(e.getMessage());
         }
 
