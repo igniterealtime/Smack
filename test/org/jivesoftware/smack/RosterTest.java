@@ -340,6 +340,8 @@ public class RosterTest extends SmackTestCase {
      */
     public void testAddEntryToNewGroup() {
         try {
+            Thread.sleep(500);
+
             // Add a new roster entry
             Roster roster = getConnection(0).getRoster();
             roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
@@ -379,6 +381,7 @@ public class RosterTest extends SmackTestCase {
 
             // Close the new connection
             con2.close();
+            Thread.sleep(500);
 
             cleanUpRoster();
         }
@@ -393,6 +396,8 @@ public class RosterTest extends SmackTestCase {
      */
     public void testRenameRosterGroup() {
         try {
+            Thread.sleep(200);
+
             // Add a new roster entry
             Roster roster = getConnection(0).getRoster();
             roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
@@ -440,6 +445,8 @@ public class RosterTest extends SmackTestCase {
      */
     public void testRosterPresences() {
         try {
+            Thread.sleep(200);
+
             Presence presence = null;
 
             // Create another connection for the same user of connection 1
@@ -542,6 +549,16 @@ public class RosterTest extends SmackTestCase {
             } catch (InterruptedException e) {}
         }
 
+        // Wait up to 2 seconds to receive roster removal notifications
+        initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 &&
+                getConnection(2).getRoster().getEntryCount() != 0) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {}
+        }
+
+
         assertEquals(
             "Wrong number of entries in connection 0",
             0,
@@ -576,6 +593,14 @@ public class RosterTest extends SmackTestCase {
 
     protected void setUp() throws Exception {
         //XMPPConnection.DEBUG_ENABLED = false;
+
+        try  {
+            Thread.sleep(500);
+        }
+        catch (Exception e) {
+            fail(e.getMessage());
+        }
+
         super.setUp();
     }
 }
