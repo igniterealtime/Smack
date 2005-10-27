@@ -42,9 +42,9 @@ import java.util.*;
 public class Roster {
 
     /**
-     * Automatically accept all subscription requests. This is the default mode
-     * and is suitable for simple client. More complex client will likely wish to
-     * handle subscription requests manually.
+     * Automatically accept all subscription and unsubscription requests. This is
+     * the default mode and is suitable for simple client. More complex client will
+     * likely wish to handle subscription requests manually.
      */
     public static final int SUBSCRIPTION_ACCEPT_ALL = 0;
 
@@ -56,7 +56,8 @@ public class Roster {
     /**
      * Subscription requests are ignored, which means they must be manually
      * processed by registering a listener for presence packets and then looking
-     * for any presence requests that have the type Presence.Type.SUBSCRIBE.
+     * for any presence requests that have the type Presence.Type.SUBSCRIBE or
+     * Presence.Type.UNSUBSCRIBE.
      */
     public static final int SUBSCRIPTION_MANUAL = 2;
 
@@ -640,6 +641,17 @@ public class Roster {
                 }
                 else if (subscriptionMode == SUBSCRIPTION_REJECT_ALL) {
                     // Reject all subscription requests.
+                    Presence response = new Presence(Presence.Type.UNSUBSCRIBED);
+                    response.setTo(presence.getFrom());
+                    connection.sendPacket(response);
+                }
+                // Otherwise, in manual mode so ignore.
+            }
+            else if (presence.getType() == Presence.Type.UNSUBSCRIBE) {
+                if (subscriptionMode != SUBSCRIPTION_MANUAL) {
+                    // Acknowledge and accept unsubscription notification so that the
+                    // server will stop sending notifications saying that the contact 
+                    // has unsubscribed to our presence.
                     Presence response = new Presence(Presence.Type.UNSUBSCRIBED);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
