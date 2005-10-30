@@ -93,12 +93,17 @@ public class UserSearchManager {
         DiscoverItems items = discoManager.discoverItems(con.getServiceName());
         for (Iterator it = items.getItems(); it.hasNext();) {
             DiscoverItems.Item item = (DiscoverItems.Item) it.next();
-            DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
-            if (info.containsFeature("jabber:iq:search")) {
-                searchServices.add(item.getEntityID());
+            try {
+                DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
+                if (info.containsFeature("jabber:iq:search")) {
+                    searchServices.add(item.getEntityID());
+                }
+            }
+            catch (XMPPException e) {
+                // No info found.
+                break;
             }
         }
         return searchServices;
     }
-
 }

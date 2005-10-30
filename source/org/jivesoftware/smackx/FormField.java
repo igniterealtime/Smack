@@ -332,6 +332,10 @@ public class FormField {
             return value;
         }
 
+        public String toString(){
+            return getLabel();
+        }
+
         public String toXML() {
             StringBuffer buf = new StringBuffer();
             buf.append("<option");
