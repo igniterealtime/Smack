@@ -2120,7 +2120,8 @@ public class MultiUserChat {
                 // Get the MUC User extension
                 MUCUser mucUser = getMUCUserExtension(packet);
                 // Check if the MUCUser informs that the invitee has declined the invitation
-                if (mucUser.getDecline() != null) {
+                if (mucUser.getDecline() != null &&
+                        ((Message) packet).getType() != Message.Type.ERROR) {
                     // Fire event for invitation rejection listeners
                     fireInvitationRejectionListeners(
                         mucUser.getDecline().getFrom(),
