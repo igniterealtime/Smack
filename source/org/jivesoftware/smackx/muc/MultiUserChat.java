@@ -35,10 +35,10 @@ import org.jivesoftware.smackx.packet.*;
 /**
  * A MultiUserChat is a conversation that takes place among many users in a virtual
  * room. A room could have many occupants with different affiliation and roles.
- * Possible affiliatons are "owner", "admin", "member", and "outcast". Possible roles 
+ * Possible affiliatons are "owner", "admin", "member", and "outcast". Possible roles
  * are "moderator", "participant", and "visitor". Each role and affiliation guarantees
  * different privileges (e.g. Send messages to all occupants, Kick participants and visitors,
- * Grant voice, Edit member list, etc.). 
+ * Grant voice, Edit member list, etc.).
  *
  * @author Gaston Dombiak
  */
@@ -74,12 +74,12 @@ public class MultiUserChat {
     static {
         XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
             public void connectionEstablished(final XMPPConnection connection) {
-                // Set on every established connection that this client supports the Multi-User 
-                // Chat protocol. This information will be used when another client tries to 
+                // Set on every established connection that this client supports the Multi-User
+                // Chat protocol. This information will be used when another client tries to
                 // discover whether this client supports MUC or not.
                 ServiceDiscoveryManager.getInstanceFor(connection).addFeature(discoNamespace);
                 // Set the NodeInformationProvider that will provide information about the
-                // joined rooms whenever a disco request is received 
+                // joined rooms whenever a disco request is received
                 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
                     discoNode,
                     new NodeInformationProvider() {
@@ -89,7 +89,7 @@ public class MultiUserChat {
                             while (rooms.hasNext()) {
                                 answer.add(new DiscoverItems.Item((String)rooms.next()));
                             }
-                            return answer.iterator(); 
+                            return answer.iterator();
                         }
                     });
             }
@@ -138,9 +138,9 @@ public class MultiUserChat {
 
     /**
      * Returns an Iterator on the rooms where the user has joined using a given connection.
-     * The Iterator will contain Strings where each String represents a room 
+     * The Iterator will contain Strings where each String represents a room
      * (e.g. room@muc.jabber.org).
-     * 
+     *
      * @param connection the connection used to join the rooms.
      * @return an Iterator on the rooms where the user has joined using a given connection.
      */
@@ -149,14 +149,14 @@ public class MultiUserChat {
         if (rooms != null) {
             return rooms.iterator();
         }
-        // Return an iterator on an empty collection (i.e. the user never joined a room) 
+        // Return an iterator on an empty collection (i.e. the user never joined a room)
         return new ArrayList().iterator();
     }
-    
+
     /**
-     * Returns an Iterator on the rooms where the requested user has joined. The Iterator will 
+     * Returns an Iterator on the rooms where the requested user has joined. The Iterator will
      * contain Strings where each String represents a room (e.g. room@muc.jabber.org).
-     * 
+     *
      * @param connection the connection to use to perform the service discovery.
      * @param user the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com.
      * @return an Iterator on the rooms where the requested user has joined.
@@ -175,7 +175,7 @@ public class MultiUserChat {
         }
         catch (XMPPException e) {
             e.printStackTrace();
-            // Return an iterator on an empty collection 
+            // Return an iterator on an empty collection
             return new ArrayList().iterator();
         }
     }
@@ -2554,7 +2554,8 @@ public class MultiUserChat {
                     MUCUser mucUser = 
                         (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
                     // Check if the MUCUser extension includes an invitation
-                    if (mucUser.getInvite() != null) {
+                    if (mucUser.getInvite() != null &&
+                            ((Message) packet).getType() != Message.Type.ERROR) {
                         // Fire event for invitation listeners
                         fireInvitationListeners(packet.getFrom(), mucUser.getInvite().getFrom(),
                                 mucUser.getInvite().getReason(), mucUser.getPassword(), (Message) packet);
