@@ -204,14 +204,20 @@ public class MultiUserChat {
      * @throws XMPPException if an error occured while trying to discover MUC services.
      */
     public static Collection getServiceNames(XMPPConnection connection) throws XMPPException {
-        List answer = new ArrayList();
+        final List answer = new ArrayList();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
         DiscoverItems items = discoManager.discoverItems(connection.getServiceName());
         for (Iterator it = items.getItems(); it.hasNext();) {
             DiscoverItems.Item item = (DiscoverItems.Item) it.next();
-            DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
-            if (info.containsFeature("http://jabber.org/protocol/muc")) {
-                answer.add(item.getEntityID());
+            try {
+                DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
+                if (info.containsFeature("http://jabber.org/protocol/muc")) {
+                    answer.add(item.getEntityID());
+                }
+            }
+            catch (XMPPException e) {
+                // Trouble finding info in some cases. This is a workaround for
+                // discovering info on remote servers.
             }
         }
         return answer;
