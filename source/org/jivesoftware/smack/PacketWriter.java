@@ -43,6 +43,16 @@ class PacketWriter {
     private boolean listenersDeleted = false;
     private Thread listenerThread;
     private LinkedList sentPackets = new LinkedList();
+    /**
+     * List of PacketInterceptor that will be notified when a new packet is about to be
+     * sent to the server. These interceptors may modify the packet before it is being
+     * actually sent to the server.
+     */
+    private List interceptors = new ArrayList();
+    /**
+     * Flag that indicates if an interceptor was deleted. This is an optimization flag.
+     */
+    private boolean interceptorDeleted = false;
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -87,6 +97,10 @@ class PacketWriter {
      */
     public void sendPacket(Packet packet) {
         if (!done) {
+            // Invoke interceptors for the new packet that is about to be sent. Interceptors
+            // may modify the content of the packet.
+            processInterceptors(packet);
+
             synchronized(queue) {
                 queue.addFirst(packet);
                 queue.notifyAll();
@@ -141,6 +155,40 @@ class PacketWriter {
     public int getPacketListenerCount() {
         synchronized (listeners) {
             return listeners.size();
+        }
+    }
+
+    /**
+     * Registers a packet interceptor with this writer. The interceptor will be
+     * notified of every packet that this writer is about to send. Interceptors
+     * may modify the packet to be sent. A packet filter determines which packets
+     * will be delivered to the interceptor.
+     *
+     * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
+     * @param packetFilter the packet filter to use.
+     */
+    public void addPacketInterceptor(PacketInterceptor packetInterceptor, PacketFilter packetFilter) {
+        synchronized (interceptors) {
+            interceptors.add(new InterceptorWrapper(packetInterceptor, packetFilter));
+        }
+    }
+
+    /**
+     * Removes a packet interceptor.
+     *
+     * @param packetInterceptor the packet interceptor to remove.
+     */
+    public void removePacketInterceptor(PacketInterceptor packetInterceptor) {
+        synchronized (interceptors) {
+            for (int i=0; i<interceptors.size(); i++) {
+                InterceptorWrapper wrapper = (InterceptorWrapper)interceptors.get(i);
+                if (wrapper != null && wrapper.packetInterceptor.equals(packetInterceptor)) {
+                    interceptors.set(i, null);
+                    // Set the flag to indicate that the interceptor list needs
+                    // to be cleaned up.
+                    interceptorDeleted = true;
+                }
+            }
         }
     }
 
@@ -271,6 +319,40 @@ class PacketWriter {
     }
 
     /**
+     * Process interceptors. Interceptors may modify the packet that is about to be sent.
+     * Since the thread that requested to send the packet will invoke all interceptors, it
+     * is important that interceptors perform their work as soon as possible so that the
+     * thread does not remain blocked for a long period.
+     *
+     * @param packet the packet that is going to be sent to the server
+     */
+    private void processInterceptors(Packet packet) {
+        if (packet != null) {
+            // Clean up null entries in the interceptors list if the flag is set. List
+            // removes are done seperately so that the main notification process doesn't
+            // need to synchronize on the list.
+            synchronized (interceptors) {
+                if (interceptorDeleted) {
+                    for (int i=interceptors.size()-1; i>=0; i--) {
+                        if (interceptors.get(i) == null) {
+                            interceptors.remove(i);
+                        }
+                    }
+                    interceptorDeleted = false;
+                }
+            }
+            // Notify the interceptors of the new packet to be sent
+            int size = interceptors.size();
+            for (int i=0; i<size; i++) {
+                InterceptorWrapper interceptorWrapper = (InterceptorWrapper)interceptors.get(i);
+                if (interceptorWrapper != null) {
+                    interceptorWrapper.notifyListener(packet);
+                }
+            }
+        }
+    }
+
+    /**
      * Sends to the server a new stream element. This operation may be requested several times
      * so we need to encapsulate the logic in one place. This message will be sent while doing
      * TLS, SASL and resource binding.
@@ -325,6 +407,41 @@ class PacketWriter {
         public void notifyListener(Packet packet) {
             if (packetFilter == null || packetFilter.accept(packet)) {
                 packetListener.processPacket(packet);
+            }
+        }
+    }
+
+    /**
+     * A wrapper class to associate a packet filter with an interceptor.
+     */
+    private static class InterceptorWrapper {
+
+        private PacketInterceptor packetInterceptor;
+        private PacketFilter packetFilter;
+
+        public InterceptorWrapper(PacketInterceptor packetInterceptor, PacketFilter packetFilter)
+        {
+            this.packetInterceptor = packetInterceptor;
+            this.packetFilter = packetFilter;
+        }
+
+        public boolean equals(Object object) {
+            if (object == null) {
+                return false;
+            }
+            if (object instanceof InterceptorWrapper) {
+                return ((InterceptorWrapper) object).packetInterceptor
+                        .equals(this.packetInterceptor);
+            }
+            else if (object instanceof PacketInterceptor) {
+                return object.equals(this.packetInterceptor);
+            }
+            return false;
+        }
+
+        public void notifyListener(Packet packet) {
+            if (packetFilter == null || packetFilter.accept(packet)) {
+                packetInterceptor.interceptPacket(packet);
             }
         }
     }

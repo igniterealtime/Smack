@@ -725,6 +725,32 @@ public class XMPPConnection {
     }
 
     /**
+     * Registers a packet interceptor with this connection. The interceptor will be
+     * invoked every time a packet is about to be sent by this connection. Interceptors
+     * may modify the packet to be sent. A packet filter determines which packets
+     * will be delivered to the interceptor.
+     *
+     * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
+     * @param packetFilter the packet filter to use.
+     */
+    public void addPacketWriterInterceptor(PacketInterceptor packetInterceptor,
+                                           PacketFilter packetFilter) {
+        if (!isConnected()) {
+            throw new IllegalStateException("Not connected to server.");
+        }
+        packetWriter.addPacketInterceptor(packetInterceptor, packetFilter);
+    }
+
+    /**
+     * Removes a packet interceptor.
+     *
+     * @param packetInterceptor the packet interceptor to remove.
+     */
+    public void removePacketWriterInterceptor(PacketInterceptor packetInterceptor) {
+        packetWriter.removePacketInterceptor(packetInterceptor);
+    }
+
+    /**
      * Creates a new packet collector for this connection. A packet filter determines
      * which packets will be accumulated by the collector.
      *
