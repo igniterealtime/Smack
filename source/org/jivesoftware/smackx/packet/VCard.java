@@ -307,6 +307,7 @@ public class VCard extends IQ {
         }
 
         String encodedImage = StringUtils.encodeBase64(bytes);
+        avatar = encodedImage;
 
         setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>");
     }
@@ -318,6 +319,7 @@ public class VCard extends IQ {
      */
     public void setAvatar(byte[] bytes) {
         String encodedImage = StringUtils.encodeBase64(bytes);
+        avatar = encodedImage;
 
         setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>");
     }
