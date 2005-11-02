@@ -29,8 +29,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -369,19 +371,27 @@ public class VCard extends IQ {
      * @param url the url to read.
      */
     public static byte[] getBytes(URL url) throws IOException {
-        InputStream in = url.openStream();
-        final byte[] buffer = new byte[4096];
-        while (true) {
-            final int bytesRead = in.read(buffer);
-            if (bytesRead < 0) {
-                break;
-            }
+        final String path = url.getPath();
+        final File file = new File(path);
+        if (file.exists()) {
+            return getFileBytes(file);
         }
+
+        return null;
+    }
+
+    private static byte[] getFileBytes(File file) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        int bytes = (int) file.length();
+        byte[] buffer = new byte[bytes];
+        int readBytes = bis.read(buffer);
+        bis.close();
         return buffer;
     }
 
     /**
      * Returns the SHA-1 Hash of the Avatar image.
+     *
      * @return the SHA-1 Hash of the Avatar image.
      */
     public String getAvatarHash() {
