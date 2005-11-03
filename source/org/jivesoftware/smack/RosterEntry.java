@@ -36,6 +36,7 @@ public class RosterEntry {
     private String user;
     private String name;
     private RosterPacket.ItemType type;
+    private RosterPacket.ItemStatus status;
     private XMPPConnection connection;
 
     /**
@@ -44,12 +45,15 @@ public class RosterEntry {
      * @param user the user.
      * @param name the nickname for the entry.
      * @param type the subscription type.
+     * @param status the subscription status (related to subscriptions pending to be approbed).
      * @param connection a connection to the XMPP server.
      */
-    RosterEntry(String user, String name, RosterPacket.ItemType type, XMPPConnection connection) {
+    RosterEntry(String user, String name, RosterPacket.ItemType type,
+                RosterPacket.ItemStatus status, XMPPConnection connection) {
         this.user = user;
         this.name = name;
         this.type = type;
+        this.status = status;
         this.connection = connection;
     }
 
@@ -93,10 +97,12 @@ public class RosterEntry {
      *
      * @param name the nickname for the entry.
      * @param type the subscription type.
+     * @param status the subscription status (related to subscriptions pending to be approbed).
      */
-    void updateState(String name, RosterPacket.ItemType type) {
+    void updateState(String name, RosterPacket.ItemType type, RosterPacket.ItemStatus status) {
         this.name = name;
         this.type = type;
+        this.status = status;
     }
 
     /**
@@ -125,6 +131,17 @@ public class RosterEntry {
      */
     public RosterPacket.ItemType getType() {
         return type;
+    }
+
+    /**
+     * Returns the roster subscription status of the entry. When the status is
+     * RosterPacket.ItemStatus.SUBSCRIPTION_PENDING, the contact has to answer the subscription
+     * request.
+     *
+     * @return the status.
+     */
+    public RosterPacket.ItemStatus getStatus() {
+        return status;
     }
 
     public String toString() {
@@ -163,6 +180,7 @@ public class RosterEntry {
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
         item.setItemType(entry.getType());
+        item.setItemStatus(entry.getStatus());
         // Set the correct group names for the item.
         for (Iterator j=entry.getGroups(); j.hasNext(); ) {
             RosterGroup group = (RosterGroup)j.next();

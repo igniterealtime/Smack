@@ -671,7 +671,7 @@ public class Roster {
             for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        item.getItemType(), connection);
+                        item.getItemType(), item.getItemStatus(), connection);
 
                 // If the packet is of the type REMOVE then remove the entry
                 if (RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
@@ -700,7 +700,8 @@ public class Roster {
                         // If the entry was in then list then update its state with the new values
                         RosterEntry existingEntry =
                             (RosterEntry) entries.get(entries.indexOf(entry));
-                        existingEntry.updateState(entry.getName(), entry.getType());
+                        existingEntry
+                                .updateState(entry.getName(), entry.getType(), entry.getStatus());
                     }
                     // If the roster entry belongs to any groups, remove it from the
                     // list of unfiled entries.
