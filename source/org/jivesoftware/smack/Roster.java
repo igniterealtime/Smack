@@ -565,9 +565,15 @@ public class Roster {
             rosterListeners.toArray(listeners);
         }
         for (int i=0; i<listeners.length; i++) {
-            listeners[i].entriesAdded(addedEntries);
-            listeners[i].entriesUpdated(updatedEntries);
-            listeners[i].entriesDeleted(deletedEntries);
+            if (!addedEntries.isEmpty()) {
+                listeners[i].entriesAdded(addedEntries);
+            }
+            if (!updatedEntries.isEmpty()) {
+                listeners[i].entriesUpdated(updatedEntries);
+            }
+            if (!deletedEntries.isEmpty()) {
+                listeners[i].entriesDeleted(deletedEntries);
+            }
         }
     }
 
