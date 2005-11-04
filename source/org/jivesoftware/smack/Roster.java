@@ -549,16 +549,25 @@ public class Roster {
     }
 
     /**
-     * Fires roster changed event to roster listeners.
+     * Fires roster changed event to roster listeners indicating that the
+     * specified collections of contacts have been added, updated or deleted
+     * from the roster.
+     *
+     * @param addedEntries the collection of address of the added contacts.
+     * @param updatedEntries the collection of address of the updated contacts.
+     * @param deletedEntries the collection of address of the deleted contacts.
      */
-    private void fireRosterChangedEvent() {
+    private void fireRosterChangedEvent(Collection addedEntries, Collection updatedEntries,
+                                        Collection deletedEntries) {
         RosterListener [] listeners = null;
         synchronized (rosterListeners) {
             listeners = new RosterListener[rosterListeners.size()];
             rosterListeners.toArray(listeners);
         }
         for (int i=0; i<listeners.length; i++) {
-            listeners[i].rosterModified();
+            listeners[i].entriesAdded(addedEntries);
+            listeners[i].entriesUpdated(updatedEntries);
+            listeners[i].entriesDeleted(deletedEntries);
         }
     }
 
@@ -667,6 +676,12 @@ public class Roster {
     private class RosterPacketListener implements PacketListener {
 
         public void processPacket(Packet packet) {
+            // Keep a registry of the entries that were added, deleted or updated. An event
+            // will be fired for each affected entry
+            Collection addedEntries = new ArrayList();
+            Collection updatedEntries = new ArrayList();
+            Collection deletedEntries = new ArrayList();
+
             RosterPacket rosterPacket = (RosterPacket)packet;
             for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
                 RosterPacket.Item item = (RosterPacket.Item)i.next();
@@ -690,11 +705,15 @@ public class Roster {
                     String key = StringUtils.parseName(item.getUser()) + "@" +
                             StringUtils.parseServer(item.getUser());
                     presenceMap.remove(key);
+                    // Keep note that an entry has been removed
+                    deletedEntries.add(item.getUser());
                 }
                 else {
                     // Make sure the entry is in the entry list.
                     if (!entries.contains(entry)) {
                         entries.add(entry);
+                        // Keep note that an entry has been added
+                        addedEntries.add(item.getUser());
                     }
                     else {
                         // If the entry was in then list then update its state with the new values
@@ -702,6 +721,8 @@ public class Roster {
                             (RosterEntry) entries.get(entries.indexOf(entry));
                         existingEntry
                                 .updateState(entry.getName(), entry.getType(), entry.getStatus());
+                        // Keep note that an entry has been updated
+                        updatedEntries.add(item.getUser());
                     }
                     // If the roster entry belongs to any groups, remove it from the
                     // list of unfiled entries.
@@ -787,7 +808,7 @@ public class Roster {
             }
 
             // Fire event for roster listeners.
-            fireRosterChangedEvent();
+            fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
         }
     }
 }

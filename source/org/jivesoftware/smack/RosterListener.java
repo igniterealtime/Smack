@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smack;
 
+import java.util.Collection;
+
 /**
  * A listener that is fired any time a roster is changed or the presence of
  * a user in the roster is changed.
@@ -29,9 +31,25 @@ package org.jivesoftware.smack;
 public interface RosterListener {
 
     /**
-     * Called when a roster entry is added or removed.
+     * Called when roster entries are added.
+     *
+     * @param addresses the XMPP addresses of the contacts that have been added to the roster.
      */
-    public void rosterModified();
+    public void entriesAdded(Collection addresses);
+
+    /**
+     * Called when a roster entries are updated.
+     *
+     * @param addresses the XMPP addresses of the contacts whose entries have been updated.
+     */
+    public void entriesUpdated(Collection addresses);
+
+    /**
+     * Called when a roster entries are removed.
+     *
+     * @param addresses the XMPP addresses of the contacts that have been removed from the roster.
+     */
+    public void entriesDeleted(Collection addresses);
 
     /**
      * Called when the presence of a roster entry is changed.
