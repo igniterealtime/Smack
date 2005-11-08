@@ -171,7 +171,7 @@ public class MessageEvent implements PacketExtension {
         if (isDelivered()) {
             allEvents.add(MessageEvent.DELIVERED);
         }
-        if (isCancelled()) {
+        if (!isMessageEventRequest() && isCancelled()) {
             allEvents.add(MessageEvent.CANCELLED);
         }
         if (isComposing()) {
