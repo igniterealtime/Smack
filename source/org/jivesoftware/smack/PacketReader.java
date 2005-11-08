@@ -30,6 +30,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.*;
+import java.io.IOException;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
@@ -305,6 +306,9 @@ class PacketReader {
                             }
                         }
                     }
+                    else if (parser.getName().equals("error")) {
+                        throw new XMPPException(parseStreamError(parser));
+                    }
                     else if (parser.getName().equals("features")) {
                     	parseFeatures(parser);
                     }
@@ -407,6 +411,25 @@ class PacketReader {
         synchronized (listenerThread) {
             listenerThread.notifyAll();
         }
+    }
+
+    private StreamError parseStreamError(XmlPullParser parser) throws IOException,
+            XmlPullParserException {
+        StreamError streamError = null;
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                streamError = new StreamError(parser.getName());
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("error")) {
+                    done = true;
+                }
+            }
+        }
+        return streamError;
     }
 
     private void parseFeatures(XmlPullParser parser) throws Exception {

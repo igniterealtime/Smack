@@ -21,6 +21,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StreamError;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -29,13 +30,19 @@ import java.io.PrintWriter;
  * A generic exception that is thrown when an error occurs performing an
  * XMPP operation. XMPP servers can respond to error conditions with an error code
  * and textual description of the problem, which are encapsulated in the XMPPError
- * class. When appropriate, an XMPPError instance is attached instances of this exception.
+ * class. When appropriate, an XMPPError instance is attached instances of this exception.<p>
+ *
+ * When a stream error occured, the server will send a stream error to the client before
+ * closing the connection. Stream errors are unrecoverable errors. When a stream error
+ * is sent to the client an XMPPException will be thrown containing the StreamError sent
+ * by the server.
  *
  * @see XMPPError
  * @author Matt Tucker
  */
 public class XMPPException extends Exception {
 
+    private StreamError streamError = null;
     private XMPPError error = null;
     private Throwable wrappedThrowable = null;
 
@@ -64,6 +71,18 @@ public class XMPPException extends Exception {
     public XMPPException(Throwable wrappedThrowable) {
         super();
         this.wrappedThrowable = wrappedThrowable;
+    }
+
+    /**
+     * Cretaes a new XMPPException with the stream error that was the root case of the
+     * exception. When a stream error is received from the server then the underlying
+     * TCP connection will be closed by the server.
+     *
+     * @param streamError the root cause of the exception.
+     */
+    public XMPPException(StreamError streamError) {
+        super();
+        this.streamError = streamError;
     }
 
     /**
@@ -126,6 +145,17 @@ public class XMPPException extends Exception {
     }
 
     /**
+     * Returns the StreamError asscociated with this exception, or <tt>null</tt> if there
+     * isn't one. The underlying TCP connection is closed by the server after sending the
+     * stream error to the client.
+     *
+     * @return the StreamError asscociated with this exception.
+     */
+    public StreamError getStreamError() {
+        return streamError;
+    }
+
+    /**
      * Returns the Throwable asscociated with this exception, or <tt>null</tt> if there
      * isn't one.
      *
@@ -162,6 +192,9 @@ public class XMPPException extends Exception {
         if (msg == null && error != null) {
             return error.toString();
         }
+        else if (msg == null && streamError != null) {
+            return streamError.toString();
+        }
         return msg;
     }
 
@@ -173,6 +206,9 @@ public class XMPPException extends Exception {
         }
         if (error != null) {
             buf.append(error);
+        }
+        if (streamError != null) {
+            buf.append(streamError);
         }
         if (wrappedThrowable != null) {
             buf.append("\n  -- caused by: ").append(wrappedThrowable);
