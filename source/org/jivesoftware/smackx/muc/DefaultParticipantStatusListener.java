@@ -37,7 +37,7 @@ public class DefaultParticipantStatusListener implements ParticipantStatusListen
     public void left(String participant) {
     }
 
-    public void kicked(String participant) {
+    public void kicked(String participant, String actor, String reason) {
     }
 
     public void voiceGranted(String participant) {
@@ -46,7 +46,7 @@ public class DefaultParticipantStatusListener implements ParticipantStatusListen
     public void voiceRevoked(String participant) {
     }
 
-    public void banned(String participant) {
+    public void banned(String participant, String actor, String reason) {
     }
 
     public void membershipGranted(String participant) {
@@ -73,7 +73,7 @@ public class DefaultParticipantStatusListener implements ParticipantStatusListen
     public void adminRevoked(String participant) {
     }
 
-    public void nicknameChanged(String nickname) {
+    public void nicknameChanged(String participant, String newNickname) {
     }
 
 }

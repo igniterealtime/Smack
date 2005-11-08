@@ -681,8 +681,8 @@ public class MultiUserChatTest extends SmackTestCase {
             muc3.join("testbot3");
             // User3 will lister for user2's "kicking"            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
-                public void kicked(String participant) {
-                    super.kicked(participant);
+                public void kicked(String participant, String actor, String reason) {
+                    super.kicked(participant, actor, reason);
                     answer[2] = participant;
                 }
             });
@@ -758,8 +758,8 @@ public class MultiUserChatTest extends SmackTestCase {
             muc3.join("testbot3");
             // User3 will lister for user2's "banning"            
             muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
-                public void banned(String participant) {
-                    super.banned(participant);
+                public void banned(String participant, String actor, String reason) {
+                    super.banned(participant, actor, reason);
                     answer[2] = participant;
                 }
             });

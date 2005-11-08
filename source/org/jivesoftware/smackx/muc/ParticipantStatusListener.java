@@ -53,8 +53,10 @@ public interface ParticipantStatusListener {
      * 
      * @param participant the participant that was kicked from the room 
      * (e.g. room@conference.jabber.org/nick).
+     * @param actor the moderator that kicked the occupant from the room (e.g. user@host.org).
+     * @param reason the reason provided by the actor to kick the occupant from the room.
      */
-    public abstract void kicked(String participant);
+    public abstract void kicked(String participant, String actor, String reason);
 
     /**
      * Called when a moderator grants voice to a visitor. This means that the visitor 
@@ -81,8 +83,10 @@ public interface ParticipantStatusListener {
      * 
      * @param participant the participant that was banned from the room 
      * (e.g. room@conference.jabber.org/nick).
+     * @param actor the administrator that banned the occupant (e.g. user@host.org).
+     * @param reason the reason provided by the administrator to ban the occupant.
      */
-    public abstract void banned(String participant);
+    public abstract void banned(String participant, String actor, String reason);
 
     /**
      * Called when an administrator grants a user membership to the room. This means that the user 
@@ -166,8 +170,10 @@ public interface ParticipantStatusListener {
      * Called when a participant changed his/her nickname in the room. The new participant's 
      * nickname will be informed with the next available presence.
      * 
-     * @param nickname the old nickname that the participant decided to change.
+     * @param participant the participant that was revoked administrator privileges
+     * (e.g. room@conference.jabber.org/nick).
+     * @param newNickname the new nickname that the participant decided to use.
      */
-    public abstract void nicknameChanged(String nickname);
+    public abstract void nicknameChanged(String participant, String newNickname);
 
 }

@@ -1986,7 +1986,7 @@ public class MultiUserChat {
         }
     }
 
-    private void fireParticipantStatusListeners(String methodName, String param) {
+    private void fireParticipantStatusListeners(String methodName, List params) {
         ParticipantStatusListener[] listeners = null;
         synchronized (participantStatusListeners) {
             listeners = new ParticipantStatusListener[participantStatusListeners.size()];
@@ -1994,12 +1994,13 @@ public class MultiUserChat {
         }
         try {
             // Get the method to execute based on the requested methodName and parameter
-            Method method =
-                ParticipantStatusListener.class.getDeclaredMethod(
-                    methodName,
-                    new Class[] { String.class });
+            Class[] classes = new Class[params.size()];
+            for (int i=0;i<params.size(); i++) {
+                classes[i] = String.class;
+            }
+            Method method = ParticipantStatusListener.class.getDeclaredMethod(methodName, classes);
             for (int i = 0; i < listeners.length; i++) {
-                method.invoke(listeners[i], new Object[] {param});
+                method.invoke(listeners[i], params.toArray());
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -2085,7 +2086,9 @@ public class MultiUserChat {
                     else {
                         // A new occupant has joined the room
                         if (!isUserStatusModification) {
-                            fireParticipantStatusListeners("joined", from);
+                            List params = new ArrayList();
+                            params.add(from);
+                            fireParticipantStatusListeners("joined", params);
                         }
                     }
                 }
@@ -2104,7 +2107,9 @@ public class MultiUserChat {
                     } else {
                         // An occupant has left the room
                         if (!isUserStatusModification) {
-                            fireParticipantStatusListeners("left", from);
+                            List params = new ArrayList();
+                            params.add(from);
+                            fireParticipantStatusListeners("left", params);
                         }
                     }
                 }
@@ -2180,7 +2185,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("voiceGranted", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("voiceGranted", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("voiceGranted", params);
             }
         }
         // The participant's voice was revoked from the room
@@ -2191,7 +2198,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("voiceRevoked", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("voiceRevoked", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("voiceRevoked", params);
             }
         }
         // Moderator privileges were granted to a participant
@@ -2201,14 +2210,18 @@ public class MultiUserChat {
                     fireUserStatusListeners("voiceGranted", new Object[] {});
                 }
                 else {
-                    fireParticipantStatusListeners("voiceGranted", from);
+                    List params = new ArrayList();
+                    params.add(from);
+                    fireParticipantStatusListeners("voiceGranted", params);
                 }
             }
             if (isUserModification) {
                 fireUserStatusListeners("moderatorGranted", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("moderatorGranted", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("moderatorGranted", params);
             }
         }
         // Moderator privileges were revoked from a participant
@@ -2218,14 +2231,18 @@ public class MultiUserChat {
                     fireUserStatusListeners("voiceRevoked", new Object[] {});
                 }
                 else {
-                    fireParticipantStatusListeners("voiceRevoked", from);
+                    List params = new ArrayList();
+                    params.add(from);
+                    fireParticipantStatusListeners("voiceRevoked", params);
                 }
             }
             if (isUserModification) {
                 fireUserStatusListeners("moderatorRevoked", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("moderatorRevoked", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("moderatorRevoked", params);
             }
         }
     }
@@ -2284,7 +2301,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("ownershipRevoked", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("ownershipRevoked", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("ownershipRevoked", params);
             }
         }
         // The user's administrative privileges to the room were revoked
@@ -2293,7 +2312,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("adminRevoked", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("adminRevoked", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("adminRevoked", params);
             }
         }
         // The user's membership to the room was revoked
@@ -2302,7 +2323,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("membershipRevoked", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("membershipRevoked", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("membershipRevoked", params);
             }
         }
 
@@ -2312,7 +2335,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("ownershipGranted", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("ownershipGranted", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("ownershipGranted", params);
             }
         }
         // The user was granted administrative privileges to the room
@@ -2321,7 +2346,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("adminGranted", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("adminGranted", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("adminGranted", params);
             }
         }
         // The user was granted membership to the room
@@ -2330,7 +2357,9 @@ public class MultiUserChat {
                 fireUserStatusListeners("membershipGranted", new Object[] {});
             }
             else {
-                fireParticipantStatusListeners("membershipGranted", from);
+                List params = new ArrayList();
+                params.add(from);
+                fireParticipantStatusListeners("membershipGranted", params);
             }
         }
     }
@@ -2364,7 +2393,11 @@ public class MultiUserChat {
                 userHasLeft();
             }
             else {
-                fireParticipantStatusListeners("kicked", from);
+                List params = new ArrayList();
+                params.add(from);
+                params.add(mucUser.getItem().getActor());
+                params.add(mucUser.getItem().getReason());
+                fireParticipantStatusListeners("kicked", params);
             }
         }
         // A user was banned from the room 
@@ -2383,8 +2416,11 @@ public class MultiUserChat {
                 userHasLeft();
             }
             else {
-                // TODO Check if we have to send the JID of the banned user
-                fireParticipantStatusListeners("banned", from);
+                List params = new ArrayList();
+                params.add(from);
+                params.add(mucUser.getItem().getActor());
+                params.add(mucUser.getItem().getReason());
+                fireParticipantStatusListeners("banned", params);
             }
         }
         // A user's membership was revoked from the room 
@@ -2403,7 +2439,10 @@ public class MultiUserChat {
         }
         // A occupant has changed his nickname in the room
         else if ("303".equals(code)) {
-            fireParticipantStatusListeners("nicknameChanged", mucUser.getItem().getNick());
+            List params = new ArrayList();
+            params.add(from);
+            params.add(mucUser.getItem().getNick());
+            fireParticipantStatusListeners("nicknameChanged", params);
         }
     }
 
