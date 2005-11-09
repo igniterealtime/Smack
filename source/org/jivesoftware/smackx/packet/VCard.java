@@ -27,6 +27,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.BufferedInputStream;
@@ -419,13 +420,27 @@ public class VCard extends IQ {
      * and not anonymous.<p>
      * <p/>
      * NOTE: the method is asynchronous and does not wait for the returned value.
+     * @param connection the XMPPConnection to use.
+     * @throws XMPPException thrown if there was an issue setting the VCard in the server.
      */
-    public void save(XMPPConnection connection) {
+    public void save(XMPPConnection connection) throws XMPPException {
         checkAuthenticated(connection);
 
         setType(IQ.Type.SET);
         setFrom(connection.getUser());
+        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(getPacketID()));
         connection.sendPacket(this);
+
+        Packet response = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+
+        // Cancel the collector.
+        collector.cancel();
+        if (response == null) {
+            throw new XMPPException("No response from server on status set.");
+        }
+        if (response.getError() != null) {
+            throw new XMPPException(response.getError());
+        }
     }
 
     /**
