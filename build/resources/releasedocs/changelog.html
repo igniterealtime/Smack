@@ -56,6 +56,37 @@ Smack Changelog
 </div>
 
 <p>
+<b>2.1.0</b> -- November 17, 2005
+<p>
+<font color="red"><b>! Warning: This release includes changes to the API.</b></font>
+<ul>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-29'>SMACK-29</a>] - XMPPConnection was not resolving the xmpp-client service.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-87'>SMACK-87</a>] - DNS is now used to look up XMPP address.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-82'>SMACK-82</a>] - Connections are now secured using TLS only when server supports TLS.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-85'>SMACK-85</a>] - Improved performance by removing unnecessary delays that might occur while doing resource binding.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-89'>SMACK-89</a>] - An XMPPException is now thrown when SASL authentication fails.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-90'>SMACK-90</a>] - Old SSL connections no longer indicate XMPP 1.0 compliance.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-92'>SMACK-92</a>] - Adding existing roster entry to a new group was not working.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-98'>SMACK-98</a>] - Unsubscribe presence packets were not being acknowledged.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-101'>SMACK-101</a>] - Invitation rejection listeners were being fired with packets of type error.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-102'>SMACK-102</a>] - Invitation listeners were being fired with packets of type error.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-103'>SMACK-103</a>] - LastActivtity was throwing number format exception in certain cases.</li>
+
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-64'>SMACK-64</a>] - Added support for JEP-55: Jabber Search.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-84'>SMACK-84</a>] - Added support for ANONYMOUS SASL.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-96'>SMACK-96</a>] - Added support for discovering shared groups of the logged user.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-104'>SMACK-104</a>] - Added support for intercepting and modifying packets to be sent to the server.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-107'>SMACK-107</a>] - Added support for stream errors.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-105'>SMACK-105</a>] - Added support for knowing if a contact has to answer a presence subscription request.</li>
+
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-55'>SMACK-55</a>] - <font color="red"><b>!</b></font> Modified parameters of <tt>ParticipantStatusListener#nicknameChanged</tt> method.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-81'>SMACK-81</a>] - <font color="red"><b>!</b></font> Modified <tt>ParticipantStatusListener</tt> interface to include reason and actor information when kicking or banning users.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-106'>SMACK-106</a>] - <font color="red"><b>!</b></font> Modified <tt>RosterListener</tt> interface to include more specific events (e.g entries added, deleted or modified).</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-83'>SMACK-83</a>] - Allowed to perform SASL authentication over plain connections.</li>
+<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-95'>SMACK-95</a>] - Data stored in the enhanced debugger can now be limited.</li>
+</ul>
+
+<p>
 <b>2.0.0</b> -- August 27, 2005
 <p>
 <ul>
