@@ -168,9 +168,8 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new connection to the specified XMPP server on the given port. The IP address
-     * of the server is assumed to match the service name.
-     *
+     * Creates a new connection to the XMPP server at the specifiec host and port.
+     * 
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
      * @throws XMPPException if an error occurs while trying to establish the connection.

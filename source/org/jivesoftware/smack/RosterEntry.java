@@ -125,7 +125,9 @@ public class RosterEntry {
 
     /**
      * Returns the roster subscription type of the entry. When the type is
-     * RosterPacket.ItemType.NONE, the subscription request is pending.
+     * {@link RosterPacket.ItemType#NONE} or {@link RosterPacket.ItemType#FROM},
+     * refer to {@link RosterEntry getStatus()} to see if a subscription request
+     * is pending.
      *
      * @return the type.
      */
@@ -135,8 +137,8 @@ public class RosterEntry {
 
     /**
      * Returns the roster subscription status of the entry. When the status is
-     * RosterPacket.ItemStatus.SUBSCRIPTION_PENDING, the contact has to answer the subscription
-     * request.
+     * RosterPacket.ItemStatus.SUBSCRIPTION_PENDING, the contact has to answer the
+     * subscription request.
      *
      * @return the status.
      */
