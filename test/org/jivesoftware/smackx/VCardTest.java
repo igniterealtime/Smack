@@ -17,7 +17,7 @@ public class VCardTest extends SmackTestCase {
         super(arg0);
     }
 
-    public void testBigFunctional() {
+    public void testBigFunctional() throws XMPPException {
         VCard origVCard = new VCard();
 
         origVCard.setFirstName("kir");
