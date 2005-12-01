@@ -44,8 +44,8 @@ public class PresencePriorityTest extends SmackTestCase {
             Thread.sleep(150);
             // Create the chats between the participants
             Chat chat0 = new Chat(getConnection(0), getBareJID(1));
-            Chat chat1 = new Chat(getConnection(1), getBareJID(0));
-            Chat chat2 = new Chat(conn, getBareJID(0));
+            Chat chat1 = new Chat(getConnection(1), getBareJID(0), chat0.getThreadID());
+            Chat chat2 = new Chat(conn, getBareJID(0), chat0.getThreadID());
 
             // Test delivery of message to the presence with highest priority
             chat0.sendMessage("Hello");
@@ -86,7 +86,7 @@ public class PresencePriorityTest extends SmackTestCase {
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
                     Presence.Mode.AVAILABLE));
-            chat2 = new Chat(conn, getBareJID(0));
+            chat2 = new Chat(conn, getBareJID(0), chat0.getThreadID());
 
             Thread.sleep(150);
             // Test delivery of message to the presence with highest priority
@@ -124,10 +124,5 @@ public class PresencePriorityTest extends SmackTestCase {
 
     protected int getMaxConnections() {
         return 2;
-    }
-
-    protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = false;
-        super.setUp();
     }
 }
