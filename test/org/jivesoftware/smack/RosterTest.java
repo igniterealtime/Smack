@@ -423,7 +423,12 @@ public class RosterTest extends SmackTestCase {
 
             roster.getGroup("Amigos").setName("");
 
-            Thread.sleep(500);
+            // Wait up to 2 seconds for the group to change its name
+            initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (roster.getGroup("Amigos") != null)) {
+                Thread.sleep(100);
+            }
 
             assertNull("The group Amigos still exists", roster.getGroup("Amigos"));
             assertNotNull("The group with no name does not exist", roster.getGroup(""));
@@ -520,23 +525,25 @@ public class RosterTest extends SmackTestCase {
      * Clean up all the entries in the roster
      */
     private void cleanUpRoster() {
-        // Delete all the entries from the roster
-        Iterator it = getConnection(0).getRoster().getEntries();
-        while (it.hasNext()) {
-            RosterEntry entry = (RosterEntry) it.next();
-            try {
-                getConnection(0).getRoster().removeEntry(entry);
-            } catch (XMPPException e) {
-                e.printStackTrace();
+        for (int i=0; i<getMaxConnections(); i++) {
+            // Delete all the entries from the roster
+            Iterator it = getConnection(i).getRoster().getEntries();
+            while (it.hasNext()) {
+                RosterEntry entry = (RosterEntry) it.next();
+                try {
+                    getConnection(i).getRoster().removeEntry(entry);
+                } catch (XMPPException e) {
+                    e.printStackTrace();
+                    fail(e.getMessage());
+                }
+            }
+
+            try  {
+                Thread.sleep(700);
+            }
+            catch (InterruptedException e) {
                 fail(e.getMessage());
             }
-        }
-
-        try  {
-            Thread.sleep(1500);
-        }
-        catch (InterruptedException e) {
-            fail(e.getMessage());
         }
         // Wait up to 2 seconds to receive roster removal notifications
         long initial = System.currentTimeMillis();
