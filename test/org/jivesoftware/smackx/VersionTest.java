@@ -21,7 +21,6 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -67,10 +66,5 @@ public class VersionTest extends SmackTestCase {
 
     protected int getMaxConnections() {
         return 1;
-    }
-
-    protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = false;
-        super.setUp();
     }
 }

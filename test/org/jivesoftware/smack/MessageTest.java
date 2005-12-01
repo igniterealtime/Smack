@@ -131,9 +131,4 @@ public class MessageTest extends SmackTestCase {
     protected int getMaxConnections() {
         return 2;
     }
-
-    protected void setUp() throws Exception {
-        XMPPConnection.DEBUG_ENABLED = false;
-        super.setUp();
-    }
 }
