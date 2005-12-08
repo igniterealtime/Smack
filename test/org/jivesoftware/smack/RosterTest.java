@@ -421,6 +421,7 @@ public class RosterTest extends SmackTestCase {
                 2,
                 roster.getGroup("Amigos").getEntryCount());
 
+            // Setting the name to empty is like removing this group
             roster.getGroup("Amigos").setName("");
 
             // Wait up to 2 seconds for the group to change its name
@@ -430,12 +431,11 @@ public class RosterTest extends SmackTestCase {
                 Thread.sleep(100);
             }
 
-            assertNull("The group Amigos still exists", roster.getGroup("Amigos"));
-            assertNotNull("The group with no name does not exist", roster.getGroup(""));
+            assertEquals("There are still groups in the roster", 0, roster.getGroupCount());
             assertEquals(
                 "Wrong number of entries in the group \"\" ",
                 2,
-                roster.getGroup("").getEntryCount());
+                roster.getUnfiledEntryCount());
 
             cleanUpRoster();
             Thread.sleep(200);
