@@ -147,12 +147,12 @@ public class MultiUserChatTest extends SmackTestCase {
             Message msg;
             // Get first historic message
             msg = muc2.nextMessage(1000);
+            assertNotNull("First message is null", msg);
             DelayInformation delay = (DelayInformation) msg.getExtension("x", "jabber:x:delay");
             SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
             UTC_FORMAT.setTimeZone(TimeZone.getDefault());
             System.out.println(UTC_FORMAT.format(delay.getStamp()));
 
-            assertNotNull("First message is null", msg);
             assertEquals("Body of first message is incorrect", "Message 3", msg.getBody());
             // Try to get second historic message 
             msg = muc2.nextMessage(1000);
@@ -435,7 +435,15 @@ public class MultiUserChatTest extends SmackTestCase {
             // Check that we have discovered the room used by this test
             assertFalse("No room was found", rooms.isEmpty());
             // Check that we have discovered the room used by this test
-            assertEquals("Wrong room JID found", room, ((HostedRoom)rooms.toArray()[0]).getJid());
+            boolean found = false;
+            for (Iterator it = rooms.iterator(); it.hasNext();) {
+                HostedRoom hostedRoom = (HostedRoom) it.next();
+                if (room.equals(hostedRoom.getJid())) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("JID of room was not found", found);
         }
         catch (XMPPException e) {
             e.printStackTrace();
