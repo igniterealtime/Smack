@@ -27,8 +27,8 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.StringUtils;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
@@ -857,7 +857,9 @@ public class XMPPConnection {
                     // already be associated with a Chat. This will miss messages
                     // with new thread ID values, but we can only assume that a
                     // listener is registered to deal with this case.
-                    if (message.getThread() == null) {
+                    if (message.getThread() == null &&
+                            message.getType() != Message.Type.GROUP_CHAT &&
+                            message.getType() != Message.Type.HEADLINE) {
                         WeakReference chatRef = (WeakReference)chats.get(
                                 StringUtils.parseBareAddress(message.getFrom()));
                         if (chatRef != null) {
