@@ -273,12 +273,7 @@ public class SASLAuthentication implements UserAuthentication {
         }
     }
 
-    private String bindResourceAndEstablishSession(String resource) throws IOException,
-            XMPPException {
-        // We now need to bind a resource for the connection
-        // Open a new stream and wait for the response
-        connection.packetWriter.openStream();
-
+    private String bindResourceAndEstablishSession(String resource) throws XMPPException {
         // Wait until server sends response containing the <bind> element
         synchronized (this) {
             if (!resourceBinded) {
@@ -287,6 +282,11 @@ public class SASLAuthentication implements UserAuthentication {
                 } catch (InterruptedException e) {
                 }
             }
+        }
+
+        if (!resourceBinded) {
+            // Server never offered resource binding
+            throw new XMPPException("Resource binding not offered by server");
         }
 
         Bind bindResource = new Bind();
@@ -323,6 +323,10 @@ public class SASLAuthentication implements UserAuthentication {
             else if (ack.getType() == IQ.Type.ERROR) {
                 throw new XMPPException(ack.getError());
             }
+        }
+        else {
+            // Server never offered session establishment
+            throw new XMPPException("Session establishment not offered by server");
         }
         return userJID;
     }
