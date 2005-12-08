@@ -48,13 +48,17 @@ public class DelayInformationProvider implements PacketExtensionProvider {
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
         Date stamp = null;
         try {
-            stamp = DelayInformation.UTC_FORMAT.parse(parser.getAttributeValue("", "stamp"));
+            synchronized (DelayInformation.UTC_FORMAT) {
+                stamp = DelayInformation.UTC_FORMAT.parse(parser.getAttributeValue("", "stamp"));
+            }
         } catch (ParseException e) {
             // Try again but assuming that the date follows JEP-82 format
             // (Jabber Date and Time Profiles) 
             try {
-                stamp = DelayInformation.NEW_UTC_FORMAT
-                        .parse(parser.getAttributeValue("", "stamp"));
+                synchronized (DelayInformation.NEW_UTC_FORMAT) {
+                    stamp = DelayInformation.NEW_UTC_FORMAT
+                            .parse(parser.getAttributeValue("", "stamp"));
+                }
             } catch (ParseException e1) {
                 // Last attempt. Try parsing the date assuming that it does not include milliseconds
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

@@ -127,7 +127,11 @@ public class DelayInformation implements PacketExtension {
         StringBuffer buf = new StringBuffer();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
                 "\"");
-        buf.append(" stamp=\"").append(UTC_FORMAT.format(stamp)).append("\"");
+        buf.append(" stamp=\"");
+        synchronized (UTC_FORMAT) {
+            buf.append(UTC_FORMAT.format(stamp));
+        }
+        buf.append("\"");
         if (from != null && from.length() > 0) {
             buf.append(" from=\"").append(from).append("\"");
         }
