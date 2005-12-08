@@ -79,14 +79,7 @@ class PacketReader {
         listenerThread.setName("Smack Listener Processor");
         listenerThread.setDaemon(true);
 
-        try {
-            parser = new MXParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(connection.reader);
-        }
-        catch (XmlPullParserException xppe) {
-            xppe.printStackTrace();
-        }
+        resetParser();
     }
 
     /**
@@ -224,8 +217,15 @@ class PacketReader {
      * when the plain connection has been secured or when a new opening stream element is going
      * to be sent by the server.
      */
-    private void resetParser() throws XmlPullParserException {
-        parser.setInput(connection.reader);
+    private void resetParser() {
+        try {
+            parser = new MXParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+            parser.setInput(connection.reader);
+        }
+        catch (XmlPullParserException xppe) {
+            xppe.printStackTrace();
+        }
     }
 
     /**
@@ -335,12 +335,17 @@ class PacketReader {
                         connection.getSASLAuthentication().challengeReceived(parser.nextText());
                     }
                     else if (parser.getName().equals("success")) {
-                        // The SASL authentication with the server was successful. The next step
-                        // will be to bind the resource
-                        connection.getSASLAuthentication().authenticated();
+                        // We now need to bind a resource for the connection
+                        // Open a new stream and wait for the response
+                        connection.packetWriter.openStream();
+
                         // Reset the state of the parser since a new stream element is going
                         // to be sent by the server
                         resetParser();
+
+                        // The SASL authentication with the server was successful. The next step
+                        // will be to bind the resource
+                        connection.getSASLAuthentication().authenticated();
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
