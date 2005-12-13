@@ -32,7 +32,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Creates an SSL connection to a XMPP server using the legacy dedicated SSL port
- * mechanism. Fully compliant XMPP 1.0 servers (e.g. Jive Messenger 2.3.0) do not
+ * mechanism. Fully compliant XMPP 1.0 servers (e.g. Wildfire 2.4.0) do not
  * require using a dedicated SSL port. Instead, TLS (a standardized version of SSL 3.0)
  * is dynamically negotiated over the standard XMPP port. Therefore, only use this
  * class to connect to an XMPP server if you know that the server does not support

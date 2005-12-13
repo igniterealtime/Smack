@@ -153,7 +153,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         try {
             boolean canPublish = ServiceDiscoveryManager.getInstanceFor(getConnection(0))
                     .canPublishItems(getServiceName());
-            assertFalse("Messenger does not support publishing...so far!!", canPublish);
+            assertFalse("Wildfire does not support publishing...so far!!", canPublish);
         }
         catch (Exception e) {
             fail(e.getMessage());

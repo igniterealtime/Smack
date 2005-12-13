@@ -14,7 +14,7 @@ import java.util.List;
  * A SharedGroupManager provides services for discovering the shared groups where a user belongs.<p>
  *
  * Important note: This functionality is not part of the XMPP spec and it will only work
- * with Jive Messenger.
+ * with Wildfire.
  *
  * @author Gaston Dombiak
  */

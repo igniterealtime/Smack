@@ -9,7 +9,7 @@ import java.util.List;
  * Test cases for getting the shared groups of a user.<p>
  *
  * Important note: This functionality is not part of the XMPP spec and it will only work
- * with Jive Messenger.
+ * with Wildfire.
  *
  * @author Gaston Dombiak
  */
