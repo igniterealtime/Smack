@@ -149,6 +149,7 @@ public class MultiUserChatTest extends SmackTestCase {
             msg = muc2.nextMessage(1000);
             assertNotNull("First message is null", msg);
             DelayInformation delay = (DelayInformation) msg.getExtension("x", "jabber:x:delay");
+            assertNotNull("Message contains no delay information", delay);
             SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
             UTC_FORMAT.setTimeZone(TimeZone.getDefault());
             System.out.println(UTC_FORMAT.format(delay.getStamp()));
