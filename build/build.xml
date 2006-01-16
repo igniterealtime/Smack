@@ -142,6 +142,7 @@
             <manifest>
                 <attribute name="Class-Path" value="smack.jar" />
             </manifest>
+            <zipfileset src="${merge.lib.dir}/jzlib.jar"/>
         </jar>
         <copy todir="${compile.dir}/images">
             <fileset dir="${basedir}/build/resources/images">
