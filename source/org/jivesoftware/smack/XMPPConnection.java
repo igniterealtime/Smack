@@ -36,6 +36,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -128,6 +129,15 @@ public class XMPPConnection {
      * with each connection.
      */
     Map chats = Collections.synchronizedMap(new HashMap());
+
+    /**
+     * Collection of available stream compression methods offered by the server.
+     */
+    private Collection compressionMethods;
+    /**
+     * Flag that indicates if stream compression is actually in use.
+     */
+    private boolean usingCompression;
 
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
@@ -909,8 +919,37 @@ public class XMPPConnection {
 
     private void initReaderAndWriter() throws XMPPException {
         try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+            if (!usingCompression) {
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+            }
+            else {
+                try {
+                    Class zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
+                    //ZOutputStream out = new ZOutputStream(socket.getOutputStream(), JZlib.Z_BEST_COMPRESSION);
+                    Constructor constructor =
+                            zoClass.getConstructor(new Class[]{OutputStream.class, Integer.TYPE});
+                    Object out = constructor.newInstance(new Object[] {socket.getOutputStream(), new Integer(9)});
+                    //out.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
+                    Method method = zoClass.getMethod("setFlushMode", new Class[] {Integer.TYPE});
+                    method.invoke(out, new Object[] {new Integer(1)});
+                    writer = new BufferedWriter(new OutputStreamWriter((OutputStream) out, "UTF-8"));
+
+                    Class ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
+                    //ZInputStream in = new ZInputStream(socket.getInputStream());
+                    constructor = ziClass.getConstructor(new Class[]{InputStream.class});
+                    Object in = constructor.newInstance(new Object[] {socket.getInputStream()});
+                    //in.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
+                    method = ziClass.getMethod("setFlushMode", new Class[] {Integer.TYPE});
+                    method.invoke(in, new Object[] {new Integer(1)});
+                    reader = new BufferedReader(new InputStreamReader((InputStream) in, "UTF-8"));
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                    writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+                }
+            }
         }
         catch (IOException ioe) {
             throw new XMPPException(
@@ -1060,5 +1099,129 @@ public class XMPPConnection {
         packetWriter.setWriter(writer);
         // Send a new opening stream to the server
         packetWriter.openStream();
+    }
+
+    /**
+     * Sets the available stream compression methods offered by the server.
+     *
+     * @param methods compression methods offered by the server.
+     */
+    void setAvailableCompressionMethods(Collection methods) {
+        compressionMethods = methods;
+    }
+
+    /**
+     * Returns true if the specified compression method was offered by the server.
+     *
+     * @param method the method to check.
+     * @return true if the specified compression method was offered by the server.
+     */
+    private boolean hasAvailableCompressionMethod(String method) {
+        return compressionMethods != null && compressionMethods.contains(method);
+    }
+
+    /**
+     * Returns true if the server offered stream compression to the client.
+     *
+     * @return true if the server offered stream compression to the client.
+     */
+    public boolean getServerSupportsCompression() {
+        return compressionMethods != null && !compressionMethods.isEmpty();
+    }
+
+    /**
+     * Returns true if network traffic is being compressed. When using stream compression network
+     * traffic can be reduced up to 90%. Therefore, stream compression is ideal when using a slow
+     * speed network connection. However, the server will need to use more CPU time in order to
+     * un/compress network data so under high load the server performance might be affected.<p>
+     *
+     * Note: To use stream compression the smackx.jar file has to be present in the classpath.
+     *
+     * @return true if network traffic is being compressed.
+     */
+    public boolean isUsingCompression() {
+        return usingCompression;
+    }
+
+    /**
+     * Starts using stream compression that will compress network traffic. Traffic can be
+     * reduced up to 90%. Therefore, stream compression is ideal when using a slow speed network
+     * connection. However, the server and the client will need to use more CPU time in order to
+     * un/compress network data so under high load the server performance might be affected.<p>
+     *
+     * Stream compression has to have been previously offered by the server. Currently only the
+     * zlib method is supported by the client. Stream compression negotiation has to be done
+     * before authentication took place.<p>
+     *
+     * Note: To use stream compression the smackx.jar file has to be present in the classpath.
+     *
+     * @return true if stream compression negotiation was successful.
+     */
+    public boolean useCompression() {
+        // If stream compression was offered by the server and we want to use
+        // compression then send compression request to the server
+        if (authenticated) {
+            throw new IllegalStateException("Compression should be negotiated before authentication.");
+        }
+        try {
+            Class.forName("com.jcraft.jzlib.ZOutputStream");
+        }
+        catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Cannot use compression. Add smackx.jar to the classpath");
+        }
+        if (hasAvailableCompressionMethod("zlib")) {
+            requestStreamCompression();
+            // Wait until compression is being used or a timeout happened
+            synchronized (this) {
+                try {
+                    this.wait(SmackConfiguration.getPacketReplyTimeout() * 5);
+                }
+                catch (InterruptedException e) {}
+            }
+            return usingCompression;
+        }
+        return false;
+    }
+
+    /**
+     * Request the server that we want to start using stream compression. When using TLS
+     * then negotiation of stream compression can only happen after TLS was negotiated. If TLS
+     * compression is being used the stream compression should not be used.
+     */
+    private void requestStreamCompression() {
+        try {
+            writer.write("<compress xmlns='http://jabber.org/protocol/compress'>");
+            writer.write("<method>zlib</method></compress>");
+            writer.flush();
+        }
+        catch (IOException e) {
+            packetReader.notifyConnectionError(e);
+        }
+    }
+
+    /**
+     * Start using stream compression since the server has acknowledged stream compression.
+     */
+    void startStreamCompression() throws Exception {
+        // Secure the plain connection
+        usingCompression = true;
+        // Initialize the reader and writer with the new secured version
+        initReaderAndWriter();
+
+        // Set the new  writer to use
+        packetWriter.setWriter(writer);
+        // Send a new opening stream to the server
+        packetWriter.openStream();
+        // Notify that compression is being used
+        synchronized (this) {
+            this.notify();
+        }
+    }
+
+    void streamCompressionDenied() {
+        // Notify that compression has been denied
+        synchronized (this) {
+            this.notify();
+        }
     }
 }

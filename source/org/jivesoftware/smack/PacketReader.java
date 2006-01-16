@@ -320,9 +320,16 @@ class PacketReader {
                         resetParser();
                     }
                     else if (parser.getName().equals("failure")) {
-                        if ("urn:ietf:params:xml:ns:xmpp-tls".equals(parser.getNamespace(null))) {
+                        String namespace = parser.getNamespace(null);
+                        if ("urn:ietf:params:xml:ns:xmpp-tls".equals(namespace)) {
                             // TLS negotiation has failed. The server will close the connection
                             throw new Exception("TLS negotiation has failed");
+                        }
+                        else if ("http://jabber.org/protocol/compress".equals(namespace)) {
+                            // Stream compression has been denied. This is a recoverable
+                            // situation. It is still possible to authenticate and
+                            // use the connection but using an uncompressed connection
+                            connection.streamCompressionDenied();
                         }
                         else {
                             // SASL authentication has failed. The server may close the connection
@@ -346,6 +353,14 @@ class PacketReader {
                         // The SASL authentication with the server was successful. The next step
                         // will be to bind the resource
                         connection.getSASLAuthentication().authenticated();
+                    }
+                    else if (parser.getName().equals("compressed")) {
+                        // Server confirmed that it's possible to use stream compression. Start
+                        // stream compression
+                        connection.startStreamCompression();
+                        // Reset the state of the parser since a new stream element is going
+                        // to be sent by the server
+                        resetParser();
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
@@ -464,6 +479,10 @@ class PacketReader {
                     // The server supports sessions
                     connection.getSASLAuthentication().sessionsSupported();
                 }
+                else if (parser.getName().equals("compression")) {
+                    // The server supports stream compression
+                    connection.setAvailableCompressionMethods(parseCompressionMethods(parser));
+                }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("features")) {
@@ -502,6 +521,28 @@ class PacketReader {
             }
         }
         return mechanisms;
+    }
+
+    private Collection parseCompressionMethods(XmlPullParser parser)
+            throws IOException, XmlPullParserException {
+        List methods = new ArrayList();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                String elementName = parser.getName();
+                if (elementName.equals("method")) {
+                    methods.add(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("compression")) {
+                    done = true;
+                }
+            }
+        }
+        return methods;
     }
 
     /**
