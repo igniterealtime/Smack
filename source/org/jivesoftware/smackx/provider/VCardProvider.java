@@ -31,6 +31,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,10 +54,10 @@ public class VCardProvider implements IQProvider {
                       sb.append(parser.getText());
                       break;
                   case XmlPullParser.START_TAG:
-                      sb.append('<' + parser.getName() + '>');
+                      sb.append('<').append(parser.getName()).append('>');
                       break;
                   case XmlPullParser.END_TAG:
-                      sb.append("</" + parser.getName() + '>');
+                      sb.append("</").append(parser.getName()).append('>');
                       break;
                   default:
               }
@@ -71,6 +73,10 @@ public class VCardProvider implements IQProvider {
       }
 
       String xmlText = sb.toString();
+      return _createVCardFromXml(xmlText);
+  }
+
+    public static VCard _createVCardFromXml(String xmlText) {
       VCard vCard = new VCard();
       try {
           DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -85,7 +91,7 @@ public class VCardProvider implements IQProvider {
       return vCard;
   }
 
-    private class VCardReader {
+    private static class VCardReader {
         private final VCard vCard;
         private final Document document;
 
@@ -106,58 +112,88 @@ public class VCardProvider implements IQProvider {
             vCard.setOrganizationUnit(getTagContents("ORGUNIT"));
 
             setupSimpleFields();
-            setupPhones("WORK", true);
-            setupPhones("HOME", false);
 
-            setupAddress("WORK", true);
-            setupAddress("HOME", false);
+            setupPhones();
+            setupAddresses();
         }
 
         private void setupEmails() {
             NodeList nodes = document.getElementsByTagName("USERID");
+            if (nodes == null) return;
             for (int i = 0; i < nodes.getLength(); i++) {
                 Element element = (Element) nodes.item(i);
-                if ("WORK".equals(element.getParentNode().getFirstChild().getNodeName())) {
-                    vCard.setEmailWork(getTextContent(element));
-                } else {
+                if ("HOME".equals(element.getParentNode().getFirstChild().getNodeName())) {
                     vCard.setEmailHome(getTextContent(element));
+                } else {
+                    vCard.setEmailWork(getTextContent(element));
                 }
             }
         }
 
-        private void setupPhones(String type, boolean work) {
+        private void setupPhones() {
             NodeList allPhones = document.getElementsByTagName("TEL");
+            if (allPhones == null) return;
             for (int i = 0; i < allPhones.getLength(); i++) {
-                Element node = (Element) allPhones.item(i);
-                if (type.equals(node.getChildNodes().item(1).getNodeName())) {
-                    String code = node.getFirstChild().getNodeName();
-                    String value = getTextContent(node.getChildNodes().item(2));
-                    if (work) {
-                        vCard.setPhoneWork(code, value);
+                NodeList nodes = allPhones.item(i).getChildNodes();
+                String type = null;
+                String code = null;
+                String value = null;
+                for (int j = 0; j < nodes.getLength(); j++) {
+                    Node node = nodes.item(j);
+                    if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+                    String nodeName = node.getNodeName();
+                    if ("NUMBER".equals(nodeName)) {
+                        value = getTextContent(node);
+                    }
+                    else if (isWorkHome(nodeName)) {
+                        type = nodeName;
                     }
                     else {
+                        code = nodeName;
+                    }
+                }
+                if (code == null || value == null) continue;
+                if ("HOME".equals(type)) {
                         vCard.setPhoneHome(code, value);
                     }
+                else { // By default, setup work phone
+                    vCard.setPhoneWork(code, value);
                 }
             }
         }
 
-        private void setupAddress(String type, boolean work) {
+        private boolean isWorkHome(String nodeName) {
+            return "HOME".equals(nodeName) || "WORK".equals(nodeName);
+        }
+
+        private void setupAddresses() {
             NodeList allAddresses = document.getElementsByTagName("ADR");
+            if (allAddresses == null) return;
             for (int i = 0; i < allAddresses.getLength(); i++) {
-                Element node = (Element) allAddresses.item(i);
-                NodeList childNodes = node.getChildNodes();
-                if (type.equals(childNodes.item(0).getNodeName())) {
-                    for (int j = 1; j < childNodes.getLength(); j++) {
-                        Node item = childNodes.item(j);
-                        if (item instanceof Element) {
-                            if (work) {
-                                vCard.setAddressFieldWork(item.getNodeName(), getTextContent(item));
+                Element addressNode = (Element) allAddresses.item(i);
+
+                String type = null;
+                List code = new ArrayList();
+                List value = new ArrayList();
+                NodeList childNodes = addressNode.getChildNodes();
+                for(int j = 0; j < childNodes.getLength(); j++) {
+                    Node node = childNodes.item(j);
+                    if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+                    String nodeName = node.getNodeName();
+                    if (isWorkHome(nodeName)) {
+                        type = nodeName;
                             }
                             else {
-                                vCard.setAddressFieldHome(item.getNodeName(), getTextContent(item));
+                        code.add(nodeName);
+                        value.add(getTextContent(node));
                             }
                         }
+                for (int j = 0; j < value.size(); j++) {
+                    if ("HOME".equals(type)) {
+                        vCard.setAddressFieldHome((String) code.get(j), (String) value.get(j));
+                    }
+                    else { // By default, setup work address
+                        vCard.setAddressFieldWork((String) code.get(j), (String) value.get(j));
                     }
                 }
             }
@@ -165,7 +201,7 @@ public class VCardProvider implements IQProvider {
 
         private String getTagContents(String tag) {
             NodeList nodes = document.getElementsByTagName(tag);
-            if (nodes.getLength() == 1) {
+            if (nodes != null && nodes.getLength() == 1) {
                 return getTextContent(nodes.item(0));
             }
             return null;
@@ -177,13 +213,13 @@ public class VCardProvider implements IQProvider {
                 Node node = childNodes.item(i);
                 if (node instanceof Element) {
                     Element element = (Element) node;
-                    if ("FN".equals(element.getNodeName())) continue;
 
+                    String field = element.getNodeName();
                     if (element.getChildNodes().getLength() == 0) {
-                        vCard.setField(element.getNodeName(), "");
+                        vCard.setField(field, "");
                     } else if (element.getChildNodes().getLength() == 1 &&
                             element.getChildNodes().item(0) instanceof Text) {
-                        vCard.setField(element.getNodeName(), getTextContent(element));
+                        vCard.setField(field, getTextContent(element));
                     }
                 }
             }

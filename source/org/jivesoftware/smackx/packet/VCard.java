@@ -124,11 +124,33 @@ public class VCard extends IQ {
     /**
      * Set generic VCard field.
      *
-     * @param field value of field. Possible values: NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
+     * @param field value of field. Possible values: FN, NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
      *              GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
      */
     public String getField(String field) {
+        if ("FN".equals(field)) {
+            return buildFullName();
+        }
         return (String) otherSimpleFields.get(field);
+    }
+
+    private String buildFullName() {
+        if (otherSimpleFields.containsKey("FN")) {
+             return otherSimpleFields.get("FN").toString().trim();
+        }
+        else {
+            StringBuffer sb = new StringBuffer();
+            if (firstName != null) {
+                sb.append(firstName).append(' ');
+            }
+            if (middleName != null) {
+                sb.append(middleName).append(' ');
+            }
+            if (lastName != null) {
+                sb.append(lastName);
+            }
+            return sb.toString().trim();
+        }
     }
 
     /**
@@ -160,6 +182,13 @@ public class VCard extends IQ {
 
     public String getMiddleName() {
         return middleName;
+    }
+
+    /**
+     * Returns the full name of the user, associated with this VCard.
+     */
+    public String getFullName() {
+        return getField("FN");
     }
 
     public void setMiddleName(String middleName) {
@@ -540,7 +569,7 @@ public class VCard extends IQ {
     }
 
     private boolean hasNameField() {
-        return firstName != null || lastName != null || middleName != null;
+        return firstName != null || lastName != null || middleName != null || otherSimpleFields.containsKey("FN");
     }
 
     private boolean hasOrganizationFields() {
@@ -638,7 +667,7 @@ public class VCard extends IQ {
 
         private void buildActualContent() {
             if (hasNameField()) {
-                appendFN();
+                appendTag("FN", getFullName());
                 appendN();
             }
 
@@ -706,7 +735,9 @@ public class VCard extends IQ {
             Iterator it = otherSimpleFields.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
-                appendTag(entry.getKey().toString(), (String) entry.getValue());
+                String tag = entry.getKey().toString();
+                if ("FN".equals(tag)) continue;
+                appendTag(tag, (String) entry.getValue());
             }
         }
 
@@ -719,28 +750,6 @@ public class VCard extends IQ {
                     }
                 });
             }
-        }
-
-        private void appendField(String tag) {
-            String value = (String) otherSimpleFields.get(tag);
-            appendTag(tag, value);
-        }
-
-        private void appendFN() {
-            final ContentBuilder contentBuilder = new ContentBuilder() {
-                public void addTagContent() {
-                    if (firstName != null) {
-                        sb.append(firstName + ' ');
-                    }
-                    if (middleName != null) {
-                        sb.append(middleName + ' ');
-                    }
-                    if (lastName != null) {
-                        sb.append(lastName);
-                    }
-                }
-            };
-            appendTag("FN", true, contentBuilder);
         }
 
         private void appendN() {
