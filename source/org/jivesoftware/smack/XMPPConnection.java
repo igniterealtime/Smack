@@ -284,12 +284,13 @@ public class XMPPConnection {
                 ioe);
         }
         this.serviceName = config.getServiceName();
-        this.configuration = config;
-        init();
-        // If compression is enabled then request the server to use stream compression
-        if (config.isCompressionEnabled()) {
-            useCompression();
+        try {
+            // Keep a copy to be sure that once the configuration has been passed to the
+            // constructor it cannot be modified
+            this.configuration = (ConnectionConfiguration) config.clone();
         }
+        catch (CloneNotSupportedException e) {}
+        init();
     }
 
     /**
@@ -442,6 +443,11 @@ public class XMPPConnection {
             }
         }
 
+        // If compression is enabled then request the server to use stream compression
+        if (configuration.isCompressionEnabled()) {
+            useCompression();
+        }
+
         // Create the roster.
         this.roster = new Roster(this);
         roster.reload();
@@ -496,6 +502,11 @@ public class XMPPConnection {
         this.user = response;
         // Update the serviceName with the one returned by the server
         this.serviceName = StringUtils.parseServer(response);
+
+        // If compression is enabled then request the server to use stream compression
+        if (configuration.isCompressionEnabled()) {
+            useCompression();
+        }
 
         // Anonymous users can't have a roster.
         roster = null;
