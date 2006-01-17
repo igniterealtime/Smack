@@ -26,7 +26,7 @@ import java.security.cert.X509Certificate;
 
 /**
  * Dummy trust manager that trust all certificates presented by the server. This class
- * is used during TLS negotiation as well as for old SSL connections.
+ * is used during old SSL connections.
  *
  * @author Gaston Dombiak
  */
