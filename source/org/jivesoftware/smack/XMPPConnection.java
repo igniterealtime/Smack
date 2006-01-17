@@ -138,6 +138,10 @@ public class XMPPConnection {
      * Flag that indicates if stream compression is actually in use.
      */
     private boolean usingCompression;
+    /**
+     * Holds the initial configuration used while creating the connection.
+     */
+    private ConnectionConfiguration configuration;
 
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
@@ -154,27 +158,17 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String serviceName) throws XMPPException {
+        // Perform DNS lookup to get host and port to use
         DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
-
-        this.host = address.getHost();
-        this.port = address.getPort();
-        try {
-            this.socket = new Socket(host, port);
-        }
-        catch (UnknownHostException uhe) {
-            throw new XMPPException(
-                "Could not connect to " + host + ":" + port + ".",
-                new XMPPError(504),
-                uhe);
-        }
-        catch (IOException ioe) {
-            throw new XMPPException(
-                "XMPPError connecting to " + host + ":" + port + ".",
-                new XMPPError(502),
-                ioe);
-        }
-        this.serviceName = serviceName;
-        init();
+        // Create the configuration for this new connection
+        ConnectionConfiguration config =
+                new ConnectionConfiguration(address.getHost(), address.getPort(), serviceName);
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(false);
+        config.setSASLAuthenticationEnabled(true);
+        config.setDebuggerEnabled(DEBUG_ENABLED);
+        // Set the new connection configuration
+        connectUsingConfiguration(config, null);
     }
 
     /**
@@ -189,25 +183,14 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host, int port) throws XMPPException {
-        this.host = host;
-        this.port = port;
-        try {
-            this.socket = new Socket(host, port);
-        }
-        catch (UnknownHostException uhe) {
-            throw new XMPPException(
-                "Could not connect to " + host + ":" + port + ".",
-                new XMPPError(504),
-                uhe);
-        }
-        catch (IOException ioe) {
-            throw new XMPPException(
-                "XMPPError connecting to " + host + ":" + port + ".",
-                new XMPPError(502),
-                ioe);
-        }
-        this.serviceName = host;
-        init();
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(host, port);
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(false);
+        config.setSASLAuthenticationEnabled(true);
+        config.setDebuggerEnabled(DEBUG_ENABLED);
+        // Set the new connection configuration
+        connectUsingConfiguration(config, null);
     }
 
     /**
@@ -223,25 +206,14 @@ public class XMPPConnection {
      *      appropiate error messages to end-users.
      */
     public XMPPConnection(String host, int port, String serviceName) throws XMPPException {
-        this.host = host;
-        this.port = port;
-        try {
-            this.socket = new Socket(host, port);
-        }
-        catch (UnknownHostException uhe) {
-            throw new XMPPException(
-                "Could not connect to " + host + ":" + port + ".",
-                new XMPPError(504),
-                uhe);
-        }
-        catch (IOException ioe) {
-            throw new XMPPException(
-                "XMPPError connecting to " + host + ":" + port + ".",
-                new XMPPError(502),
-                ioe);
-        }
-        this.serviceName = serviceName;
-        init();
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(host, port, serviceName);
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(false);
+        config.setSASLAuthenticationEnabled(true);
+        config.setDebuggerEnabled(DEBUG_ENABLED);
+        // Set the new connection configuration
+        connectUsingConfiguration(config, null);
     }
 
     /**
@@ -266,10 +238,38 @@ public class XMPPConnection {
     public XMPPConnection(String host, int port, String serviceName, SocketFactory socketFactory)
             throws XMPPException
     {
-        this.host = host;
-        this.port = port;
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(host, port, serviceName);
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(false);
+        config.setSASLAuthenticationEnabled(true);
+        config.setDebuggerEnabled(DEBUG_ENABLED);
+        // Set the new connection configuration
+        connectUsingConfiguration(config, socketFactory);
+    }
+
+    public XMPPConnection(ConnectionConfiguration config) throws XMPPException {
+        // Set the new connection configuration
+        connectUsingConfiguration(config, null);
+    }
+
+    public XMPPConnection(ConnectionConfiguration config, SocketFactory socketFactory)
+            throws XMPPException {
+        // Set the new connection configuration
+        connectUsingConfiguration(config, socketFactory);
+    }
+
+    private void connectUsingConfiguration(ConnectionConfiguration config,
+            SocketFactory socketFactory) throws XMPPException {
+        this.host = config.getHost();
+        this.port = config.getPort();
         try {
-            this.socket = socketFactory.createSocket(host, port);
+            if (socketFactory == null) {
+                this.socket = new Socket(host, port);
+            }
+            else {
+                this.socket = socketFactory.createSocket(host, port);
+            }
         }
         catch (UnknownHostException uhe) {
             throw new XMPPException(
@@ -283,8 +283,13 @@ public class XMPPConnection {
                 new XMPPError(502),
                 ioe);
         }
-        this.serviceName = serviceName;
+        this.serviceName = config.getServiceName();
+        this.configuration = config;
         init();
+        // If compression is enabled then request the server to use stream compression
+        if (config.isCompressionEnabled()) {
+            useCompression();
+        }
     }
 
     /**
@@ -414,7 +419,8 @@ public class XMPPConnection {
         username = username.toLowerCase().trim();
 
         String response = null;
-        if (saslAuthentication.hasNonAnonymousAuthentication()) {
+        if (configuration.isSASLAuthenticationEnabled() &&
+                saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             response = saslAuthentication.authenticate(username, password, resource);
         }
@@ -453,7 +459,7 @@ public class XMPPConnection {
         // name we are now logged-in as.
         // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
         // will be null
-        if (DEBUG_ENABLED && debugger != null) {
+        if (configuration.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
     }
@@ -477,7 +483,8 @@ public class XMPPConnection {
         }
 
         String response = null;
-        if (saslAuthentication.hasAnonymousAuthentication()) {
+        if (configuration.isSASLAuthenticationEnabled() &&
+                saslAuthentication.hasAnonymousAuthentication()) {
             response = saslAuthentication.authenticateAnonymously();
         }
         else {
@@ -504,7 +511,7 @@ public class XMPPConnection {
         // name we are now logged-in as.
         // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
         // will be null
-        if (DEBUG_ENABLED && debugger != null) {
+        if (configuration.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
     }
@@ -840,7 +847,7 @@ public class XMPPConnection {
 
             // If debugging is enabled, we should start the thread that will listen for
             // all packets and then log them.
-            if (DEBUG_ENABLED) {
+            if (configuration.isDebuggerEnabled()) {
                 packetReader.addPacketListener(debugger.getReaderListener(), null);
                 if (debugger.getWriterListener() != null) {
                     packetWriter.addPacketListener(debugger.getWriterListener(), null);
@@ -959,7 +966,7 @@ public class XMPPConnection {
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.
-        if (DEBUG_ENABLED) {
+        if (configuration.isDebuggerEnabled()) {
             if (debugger == null) {
                 // Detect the debugger class to use.
                 String className = null;
@@ -1061,6 +1068,10 @@ public class XMPPConnection {
      * want to secure the connection.
      */
     void startTLSReceived() {
+        if (!configuration.isTLSEnabled()) {
+            // Do not secure the connection using TLS since TLS was disabled
+            return;
+        }
         try {
             writer.write("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"/>");
             writer.flush();
@@ -1077,9 +1088,9 @@ public class XMPPConnection {
      */
     void proceedTLSReceived() throws Exception {
         SSLContext context = SSLContext.getInstance("TLS");
-        // Accept any certificate presented by the server
+        // Verify certificate presented by the server
         context.init(null, // KeyManager not required
-                new javax.net.ssl.TrustManager[]{new OpenTrustManager()},
+                new javax.net.ssl.TrustManager[]{new ServerTrustManager(serviceName, configuration)},
                 new java.security.SecureRandom());
         Socket plain = socket;
         // Secure the plain connection
@@ -1121,15 +1132,6 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns true if the server offered stream compression to the client.
-     *
-     * @return true if the server offered stream compression to the client.
-     */
-    public boolean getServerSupportsCompression() {
-        return compressionMethods != null && !compressionMethods.isEmpty();
-    }
-
-    /**
      * Returns true if network traffic is being compressed. When using stream compression network
      * traffic can be reduced up to 90%. Therefore, stream compression is ideal when using a slow
      * speed network connection. However, the server will need to use more CPU time in order to
@@ -1157,7 +1159,7 @@ public class XMPPConnection {
      *
      * @return true if stream compression negotiation was successful.
      */
-    public boolean useCompression() {
+    private boolean useCompression() {
         // If stream compression was offered by the server and we want to use
         // compression then send compression request to the server
         if (authenticated) {

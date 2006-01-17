@@ -27,6 +27,7 @@ import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.xmlpull.v1.*;
 import org.xmlpull.mxp1.MXParser;
 
@@ -184,11 +185,16 @@ public abstract class SmackTestCase extends TestCase {
         try {
             // Connect to the server
             for (int i = 0; i < getMaxConnections(); i++) {
+                // Create the configuration for this new connection
+                ConnectionConfiguration config = new ConnectionConfiguration(host, port);
+                config.setTLSEnabled(true);
+                config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
+                config.setSASLAuthenticationEnabled(true);
                 if (getSocketFactory() == null) {
-                    connections[i] = new XMPPConnection(host, port);
+                    connections[i] = new XMPPConnection(config);
                 }
                 else {
-                    connections[i] = new XMPPConnection(host, port, host, getSocketFactory());
+                    connections[i] = new XMPPConnection(config, getSocketFactory());
                 }
             }
             // Use the host name that the server reports. This is a good idea in most
@@ -206,12 +212,9 @@ public abstract class SmackTestCase extends TestCase {
                     getConnection(i).getAccountManager().createAccount("user" + i, "user" + i);
                 } catch (XMPPException e) {
                     // Do nothing if the accout already exists
-                    if (e.getXMPPError().getCode() != 409) {
+                    if (e.getXMPPError() == null || e.getXMPPError().getCode() != 409) {
                         throw e;
                     }
-                }
-                if (Boolean.getBoolean("test.compressionEnabled")) {
-                    getConnection(i).useCompression();
                 }
                 // Login with the new test account
                 getConnection(i).login("user" + i, "user" + i);

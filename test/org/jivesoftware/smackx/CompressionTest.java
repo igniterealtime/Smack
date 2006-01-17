@@ -23,6 +23,8 @@ package org.jivesoftware.smackx;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackConfiguration;
 
 /**
  * Ensure that stream compression (JEP-138) is correctly supported by Smack.
@@ -40,11 +42,14 @@ public class CompressionTest extends SmackTestCase {
      * stream compression enabled.
      */
     public void testSuccessCompression() throws XMPPException {
-        XMPPConnection connection = new XMPPConnection(getHost(), getPort());
 
-        assertTrue("Server doesn't support stream compression", connection.getServerSupportsCompression());
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(true);
+        config.setSASLAuthenticationEnabled(true);
 
-        assertTrue("Failed to negotiate stream compression", connection.useCompression());
+        XMPPConnection connection = new XMPPConnection(config);
 
         assertTrue("Connection is not using stream compression", connection.isUsingCompression());
 
