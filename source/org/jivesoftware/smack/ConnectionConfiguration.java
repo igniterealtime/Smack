@@ -31,7 +31,7 @@ import java.io.File;
  *
  * @author Gaston Dombiak
  */
-public class ConnectionConfiguration {
+public class ConnectionConfiguration implements Cloneable {
 
     private String serviceName;
 
@@ -42,11 +42,11 @@ public class ConnectionConfiguration {
     private String truststoreType;
     private String truststorePassword;
     private boolean tlsEnabled = true;
-    private boolean verifyChainEnabled = true;
-    private boolean verifyRootCAEnabled = true;
+    private boolean verifyChainEnabled = false;
+    private boolean verifyRootCAEnabled = false;
     private boolean selfSignedCertificateEnabled = false;
-    private boolean expiredCertificatesCheckEnabled = true;
-    private boolean notMatchingDomainCheckEnabled = true;
+    private boolean expiredCertificatesCheckEnabled = false;
+    private boolean notMatchingDomainCheckEnabled = false;
 
     private boolean compressionEnabled = false;
 
@@ -181,7 +181,7 @@ public class ConnectionConfiguration {
 
     /**
      * Returns true if the whole chain of certificates presented by the server are going to
-     * be checked. By default the certificate chain is verified.
+     * be checked. By default the certificate chain is not verified.
      *
      * @return true if the whole chaing of certificates presented by the server are going to
      *         be checked.
@@ -192,7 +192,7 @@ public class ConnectionConfiguration {
 
     /**
      * Sets if the whole chain of certificates presented by the server are going to
-     * be checked. By default the certificate chain is verified.
+     * be checked. By default the certificate chain is not verified.
      *
      * @param verifyChainEnabled if the whole chaing of certificates presented by the server
      *        are going to be checked.
@@ -202,7 +202,7 @@ public class ConnectionConfiguration {
     }
 
     /**
-     * Returns true if root CA checking is going to be done. By default checking is enabled.
+     * Returns true if root CA checking is going to be done. By default checking is disabled.
      *
      * @return true if root CA checking is going to be done.
      */
@@ -211,7 +211,7 @@ public class ConnectionConfiguration {
     }
 
     /**
-     * Sets if root CA checking is going to be done. By default checking is enabled.
+     * Sets if root CA checking is going to be done. By default checking is disabled.
      *
      * @param verifyRootCAEnabled if root CA checking is going to be done.
      */
@@ -241,7 +241,7 @@ public class ConnectionConfiguration {
 
     /**
      * Returns true if certificates presented by the server are going to be checked for their
-     * validity. By default certificates are verified.
+     * validity. By default certificates are not verified.
      *
      * @return true if certificates presented by the server are going to be checked for their
      *         validity.
@@ -252,7 +252,7 @@ public class ConnectionConfiguration {
 
     /**
      * Sets if certificates presented by the server are going to be checked for their
-     * validity. By default certificates are verified.
+     * validity. By default certificates are not verified.
      *
      * @param expiredCertificatesCheckEnabled if certificates presented by the server are going
      *        to be checked for their validity.
@@ -263,7 +263,7 @@ public class ConnectionConfiguration {
 
     /**
      * Returns true if certificates presented by the server are going to be checked for their
-     * domain. By default certificates are verified.
+     * domain. By default certificates are not verified.
      *
      * @return true if certificates presented by the server are going to be checked for their
      *         domain.
@@ -274,7 +274,7 @@ public class ConnectionConfiguration {
 
     /**
      * Sets if certificates presented by the server are going to be checked for their
-     * domain. By default certificates are verified.
+     * domain. By default certificates are not verified.
      *
      * @param notMatchingDomainCheckEnabled if certificates presented by the server are going
      *        to be checked for their domain.
@@ -349,5 +349,9 @@ public class ConnectionConfiguration {
      */
     public void setDebuggerEnabled(boolean debuggerEnabled) {
         this.debuggerEnabled = debuggerEnabled;
+    }
+
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
