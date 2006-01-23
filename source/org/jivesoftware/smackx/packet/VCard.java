@@ -26,16 +26,15 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -526,19 +525,40 @@ public class VCard extends IQ {
     private void copyFieldsFrom(VCard result) {
         if (result == null) result = new VCard();
 
-        Field[] fields = VCard.class.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
-            if (field.getDeclaringClass() == VCard.class &&
-                    !Modifier.isFinal(field.getModifiers())) {
-                try {
-                    field.setAccessible(true);
-                    field.set(this, field.get(result));
-                }
-                catch (IllegalAccessException e) {
-                    throw new RuntimeException("This cannot happen:" + field, e);
-                }
+        homeAddr = result.homeAddr;
+        homePhones = result.homePhones;
+
+        workAddr = result.workAddr;
+        workPhones = result.workPhones;
+
+        firstName = result.firstName;
+        lastName = result.lastName;
+        middleName = result.middleName;
+
+        emailHome = result.emailHome;
+        emailWork = result.emailWork;
+
+        organization = result.organization;
+        organizationUnit = result.organizationUnit;
+
+        otherSimpleFields = result.otherSimpleFields;
+        avatar = result.avatar;
+
+        setType(result.getType());
+
+        setError(result.getError());
+        setFrom(result.getFrom());
+        setTo(result.getTo());
+        setPacketID(result.getPacketID());
+        Iterator iterator = result.getExtensions();
+        while (iterator.hasNext()) {
+            addExtension((PacketExtension) iterator.next());
             }
+
+        iterator = result.getPropertyNames();
+        while(iterator.hasNext()) {
+            String key = (String) iterator.next();
+            setProperty(key, result.getProperty(key));
         }
     }
 
