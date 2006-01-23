@@ -149,4 +149,11 @@
         <className>org.jivesoftware.smackx.packet.SharedGroupsInfo$Provider</className>
     </iqProvider>
 
+    <!-- JEP-33: Extended Stanza Addressing -->
+    <extensionProvider>
+        <elementName>addresses</elementName>
+        <namespace>http://jabber.org/protocol/address</namespace>
+        <className>org.jivesoftware.smackx.provider.MultipleAddressesProvider</className>
+    </extensionProvider>
+
 </smackProviders>
