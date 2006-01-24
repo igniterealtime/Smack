@@ -375,10 +375,11 @@ public class Roster {
         if (user == null) {
             return null;
         }
+        String userLowerCase = user.toLowerCase();
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
+                if (entry.getUser().equals(userLowerCase)) {
                     return entry;
                 }
             }
@@ -394,18 +395,7 @@ public class Roster {
      * @return true if the XMPP address is an entry in the roster.
      */
     public boolean contains(String user) {
-        if (user == null) {
-            return false;
-        }
-        synchronized (entries) {
-            for (Iterator i=entries.iterator(); i.hasNext(); ) {
-                RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return getEntry(user) != null;
     }
 
     /**
@@ -541,11 +531,14 @@ public class Roster {
      * @return the key to use in the presenceMap for the fully qualified xmpp ID.
      */
     private String getPresenceMapKey(String user) {
+        if (user == null) {
+            return null;
+        }
         String key = user;
         if (!contains(user)) {
             key = StringUtils.parseBareAddress(user);
         }
-        return key;
+        return key.toLowerCase();
     }
 
     /**
@@ -620,7 +613,7 @@ public class Roster {
                 synchronized (entries) {
                     for (Iterator i = entries.iterator(); i.hasNext();) {
                         RosterEntry entry = (RosterEntry) i.next();
-                        if (entry.getUser().toLowerCase().equals(key.toLowerCase())) {
+                        if (entry.getUser().equals(key)) {
                             fireRosterPresenceEvent(from);
                         }
                     }
@@ -641,7 +634,7 @@ public class Roster {
                 synchronized (entries) {
                     for (Iterator i=entries.iterator(); i.hasNext(); ) {
                         RosterEntry entry = (RosterEntry)i.next();
-                        if (entry.getUser().toLowerCase().equals(key.toLowerCase())) {
+                        if (entry.getUser().equals(key)) {
                             fireRosterPresenceEvent(from);
                         }
                     }

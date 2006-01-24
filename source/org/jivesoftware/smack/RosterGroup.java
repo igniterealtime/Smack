@@ -119,10 +119,11 @@ public class RosterGroup {
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
         user = StringUtils.parseBareAddress(user);
+        String userLowerCase = user.toLowerCase();
         synchronized (entries) {
             for (Iterator i=entries.iterator(); i.hasNext(); ) {
                 RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
+                if (entry.getUser().equals(userLowerCase)) {
                     return entry;
                 }
             }
@@ -149,21 +150,7 @@ public class RosterGroup {
      * @return true if the XMPP address is an entry in this group.
      */
     public boolean contains(String user) {
-        if (user == null) {
-            return false;
-        }
-        // Roster entries never include a resource so remove the resource
-        // if it's a part of the XMPP address.
-        user = StringUtils.parseBareAddress(user);
-        synchronized (entries) {
-            for (Iterator i=entries.iterator(); i.hasNext(); ) {
-                RosterEntry entry = (RosterEntry)i.next();
-                if (entry.getUser().toLowerCase().equals(user.toLowerCase())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return getEntry(user) != null;
     }
 
     /**
@@ -200,7 +187,7 @@ public class RosterGroup {
                 throw new XMPPException(response.getError());
             }
             // Add the new entry to the group since the server processed the request successfully
-            entries.add(entry);
+            addEntryLocal(entry);
         }
     }
 
@@ -242,7 +229,7 @@ public class RosterGroup {
                 throw new XMPPException(response.getError());
             }
             // Remove the entry locally since the server processed the request successfully
-            entries.remove(entry);
+            removeEntryLocal(entry);
         }
     }
 
