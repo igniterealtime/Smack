@@ -431,11 +431,18 @@ public class RosterTest extends SmackTestCase {
                 Thread.sleep(100);
             }
 
-            assertEquals("There are still groups in the roster", 0, roster.getGroupCount());
+            assertNull("The group Amigos still exists", roster.getGroup("Amigos"));
+            assertNotNull("The group with no name does not exist", roster.getGroup(""));
+            assertEquals(
+                "Wrong number of entries in the group with no name",
+                2,
+                roster.getGroup("").getEntryCount());
+
+            /*assertEquals("There are still groups in the roster", 0, roster.getGroupCount());
             assertEquals(
                 "Wrong number of entries in the group \"\" ",
                 2,
-                roster.getUnfiledEntryCount());
+                roster.getUnfiledEntryCount());*/
 
             cleanUpRoster();
             Thread.sleep(200);
