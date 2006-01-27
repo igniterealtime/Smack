@@ -275,6 +275,19 @@ public class ProviderManager {
     }
 
     /**
+     * Removes an IQ provider with the specified element name and namespace. This
+     * method is typically called to cleanup providers that are programatically added
+     * using the {@link #addIQProvider(String, String, Object) addIQProvider} method.
+     *
+     * @param elementName the XML element name.
+     * @param namespace the XML namespace.
+     */
+    public static void removeIQProvider(String elementName, String namespace) {
+        String key = getProviderKey(elementName, namespace);
+        iqProviders.remove(key);
+    }
+
+    /**
      * Returns the packet extension provider registered to the specified XML element name
      * and namespace. For example, if a provider was registered to the element name "x" and the
      * namespace "jabber:x:event", then the following packet would trigger the provider:
@@ -316,6 +329,19 @@ public class ProviderManager {
         }
         String key = getProviderKey(elementName, namespace);
         extensionProviders.put(key, provider);
+    }
+
+    /**
+     * Removes an extension provider with the specified element name and namespace. This
+     * method is typically called to cleanup providers that are programatically added
+     * using the {@link #addExtensionProvider(String, String, Object) addExtensionProvider} method.
+     *
+     * @param elementName the XML element name.
+     * @param namespace the XML namespace.
+     */
+    public static void removeExtensionProvider(String elementName, String namespace) {
+        String key = getProviderKey(elementName, namespace);
+        extensionProviders.remove(key);
     }
 
     /**
