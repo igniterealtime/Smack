@@ -35,11 +35,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Gaston
- * Date: Jun 18, 2005
- * Time: 1:00:57 AM
- * To change this template use File | Settings | File Templates.
+ * vCard provider. 
+ *
+ * @author Gaston Dombiak
  */
 public class VCardProvider implements IQProvider {
 
