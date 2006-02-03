@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>File Transfer</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">File Transfer</div><p>
+
+The file transfer extension allows the user to transmit and receive files.
+
+<ul>
+  <li><a href="#sendfile">Send a file to another user</a></li>
+  <li><a href="#recievefile">Recieving a file from another user</a></li>
+  <li><a href="#monitorprogress">Monitoring the progress of a file transfer</a></li>
+</ul>
+<b>JEP related:</b> <a href="http://www.jabber.org/jeps/jep-0095.html">JEP-95</a>
+<a href="http://www.jabber.org/jeps/jep-0096.html">JEP-96</a>
+<a href="http://www.jabber.org/jeps/jep-0065.html">JEP-65</a>
+<a href="http://www.jabber.org/jeps/jep-0047.html">JEP-47</a>
+<hr>
+
+<div class="subheader"><a name="sendfile">Send a file to another user</a></div><p>
+
+<b>Description</b><p>
+
+A user may wish to send a file to another user. The other user has the option of acception,
+rejecting, or ignoring the users request. Smack provides a simple interface in order
+to enable the user to easily send a file.</p>
+
+<b>Usage</b><p>
+
+In order to send a file you must first construct an instance of the <b><i>FileTransferManager</b></i> 
+class. This class has one constructor with one parameter which is your XMPPConnection.
+In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i></p>
+
+<p>Once you have your <b><i>FileTransferManager</b></i> you will need to create an outgoing
+file transfer to send a file. The method to use on the <b><i>FileTransferManager</b></i> 
+is the <b>createOutgoingFileTransfer(userID)</b> method. The userID you provide to this
+method is the fully-qualified jabber ID of the user you wish to send the file to. A 
+fully-qualified jabber ID consists of a node, a domain, and a resource, the user 
+must be connected to the resource in order to be able to recieve the file transfer.</p>
+
+<p>Now that you have your <b><i>OutgoingFileTransfer</b></i> instance you will want
+to send the file. The method to send a file is <b>sendFile(file, description)</b>. The file
+ you provide to this method should be a readable file on the local file system, and the description is a short 
+ description of the file to help the user decide whether or not they would like to recieve the file.</p>
+ 
+<p>For information on monitoring the progress of a file transfer see the <a href="#monitorprogress">monitoring progress</a>
+section of this document.</p>
+
+<p>Other means to send a file are also provided as part of the <b><i>OutgoingFileTransfer</b></i>. Please
+consult the Javadoc for more information.</p>
+ 
+
+<b>Examples</b><p>
+
+In this example we can see how to send a file: <br>
+<blockquote>
+<pre>
+      <font color="#3f7f5f">// Create the file transfer manager</font>
+      FileTransferManager manager = new FileTransferManager(connection);
+		
+      <font color="#3f7f5f">// Create the outgoing file transfer</font>
+      OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(<font color="#0000FF">"romeo@montague.net"</font>);
+		
+      <font color="#3f7f5f">// Send the file</font>
+      transfer.sendFile(new File(<font color="#0000FF">"shakespeare_complete_works.txt"</font>), <font color="#0000FF">"You won't believe this!"</font>);
+
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="recievefile">Recieving a file from another user</a></div><p>
+
+<b>Description</b><p>
+
+The user may wish to recieve files from another user. The process of recieving a file is event driven,
+new file transfer requests are recieved from other users via a listener registered with the file transfer
+manager.</p>
+
+<b>Usage</b><p>
+
+In order to recieve a file you must first construct an instance of the <b><i>FileTransferManager</b></i> 
+class. This class has one constructor with one parameter which is your XMPPConnection.
+In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i></p>
+
+<p>Once you have your <b><i>FileTransferManager</b></i> you will need to register a listener
+with it. The FileTransferListner interface has one method, <b>fileTransferRequest(request)</b>.
+When a request is recieved through this method, you can either accept or reject the
+request. To help you make your decision there are several methods in the <b><i>FileTransferRequest</b></i> 
+class that return information about the transfer request.</p>
+
+<p>To accept the file transfer, call the <b>accept()</b>,  
+this method will create an <b><i>IncomingFileTransfer</b></i>. After you have the file transfer you may start 
+to transfer the file by calling the <b>recieveFile(file)</b> method. 
+The file provided to this method will be where the data from thefile transfer is saved.</p>
+
+<p>Finally, to reject the file transfer the only method you need to call is <b>reject()</b> 
+on the <b><i>IncomingFileTransfer</b></i>.</p>
+
+<p>For information on monitoring the progress of a file transfer see the <a href="#monitorprogress">monitoring progress</a>
+section of this document.</p>
+
+<p>Other means to recieve a file are also provided as part of the <b><i>IncomingFileTransfer</b></i>. Please
+consult the Javadoc for more information.</p>
+
+<b>Examples</b><p>
+
+In this example we can see how to approve or reject a file transfer request: <br>
+<blockquote>
+<pre>      <font color="#3f7f5f">// Create the file transfer manager</font>
+      final FileTransferManager manager = new FileTransferManager(connection);
+
+      <font color="#3f7f5f">// Create the listener</font>
+      manager.addFileTransferListener(new FileTransferListener() {
+            public void fileTransferRequest(FileTransferRequest request) {
+                  <font color="#3f7f5f">// Check to see if the request should be accepted</font>
+                  if(shouldAccept(request)) {
+                        <font color="#3f7f5f">// Accept it</font>
+                        IncomingFileTransfer transfer = request.accept();
+                        transfer.recieveFile(new File(<font color="#0000FF">"shakespeare_complete_works.txt"</font>));
+                  } else {
+                        <font color="#3f7f5f">// Reject it</font>
+                        request.reject();
+                  }
+            }
+      });
+</pre>
+</blockquote>
+
+<hr>
+
+<div class="subheader"><a name="monitorprogress">Monitoring the progress of a file transfer</a></div><p>
+
+<b>Description</b><p>
+
+While a file transfer is in progress you may wish to monitor the progress of a file transfer.</p>
+
+<b>Usage</b><p>
+
+<p>Both the <b><i>IncomingFileTransfer</b></i> and the <b><i>OutgoingFileTransfer</b></i>
+extend the <b><i>FileTransfer</b></i> class which provides several methods to monitor
+how a file transfer is progressing:</p>
+<ul>
+<li><b>getStatus()</b> - The file transfer can be in several states, negotiating, rejected, canceled,
+in progress, error, and complete. This method will return which state the file transfer is currently in.
+<li><b>getProgress()</b> - if the status of the file transfer is in progress this
+method will return a number between 0 and 1, 0 being the transfer has not yet started
+and 1 being the transfer is complete. It may also return a -1 if the transfer is not in progress.
+<li><b>isDone()</b> - Similar to getProgress() except it returns a <i>boolean</i>. If the state is
+rejected, canceled, error, or complete then true will be returned and false otherwise.
+<li><b>getError()</b> - If there is an error during the file transfer this method will 
+return the type of error that occured.
+</ul>
+
+<b>Examples</b><p>
+
+In this example we can see how to monitor a file transfer: <br>
+<blockquote>
+<pre>      while(!transfer.isDone()) {
+            if(transfer.getStatus().equals(Status.ERROR)) {
+                  System.out.println(<font color="#0000FF">"ERROR!!! "</font> + transfer.getError());
+            } else {
+                  System.out.println(transfer.getStatus());
+                  System.out.println(transfer.getProgress());
+            }
+            sleep(1000);
+      }
+</pre>
+</blockquote>
+</body>
+
+</html>

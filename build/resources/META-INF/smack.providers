@@ -156,4 +156,35 @@
         <className>org.jivesoftware.smackx.provider.MultipleAddressesProvider</className>
     </extensionProvider>
 
+        <!-- FileTransfer -->
+    <iqProvider>
+    	<elementName>si</elementName>
+    	<namespace>http://jabber.org/protocol/si</namespace>
+    	<className>org.jivesoftware.smackx.provider.StreamInitiationProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+    	<elementName>query</elementName>
+    	<namespace>http://jabber.org/protocol/bytestreams</namespace>
+    	<className>org.jivesoftware.smackx.provider.BytestreamsProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+    	<elementName>open</elementName>
+    	<namespace>http://jabber.org/protocol/ibb</namespace>
+    	<className>org.jivesoftware.smackx.provider.IBBProviders$Open</className>
+    </iqProvider>
+
+    <iqProvider>
+    	<elementName>close</elementName>
+    	<namespace>http://jabber.org/protocol/ibb</namespace>
+    	<className>org.jivesoftware.smackx.provider.IBBProviders$Close</className>
+    </iqProvider>
+    
+    <extensionProvider>
+        <elementName>data</elementName>
+        <namespace>http://jabber.org/protocol/ibb</namespace>
+        <className>org.jivesoftware.smackx.provider.IBBProviders$Data</className>
+    </extensionProvider>
+
 </smackProviders>
