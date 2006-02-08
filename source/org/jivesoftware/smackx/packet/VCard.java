@@ -26,15 +26,16 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -123,33 +124,11 @@ public class VCard extends IQ {
     /**
      * Set generic VCard field.
      *
-     * @param field value of field. Possible values: FN, NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
+     * @param field value of field. Possible values: NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
      *              GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
      */
     public String getField(String field) {
-        if ("FN".equals(field)) {
-            return buildFullName();
-        }
         return (String) otherSimpleFields.get(field);
-    }
-
-    private String buildFullName() {
-        if (otherSimpleFields.containsKey("FN")) {
-             return otherSimpleFields.get("FN").toString().trim();
-        }
-        else {
-            StringBuffer sb = new StringBuffer();
-            if (firstName != null) {
-                sb.append(firstName).append(' ');
-            }
-            if (middleName != null) {
-                sb.append(middleName).append(' ');
-            }
-            if (lastName != null) {
-                sb.append(lastName);
-            }
-            return sb.toString().trim();
-        }
     }
 
     /**
@@ -181,13 +160,6 @@ public class VCard extends IQ {
 
     public String getMiddleName() {
         return middleName;
-    }
-
-    /**
-     * Returns the full name of the user, associated with this VCard.
-     */
-    public String getFullName() {
-        return getField("FN");
     }
 
     public void setMiddleName(String middleName) {
@@ -525,40 +497,19 @@ public class VCard extends IQ {
     private void copyFieldsFrom(VCard result) {
         if (result == null) result = new VCard();
 
-        homeAddr = result.homeAddr;
-        homePhones = result.homePhones;
-
-        workAddr = result.workAddr;
-        workPhones = result.workPhones;
-
-        firstName = result.firstName;
-        lastName = result.lastName;
-        middleName = result.middleName;
-
-        emailHome = result.emailHome;
-        emailWork = result.emailWork;
-
-        organization = result.organization;
-        organizationUnit = result.organizationUnit;
-
-        otherSimpleFields = result.otherSimpleFields;
-        avatar = result.avatar;
-
-        setType(result.getType());
-
-        setError(result.getError());
-        setFrom(result.getFrom());
-        setTo(result.getTo());
-        setPacketID(result.getPacketID());
-        Iterator iterator = result.getExtensions();
-        while (iterator.hasNext()) {
-            addExtension((PacketExtension) iterator.next());
+        Field[] fields = VCard.class.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            if (field.getDeclaringClass() == VCard.class &&
+                    !Modifier.isFinal(field.getModifiers())) {
+                try {
+                    field.setAccessible(true);
+                    field.set(this, field.get(result));
+                }
+                catch (IllegalAccessException e) {
+                    throw new RuntimeException("This cannot happen:" + field, e);
+                }
             }
-
-        iterator = result.getPropertyNames();
-        while(iterator.hasNext()) {
-            String key = (String) iterator.next();
-            setProperty(key, result.getProperty(key));
         }
     }
 
@@ -589,7 +540,7 @@ public class VCard extends IQ {
     }
 
     private boolean hasNameField() {
-        return firstName != null || lastName != null || middleName != null || otherSimpleFields.containsKey("FN");
+        return firstName != null || lastName != null || middleName != null;
     }
 
     private boolean hasOrganizationFields() {
@@ -687,7 +638,7 @@ public class VCard extends IQ {
 
         private void buildActualContent() {
             if (hasNameField()) {
-                appendTag("FN", getFullName());
+                appendFN();
                 appendN();
             }
 
@@ -755,9 +706,7 @@ public class VCard extends IQ {
             Iterator it = otherSimpleFields.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
-                String tag = entry.getKey().toString();
-                if ("FN".equals(tag)) continue;
-                appendTag(tag, (String) entry.getValue());
+                appendTag(entry.getKey().toString(), (String) entry.getValue());
             }
         }
 
@@ -770,6 +719,28 @@ public class VCard extends IQ {
                     }
                 });
             }
+        }
+
+        private void appendField(String tag) {
+            String value = (String) otherSimpleFields.get(tag);
+            appendTag(tag, value);
+        }
+
+        private void appendFN() {
+            final ContentBuilder contentBuilder = new ContentBuilder() {
+                public void addTagContent() {
+                    if (firstName != null) {
+                        sb.append(firstName + ' ');
+                    }
+                    if (middleName != null) {
+                        sb.append(middleName + ' ');
+                    }
+                    if (lastName != null) {
+                        sb.append(lastName);
+                    }
+                }
+            };
+            appendTag("FN", true, contentBuilder);
         }
 
         private void appendN() {
