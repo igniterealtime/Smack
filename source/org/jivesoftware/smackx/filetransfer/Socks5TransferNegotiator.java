@@ -79,7 +79,14 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     private List proxies;
 
     private List streamHosts;
+
+    // locks the proxies during their initialization process
+    private final Object proxyLock = new Object();
+
     private ProxyProcess proxyProcess;
+
+    // locks on the proxy process during its initiatilization process
+    private final Object processLock = new Object();
 
     public Socks5TransferNegotiator(final XMPPConnection connection) {
         this.connection = connection;
@@ -100,7 +107,6 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             throws XMPPException {
 
         Bytestream streamHostsInfo = (Bytestream) streamInitiation;
-
 
         if (streamHostsInfo.getType().equals(IQ.Type.ERROR)) {
             throw new XMPPException(streamHostsInfo.getError());
@@ -345,9 +351,11 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     private ProxyProcess establishListeningSocket() throws IOException {
-        if (proxyProcess == null) {
-            proxyProcess = new ProxyProcess(new ServerSocket(7777));
-            proxyProcess.start();
+        synchronized (processLock) {
+            if (proxyProcess == null) {
+                proxyProcess = new ProxyProcess(new ServerSocket(7777));
+                proxyProcess.start();
+            }
         }
         proxyProcess.addTransfer();
         return proxyProcess;
@@ -396,7 +404,6 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
      */
     private Bytestream createByteStreamInit(final String from, final String to,
             final String sid, final String localIP, final int port) {
-
         Bytestream bs = new Bytestream();
         bs.setTo(to);
         bs.setFrom(from);
@@ -406,8 +413,11 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         if (localIP != null && port > 0) {
             bs.addStreamHost(from, localIP, port);
         }
-        if (proxies == null) {
-            initProxies();
+        // make sure the proxies have been initialized completely
+        synchronized (proxyLock) {
+            if (proxies == null) {
+                initProxies();
+            }
         }
         if (streamHosts != null) {
             Iterator it = streamHosts.iterator();
@@ -704,7 +714,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
         public void stop() {
             done = true;
-            synchronized(this) {
+            synchronized (this) {
                 this.notify();
             }
         }
@@ -728,7 +738,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             synchronized (this) {
                 if (transfers == -1) {
                     transfers = 1;
-                    thread.notify();
+                    this.notify();
                 }
                 else {
                     transfers++;
