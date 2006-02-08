@@ -175,7 +175,7 @@ public class IncomingFileTransfer extends FileTransfer {
                 .selectStreamNegotiator(recieveRequest);
         setStatus(Status.NEGOTIATING_STREAM);
         InputStream inputStream = streamNegotiator
-                .initiateIncomingStream(recieveRequest.getStreamInitiation());
+                .createIncomingStream(recieveRequest.getStreamInitiation());
         setStatus(Status.NEGOTIATED);
         return inputStream;
     }

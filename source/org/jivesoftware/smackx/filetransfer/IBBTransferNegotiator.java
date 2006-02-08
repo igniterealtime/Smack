@@ -19,7 +19,10 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -58,38 +61,22 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         this.connection = connection;
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see org.jivesoftware.smackx.filetransfer.StreamNegotiator#initiateDownload(org.jivesoftware.smackx.packet.StreamInitiation,
-      *      java.io.File)
-      */
-    public InputStream initiateIncomingStream(StreamInitiation initiation)
-            throws XMPPException {
-        StreamInitiation response = super.createInitiationAccept(initiation,
-                NAMESPACE);
+    public PacketFilter getInitiationPacketFilter(String from, String streamID) {
+        return new AndFilter(new FromContainsFilter(
+                from), new IBBOpenSidFilter(streamID));
+    }
 
-        // establish collector to await response
-        PacketCollector collector = connection
-                .createPacketCollector(new AndFilter(new FromContainsFilter(
-                        initiation.getFrom()), new IBBSidFilter(initiation.getSessionID())));
-        connection.sendPacket(response);
+    InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException {
+        Open openRequest = (Open) streamInitiation;
 
-        IBBExtensions.Open openRequest = (IBBExtensions.Open) collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (openRequest == null) {
-            throw new XMPPException("No response from file transfer initiator");
-        }
-        else if (openRequest.getType().equals(IQ.Type.ERROR)) {
+        if (openRequest.getType().equals(IQ.Type.ERROR)) {
             throw new XMPPException(openRequest.getError());
         }
-        collector.cancel();
 
-        PacketFilter dataFilter = new AndFilter(new PacketExtensionFilter(
-                IBBExtensions.Data.ELEMENT_NAME, IBBExtensions.NAMESPACE),
-                new FromMatchesFilter(initiation.getFrom()));
+        PacketFilter dataFilter = new IBBMessageSidFilter(openRequest.getFrom(),
+                openRequest.getSessionID());
         PacketFilter closeFilter = new AndFilter(new PacketTypeFilter(
-                IBBExtensions.Close.class), new FromMatchesFilter(initiation
+                IBBExtensions.Close.class), new FromMatchesFilter(openRequest
                 .getFrom()));
 
         InputStream stream = new IBBInputStream(openRequest.getSessionID(),
@@ -98,6 +85,11 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         initInBandTransfer(openRequest);
 
         return stream;
+    }
+
+    public InputStream createIncomingStream(StreamInitiation initiation) throws XMPPException {
+        Packet openRequest = initiateIncomingStream(connection, initiation);
+        return negotiateIncomingStream(openRequest);
     }
 
     /**
@@ -111,7 +103,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
                 IQ.Type.RESULT));
     }
 
-    public OutputStream initiateOutgoingStream(String streamID, String initiator,
+    public OutputStream createOutgoingStream(String streamID, String initiator,
             String target) throws XMPPException {
         Open openIQ = new Open(streamID, DEFAULT_BLOCK_SIZE);
         openIQ.setTo(target);
@@ -143,8 +135,11 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return new IBBOutputStream(target, streamID, DEFAULT_BLOCK_SIZE);
     }
 
-    public String getNamespace() {
-        return NAMESPACE;
+    public String[] getNamespaces() {
+        return new String[]{NAMESPACE};
+    }
+
+    public void cleanup() {
     }
 
     private class IBBOutputStream extends OutputStream {
@@ -155,22 +150,25 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
         protected int seq = 0;
 
-        private final Message template;
+        final String userID;
 
         private final int options = Base64.DONT_BREAK_LINES;
 
-        private IQ closePacket;
+        final private IQ closePacket;
 
         private String messageID;
+        private String sid;
 
         IBBOutputStream(String userID, String sid, int blockSize) {
             if (blockSize <= 0) {
                 throw new IllegalArgumentException("Buffer size <= 0");
             }
             buffer = new byte[blockSize];
-            template = new Message(userID);
+            this.userID = userID;
+
+            Message template = new Message(userID);
             messageID = template.getPacketID();
-            template.addExtension(new IBBExtensions.Data(sid));
+            this.sid = sid;
             closePacket = createClosePacket(userID, sid);
         }
 
@@ -209,12 +207,11 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         }
 
         private void writeToXML(byte[] buffer, int offset, int len) {
-            template.setPacketID(messageID + "_" + seq);
-            IBBExtensions.Data ext = (IBBExtensions.Data) template
-                    .getExtension(IBBExtensions.Data.ELEMENT_NAME,
-                            IBBExtensions.NAMESPACE);
+            Message template = createTemplate(messageID + "_" + seq);
+            IBBExtensions.Data ext = new IBBExtensions.Data(sid);
+            template.addExtension(ext);
 
-            String enc = Base64.encodeBytes(buffer, offset, count, options);
+            String enc = Base64.encodeBytes(buffer, offset, len, options);
 
             ext.setData(enc);
             ext.setSeq(seq);
@@ -236,6 +233,11 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             write(b, 0, b.length);
         }
 
+        public Message createTemplate(String messageID) {
+            Message template = new Message(userID);
+            template.setPacketID(messageID);
+            return template;
+        }
     }
 
     private class IBBInputStream extends InputStream implements PacketListener {
@@ -304,24 +306,23 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
         private boolean loadBufferWait() throws IOException {
             IBBExtensions.Data data;
-            do {
-                Message mess = null;
-                while (mess == null) {
-                    if (isDone) {
-                        mess = (Message) dataCollector.pollResult();
-                        if (mess == null) {
-                            return false;
-                        }
-                    }
-                    else {
-                        mess = (Message) dataCollector.nextResult(1000);
+
+            Message mess = null;
+            while (mess == null) {
+                if (isDone) {
+                    mess = (Message) dataCollector.pollResult();
+                    if (mess == null) {
+                        return false;
                     }
                 }
-                data = (IBBExtensions.Data) mess.getExtension(
-                        IBBExtensions.Data.ELEMENT_NAME,
-                        IBBExtensions.NAMESPACE);
+                else {
+                    mess = (Message) dataCollector.nextResult(1000);
+                }
             }
-            while (!data.getSessionID().equals(streamID));
+            data = (IBBExtensions.Data) mess.getExtension(
+                    IBBExtensions.Data.ELEMENT_NAME,
+                    IBBExtensions.NAMESPACE);
+            
             checkSequence((int) data.getSeq());
             buffer = Base64.decode(data.getData());
             bufferPointer = 0;
@@ -389,11 +390,11 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         }
     }
 
-    private static class IBBSidFilter implements PacketFilter {
+    private static class IBBOpenSidFilter implements PacketFilter {
 
         private String sessionID;
 
-        public IBBSidFilter(String sessionID) {
+        public IBBOpenSidFilter(String sessionID) {
             if (sessionID == null) {
                 throw new IllegalArgumentException("StreamID cannot be null");
             }
@@ -408,6 +409,33 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             String sessionID = open.getSessionID();
 
             return (sessionID != null && sessionID.equals(this.sessionID));
+        }
+    }
+
+    private static class IBBMessageSidFilter implements PacketFilter {
+
+        private final String sessionID;
+        private String from;
+
+        public IBBMessageSidFilter(String from, String sessionID) {
+            this.from = from;
+            this.sessionID = sessionID;
+        }
+
+        public boolean accept(Packet packet) {
+            if (!(packet instanceof Message)) {
+                return false;
+            }
+            if (!packet.getFrom().equalsIgnoreCase(from)) {
+                return false;
+            }
+
+            IBBExtensions.Data data = (IBBExtensions.Data) packet.
+                    getExtension(IBBExtensions.Data.ELEMENT_NAME, IBBExtensions.NAMESPACE);
+            if (data == null) {
+                return false;
+            }
+            return data.getSessionID() != null && data.getSessionID().equalsIgnoreCase(sessionID);
         }
     }
 

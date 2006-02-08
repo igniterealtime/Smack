@@ -115,7 +115,10 @@ public abstract class FileTransfer {
 	 *         and 1.
 	 */
 	public double getProgress() {
-		return 0;
+        if(amountWritten == 0) {
+            return 0;
+        }
+        return amountWritten / fileSize;
 	}
 
 	/**

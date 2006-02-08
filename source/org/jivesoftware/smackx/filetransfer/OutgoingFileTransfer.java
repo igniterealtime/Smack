@@ -309,8 +309,8 @@ public class OutgoingFileTransfer extends FileTransfer {
 		// Negotiate the stream
 
 		setStatus(Status.NEGOTIATING_STREAM);
-		outputStream = streamNegotiator.initiateOutgoingStream(streamID,
-				initiator, getPeer());
+		outputStream = streamNegotiator.createOutgoingStream(streamID,
+                initiator, getPeer());
 		if (!getStatus().equals(Status.NEGOTIATING_STREAM)) {
 			return null;
 		}

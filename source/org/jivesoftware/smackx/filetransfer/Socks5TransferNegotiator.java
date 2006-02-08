@@ -29,6 +29,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.Bytestream;
@@ -84,35 +85,40 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         this.connection = connection;
     }
 
+    public PacketFilter getInitiationPacketFilter(String from, String sessionID) {
+        return new AndFilter(new FromMatchesFilter(from),
+                new BytestreamSIDFilter(sessionID));
+    }
+
     /*
       * (non-Javadoc)
       *
       * @see org.jivesoftware.smackx.filetransfer.StreamNegotiator#initiateDownload(org.jivesoftware.smackx.packet.StreamInitiation,
       *      java.io.File)
       */
-    public InputStream initiateIncomingStream(StreamInitiation initiation)
+    InputStream negotiateIncomingStream(Packet streamInitiation)
             throws XMPPException {
-        StreamInitiation response = super.createInitiationAccept(initiation,
-                NAMESPACE);
 
-        // establish collector to await response
-        PacketCollector collector = connection
-                .createPacketCollector(new AndFilter(new FromMatchesFilter(initiation.getFrom()),
-                        new BytestreamSIDFilter(initiation.getSessionID())));
-        connection.sendPacket(response);
+        Bytestream streamHostsInfo = (Bytestream) streamInitiation;
 
-        Bytestream streamHostsInfo = (Bytestream) collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (streamHostsInfo == null) {
-            throw new XMPPException("No response from file transfer initiator");
-        }
-        else if (streamHostsInfo.getType().equals(IQ.Type.ERROR)) {
+
+        if (streamHostsInfo.getType().equals(IQ.Type.ERROR)) {
             throw new XMPPException(streamHostsInfo.getError());
         }
-        collector.cancel();
-
-        // select appropriate host
-        SelectedHostInfo selectedHost = selectHost(streamHostsInfo);
+        SelectedHostInfo selectedHost;
+        try {
+            // select appropriate host
+            selectedHost = selectHost(streamHostsInfo);
+        }
+        catch (XMPPException ex) {
+            if (ex.getXMPPError() != null) {
+                IQ errorPacket = super.createError(streamHostsInfo.getTo(),
+                        streamHostsInfo.getFrom(), streamHostsInfo.getPacketID(),
+                        ex.getXMPPError());
+                connection.sendPacket(errorPacket);
+            }
+            throw(ex);
+        }
 
         // send used-host confirmation
         Bytestream streamResponse = createUsedHostConfirmation(
@@ -126,6 +132,12 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         catch (IOException e) {
             throw new XMPPException("Error establishing input stream", e);
         }
+
+    }
+
+    public InputStream createIncomingStream(StreamInitiation initiation) throws XMPPException {
+        Packet streamInitiation = initiateIncomingStream(connection, initiation);
+        return negotiateIncomingStream(streamInitiation);
     }
 
     /**
@@ -176,12 +188,11 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
                 e.printStackTrace();
                 selectedHost = null;
                 socket = null;
-                continue;
             }
         }
         if (selectedHost == null || socket == null) {
             throw new XMPPException(
-                    "Could not establish socket with any provided host");
+                    "Could not establish socket with any provided host", new XMPPError(406));
         }
 
         return new SelectedHostInfo(selectedHost, socket);
@@ -212,7 +223,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
       * @see org.jivesoftware.smackx.filetransfer.StreamNegotiator#initiateUpload(java.lang.String,
       *      org.jivesoftware.smackx.packet.StreamInitiation, java.io.File)
       */
-    public OutputStream initiateOutgoingStream(String streamID, String initiator,
+    public OutputStream createOutgoingStream(String streamID, String initiator,
             String target) throws XMPPException {
         Socket socket;
         try {
@@ -294,6 +305,12 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             throw new XMPPException("Unexpected response from remote user");
         }
 
+        // check for an error
+        if (response.getType().equals(IQ.Type.ERROR)) {
+            throw new XMPPException("Remote client returned error, stream hosts expected",
+                    response.getError());
+        }
+
         StreamHostUsed used = response.getUsedHost();
         StreamHost usedHost = query.getStreamHost(used.getJID());
         if (usedHost == null) {
@@ -370,11 +387,11 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
      * &lt;/iq&gt;
      * </pre>
      *
-     * @param from initiator@host1/foo - The file transfer initiator.
-     * @param to target@host2/bar - The file transfer target.
-     * @param sid 'mySID' - the unique identifier for this file transfer
+     * @param from    initiator@host1/foo - The file transfer initiator.
+     * @param to      target@host2/bar - The file transfer target.
+     * @param sid     'mySID' - the unique identifier for this file transfer
      * @param localIP The IP of the local machine if it is being provided, null otherwise.
-     * @param port The port of the local mahine if it is being provided, null otherwise.
+     * @param port    The port of the local mahine if it is being provided, null otherwise.
      * @return Returns the created <b><i>Bytestream</b></i> packet
      */
     private Bytestream createByteStreamInit(final String from, final String to,
@@ -546,8 +563,8 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         return responseDigest;
     }
 
-    public String getNamespace() {
-        return NAMESPACE;
+    public String[] getNamespaces() {
+        return new String[]{NAMESPACE};
     }
 
     private void establishSOCKS5ConnectionToProxy(Socket socket, String digest)
@@ -603,7 +620,10 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         return data;
     }
 
-    private class SelectedHostInfo {
+    public void cleanup() {
+    }
+
+    private static class SelectedHostInfo {
 
         protected XMPPException exception;
 
@@ -684,6 +704,9 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
         public void stop() {
             done = true;
+            synchronized(this) {
+                this.notify();
+            }
         }
 
         public int getPort() {

@@ -72,6 +72,8 @@ public class FileTransferNegotiator {
 
     private static final Random randomGenerator = new Random();
 
+    public static boolean IBB_ONLY = false;
+
     /**
      * Returns the file transfer negotiator related to a particular connection.
      * When this class is requested on a particular connection the file transfer
@@ -82,6 +84,9 @@ public class FileTransferNegotiator {
      */
     public static FileTransferNegotiator getInstanceFor(
             final XMPPConnection connection) {
+        if (connection == null) {
+            throw new IllegalArgumentException("Connection cannot be null");
+        }
         if (!connection.isConnected()) {
             return null;
         }
@@ -227,7 +232,7 @@ public class FileTransferNegotiator {
 
         StreamNegotiator selectedStreamNegotiator;
         try {
-            selectedStreamNegotiator = selectProtocol(streamMethodField);
+            selectedStreamNegotiator = getNegotiator(streamMethodField);
         }
         catch (XMPPException e) {
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
@@ -254,14 +259,14 @@ public class FileTransferNegotiator {
         return field;
     }
 
-    private StreamNegotiator selectProtocol(final FormField field)
+    private StreamNegotiator getNegotiator(final FormField field)
             throws XMPPException {
-        String variable = null;
+        String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
         for (Iterator it = field.getOptions(); it.hasNext();) {
             variable = ((FormField.Option) it.next()).getValue();
-            if (variable.equals(BYTE_STREAM)) {
+            if (variable.equals(BYTE_STREAM) && !IBB_ONLY) {
                 isByteStream = true;
             }
             else if (variable.equals(INBAND_BYTE_STREAM)) {
@@ -274,8 +279,15 @@ public class FileTransferNegotiator {
             throw new XMPPException("No acceptable transfer mechanism", error);
         }
 
-        return (isByteStream ? byteStreamTransferManager
-                : inbandTransferManager);
+        if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
+            return new FaultTolerantNegotiator(connection, byteStreamTransferManager, inbandTransferManager);
+        }
+        else if (isByteStream) {
+            return byteStreamTransferManager;
+        }
+        else {
+            return inbandTransferManager;
+        }
     }
 
     /**
@@ -362,9 +374,8 @@ public class FileTransferNegotiator {
             IQ iqResponse = (IQ) siResponse;
             if (iqResponse.getType().equals(IQ.Type.RESULT)) {
                 StreamInitiation response = (StreamInitiation) siResponse;
-                return getUploadNegotiator((((FormField) response
-                        .getFeatureNegotiationForm().getFields().next())
-                        .getValues().next()).toString());
+                return getOutgoingNegotiator(getStreamMethodField(response
+                        .getFeatureNegotiationForm()));
 
             }
             else if (iqResponse.getType().equals(IQ.Type.ERROR)) {
@@ -379,23 +390,44 @@ public class FileTransferNegotiator {
         }
     }
 
-    private StreamNegotiator getUploadNegotiator(String selectedProtocol) {
-        if (selectedProtocol.equals(BYTE_STREAM)) {
+    private StreamNegotiator getOutgoingNegotiator(final FormField field)
+            throws XMPPException {
+        String variable;
+        boolean isByteStream = false;
+        boolean isIBB = false;
+        for (Iterator it = field.getValues(); it.hasNext();) {
+            variable = (it.next().toString());
+            if (variable.equals(BYTE_STREAM) && !IBB_ONLY) {
+                isByteStream = true;
+            }
+            else if (variable.equals(INBAND_BYTE_STREAM)) {
+                isIBB = true;
+            }
+        }
+
+        if (!isByteStream && !isIBB) {
+            XMPPError error = new XMPPError(400);
+            throw new XMPPException("No acceptable transfer mechanism", error);
+        }
+
+        if (isByteStream && isIBB) {
+            return new FaultTolerantNegotiator(connection, byteStreamTransferManager, inbandTransferManager);
+        }
+        else if (isByteStream) {
             return byteStreamTransferManager;
         }
-        else if (selectedProtocol.equals(INBAND_BYTE_STREAM)) {
-            return inbandTransferManager;
-        }
         else {
-            return null;
+            return inbandTransferManager;
         }
     }
 
     private DataForm createDefaultInitiationForm() {
         DataForm form = new DataForm(Form.TYPE_FORM);
         FormField field = new FormField(STREAM_DATA_FIELD_NAME);
-        field.setType(FormField.TYPE_LIST_SINGLE);
-        field.addOption(new FormField.Option(BYTE_STREAM));
+        field.setType(FormField.TYPE_LIST_MULTI);
+        if (!IBB_ONLY) {
+            field.addOption(new FormField.Option(BYTE_STREAM));
+        }
         field.addOption(new FormField.Option(INBAND_BYTE_STREAM));
         form.addField(field);
         return form;
