@@ -27,7 +27,9 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
- * Writes packets to a XMPP server.
+ * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
+ * interceptors can be registered to dynamically modify packets before they're actually
+ * sent. Packet listeners can be registered to listen for all outgoing packets.
  *
  * @author Matt Tucker
  */
@@ -41,8 +43,7 @@ class PacketWriter {
     
     private List listeners = new ArrayList();
     private boolean listenersDeleted = false;
-    private Thread listenerThread;
-    private LinkedList sentPackets = new LinkedList();
+
     /**
      * List of PacketInterceptor that will be notified when a new packet is about to be
      * sent to the server. These interceptors may modify the packet before it is being
@@ -72,14 +73,6 @@ class PacketWriter {
         writerThread.setName("Smack Packet Writer");
         writerThread.setDaemon(true);
 
-        listenerThread = new Thread() {
-            public void run() {
-                processListeners();
-            }
-        };
-        listenerThread.setName("Smack Writer Listener Processor");
-        listenerThread.setDaemon(true);
-
         // Schedule a keep-alive task to run if the feature is enabled. will write
         // out a space character each time it runs to keep the TCP/IP connection open.
         int keepAliveInterval = SmackConfiguration.getKeepAliveInterval();
@@ -105,19 +98,20 @@ class PacketWriter {
                 queue.addFirst(packet);
                 queue.notifyAll();
             }
-            // Add the sent packet to the list of sent packets. The
-            // PacketWriterListeners will be notified of the new packet.
-            synchronized(sentPackets) {
-                sentPackets.addFirst(packet);
-                sentPackets.notifyAll();
-            }
+
+            // Process packet writer listeners. Note that we're using the sending
+            // thread so it's expected that listeners are fast.
+            processListeners(packet);
         }
     }
 
     /**
      * Registers a packet listener with this writer. The listener will be
-     * notified of every packet that this writer sends. A packet filter determines
-     * which packets will be delivered to the listener.
+     * notified immediately after every packet this writer sends. A packet filter
+     * determines which packets will be delivered to the listener. Note that the thread
+     * that writes packets will be used to invoke the listeners. Therefore, each
+     * packet listener should complete all operations quickly or use a different
+     * thread for processing.
      *
      * @param packetListener the packet listener to notify of sent packets.
      * @param packetFilter the packet filter to use.
@@ -199,7 +193,6 @@ class PacketWriter {
      */
     public void startup() {
         writerThread.start();
-        listenerThread.start();
     }
 
     void setWriter(Writer writer) {
@@ -274,46 +267,26 @@ class PacketWriter {
     /**
      * Process listeners.
      */
-    private void processListeners() {
-        while (!done) {
-            Packet sentPacket;
-            // Wait until a new packet has been sent
-            synchronized (sentPackets) {
-                while (!done && sentPackets.size() == 0) {
-                    try {
-                        sentPackets.wait(2000);
+    private void processListeners(Packet packet) {
+        // Clean up null entries in the listeners list if the flag is set. List
+        // removes are done seperately so that the main notification process doesn't
+        // need to synchronize on the list.
+        synchronized (listeners) {
+            if (listenersDeleted) {
+                for (int i=listeners.size()-1; i>=0; i--) {
+                    if (listeners.get(i) == null) {
+                        listeners.remove(i);
                     }
-                    catch (InterruptedException ie) { }
                 }
-                if (sentPackets.size() > 0) {
-                    sentPacket = (Packet)sentPackets.removeLast();
-                }
-                else {
-                    sentPacket = null;
-                }
+                listenersDeleted = false;
             }
-            if (sentPacket != null) {
-                // Clean up null entries in the listeners list if the flag is set. List
-                // removes are done seperately so that the main notification process doesn't
-                // need to synchronize on the list.
-                synchronized (listeners) {
-                    if (listenersDeleted) {
-                        for (int i=listeners.size()-1; i>=0; i--) {
-                            if (listeners.get(i) == null) {
-                                listeners.remove(i);
-                            }
-                        }
-                        listenersDeleted = false;
-                    }
-                }
-                // Notify the listeners of the new sent packet
-                int size = listeners.size();
-                for (int i=0; i<size; i++) {
-                    ListenerWrapper listenerWrapper = (ListenerWrapper)listeners.get(i);
-                    if (listenerWrapper != null) {
-                        listenerWrapper.notifyListener(sentPacket);
-                    }
-                }
+        }
+        // Notify the listeners of the new sent packet
+        int size = listeners.size();
+        for (int i=0; i<size; i++) {
+            ListenerWrapper listenerWrapper = (ListenerWrapper)listeners.get(i);
+            if (listenerWrapper != null) {
+                listenerWrapper.notifyListener(packet);
             }
         }
     }

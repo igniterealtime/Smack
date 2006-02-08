@@ -730,7 +730,10 @@ public class XMPPConnection {
     /**
      * Registers a packet listener with this connection. The listener will be
      * notified of every packet that this connection sends. A packet filter determines
-     * which packets will be delivered to the listener.
+     * which packets will be delivered to the listener. Note that the thread
+     * that writes packets will be used to invoke the listeners. Therefore, each
+     * packet listener should complete all operations quickly or use a different
+     * thread for processing.
      *
      * @param packetListener the packet listener to notify of sent packets.
      * @param packetFilter the packet filter to use.
