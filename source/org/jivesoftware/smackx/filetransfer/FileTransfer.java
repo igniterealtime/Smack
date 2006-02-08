@@ -285,7 +285,15 @@ public abstract class FileTransfer {
 		public static final Status CANCLED = new Status();
 	}
 
-	public static class Error {
+    /**
+     * Return the length of bytes written out to the stream.
+     * @return the amount in bytes written out.
+     */
+    public long getAmountWritten(){
+        return amountWritten;
+    }
+
+    public static class Error {
 		/**
 		 * No error
 		 */
