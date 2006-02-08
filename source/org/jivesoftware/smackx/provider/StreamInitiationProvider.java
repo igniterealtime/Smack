@@ -25,7 +25,6 @@ import org.jivesoftware.smackx.packet.DataForm;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.jivesoftware.smackx.packet.StreamInitiation;
 import org.jivesoftware.smackx.packet.StreamInitiation.File;
-import org.jivesoftware.smackx.provider.DataFormProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**

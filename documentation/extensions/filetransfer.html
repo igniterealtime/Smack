@@ -29,31 +29,31 @@ The file transfer extension allows the user to transmit and receive files.
 
 A user may wish to send a file to another user. The other user has the option of acception,
 rejecting, or ignoring the users request. Smack provides a simple interface in order
-to enable the user to easily send a file.</p>
+to enable the user to easily send a file.
 
 <b>Usage</b><p>
 
-In order to send a file you must first construct an instance of the <b><i>FileTransferManager</b></i> 
+In order to send a file you must first construct an instance of the <b><i>FileTransferManager</i></b>
 class. This class has one constructor with one parameter which is your XMPPConnection.
-In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i></p>
+In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i>
 
-<p>Once you have your <b><i>FileTransferManager</b></i> you will need to create an outgoing
-file transfer to send a file. The method to use on the <b><i>FileTransferManager</b></i> 
+<p>Once you have your <b><i>FileTransferManager</i></b> you will need to create an outgoing
+file transfer to send a file. The method to use on the <b><i>FileTransferManager</i></b>
 is the <b>createOutgoingFileTransfer(userID)</b> method. The userID you provide to this
 method is the fully-qualified jabber ID of the user you wish to send the file to. A 
 fully-qualified jabber ID consists of a node, a domain, and a resource, the user 
-must be connected to the resource in order to be able to recieve the file transfer.</p>
+must be connected to the resource in order to be able to recieve the file transfer.
 
-<p>Now that you have your <b><i>OutgoingFileTransfer</b></i> instance you will want
+<p>Now that you have your <b><i>OutgoingFileTransfer</i></b> instance you will want
 to send the file. The method to send a file is <b>sendFile(file, description)</b>. The file
  you provide to this method should be a readable file on the local file system, and the description is a short 
- description of the file to help the user decide whether or not they would like to recieve the file.</p>
+ description of the file to help the user decide whether or not they would like to recieve the file.
  
 <p>For information on monitoring the progress of a file transfer see the <a href="#monitorprogress">monitoring progress</a>
-section of this document.</p>
+section of this document.
 
-<p>Other means to send a file are also provided as part of the <b><i>OutgoingFileTransfer</b></i>. Please
-consult the Javadoc for more information.</p>
+<p>Other means to send a file are also provided as part of the <b><i>OutgoingFileTransfer</i></b>. Please
+consult the Javadoc for more information.
  
 
 <b>Examples</b><p>
@@ -85,29 +85,29 @@ manager.</p>
 
 <b>Usage</b><p>
 
-In order to recieve a file you must first construct an instance of the <b><i>FileTransferManager</b></i> 
+In order to recieve a file you must first construct an instance of the <b><i>FileTransferManager</i></b>
 class. This class has one constructor with one parameter which is your XMPPConnection.
-In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i></p>
+In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i>
 
-<p>Once you have your <b><i>FileTransferManager</b></i> you will need to register a listener
+<p>Once you have your <b><i>FileTransferManager</i></b> you will need to register a listener
 with it. The FileTransferListner interface has one method, <b>fileTransferRequest(request)</b>.
 When a request is recieved through this method, you can either accept or reject the
-request. To help you make your decision there are several methods in the <b><i>FileTransferRequest</b></i> 
-class that return information about the transfer request.</p>
+request. To help you make your decision there are several methods in the <b><i>FileTransferRequest</i></b>
+class that return information about the transfer request.
 
 <p>To accept the file transfer, call the <b>accept()</b>,  
-this method will create an <b><i>IncomingFileTransfer</b></i>. After you have the file transfer you may start 
+this method will create an <b><i>IncomingFileTransfer</i></b>. After you have the file transfer you may start
 to transfer the file by calling the <b>recieveFile(file)</b> method. 
 The file provided to this method will be where the data from thefile transfer is saved.</p>
 
 <p>Finally, to reject the file transfer the only method you need to call is <b>reject()</b> 
-on the <b><i>IncomingFileTransfer</b></i>.</p>
+on the <b><i>IncomingFileTransfer</i></b>.
 
 <p>For information on monitoring the progress of a file transfer see the <a href="#monitorprogress">monitoring progress</a>
-section of this document.</p>
+section of this document.
 
-<p>Other means to recieve a file are also provided as part of the <b><i>IncomingFileTransfer</b></i>. Please
-consult the Javadoc for more information.</p>
+<p>Other means to recieve a file are also provided as part of the <b><i>IncomingFileTransfer</i></b>. Please
+consult the Javadoc for more information.
 
 <b>Examples</b><p>
 
@@ -143,9 +143,9 @@ While a file transfer is in progress you may wish to monitor the progress of a f
 
 <b>Usage</b><p>
 
-<p>Both the <b><i>IncomingFileTransfer</b></i> and the <b><i>OutgoingFileTransfer</b></i>
-extend the <b><i>FileTransfer</b></i> class which provides several methods to monitor
-how a file transfer is progressing:</p>
+<p>Both the <b><i>IncomingFileTransfer</i></b> and the <b><i>OutgoingFileTransfer</i></b>
+extend the <b><i>FileTransfer</i></b> class which provides several methods to monitor
+how a file transfer is progressing:
 <ul>
 <li><b>getStatus()</b> - The file transfer can be in several states, negotiating, rejected, canceled,
 in progress, error, and complete. This method will return which state the file transfer is currently in.
