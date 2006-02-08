@@ -203,6 +203,9 @@ public class FileTransferNegotiator {
 
     private void cleanup(final XMPPConnection connection) {
         transferObject.remove(connection);
+
+        byteStreamTransferManager.cleanup();
+        inbandTransferManager.cleanup();
     }
 
     /**
