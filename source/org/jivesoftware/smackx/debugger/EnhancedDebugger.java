@@ -34,6 +34,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -221,10 +222,8 @@ public class EnhancedDebugger implements SmackDebugger {
     }
 
     private void addBasicPanels() {
-        JPanel allPane = new JPanel();
-        allPane.setLayout(new GridLayout(2, 1));
-        tabbedPane.add("All Packets", allPane);
-        tabbedPane.setToolTipTextAt(0, "Sent and received packets processed by Smack");
+        JSplitPane allPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        allPane.setOneTouchExpandable(true);
 
         messagesTable =
                 new DefaultTableModel(
@@ -245,7 +244,7 @@ public class EnhancedDebugger implements SmackDebugger {
         JTable table = new JTable(messagesTable);
         // Allow only single a selection
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // Hide the first column 
+        // Hide the first column
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
@@ -275,7 +274,7 @@ public class EnhancedDebugger implements SmackDebugger {
         SelectionListener selectionListener = new SelectionListener(table);
         table.getSelectionModel().addListSelectionListener(selectionListener);
         table.getColumnModel().getSelectionModel().addListSelectionListener(selectionListener);
-        allPane.add(new JScrollPane(table));
+        allPane.setTopComponent(new JScrollPane(table));
         messageTextArea = new JTextArea();
         messageTextArea.setEditable(false);
         // Add pop-up menu.
@@ -292,10 +291,16 @@ public class EnhancedDebugger implements SmackDebugger {
         menu.add(menuItem1);
         // Add listener to the text area so the popup menu can come up.
         messageTextArea.addMouseListener(new PopupListener(menu));
-        allPane.add(new JScrollPane(messageTextArea));
+        allPane.setBottomComponent(new JScrollPane(messageTextArea));
+        allPane.setDividerLocation(150);
+
+        tabbedPane.add("All Packets", allPane);
+        tabbedPane.setToolTipTextAt(0, "Sent and received packets processed by Smack");
 
         // Create UI elements for client generated XML traffic.
         final JTextArea sentText = new JTextArea();
+        sentText.setWrapStyleWord(true);
+        sentText.setLineWrap(true);
         sentText.setEditable(false);
         sentText.setForeground(new Color(112, 3, 3));
         tabbedPane.add("Raw Sent Packets", new JScrollPane(sentText));
@@ -327,6 +332,8 @@ public class EnhancedDebugger implements SmackDebugger {
 
         // Create UI elements for server generated XML traffic.
         final JTextArea receivedText = new JTextArea();
+        receivedText.setWrapStyleWord(true);
+        receivedText.setLineWrap(true);
         receivedText.setEditable(false);
         receivedText.setForeground(new Color(6, 76, 133));
         tabbedPane.add("Raw Received Packets", new JScrollPane(receivedText));
@@ -361,24 +368,37 @@ public class EnhancedDebugger implements SmackDebugger {
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
         ObservableReader debugReader = new ObservableReader(reader);
         readerListener = new ReaderListener() {
-            public void read(String str) {
-                if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER &&
-                        !EnhancedDebuggerWindow.getInstance().isVisible()) {
-                    // Do not add content if the parent is not visible
-                    return;
-                }
+            public void read(final String str) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER &&
+                                !EnhancedDebuggerWindow.getInstance().isVisible()) {
+                            // Do not add content if the parent is not visible
+                            return;
+                        }
 
-                int index = str.lastIndexOf(">");
-                if (index != -1) {
-                    receivedText.append(str.substring(0, index + 1));
-                    receivedText.append(NEWLINE);
-                    if (str.length() > index) {
-                        receivedText.append(str.substring(index + 1));
+                        int index = str.lastIndexOf(">");
+                        if (index != -1) {
+                            if (receivedText.getLineCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS)
+                            {
+                                try {
+                                    receivedText.replaceRange("", 0, receivedText.getLineEndOffset(0));
+                                }
+                                catch (BadLocationException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            receivedText.append(str.substring(0, index + 1));
+                            receivedText.append(NEWLINE);
+                            if (str.length() > index) {
+                                receivedText.append(str.substring(index + 1));
+                            }
+                        }
+                        else {
+                            receivedText.append(str);
+                        }
                     }
-                }
-                else {
-                    receivedText.append(str);
-                }
+                });
             }
         };
         debugReader.addReaderListener(readerListener);
@@ -393,6 +413,15 @@ public class EnhancedDebugger implements SmackDebugger {
                                 !EnhancedDebuggerWindow.getInstance().isVisible()) {
                             // Do not add content if the parent is not visible
                             return;
+                        }
+
+                        if (sentText.getLineCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
+                            try {
+                                sentText.replaceRange("", 0, sentText.getLineEndOffset(0));
+                            }
+                            catch (BadLocationException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         sentText.append(str);
@@ -720,11 +749,9 @@ public class EnhancedDebugger implements SmackDebugger {
                 }
 
                 // Check if we need to remove old rows from the table to keep memory consumption low
-                if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER) {
-                    if (EnhancedDebuggerWindow.MAX_TABLE_ROWS > 0 &&
-                            messagesTable.getRowCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
-                        messagesTable.removeRow(0);
-                    }
+                if (EnhancedDebuggerWindow.MAX_TABLE_ROWS > 0 &&
+                        messagesTable.getRowCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
+                    messagesTable.removeRow(0);
                 }
 
                 messagesTable.addRow(
@@ -783,11 +810,9 @@ public class EnhancedDebugger implements SmackDebugger {
                 }
 
                 // Check if we need to remove old rows from the table to keep memory consumption low
-                if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER) {
-                    if (EnhancedDebuggerWindow.MAX_TABLE_ROWS > 0 &&
-                            messagesTable.getRowCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
-                        messagesTable.removeRow(0);
-                    }
+                if (EnhancedDebuggerWindow.MAX_TABLE_ROWS > 0 &&
+                        messagesTable.getRowCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
+                    messagesTable.removeRow(0);
                 }
 
                 messagesTable.addRow(
@@ -945,11 +970,11 @@ public class EnhancedDebugger implements SmackDebugger {
 
         public void valueChanged(ListSelectionEvent e) {
             if (table.getSelectedRow() == -1) {
-                // Clear the messageTextArea since there is none packet selected 
+                // Clear the messageTextArea since there is none packet selected
                 messageTextArea.setText(null);
             }
             else {
-                // Set the detail of the packet in the messageTextArea 
+                // Set the detail of the packet in the messageTextArea
                 messageTextArea.setText(
                         (String) table.getModel().getValueAt(table.getSelectedRow(), 0));
                 // Scroll up to the top

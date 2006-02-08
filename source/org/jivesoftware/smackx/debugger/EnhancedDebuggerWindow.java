@@ -54,12 +54,11 @@ public class EnhancedDebuggerWindow {
     public static boolean PERSISTED_DEBUGGER = false;
     /**
      * Keeps the max number of rows to keep in the tables. A value less than 0 means that packets
-     * will never be removed. Since debuggers are meant to be used by developers the default is
-     * to keep all the information. However, if you are planning to use this debugger in a
+     * will never be removed. If you are planning to use this debugger in a
      * production environment then you should set a lower value (e.g. 50) to prevent the debugger
      * from consuming all the JVM memory.
      */
-    public static int MAX_TABLE_ROWS = -1;
+    public static int MAX_TABLE_ROWS = 150;
 
     {
         URL url;
