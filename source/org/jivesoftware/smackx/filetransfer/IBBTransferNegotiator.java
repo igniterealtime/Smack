@@ -27,6 +27,7 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.packet.IBBExtensions;
 import org.jivesoftware.smackx.packet.IBBExtensions.Open;
 import org.jivesoftware.smackx.packet.StreamInitiation;
@@ -206,7 +207,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             count = 0;
         }
 
-        private void writeToXML(byte[] buffer, int offset, int len) {
+        private synchronized void writeToXML(byte[] buffer, int offset, int len) {
             Message template = createTemplate(messageID + "_" + seq);
             IBBExtensions.Data ext = new IBBExtensions.Data(sid);
             template.addExtension(ext);
@@ -215,6 +216,13 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
             ext.setData(enc);
             ext.setSeq(seq);
+            synchronized(this) {
+                try {
+                    this.wait(100);
+                }
+                catch (InterruptedException e) {
+                }
+            }
 
             connection.sendPacket(template);
 
@@ -259,6 +267,8 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         private boolean isClosed;
 
         private IQ closeConfirmation;
+
+        private Message lastMess;
 
         private IBBInputStream(String streamID, PacketFilter dataFilter,
                 PacketFilter closeFilter) {
@@ -319,22 +329,23 @@ public class IBBTransferNegotiator extends StreamNegotiator {
                     mess = (Message) dataCollector.nextResult(1000);
                 }
             }
+            lastMess = mess;
             data = (IBBExtensions.Data) mess.getExtension(
                     IBBExtensions.Data.ELEMENT_NAME,
                     IBBExtensions.NAMESPACE);
             
-            checkSequence((int) data.getSeq());
+            checkSequence(mess, (int) data.getSeq());
             buffer = Base64.decode(data.getData());
             bufferPointer = 0;
             return true;
         }
 
-        private void checkSequence(int seq) throws IOException {
+        private void checkSequence(Message mess, int seq) throws IOException {
             if (this.seq == 65535) {
                 this.seq = -1;
             }
             if (seq - 1 != this.seq) {
-                cancelTransfer();
+                cancelTransfer(mess);
                 throw new IOException("Packets out of sequence");
             }
             else {
@@ -342,10 +353,10 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             }
         }
 
-        private void cancelTransfer() {
+        private void cancelTransfer(Message mess) {
             cleanup();
 
-            sendCancelMessage();
+            sendCancelMessage(mess);
         }
 
         private void cleanup() {
@@ -353,7 +364,11 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             connection.removePacketListener(this);
         }
 
-        private void sendCancelMessage() {
+        private void sendCancelMessage(Message message) {
+            IQ error = FileTransferNegotiator.createIQ(message.getPacketID(), message.getFrom(), message.getTo(),
+                    IQ.Type.ERROR);
+            error.setError(new XMPPError(504));
+            connection.sendPacket(error);
         }
 
         public boolean markSupported() {
@@ -379,8 +394,8 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             if (isEOF) {
                 sendCloseConfirmation();
             }
-            else {
-                sendCancelMessage();
+            else if(lastMess != null) {
+                sendCancelMessage(lastMess);
             }
             isClosed = true;
         }
