@@ -23,14 +23,14 @@ rem //------------------------------------------------------------------------//
 rem // Make the correct classpath (should include the java jars and the
 rem // Ant jars)
 rem //------------------------------------------------------------------------//
-SET CP=%JAVA_HOME%\lib\tools.jar;.\ant.jar;.\junit.jar
+SET CP="%JAVA_HOME%\lib\tools.jar;.\ant.jar;.\junit.jar"
 
 rem //------------------------------------------------------------------------//
 rem // Run Ant
 rem // Note for Win 98/95 users: You need to change "%*" in the following
 rem // line to be "%1 %2 %3 %4 %5 %6 %7 %8 %9"
 rem //------------------------------------------------------------------------//
-%JAVA_HOME%\bin\java -Xms32m -Xmx128m -classpath %CP% -Dant.home=. org.apache.tools.ant.Main %*
+"%JAVA_HOME%\bin\java" -Xms32m -Xmx128m -classpath %CP% -Dant.home=. org.apache.tools.ant.Main %*
 goto end
 
 rem //------------------------------------------------------------------------//
