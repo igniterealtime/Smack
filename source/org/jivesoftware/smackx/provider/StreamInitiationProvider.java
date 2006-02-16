@@ -81,7 +81,16 @@ public class StreamInitiationProvider implements IQProvider {
 				if (elementName.equals("si")) {
 					done = true;
 				} else if (elementName.equals("file")) {
-					File file = new File(name, Long.parseLong(size));
+                    long fileSize = 0;
+                    if(size != null && size.trim().length() !=0){
+                        try {
+                            fileSize = Long.parseLong(size);
+                        }
+                        catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    File file = new File(name, fileSize);
 					file.setHash(hash);
 					if (date != null)
 						file.setDate(DelayInformation.UTC_FORMAT.parse(date));
