@@ -38,7 +38,7 @@ public class Authentication extends IQ {
      * "set" mode in order to perform an actual authentication with the server.
      * In order to send a "get" request to get the available authentication
      * modes back from the server, change the type of the IQ packet to "get":
-     *
+     * <p/>
      * <p><tt>setType(IQ.Type.GET);</tt>
      */
     public Authentication() {
@@ -105,7 +105,7 @@ public class Authentication extends IQ {
      * authentication mode will be used.
      *
      * @param connectionID the connection ID.
-     * @param password the password.
+     * @param password     the password.
      * @see org.jivesoftware.smack.XMPPConnection#getConnectionID()
      */
     public void setDigest(String connectionID, String password) {
@@ -120,7 +120,7 @@ public class Authentication extends IQ {
      * If only one value is set, the respective authentication mode will be used.
      *
      * @param digest the digest, which is the SHA-1 hash of the connection ID
-     *      the user's password, encoded as hex.
+     *               the user's password, encoded as hex.
      * @see org.jivesoftware.smack.XMPPConnection#getConnectionID()
      */
     public void setDigest(String digest) {
@@ -153,7 +153,7 @@ public class Authentication extends IQ {
                 buf.append("<username/>");
             }
             else {
-                buf.append("<username>").append( username).append("</username>");
+                buf.append("<username>").append(username).append("</username>");
             }
         }
         if (digest != null) {
@@ -169,7 +169,7 @@ public class Authentication extends IQ {
                 buf.append("<password/>");
             }
             else {
-                buf.append("<password>").append(password).append("</password>");
+                buf.append("<password>").append(StringUtils.escapeForXML(password)).append("</password>");
             }
         }
         if (resource != null) {
