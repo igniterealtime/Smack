@@ -20,9 +20,6 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.provider.IQProvider;
-import org.xmlpull.v1.XmlPullParser;
-
 /**
  * IQ packet used by Smack to bind a resource and to obtain the jid assigned by the server.
  * There are two ways to bind a resource. One is simply sending an empty Bind packet where the
@@ -70,30 +67,5 @@ public class Bind extends IQ {
         }
         buf.append("</bind>");
         return buf.toString();
-    }
-
-    public static class Provider implements IQProvider {
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            Bind bind = new Bind();
-            boolean done = false;
-            while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (parser.getName().equals("resource")) {
-                        bind.setResource(parser.nextText());
-                    }
-                    else if (parser.getName().equals("jid")) {
-                        bind.setJid(parser.nextText());
-                    }
-                } else if (eventType == XmlPullParser.END_TAG) {
-                    if (parser.getName().equals("bind")) {
-                        done = true;
-                    }
-                }
-            }
-
-            return bind;
-        }
     }
 }

@@ -29,8 +29,8 @@ import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.*;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
@@ -585,6 +585,10 @@ class PacketReader {
                 else if (elementName.equals("query") && namespace.equals("jabber:iq:register")) {
                     iqPacket = parseRegistration(parser);
                 }
+                else if (elementName.equals("bind") &&
+                        namespace.equals("urn:ietf:params:xml:ns:xmpp-bind")) {
+                    iqPacket = parseResourceBinding(parser);
+                }
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 else {
@@ -754,6 +758,29 @@ class PacketReader {
         }
         registration.setAttributes(fields);
         return registration;
+    }
+
+    private Bind parseResourceBinding(XmlPullParser parser) throws IOException,
+            XmlPullParserException {
+        Bind bind = new Bind();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("resource")) {
+                    bind.setResource(parser.nextText());
+                }
+                else if (parser.getName().equals("jid")) {
+                    bind.setJid(parser.nextText());
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("bind")) {
+                    done = true;
+                }
+            }
+        }
+
+        return bind;
     }
 
     /**
