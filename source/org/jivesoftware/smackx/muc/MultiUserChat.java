@@ -20,10 +20,6 @@
 
 package org.jivesoftware.smackx.muc;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
-import java.util.*;
-
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
@@ -31,6 +27,11 @@ import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.NodeInformationProvider;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.*;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * A MultiUserChat is a conversation that takes place among many users in a virtual
@@ -63,6 +64,7 @@ public class MultiUserChat {
 
     private PacketFilter presenceFilter;
     private PacketListener presenceListener;
+    private List presenceInterceptors = new ArrayList();
     private PacketFilter subjectFilter;
     private PacketListener subjectListener;
     private PacketFilter messageFilter;
@@ -289,6 +291,11 @@ public class MultiUserChat {
         joinPresence.setTo(room + "/" + nickname);
         // Indicate the the client supports MUC          
         joinPresence.addExtension(new MUCInitialPresence());
+        // Invoke presence interceptors so that extra information can be dynamically added
+        for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
+            PacketInterceptor packetInterceptor = (PacketInterceptor) it.next();
+            packetInterceptor.interceptPacket(joinPresence);
+        }
 
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
@@ -423,6 +430,11 @@ public class MultiUserChat {
             mucInitialPresence.setHistory(history.getMUCHistory());
         }
         joinPresence.addExtension(mucInitialPresence);
+        // Invoke presence interceptors so that extra information can be dynamically added
+        for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
+            PacketInterceptor packetInterceptor = (PacketInterceptor) it.next();
+            packetInterceptor.interceptPacket(joinPresence);
+        }
 
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
@@ -470,6 +482,11 @@ public class MultiUserChat {
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.UNAVAILABLE);
         leavePresence.setTo(room + "/" + nickname);
+        // Invoke presence interceptors so that extra information can be dynamically added
+        for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
+            PacketInterceptor packetInterceptor = (PacketInterceptor) it.next();
+            packetInterceptor.interceptPacket(leavePresence);
+        }
         connection.sendPacket(leavePresence);
         // Reset occupant information.
         occupantsMap = new HashMap();
@@ -825,6 +842,28 @@ public class MultiUserChat {
     }
 
     /**
+     * Adds a new {@link PacketInterceptor} that will be invoked every time a new presence
+     * is going to be sent by this MultiUserChat to the server. Packet interceptors may
+     * add new extensions to the presence that is going to be sent to the MUC service.
+     *
+     * @param presenceInterceptor the new packet interceptor that will intercept presence packets.
+     */
+    public void addPresenceInterceptor(PacketInterceptor presenceInterceptor) {
+        presenceInterceptors.add(presenceInterceptor);
+    }
+
+    /**
+     * Removes a {@link PacketInterceptor} that was being invoked every time a new presence
+     * was being sent by this MultiUserChat to the server. Packet interceptors may
+     * add new extensions to the presence that is going to be sent to the MUC service.
+     *
+     * @param presenceInterceptor the packet interceptor to remove.
+     */
+    public void removePresenceInterceptor(PacketInterceptor presenceInterceptor) {
+        presenceInterceptors.remove(presenceInterceptor);
+    }
+
+    /**
      * Returns the last known room's subject or <tt>null</tt> if the user hasn't joined the room 
      * or the room does not have a subject yet. In case the room has a subject, as soon as the 
      * user joins the room a message with the current room's subject will be received.<p>
@@ -903,6 +942,11 @@ public class MultiUserChat {
         // We don't have to signal the MUC support again
         Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
         joinPresence.setTo(room + "/" + nickname);
+        // Invoke presence interceptors so that extra information can be dynamically added
+        for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
+            PacketInterceptor packetInterceptor = (PacketInterceptor) it.next();
+            packetInterceptor.interceptPacket(joinPresence);
+        }
 
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
@@ -951,6 +995,11 @@ public class MultiUserChat {
         joinPresence.setStatus(status);
         joinPresence.setMode(mode);
         joinPresence.setTo(room + "/" + nickname);
+        // Invoke presence interceptors so that extra information can be dynamically added
+        for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
+            PacketInterceptor packetInterceptor = (PacketInterceptor) it.next();
+            packetInterceptor.interceptPacket(joinPresence);
+        }
 
         // Send join packet.
         connection.sendPacket(joinPresence);
@@ -2590,7 +2639,7 @@ public class MultiUserChat {
             invitationPacketListener = new PacketListener() {
                 public void processPacket(Packet packet) {
                     // Get the MUCUser extension
-                    MUCUser mucUser = 
+                    MUCUser mucUser =
                         (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
                     // Check if the MUCUser extension includes an invitation
                     if (mucUser.getInvite() != null &&
