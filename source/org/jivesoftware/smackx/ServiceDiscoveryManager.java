@@ -167,6 +167,12 @@ public class ServiceDiscoveryManager {
                         while (items.hasNext()) {
                             response.addItem((DiscoverItems.Item) items.next());
                         }
+                    } else if(discoverItems.getNode() != null) {
+                        // Return an <item-not-found/> error since the client
+                        // doesn't contain the specified node
+                        response.setNode(discoverItems.getNode());
+                        response.setType(IQ.Type.ERROR);
+                        response.setError(new XMPPError(404, "item-not-found"));
                     }
                     connection.sendPacket(response);
                 }
@@ -202,6 +208,7 @@ public class ServiceDiscoveryManager {
                     }
                     else {
                         // Return an <item-not-found/> error since a client doesn't have nodes
+                        response.setNode(discoverInfo.getNode());
                         response.setType(IQ.Type.ERROR);
                         response.setError(new XMPPError(404, "item-not-found"));
                     }
