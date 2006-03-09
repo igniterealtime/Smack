@@ -20,12 +20,12 @@
 
 package org.jivesoftware.smack;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import org.xmlpull.v1.*;
 import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -44,7 +44,7 @@ import org.xmlpull.mxp1.MXParser;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "2.1.0";
+    private static final String SMACK_VERSION = "2.2.0";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
