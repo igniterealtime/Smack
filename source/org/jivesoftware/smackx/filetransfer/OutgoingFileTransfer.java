@@ -19,23 +19,18 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
+
+import java.io.*;
 
 /**
  * Handles the sending of a file to another user. File transfer's in jabber have
  * several steps and there are several methods in this class that handle these
  * steps differently.
- * 
+ *
  * @author Alexander Wenckus
- * 
+ *
  */
 public class OutgoingFileTransfer extends FileTransfer {
 
@@ -44,7 +39,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	/**
 	 * Returns the time in milliseconds after which the file transfer
 	 * negotiation process will timeout if the other user has not responded.
-	 * 
+	 *
 	 * @return Returns the time in milliseconds after which the file transfer
 	 *         negotiation process will timeout if the remote user has not
 	 *         responded.
@@ -56,7 +51,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	/**
 	 * Sets the time in milliseconds after which the file transfer negotiation
 	 * process will timeout if the other user has not responded.
-	 * 
+	 *
 	 * @param responseTimeout
 	 *            The timeout time in milliseconds.
 	 */
@@ -86,7 +81,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * Returns the output stream connected to the peer to transfer the file. It
 	 * is only available after it has been succesfully negotiated by the
 	 * {@link StreamNegotiator}.
-	 * 
+	 *
 	 * @return Returns the output stream connected to the peer to transfer the
 	 *         file.
 	 */
@@ -101,7 +96,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	/**
 	 * This method handles the negotiation of the file transfer and the stream,
 	 * it only returns the created stream after the negotiation has been completed.
-	 * 
+	 *
 	 * @param fileName
 	 *            The name of the file that will be transmitted. It is
 	 *            preferable for this name to have an extension as it will be
@@ -138,7 +133,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * {@link NegotiationProgress} callback. When the negotiation process is
 	 * complete the OutputStream can be retrieved from the callback via the
 	 * {@link NegotiationProgress#getOutputStream()} method.
-	 * 
+	 *
 	 * @param fileName
 	 *            The name of the file that will be transmitted. It is
 	 *            preferable for this name to have an extension as it will be
@@ -186,13 +181,13 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * This method handles the stream negotiation process and transmits the file
 	 * to the remote user. It returns immediatly and the progress of the file
 	 * transfer can be monitored through several methods:
-	 * 
+	 *
 	 * <UL>
 	 * <LI>{@link FileTransfer#getStatus()}
 	 * <LI>{@link FileTransfer#getProgress()}
 	 * <LI>{@link FileTransfer#isDone()}
 	 * </UL>
-	 * 
+	 *
 	 * @throws XMPPException
 	 *             If there is an error during the negotiation process or the
 	 *             sending of the file.
@@ -219,10 +214,9 @@ public class OutgoingFileTransfer extends FileTransfer {
 					return;
 				}
 
-				if (!getStatus().equals(Status.NEGOTIATED)) {
+                if (!updateStatus(Status.NEGOTIATED, Status.IN_PROGRESS)) {
 					return;
 				}
-				setStatus(Status.IN_PROGRESS);
 
 				InputStream inputStream = null;
 				try {
@@ -244,12 +238,11 @@ public class OutgoingFileTransfer extends FileTransfer {
 						outputStream.flush();
 						outputStream.close();
 					} catch (IOException e) {
+                        /* Do Nothing */
 					}
 				}
-				if (getStatus().equals(Status.IN_PROGRESS)) {
-					setStatus(FileTransfer.Status.COMPLETE);
+                updateStatus(Status.IN_PROGRESS, FileTransfer.Status.COMPLETE);
 				}
-			}
 
 		}, "File Transfer " + streamID);
 		transferThread.start();
@@ -279,7 +272,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * Note: This method is only useful when the {@link #sendFile(File, String)}
 	 * method is called, as it is the only method that actualy transmits the
 	 * file.
-	 * 
+	 *
 	 * @return Returns the amount of bytes that have been sent for the file
 	 *         transfer. Or -1 if the file transfer has not started.
 	 */
@@ -291,7 +284,9 @@ public class OutgoingFileTransfer extends FileTransfer {
 			String description) throws XMPPException {
 		// Negotiate the file transfer profile
 
-		setStatus(Status.NEGOTIATING_TRANSFER);
+        if (!updateStatus(Status.INITIAL, Status.NEGOTIATING_TRANSFER)) {
+            throw new XMPPException("Illegal state change");
+        }
 		StreamNegotiator streamNegotiator = negotiator.negotiateOutgoingTransfer(
 				getPeer(), streamID, fileName, fileSize, description,
 				RESPONSE_TIMEOUT);
@@ -302,19 +297,16 @@ public class OutgoingFileTransfer extends FileTransfer {
 			return null;
 		}
 
-		if (!getStatus().equals(Status.NEGOTIATING_TRANSFER)) {
-			return null;
-		}
-
-		// Negotiate the stream
-
-		setStatus(Status.NEGOTIATING_STREAM);
+        // Negotiate the stream
+        if (!updateStatus(Status.NEGOTIATING_TRANSFER, Status.NEGOTIATING_STREAM)) {
+            throw new XMPPException("Illegal state change");
+        }
 		outputStream = streamNegotiator.createOutgoingStream(streamID,
                 initiator, getPeer());
-		if (!getStatus().equals(Status.NEGOTIATING_STREAM)) {
-			return null;
+
+        if (!updateStatus(Status.NEGOTIATING_STREAM, Status.NEGOTIATED)) {
+            throw new XMPPException("Illegal state change");
 		}
-		setStatus(Status.NEGOTIATED);
 		return outputStream;
 	}
 
@@ -325,9 +317,9 @@ public class OutgoingFileTransfer extends FileTransfer {
 	/**
 	 * A callback class to retrive the status of an outgoing transfer
 	 * negotiation process.
-	 * 
+	 *
 	 * @author Alexander Wenckus
-	 * 
+	 *
 	 */
 	public static class NegotiationProgress {
 
@@ -335,7 +327,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 
 		/**
 		 * Returns the current status of the negotiation process.
-		 * 
+		 *
 		 * @return Returns the current status of the negotiation process.
 		 */
 		public Status getStatus() {
@@ -348,10 +340,10 @@ public class OutgoingFileTransfer extends FileTransfer {
 		/**
 		 * Once the negotiation process is completed the output stream can be
 		 * retrieved.
-		 * 
+		 *
 		 * @return Once the negotiation process is completed the output stream
 		 *         can be retrieved.
-		 * 
+		 *
 		 */
 		public OutputStream getOutputStream() {
 			if (delegate == null) {

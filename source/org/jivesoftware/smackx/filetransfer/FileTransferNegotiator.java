@@ -149,7 +149,7 @@ public class FileTransferNegotiator {
      * @param type The iq type of the packet.
      * @return The created IQ packet.
      */
-    protected static IQ createIQ(final String ID, final String to,
+    public static IQ createIQ(final String ID, final String to,
             final String from, final IQ.Type type) {
         IQ iqPacket = new IQ() {
             public String getChildElementXML() {

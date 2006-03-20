@@ -244,6 +244,12 @@ public class Bytestream extends IQ {
             buf.append(">");
             if (getUsedHost() != null)
                 buf.append(getUsedHost().toXML());
+            // A result from the server can also contain stream hosts
+            else if (countStreamHosts() > 0) {
+                for (Iterator it = getStreamHosts().iterator(); it.hasNext();) {
+                    buf.append(((StreamHost) it.next()).toXML());
+                }
+            }
         }
         else {
             return null;
