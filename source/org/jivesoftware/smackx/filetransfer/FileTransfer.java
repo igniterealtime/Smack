@@ -42,7 +42,7 @@ public abstract class FileTransfer {
 
 	private String peer;
 
-	private org.jivesoftware.smackx.filetransfer.FileTransfer.Status status;
+	private org.jivesoftware.smackx.filetransfer.FileTransfer.Status status = Status.INITIAL;
 
     private final Object statusMonitor = new Object();
 
@@ -249,12 +249,12 @@ public abstract class FileTransfer {
 		 *
 		 * @see FileTransfer#getError()
 		 */
-		public static final Status ERROR = new Status();
+		public static final Status ERROR = new Status("Error");
 
 		/**
          * The initial status of the file transfer.
          */
-        public static final Status INITIAL = new Status();
+        public static final Status INITIAL = new Status("Initial");
 
         /**
 		 * The file transfer is being negotiated with the peer. The party
@@ -264,13 +264,13 @@ public abstract class FileTransfer {
 		 *
 		 * @see #NEGOTIATING_STREAM
 		 */
-		public static final Status NEGOTIATING_TRANSFER = new Status();
+		public static final Status NEGOTIATING_TRANSFER = new Status("Negotiating Transfer");
 
 		/**
 		 * The peer has refused the file transfer request halting the file
 		 * transfer negotiation process.
 		 */
-		public static final Status REFUSED = new Status();
+		public static final Status REFUSED = new Status("Refused");
 
 		/**
 		 * The stream to transfer the file is being negotiated over the chosen
@@ -279,32 +279,42 @@ public abstract class FileTransfer {
 		 *
 		 * @see #NEGOTIATED
 		 */
-		public static final Status NEGOTIATING_STREAM = new Status();
+		public static final Status NEGOTIATING_STREAM = new Status("Negotiating Stream");
 
 		/**
 		 * After the stream negotitation has completed the intermediate state
 		 * between the time when the negotiation is finished and the actual
 		 * transfer begins.
 		 */
-		public static final Status NEGOTIATED = new Status();
+		public static final Status NEGOTIATED = new Status("Negotiated");
 
 		/**
 		 * The transfer is in progress.
 		 *
 		 * @see FileTransfer#getProgress()
 		 */
-		public static final Status IN_PROGRESS = new Status();
+		public static final Status IN_PROGRESS = new Status("In Progress");
 
 		/**
 		 * The transfer has completed successfully.
 		 */
-		public static final Status COMPLETE = new Status();
+		public static final Status COMPLETE = new Status("Complete");
 
 		/**
 		 * The file transfer was canceled
 		 */
-		public static final Status CANCLED = new Status();
-	}
+		public static final Status CANCLED = new Status("Cancled");
+
+        private String status;
+
+        private Status(String status) {
+            this.status = status;
+        }
+
+        public String toString() {
+            return status;
+        }
+    }
 
     /**
      * Return the length of bytes written out to the stream.
