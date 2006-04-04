@@ -31,7 +31,7 @@ public class VCardTest extends SmackTestCase {
         origVCard.setNickName("KIR");
 
         origVCard.setField("TITLE", "Mr");
-        origVCard.setAddressFieldHome("STREET", "Some street");
+        origVCard.setAddressFieldHome("STREET", "Some street & House");
         origVCard.setAddressFieldWork("STREET", "Some street work");
 
         origVCard.setPhoneWork("FAX", "3443233");
