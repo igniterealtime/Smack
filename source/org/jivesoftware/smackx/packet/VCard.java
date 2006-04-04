@@ -118,6 +118,9 @@ public class VCard extends IQ {
      */
     private Map otherSimpleFields = new HashMap();
 
+    // fields that, as they are should not be escaped before forwarding to the server
+    private Map otherUnescapableFields = new HashMap();
+
     public VCard() {
     }
 
@@ -139,7 +142,24 @@ public class VCard extends IQ {
      * @see #getField(String)
      */
     public void setField(String field, String value) {
-        otherSimpleFields.put(field, value);
+        setField(field, value, false);
+    }
+
+    /**
+     * Set generic, unescapable VCard field. If unescabale is set to true, XML maybe a part of the
+     * value.
+     *
+     * @param value value of field
+     * @param field field to set. See {@link #getField(String)}
+     * @param isUnescapable True if the value should not be escaped, and false if it should.
+     */
+    public void setField(String field, String value, boolean isUnescapable) {
+        if(!isUnescapable) {
+            otherSimpleFields.put(field, value);
+        }
+        else {
+            otherUnescapableFields.put(field, value);
+        }
     }
 
     public String getFirstName() {
@@ -310,7 +330,7 @@ public class VCard extends IQ {
         String encodedImage = StringUtils.encodeBase64(bytes);
         avatar = encodedImage;
 
-        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>");
+        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>", true);
     }
 
     /**
@@ -322,7 +342,7 @@ public class VCard extends IQ {
         String encodedImage = StringUtils.encodeBase64(bytes);
         avatar = encodedImage;
 
-        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>");
+        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>", true);
     }
 
     /**
@@ -362,10 +382,7 @@ public class VCard extends IQ {
         if (avatar == null) {
             return null;
         }
-        if (avatar != null) {
-            return StringUtils.decodeBase64(avatar);
-        }
-        return null;
+        return StringUtils.decodeBase64(avatar);
     }
 
     /**
@@ -384,12 +401,21 @@ public class VCard extends IQ {
     }
 
     private static byte[] getFileBytes(File file) throws IOException {
-        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-        int bytes = (int) file.length();
-        byte[] buffer = new byte[bytes];
-        int readBytes = bis.read(buffer);
-        bis.close();
-        return buffer;
+        BufferedInputStream bis = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(file));
+            int bytes = (int) file.length();
+            byte[] buffer = new byte[bytes];
+            int readBytes = bis.read(buffer);
+            if(readBytes != buffer.length) {
+                throw new IOException("Entire file not read");
+            }
+            return buffer;
+        } finally {
+            if(bis != null) {
+                bis.close();
+            }
+        }
     }
 
     /**
@@ -403,12 +429,13 @@ public class VCard extends IQ {
             return null;
         }
 
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-1");
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            return null;
         }
 
         digest.update(bytes);
@@ -515,13 +542,13 @@ public class VCard extends IQ {
 
     private void checkAuthenticated(XMPPConnection connection) {
         if (connection == null) {
-            new IllegalArgumentException("No connection was provided");
+            throw new IllegalArgumentException("No connection was provided");
         }
         if (!connection.isAuthenticated()) {
-            new IllegalArgumentException("Connection is not authenticated");
+            throw new IllegalArgumentException("Connection is not authenticated");
         }
         if (connection.isAnonymous()) {
-            new IllegalArgumentException("Connection cannot be anonymous");
+            throw new IllegalArgumentException("Connection cannot be anonymous");
         }
     }
 
@@ -590,11 +617,8 @@ public class VCard extends IQ {
         if (!workAddr.equals(vCard.workAddr)) {
             return false;
         }
-        if (!workPhones.equals(vCard.workPhones)) {
-            return false;
-        }
+        return workPhones.equals(vCard.workPhones);
 
-        return true;
     }
 
     public int hashCode() {
@@ -662,7 +686,7 @@ public class VCard extends IQ {
                         appendEmptyTag(type);
                         appendEmptyTag("INTERNET");
                         appendEmptyTag("PREF");
-                        appendTag("USERID", email);
+                        appendTag("USERID", StringUtils.escapeForXML(email));
                     }
                 });
             }
@@ -676,7 +700,7 @@ public class VCard extends IQ {
                     public void addTagContent() {
                         appendEmptyTag(entry.getKey());
                         appendEmptyTag(code);
-                        appendTag("NUMBER", (String) entry.getValue());
+                        appendTag("NUMBER", StringUtils.escapeForXML((String) entry.getValue()));
                     }
                 });
             }
@@ -691,7 +715,7 @@ public class VCard extends IQ {
                         Iterator it = addr.entrySet().iterator();
                         while (it.hasNext()) {
                             final Map.Entry entry = (Map.Entry) it.next();
-                            appendTag((String) entry.getKey(), (String) entry.getValue());
+                            appendTag((String) entry.getKey(), StringUtils.escapeForXML((String) entry.getValue()));
                         }
                     }
                 });
@@ -706,6 +730,13 @@ public class VCard extends IQ {
             Iterator it = otherSimpleFields.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
+                appendTag(entry.getKey().toString(),
+                        StringUtils.escapeForXML((String) entry.getValue()));
+            }
+
+            it = otherUnescapableFields.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
                 appendTag(entry.getKey().toString(), (String) entry.getValue());
             }
         }
@@ -714,29 +745,24 @@ public class VCard extends IQ {
             if (hasOrganizationFields()) {
                 appendTag("ORG", true, new ContentBuilder() {
                     public void addTagContent() {
-                        appendTag("ORGNAME", organization);
-                        appendTag("ORGUNIT", organizationUnit);
+                        appendTag("ORGNAME", StringUtils.escapeForXML(organization));
+                        appendTag("ORGUNIT", StringUtils.escapeForXML(organizationUnit));
                     }
                 });
             }
-        }
-
-        private void appendField(String tag) {
-            String value = (String) otherSimpleFields.get(tag);
-            appendTag(tag, value);
         }
 
         private void appendFN() {
             final ContentBuilder contentBuilder = new ContentBuilder() {
                 public void addTagContent() {
                     if (firstName != null) {
-                        sb.append(firstName + ' ');
+                        sb.append(StringUtils.escapeForXML(firstName)).append(' ');
                     }
                     if (middleName != null) {
-                        sb.append(middleName + ' ');
+                        sb.append(StringUtils.escapeForXML(middleName)).append(' ');
                     }
                     if (lastName != null) {
-                        sb.append(lastName);
+                        sb.append(StringUtils.escapeForXML(lastName));
                     }
                 }
             };
@@ -746,9 +772,9 @@ public class VCard extends IQ {
         private void appendN() {
             appendTag("N", true, new ContentBuilder() {
                 public void addTagContent() {
-                    appendTag("FAMILY", lastName);
-                    appendTag("GIVEN", firstName);
-                    appendTag("MIDDLE", middleName);
+                    appendTag("FAMILY", StringUtils.escapeForXML(lastName));
+                    appendTag("GIVEN", StringUtils.escapeForXML(firstName));
+                    appendTag("MIDDLE", StringUtils.escapeForXML(middleName));
                 }
             });
         }

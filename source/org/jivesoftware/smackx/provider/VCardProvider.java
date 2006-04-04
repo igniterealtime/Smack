@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.VCard;
 import org.w3c.dom.*;
 import org.xmlpull.v1.XmlPullParser;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * vCard provider. 
+ * vCard provider.
  *
  * @author Gaston Dombiak
  */
@@ -49,7 +50,8 @@ public class VCardProvider implements IQProvider {
           while (true) {
               switch (event) {
                   case XmlPullParser.TEXT:
-                      sb.append(parser.getText());
+                      // We must re-escape the xml so that the DOM won't throw an exception
+                      sb.append(StringUtils.escapeForXML(parser.getText()));
                       break;
                   case XmlPullParser.START_TAG:
                       sb.append('<').append(parser.getName()).append('>');
