@@ -56,7 +56,12 @@ public abstract class FileTransfer {
 
 	private Exception exception;
 
-	protected FileTransfer(String peer, String streamID,
+    /**
+     * Buffer size between input and output
+     */
+    private static final int BUFFER_SIZE = 8192;
+
+    protected FileTransfer(String peer, String streamID,
 			FileTransferNegotiator negotiator) {
 		this.peer = peer;
 		this.streamID = streamID;
@@ -196,20 +201,13 @@ public abstract class FileTransfer {
     }
 
 	protected void writeToStream(final InputStream in, final OutputStream out)
-			throws XMPPException {
-		final byte[] b = new byte[1000];
-		int count;
+			throws XMPPException
+    {
+		final byte[] b = new byte[BUFFER_SIZE];
+		int count = 0;
 		amountWritten = 0;
-		try {
-			count = in.read(b);
-		} catch (IOException e) {
-			throw new XMPPException("error reading from input stream", e);
-		}
-		while (count != -1 && !getStatus().equals(Status.CANCLED)) {
-			if (getStatus().equals(Status.CANCLED)) {
-				return;
-			}
 
+        do {
 			// write to the output stream
 			try {
 				out.write(b, 0, count);
@@ -225,10 +223,9 @@ public abstract class FileTransfer {
 			} catch (IOException e) {
 				throw new XMPPException("error reading from input stream", e);
 			}
-		}
+		} while (count != -1 && !getStatus().equals(Status.CANCLED));
 
-		// the connection was likely terminated abrubtly if these are not
-		// equal
+		// the connection was likely terminated abrubtly if these are not equal
 		if (!getStatus().equals(Status.CANCLED) && getError() == Error.NONE
 				&& amountWritten != fileSize) {
             setStatus(Status.ERROR);
