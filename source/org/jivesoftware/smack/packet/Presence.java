@@ -184,7 +184,7 @@ public class Presence extends Packet {
         }
         buf.append(">");
         if (status != null) {
-            buf.append("<status>").append(status).append("</status>");
+            buf.append("<status>").append(StringUtils.escapeForXML(status)).append("</status>");
         }
         if (priority != -1) {
             buf.append("<priority>").append(priority).append("</priority>");
