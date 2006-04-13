@@ -143,6 +143,9 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     public void cleanup() {
     }
 
+    public void cancel() {
+    }
+
     private class IBBOutputStream extends OutputStream {
 
         protected byte[] buffer;
@@ -191,9 +194,16 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         public synchronized void write(byte b[], int off, int len)
                 throws IOException {
             if (len >= buffer.length) {
-                throw new IllegalArgumentException(
-                        "byte size exceeds blocksize");
+                // "byte" off the first chunck to write out
+                writeOut(b, off, buffer.length);
+                // recursivly call this method again with the lesser amount subtracted.
+                write(b, off + buffer.length, len - buffer.length);
+            } else {
+                writeOut(b, off, len);
             }
+        }
+
+        private void writeOut(byte b[], int off, int len) {
             if (len > buffer.length - count) {
                 flushBuffer();
             }
@@ -216,11 +226,12 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
             ext.setData(enc);
             ext.setSeq(seq);
-            synchronized(this) {
+            synchronized (this) {
                 try {
                     this.wait(100);
                 }
                 catch (InterruptedException e) {
+                    /* Do Nothing */
                 }
             }
 
@@ -333,7 +344,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             data = (IBBExtensions.Data) mess.getExtension(
                     IBBExtensions.Data.ELEMENT_NAME,
                     IBBExtensions.NAMESPACE);
-            
+
             checkSequence(mess, (int) data.getSeq());
             buffer = Base64.decode(data.getData());
             bufferPointer = 0;
@@ -394,7 +405,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             if (isEOF) {
                 sendCloseConfirmation();
             }
-            else if(lastMess != null) {
+            else if (lastMess != null) {
                 sendCancelMessage(lastMess);
             }
             isClosed = true;
