@@ -55,7 +55,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * @param responseTimeout
 	 *            The timeout time in milliseconds.
 	 */
-	public void setResponseTimeout(int responseTimeout) {
+	public static void setResponseTimeout(int responseTimeout) {
 		RESPONSE_TIMEOUT = responseTimeout;
 	}
 
@@ -262,7 +262,6 @@ public class OutgoingFileTransfer extends FileTransfer {
 			}
 		}
 		setException(e);
-		return;
 	}
 
 	/**
