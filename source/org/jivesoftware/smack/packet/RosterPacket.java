@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 import java.util.*;
 
 /**
@@ -29,7 +31,7 @@ import java.util.*;
  */
 public class RosterPacket extends IQ {
 
-    private List rosterItems = new ArrayList();
+    private final List rosterItems = new ArrayList();
 
     /**
      * Adds a roster item to the packet.
@@ -88,7 +90,7 @@ public class RosterPacket extends IQ {
         private String name;
         private ItemType itemType;
         private ItemStatus itemStatus;
-        private List groupNames;
+        private final List groupNames;
 
         /**
          * Creates a new roster item.
@@ -219,7 +221,7 @@ public class RosterPacket extends IQ {
             synchronized (groupNames) {
                 for (int i=0; i<groupNames.size(); i++) {
                     String groupName = (String)groupNames.get(i);
-                    buf.append("<group>").append(groupName).append("</group>");
+                    buf.append("<group>").append(StringUtils.escapeForXML(groupName)).append("</group>");
                 }
             }
             buf.append("</item>");
