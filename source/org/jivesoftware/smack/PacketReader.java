@@ -215,6 +215,11 @@ class PacketReader {
                 listener.connectionClosedOnError(e);
             }
         }
+				
+        // Make sure that the listenerThread is awake to shutdown properly
+        synchronized (listenerThread) {
+            listenerThread.notify();
+        }
     }
 
     /**
