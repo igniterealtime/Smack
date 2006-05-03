@@ -147,7 +147,6 @@ public class StringUtils {
         for (; i < len; i++) {
             ch = input[i];
             if (ch > '>') {
-                continue;
             }
             else if (ch == '<') {
                 if (i > last) {
@@ -252,23 +251,9 @@ public class StringUtils {
             }
             hex.append(Integer.toString((int) bytes[i] & 0xff, 16));
         }
-        
+
         return hex.toString();
     }
-
-    //*********************************************************************
-    //* Base64 - a simple base64 encoder and decoder.
-    //*
-    //*     Copyright (c) 1999, Bob Withers - bwit@pobox.com
-    //*
-    //* This code may be freely used for any purpose, either personal
-    //* or commercial, provided the authors copyright notice remains
-    //* intact.
-    //*********************************************************************
-
-    private static final int fillchar = '=';
-    private static final String cvt = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                                    + "0123456789+/";
 
     /**
      * Encodes a String as a base64 String.
@@ -294,38 +279,31 @@ public class StringUtils {
      * @return a base64 encode String.
      */
     public static String encodeBase64(byte[] data) {
-        int c;
-        int len = data.length;
-        StringBuffer ret = new StringBuffer(((len / 3) + 1) * 4);
-        for (int i = 0; i < len; ++i) {
-            c = (data[i] >> 2) & 0x3f;
-            ret.append(cvt.charAt(c));
-            c = (data[i] << 4) & 0x3f;
-            if (++i < len)
-                c |= (data[i] >> 4) & 0x0f;
+        return encodeBase64(data, false);
+    }
 
-            ret.append(cvt.charAt(c));
-            if (i < len) {
-                c = (data[i] << 2) & 0x3f;
-                if (++i < len)
-                    c |= (data[i] >> 6) & 0x03;
+    /**
+     * Encodes a byte array into a bse64 String.
+     *
+     * @param data The byte arry to encode.
+     * @param lineBreaks True if the encoding should contain line breaks and false if it should not.
+     * @return A base64 encoded String.
+     */
+    public static String encodeBase64(byte[] data, boolean lineBreaks) {
+        return encodeBase64(data, 0, data.length, lineBreaks);
+    }
 
-                ret.append(cvt.charAt(c));
-            }
-            else {
-                ++i;
-                ret.append((char) fillchar);
-            }
-
-            if (i < len) {
-                c = data[i] & 0x3f;
-                ret.append(cvt.charAt(c));
-            }
-            else {
-                ret.append((char) fillchar);
-            }
-        }
-        return ret.toString();
+    /**
+     * Encodes a byte array into a bse64 String.
+     *
+     * @param data The byte arry to encode.
+     * @param offset the offset of the bytearray to begin encoding at.
+     * @param len the length of bytes to encode.
+     * @param lineBreaks True if the encoding should contain line breaks and false if it should not.
+     * @return A base64 encoded String.
+     */
+    public static String encodeBase64(byte[] data, int offset, int len, boolean lineBreaks) {
+        return Base64.encodeBytes(data, offset, len, (lineBreaks ?  Base64.NO_OPTIONS : Base64.DONT_BREAK_LINES));
     }
 
     /**
@@ -335,54 +313,7 @@ public class StringUtils {
      * @return the decoded String.
      */
     public static byte[] decodeBase64(String data) {
-        byte [] bytes = null;
-        try {
-            bytes = data.getBytes("ISO-8859-1");
-            return decodeBase64(bytes).getBytes("ISO-8859-1");
-        }
-        catch (UnsupportedEncodingException uee) {
-            uee.printStackTrace();
-        }
-        return new byte[] { };
-    }
-
-    /**
-     * Decodes a base64 aray of bytes.
-     *
-     * @param data a base64 encode byte array to decode.
-     * @return the decoded String.
-     */
-    private static String decodeBase64(byte[] data) {
-        int c, c1;
-        int len = data.length;
-        StringBuffer ret = new StringBuffer((len * 3) / 4);
-        for (int i = 0; i < len; ++i) {
-            c = cvt.indexOf(data[i]);
-            ++i;
-            c1 = cvt.indexOf(data[i]);
-            c = ((c << 2) | ((c1 >> 4) & 0x3));
-            ret.append((char) c);
-            if (++i < len) {
-                c = data[i];
-                if (fillchar == c)
-                    break;
-
-                c = cvt.indexOf(c);
-                c1 = ((c1 << 4) & 0xf0) | ((c >> 2) & 0xf);
-                ret.append((char) c1);
-            }
-
-            if (++i < len) {
-                c1 = data[i];
-                if (fillchar == c1)
-                    break;
-
-                c1 = cvt.indexOf(c1);
-                c = ((c << 6) & 0xc0) | c1;
-                ret.append((char) c);
-            }
-        }
-        return ret.toString();
+        return Base64.decode(data);
     }
 
     /**
@@ -414,7 +345,7 @@ public class StringUtils {
      * @param length the desired length of the random String to return.
      * @return a random String of numbers and letters of the specified length.
      */
-    public static final String randomString(int length) {
+    public static String randomString(int length) {
         if (length < 1) {
             return null;
         }

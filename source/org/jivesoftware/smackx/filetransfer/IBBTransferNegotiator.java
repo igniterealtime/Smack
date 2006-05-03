@@ -23,6 +23,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -156,8 +157,6 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
         final String userID;
 
-        private final int options = Base64.DONT_BREAK_LINES;
-
         final private IQ closePacket;
 
         private String messageID;
@@ -222,7 +221,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             IBBExtensions.Data ext = new IBBExtensions.Data(sid);
             template.addExtension(ext);
 
-            String enc = Base64.encodeBytes(buffer, offset, len, options);
+            String enc = StringUtils.encodeBase64(buffer, offset, len, false);
 
             ext.setData(enc);
             ext.setSeq(seq);
@@ -346,7 +345,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
                     IBBExtensions.NAMESPACE);
 
             checkSequence(mess, (int) data.getSeq());
-            buffer = Base64.decode(data.getData());
+            buffer = StringUtils.decodeBase64(data.getData());
             bufferPointer = 0;
             return true;
         }
