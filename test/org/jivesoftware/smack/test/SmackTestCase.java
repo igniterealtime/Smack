@@ -349,4 +349,20 @@ public abstract class SmackTestCase extends TestCase {
         return "config/" + fullClassName.substring(firstChar) + ".xml";
     }
 
+    /**
+     * Compares two contents of two byte arrays to make sure that they are equal
+     *
+     * @param message The message to show in the case of failure
+     * @param byteArray1 The first byte array.
+     * @param byteArray2 The second byte array.
+     */
+    public static void assertEquals(String message, byte [] byteArray1, byte [] byteArray2) {
+        if(byteArray1.length != byteArray2.length) {
+            fail(message);
+        }
+        for(int i = 0; i < byteArray1.length; i++) {
+            assertEquals(message, byteArray1[i], byteArray2[i]);
+        }
+    }
+
 }
