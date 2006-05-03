@@ -559,6 +559,7 @@ public class VCard extends IQ {
                 || emailHome != null
                 || emailWork != null
                 || otherSimpleFields.size() > 0
+                || otherUnescapableFields.size() > 0
                 || homeAddr.size() > 0
                 || homePhones.size() > 0
                 || workAddr.size() > 0
