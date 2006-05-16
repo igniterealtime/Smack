@@ -251,7 +251,7 @@ public class Bookmarks implements PrivateData {
         String jid = parser.getAttributeValue("", "jid");
 
         conf.setName(name);
-        conf.setAutoJoin(Boolean.parseBoolean(autojoin));
+        conf.setAutoJoin(Boolean.valueOf(autojoin).booleanValue());
         conf.setJid(jid);
 
         // Check for nickname
