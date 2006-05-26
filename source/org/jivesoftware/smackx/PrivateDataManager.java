@@ -102,6 +102,17 @@ public class PrivateDataManager {
         privateDataProviders.put(key, provider);
     }
 
+    /**
+     * Removes a private data provider with the specified element name and namespace.
+     *
+     * @param elementName The XML element name.
+     * @param namespace The XML namespace.
+     */
+    public static void removePrivateDataProvider(String elementName, String namespace) {
+        String key = getProviderKey(elementName, namespace);
+        privateDataProviders.remove(key);
+    }
+
 
     private XMPPConnection connection;
 
@@ -312,8 +323,7 @@ public class PrivateDataManager {
                     }
                 }
             }
-            IQ result = new PrivateDataResult(privateData);
-            return result;
+            return new PrivateDataResult(privateData);
         }
     }
 
