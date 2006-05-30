@@ -440,7 +440,15 @@ public class Roster {
      * when you are not subscribed to the user's presence updates.<p>
      * 
      * If the user has several presences (one for each resource) then answer the presence
-     * with the highest priority.
+     * with the highest priority.<p>
+     *
+     * Note that presence information is received asynchronously. So, just after logging
+     * in to the server, presence values for users in the roster might be <tt>null</tt>
+     * even if they are actually online. In other words, the value returned by this
+     * method should only be treated as a snapshot in time, and may not accurately reflect
+     * other user's presence instant by instant. If you need to track presence over time,
+     * such as when showing a visual representation of the roster, consider using a
+     * {@link RosterListener}.
      *
      * @param user a fully qualified xmpp ID. The address could be in any valid format (e.g.
      * "domain/resource", "user@domain" or "user@domain/resource").
@@ -552,7 +560,7 @@ public class Roster {
      */
     private void fireRosterChangedEvent(Collection addedEntries, Collection updatedEntries,
                                         Collection deletedEntries) {
-        RosterListener [] listeners = null;
+        RosterListener [] listeners;
         synchronized (rosterListeners) {
             listeners = new RosterListener[rosterListeners.size()];
             rosterListeners.toArray(listeners);
@@ -574,7 +582,7 @@ public class Roster {
      * Fires roster presence changed event to roster listeners.
      */
     private void fireRosterPresenceEvent(String user) {
-        RosterListener [] listeners = null;
+        RosterListener [] listeners;
         synchronized (rosterListeners) {
             listeners = new RosterListener[rosterListeners.size()];
             rosterListeners.toArray(listeners);
