@@ -20,11 +20,14 @@
 
 package org.jivesoftware.smack;
 
-import java.util.*;
-import java.io.*;
-
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
@@ -432,6 +435,12 @@ class PacketWriter {
         }
 
         public void run() {
+            try {
+                // Sleep 15 seconds before sending first heartbeat. This will give time to
+                // properly finish TLS negotiation and then start sending heartbeats.
+                Thread.sleep(15000);
+            }
+            catch (InterruptedException ie) { }
             while (!done) {
                 synchronized (writer) {
                     try {
