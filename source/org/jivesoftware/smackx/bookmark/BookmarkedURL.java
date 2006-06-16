@@ -12,10 +12,22 @@ package org.jivesoftware.smackx.bookmark;
  *
  * @author Derek DeMoro
  */
-public class BookmarkedURL {
+public class BookmarkedURL implements SharedBookmark {
 
     private String name;
-    private String URL;
+    private final String URL;
+    private boolean isRss;
+    private boolean isShared;
+
+    protected BookmarkedURL(String URL) {
+        this.URL = URL;
+    }
+
+    protected BookmarkedURL(String URL, String name, boolean isRss) {
+        this.URL = URL;
+        this.name = name;
+        this.isRss = isRss;
+    }
 
     /**
      * Returns the name representing the URL (eg. Jive Software). This can be used in as a label, or
@@ -32,7 +44,7 @@ public class BookmarkedURL {
      *
      * @param name the name.
      */
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
     }
 
@@ -44,14 +56,37 @@ public class BookmarkedURL {
     public String getURL() {
         return URL;
     }
-
     /**
-     * Sets the URL.
+     * Set to true if this URL is an RSS or news feed.
      *
-     * @param URL the url.
+     * @param isRss True if the URL is a news feed and false if it is not.
      */
-    public void setURL(String URL) {
-        this.URL = URL;
+    protected void setRss(boolean isRss) {
+        this.isRss = isRss;
     }
 
+    /**
+     * Returns true if this URL is a news feed.
+     *
+     * @return Returns true if this URL is a news feed.
+     */
+    public boolean isRss() {
+        return isRss;
+    }
+
+    public boolean equals(Object obj) {
+        if(!(obj instanceof BookmarkedURL)) {
+            return false;
+        }
+        BookmarkedURL url = (BookmarkedURL)obj;
+        return url.getURL().equalsIgnoreCase(URL);
+    }
+
+    protected void setShared(boolean shared) {
+        this.isShared = shared;
+    }
+
+    public boolean isShared() {
+        return isShared;
+    }
 }

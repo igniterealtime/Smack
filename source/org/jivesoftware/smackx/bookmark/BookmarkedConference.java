@@ -12,14 +12,29 @@ package org.jivesoftware.smackx.bookmark;
  *
  * @author Derek DeMoro
  */
-public class BookmarkedConference {
+public class BookmarkedConference implements SharedBookmark {
 
     private String name;
     private boolean autoJoin;
-    private String jid;
+    private final String jid;
 
     private String nickname;
     private String password;
+    private boolean isShared;
+
+    protected BookmarkedConference(String jid) {
+        this.jid = jid;
+    }
+
+    protected BookmarkedConference(String name, String jid, boolean autoJoin, String nickname,
+            String password)
+    {
+        this.name = name;
+        this.jid = jid;
+        this.autoJoin = autoJoin;
+        this.nickname = nickname;
+        this.password = password;
+    }
 
 
     /**
@@ -31,7 +46,7 @@ public class BookmarkedConference {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
     }
 
@@ -44,7 +59,7 @@ public class BookmarkedConference {
         return autoJoin;
     }
 
-    public void setAutoJoin(boolean autoJoin) {
+    protected void setAutoJoin(boolean autoJoin) {
         this.autoJoin = autoJoin;
     }
 
@@ -57,10 +72,6 @@ public class BookmarkedConference {
         return jid;
     }
 
-    public void setJid(String jid) {
-        this.jid = jid;
-    }
-
     /**
      * Returns the nickname to use when joining this conference room. This is an optional
      * value and may return null.
@@ -71,7 +82,7 @@ public class BookmarkedConference {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    protected void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
@@ -85,7 +96,23 @@ public class BookmarkedConference {
         return password;
     }
 
-    public void setPassword(String password) {
+    protected void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof BookmarkedConference)) {
+            return false;
+        }
+        BookmarkedConference conference = (BookmarkedConference)obj;
+        return conference.getJid().equalsIgnoreCase(jid);
+    }
+
+    protected void setShared(boolean isShared) {
+        this.isShared = isShared;
+    }
+
+    public boolean isShared() {
+        return isShared;
     }
 }

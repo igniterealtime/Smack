@@ -7,15 +7,15 @@
  */
 package org.jivesoftware.smackx.bookmark;
 
-import org.jivesoftware.smackx.PrivateDataManager;
 import org.jivesoftware.smackx.packet.PrivateData;
 import org.jivesoftware.smackx.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.io.IOException;
 
 /**
  * Bookmarks is used for storing and retrieving URLS and Conference rooms.
@@ -58,9 +58,6 @@ public class Bookmarks implements PrivateData {
      * Required Empty Constructor to use Bookmarks.
      */
     public Bookmarks() {
-        // Register own provider for simpler implementation.
-        PrivateDataManager.addPrivateDataProvider("storage", "storage:bookmarks", new Bookmarks.Provider());
-
         bookmarkedURLS = new ArrayList();
         bookmarkedConferences = new ArrayList();
     }
@@ -120,7 +117,7 @@ public class Bookmarks implements PrivateData {
      *
      * @return a collection of all Bookmarked URLs.
      */
-    public Collection getBookmarkedURLS() {
+    public List getBookmarkedURLS() {
         return bookmarkedURLS;
     }
 
@@ -129,7 +126,7 @@ public class Bookmarks implements PrivateData {
      *
      * @return a collection of all Bookmarked Conferences.
      */
-    public Collection getBookmarkedConferences() {
+    public List getBookmarkedConferences() {
         return bookmarkedConferences;
     }
 
@@ -164,13 +161,24 @@ public class Bookmarks implements PrivateData {
         final Iterator urls = getBookmarkedURLS().iterator();
         while (urls.hasNext()) {
             BookmarkedURL urlStorage = (BookmarkedURL) urls.next();
-            buf.append("<url name=\"").append(urlStorage.getName()).append("\" url=\"").append(urlStorage.getURL()).append("\" />");
+            if(urlStorage.isShared()) {
+                continue;
+            }
+            buf.append("<url name=\"").append(urlStorage.getName()).
+                    append("\" url=\"").append(urlStorage.getURL()).append("\"");
+            if(urlStorage.isRss()) {
+                buf.append(" rss=\"").append(true).append("\"");
+            }
+            buf.append(" />");
         }
 
         // Add Conference additions
         final Iterator conferences = getBookmarkedConferences().iterator();
         while (conferences.hasNext()) {
             BookmarkedConference conference = (BookmarkedConference) conferences.next();
+            if(conference.isShared()) {
+                continue;
+            }
             buf.append("<conference ");
             buf.append("name=\"").append(conference.getName()).append("\" ");
             buf.append("autojoin=\"").append(conference.isAutoJoin()).append("\" ");
@@ -219,14 +227,15 @@ public class Bookmarks implements PrivateData {
                         storage.addBookmarkedURL(urlStorage);
                     }
                 }
-                else if (eventType == XmlPullParser.START_TAG && "conference".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.START_TAG &&
+                        "conference".equals(parser.getName()))
+                {
                     final BookmarkedConference conference = getConferenceStorage(parser);
                     storage.addBookmarkedConference(conference);
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
-                    if ("storage".equals(parser.getName())) {
-                        done = true;
-                    }
+                else if (eventType == XmlPullParser.END_TAG && "storage".equals(parser.getName()))
+                {
+                    done = true;
                 }
             }
 
@@ -235,24 +244,35 @@ public class Bookmarks implements PrivateData {
         }
     }
 
-    private static BookmarkedURL getURLStorage(XmlPullParser parser) {
+    private static BookmarkedURL getURLStorage(XmlPullParser parser) throws IOException, XmlPullParserException {
         String name = parser.getAttributeValue("", "name");
         String url = parser.getAttributeValue("", "url");
-        BookmarkedURL urlStore = new BookmarkedURL();
-        urlStore.setName(name);
-        urlStore.setURL(url);
+        String rssString = parser.getAttributeValue("", "rss");
+        boolean rss = rssString != null && "true".equals(rssString);
+
+        BookmarkedURL urlStore = new BookmarkedURL(url, name, rss);
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if(eventType == XmlPullParser.START_TAG
+                        && "shared_bookmark".equals(parser.getName())) {
+                    urlStore.setShared(true);
+            }
+            else if (eventType == XmlPullParser.END_TAG && "url".equals(parser.getName())) {
+                done = true;
+            }
+        }
         return urlStore;
     }
 
     private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws Exception {
-        BookmarkedConference conf = new BookmarkedConference();
         String name = parser.getAttributeValue("", "name");
         String autojoin = parser.getAttributeValue("", "autojoin");
         String jid = parser.getAttributeValue("", "jid");
 
+        BookmarkedConference conf = new BookmarkedConference(jid);
         conf.setName(name);
         conf.setAutoJoin(Boolean.valueOf(autojoin).booleanValue());
-        conf.setJid(jid);
 
         // Check for nickname
         boolean done = false;
@@ -264,10 +284,12 @@ public class Bookmarks implements PrivateData {
             else if (eventType == XmlPullParser.START_TAG && "password".equals(parser.getName())) {
                 conf.setPassword(parser.nextText());
             }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if ("conference".equals(parser.getName())) {
-                    done = true;
-                }
+            else if(eventType == XmlPullParser.START_TAG
+                        && "shared_bookmark".equals(parser.getName())) {
+                    conf.setShared(true);
+            }
+            else if (eventType == XmlPullParser.END_TAG && "conference".equals(parser.getName())) {
+                done = true;
             }
         }
 
