@@ -19,9 +19,9 @@
 
 package org.jivesoftware.smack.util;
 
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.Attributes;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -83,7 +83,8 @@ public class DNSUtil {
         String host = domain;
         int port = 5222;
         try {
-            Attributes dnsLookup = context.getAttributes("_xmpp-client._tcp." + domain);
+            Attributes dnsLookup =
+                    context.getAttributes("_xmpp-client._tcp." + domain, new String[]{"SRV"});
             String srvRecord = (String)dnsLookup.get("SRV").get();
             String [] srvRecordEntries = srvRecord.split(" ");
             port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
@@ -134,7 +135,8 @@ public class DNSUtil {
         String host = domain;
         int port = 5269;
         try {
-            Attributes dnsLookup = context.getAttributes("_xmpp-server._tcp." + domain);
+            Attributes dnsLookup =
+                    context.getAttributes("_xmpp-server._tcp." + domain, new String[]{"SRV"});
             String srvRecord = (String)dnsLookup.get("SRV").get();
             String [] srvRecordEntries = srvRecord.split(" ");
             port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
@@ -143,7 +145,8 @@ public class DNSUtil {
         catch (Exception e) {
             // Attempt lookup with older "jabber" name.
             try {
-                Attributes dnsLookup = context.getAttributes("_jabber._tcp." + domain);
+                Attributes dnsLookup =
+                        context.getAttributes("_jabber._tcp." + domain, new String[]{"SRV"});
                 String srvRecord = (String)dnsLookup.get("SRV").get();
                 String [] srvRecordEntries = srvRecord.split(" ");
                 port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
