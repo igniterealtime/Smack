@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.Bytestream;
 import org.jivesoftware.smackx.packet.Bytestream.StreamHost;
@@ -72,6 +73,15 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
     protected static final String NAMESPACE = "http://jabber.org/protocol/bytestreams";
 
+    /**
+     * The number of connection failures it takes to a streamhost for that particular streamhost
+     * to be blacklisted. When a host is blacklisted no more connection attempts will be made to
+     * it for a period of 2 hours.
+     */
+    private static final int CONNECT_FAILURE_THRESHOLD = 2;
+
+    private static final long BLACKLIST_LIFETIME = 60 * 1000 * 120;
+
     public static boolean isAllowLocalProxyHost = true;
 
     private final XMPPConnection connection;
@@ -87,6 +97,8 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
     // locks on the proxy process during its initiatilization process
     private final Object processLock = new Object();
+
+    private final Cache addressBlacklist = new Cache(100, BLACKLIST_LIFETIME);
 
     public Socks5TransferNegotiator(final XMPPConnection connection) {
         this.connection = connection;
@@ -169,9 +181,12 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     /**
-     * @param streamHostsInfo
-     * @return
-     * @throws XMPPException
+     * Selects a host to connect to over which the file will be transmitted.
+     *
+     * @param streamHostsInfo the packet recieved from the initiator containing the available hosts
+     * to transfer the file
+     * @return the selected host and socket that were created.
+     * @throws XMPPException when there is no appropriate host.
      */
     private SelectedHostInfo selectHost(Bytestream streamHostsInfo)
             throws XMPPException
@@ -181,10 +196,16 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         Socket socket = null;
         while (it.hasNext()) {
             selectedHost = (StreamHost) it.next();
+            String address = selectedHost.getAddress();
 
+            // Check to see if this address has been blacklisted
+            int failures = getConnectionFailures(address);
+            if(failures >= CONNECT_FAILURE_THRESHOLD) {
+                continue;
+            }
             // establish socket
             try {
-                socket = new Socket(selectedHost.getAddress(), selectedHost
+                socket = new Socket(address, selectedHost
                         .getPort());
                 establishSOCKS5ConnectionToProxy(socket, createDigest(
                         streamHostsInfo.getSessionID(), streamHostsInfo
@@ -193,6 +214,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             }
             catch (IOException e) {
                 e.printStackTrace();
+                incrementConnectionFailures(address);
                 selectedHost = null;
                 socket = null;
             }
@@ -203,6 +225,22 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         }
 
         return new SelectedHostInfo(selectedHost, socket);
+    }
+
+    private void incrementConnectionFailures(String address) {
+        Integer count = (Integer) addressBlacklist.get(address);
+        if(count == null) {
+            count = new Integer(1);
+        }
+        else {
+            count = new Integer(count.intValue() + 1);
+        }
+        addressBlacklist.put(address, count);
+    }
+
+    private int getConnectionFailures(String address) {
+        Integer count = (Integer) addressBlacklist.get(address);
+        return (count != null ? count.intValue() : 0);
     }
 
     /**
