@@ -52,12 +52,12 @@
 
 package org.jivesoftware.smack;
 
-import java.util.Iterator;
-import java.util.ArrayList;
-
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smack.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Tests the Roster functionality by creating and removing roster entries.
@@ -459,7 +459,7 @@ public class RosterTest extends SmackTestCase {
         try {
             Thread.sleep(200);
 
-            Presence presence = null;
+            Presence presence;
 
             // Create another connection for the same user of connection 1
             XMPPConnection conn4 = new XMPPConnection(getServiceName());
@@ -526,6 +526,56 @@ public class RosterTest extends SmackTestCase {
         catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    /**
+     * User1 is connected from 2 resources. User1 adds User0 to his roster. Ensure
+     * that both resources of user1 get the available presence of User0. Remove User0
+     * from User1's roster and check presences again.
+     */
+    public void testMultipleResources() throws Exception {
+        // Create another connection for the same user of connection 1
+        XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        conn4.login(getUsername(1), getUsername(1), "Home");
+
+        // Add a new roster entry
+        Roster roster = conn4.getRoster();
+        roster.createEntry(getBareJID(0), "gato11", null);
+
+        // Wait up to 2 seconds
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 && (
+                roster.getPresence(getBareJID(0)) == null ||
+                        getConnection(1).getRoster().getPresence(getBareJID(0)) == null)) {
+            Thread.sleep(100);
+        }
+
+        // Check that a presence is returned for the new contact
+        Presence presence = roster.getPresence(getBareJID(0));
+        assertNotNull("Returned a null Presence for an existing user", presence);
+
+        // Check that a presence is returned for the new contact
+        presence = getConnection(1).getRoster().getPresence(getBareJID(0));
+        assertNotNull("Returned a null Presence for an existing user", presence);
+
+        // Delete user from roster
+        roster.removeEntry(roster.getEntry(getBareJID(0)));
+
+        // Wait up to 2 seconds
+        initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 && (
+                roster.getPresence(getBareJID(0)) != null ||
+                        getConnection(1).getRoster().getPresence(getBareJID(0)) != null)) {
+            Thread.sleep(100);
+        }
+
+        // Check that no presence is returned for the removed contact
+        presence = roster.getPresence(getBareJID(0));
+        assertNull("Presence found for removed contact", presence);
+
+        // Check that no presence is returned for the removed contact
+        presence = getConnection(1).getRoster().getPresence(getBareJID(0));
+        assertNull("Presence found for removed contact", presence);
     }
 
     /**
