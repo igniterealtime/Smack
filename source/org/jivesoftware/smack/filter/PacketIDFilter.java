@@ -46,4 +46,8 @@ public class PacketIDFilter implements PacketFilter {
     public boolean accept(Packet packet) {
         return packetID.equals(packet.getPacketID());
     }
+
+    public String toString() {
+        return "PacketIDFilter by id: " + packetID;
+    }
 }

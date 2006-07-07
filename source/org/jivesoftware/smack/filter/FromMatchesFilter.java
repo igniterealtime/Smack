@@ -68,4 +68,8 @@ public class FromMatchesFilter implements PacketFilter {
             return address.equals(packet.getFrom().toLowerCase());
         }
     }
+
+    public String toString() {
+        return "FromMatchesFilter: " + address;
+    }
 }

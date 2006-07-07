@@ -55,4 +55,7 @@ public class PacketTypeFilter implements PacketFilter {
         return packetType.isInstance(packet);
     }
 
+    public String toString() {
+        return "PacketTypeFilter: " + packetType.getName();
+    }
 }
