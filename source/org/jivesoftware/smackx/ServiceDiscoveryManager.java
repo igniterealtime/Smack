@@ -20,12 +20,17 @@
 
 package org.jivesoftware.smackx;
 
-import java.util.*;
-
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.packet.*;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.packet.DiscoverItems;
+
+import java.util.*;
 
 /**
  * Manages discovery of services in XMPP entities. This class provides:
@@ -158,19 +163,23 @@ public class ServiceDiscoveryManager {
                     response.setType(IQ.Type.RESULT);
                     response.setTo(discoverItems.getFrom());
                     response.setPacketID(discoverItems.getPacketID());
+                    response.setNode(discoverItems.getNode());
 
                     // Add the defined items related to the requested node. Look for 
                     // the NodeInformationProvider associated with the requested node.  
-                    if (getNodeInformationProvider(discoverItems.getNode()) != null) {
-                        Iterator items =
-                            getNodeInformationProvider(discoverItems.getNode()).getNodeItems();
-                        while (items.hasNext()) {
-                            response.addItem((DiscoverItems.Item) items.next());
+                    NodeInformationProvider nodeInformationProvider =
+                            getNodeInformationProvider(discoverItems.getNode());
+                    if (nodeInformationProvider != null) {
+                        // Specified node was found
+                        Iterator items = nodeInformationProvider.getNodeItems();
+                        if (items != null) {
+                            while (items.hasNext()) {
+                                response.addItem((DiscoverItems.Item) items.next());
+                            }
                         }
                     } else if(discoverItems.getNode() != null) {
-                        // Return an <item-not-found/> error since the client
-                        // doesn't contain the specified node
-                        response.setNode(discoverItems.getNode());
+                        // Return <item-not-found/> error since client doesn't contain
+                        // the specified node
                         response.setType(IQ.Type.ERROR);
                         response.setError(new XMPPError(404, "item-not-found"));
                     }
@@ -192,7 +201,8 @@ public class ServiceDiscoveryManager {
                     response.setType(IQ.Type.RESULT);
                     response.setTo(discoverInfo.getFrom());
                     response.setPacketID(discoverInfo.getPacketID());
-                    // Add the client's identity and features only if "node" is null
+                    response.setNode(discoverInfo.getNode());
+                     // Add the client's identity and features only if "node" is null
                     if (discoverInfo.getNode() == null) {
                         // Set this client identity
                         DiscoverInfo.Identity identity = new DiscoverInfo.Identity("client",
@@ -207,10 +217,24 @@ public class ServiceDiscoveryManager {
                         }
                     }
                     else {
-                        // Return an <item-not-found/> error since a client doesn't have nodes
-                        response.setNode(discoverInfo.getNode());
-                        response.setType(IQ.Type.ERROR);
-                        response.setError(new XMPPError(404, "item-not-found"));
+                        // Disco#info was sent to a node. Check if we have information of the
+                        // specified node
+                        NodeInformationProvider nodeInformationProvider =
+                                getNodeInformationProvider(discoverInfo.getNode());
+                        if (nodeInformationProvider != null) {
+                            // Node was found. Add node features
+                            Iterator features = nodeInformationProvider.getNodeFeatures();
+                            if (features != null) {
+                                while (features.hasNext()) {
+                                    response.addFeature((String) features.next());
+                                }
+                            }
+                        }
+                        else {
+                            // Return <item-not-found/> error since specified node was not found
+                            response.setType(IQ.Type.ERROR);
+                            response.setError(new XMPPError(404, "item-not-found"));
+                        }
                     }
                     connection.sendPacket(response);
                 }

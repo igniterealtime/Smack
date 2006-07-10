@@ -93,6 +93,10 @@ public class MultiUserChat {
                             }
                             return answer.iterator();
                         }
+
+                        public Iterator getNodeFeatures() {
+                            return null;
+                        }
                     });
             }
         });

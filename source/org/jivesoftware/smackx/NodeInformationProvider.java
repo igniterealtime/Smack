@@ -24,10 +24,11 @@ import java.util.Iterator;
 
 
 /**
- * The NodeInformationProvider is responsible for providing information (i.e. DiscoverItems.Item)
- * about a given node. This information will be requested each time this XMPPP client receives a
- * disco items requests on the given node.
- * 
+ * The NodeInformationProvider is responsible for providing supported features and hosted
+ * items (i.e. DiscoverItems.Item) about a given node. This information will be requested
+ * each time this XMPPP client receives a disco info or items requests on the given node.
+ * each time this XMPPP client receives a disco info or items requests on the given node.
+ *
  * @author Gaston Dombiak
  */
 public interface NodeInformationProvider {
@@ -41,4 +42,13 @@ public interface NodeInformationProvider {
      */
     public abstract Iterator getNodeItems();
 
+    /**
+     * Returns an Iterator on the features defined in the node. For
+     * example, the entity caps protocol specifies that an XMPP client
+     * should answer with each feature supported by the client version
+     * or extension.
+     *
+     * @return an Iterator on the feature strings defined in the node.
+     */
+    public abstract Iterator getNodeFeatures();
 }
