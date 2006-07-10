@@ -42,18 +42,18 @@ import java.util.*;
  */
 class PacketReader {
 
-    private Thread readerThread;
-    private Thread listenerThread;
+    private final Thread readerThread;
+    private final Thread listenerThread;
 
     private XMPPConnection connection;
     private XmlPullParser parser;
     private boolean done = false;
-    protected List collectors = new ArrayList();
-    private List listeners = new ArrayList();
-    protected List connectionListeners = new ArrayList();
+    private final VolatileMemberCollection collectors = new VolatileMemberCollection(50);
+    private final VolatileMemberCollection listeners = new VolatileMemberCollection(50);
+    protected final List connectionListeners = new ArrayList();
 
     private String connectionID = null;
-    private Object connectionIDLock = new Object();
+    private final Object connectionIDLock = new Object();
 
     protected PacketReader(XMPPConnection connection) {
         this.connection = connection;
@@ -90,7 +90,14 @@ class PacketReader {
      * @return a new packet collector.
      */
     public PacketCollector createPacketCollector(PacketFilter packetFilter) {
-        return new PacketCollector(this, packetFilter);
+        PacketCollector collector = new PacketCollector(this, packetFilter);
+        collectors.add(collector);
+        // Add the collector to the list of active collector.
+        return collector;
+    }
+
+    protected void cancelPacketCollector(PacketCollector packetCollector) {
+        collectors.remove(packetCollector);
     }
 
     /**
@@ -114,14 +121,7 @@ class PacketReader {
      * @param packetListener the packet listener to remove.
      */
     public void removePacketListener(PacketListener packetListener) {
-        synchronized (listeners) {
-            for (int i=0; i<listeners.size(); i++) {
-                ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
-                if (wrapper != null && wrapper.packetListener.equals(packetListener)) {
-                    listeners.set(i, null);
-                }
-            }
-        }
+        listeners.remove(packetListener);
     }
 
     /**
@@ -243,22 +243,11 @@ class PacketReader {
      */
     private void processListeners() {
         while (!done) {
-            synchronized (listeners) {
-                if (listeners.size() > 0) {
-                    for (int i=listeners.size()-1; i>=0; i--) {
-                        if (listeners.get(i) == null) {
-                            listeners.remove(i);
-                        }
-                    }
-                }
-            }
             boolean processedPacket = false;
-            int size = listeners.size();
-            for (int i=0; i<size; i++) {
-                ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
-                if (wrapper != null) {
-                    processedPacket = processedPacket || wrapper.notifyListener();
-                }
+            Iterator it = listeners.getIterator();
+            while (it.hasNext()) {
+                ListenerWrapper wrapper = (ListenerWrapper) it.next();
+                processedPacket = processedPacket || wrapper.notifyListener();
             }
             if (!processedPacket) {
                 try {
@@ -418,23 +407,11 @@ class PacketReader {
             return;
         }
 
-        // Remove all null values from the collectors list.
-        synchronized (collectors) {
-            for (int i=collectors.size()-1; i>=0; i--) {
-                    if (collectors.get(i) == null) {
-                        collectors.remove(i);
-                    }
-                }
-        }
-
         // Loop through all collectors and notify the appropriate ones.
-        int size = collectors.size();
-        for (int i=0; i<size; i++) {
-            PacketCollector collector = (PacketCollector)collectors.get(i);
-            if (collector != null) {
-                // Have the collector process the packet to see if it wants to handle it.
-                collector.processPacket(packet);
-            }
+        Iterator it = collectors.getIterator();
+        while (it.hasNext()) {
+            PacketCollector collector = (PacketCollector) it.next();
+            collector.processPacket(packet);
         }
 
         // Notify the listener thread that packets are waiting.
@@ -789,6 +766,99 @@ class PacketReader {
     }
 
     /**
+     * When an object is added it the first attempt is to add it to a 'null' space and when it is
+     * removed it is not removed from the list but instead the position is nulled so as not to
+     * interfere with list iteration as the Collection memebres are thought to be extermely
+     * volatile. In other words, many are added and deleted and 'null' values are skipped by the
+     * returned iterator.
+     */
+    static class VolatileMemberCollection {
+
+        private final Object mutex = new Object();
+        private final ArrayList collectors;
+        private int nullIndex = -1;
+        private int[] nullArray;
+
+        VolatileMemberCollection(int initialCapacity) {
+            collectors = new ArrayList(initialCapacity);
+            nullArray = new int[initialCapacity];
+        }
+
+        public void add(Object member) {
+            synchronized (mutex) {
+                if (nullIndex < 0) {
+                    ensureCapacity();
+                    collectors.add(member);
+                }
+                else {
+                    collectors.set(nullArray[nullIndex--], member);
+                }
+            }
+        }
+
+        private void ensureCapacity() {
+            int current = nullArray.length;
+            if (collectors.size() + 1 >= current) {
+                int newCapacity = current * 2;
+                int oldData[] = nullArray;
+
+                collectors.ensureCapacity(newCapacity);
+                nullArray = new int[newCapacity];
+                System.arraycopy(oldData, 0, nullArray, 0, nullIndex + 1);
+            }
+        }
+
+        public void remove(Object member) {
+            synchronized (mutex) {
+                int index = collectors.lastIndexOf(member);
+                if (index >= 0) {
+                    collectors.set(index, null);
+                    nullArray[++nullIndex] = index;
+                }
+            }
+        }
+
+        /**
+         * One thread should be using an iterator at a time.
+         *
+         * @return Iterator over PacketCollector.
+         */
+        public Iterator getIterator() {
+            return new Iterator() {
+                private int index = 0;
+                private Object next;
+                private int size = collectors.size();
+
+                public void remove() {
+                }
+
+                public boolean hasNext() {
+                    return next != null || grabNext() != null;
+                }
+
+                private Object grabNext() {
+                    Object next;
+                    while (index < size) {
+                        next = collectors.get(index++);
+                        if (next != null) {
+                            this.next = next;
+                            return next;
+                        }
+                    }
+                    this.next = null;
+                    return null;
+                }
+
+                public Object next() {
+                    Object toReturn = (this.next != null ? this.next : grabNext());
+                    this.next = null;
+                    return toReturn;
+                }
+            };
+        }
+    }
+
+    /**
      * A wrapper class to associate a packet collector with a listener.
      */
     private static class ListenerWrapper {
@@ -800,7 +870,7 @@ class PacketReader {
                 PacketFilter packetFilter)
         {
             this.packetListener = packetListener;
-            this.packetCollector = new PacketCollector(packetReader, packetFilter);
+            this.packetCollector = packetReader.createPacketCollector(packetFilter);
         }
 
         public boolean equals(Object object) {

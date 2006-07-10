@@ -20,8 +20,8 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.packet.Packet;
 
 import java.util.LinkedList;
 
@@ -63,10 +63,6 @@ public class PacketCollector {
         this.packetReader = packetReader;
         this.packetFilter = packetFilter;
         this.resultQueue = new LinkedList();
-         // Add the collector to the packet reader's list of active collector.
-        synchronized (packetReader.collectors) {
-            packetReader.collectors.add(this);
-        }
     }
 
     /**
@@ -78,13 +74,7 @@ public class PacketCollector {
         // If the packet collector has already been cancelled, do nothing.
         if (!cancelled) {
             cancelled = true;
-            // Remove object from collectors list by setting the value in the
-            // list at the correct index to null. The collector thread will
-            // automatically remove the actual list entry when it can.
-            synchronized (packetReader.collectors) {
-                int index = packetReader.collectors.indexOf(this);
-                packetReader.collectors.set(index, null);
-            }
+            packetReader.cancelPacketCollector(this);
         }
     }
 
