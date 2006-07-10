@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.XHTMLExtension;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -50,25 +51,40 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
         throws Exception {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
         boolean done = false;
-        StringBuffer buffer = new StringBuffer();;
+        StringBuffer buffer = new StringBuffer();
+        int startDepth = parser.getDepth();
+        int depth = parser.getDepth();
+        String lastTag = "";
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("body")) 
+                if (parser.getName().equals("body")) {
                     buffer = new StringBuffer();
+                    depth = parser.getDepth();
+                }
+                lastTag = parser.getText();
                 buffer.append(parser.getText());
             } else if (eventType == XmlPullParser.TEXT) {
-                if (buffer != null) buffer.append(parser.getText());
+                if (buffer != null) {
+                    // We need to return valid XML so any inner text needs to be re-escaped
+                    buffer.append(StringUtils.escapeForXML(parser.getText()));
+                }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("body")) {
+                if (parser.getName().equals("body") || parser.getDepth() <= depth) {
                     buffer.append(parser.getText());
                     xhtmlExtension.addBody(buffer.toString());
                 }
-                else if (parser.getName().equals(xhtmlExtension.getElementName())) {
+                else if (parser.getName().equals(xhtmlExtension.getElementName())
+                        || parser.getDepth() <= startDepth) {
                     done = true;
                 }
-                else 
-                    buffer.append(parser.getText());
+                else {
+                    // This is a check for tags that are both a start and end tag like <br/>
+                    // So that they aren't doubled
+                    if(!lastTag.equals(parser.getText())) {
+                        buffer.append(parser.getText());
+                    }
+                }
             }
         }
 
