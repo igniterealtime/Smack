@@ -101,4 +101,21 @@ public class Occupant {
     public String getNick() {
         return nick;
     }
+
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Occupant)) {
+            return false;
+        }
+        Occupant occupant = (Occupant)obj;
+        return jid.equals(occupant.jid);
+    }
+
+    public int hashCode() {
+        int result;
+        result = affiliation.hashCode();
+        result = 17 * result + role.hashCode();
+        result = 17 * result + jid.hashCode();
+        result = 17 * result + (nick != null ? nick.hashCode() : 0);
+        return result;
+    }
 }
