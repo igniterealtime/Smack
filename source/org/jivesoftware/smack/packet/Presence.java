@@ -284,7 +284,6 @@ public class Presence extends Packet {
         public static final Mode AWAY =  new Mode("away");
         public static final Mode EXTENDED_AWAY = new Mode("xa");
         public static final Mode DO_NOT_DISTURB = new Mode("dnd");
-        public static final Mode INVISIBLE = new Mode("invisible");
 
         private String value;
 
@@ -315,9 +314,6 @@ public class Presence extends Packet {
             }
             else if (value.equals("dnd")) {
                 return DO_NOT_DISTURB;
-            }
-            else if (value.equals("invisible")) {
-                return INVISIBLE;
             }
             else {
                 return AVAILABLE;
