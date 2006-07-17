@@ -42,6 +42,8 @@ import java.util.ArrayList;
  */
 public class VCardProvider implements IQProvider {
 
+    private final static String PREFERRED_ENCODING = "UTF-8";
+
   public IQ parseIQ(XmlPullParser parser) throws Exception {
       StringBuffer sb = new StringBuffer();
       try {
@@ -81,7 +83,8 @@ public class VCardProvider implements IQProvider {
       try {
           DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
           DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-          Document document = documentBuilder.parse(new ByteArrayInputStream(xmlText.getBytes()));
+          Document document = documentBuilder.parse(
+                  new ByteArrayInputStream(xmlText.getBytes(PREFERRED_ENCODING)));
 
           new VCardReader(vCard, document).initializeFields();
 
