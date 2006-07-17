@@ -3,7 +3,7 @@
 <testcase>
 
     <!-- Host and port of the XMPP server to use -->
-    <host>zeushome2</host>
+    <host>localhost</host>
     <port>5222</port>
 
     <!-- Chat and MUC domain names to use -->
