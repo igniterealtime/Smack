@@ -88,7 +88,8 @@ public class RosterTest extends SmackTestCase {
             roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
 
             // Wait until the server confirms the new entries
-            while (roster.getEntryCount() != 2) {
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 && roster.getEntryCount() != 2) {
                 Thread.sleep(50);
             }
 
@@ -98,7 +99,7 @@ public class RosterTest extends SmackTestCase {
                 }
             }
             // Wait up to 2 seconds
-            long initial = System.currentTimeMillis();
+            initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 2000 &&
                     (roster.getGroupCount() != 0 &&
                     getConnection(2).getRoster().getEntryCount() != 2)) {
