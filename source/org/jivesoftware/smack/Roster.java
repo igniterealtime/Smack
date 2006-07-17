@@ -25,6 +25,7 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
@@ -68,10 +69,10 @@ public class Roster {
     private static int defaultSubscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
 
     private XMPPConnection connection;
-    private Map groups;
+    private Map<String,RosterGroup> groups;
     private List entries;
     private List unfiledEntries;
-    private List rosterListeners;
+    private List<RosterListener> rosterListeners;
     private Map presenceMap;
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
@@ -110,10 +111,10 @@ public class Roster {
      */
     Roster(final XMPPConnection connection) {
         this.connection = connection;
-        groups = new Hashtable();
+        groups = new ConcurrentHashMap<String,RosterGroup>();
         unfiledEntries = new ArrayList();
         entries = new ArrayList();
-        rosterListeners = new ArrayList();
+        rosterListeners = new ArrayList<RosterListener>();
         presenceMap = new HashMap();
         // Listen for any roster packets.
         PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
@@ -130,7 +131,7 @@ public class Roster {
      *
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
-     * {@link org.jivesoftware.smack.packet.Presence.Type#SUBSCRIBE}.
+     * {@link org.jivesoftware.smack.packet.Presence.Type#subscribe}.
      *
      * @return the subscription mode.
      */
@@ -145,7 +146,7 @@ public class Roster {
      *
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
-     * {@link org.jivesoftware.smack.packet.Presence.Type#SUBSCRIBE}.
+     * {@link org.jivesoftware.smack.packet.Presence.Type#subscribe}.
      *
      * @param subscriptionMode the subscription mode.
      */
@@ -251,7 +252,7 @@ public class Roster {
         }
 
         // Create a presence subscription packet and send.
-        Presence presencePacket = new Presence(Presence.Type.SUBSCRIBE);
+        Presence presencePacket = new Presence(Presence.Type.subscribe);
         presencePacket.setTo(user);
         connection.sendPacket(presencePacket);
     }
@@ -291,7 +292,7 @@ public class Roster {
             throw new XMPPException(response.getError());
         }
         else {
-            
+
         }
     }
 
@@ -301,42 +302,26 @@ public class Roster {
      * @return the number of entries in the roster.
      */
     public int getEntryCount() {
-        HashMap entryMap = new HashMap();
-        // Loop through all roster groups.
-        for (Iterator groups = getGroups(); groups.hasNext(); ) {
-            RosterGroup rosterGroup = (RosterGroup) groups.next();
-            for (Iterator entries = rosterGroup.getEntries(); entries.hasNext(); ) {
-                entryMap.put(entries.next(), "");
-            }
-        }
-        synchronized (unfiledEntries) {
-            return entryMap.size() + unfiledEntries.size();
-        }
+        return getEntries().size();
     }
 
     /**
-     * Returns all entries in the roster, including entries that don't belong to
-     * any groups.
+     * Returns an unmodifiable collection of all entries in the roster, including entries
+     * that don't belong to any groups.
      *
      * @return all entries in the roster.
      */
-    public Iterator getEntries() {
-        ArrayList allEntries = new ArrayList();
+    public Collection<RosterEntry> getEntries() {
+        Set<RosterEntry> allEntries = new HashSet<RosterEntry>();
         // Loop through all roster groups and add their entries to the answer
-        for (Iterator groups = getGroups(); groups.hasNext(); ) {
-            RosterGroup rosterGroup = (RosterGroup) groups.next();
-            for (Iterator entries = rosterGroup.getEntries(); entries.hasNext(); ) {
-                RosterEntry entry = (RosterEntry)entries.next();
-                if (!allEntries.contains(entry)) {
-                    allEntries.add(entry);
-                }
-            }
+        for (RosterGroup rosterGroup: getGroups()) {
+            allEntries.addAll(rosterGroup.getEntries());
         }
         // Add the roster unfiled entries to the answer
         synchronized (unfiledEntries) {
             allEntries.addAll(unfiledEntries);
         }
-        return allEntries.iterator();
+        return Collections.unmodifiableCollection(allEntries);
     }
 
     /**
@@ -406,9 +391,7 @@ public class Roster {
      * @return the roster group with the specified name.
      */
     public RosterGroup getGroup(String name) {
-        synchronized (groups) {
-            return (RosterGroup)groups.get(name);
-        }
+       return groups.get(name);
     }
 
     /**
@@ -417,21 +400,16 @@ public class Roster {
      * @return the number of groups in the roster.
      */
     public int getGroupCount() {
-        synchronized (groups) {
-            return groups.size();
-        }
+        return groups.size();
     }
 
     /**
-     * Returns an iterator the for all the roster groups.
+     * Returns an unmodiable collections of all the roster groups.
      *
      * @return an iterator for all roster groups.
      */
-    public Iterator getGroups() {
-        synchronized (groups) {
-            List groupsList = Collections.unmodifiableList(new ArrayList(groups.values()));
-            return groupsList.iterator();
-        }
+    public Collection<RosterGroup> getGroups() {
+        return Collections.unmodifiableCollection(groups.values());
     }
 
     /**
@@ -483,7 +461,7 @@ public class Roster {
         }
     }
 
-    /**                                                                                                    
+    /**
      * Returns the presence info for a particular user's resource, or <tt>null</tt> if the user
      * is unavailable (offline) or if no presence information is available, such as
      * when you are not subscribed to the user's presence updates.
@@ -603,7 +581,7 @@ public class Roster {
 
             // If an "available" packet, add it to the presence map. Each presence map will hold
             // for a particular user a map with the presence packets saved for each resource.
-            if (presence.getType() == Presence.Type.AVAILABLE) {
+            if (presence.getType() == Presence.Type.available) {
                 Map userPresences;
                 // Get the user presence map
                 if (presenceMap.get(key) == null) {
@@ -628,7 +606,7 @@ public class Roster {
                 }
             }
             // If an "unavailable" packet, remove any entries in the presence map.
-            else if (presence.getType() == Presence.Type.UNAVAILABLE) {
+            else if (presence.getType() == Presence.Type.unavailable) {
                 if (presenceMap.get(key) != null) {
                     Map userPresences = (Map) presenceMap.get(key);
                     synchronized (userPresences) {
@@ -648,27 +626,27 @@ public class Roster {
                     }
                 }
             }
-            else if (presence.getType() == Presence.Type.SUBSCRIBE) {
+            else if (presence.getType() == Presence.Type.subscribe) {
                 if (subscriptionMode == SUBSCRIPTION_ACCEPT_ALL) {
                     // Accept all subscription requests.
-                    Presence response = new Presence(Presence.Type.SUBSCRIBED);
+                    Presence response = new Presence(Presence.Type.subscribed);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
                 }
                 else if (subscriptionMode == SUBSCRIPTION_REJECT_ALL) {
                     // Reject all subscription requests.
-                    Presence response = new Presence(Presence.Type.UNSUBSCRIBED);
+                    Presence response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
                 }
                 // Otherwise, in manual mode so ignore.
             }
-            else if (presence.getType() == Presence.Type.UNSUBSCRIBE) {
+            else if (presence.getType() == Presence.Type.unsubscribe) {
                 if (subscriptionMode != SUBSCRIPTION_MANUAL) {
                     // Acknowledge and accept unsubscription notification so that the
                     // server will stop sending notifications saying that the contact 
                     // has unsubscribed to our presence.
-                    Presence response = new Presence(Presence.Type.UNSUBSCRIBED);
+                    Presence response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
                 }
@@ -690,8 +668,7 @@ public class Roster {
             Collection deletedEntries = new ArrayList();
 
             RosterPacket rosterPacket = (RosterPacket)packet;
-            for (Iterator i=rosterPacket.getRosterItems(); i.hasNext(); ) {
-                RosterPacket.Item item = (RosterPacket.Item)i.next();
+            for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), item.getItemStatus(), connection);
 
@@ -733,7 +710,7 @@ public class Roster {
                     }
                     // If the roster entry belongs to any groups, remove it from the
                     // list of unfiled entries.
-                    if (item.getGroupNames().hasNext()) {
+                    if (!item.getGroupNames().isEmpty()) {
                         synchronized (unfiledEntries) {
                             unfiledEntries.remove(entry);
                         }
@@ -749,18 +726,16 @@ public class Roster {
                 }
 
                 // Find the list of groups that the user currently belongs to.
-                List currentGroupNames = new ArrayList();
-                for (Iterator j = entry.getGroups(); j.hasNext();  ) {
-                    RosterGroup group = (RosterGroup)j.next();
-                    currentGroupNames.add(group.getName());
+                List<String> currentGroupNames = new ArrayList<String>();
+                for (RosterGroup rosterGroup : entry.getGroups()) {
+                    currentGroupNames.add(rosterGroup.getName());
                 }
 
                 // If the packet is not of the type REMOVE then add the entry to the groups
                 if (!RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
                     // Create the new list of groups the user belongs to.
-                    List newGroupNames = new ArrayList();
-                    for (Iterator k = item.getGroupNames(); k.hasNext();  ) {
-                        String groupName = (String)k.next();
+                    List<String> newGroupNames = new ArrayList<String>();
+                    for (String groupName : item.getGroupNames()) {
                         // Add the group name to the list.
                         newGroupNames.add(groupName);
 
@@ -798,12 +773,9 @@ public class Roster {
                 // RosterGroup.removeEntry removes the entry immediately (locally) and the 
                 // group could remain empty. 
                 // TODO Check the performance/logic for rosters with large number of groups 
-                for (Iterator it = getGroups(); it.hasNext();) {
-                    RosterGroup group = (RosterGroup)it.next();
+                for (RosterGroup group : getGroups()) {
                     if (group.getEntryCount() == 0) {
-                        synchronized (groups) {
-                            groups.remove(group.getName());
-                        }                            
+                        groups.remove(group.getName());
                     }
                 }
             }

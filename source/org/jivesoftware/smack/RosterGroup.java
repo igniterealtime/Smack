@@ -37,7 +37,7 @@ public class RosterGroup {
 
     private String name;
     private XMPPConnection connection;
-    private List entries;
+    private List<RosterEntry> entries;
 
     /**
      * Creates a new roster group instance.
@@ -48,7 +48,7 @@ public class RosterGroup {
     RosterGroup(String name, XMPPConnection connection) {
         this.name = name;
         this.connection = connection;
-        entries = new ArrayList();
+        entries = new ArrayList<RosterEntry>();
     }
 
     /**
@@ -95,13 +95,13 @@ public class RosterGroup {
     }
 
     /**
-     * Returns an iterator for the entries in the group.
+     * Returns an unmodifiable collection of all entries in the group.
      *
-     * @return an iterator for the entries in the group.
+     * @return all entries in the group.
      */
-    public Iterator getEntries() {
+    public Collection<RosterEntry> getEntries() {
         synchronized (entries) {
-            return Collections.unmodifiableList(new ArrayList(entries)).iterator();
+            return Collections.unmodifiableList(new ArrayList<RosterEntry>(entries));
         }
     }
 

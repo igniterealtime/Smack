@@ -106,21 +106,20 @@ public class RosterEntry {
     }
 
     /**
-     * Returns an iterator for all the roster groups that this entry belongs to.
+     * Returns an unmodifiable collection of the roster groups that this entry belongs to.
      *
      * @return an iterator for the groups this entry belongs to.
      */
-    public Iterator getGroups() {
-        List results = new ArrayList();
+    public Collection<RosterGroup> getGroups() {
+        List<RosterGroup> results = new ArrayList<RosterGroup>();
         // Loop through all roster groups and find the ones that contain this
         // entry. This algorithm should be fine
-        for (Iterator i=connection.roster.getGroups(); i.hasNext(); ) {
-            RosterGroup group = (RosterGroup)i.next();
+        for (RosterGroup group: connection.roster.getGroups()) {
             if (group.contains(this)) {
                 results.add(group);
             }
         }
-        return results.iterator();
+        return Collections.unmodifiableCollection(results);
     }
 
     /**
@@ -152,14 +151,15 @@ public class RosterEntry {
             buf.append(name).append(": ");
         }
         buf.append(user);
-        Iterator groups = getGroups();
-        if (groups.hasNext()) {
+        Collection<RosterGroup> groups = getGroups();
+        if (!groups.isEmpty()) {
             buf.append(" [");
-            RosterGroup group = (RosterGroup)groups.next();
+            Iterator<RosterGroup> iter = groups.iterator();
+            RosterGroup group = iter.next();
             buf.append(group.getName());
-            while (groups.hasNext()) {
+            while (iter.hasNext()) {
             buf.append(", ");
-                group = (RosterGroup)groups.next();
+                group = iter.next();
                 buf.append(group.getName());
             }
             buf.append("]");
@@ -184,8 +184,7 @@ public class RosterEntry {
         item.setItemType(entry.getType());
         item.setItemStatus(entry.getStatus());
         // Set the correct group names for the item.
-        for (Iterator j=entry.getGroups(); j.hasNext(); ) {
-            RosterGroup group = (RosterGroup)j.next();
+        for (RosterGroup group : entry.getGroups()) {
             item.addGroupName(group.getName());
         }
         return item;

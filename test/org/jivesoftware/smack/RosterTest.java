@@ -58,6 +58,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Tests the Roster functionality by creating and removing roster entries.
@@ -91,12 +92,8 @@ public class RosterTest extends SmackTestCase {
                 Thread.sleep(50);
             }
 
-            Iterator it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
-                Iterator groups = entry.getGroups();
-                while (groups.hasNext()) {
-                    RosterGroup rosterGroup = (RosterGroup) groups.next();
+            for (RosterEntry entry : roster.getEntries()) {
+                for (RosterGroup rosterGroup : entry.getGroups()) {
                     rosterGroup.removeEntry(entry);
                 }
             }
@@ -172,9 +169,7 @@ public class RosterTest extends SmackTestCase {
             assertNotNull("Presence not received", roster.getPresence(getBareJID(1)));
             assertNotNull("Presence not received", roster.getPresence(getBareJID(2)));
 
-            Iterator it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
+            for (RosterEntry entry : roster.getEntries()) {
                 roster.removeEntry(entry);
                 Thread.sleep(250);
             }
@@ -216,9 +211,7 @@ public class RosterTest extends SmackTestCase {
 
             Thread.sleep(200);
 
-            Iterator it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
+            for (RosterEntry entry : roster.getEntries()) {
                 roster.removeEntry(entry);
                 Thread.sleep(250);
             }
@@ -256,18 +249,14 @@ public class RosterTest extends SmackTestCase {
             Thread.sleep(200);
 
             // Change the roster entry name and check if the change was made
-            Iterator it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
+            for (RosterEntry entry : roster.getEntries()) {
                 entry.setName("gato11");
                 assertEquals("gato11", entry.getName());
             }
             // Reload the roster and check the name again
             roster.reload();
             Thread.sleep(2000);
-            it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
+            for (RosterEntry entry : roster.getEntries()) {
                 assertEquals("gato11", entry.getName());
             }
 
@@ -302,10 +291,8 @@ public class RosterTest extends SmackTestCase {
             }
             //assertNotNull("Presence not received", roster.getPresence(getBareJID(0)));
 
-            Iterator it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
-                assertFalse("The roster entry belongs to a group", entry.getGroups().hasNext());
+            for (RosterEntry entry : roster.getEntries()) {
+                assertFalse("The roster entry belongs to a group", !entry.getGroups().isEmpty());
             }
 
             // Change the roster entry name and check if the change was made
@@ -313,12 +300,9 @@ public class RosterTest extends SmackTestCase {
 
             // Reload the roster and check the name again
             Thread.sleep(200);
-            it = roster.getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
+            for (RosterEntry entry : roster.getEntries()) {
                 assertEquals("Name of roster entry is wrong", "NewName", entry.getName());
-                assertTrue("The roster entry does not belong to any group", entry.getGroups()
-                        .hasNext());
+                assertTrue("The roster entry does not belong to any group", !entry.getGroups().isEmpty());
             }
             // Wait up to 5 seconds to receive presences of the new roster contacts
             initial = System.currentTimeMillis();
@@ -372,12 +356,12 @@ public class RosterTest extends SmackTestCase {
             RosterEntry entry = roster2.getEntry(getBareJID(1));
             assertNotNull("No entry for user 1 was found", entry);
 
-            ArrayList groups = new ArrayList();
-            Iterator groupsItr = entry.getGroups();
-            groups.add(((RosterGroup)groupsItr.next()).getName());
-            groups.add(((RosterGroup)groupsItr.next()).getName());
-            assertTrue("Friends group was not found", groups.contains("Friends"));
-            assertTrue("NewGroup group was not found", groups.contains("NewGroup"));
+            List<String> groupNames = new ArrayList<String>();
+            for (RosterGroup rosterGroup : entry.getGroups()) {
+                groupNames.add(rosterGroup.getName());
+            }
+            assertTrue("Friends group was not found", groupNames.contains("Friends"));
+            assertTrue("NewGroup group was not found", groupNames.contains("NewGroup"));
 
             // Close the new connection
             con2.close();
@@ -584,12 +568,11 @@ public class RosterTest extends SmackTestCase {
     private void cleanUpRoster() {
         for (int i=0; i<getMaxConnections(); i++) {
             // Delete all the entries from the roster
-            Iterator it = getConnection(i).getRoster().getEntries();
-            while (it.hasNext()) {
-                RosterEntry entry = (RosterEntry) it.next();
+            for (RosterEntry entry : getConnection(i).getRoster().getEntries()) {
                 try {
                     getConnection(i).getRoster().removeEntry(entry);
-                } catch (XMPPException e) {
+                }
+                catch (XMPPException e) {
                     e.printStackTrace();
                     fail(e.getMessage());
                 }

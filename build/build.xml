@@ -24,8 +24,14 @@
     <!-- PROPERTIES -->
     <!-- ======================================================================================= -->
 
-    <property file="${basedir}/build/build.properties" />
+    <!-- Smack Version -->
+    <property name="version.major" value="3" />
+    <property name="version.minor" value="0" />
+    <property name="version.revision" value="0" />
 
+    <property name="version.name" value="${version.major}.${version.minor}.${version.revision}" />
+
+    <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/classes" />
     <property name="compile.test.dir" value="${basedir}/classes-test" />
     <property name="jar.dest.dir" value="${basedir}" />
@@ -34,11 +40,6 @@
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
     <property name="test.dir" value="${basedir}/test" />
     <property name="resources.dir" value="${basedir}/build/resources" />
-
-    <property name="version.major" value="2" />
-    <property name="version.minor" value="2" />
-    <property name="version.revision" value="1" />
-    <property name="version.name" value="${version.major}.${version.minor}.${version.revision}" />
 
     <!-- Test props - override these defaults in the properties file or in command line -->
     <property name="test.host" value="localhost" />
@@ -78,8 +79,8 @@
             destdir="${compile.dir}"
             includeAntRuntime="no"
             debug="on"
-            source="1.3"
-            target="1.2"
+            source="1.5"
+            target="1.5"
         >
             <src path="${basedir}/source" />
             <classpath>
@@ -102,8 +103,8 @@
             destdir="${compile.test.dir}"
             includeAntRuntime="no"
             debug="on"
-            source="1.3"
-            target="1.2"
+            source="1.5"
+            target="1.5"
         >
             <src path="${test.dir}" />
             <classpath>

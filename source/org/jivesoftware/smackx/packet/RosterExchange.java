@@ -64,8 +64,8 @@ public class RosterExchange implements PacketExtension {
      */
     public RosterExchange(Roster roster) {
         // Add all the roster entries to the new RosterExchange 
-        for (Iterator rosterEntries = roster.getEntries(); rosterEntries.hasNext();) {
-            this.addRosterEntry((RosterEntry) rosterEntries.next());
+        for (RosterEntry rosterEntry : roster.getEntries()) {
+            this.addRosterEntry(rosterEntry);
         }
     }
 
@@ -76,15 +76,16 @@ public class RosterExchange implements PacketExtension {
      */
     public void addRosterEntry(RosterEntry rosterEntry) {
 		// Obtain a String[] from the roster entry groups name 
-		ArrayList groupNamesList = new ArrayList();
+		List<String> groupNamesList = new ArrayList<String>();
 		String[] groupNames;
-		for (Iterator groups = rosterEntry.getGroups(); groups.hasNext();) {
-			groupNamesList.add(((RosterGroup) groups.next()).getName());
+		for (RosterGroup group : rosterEntry.getGroups()) {
+			groupNamesList.add(group.getName());
 		}
-		groupNames = (String[]) groupNamesList.toArray(new String[groupNamesList.size()]);
+		groupNames = groupNamesList.toArray(new String[groupNamesList.size()]);
 
         // Create a new Entry based on the rosterEntry and add it to the packet
-        RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getUser(), rosterEntry.getName(), groupNames);
+        RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getUser(),
+                rosterEntry.getName(), groupNames);
 		
         addRosterEntry(remoteRosterEntry);
     }

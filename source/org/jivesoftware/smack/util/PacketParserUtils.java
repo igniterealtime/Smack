@@ -131,7 +131,16 @@ public class PacketParserUtils {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     public static Presence parsePresence(XmlPullParser parser) throws Exception {
-        Presence.Type type = Presence.Type.fromString(parser.getAttributeValue("", "type"));
+        Presence.Type type = Presence.Type.available;
+        String typeString = parser.getAttributeValue("", "type");
+        if (typeString != null && !typeString.equals("")) {
+            try {
+                type = Presence.Type.valueOf(typeString);
+            }
+            catch (IllegalArgumentException iae) {
+                System.err.println("Found invalid presence type " + typeString);
+            }
+        }
 
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
@@ -154,14 +163,22 @@ public class PacketParserUtils {
                         int priority = Integer.parseInt(parser.nextText());
                         presence.setPriority(priority);
                     }
-                    catch (NumberFormatException nfe) { }
+                    catch (NumberFormatException nfe) {
+                        // Ignore.
+                    }
                     catch (IllegalArgumentException iae) {
                         // Presence priority is out of range so assume priority to be zero
                         presence.setPriority(0);
                     }
                 }
                 else if (elementName.equals("show")) {
-                    presence.setMode(Presence.Mode.fromString(parser.nextText()));
+                    String modeText = parser.nextText();
+                    try {
+                        presence.setMode(Presence.Mode.valueOf(modeText));
+                    }
+                    catch (IllegalArgumentException iae) {
+                        System.err.println("Found invalid presence mode " + modeText);
+                    }
                 }
                 else if (elementName.equals("error")) {
                     presence.setError(parseError(parser));

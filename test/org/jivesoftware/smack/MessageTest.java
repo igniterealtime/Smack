@@ -42,7 +42,7 @@ public class MessageTest extends SmackTestCase {
      */
     public void testOfflineMessage() {
         // Make user2 unavailable
-        getConnection(1).sendPacket(new Presence(Presence.Type.UNAVAILABLE));
+        getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
 
         try {
             Thread.sleep(500);
@@ -56,7 +56,7 @@ public class MessageTest extends SmackTestCase {
 
             // User2 becomes available again
             PacketCollector collector = getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.CHAT));
-            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE));
+            getConnection(1).sendPacket(new Presence(Presence.Type.available));
 
             // Check that offline messages are retrieved by user2 which is now available
             Message message = (Message) collector.nextResult(2500);

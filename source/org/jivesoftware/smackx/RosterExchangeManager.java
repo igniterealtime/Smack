@@ -129,8 +129,9 @@ public class RosterExchangeManager {
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
         RosterExchange rosterExchange = new RosterExchange();
-        for (Iterator it = rosterGroup.getEntries(); it.hasNext();)
-            rosterExchange.addRosterEntry((RosterEntry) it.next());
+        for (RosterEntry entry : rosterGroup.getEntries()) {
+            rosterExchange.addRosterEntry(entry);
+        }
         msg.addExtension(rosterExchange);
 
         // Send the message that contains the roster

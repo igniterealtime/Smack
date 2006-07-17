@@ -23,6 +23,7 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Represents XMPP roster packets.
@@ -31,7 +32,7 @@ import java.util.*;
  */
 public class RosterPacket extends IQ {
 
-    private final List rosterItems = new ArrayList();
+    private final List<Item> rosterItems = new ArrayList<Item>();
 
     /**
      * Adds a roster item to the packet.
@@ -56,14 +57,13 @@ public class RosterPacket extends IQ {
     }
 
     /**
-     * Returns an Iterator for the roster items in the packet.
+     * Returns an unmodifiable collection for the roster items in the packet.
      *
-     * @return and Iterator for the roster items in the packet.
+     * @return an unmodifiable collection for the roster items in the packet.
      */
-    public Iterator getRosterItems() {
+    public Collection<Item> getRosterItems() {
         synchronized (rosterItems) {
-            List entries = Collections.unmodifiableList(new ArrayList(rosterItems));
-            return entries.iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(rosterItems));
         }
     }
 
@@ -71,8 +71,7 @@ public class RosterPacket extends IQ {
         StringBuffer buf = new StringBuffer();
         buf.append("<query xmlns=\"jabber:iq:roster\">");
         synchronized (rosterItems) {
-            for (int i=0; i<rosterItems.size(); i++) {
-                Item entry = (Item)rosterItems.get(i);
+            for (Item entry : rosterItems) {
                 buf.append(entry.toXML());
             }
         }
@@ -90,7 +89,7 @@ public class RosterPacket extends IQ {
         private String name;
         private ItemType itemType;
         private ItemStatus itemStatus;
-        private final List groupNames;
+        private final Set<String> groupNames;
 
         /**
          * Creates a new roster item.
@@ -103,7 +102,7 @@ public class RosterPacket extends IQ {
             this.name = name;
             itemType = null;
             itemStatus = null;
-            groupNames = new ArrayList();
+            groupNames = new CopyOnWriteArraySet<String>();
         }
 
         /**
@@ -170,15 +169,13 @@ public class RosterPacket extends IQ {
         }
 
         /**
-         * Returns an Iterator for the group names (as Strings) that the roster item
+         * Returns an unmodifiable set of the group names that the roster item
          * belongs to.
          *
-         * @return an Iterator for the group names.
+         * @return an unmodifiable set of the group names.
          */
-        public Iterator getGroupNames() {
-            synchronized (groupNames) {
-                return Collections.unmodifiableList(groupNames).iterator();
-            }
+        public Set<String> getGroupNames() {
+            return Collections.unmodifiableSet(groupNames);
         }
 
         /**
@@ -187,11 +184,7 @@ public class RosterPacket extends IQ {
          * @param groupName the group name.
          */
         public void addGroupName(String groupName) {
-            synchronized (groupNames) {
-                if (!groupNames.contains(groupName)) {
-                    groupNames.add(groupName);
-                }
-            }
+            groupNames.add(groupName);
         }
 
         /**
@@ -200,9 +193,7 @@ public class RosterPacket extends IQ {
          * @param groupName the group name.
          */
         public void removeGroupName(String groupName) {
-            synchronized (groupNames) {
-                groupNames.remove(groupName);
-            }
+            groupNames.remove(groupName);
         }
 
         public String toXML() {
@@ -218,11 +209,8 @@ public class RosterPacket extends IQ {
                 buf.append(" ask=\"").append(itemStatus).append("\"");
             }
             buf.append(">");
-            synchronized (groupNames) {
-                for (int i=0; i<groupNames.size(); i++) {
-                    String groupName = (String)groupNames.get(i);
-                    buf.append("<group>").append(StringUtils.escapeForXML(groupName)).append("</group>");
-                }
+            for (String groupName : groupNames) {
+                buf.append("<group>").append(StringUtils.escapeForXML(groupName)).append("</group>");
             }
             buf.append("</item>");
             return buf.toString();

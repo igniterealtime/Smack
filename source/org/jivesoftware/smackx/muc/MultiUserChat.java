@@ -291,7 +291,7 @@ public class MultiUserChat {
         }
         // We create a room by sending a presence packet to room@service/nick
         // and signal support for MUC. The owner will be automatically logged into the room.
-        Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
+        Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setTo(room + "/" + nickname);
         // Indicate the the client supports MUC          
         joinPresence.addExtension(new MUCInitialPresence());
@@ -422,7 +422,7 @@ public class MultiUserChat {
         }
         // We join a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
-        Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
+        Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setTo(room + "/" + nickname);
 
         // Indicate the the client supports MUC          
@@ -484,7 +484,7 @@ public class MultiUserChat {
         }
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
-        Presence leavePresence = new Presence(Presence.Type.UNAVAILABLE);
+        Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(room + "/" + nickname);
         // Invoke presence interceptors so that extra information can be dynamically added
         for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
@@ -944,7 +944,7 @@ public class MultiUserChat {
         // We change the nickname by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         // We don't have to signal the MUC support again
-        Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
+        Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setTo(room + "/" + nickname);
         // Invoke presence interceptors so that extra information can be dynamically added
         for (Iterator it = presenceInterceptors.iterator(); it.hasNext();) {
@@ -995,7 +995,7 @@ public class MultiUserChat {
         }
         // We change the availability status by sending a presence packet to the room with the
         // new presence status and mode
-        Presence joinPresence = new Presence(Presence.Type.AVAILABLE);
+        Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setStatus(status);
         joinPresence.setMode(mode);
         joinPresence.setTo(room + "/" + nickname);
@@ -2112,7 +2112,7 @@ public class MultiUserChat {
                 String from = presence.getFrom();
                 String myRoomJID = room + "/" + nickname;
                 boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
-                if (presence.getType() == Presence.Type.AVAILABLE) {
+                if (presence.getType() == Presence.Type.available) {
                     Presence oldPresence;
                     synchronized (occupantsMap) {
                         oldPresence = (Presence)occupantsMap.get(from);
@@ -2145,7 +2145,7 @@ public class MultiUserChat {
                         }
                     }
                 }
-                else if (presence.getType() == Presence.Type.UNAVAILABLE) {
+                else if (presence.getType() == Presence.Type.unavailable) {
                     synchronized (occupantsMap) {
                         occupantsMap.remove(from);
                     }

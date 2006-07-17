@@ -37,10 +37,10 @@ public class PresencePriorityTest extends SmackTestCase {
             conn = new XMPPConnection(getHost(), getPort());
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             // Change the presence priorities of User_1
-            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
-                    Presence.Mode.AVAILABLE));
-            conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
-                    Presence.Mode.AVAILABLE));
+            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 1,
+                    Presence.Mode.available));
+            conn.sendPacket(new Presence(Presence.Type.available, null, 2,
+                    Presence.Mode.available));
             Thread.sleep(150);
             // Create the chats between the participants
             Chat chat0 = new Chat(getConnection(0), getBareJID(1));
@@ -55,10 +55,10 @@ public class PresencePriorityTest extends SmackTestCase {
                     chat1.nextMessage(1000));
 
             // Invert the presence priorities of User_1
-            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
-                    Presence.Mode.AVAILABLE));
-            conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
-                    Presence.Mode.AVAILABLE));
+            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 2,
+                    Presence.Mode.available));
+            conn.sendPacket(new Presence(Presence.Type.available, null, 1,
+                    Presence.Mode.available));
 
             Thread.sleep(150);
             // Test delivery of message to the presence with highest priority
@@ -78,14 +78,14 @@ public class PresencePriorityTest extends SmackTestCase {
             assertNotNull("Resource with highest priority didn't receive the message",
                     chat1.nextMessage(2000));
 
-            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
-                    Presence.Mode.AVAILABLE));
+            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 2,
+                    Presence.Mode.available));
 
             // User_1 will log in again using another resource
             conn = new XMPPConnection(getHost(), getPort());
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
-            conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
-                    Presence.Mode.AVAILABLE));
+            conn.sendPacket(new Presence(Presence.Type.available, null, 1,
+                    Presence.Mode.available));
             chat2 = new Chat(conn, getBareJID(0), chat0.getThreadID());
 
             Thread.sleep(150);
@@ -97,10 +97,10 @@ public class PresencePriorityTest extends SmackTestCase {
                     chat2.nextMessage(1000));
 
             // Invert the presence priorities of User_1
-            getConnection(1).sendPacket(new Presence(Presence.Type.AVAILABLE, null, 1,
-                    Presence.Mode.AVAILABLE));
-            conn.sendPacket(new Presence(Presence.Type.AVAILABLE, null, 2,
-                    Presence.Mode.AVAILABLE));
+            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 1,
+                    Presence.Mode.available));
+            conn.sendPacket(new Presence(Presence.Type.available, null, 2,
+                    Presence.Mode.available));
 
             Thread.sleep(150);
             // Test delivery of message to the presence with highest priority

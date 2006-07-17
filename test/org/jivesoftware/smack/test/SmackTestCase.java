@@ -55,8 +55,8 @@ public abstract class SmackTestCase extends TestCase {
     private String serviceName = "localhost";
     private int port = 5222;
 
-    private String chatDomain = "chat.localhost";
-    private String mucDomain = "conference.localhost";
+    private String chatDomain = "chat";
+    private String mucDomain = "conference";
 
     private XMPPConnection[] connections = null;
 
@@ -172,7 +172,7 @@ public abstract class SmackTestCase extends TestCase {
      * @return the default MUC service domain.
      */
     protected String getMUCDomain() {
-        return mucDomain;
+        return mucDomain + "." + serviceName;
     }
 
     protected void setUp() throws Exception {

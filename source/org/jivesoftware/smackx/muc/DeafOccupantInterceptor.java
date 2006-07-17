@@ -47,7 +47,7 @@ public class DeafOccupantInterceptor implements PacketInterceptor {
     public void interceptPacket(Packet packet) {
         Presence presence = (Presence) packet;
         // Check if user is joining a room
-        if (Presence.Type.AVAILABLE == presence.getType() &&
+        if (Presence.Type.available == presence.getType() &&
                 presence.getExtension("x", "http://jabber.org/protocol/muc") != null) {
             // Add extension that indicates that user wants to be a deaf occupant
             packet.addExtension(new DeafExtension());

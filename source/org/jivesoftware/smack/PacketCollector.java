@@ -135,17 +135,34 @@ public class PacketCollector {
     public synchronized Packet nextResult(long timeout) {
         // Wait up to the specified amount of time for a result.
         if (resultQueue.isEmpty()) {
+            long waitTime = timeout;
+            long start = System.currentTimeMillis();
             try {
-                wait(timeout);
+                // Keep waiting until the specified amount of time has elapsed, or
+                // a packet is available to return.
+                while (resultQueue.isEmpty()) {
+                    if (waitTime <= 0) {
+                        break;
+                    }
+                    wait(waitTime);
+                    long now = System.currentTimeMillis();
+                    waitTime -= (now - start);
+                    start = now;
+                }
             }
             catch (InterruptedException ie) {
                 // Ignore.
             }
+            // Still haven't found a result, so return null.
+            if (resultQueue.isEmpty()) {
+                return null;
+            }
+            // Return the packet that was found.
+            else {
+                return (Packet)resultQueue.removeLast();
+            }
         }
-        // If still no result, return null.
-        if (resultQueue.isEmpty()) {
-            return null;
-        }
+        // There's already a packet waiting, so return it.
         else {
             return (Packet)resultQueue.removeLast();
         }

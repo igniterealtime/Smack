@@ -454,7 +454,7 @@ public class XMPPConnection {
 
         // Set presence to online.
         if (sendPresence) {
-            packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
+            packetWriter.sendPacket(new Presence(Presence.Type.available));
         }
 
         // Indicate that we're now authenticated.
@@ -512,7 +512,7 @@ public class XMPPConnection {
         roster = null;
 
         // Set presence to online.
-        packetWriter.sendPacket(new Presence(Presence.Type.AVAILABLE));
+        packetWriter.sendPacket(new Presence(Presence.Type.available));
 
         // Indicate that we're now authenticated.
         authenticated = true;
@@ -596,24 +596,6 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new group chat connected to the specified room. The room name
-     * should be full address, such as <tt>room@chat.example.com</tt>.
-     * <p>
-     * Most XMPP servers use a sub-domain for the chat service (eg chat.example.com
-     * for the XMPP server example.com). You must ensure that the room address you're
-     * trying to connect to includes the proper chat sub-domain.
-     *
-     * @param room the fully qualifed name of the room.
-     * @return a new GroupChat object.
-     */
-    public GroupChat createGroupChat(String room) {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        return new GroupChat(this, room);
-    }
-
-    /**
      * Returns true if currently connected to the XMPP server.
      *
      * @return true if connected.
@@ -656,7 +638,7 @@ public class XMPPConnection {
      */
     public void close() {
         // Set presence to offline.
-        packetWriter.sendPacket(new Presence(Presence.Type.UNAVAILABLE));
+        packetWriter.sendPacket(new Presence(Presence.Type.unavailable));
         packetReader.shutdown();
         packetWriter.shutdown();
         // Wait 150 ms for processes to clean-up, then shutdown.

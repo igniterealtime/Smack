@@ -104,10 +104,10 @@ public class RosterExchangeManagerTest extends SmackTestCase {
     public void testSendRosterGroup() {
         // Send user1's RosterGroups to user2
         try {
-            RosterExchangeManager rosterExchangeManager =
-                new RosterExchangeManager(getConnection(0));
-            for (Iterator it = getConnection(0).getRoster().getGroups(); it.hasNext();)
-                rosterExchangeManager.send((RosterGroup) it.next(), getBareJID(1));
+            RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(getConnection(0));
+            for (RosterGroup rosterGroup : getConnection(0).getRoster().getGroups()) {
+                rosterExchangeManager.send(rosterGroup, getBareJID(1));
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
