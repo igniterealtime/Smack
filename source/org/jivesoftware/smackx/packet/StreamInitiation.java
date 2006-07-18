@@ -339,7 +339,7 @@ public class StreamInitiation extends IQ {
                     .append(getNamespace()).append("\" ");
 
             if (getName() != null) {
-                buffer.append("name=\"").append(getName()).append("\" ");
+                buffer.append("name=\"").append(StringUtils.escapeForXML(getName())).append("\" ");
             }
 
             if (getSize() > 0) {
