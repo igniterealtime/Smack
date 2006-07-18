@@ -465,7 +465,13 @@ public class RosterTest extends SmackTestCase {
     }
 
     /**
-     * Test presence management.
+     * Test presence management.<p>
+     * 
+     * 1. Log in user0 from a client and user1 from 2 clients
+     * 2. Create presence subscription of type BOTH between 2 users
+     * 3. Check that presence is correctly delivered to both users
+     * 4. User1 logs out from a client
+     * 5. Check that presence for each connected resource is correct
      */
     public void testRosterPresences() throws Exception {
         Thread.sleep(200);
