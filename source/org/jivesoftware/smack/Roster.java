@@ -314,7 +314,7 @@ public class Roster {
     public Collection<RosterEntry> getEntries() {
         Set<RosterEntry> allEntries = new HashSet<RosterEntry>();
         // Loop through all roster groups and add their entries to the answer
-        for (RosterGroup rosterGroup: getGroups()) {
+        for (RosterGroup rosterGroup : getGroups()) {
             allEntries.addAll(rosterGroup.getEntries());
         }
         // Add the roster unfiled entries to the answer
