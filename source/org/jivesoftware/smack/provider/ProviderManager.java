@@ -28,6 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages providers for parsing custom XML sub-documents of XMPP packets. Two types of
@@ -110,8 +111,8 @@ import java.util.*;
  */
 public class ProviderManager {
 
-    private static Map extensionProviders = new Hashtable();
-    private static Map iqProviders = new Hashtable();
+    private static Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
+    private static Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
 
     static {
         // Load IQ processing providers.
@@ -154,7 +155,7 @@ public class ProviderManager {
                                             // Add the provider to the map.
                                             Class provider = Class.forName(className);
                                             if (IQProvider.class.isAssignableFrom(provider)) {
-                                                iqProviders.put(key, provider.newInstance());
+                                                iqProviders.put(key, (IQProvider)provider.newInstance());
                                             }
                                             else if (IQ.class.isAssignableFrom(provider)) {
                                                 iqProviders.put(key, provider);
@@ -211,6 +212,7 @@ public class ProviderManager {
                             providerStream.close();
                         }
                         catch (Exception e) {
+                            // Ignore.
                         }
                     }
                 }
@@ -247,12 +249,14 @@ public class ProviderManager {
     }
 
     /**
-     * Returns an Iterator for all IQProvider instances.
+     * Returns an unmodifiable collection of all IQProvider instances. Each object
+     * in the collection will either be an IQProvider instance, or a Class object
+     * that implements the IQProvider interface.
      *
-     * @return an Iterator for all IQProvider instances.
+     * @return all IQProvider instances.
      */
-    public static Iterator getIQProviders() {
-        return Collections.unmodifiableCollection(new HashMap(iqProviders).values()).iterator();
+    public static Collection<Object> getIQProviders() {
+        return Collections.unmodifiableCollection(iqProviders.values());
     }
 
     /**
@@ -348,13 +352,14 @@ public class ProviderManager {
     }
 
     /**
-     * Returns an Iterator for all PacketExtensionProvider instances.
+     * Returns an unmodifiable collection of all PacketExtensionProvider instances. Each object
+     * in the collection will either be a PacketExtensionProvider instance, or a Class object
+     * that implements the PacketExtensionProvider interface.
      *
-     * @return an Iterator for all PacketExtensionProvider instances.
+     * @return all PacketExtensionProvider instances.
      */
-    public static Iterator getExtensionProviders() {
-        return Collections.unmodifiableCollection(
-                new HashMap(extensionProviders).values()).iterator();
+    public static Collection<Object> getExtensionProviders() {
+        return Collections.unmodifiableCollection(extensionProviders.values());
     }
 
     /**
@@ -377,7 +382,7 @@ public class ProviderManager {
      */
     private static ClassLoader[] getClassLoaders() {
         ClassLoader[] classLoaders = new ClassLoader[2];
-        classLoaders[0] = new ProviderManager().getClass().getClassLoader();
+        classLoaders[0] = ProviderManager.class.getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
         return classLoaders;
     }

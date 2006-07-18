@@ -38,9 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * Others users may attempt to subscribe to this user using a subscription request. Three
  * modes are supported for handling these requests: <ul>
- *      <li> SUBSCRIPTION_ACCEPT_ALL -- accept all subscription requests.
- *      <li> SUBSCRIPTION_REJECT_ALL -- reject all subscription requests.
- *      <li> SUBSCRIPTION_MANUAL -- manually process all subscription requests. </ul>
+ *      <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
+ *      <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
+ *      <li>{@link SubscriptionMode#manual manual} -- manually process all subscription requests.</li>
+ * </ul>
  *
  * @see XMPPConnection#getRoster()
  * @author Matt Tucker
@@ -48,30 +49,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Roster {
 
     /**
-     * Automatically accept all subscription and unsubscription requests. This is
-     * the default mode and is suitable for simple client. More complex client will
-     * likely wish to handle subscription requests manually.
-     */
-    public static final int SUBSCRIPTION_ACCEPT_ALL = 0;
-
-    /**
-     * Automatically reject all subscription requests.
-     */
-    public static final int SUBSCRIPTION_REJECT_ALL = 1;
-
-    /**
-     * Subscription requests are ignored, which means they must be manually
-     * processed by registering a listener for presence packets and then looking
-     * for any presence requests that have the type Presence.Type.SUBSCRIBE or
-     * Presence.Type.UNSUBSCRIBE.
-     */
-    public static final int SUBSCRIPTION_MANUAL = 2;
-
-    /**
      * The default subscription processing mode to use when a Roster is created. By default
      * all subscription requests are automatically accepted.
      */
-    private static int defaultSubscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
+    private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
     private XMPPConnection connection;
     private final Map<String, RosterGroup> groups;
@@ -83,17 +64,17 @@ public class Roster {
     // has been recieved and processed.
     boolean rosterInitialized = false;
 
-    private int subscriptionMode = getDefaultSubscriptionMode();
+    private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
     /**
      * Returns the default subscription processing mode to use when a new Roster is created. The
      * subscription processing mode dictates what action Smack will take when subscription
      * requests from other users are made. The default subscription mode
-     * is {@link #SUBSCRIPTION_ACCEPT_ALL}.
+     * is {@link SubscriptionMode#accept_all}.
      *
      * @return the default subscription mode to use for new Rosters
      */
-    public static int getDefaultSubscriptionMode() {
+    public static SubscriptionMode getDefaultSubscriptionMode() {
         return defaultSubscriptionMode;
     }
 
@@ -101,11 +82,11 @@ public class Roster {
      * Sets the default subscription processing mode to use when a new Roster is created. The
      * subscription processing mode dictates what action Smack will take when subscription
      * requests from other users are made. The default subscription mode
-     * is {@link #SUBSCRIPTION_ACCEPT_ALL}.
+     * is {@link SubscriptionMode#accept_all}.
      *
      * @param subscriptionMode the default subscription mode to use for new Rosters.
      */
-    public static void setDefaultSubscriptionMode(int subscriptionMode) {
+    public static void setDefaultSubscriptionMode(SubscriptionMode subscriptionMode) {
         defaultSubscriptionMode = subscriptionMode;
     }
 
@@ -132,7 +113,7 @@ public class Roster {
     /**
      * Returns the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link #SUBSCRIPTION_ACCEPT_ALL}.<p>
+     * The default subscription mode is {@link SubscriptionMode#accept_all}.<p>
      *
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
@@ -140,14 +121,14 @@ public class Roster {
      *
      * @return the subscription mode.
      */
-    public int getSubscriptionMode() {
+    public SubscriptionMode getSubscriptionMode() {
         return subscriptionMode;
     }
 
     /**
      * Sets the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link #SUBSCRIPTION_ACCEPT_ALL}.<p>
+     * The default subscription mode is {@link SubscriptionMode#accept_all}.<p>
      *
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
@@ -155,13 +136,7 @@ public class Roster {
      *
      * @param subscriptionMode the subscription mode.
      */
-    public void setSubscriptionMode(int subscriptionMode) {
-        if (subscriptionMode != SUBSCRIPTION_ACCEPT_ALL &&
-                subscriptionMode != SUBSCRIPTION_REJECT_ALL &&
-                subscriptionMode != SUBSCRIPTION_MANUAL)
-        {
-            throw new IllegalArgumentException("Invalid mode.");
-        }
+    public void setSubscriptionMode(SubscriptionMode subscriptionMode) {
         this.subscriptionMode = subscriptionMode;
     }
 
@@ -342,15 +317,14 @@ public class Roster {
     }
 
     /**
-     * Returns an Iterator for the unfiled roster entries. An unfiled entry is
+     * Returns an unmodifiable collection for the unfiled roster entries. An unfiled entry is
      * an entry that doesn't belong to any groups.
      *
-     * @return an iterator the unfiled roster entries.
+     * @return the unfiled roster entries.
      */
-    public Iterator<RosterEntry> getUnfiledEntries() {
+    public Collection<RosterEntry> getUnfiledEntries() {
         synchronized (unfiledEntries) {
-            return Collections.unmodifiableList(new ArrayList<RosterEntry>(unfiledEntries))
-                    .iterator();
+            return Collections.unmodifiableList(new ArrayList<RosterEntry>(unfiledEntries));
         }
     }
 
@@ -421,7 +395,7 @@ public class Roster {
      * Returns the presence info for a particular user, or <tt>null</tt> if the user
      * is unavailable (offline) or if no presence information is available, such as
      * when you are not subscribed to the user's presence updates.<p>
-     * 
+     *
      * If the user has several presences (one for each resource) then answer the presence
      * with the highest priority.<p>
      *
@@ -472,7 +446,7 @@ public class Roster {
      * when you are not subscribed to the user's presence updates.
      *
      * @param userResource a fully qualified xmpp ID including a resource.
-     * @return the user's current presence, or <tt>null</tt> if the user is unavailable 
+     * @return the user's current presence, or <tt>null</tt> if the user is unavailable
      * or if no presence information is available.
      */
     public Presence getPresenceResource(String userResource) {
@@ -576,6 +550,32 @@ public class Roster {
     }
 
     /**
+     * An enumeration for the subscription mode options.
+     */
+    public enum SubscriptionMode {
+
+        /**
+         * Automatically accept all subscription and unsubscription requests. This is
+         * the default mode and is suitable for simple client. More complex client will
+         * likely wish to handle subscription requests manually.
+        */
+        accept_all,
+
+        /**
+         * Automatically reject all subscription requests.
+         */
+        reject_all,
+
+        /**
+         * Subscription requests are ignored, which means they must be manually
+         * processed by registering a listener for presence packets and then looking
+         * for any presence requests that have the type Presence.Type.SUBSCRIBE or
+         * Presence.Type.UNSUBSCRIBE.
+         */
+        manual
+    }
+
+    /**
      * Listens for all presence packets and processes them.
      */
     private class PresencePacketListener implements PacketListener {
@@ -630,13 +630,13 @@ public class Roster {
                 }
             }
             else if (presence.getType() == Presence.Type.subscribe) {
-                if (subscriptionMode == SUBSCRIPTION_ACCEPT_ALL) {
+                if (subscriptionMode == SubscriptionMode.accept_all) {
                     // Accept all subscription requests.
                     Presence response = new Presence(Presence.Type.subscribed);
                     response.setTo(presence.getFrom());
                     connection.sendPacket(response);
                 }
-                else if (subscriptionMode == SUBSCRIPTION_REJECT_ALL) {
+                else if (subscriptionMode == SubscriptionMode.reject_all) {
                     // Reject all subscription requests.
                     Presence response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());
@@ -645,9 +645,9 @@ public class Roster {
                 // Otherwise, in manual mode so ignore.
             }
             else if (presence.getType() == Presence.Type.unsubscribe) {
-                if (subscriptionMode != SUBSCRIPTION_MANUAL) {
+                if (subscriptionMode != SubscriptionMode.manual) {
                     // Acknowledge and accept unsubscription notification so that the
-                    // server will stop sending notifications saying that the contact 
+                    // server will stop sending notifications saying that the contact
                     // has unsubscribed to our presence.
                     Presence response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());

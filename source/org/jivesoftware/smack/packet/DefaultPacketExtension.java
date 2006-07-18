@@ -20,10 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Default implementation of the PacketExtension interface. Unless a PacketExtensionProvider
@@ -51,7 +48,7 @@ public class DefaultPacketExtension implements PacketExtension {
 
     private String elementName;
     private String namespace;
-    private Map map;
+    private Map<String,String> map;
 
     /**
      * Creates a new generic packet extension.
@@ -85,8 +82,7 @@ public class DefaultPacketExtension implements PacketExtension {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
-        for (Iterator i=getNames(); i.hasNext(); ) {
-            String name = (String)i.next();
+        for (String name : getNames()) {
             String value = getValue(name);
             buf.append("<").append(name).append(">");
             buf.append(value);
@@ -97,16 +93,16 @@ public class DefaultPacketExtension implements PacketExtension {
     }
 
     /**
-     * Returns an Iterator for the names that can be used to get
+     * Returns an unmodifiable collection of the names that can be used to get
      * values of the packet extension.
      *
-     * @return an Iterator for the names.
+     * @return the names.
      */
-    public synchronized Iterator getNames() {
+    public synchronized Collection<String> getNames() {
         if (map == null) {
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.emptySet();
         }
-        return Collections.unmodifiableMap(new HashMap(map)).keySet().iterator();
+        return Collections.unmodifiableSet(new HashMap<String,String>(map).keySet());
     }
 
     /**
@@ -119,7 +115,7 @@ public class DefaultPacketExtension implements PacketExtension {
         if (map == null) {
             return null;
         }
-        return (String)map.get(name);
+        return map.get(name);
     }
 
     /**
@@ -130,7 +126,7 @@ public class DefaultPacketExtension implements PacketExtension {
      */
     public synchronized void setValue(String name, String value) {
         if (map == null) {
-            map = new HashMap();
+            map = new HashMap<String,String>();
         }
         map.put(name, value);
     }

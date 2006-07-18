@@ -362,13 +362,7 @@ class PacketWriter {
         stream.append(" to=\"").append(connection.serviceName).append("\"");
         stream.append(" xmlns=\"jabber:client\"");
         stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\"");
-        if (connection instanceof SSLXMPPConnection) {
-            // Old SSL connections should not include indicate XMPP 1.0 compliance
-            stream.append(">");
-        }
-        else {
-            stream.append(" version=\"1.0\">");
-        }
+        stream.append(" version=\"1.0\">");
         writer.write(stream.toString());
         writer.flush();
     }

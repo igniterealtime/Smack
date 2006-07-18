@@ -178,7 +178,7 @@ public class XMPPConnection {
 
     /**
      * Creates a new connection to the XMPP server at the specifiec host and port.
-     * 
+     *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
      * @throws XMPPException if an error occurs while trying to establish the connection.
@@ -941,20 +941,20 @@ public class XMPPConnection {
                     Class<?> zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
                     //ZOutputStream out = new ZOutputStream(socket.getOutputStream(), JZlib.Z_BEST_COMPRESSION);
                     Constructor<?> constructor =
-                            zoClass.getConstructor(new Class[]{OutputStream.class, Integer.TYPE});
-                    Object out = constructor.newInstance(new Object[] {socket.getOutputStream(), new Integer(9)});
+                            zoClass.getConstructor(OutputStream.class, Integer.TYPE);
+                    Object out = constructor.newInstance(socket.getOutputStream(), 9);
                     //out.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
-                    Method method = zoClass.getMethod("setFlushMode", new Class[] {Integer.TYPE});
-                    method.invoke(out, new Object[] {new Integer(1)});
+                    Method method = zoClass.getMethod("setFlushMode", Integer.TYPE);
+                    method.invoke(out, 1);
                     writer = new BufferedWriter(new OutputStreamWriter((OutputStream) out, "UTF-8"));
 
                     Class<?> ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
                     //ZInputStream in = new ZInputStream(socket.getInputStream());
-                    constructor = ziClass.getConstructor(new Class[]{InputStream.class});
-                    Object in = constructor.newInstance(new Object[] {socket.getInputStream()});
+                    constructor = ziClass.getConstructor(InputStream.class);
+                    Object in = constructor.newInstance(socket.getInputStream());
                     //in.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
-                    method = ziClass.getMethod("setFlushMode", new Class[] {Integer.TYPE});
-                    method.invoke(in, new Object[] {new Integer(1)});
+                    method = ziClass.getMethod("setFlushMode", Integer.TYPE);
+                    method.invoke(in, 1);
                     reader = new BufferedReader(new InputStreamReader((InputStream) in, "UTF-8"));
                 }
                 catch (Exception e) {
@@ -982,6 +982,7 @@ public class XMPPConnection {
                     className = System.getProperty("smack.debuggerClass");
                 }
                 catch (Throwable t) {
+                    // Ignore.
                 }
                 Class<?> debuggerClass = null;
                 if (className != null) {
@@ -1010,10 +1011,8 @@ public class XMPPConnection {
                 // option
                 try {
                     Constructor<?> constructor =
-                        debuggerClass.getConstructor(
-                            new Class[] { XMPPConnection.class, Writer.class, Reader.class });
-                    debugger = (SmackDebugger) constructor
-                            .newInstance(new Object[]{this, writer, reader});
+                        debuggerClass.getConstructor(XMPPConnection.class, Writer.class, Reader.class);
+                    debugger = (SmackDebugger) constructor.newInstance(this, writer, reader);
                     reader = debugger.getReader();
                     writer = debugger.getWriter();
                 }
@@ -1143,7 +1142,7 @@ public class XMPPConnection {
      * speed network connection. However, the server will need to use more CPU time in order to
      * un/compress network data so under high load the server performance might be affected.<p>
      *
-     * Note: To use stream compression the smackx.jar file has to be present in the classpath.
+     * Note: to use stream compression the smackx.jar file has to be present in the classpath.
      *
      * @return true if network traffic is being compressed.
      */
@@ -1161,7 +1160,7 @@ public class XMPPConnection {
      * zlib method is supported by the client. Stream compression negotiation has to be done
      * before authentication took place.<p>
      *
-     * Note: To use stream compression the smackx.jar file has to be present in the classpath.
+     * Note: to use stream compression the smackx.jar file has to be present in the classpath.
      *
      * @return true if stream compression negotiation was successful.
      */
@@ -1184,7 +1183,9 @@ public class XMPPConnection {
                 try {
                     this.wait(SmackConfiguration.getPacketReplyTimeout() * 5);
                 }
-                catch (InterruptedException e) {}
+                catch (InterruptedException e) {
+                    // Ignore.
+                }
             }
             return usingCompression;
         }

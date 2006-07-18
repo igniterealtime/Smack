@@ -218,9 +218,8 @@ public class EnhancedDebuggerWindow {
         JPanel iqProvidersPanel = new JPanel();
         iqProvidersPanel.setLayout(new GridLayout(1, 1));
         iqProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed IQ Providers"));
-        Vector providers = new Vector();
-        for (Iterator it = ProviderManager.getIQProviders(); it.hasNext();) {
-            Object provider = it.next();
+        Vector<String> providers = new Vector<String>();
+        for (Object provider : ProviderManager.getIQProviders()) {
             if (provider.getClass() == Class.class) {
                 providers.add(((Class) provider).getName());
             }
@@ -238,9 +237,8 @@ public class EnhancedDebuggerWindow {
         JPanel extensionProvidersPanel = new JPanel();
         extensionProvidersPanel.setLayout(new GridLayout(1, 1));
         extensionProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed Extension Providers"));
-        providers = new Vector();
-        for (Iterator it = ProviderManager.getExtensionProviders(); it.hasNext();) {
-            Object provider = it.next();
+        providers = new Vector<String>();
+        for (Object provider : ProviderManager.getExtensionProviders()) {
             if (provider.getClass() == Class.class) {
                 providers.add(((Class) provider).getName());
             }

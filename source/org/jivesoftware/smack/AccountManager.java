@@ -28,10 +28,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.util.StringUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -73,8 +70,8 @@ public class AccountManager {
     }
 
     /**
-     * Returns an Iterator for the (String) names of the required account attributes.
-     * All attributes must be set when creating new accounts. The standard
+     * Returns an unmodifiable collection of the names of the required account attributes.
+     * All attributes must be set when creating new accounts. The standard set of possible
      * attributes are as follows: <ul>
      *      <li>name -- the user's name.
      *      <li>first -- the user's first name.
@@ -96,20 +93,20 @@ public class AccountManager {
      *
      * @return the required account attributes.
      */
-    public Iterator<String> getAccountAttributes() {
+    public Collection<String> getAccountAttributes() {
         try {
             if (info == null) {
                 getRegistrationInfo();
             }
             Map<String, String> attributes = info.getAttributes();
             if (attributes != null) {
-                return attributes.keySet().iterator();
+                return Collections.unmodifiableSet(attributes.keySet());
             }
         }
         catch (XMPPException xe) {
             xe.printStackTrace();
         }
-        return Collections.EMPTY_LIST.iterator();
+        return Collections.emptySet();
     }
 
     /**
@@ -170,8 +167,7 @@ public class AccountManager {
         }
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<String, String>();
-        for (Iterator<String> i=getAccountAttributes(); i.hasNext(); ) {
-            String attributeName = i.next();
+        for (String attributeName : getAccountAttributes()) {
             attributes.put(attributeName, "");
         }
         createAccount(username, password, attributes);

@@ -72,8 +72,8 @@ public abstract class Packet {
     private String packetID = null;
     private String to = null;
     private String from = null;
-    private List packetExtensions = null;
-    private Map properties = null;
+    private List<PacketExtension> packetExtensions = null;
+    private Map<String,Object> properties = null;
     private XMPPError error = null;
 
     /**
@@ -168,15 +168,15 @@ public abstract class Packet {
     }
 
     /**
-     * Returns an Iterator for the packet extensions attached to the packet.
+     * Returns an unmodifiable collection of the packet extensions attached to the packet.
      *
-     * @return an Iterator for the packet extensions.
+     * @return the packet extensions.
      */
-    public synchronized Iterator getExtensions() {
+    public synchronized Collection<PacketExtension> getExtensions() {
         if (packetExtensions == null) {
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(new ArrayList(packetExtensions)).iterator();
+        return Collections.unmodifiableList(new ArrayList<PacketExtension>(packetExtensions));
     }
 
     /**
@@ -197,8 +197,7 @@ public abstract class Packet {
         if (packetExtensions == null || elementName == null || namespace == null) {
             return null;
         }
-        for (Iterator i=packetExtensions.iterator(); i.hasNext(); ) {
-            PacketExtension ext = (PacketExtension)i.next();
+        for (PacketExtension ext : packetExtensions) {
             if (elementName.equals(ext.getElementName()) && namespace.equals(ext.getNamespace())) {
                 return ext;
             }
@@ -213,7 +212,7 @@ public abstract class Packet {
      */
     public synchronized void addExtension(PacketExtension extension) {
         if (packetExtensions == null) {
-            packetExtensions = new ArrayList();
+            packetExtensions = new ArrayList<PacketExtension>();
         }
         packetExtensions.add(extension);
     }
@@ -246,56 +245,6 @@ public abstract class Packet {
     }
 
     /**
-     * Sets a packet property with an int value.
-     *
-     * @param name the name of the property.
-     * @param value the value of the property.
-     */
-    public void setProperty(String name, int value) {
-        setProperty(name, new Integer(value));
-    }
-
-    /**
-     * Sets a packet property with a long value.
-     *
-     * @param name the name of the property.
-     * @param value the value of the property.
-     */
-    public void setProperty(String name, long value) {
-        setProperty(name, new Long(value));
-    }
-
-    /**
-     * Sets a packet property with a float value.
-     *
-     * @param name the name of the property.
-     * @param value the value of the property.
-     */
-    public void setProperty(String name, float value) {
-        setProperty(name, new Float(value));
-    }
-
-    /**
-     * Sets a packet property with a double value.
-     *
-     * @param name the name of the property.
-     * @param value the value of the property.
-     */
-    public void setProperty(String name, double value) {
-        setProperty(name, new Double(value));
-    }
-
-    /**
-     * Sets a packet property with a bboolean value.
-     *
-     * @param name the name of the property.
-     * @param value the value of the property.
-     */
-    public void setProperty(String name, boolean value) {
-        setProperty(name, new Boolean(value));
-    }
-
-    /**
      * Sets a property with an Object as the value. The value must be Serializable
      * or an IllegalArgumentException will be thrown.
      *
@@ -307,7 +256,7 @@ public abstract class Packet {
             throw new IllegalArgumentException("Value must be serialiazble");
         }
         if (properties == null) {
-            properties = new HashMap();
+            properties = new HashMap<String, Object>();
         }
         properties.put(name, value);
     }
@@ -325,15 +274,15 @@ public abstract class Packet {
     }
 
     /**
-     * Returns an Iterator for all the property names that are set.
+     * Returns an unmodifiable collection of all the property names that are set.
      *
-     * @return an Iterator for all property names.
+     * @return all property names.
      */
-    public synchronized Iterator getPropertyNames() {
+    public synchronized Collection<String> getPropertyNames() {
         if (properties == null) {
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.emptySet();
         }
-        return properties.keySet().iterator();
+        return Collections.unmodifiableSet(new HashSet<String>(properties.keySet()));
     }
 
     /**
@@ -355,17 +304,14 @@ public abstract class Packet {
     protected synchronized String getExtensionsXML() {
         StringBuilder buf = new StringBuilder();
         // Add in all standard extension sub-packets.
-        Iterator extensions = getExtensions();
-        while (extensions.hasNext()) {
-            PacketExtension extension = (PacketExtension)extensions.next();
+        for (PacketExtension extension : getExtensions()) {
             buf.append(extension.toXML());
         }
         // Add in packet properties.
         if (properties != null && !properties.isEmpty()) {
             buf.append("<properties xmlns=\"http://www.jivesoftware.com/xmlns/xmpp/properties\">");
             // Loop through all properties and write them out.
-            for (Iterator i=getPropertyNames(); i.hasNext(); ) {
-                String name = (String)i.next();
+            for (String name : getPropertyNames()) {
                 Object value = getProperty(name);
                 buf.append("<property>");
                 buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
@@ -409,10 +355,20 @@ public abstract class Packet {
                     }
                     finally {
                         if (out != null) {
-                            try { out.close(); } catch (Exception e) { }
+                            try {
+                                out.close();
+                            }
+                            catch (Exception e) {
+                                // Ignore.
+                            }
                         }
                         if (byteStream != null) {
-                            try { byteStream.close(); } catch (Exception e) { }
+                            try {
+                                byteStream.close();
+                            }
+                            catch (Exception e) {
+                                // Ignore.
+                            }
                         }
                     }
                 }

@@ -44,7 +44,7 @@ import java.util.Enumeration;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "2.2.1";
+    private static final String SMACK_VERSION = "3.0.0";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
@@ -100,6 +100,7 @@ public final class SmackConfiguration {
                             systemStream.close();
                         }
                         catch (Exception e) {
+                            // Ignore.
                         }
                     }
                 }
