@@ -31,7 +31,7 @@ public class SharedGroupsInfo extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<sharedgroup xmlns=\"http://www.jivesoftware.org/protocol/sharedgroup\">");
         for (Iterator it=groups.iterator(); it.hasNext();) {
             buf.append("<group>").append(it.next()).append("</group>");

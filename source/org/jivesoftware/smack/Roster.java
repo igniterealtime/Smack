@@ -20,8 +20,13 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
@@ -63,17 +68,17 @@ public class Roster {
     public static final int SUBSCRIPTION_MANUAL = 2;
 
     /**
-     * The default subscription processing mode to use when a Roster is created. By default 
-     * all subscription requests are automatically accepted. 
+     * The default subscription processing mode to use when a Roster is created. By default
+     * all subscription requests are automatically accepted.
      */
     private static int defaultSubscriptionMode = SUBSCRIPTION_ACCEPT_ALL;
 
     private XMPPConnection connection;
-    private Map<String,RosterGroup> groups;
-    private List entries;
-    private List unfiledEntries;
-    private List<RosterListener> rosterListeners;
-    private Map presenceMap;
+    private final Map<String, RosterGroup> groups;
+    private final List<RosterEntry> entries;
+    private final List<RosterEntry> unfiledEntries;
+    private final List<RosterListener> rosterListeners;
+    private Map<String, Map<String, Presence>> presenceMap;
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
     boolean rosterInitialized = false;
@@ -81,11 +86,11 @@ public class Roster {
     private int subscriptionMode = getDefaultSubscriptionMode();
 
     /**
-     * Returns the default subscription processing mode to use when a new Roster is created. The 
-     * subscription processing mode dictates what action Smack will take when subscription 
-     * requests from other users are made. The default subscription mode 
+     * Returns the default subscription processing mode to use when a new Roster is created. The
+     * subscription processing mode dictates what action Smack will take when subscription
+     * requests from other users are made. The default subscription mode
      * is {@link #SUBSCRIPTION_ACCEPT_ALL}.
-     * 
+     *
      * @return the default subscription mode to use for new Rosters
      */
     public static int getDefaultSubscriptionMode() {
@@ -93,9 +98,9 @@ public class Roster {
     }
 
     /**
-     * Sets the default subscription processing mode to use when a new Roster is created. The 
-     * subscription processing mode dictates what action Smack will take when subscription 
-     * requests from other users are made. The default subscription mode 
+     * Sets the default subscription processing mode to use when a new Roster is created. The
+     * subscription processing mode dictates what action Smack will take when subscription
+     * requests from other users are made. The default subscription mode
      * is {@link #SUBSCRIPTION_ACCEPT_ALL}.
      *
      * @param subscriptionMode the default subscription mode to use for new Rosters.
@@ -112,10 +117,10 @@ public class Roster {
     Roster(final XMPPConnection connection) {
         this.connection = connection;
         groups = new ConcurrentHashMap<String,RosterGroup>();
-        unfiledEntries = new ArrayList();
-        entries = new ArrayList();
+        unfiledEntries = new ArrayList<RosterEntry>();
+        entries = new ArrayList<RosterEntry>();
         rosterListeners = new ArrayList<RosterListener>();
-        presenceMap = new HashMap();
+        presenceMap = new HashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
         PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
         connection.addPacketListener(new RosterPacketListener(), rosterFilter);
@@ -230,9 +235,9 @@ public class Roster {
         rosterPacket.setType(IQ.Type.SET);
         RosterPacket.Item item = new RosterPacket.Item(user, name);
         if (groups != null) {
-            for (int i=0; i<groups.length; i++) {
-                if (groups[i] != null) {
-                    item.addGroupName(groups[i]);
+            for (String group : groups) {
+                if (group != null) {
+                    item.addGroupName(group);
                 }
             }
         }
@@ -258,7 +263,7 @@ public class Roster {
     }
 
     /**
-     * Removes a roster entry from the roster. The roster entry will also be removed from the 
+     * Removes a roster entry from the roster. The roster entry will also be removed from the
      * unfiled entries or from any roster group where it could belong and will no longer be part
      * of the roster. Note that this is an asynchronous call -- Smack must wait for the server
      * to send an updated subscription status.
@@ -342,9 +347,10 @@ public class Roster {
      *
      * @return an iterator the unfiled roster entries.
      */
-    public Iterator getUnfiledEntries() {
+    public Iterator<RosterEntry> getUnfiledEntries() {
         synchronized (unfiledEntries) {
-            return Collections.unmodifiableList(new ArrayList(unfiledEntries)).iterator();
+            return Collections.unmodifiableList(new ArrayList<RosterEntry>(unfiledEntries))
+                    .iterator();
         }
     }
 
@@ -362,8 +368,7 @@ public class Roster {
         }
         String userLowerCase = user.toLowerCase();
         synchronized (entries) {
-            for (Iterator i=entries.iterator(); i.hasNext(); ) {
-                RosterEntry entry = (RosterEntry)i.next();
+            for (RosterEntry entry : entries) {
                 if (entry.getUser().equals(userLowerCase)) {
                     return entry;
                 }
@@ -435,19 +440,19 @@ public class Roster {
      */
     public Presence getPresence(String user) {
         String key = getPresenceMapKey(user);
-        Map userPresences = (Map) presenceMap.get(key);
+        Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             return null;
         }
         else {
             // Find the resource with the highest priority
             // Might be changed to use the resource with the highest availability instead.
-            Iterator it = userPresences.keySet().iterator();
+            Iterator<String> it = userPresences.keySet().iterator();
             Presence p;
             Presence presence = null;
 
             while (it.hasNext()) {
-                p = (Presence) userPresences.get(it.next());
+                p = userPresences.get(it.next());
                 if (presence == null) {
                     presence = p;
                 }
@@ -473,12 +478,12 @@ public class Roster {
     public Presence getPresenceResource(String userResource) {
         String key = getPresenceMapKey(userResource);
         String resource = StringUtils.parseResource(userResource);
-        Map userPresences = (Map)presenceMap.get(key);
+        Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             return null;
         }
         else {
-            return (Presence) userPresences.get(resource);
+            return userPresences.get(resource);
         }
     }
 
@@ -492,15 +497,15 @@ public class Roster {
      *      or <tt>null</tt> if the user is unavailable or if no presence information
      *      is available.
      */
-    public Iterator getPresences(String user) {
+    public Iterator<Presence> getPresences(String user) {
         String key = getPresenceMapKey(user);
-        Map userPresences = (Map)presenceMap.get(key);
+        Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             return null;
         }
         else {
             synchronized (userPresences) {
-                return new HashMap(userPresences).values().iterator();
+                return new HashMap<String, Presence>(userPresences).values().iterator();
             }
         }
     }
@@ -543,15 +548,15 @@ public class Roster {
             listeners = new RosterListener[rosterListeners.size()];
             rosterListeners.toArray(listeners);
         }
-        for (int i=0; i<listeners.length; i++) {
+        for (RosterListener listener : listeners) {
             if (!addedEntries.isEmpty()) {
-                listeners[i].entriesAdded(addedEntries);
+                listener.entriesAdded(addedEntries);
             }
             if (!updatedEntries.isEmpty()) {
-                listeners[i].entriesUpdated(updatedEntries);
+                listener.entriesUpdated(updatedEntries);
             }
             if (!deletedEntries.isEmpty()) {
-                listeners[i].entriesDeleted(deletedEntries);
+                listener.entriesDeleted(deletedEntries);
             }
         }
     }
@@ -565,8 +570,8 @@ public class Roster {
             listeners = new RosterListener[rosterListeners.size()];
             rosterListeners.toArray(listeners);
         }
-        for (int i=0; i<listeners.length; i++) {
-            listeners[i].presenceChanged(user);
+        for (RosterListener listener : listeners) {
+            listener.presenceChanged(user);
         }
     }
 
@@ -582,14 +587,14 @@ public class Roster {
             // If an "available" packet, add it to the presence map. Each presence map will hold
             // for a particular user a map with the presence packets saved for each resource.
             if (presence.getType() == Presence.Type.available) {
-                Map userPresences;
+                Map<String, Presence> userPresences;
                 // Get the user presence map
                 if (presenceMap.get(key) == null) {
-                    userPresences = new HashMap();
+                    userPresences = new HashMap<String, Presence>();
                     presenceMap.put(key, userPresences);
                 }
                 else {
-                    userPresences = (Map)presenceMap.get(key);
+                    userPresences = presenceMap.get(key);
                 }
                 // Add the new presence, using the resources as a key.
                 synchronized (userPresences) {
@@ -597,8 +602,7 @@ public class Roster {
                 }
                 // If the user is in the roster, fire an event.
                 synchronized (entries) {
-                    for (Iterator i = entries.iterator(); i.hasNext();) {
-                        RosterEntry entry = (RosterEntry) i.next();
+                    for (RosterEntry entry : entries) {
                         if (entry.getUser().equals(key)) {
                             fireRosterPresenceEvent(from);
                         }
@@ -608,7 +612,7 @@ public class Roster {
             // If an "unavailable" packet, remove any entries in the presence map.
             else if (presence.getType() == Presence.Type.unavailable) {
                 if (presenceMap.get(key) != null) {
-                    Map userPresences = (Map) presenceMap.get(key);
+                    Map<String, Presence> userPresences = presenceMap.get(key);
                     synchronized (userPresences) {
                         userPresences.remove(StringUtils.parseResource(from));
                     }
@@ -618,8 +622,7 @@ public class Roster {
                 }
                 // If the user is in the roster, fire an event.
                 synchronized (entries) {
-                    for (Iterator i=entries.iterator(); i.hasNext(); ) {
-                        RosterEntry entry = (RosterEntry)i.next();
+                    for (RosterEntry entry : entries) {
                         if (entry.getUser().equals(key)) {
                             fireRosterPresenceEvent(from);
                         }
@@ -663,11 +666,11 @@ public class Roster {
         public void processPacket(Packet packet) {
             // Keep a registry of the entries that were added, deleted or updated. An event
             // will be fired for each affected entry
-            Collection addedEntries = new ArrayList();
-            Collection updatedEntries = new ArrayList();
-            Collection deletedEntries = new ArrayList();
+            Collection<String> addedEntries = new ArrayList<String>();
+            Collection<String> updatedEntries = new ArrayList<String>();
+            Collection<String> deletedEntries = new ArrayList<String>();
 
-            RosterPacket rosterPacket = (RosterPacket)packet;
+            RosterPacket rosterPacket = (RosterPacket) packet;
             for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), item.getItemStatus(), connection);
@@ -701,8 +704,7 @@ public class Roster {
                     }
                     else {
                         // If the entry was in then list then update its state with the new values
-                        RosterEntry existingEntry =
-                            (RosterEntry) entries.get(entries.indexOf(entry));
+                        RosterEntry existingEntry = entries.get(entries.indexOf(entry));
                         existingEntry
                                 .updateState(entry.getName(), entry.getType(), entry.getStatus());
                         // Keep note that an entry has been updated
@@ -752,15 +754,14 @@ public class Roster {
                     // We have the list of old and new group names. We now need to
                     // remove the entry from the all the groups it may no longer belong
                     // to. We do this by subracting the new group set from the old.
-                    for (int m=0; m<newGroupNames.size(); m++) {
-                        currentGroupNames.remove(newGroupNames.get(m));
+                    for (String newGroupName : newGroupNames) {
+                        currentGroupNames.remove(newGroupName);
                     }
                 }
 
                 // Loop through any groups that remain and remove the entries.
                 // This is neccessary for the case of remote entry removals.
-                for (int n=0; n<currentGroupNames.size(); n++) {
-                    String groupName = (String)currentGroupNames.get(n);
+                for (String groupName : currentGroupNames) {
                     RosterGroup group = getGroup(groupName);
                     group.removeEntryLocal(entry);
                     if (group.getEntryCount() == 0) {

@@ -20,10 +20,14 @@
 
 package org.jivesoftware.smackx;
 
-import java.util.*;
-
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.packet.DataForm;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Represents a Form for gathering data. The form could be of the following types:
@@ -334,8 +338,8 @@ public class Form {
             // Clear the old values
             field.resetValues();
             // Set the default value
-            for (Iterator it = field.getValues(); it.hasNext();) {
-                field.addValue((String) it.next());
+            for (Iterator<String> it = field.getValues(); it.hasNext();) {
+                field.addValue(it.next());
             }
         }
         else {
@@ -348,7 +352,7 @@ public class Form {
      *
      * @return an Iterator for the fields that are part of the form.
      */
-    public Iterator getFields() {
+    public Iterator<FormField> getFields() {
         return dataForm.getFields();
     }
 
@@ -366,8 +370,8 @@ public class Form {
         }
         // Look for the field whose variable matches the requested variable
         FormField field;
-        for (Iterator it=getFields();it.hasNext();) {
-            field = (FormField)it.next();
+        for (Iterator<FormField> it=getFields();it.hasNext();) {
+            field = it.next();
             if (variable.equals(field.getVariable())) {
                 return field;
             }
@@ -381,7 +385,7 @@ public class Form {
      * @return instructions that explain how to fill out the form.
      */
     public String getInstructions() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // Join the list of instructions together separated by newlines
         for (Iterator it = dataForm.getInstructions(); it.hasNext();) {
             sb.append((String) it.next());
@@ -432,7 +436,7 @@ public class Form {
      */
     public void setInstructions(String instructions) {
         // Split the instructions into multiple instructions for each existent newline
-        ArrayList instructionsList = new ArrayList();
+        ArrayList<String> instructionsList = new ArrayList<String>();
         StringTokenizer st = new StringTokenizer(instructions, "\n");
         while (st.hasMoreTokens()) {
             instructionsList.add(st.nextToken());
@@ -464,8 +468,8 @@ public class Form {
         if (isSubmitType()) {
             // Create a new DataForm that contains only the answered fields 
             DataForm dataFormToSend = new DataForm(getType());
-            for(Iterator it=getFields();it.hasNext();) {
-                FormField field = (FormField)it.next();
+            for(Iterator<FormField> it=getFields();it.hasNext();) {
+                FormField field = it.next();
                 if (field.getValues().hasNext()) {
                     dataFormToSend.addField(field);
                 }
@@ -513,8 +517,8 @@ public class Form {
         }
         // Create a new Form
         Form form = new Form(TYPE_SUBMIT);
-        for (Iterator fields=getFields(); fields.hasNext();) {
-            FormField field = (FormField)fields.next();
+        for (Iterator<FormField> fields=getFields(); fields.hasNext();) {
+            FormField field = fields.next();
             // Add to the new form any type of field that includes a variable.
             // Note: The fields of type FIXED are the only ones that don't specify a variable
             if (field.getVariable() != null) {
@@ -525,9 +529,9 @@ public class Form {
                 if (FormField.TYPE_HIDDEN.equals(field.getType())) {
                     // Since a hidden field could have many values we need to collect them 
                     // in a list
-                    List values = new ArrayList();
-                    for (Iterator it=field.getValues();it.hasNext();) {
-                        values.add((String)it.next());
+                    List<String> values = new ArrayList<String>();
+                    for (Iterator<String> it=field.getValues();it.hasNext();) {
+                        values.add(it.next());
                     }
                     form.setAnswer(field.getVariable(), values);
                 }                

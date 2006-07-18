@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smackx;
 
+import org.jivesoftware.smackx.packet.DiscoverItems;
+
 import java.util.Iterator;
 
 
@@ -40,7 +42,7 @@ public interface NodeInformationProvider {
      *  
      * @return an Iterator on the Items defined in the node.
      */
-    public abstract Iterator getNodeItems();
+    public abstract Iterator<DiscoverItems.Item> getNodeItems();
 
     /**
      * Returns an Iterator on the features defined in the node. For
@@ -50,5 +52,5 @@ public interface NodeInformationProvider {
      *
      * @return an Iterator on the feature strings defined in the node.
      */
-    public abstract Iterator getNodeFeatures();
+    public abstract Iterator<String> getNodeFeatures();
 }

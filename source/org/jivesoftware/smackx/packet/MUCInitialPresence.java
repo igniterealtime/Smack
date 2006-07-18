@@ -20,11 +20,11 @@
 
 package org.jivesoftware.smackx.packet;
 
+import org.jivesoftware.smack.packet.PacketExtension;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
  * Represents extended presence information whose sole purpose is to signal the ability of 
@@ -52,7 +52,7 @@ public class MUCInitialPresence implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         if (getPassword() != null) {
@@ -200,7 +200,7 @@ public class MUCInitialPresence implements PacketExtension {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<history");
             if (getMaxChars() != -1) {
                 buf.append(" maxchars=\"").append(getMaxChars()).append("\"");

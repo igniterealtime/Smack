@@ -169,7 +169,7 @@ public class Presence extends Packet {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<presence");
         if (getPacketID() != null) {
             buf.append(" id=\"").append(getPacketID()).append("\"");
@@ -208,7 +208,7 @@ public class Presence extends Packet {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(type);
         if (mode != null) {
             buf.append(": ").append(mode);

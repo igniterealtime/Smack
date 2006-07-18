@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public class XHTMLText {
 
-    private StringBuffer text = new StringBuffer(30);
+    private StringBuilder text = new StringBuilder(30);
 
     /**
      * Creates a new XHTMLText with body tag params.
@@ -49,7 +49,7 @@ public class XHTMLText {
      * @param style the XHTML style of the anchor
      */
     public void appendOpenAnchorTag(String href, String style) {
-        StringBuffer sb = new StringBuffer("<a");
+        StringBuilder sb = new StringBuilder("<a");
         if (href != null) {
             sb.append(" href=\"");
             sb.append(href);
@@ -78,7 +78,7 @@ public class XHTMLText {
      * @param style the XHTML style of the blockquote
      */
     public void appendOpenBlockQuoteTag(String style) {
-        StringBuffer sb = new StringBuffer("<blockquote");
+        StringBuilder sb = new StringBuilder("<blockquote");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -103,7 +103,7 @@ public class XHTMLText {
      * @param lang the language of the body
      */
     private void appendOpenBodyTag(String style, String lang) {
-        StringBuffer sb = new StringBuffer("<body");
+        StringBuilder sb = new StringBuilder("<body");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -184,7 +184,7 @@ public class XHTMLText {
         if (level > 3 || level < 1) {
             return;
         }
-        StringBuffer sb = new StringBuffer("<h");
+        StringBuilder sb = new StringBuilder("<h");
         sb.append(level);
         if (style != null) {
             sb.append(" style=\"");
@@ -204,7 +204,7 @@ public class XHTMLText {
         if (level > 3 || level < 1) {
             return;
         }
-        StringBuffer sb = new StringBuffer("</h");
+        StringBuilder sb = new StringBuilder("</h");
         sb.append(level);
         sb.append(">");
         text.append(sb.toString());
@@ -220,7 +220,7 @@ public class XHTMLText {
      * @param width how wide is the picture
      */
     public void appendImageTag(String align, String alt, String height, String src, String width) {
-        StringBuffer sb = new StringBuffer("<img");
+        StringBuilder sb = new StringBuilder("<img");
         if (align != null) {
             sb.append(" align=\"");
             sb.append(align);
@@ -256,7 +256,7 @@ public class XHTMLText {
      * @param style the style of the line item
      */
     public void appendLineItemTag(String style) {
-        StringBuffer sb = new StringBuffer("<li");
+        StringBuilder sb = new StringBuilder("<li");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -273,7 +273,7 @@ public class XHTMLText {
      * @param style the style of the ordered list
      */
     public void appendOpenOrderedListTag(String style) {
-        StringBuffer sb = new StringBuffer("<ol");
+        StringBuilder sb = new StringBuilder("<ol");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -298,7 +298,7 @@ public class XHTMLText {
      * @param style the style of the unordered list
      */
     public void appendOpenUnorderedListTag(String style) {
-        StringBuffer sb = new StringBuffer("<ul");
+        StringBuilder sb = new StringBuilder("<ul");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -323,7 +323,7 @@ public class XHTMLText {
      * @param style the style of the paragraph
      */
     public void appendOpenParagraphTag(String style) {
-        StringBuffer sb = new StringBuffer("<p");
+        StringBuilder sb = new StringBuilder("<p");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -348,7 +348,7 @@ public class XHTMLText {
      * @param style the style of the inlined quote
      */
     public void appendOpenInlinedQuoteTag(String style) {
-        StringBuffer sb = new StringBuffer("<q");
+        StringBuilder sb = new StringBuilder("<q");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);
@@ -372,7 +372,7 @@ public class XHTMLText {
      * @param style the style for a span of text
      */
     public void appendOpenSpanTag(String style) {
-        StringBuffer sb = new StringBuffer("<span");
+        StringBuilder sb = new StringBuilder("<span");
         if (style != null) {
             sb.append(" style=\"");
             sb.append(style);

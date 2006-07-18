@@ -223,7 +223,7 @@ public class Bytestream extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append("<query xmlns=\"http://jabber.org/protocol/bytestreams\"");
         if (this.getType().equals(IQ.Type.SET)) {
@@ -337,7 +337,7 @@ public class Bytestream extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             buf.append("<").append(getElementName()).append(" ");
             buf.append("jid=\"").append(getJID()).append("\" ");
@@ -394,7 +394,7 @@ public class Bytestream extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<").append(getElementName()).append(" ");
             buf.append("jid=\"").append(getJID()).append("\" ");
             buf.append("/>");
@@ -443,7 +443,7 @@ public class Bytestream extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<").append(getElementName()).append(">");
             buf.append(getTarget());
             buf.append("</").append(getElementName()).append(">");

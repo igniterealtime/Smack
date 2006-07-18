@@ -20,9 +20,10 @@
 
 package org.jivesoftware.smackx.packet;
 
-import java.util.*;
-
 import org.jivesoftware.smack.packet.PacketExtension;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Represents message events relating to the delivery, display, composition and cancellation of 
@@ -303,7 +304,7 @@ public class MessageEvent implements PacketExtension {
      * 
      */
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         // Note: Cancellation events don't specify any tag. They just send the packetID

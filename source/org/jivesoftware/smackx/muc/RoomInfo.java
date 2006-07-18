@@ -20,8 +20,8 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
 
 /**
  * Represents the room information that was discovered using Service Discovery. It's possible to
@@ -87,10 +87,10 @@ public class RoomInfo {
         Form form = Form.getFormFrom(info);
         if (form != null) {
             this.description =
-                    (String) form.getField("muc#roominfo_description").getValues().next();
-            this.subject = (String) form.getField("muc#roominfo_subject").getValues().next();
+                    form.getField("muc#roominfo_description").getValues().next();
+            this.subject = form.getField("muc#roominfo_subject").getValues().next();
             this.occupantsCount =
-                    Integer.parseInt((String) form.getField("muc#roominfo_occupants").getValues()
+                    Integer.parseInt(form.getField("muc#roominfo_occupants").getValues()
                     .next());
         }
     }

@@ -22,9 +22,11 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import java.util.*;
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * A Time IQ packet, which is used by XMPP clients to exchange their respective local
@@ -179,7 +181,7 @@ public class Time extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"jabber:iq:time\">");
         if (utc != null) {
             buf.append("<utc>").append(utc).append("</utc>");

@@ -63,8 +63,8 @@ public final class SmackConfiguration {
         try {
             // Get an array of class loaders to try loading the providers files from.
             ClassLoader[] classLoaders = getClassLoaders();
-            for (int i = 0; i < classLoaders.length; i++) {
-                Enumeration configEnum = classLoaders[i].getResources("META-INF/smack-config.xml");
+            for (ClassLoader classLoader : classLoaders) {
+                Enumeration configEnum = classLoader.getResources("META-INF/smack-config.xml");
                 while (configEnum.hasMoreElements()) {
                     URL url = (URL) configEnum.nextElement();
                     InputStream systemStream = null;
@@ -81,7 +81,8 @@ public final class SmackConfiguration {
                                     parseClassToLoad(parser);
                                 }
                                 else if (parser.getName().equals("packetReplyTimeout")) {
-                                    packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
+                                    packetReplyTimeout =
+                                            parseIntProperty(parser, packetReplyTimeout);
                                 }
                                 else if (parser.getName().equals("keepAliveInterval")) {
                                     keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
@@ -200,7 +201,7 @@ public final class SmackConfiguration {
      */
     private static ClassLoader[] getClassLoaders() {
         ClassLoader[] classLoaders = new ClassLoader[2];
-        classLoaders[0] = new SmackConfiguration().getClass().getClassLoader();
+        classLoaders[0] = SmackConfiguration.class.getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
         return classLoaders;
     }

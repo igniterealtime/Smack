@@ -20,11 +20,11 @@
 
 package org.jivesoftware.smackx.packet;
 
+import org.jivesoftware.smack.packet.PacketExtension;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
  * Represents timestamp information about data stored for later delivery. A DelayInformation will 
@@ -124,7 +124,7 @@ public class DelayInformation implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
                 "\"");
         buf.append(" stamp=\"");

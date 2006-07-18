@@ -21,7 +21,6 @@
 package org.jivesoftware.smack.packet;
 
 import java.util.Map;
-import java.util.Iterator;
 
 /**
  * Represents registration packets. An empty GET query will cause the server to return information
@@ -49,7 +48,7 @@ import java.util.Iterator;
 public class Registration extends IQ {
 
     private String instructions = null;
-    private Map attributes = null;
+    private Map<String, String> attributes = null;
 
     /**
      * Returns the registration instructions, or <tt>null</tt> if no instructions
@@ -76,7 +75,7 @@ public class Registration extends IQ {
      *
      * @return the account attributes.
      */
-    public Map getAttributes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
 
@@ -85,21 +84,19 @@ public class Registration extends IQ {
      *
      * @param attributes the account attributes.
      */
-    public void setAttributes(Map attributes) {
+    public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"jabber:iq:register\">");
         if (instructions != null) {
             buf.append("<instructions>").append(instructions).append("</instructions>");
         }
         if (attributes != null && attributes.size() > 0) {
-            Iterator fieldNames = attributes.keySet().iterator();
-            while (fieldNames.hasNext()) {
-                String name = (String)fieldNames.next();
-                String value = (String)attributes.get(name);
+            for (String name : attributes.keySet()) {
+                String value = attributes.get(name);
                 buf.append("<").append(name).append(">");
                 buf.append(value);
                 buf.append("</").append(name).append(">");

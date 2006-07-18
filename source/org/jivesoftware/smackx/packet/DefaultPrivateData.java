@@ -20,10 +20,10 @@
 
 package org.jivesoftware.smackx.packet;
 
-import java.util.Map;
-import java.util.Iterator;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Default implementation of the PrivateData interface. Unless a PrivateDataProvider
@@ -83,7 +83,7 @@ public class DefaultPrivateData implements PrivateData {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
         for (Iterator i=getNames(); i.hasNext(); ) {
             String name = (String)i.next();

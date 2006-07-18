@@ -51,11 +51,14 @@
  */
 package org.jivesoftware.smackx.muc;
 
-import java.util.*;
-
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smackx.*;
+import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.FormField;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Tests creating new MUC rooms.
@@ -90,15 +93,15 @@ public class MultiUserChatCreationTest extends SmackTestCase {
             // Create a new form to submit based on the original form
             Form submitForm = form.createAnswerForm();
             // Add default answers to the form to submit
-            for (Iterator fields = form.getFields(); fields.hasNext();) {
-                FormField field = (FormField) fields.next();
+            for (Iterator<FormField> fields = form.getFields(); fields.hasNext();) {
+                FormField field = fields.next();
                 if (!FormField.TYPE_HIDDEN.equals(field.getType())
                     && field.getVariable() != null) {
                     // Sets the default value as the answer
                     submitForm.setDefaultAnswer(field.getVariable());
                 }
             }
-            List owners = new ArrayList();
+            List<String> owners = new ArrayList<String>();
             owners.add(getBareJID(0));
             submitForm.setAnswer("muc#roomconfig_roomowners", owners);
 

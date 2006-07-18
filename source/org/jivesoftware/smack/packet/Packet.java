@@ -22,8 +22,10 @@ package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.StringUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
-import java.io.*;
 
 /**
  * Base class for XMPP packets. Every packet has a unique ID (which is automatically
@@ -351,7 +353,7 @@ public abstract class Packet {
      * are no packet extensions.
      */
     protected synchronized String getExtensionsXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         // Add in all standard extension sub-packets.
         Iterator extensions = getExtensions();
         while (extensions.hasNext()) {

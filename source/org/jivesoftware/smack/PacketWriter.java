@@ -41,10 +41,10 @@ class PacketWriter {
     private Thread writerThread;
     private Writer writer;
     private XMPPConnection connection;
-    final private LinkedList queue;
+    final private LinkedList<Packet> queue;
     private boolean done = false;
     
-    final private List listeners = new ArrayList();
+    final private List<ListenerWrapper> listeners = new ArrayList<ListenerWrapper>();
     private boolean listenersDeleted = false;
 
     /**
@@ -72,7 +72,7 @@ class PacketWriter {
     protected PacketWriter(XMPPConnection connection) {
         this.connection = connection;
         this.writer = connection.writer;
-        this.queue = new LinkedList();
+        this.queue = new LinkedList<Packet>();
 
         writerThread = new Thread() {
             public void run() {
@@ -130,7 +130,7 @@ class PacketWriter {
     public void removePacketListener(PacketListener packetListener) {
         synchronized (listeners) {
             for (int i=0; i<listeners.size(); i++) {
-                ListenerWrapper wrapper = (ListenerWrapper)listeners.get(i);
+                ListenerWrapper wrapper = listeners.get(i);
                 if (wrapper != null && wrapper.packetListener.equals(packetListener)) {
                     listeners.set(i, null);
                     // Set the flag to indicate that the listener list needs
@@ -239,7 +239,7 @@ class PacketWriter {
                 }
             }
             if (queue.size() > 0) {
-                return (Packet)queue.removeLast();
+                return queue.removeLast();
             }
             else {
                 return null;
@@ -308,7 +308,7 @@ class PacketWriter {
         // Notify the listeners of the new sent packet
         int size = listeners.size();
         for (int i=0; i<size; i++) {
-            ListenerWrapper listenerWrapper = (ListenerWrapper)listeners.get(i);
+            ListenerWrapper listenerWrapper = listeners.get(i);
             if (listenerWrapper != null) {
                 listenerWrapper.notifyListener(packet);
             }
@@ -357,7 +357,7 @@ class PacketWriter {
      * @throws IOException If an error occurs while sending the stanza to the server.
      */
     void openStream() throws IOException {
-        StringBuffer stream = new StringBuffer();
+        StringBuilder stream = new StringBuilder();
         stream.append("<stream:stream");
         stream.append(" to=\"").append(connection.serviceName).append("\"");
         stream.append(" xmlns=\"jabber:client\"");

@@ -68,7 +68,7 @@ public class RosterPacket extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"jabber:iq:roster\">");
         synchronized (rosterItems) {
             for (Item entry : rosterItems) {
@@ -197,7 +197,7 @@ public class RosterPacket extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<item jid=\"").append(user).append("\"");
             if (name != null) {
                 buf.append(" name=\"").append(name).append("\"");

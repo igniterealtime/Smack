@@ -47,7 +47,7 @@ public class BytestreamsProvider implements IQProvider {
 	 * @see org.jivesoftware.smack.provider.IQProvider#parseIQ(org.xmlpull.v1.XmlPullParser)
 	 */
 	public IQ parseIQ(XmlPullParser parser) throws Exception {
-		// StringBuffer buf = new StringBuffer();
+		// StringBuilder buf = new StringBuilder();
 		boolean done = false;
 
 		Bytestream toReturn = new Bytestream();

@@ -105,7 +105,7 @@ public class MultipleAddresses implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName());
         buf.append(" xmlns=\"").append(getNamespace()).append("\">");
         // Loop through all the addresses and append them to the string buffer
@@ -175,7 +175,7 @@ public class MultipleAddresses implements PacketExtension {
         }
 
         private String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<address type=\"");
             // Append the address type (e.g. TO/CC/BCC)
             buf.append(type).append("\"");

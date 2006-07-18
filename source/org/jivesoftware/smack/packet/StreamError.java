@@ -99,7 +99,7 @@ public class StreamError {
     }
 
     public String toString() {
-        StringBuffer txt = new StringBuffer();
+        StringBuilder txt = new StringBuilder();
         txt.append("stream:error (").append(code).append(")");
         return txt.toString();
     }

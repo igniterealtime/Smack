@@ -12,10 +12,10 @@ import org.jivesoftware.smackx.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.io.IOException;
 
 /**
  * Bookmarks is used for storing and retrieving URLS and Conference rooms.
@@ -155,7 +155,7 @@ public class Bookmarks implements PrivateData {
      * @return the private data as XML.
      */
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<storage xmlns=\"storage:bookmarks\">");
 
         final Iterator urls = getBookmarkedURLS().iterator();

@@ -48,9 +48,11 @@ class PacketReader {
     private XMPPConnection connection;
     private XmlPullParser parser;
     private boolean done = false;
-    private final VolatileMemberCollection collectors = new VolatileMemberCollection(50);
+    private final VolatileMemberCollection<PacketCollector> collectors =
+            new VolatileMemberCollection<PacketCollector>(50);
     private final VolatileMemberCollection listeners = new VolatileMemberCollection(50);
-    protected final List connectionListeners = new ArrayList();
+    protected final List<ConnectionListener> connectionListeners =
+            new ArrayList<ConnectionListener>();
 
     private String connectionID = null;
     private final Object connectionIDLock = new Object();
@@ -176,12 +178,11 @@ class PacketReader {
     public void shutdown() {
         // Notify connection listeners of the connection closing if done hasn't already been set.
         if (!done) {
-            ArrayList listenersCopy;
+            List<ConnectionListener> listenersCopy;
             synchronized (connectionListeners) {
                 // Make a copy since it's possible that a listener will be removed from the list
-                listenersCopy = new ArrayList(connectionListeners);
-                for (Iterator i=listenersCopy.iterator(); i.hasNext(); ) {
-                    ConnectionListener listener = (ConnectionListener)i.next();
+                listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
+                for (ConnectionListener listener : listenersCopy) {
                     listener.connectionClosed();
                 }
             }
@@ -206,12 +207,11 @@ class PacketReader {
         // Print the stack trace to help catch the problem
         e.printStackTrace();
         // Notify connection listeners of the error.
-        ArrayList listenersCopy;
+        List<ConnectionListener> listenersCopy;
         synchronized (connectionListeners) {
             // Make a copy since it's possible that a listener will be removed from the list
-            listenersCopy = new ArrayList(connectionListeners);
-            for (Iterator i=listenersCopy.iterator(); i.hasNext(); ) {
-                ConnectionListener listener = (ConnectionListener)i.next();
+            listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
+            for (ConnectionListener listener : listenersCopy) {
                 listener.connectionClosedOnError(e);
             }
         }
@@ -489,8 +489,8 @@ class PacketReader {
      * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
      * @throws Exception if an exception occurs while parsing the stanza.
      */
-    private Collection parseMechanisms(XmlPullParser parser) throws Exception {
-        List mechanisms = new ArrayList();
+    private Collection<String> parseMechanisms(XmlPullParser parser) throws Exception {
+        List<String> mechanisms = new ArrayList<String>();
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -510,9 +510,9 @@ class PacketReader {
         return mechanisms;
     }
 
-    private Collection parseCompressionMethods(XmlPullParser parser)
+    private Collection<String> parseCompressionMethods(XmlPullParser parser)
             throws IOException, XmlPullParserException {
-        List methods = new ArrayList();
+        List<String> methods = new ArrayList<String>();
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -698,7 +698,7 @@ class PacketReader {
 
      private Registration parseRegistration(XmlPullParser parser) throws Exception {
         Registration registration = new Registration();
-        Map fields = null;
+        Map<String, String> fields = null;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -709,7 +709,7 @@ class PacketReader {
                     String name = parser.getName();
                     String value = "";
                     if (fields == null) {
-                        fields = new HashMap();
+                        fields = new HashMap<String, String>();
                     }
 
                     if (parser.next() == XmlPullParser.TEXT) {
@@ -772,19 +772,19 @@ class PacketReader {
      * volatile. In other words, many are added and deleted and 'null' values are skipped by the
      * returned iterator.
      */
-    static class VolatileMemberCollection {
+    static class VolatileMemberCollection<E> {
 
         private final Object mutex = new Object();
-        private final ArrayList collectors;
+        private final ArrayList<E> collectors;
         private int nullIndex = -1;
         private int[] nullArray;
 
         VolatileMemberCollection(int initialCapacity) {
-            collectors = new ArrayList(initialCapacity);
+            collectors = new ArrayList<E>(initialCapacity);
             nullArray = new int[initialCapacity];
         }
 
-        public void add(Object member) {
+        public void add(E member) {
             synchronized (mutex) {
                 if (nullIndex < 0) {
                     ensureCapacity();
@@ -808,7 +808,7 @@ class PacketReader {
             }
         }
 
-        public void remove(Object member) {
+        public void remove(E member) {
             synchronized (mutex) {
                 int index = collectors.lastIndexOf(member);
                 if (index >= 0) {

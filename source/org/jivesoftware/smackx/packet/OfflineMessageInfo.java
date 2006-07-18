@@ -79,7 +79,7 @@ public class OfflineMessageInfo implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         if (getNode() != null)

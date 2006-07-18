@@ -20,11 +20,16 @@
 
 package org.jivesoftware.smackx.packet;
 
-import java.util.*;
-
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.*;
+import org.jivesoftware.smackx.RemoteRosterEntry;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents XMPP Roster Item Exchange packets.<p>
@@ -161,7 +166,7 @@ public class RosterExchange implements PacketExtension {
      * 
      */
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         // Loop through all roster entries and append them to the string buffer

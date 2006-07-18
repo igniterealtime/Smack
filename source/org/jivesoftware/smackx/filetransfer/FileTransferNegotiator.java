@@ -312,7 +312,7 @@ public class FileTransferNegotiator {
      * @return Returns a new, unique, stream ID to identify a file transfer.
      */
     public String getNextStreamID() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(STREAM_INIT_PREFIX);
         buffer.append(Math.abs(randomGenerator.nextLong()));
 
@@ -398,8 +398,8 @@ public class FileTransferNegotiator {
         String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
-        for (Iterator it = field.getValues(); it.hasNext();) {
-            variable = (it.next().toString());
+        for (Iterator<String> it = field.getValues(); it.hasNext();) {
+            variable = it.next();
             if (variable.equals(BYTE_STREAM) && !IBB_ONLY) {
                 isByteStream = true;
             }

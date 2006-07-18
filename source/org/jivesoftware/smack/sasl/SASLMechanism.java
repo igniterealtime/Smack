@@ -55,7 +55,7 @@ public abstract class SASLMechanism {
      */
     public void authenticate(String username, String host, String password) throws IOException {
         // Build the authentication stanza encoding the authentication text
-        StringBuffer stanza = new StringBuffer();
+        StringBuilder stanza = new StringBuilder();
         stanza.append("<auth mechanism=\"").append(getName());
         stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         String authenticationText = getAuthenticationText(username, host, password);
@@ -76,7 +76,7 @@ public abstract class SASLMechanism {
      */
     public void challengeReceived(String challenge) throws IOException {
         // Build the challenge response stanza encoding the response text
-        StringBuffer stanza = new StringBuffer();
+        StringBuilder stanza = new StringBuilder();
         stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         String authenticationText = getChallengeResponse(StringUtils.decodeBase64(challenge));
         if (authenticationText != null) {

@@ -22,11 +22,12 @@ package org.jivesoftware.smack.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.xmlpull.v1.*;
 import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
 
-import java.util.*;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.*;
 
 /**
  * Manages providers for parsing custom XML sub-documents of XMPP packets. Two types of
@@ -117,12 +118,12 @@ public class ProviderManager {
         try {
             // Get an array of class loaders to try loading the providers files from.
             ClassLoader[] classLoaders = getClassLoaders();
-            for (int i=0; i<classLoaders.length; i++) {
-                Enumeration providerEnum = classLoaders[i].getResources(
+            for (ClassLoader classLoader : classLoaders) {
+                Enumeration providerEnum = classLoader.getResources(
                         "META-INF/smack.providers");
                 while (providerEnum.hasMoreElements()) {
-                    URL url = (URL)providerEnum.nextElement();
-                    java.io.InputStream providerStream = null;
+                    URL url = (URL) providerEnum.nextElement();
+                    InputStream providerStream = null;
                     try {
                         providerStream = url.openStream();
                         XmlPullParser parser = new MXParser();
@@ -187,13 +188,11 @@ public class ProviderManager {
                                             // Add the provider to the map.
                                             Class provider = Class.forName(className);
                                             if (PacketExtensionProvider.class.isAssignableFrom(
-                                                    provider))
-                                            {
+                                                    provider)) {
                                                 extensionProviders.put(key, provider.newInstance());
                                             }
                                             else if (PacketExtension.class.isAssignableFrom(
-                                                    provider))
-                                            {
+                                                    provider)) {
                                                 extensionProviders.put(key, provider);
                                             }
                                         }
@@ -204,11 +203,15 @@ public class ProviderManager {
                                 }
                             }
                             eventType = parser.next();
-                        } while (eventType != XmlPullParser.END_DOCUMENT);
+                        }
+                        while (eventType != XmlPullParser.END_DOCUMENT);
                     }
                     finally {
-                        try { providerStream.close(); }
-                        catch (Exception e) { }
+                        try {
+                            providerStream.close();
+                        }
+                        catch (Exception e) {
+                        }
                     }
                 }
             }
@@ -362,7 +365,7 @@ public class ProviderManager {
      * @return a unique key for the element name and namespace pair.
      */
     private static String getProviderKey(String elementName, String namespace) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
         return buf.toString();
     }

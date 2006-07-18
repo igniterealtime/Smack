@@ -48,7 +48,7 @@ public class PacketCollector {
     private static final int MAX_PACKETS = 65536;
 
     private PacketFilter packetFilter;
-    private LinkedList resultQueue;
+    private LinkedList<Packet> resultQueue;
     private PacketReader packetReader;
     private boolean cancelled = false;
 
@@ -62,7 +62,7 @@ public class PacketCollector {
     protected PacketCollector(PacketReader packetReader, PacketFilter packetFilter) {
         this.packetReader = packetReader;
         this.packetFilter = packetFilter;
-        this.resultQueue = new LinkedList();
+        this.resultQueue = new LinkedList<Packet>();
     }
 
     /**
@@ -101,7 +101,7 @@ public class PacketCollector {
             return null;
         }
         else {
-            return (Packet)resultQueue.removeLast();
+            return resultQueue.removeLast();
         }
     }
 
@@ -121,7 +121,7 @@ public class PacketCollector {
                 // Ignore.
             }
         }
-        return (Packet)resultQueue.removeLast();
+        return resultQueue.removeLast();
     }
 
     /**
@@ -159,12 +159,12 @@ public class PacketCollector {
             }
             // Return the packet that was found.
             else {
-                return (Packet)resultQueue.removeLast();
+                return resultQueue.removeLast();
             }
         }
         // There's already a packet waiting, so return it.
         else {
-            return (Packet)resultQueue.removeLast();
+            return resultQueue.removeLast();
         }
     }
 

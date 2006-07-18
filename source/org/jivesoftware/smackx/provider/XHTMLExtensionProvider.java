@@ -51,7 +51,7 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
         throws Exception {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
         boolean done = false;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int startDepth = parser.getDepth();
         int depth = parser.getDepth();
         String lastTag = "";
@@ -59,7 +59,7 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("body")) {
-                    buffer = new StringBuffer();
+                    buffer = new StringBuilder();
                     depth = parser.getDepth();
                 }
                 lastTag = parser.getText();

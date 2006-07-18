@@ -62,7 +62,7 @@ public class ConnectionConfiguration implements Cloneable {
         // Build the default path to the cacert truststore file. By default we are
         // going to use the file located in $JREHOME/lib/security/cacerts.
         String javaHome =  System.getProperty("java.home");
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(javaHome).append(File.separator).append("lib");
         buffer.append(File.separator).append("security");
         buffer.append(File.separator).append("cacerts");

@@ -42,7 +42,7 @@ public class SASLPlainMechanism extends SASLMechanism {
     protected String getAuthenticationText(String username, String host, String password) {
         // Build the text containing the "authorization identity" + NUL char +
         // "authentication identity" + NUL char + "clear-text password"
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         text.append(username).append("@").append(host);
         text.append('\0');
         text.append(username);

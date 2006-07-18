@@ -97,7 +97,7 @@ public class XMPPError {
      * @return the error as XML.
      */
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<error code=\"").append(code).append("\">");
         if (message != null) {
             buf.append(message);
@@ -107,7 +107,7 @@ public class XMPPError {
     }
 
     public String toString() {
-        StringBuffer txt = new StringBuffer();
+        StringBuilder txt = new StringBuilder();
         txt.append("(").append(code).append(")");
         if (message != null) {
             txt.append(" ").append(message);

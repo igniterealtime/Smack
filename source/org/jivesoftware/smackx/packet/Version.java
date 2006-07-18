@@ -115,7 +115,7 @@ public class Version extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"jabber:iq:version\">");
         if (name != null) {
             buf.append("<name>").append(name).append("</name>");

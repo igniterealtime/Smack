@@ -20,9 +20,12 @@
 
 package org.jivesoftware.smackx.packet;
 
-import java.util.*;
-
 import org.jivesoftware.smack.packet.IQ;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A DiscoverInfo IQ packet, which is used by XMPP clients to request and receive information 
@@ -35,8 +38,8 @@ import org.jivesoftware.smack.packet.IQ;
  */
 public class DiscoverInfo extends IQ {
 
-    private List features = new ArrayList();
-    private List identities = new ArrayList();
+    private final List<Feature> features = new ArrayList<Feature>();
+    private final List<Identity> identities = new ArrayList<Identity>();
     private String node;
 
     /**
@@ -59,9 +62,9 @@ public class DiscoverInfo extends IQ {
      *
      * @return an Iterator on the discovered features of an XMPP entity
      */
-    Iterator getFeatures() {
+    Iterator<Feature> getFeatures() {
         synchronized (features) {
-            return Collections.unmodifiableList(new ArrayList(features)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Feature>(features)).iterator();
         }
     }
 
@@ -81,9 +84,9 @@ public class DiscoverInfo extends IQ {
      * 
      * @return an Iterator on the discoveted identities 
      */
-    public Iterator getIdentities() {
+    public Iterator<Identity> getIdentities() {
         synchronized (identities) {
-            return Collections.unmodifiableList(new ArrayList(identities)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Identity>(identities)).iterator();
         }
     }
 
@@ -120,15 +123,15 @@ public class DiscoverInfo extends IQ {
      * @return true if the requestes feature has been discovered
      */
     public boolean containsFeature(String feature) {
-        for (Iterator it = getFeatures(); it.hasNext();) {
-            if (feature.equals(((DiscoverInfo.Feature) it.next()).getVar()))
+        for (Iterator<Feature> it = getFeatures(); it.hasNext();) {
+            if (feature.equals(it.next().getVar()))
                 return true;
         }
         return false;
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"http://jabber.org/protocol/disco#info\"");
         if (getNode() != null) {
             buf.append(" node=\"");
@@ -137,14 +140,12 @@ public class DiscoverInfo extends IQ {
         }
         buf.append(">");
         synchronized (identities) {
-            for (int i = 0; i < identities.size(); i++) {
-                Identity identity = (Identity) identities.get(i);
+            for (Identity identity : identities) {
                 buf.append(identity.toXML());
             }
         }
         synchronized (features) {
-            for (int i = 0; i < features.size(); i++) {
-                Feature feature = (Feature) features.get(i);
+            for (Feature feature : features) {
                 buf.append(feature.toXML());
             }
         }
@@ -220,7 +221,7 @@ public class DiscoverInfo extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<identity category=\"").append(category).append("\"");
             buf.append(" name=\"").append(name).append("\"");
             if (type != null) {
@@ -260,7 +261,7 @@ public class DiscoverInfo extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<feature var=\"").append(variable).append("\"/>");
             return buf.toString();
         }

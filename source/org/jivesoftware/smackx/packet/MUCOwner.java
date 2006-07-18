@@ -19,9 +19,12 @@
  */
 
 package org.jivesoftware.smackx.packet;
-import java.util.*;
-
 import org.jivesoftware.smack.packet.IQ;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * IQ packet that serves for granting and revoking ownership privileges, granting 
@@ -82,7 +85,7 @@ public class MUCOwner extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"http://jabber.org/protocol/muc#owner\">");
         synchronized (items) {
             for (int i = 0; i < items.size(); i++) {
@@ -237,7 +240,7 @@ public class MUCOwner extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<item");
             if (getAffiliation() != null) {
                 buf.append(" affiliation=\"").append(getAffiliation()).append("\"");
@@ -317,7 +320,7 @@ public class MUCOwner extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<destroy");
             if (getJid() != null) {
                 buf.append(" jid=\"").append(getJid()).append("\"");

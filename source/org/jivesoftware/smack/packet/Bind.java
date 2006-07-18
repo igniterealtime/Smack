@@ -57,7 +57,7 @@ public class Bind extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\">");
         if (resource != null) {
             buf.append("<resource>").append(resource).append("</resource>");

@@ -46,7 +46,7 @@ public class MUCUser implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         if (getInvite() != null) {
@@ -261,7 +261,7 @@ public class MUCUser implements PacketExtension {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<invite ");
             if (getTo() != null) {
                 buf.append(" to=\"").append(getTo()).append("\"");
@@ -346,7 +346,7 @@ public class MUCUser implements PacketExtension {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<decline ");
             if (getTo() != null) {
                 buf.append(" to=\"").append(getTo()).append("\"");
@@ -490,7 +490,7 @@ public class MUCUser implements PacketExtension {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<item");
             if (getAffiliation() != null) {
                 buf.append(" affiliation=\"").append(getAffiliation()).append("\"");
@@ -550,7 +550,7 @@ public class MUCUser implements PacketExtension {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<status code=\"").append(getCode()).append("\"/>");
             return buf.toString();
         }
@@ -605,7 +605,7 @@ public class MUCUser implements PacketExtension {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<destroy");
             if (getJid() != null) {
                 buf.append(" jid=\"").append(getJid()).append("\"");

@@ -59,11 +59,11 @@ import java.util.*;
  */
 public class SASLAuthentication implements UserAuthentication {
 
-    private static Map implementedMechanisms = new HashMap();
-    private static List mechanismsPreferences = new ArrayList();
+    private static Map<String, Class> implementedMechanisms = new HashMap<String, Class>();
+    private static List<String> mechanismsPreferences = new ArrayList<String>();
 
     private XMPPConnection connection;
-    private Collection serverMechanisms = new ArrayList();
+    private Collection<String> serverMechanisms = new ArrayList<String>();
     private SASLMechanism currentMechanism = null;
     /**
      * Boolean indicating if SASL negotiation has finished and was successful.
@@ -115,10 +115,10 @@ public class SASLAuthentication implements UserAuthentication {
      *
      * @return the registerd SASLMechanism classes sorted by the level of preference.
      */
-    public static List getRegisterSASLMechanisms() {
-        List answer = new ArrayList();
-        for (Iterator it = mechanismsPreferences.iterator(); it.hasNext();) {
-            answer.add(implementedMechanisms.get(it.next()));
+    public static List<Class> getRegisterSASLMechanisms() {
+        List<Class> answer = new ArrayList<Class>();
+        for (String mechanismsPreference : mechanismsPreferences) {
+            answer.add(implementedMechanisms.get(mechanismsPreference));
         }
         return answer;
     }
@@ -171,11 +171,10 @@ public class SASLAuthentication implements UserAuthentication {
             throws XMPPException {
         // Locate the SASLMechanism to use
         Class selected = null;
-        for (Iterator it = mechanismsPreferences.iterator(); it.hasNext();) {
-            String mechanism = (String) it.next();
+        for (String mechanism : mechanismsPreferences) {
             if (implementedMechanisms.containsKey(mechanism) &&
                     serverMechanisms.contains(mechanism)) {
-                selected = (Class) implementedMechanisms.get(mechanism);
+                selected = implementedMechanisms.get(mechanism);
                 break;
             }
         }
@@ -339,7 +338,7 @@ public class SASLAuthentication implements UserAuthentication {
      * @param mechanisms collection of strings with the available SASL mechanism reported
      *                   by the server.
      */
-    void setAvailableSASLMethods(Collection mechanisms) {
+    void setAvailableSASLMethods(Collection<String> mechanisms) {
         this.serverMechanisms = mechanisms;
     }
 

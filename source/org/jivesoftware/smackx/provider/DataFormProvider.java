@@ -20,14 +20,14 @@
 
 package org.jivesoftware.smackx.provider;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The DataFormProvider parses DataForm packets.
@@ -45,7 +45,7 @@ public class DataFormProvider implements PacketExtensionProvider {
 
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
         boolean done = false;
-        StringBuffer buffer = null;
+        StringBuilder buffer = null;
         DataForm dataForm = new DataForm(parser.getAttributeValue("", "type"));
         while (!done) {
             int eventType = parser.next();

@@ -20,7 +20,10 @@
 
 package org.jivesoftware.smack.packet;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Default implementation of the PacketExtension interface. Unless a PacketExtensionProvider
@@ -80,7 +83,7 @@ public class DefaultPacketExtension implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
         for (Iterator i=getNames(); i.hasNext(); ) {
             String name = (String)i.next();

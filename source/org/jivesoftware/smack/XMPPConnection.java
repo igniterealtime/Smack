@@ -39,7 +39,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -73,7 +77,8 @@ public class XMPPConnection {
      */
     public static boolean DEBUG_ENABLED = false;
 
-    private static List connectionEstablishedListeners = new ArrayList();
+    private final static List<ConnectionEstablishedListener> connectionEstablishedListeners =
+            new ArrayList<ConnectionEstablishedListener>();
 
     static {
         // Use try block since we may not have permission to get a system
@@ -128,7 +133,7 @@ public class XMPPConnection {
      * does not interfere with garbage collection. The map of chats must be stored
      * with each connection.
      */
-    Map chats = Collections.synchronizedMap(new HashMap());
+    Map<String, WeakReference<Chat>> chats = new ConcurrentHashMap<String, WeakReference<Chat>>();
 
     /**
      * Collection of available stream compression methods offered by the server.
@@ -289,7 +294,9 @@ public class XMPPConnection {
             // constructor it cannot be modified
             this.configuration = (ConnectionConfiguration) config.clone();
         }
-        catch (CloneNotSupportedException e) {}
+        catch (CloneNotSupportedException e) {
+            // Do nothing
+        }
         init();
     }
 
@@ -419,7 +426,7 @@ public class XMPPConnection {
         // Do partial version of nameprep on the username.
         username = username.toLowerCase().trim();
 
-        String response = null;
+        String response;
         if (configuration.isSASLAuthenticationEnabled() &&
                 saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
@@ -488,7 +495,7 @@ public class XMPPConnection {
             throw new IllegalStateException("Already logged in to server.");
         }
 
-        String response = null;
+        String response;
         if (configuration.isSASLAuthenticationEnabled() &&
                 saslAuthentication.hasAnonymousAuthentication()) {
             response = saslAuthentication.authenticateAnonymously();
@@ -876,12 +883,12 @@ public class XMPPConnection {
                     if (message.getThread() == null &&
                             message.getType() != Message.Type.GROUP_CHAT &&
                             message.getType() != Message.Type.HEADLINE) {
-                        WeakReference chatRef = (WeakReference)chats.get(
-                                StringUtils.parseBareAddress(message.getFrom()));
+                        WeakReference<Chat> chatRef =
+                                chats.get(StringUtils.parseBareAddress(message.getFrom()));
                         if (chatRef != null) {
                             // Do some extra clean-up if the reference was cleared.
-                            Chat chat;
-                            if ((chat = (Chat)chatRef.get()) == null) {
+                            Chat chat = chatRef.get();
+                            if (chat == null) {
                                 chats.remove(message.getFrom());
                             }
                             else {
@@ -931,9 +938,9 @@ public class XMPPConnection {
             }
             else {
                 try {
-                    Class zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
+                    Class<?> zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
                     //ZOutputStream out = new ZOutputStream(socket.getOutputStream(), JZlib.Z_BEST_COMPRESSION);
-                    Constructor constructor =
+                    Constructor<?> constructor =
                             zoClass.getConstructor(new Class[]{OutputStream.class, Integer.TYPE});
                     Object out = constructor.newInstance(new Object[] {socket.getOutputStream(), new Integer(9)});
                     //out.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
@@ -941,7 +948,7 @@ public class XMPPConnection {
                     method.invoke(out, new Object[] {new Integer(1)});
                     writer = new BufferedWriter(new OutputStreamWriter((OutputStream) out, "UTF-8"));
 
-                    Class ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
+                    Class<?> ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
                     //ZInputStream in = new ZInputStream(socket.getInputStream());
                     constructor = ziClass.getConstructor(new Class[]{InputStream.class});
                     Object in = constructor.newInstance(new Object[] {socket.getInputStream()});
@@ -976,7 +983,7 @@ public class XMPPConnection {
                 }
                 catch (Throwable t) {
                 }
-                Class debuggerClass = null;
+                Class<?> debuggerClass = null;
                 if (className != null) {
                     try {
                         debuggerClass = Class.forName(className);
@@ -1002,7 +1009,7 @@ public class XMPPConnection {
                 // Create a new debugger instance. If an exception occurs then disable the debugging
                 // option
                 try {
-                    Constructor constructor =
+                    Constructor<?> constructor =
                         debuggerClass.getConstructor(
                             new Class[] { XMPPConnection.class, Writer.class, Reader.class });
                     debugger = (SmackDebugger) constructor
@@ -1027,13 +1034,13 @@ public class XMPPConnection {
      * Fires listeners on connection established events.
      */
     private static void connectionEstablished(XMPPConnection connection) {
-        ConnectionEstablishedListener[] listeners = null;
+        ConnectionEstablishedListener[] listeners;
         synchronized (connectionEstablishedListeners) {
             listeners = new ConnectionEstablishedListener[connectionEstablishedListeners.size()];
             connectionEstablishedListeners.toArray(listeners);
         }
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].connectionEstablished(connection);
+        for (ConnectionEstablishedListener listener : listeners) {
+            listener.connectionEstablished(connection);
         }
     }
 

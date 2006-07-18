@@ -99,7 +99,7 @@ public class GroupChatInvitation implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<x xmlns=\"jabber:x:conference\" jid=\"").append(roomAddress).append("\"/>");
         return buf.toString();
     }

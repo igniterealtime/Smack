@@ -20,12 +20,18 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.util.StringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -90,17 +96,19 @@ public class AccountManager {
      *
      * @return the required account attributes.
      */
-    public Iterator getAccountAttributes() {
+    public Iterator<String> getAccountAttributes() {
         try {
             if (info == null) {
                 getRegistrationInfo();
             }
-            Map attributes = info.getAttributes();
+            Map<String, String> attributes = info.getAttributes();
             if (attributes != null) {
                 return attributes.keySet().iterator();
             }
         }
-        catch (XMPPException xe) { }
+        catch (XMPPException xe) {
+            xe.printStackTrace();
+        }
         return Collections.EMPTY_LIST.iterator();
     }
 
@@ -117,9 +125,11 @@ public class AccountManager {
             if (info == null) {
                 getRegistrationInfo();
             }
-            return (String) info.getAttributes().get(name);
+            return info.getAttributes().get(name);
         }
-        catch (XMPPException xe) { }
+        catch (XMPPException xe) {
+            xe.printStackTrace();
+        }
         return null;
     }
 
@@ -159,9 +169,9 @@ public class AccountManager {
             throw new XMPPException("Server does not support account creation.");
         }
         // Create a map for all the required attributes, but give them blank values.
-        Map attributes = new HashMap();
-        for (Iterator i=getAccountAttributes(); i.hasNext(); ) {
-            String attributeName = (String)i.next();
+        Map<String, String> attributes = new HashMap<String, String>();
+        for (Iterator<String> i=getAccountAttributes(); i.hasNext(); ) {
+            String attributeName = i.next();
             attributes.put(attributeName, "");
         }
         createAccount(username, password, attributes);
@@ -178,7 +188,7 @@ public class AccountManager {
      * @throws XMPPException if an error occurs creating the account.
      * @see #getAccountAttributes()
      */
-    public void createAccount(String username, String password, Map attributes)
+    public void createAccount(String username, String password, Map<String, String> attributes)
             throws XMPPException
     {
         if (!supportsAccountCreation()) {
@@ -217,7 +227,7 @@ public class AccountManager {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getServiceName());
-        HashMap map = new HashMap();
+        Map<String, String> map = new HashMap<String, String>();
         map.put("username",StringUtils.parseName(connection.getUser()));
         map.put("password",newPassword);
         reg.setAttributes(map);
@@ -251,7 +261,7 @@ public class AccountManager {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getServiceName());
-        Map attributes = new HashMap();
+        Map<String, String> attributes = new HashMap<String, String>();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
         reg.setAttributes(attributes);

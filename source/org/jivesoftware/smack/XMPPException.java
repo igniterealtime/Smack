@@ -20,8 +20,8 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.packet.XMPPError;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -199,7 +199,7 @@ public class XMPPException extends Exception {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         String message = super.getMessage();
         if (message != null) {
             buf.append(message).append(": ");

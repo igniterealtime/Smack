@@ -43,7 +43,7 @@ public class UserSearch extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"jabber:iq:search\">");
         buf.append(getExtensionsXML());
         buf.append("</query>");

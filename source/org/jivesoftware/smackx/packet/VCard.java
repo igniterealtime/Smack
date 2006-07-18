@@ -26,8 +26,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.BufferedInputStream;
@@ -89,8 +89,8 @@ public class VCard extends IQ {
      * Phone types:
      * VOICE?, FAX?, PAGER?, MSG?, CELL?, VIDEO?, BBS?, MODEM?, ISDN?, PCS?, PREF?
      */
-    private Map homePhones = new HashMap();
-    private Map workPhones = new HashMap();
+    private Map<String, String> homePhones = new HashMap<String, String>();
+    private Map<String, String> workPhones = new HashMap<String, String>();
 
 
     /**
@@ -98,8 +98,8 @@ public class VCard extends IQ {
      * POSTAL?, PARCEL?, (DOM | INTL)?, PREF?, POBOX?, EXTADR?, STREET?, LOCALITY?,
      * REGION?, PCODE?, CTRY?
      */
-    private Map homeAddr = new HashMap();
-    private Map workAddr = new HashMap();
+    private Map<String, String> homeAddr = new HashMap<String, String>();
+    private Map<String, String> workAddr = new HashMap<String, String>();
 
     private String firstName;
     private String lastName;
@@ -116,10 +116,10 @@ public class VCard extends IQ {
     /**
      * Such as DESC ROLE GEO etc.. see JEP-0054
      */
-    private Map otherSimpleFields = new HashMap();
+    private Map<String, String> otherSimpleFields = new HashMap<String, String>();
 
     // fields that, as they are should not be escaped before forwarding to the server
-    private Map otherUnescapableFields = new HashMap();
+    private Map<String, String> otherUnescapableFields = new HashMap<String, String>();
 
     public VCard() {
     }
@@ -131,7 +131,7 @@ public class VCard extends IQ {
      *              GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
      */
     public String getField(String field) {
-        return (String) otherSimpleFields.get(field);
+        return otherSimpleFields.get(field);
     }
 
     /**
@@ -168,6 +168,8 @@ public class VCard extends IQ {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+        // Update FN field
+        updateFN();
     }
 
     public String getLastName() {
@@ -176,6 +178,8 @@ public class VCard extends IQ {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+        // Update FN field
+        updateFN();
     }
 
     public String getMiddleName() {
@@ -184,10 +188,12 @@ public class VCard extends IQ {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
+        // Update FN field
+        updateFN();
     }
 
     public String getNickName() {
-        return (String) otherSimpleFields.get("NICKNAME");
+        return otherSimpleFields.get("NICKNAME");
     }
 
     public void setNickName(String nickName) {
@@ -211,7 +217,7 @@ public class VCard extends IQ {
     }
 
     public String getJabberId() {
-        return (String) otherSimpleFields.get("JABBERID");
+        return otherSimpleFields.get("JABBERID");
     }
 
     public void setJabberId(String jabberId) {
@@ -241,7 +247,7 @@ public class VCard extends IQ {
      *                  LOCALITY, REGION, PCODE, CTRY
      */
     public String getAddressFieldHome(String addrField) {
-        return (String) homeAddr.get(addrField);
+        return homeAddr.get(addrField);
     }
 
     /**
@@ -261,7 +267,7 @@ public class VCard extends IQ {
      *                  LOCALITY, REGION, PCODE, CTRY
      */
     public String getAddressFieldWork(String addrField) {
-        return (String) workAddr.get(addrField);
+        return workAddr.get(addrField);
     }
 
     /**
@@ -291,7 +297,7 @@ public class VCard extends IQ {
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
      */
     public String getPhoneHome(String phoneType) {
-        return (String) homePhones.get(phoneType);
+        return homePhones.get(phoneType);
     }
 
     /**
@@ -310,7 +316,7 @@ public class VCard extends IQ {
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
      */
     public String getPhoneWork(String phoneType) {
-        return (String) workPhones.get(phoneType);
+        return workPhones.get(phoneType);
     }
 
     /**
@@ -442,6 +448,20 @@ public class VCard extends IQ {
         return StringUtils.encodeHex(digest.digest());
     }
 
+    private void updateFN() {
+        StringBuilder sb = new StringBuilder();
+        if (firstName != null) {
+            sb.append(StringUtils.escapeForXML(firstName)).append(' ');
+        }
+        if (middleName != null) {
+            sb.append(StringUtils.escapeForXML(middleName)).append(' ');
+        }
+        if (lastName != null) {
+            sb.append(StringUtils.escapeForXML(lastName));
+        }
+        setField("FN", sb.toString());
+    }
+
     /**
      * Save this vCard for the user connected by 'connection'. Connection should be authenticated
      * and not anonymous.<p>
@@ -516,7 +536,7 @@ public class VCard extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         new VCardWriter(sb).write();
         return sb.toString();
     }
@@ -525,8 +545,7 @@ public class VCard extends IQ {
         if (result == null) result = new VCard();
 
         Field[] fields = VCard.class.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
+        for (Field field : fields) {
             if (field.getDeclaringClass() == VCard.class &&
                     !Modifier.isFinal(field.getModifiers())) {
                 try {
@@ -647,9 +666,9 @@ public class VCard extends IQ {
 
     private class VCardWriter {
 
-        private final StringBuffer sb;
+        private final StringBuilder sb;
 
-        VCardWriter(StringBuffer sb) {
+        VCardWriter(StringBuilder sb) {
             this.sb = sb;
         }
 
@@ -663,7 +682,6 @@ public class VCard extends IQ {
 
         private void buildActualContent() {
             if (hasNameField()) {
-                appendFN();
                 appendN();
             }
 
@@ -693,7 +711,7 @@ public class VCard extends IQ {
             }
         }
 
-        private void appendPhones(Map phones, final String code) {
+        private void appendPhones(Map<String, String> phones, final String code) {
             Iterator it = phones.entrySet().iterator();
             while (it.hasNext()) {
                 final Map.Entry entry = (Map.Entry) it.next();
@@ -707,7 +725,7 @@ public class VCard extends IQ {
             }
         }
 
-        private void appendAddress(final Map addr, final String code) {
+        private void appendAddress(final Map<String, String> addr, final String code) {
             if (addr.size() > 0) {
                 appendTag("ADR", true, new ContentBuilder() {
                     public void addTagContent() {
@@ -751,23 +769,6 @@ public class VCard extends IQ {
                     }
                 });
             }
-        }
-
-        private void appendFN() {
-            final ContentBuilder contentBuilder = new ContentBuilder() {
-                public void addTagContent() {
-                    if (firstName != null) {
-                        sb.append(StringUtils.escapeForXML(firstName)).append(' ');
-                    }
-                    if (middleName != null) {
-                        sb.append(StringUtils.escapeForXML(middleName)).append(' ');
-                    }
-                    if (lastName != null) {
-                        sb.append(StringUtils.escapeForXML(lastName));
-                    }
-                }
-            };
-            appendTag("FN", true, contentBuilder);
         }
 
         private void appendN() {

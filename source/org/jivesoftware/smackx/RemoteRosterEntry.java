@@ -99,7 +99,7 @@ public class RemoteRosterEntry {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<item jid=\"").append(user).append("\"");
         if (name != null) {
             buf.append(" name=\"").append(name).append("\"");

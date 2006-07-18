@@ -31,6 +31,7 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages discovery of services in XMPP entities. This class provides:
@@ -48,11 +49,13 @@ public class ServiceDiscoveryManager {
     private static String identityName = "Smack";
     private static String identityType = "pc";
 
-    private static Map instances = new Hashtable();
+    private static Map<XMPPConnection, ServiceDiscoveryManager> instances =
+            new ConcurrentHashMap<XMPPConnection, ServiceDiscoveryManager>();
 
     private XMPPConnection connection;
-    private List features = new ArrayList();
-    private Map nodeInformationProviders = new Hashtable();
+    private final List<String> features = new ArrayList<String>();
+    private Map<String, NodeInformationProvider> nodeInformationProviders =
+            new ConcurrentHashMap<String, NodeInformationProvider>();
 
     // Create a new ServiceDiscoveryManager on every established connection
     static {
@@ -82,7 +85,7 @@ public class ServiceDiscoveryManager {
      * @return the ServiceDiscoveryManager associated with a given XMPPConnection.
      */
     public static ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
-        return (ServiceDiscoveryManager) instances.get(connection);
+        return instances.get(connection);
     }
 
     /**
@@ -211,8 +214,8 @@ public class ServiceDiscoveryManager {
                         response.addIdentity(identity);
                         // Add the registered features to the response
                         synchronized (features) {
-                            for (Iterator it = getFeatures(); it.hasNext();) {
-                                response.addFeature((String) it.next());
+                            for (Iterator<String> it = getFeatures(); it.hasNext();) {
+                                response.addFeature(it.next());
                             }
                         }
                     }
@@ -258,7 +261,7 @@ public class ServiceDiscoveryManager {
         if (node == null) {
             return null;
         }
-        return (NodeInformationProvider) nodeInformationProviders.get(node);
+        return nodeInformationProviders.get(node);
     }
 
     /**
@@ -297,9 +300,9 @@ public class ServiceDiscoveryManager {
      * 
      * @return an Iterator on the supported features by this XMPP entity.
      */
-    public Iterator getFeatures() {
+    public Iterator<String> getFeatures() {
         synchronized (features) {
-            return Collections.unmodifiableList(new ArrayList(features)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(features)).iterator();
         }
     }
 

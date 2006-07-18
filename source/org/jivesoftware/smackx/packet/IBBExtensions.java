@@ -93,7 +93,7 @@ public class IBBExtensions {
 		}
 
 		public String getChildElementXML() {
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
             buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\" ");
             buf.append("sid=\"").append(getSessionID()).append("\" ");
             buf.append("block-size=\"").append(getBlockSize()).append("\"");
@@ -193,7 +193,7 @@ public class IBBExtensions {
 		}
 
 		public String toXML() {
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
             buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace())
                     .append("\" ");
             buf.append("sid=\"").append(getSessionID()).append("\" ");
@@ -230,7 +230,7 @@ public class IBBExtensions {
 		}
 
 		public String getChildElementXML() {
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
             buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\" ");
             buf.append("sid=\"").append(getSessionID()).append("\"");
 			buf.append("/>");

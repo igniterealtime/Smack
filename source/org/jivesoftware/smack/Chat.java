@@ -20,12 +20,15 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.filter.*;
 
-import java.util.*;
 import java.lang.ref.WeakReference;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * A chat is a series of messages sent between two users. Each chat has a unique
@@ -66,7 +69,8 @@ public class Chat {
     private String participant;
     private PacketFilter messageFilter;
     private PacketCollector messageCollector;
-    private Set listeners = new HashSet();
+    private final Set<WeakReference<PacketListener>> listeners =
+            new HashSet<WeakReference<PacketListener>>();
 
     /**
      * Creates a new chat with the specified user.
@@ -94,7 +98,7 @@ public class Chat {
         // Register with the map of chats so that messages with no thread ID
         // set will be delivered to this Chat.
         connection.chats.put(StringUtils.parseBareAddress(participant),
-                new WeakReference(this));
+                new WeakReference<Chat>(this));
 
         // Filter the messages whose thread equals Chat's id
         messageFilter = new ThreadFilter(threadID);
@@ -222,7 +226,7 @@ public class Chat {
         // Keep track of the listener so that we can manually deliver extra
         // messages to it later if needed.
         synchronized (listeners) {
-            listeners.add(new WeakReference(listener));
+            listeners.add(new WeakReference<PacketListener>(listener));
         }
     }
 
@@ -242,10 +246,10 @@ public class Chat {
 
         messageCollector.processPacket(message);
         synchronized (listeners) {
-            for (Iterator i=listeners.iterator(); i.hasNext(); ) {
-                WeakReference listenerRef = (WeakReference)i.next();
+            for (Iterator<WeakReference<PacketListener>> i=listeners.iterator(); i.hasNext(); ) {
+                WeakReference<PacketListener> listenerRef = i.next();
                 PacketListener listener;
-                if ((listener = (PacketListener)listenerRef.get()) != null) {
+                if ((listener = listenerRef.get()) != null) {
                     listener.processPacket(message);
                 }
                 // If the reference was cleared, remove it from the set.

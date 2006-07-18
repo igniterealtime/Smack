@@ -20,7 +20,10 @@
 
 package org.jivesoftware.smackx;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a field of a form. The field could be used to represent a question to complete,
@@ -46,8 +49,8 @@ public class FormField {
     private String label;
     private String variable;
     private String type;
-    private List options = new ArrayList();
-    private List values = new ArrayList();
+    private final List<Option> options = new ArrayList<Option>();
+    private final List<String> values = new ArrayList<String>();
 
     /**
      * Creates a new FormField with the variable name that uniquely identifies the field 
@@ -97,9 +100,9 @@ public class FormField {
      * 
      * @return Iterator for the available options. 
      */
-    public Iterator getOptions() {
+    public Iterator<Option> getOptions() {
         synchronized (options) {
-            return Collections.unmodifiableList(new ArrayList(options)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Option>(options)).iterator();
         }
     }
 
@@ -144,9 +147,9 @@ public class FormField {
      * 
      * @return an Iterator for the default values or answered values of the question. 
      */
-    public Iterator getValues() {
+    public Iterator<String> getValues() {
         synchronized (values) {
-            return Collections.unmodifiableList(new ArrayList(values)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(values)).iterator();
         }
     }
 
@@ -234,7 +237,7 @@ public class FormField {
      *  
      * @param newValues default values or an answered values of the question.
      */
-    public void addValues(List newValues) {
+    public void addValues(List<String> newValues) {
         synchronized (values) {
             values.addAll(newValues);
         }
@@ -246,7 +249,7 @@ public class FormField {
      */
     protected void resetValues() {
         synchronized (values) {
-            values.removeAll(new ArrayList(values));
+            values.removeAll(new ArrayList<String>(values));
         }
     }
     
@@ -263,7 +266,7 @@ public class FormField {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<field");
         // Add attributes
         if (getLabel() != null) {
@@ -284,7 +287,7 @@ public class FormField {
             buf.append("<required/>");
         }
         // Loop through all the values and append them to the string buffer
-        for (Iterator i = getValues(); i.hasNext();) {
+        for (Iterator<String> i = getValues(); i.hasNext();) {
             buf.append("<value>").append(i.next()).append("</value>");
         }
         // Loop through all the values and append them to the string buffer
@@ -337,7 +340,7 @@ public class FormField {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<option");
             // Add attribute
             if (getLabel() != null) {

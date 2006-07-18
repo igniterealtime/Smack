@@ -20,13 +20,13 @@
 
 package org.jivesoftware.smackx.packet;
 
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.FormField;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.FormField;
 
 /**
  * Represents a form that could be use for gathering data as well as for reporting data
@@ -38,10 +38,10 @@ public class DataForm implements PacketExtension {
 
     private String type;
     private String title;
-    private List instructions = new ArrayList();
+    private List<String> instructions = new ArrayList<String>();
     private ReportedData reportedData;
-    private List items = new ArrayList();
-    private List fields = new ArrayList();
+    private final List<Item> items = new ArrayList<Item>();
+    private final List<FormField> fields = new ArrayList<FormField>();
     
     public DataForm(String type) {
         this.type = type;
@@ -85,9 +85,9 @@ public class DataForm implements PacketExtension {
      * 
      * @return an Iterator for the list of instructions that explain how to fill out the form.
      */
-    public Iterator getInstructions() {
+    public Iterator<String> getInstructions() {
         synchronized (instructions) {
-            return Collections.unmodifiableList(new ArrayList(instructions)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(instructions)).iterator();
         }
     }
 
@@ -105,9 +105,9 @@ public class DataForm implements PacketExtension {
      *
      * @return an Iterator for the items returned from a search.
      */
-    public Iterator getItems() {
+    public Iterator<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList(items)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(items)).iterator();
         }
     }
 
@@ -116,9 +116,9 @@ public class DataForm implements PacketExtension {
      *
      * @return an Iterator for the fields that are part of the form.
      */
-    public Iterator getFields() {
+    public Iterator<FormField> getFields() {
         synchronized (fields) {
-            return Collections.unmodifiableList(new ArrayList(fields)).iterator();
+            return Collections.unmodifiableList(new ArrayList<FormField>(fields)).iterator();
         }
     }
 
@@ -147,7 +147,7 @@ public class DataForm implements PacketExtension {
      * 
      * @param instructions list of instructions that explain how to fill out the form.
      */
-    public void setInstructions(List instructions) {
+    public void setInstructions(List<String> instructions) {
         this.instructions = instructions;
     }
 
@@ -196,7 +196,7 @@ public class DataForm implements PacketExtension {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\" type=\"" + getType() +"\">");
         if (getTitle() != null) {
@@ -231,9 +231,9 @@ public class DataForm implements PacketExtension {
      * @author Gaston Dombiak
      */
     public static class ReportedData {
-        private List fields = new ArrayList();
+        private List<FormField> fields = new ArrayList<FormField>();
         
-        public ReportedData(List fields) {
+        public ReportedData(List<FormField> fields) {
             this.fields = fields;
         }
         
@@ -242,12 +242,12 @@ public class DataForm implements PacketExtension {
          * 
          * @return the fields returned from a search.
          */
-        public Iterator getFields() {
-            return Collections.unmodifiableList(new ArrayList(fields)).iterator();
+        public Iterator<FormField> getFields() {
+            return Collections.unmodifiableList(new ArrayList<FormField>(fields)).iterator();
         }
         
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<reported>");
             // Loop through all the form items and append them to the string buffer
             for (Iterator i = getFields(); i.hasNext();) {
@@ -266,9 +266,9 @@ public class DataForm implements PacketExtension {
      * @author Gaston Dombiak
      */
     public static class Item {
-        private List fields = new ArrayList();
+        private List<FormField> fields = new ArrayList<FormField>();
         
-        public Item(List fields) {
+        public Item(List<FormField> fields) {
             this.fields = fields;
         }
         
@@ -277,12 +277,12 @@ public class DataForm implements PacketExtension {
          * 
          * @return the fields that define the data that goes with the item.
          */
-        public Iterator getFields() {
-            return Collections.unmodifiableList(new ArrayList(fields)).iterator();
+        public Iterator<FormField> getFields() {
+            return Collections.unmodifiableList(new ArrayList<FormField>(fields)).iterator();
         }
         
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<item>");
             // Loop through all the form items and append them to the string buffer
             for (Iterator i = getFields(); i.hasNext();) {

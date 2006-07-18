@@ -102,7 +102,7 @@ public class OfflineMessageRequest extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<offline xmlns=\"http://jabber.org/protocol/offline\">");
         synchronized (items) {
             for (int i = 0; i < items.size(); i++) {
@@ -175,7 +175,7 @@ public class OfflineMessageRequest extends IQ {
         }
 
         public String toXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<item");
             if (getAction() != null) {
                 buf.append(" action=\"").append(getAction()).append("\"");

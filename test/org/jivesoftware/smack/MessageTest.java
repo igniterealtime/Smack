@@ -20,10 +20,10 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Tests sending messages to other clients.
@@ -82,7 +82,7 @@ public class MessageTest extends SmackTestCase {
 
         // Create message with a body of 4K characters
         Message msg = new Message(getFullJID(1), Message.Type.CHAT);
-        StringBuffer sb = new StringBuffer(5000);
+        StringBuilder sb = new StringBuilder(5000);
         for (int i=0; i<=4000; i++) {
             sb.append("X");
         }

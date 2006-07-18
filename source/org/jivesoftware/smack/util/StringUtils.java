@@ -20,9 +20,9 @@
 
 package org.jivesoftware.smack.util;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 /**
@@ -143,7 +143,7 @@ public class StringUtils {
         int last=0;
         char[] input = string.toCharArray();
         int len = input.length;
-        StringBuffer out = new StringBuffer((int)(len*1.3));
+        StringBuilder out = new StringBuilder((int)(len*1.3));
         for (; i < len; i++) {
             ch = input[i];
             if (ch > '>') {
@@ -243,13 +243,13 @@ public class StringUtils {
      * @return generated hex string.
      */
     public static String encodeHex(byte[] bytes) {
-        StringBuffer hex = new StringBuffer(bytes.length * 2);
+        StringBuilder hex = new StringBuilder(bytes.length * 2);
 
-        for (int i=0; i<bytes.length; i++) {
-            if (((int) bytes[i] & 0xff) < 0x10) {
+        for (byte aByte : bytes) {
+            if (((int) aByte & 0xff) < 0x10) {
                 hex.append("0");
             }
-            hex.append(Integer.toString((int) bytes[i] & 0xff, 16));
+            hex.append(Integer.toString((int) aByte & 0xff, 16));
         }
 
         return hex.toString();

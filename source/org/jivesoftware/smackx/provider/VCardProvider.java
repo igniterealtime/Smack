@@ -32,8 +32,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * vCard provider.
@@ -45,7 +45,7 @@ public class VCardProvider implements IQProvider {
     private final static String PREFERRED_ENCODING = "UTF-8";
 
   public IQ parseIQ(XmlPullParser parser) throws Exception {
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       try {
           int event = parser.getEventType();
           // get the content
@@ -229,12 +229,12 @@ public class VCardProvider implements IQProvider {
         }
 
         private String getTextContent(Node node) {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             appendText(result, node);
             return result.toString();
         }
 
-        private void appendText(StringBuffer result, Node node) {
+        private void appendText(StringBuilder result, Node node) {
             NodeList childNodes = node.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node nd = childNodes.item(i);

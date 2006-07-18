@@ -20,12 +20,12 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Ensure that the server is handling IQ packets correctly.
@@ -45,7 +45,7 @@ public class IQTest extends SmackTestCase {
     public void testInvalidNamespace() {
         IQ iq = new IQ() {
             public String getChildElementXML() {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append("<query xmlns=\"jabber:iq:anything\">");
                 buf.append("</query>");
                 return buf.toString();

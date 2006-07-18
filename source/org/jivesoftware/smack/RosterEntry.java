@@ -20,8 +20,8 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.RosterPacket;
 
 import java.util.*;
 
@@ -146,7 +146,7 @@ public class RosterEntry {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (name != null) {
             buf.append(name).append(": ");
         }

@@ -93,7 +93,7 @@ public class OfflineMessageManager {
                 namespace);
         Form extendedInfo = Form.getFormFrom(info);
         if (extendedInfo != null) {
-            String value = (String) extendedInfo.getField("number_of_messages").getValues().next();
+            String value = extendedInfo.getField("number_of_messages").getValues().next();
             return Integer.parseInt(value);
         }
         return 0;
@@ -109,8 +109,8 @@ public class OfflineMessageManager {
      * @throws XMPPException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      */
-    public Iterator getHeaders() throws XMPPException {
-        List answer = new ArrayList();
+    public Iterator<OfflineMessageHeader> getHeaders() throws XMPPException {
+        List<OfflineMessageHeader> answer = new ArrayList<OfflineMessageHeader>();
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                 null, namespace);
         for (Iterator it = items.getItems(); it.hasNext();) {
@@ -132,11 +132,11 @@ public class OfflineMessageManager {
      * @throws XMPPException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      */
-    public Iterator getMessages(final List nodes) throws XMPPException {
-        List messages = new ArrayList();
+    public Iterator<Message> getMessages(final List<String> nodes) throws XMPPException {
+        List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
-        for (Iterator it = nodes.iterator(); it.hasNext();) {
-            OfflineMessageRequest.Item item = new OfflineMessageRequest.Item((String) it.next());
+        for (String node : nodes) {
+            OfflineMessageRequest.Item item = new OfflineMessageRequest.Item(node);
             item.setAction("view");
             request.addItem(item);
         }
@@ -188,8 +188,8 @@ public class OfflineMessageManager {
      * @throws XMPPException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      */
-    public Iterator getMessages() throws XMPPException {
-        List messages = new ArrayList();
+    public Iterator<Message> getMessages() throws XMPPException {
+        List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
         // Filter packets looking for an answer from the server.
@@ -232,10 +232,10 @@ public class OfflineMessageManager {
      * @throws XMPPException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      */
-    public void deleteMessages(List nodes) throws XMPPException {
+    public void deleteMessages(List<String> nodes) throws XMPPException {
         OfflineMessageRequest request = new OfflineMessageRequest();
-        for (Iterator it = nodes.iterator(); it.hasNext();) {
-            OfflineMessageRequest.Item item = new OfflineMessageRequest.Item((String) it.next());
+        for (String node : nodes) {
+            OfflineMessageRequest.Item item = new OfflineMessageRequest.Item(node);
             item.setAction("remove");
             request.addItem(item);
         }

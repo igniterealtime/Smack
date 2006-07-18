@@ -20,16 +20,20 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.packet.*;
-import org.jivesoftware.smackx.provider.*;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smackx.packet.DefaultPrivateData;
+import org.jivesoftware.smackx.packet.PrivateData;
+import org.jivesoftware.smackx.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
 
-import java.util.Map;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Manages private data, which is a mechanism to allow users to store arbitrary XML
@@ -177,7 +181,7 @@ public class PrivateDataManager {
         // Create an IQ packet to get the private data.
         IQ privateDataGet = new IQ() {
             public String getChildElementXML() {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append("<query xmlns=\"jabber:iq:private\">");
                 buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\"/>");
                 buf.append("</query>");
@@ -223,7 +227,7 @@ public class PrivateDataManager {
         // Create an IQ packet to set the private data.
         IQ privateDataSet = new IQ() {
             public String getChildElementXML() {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append("<query xmlns=\"jabber:iq:private\">");
                 buf.append(privateData.toXML());
                 buf.append("</query>");
@@ -264,7 +268,7 @@ public class PrivateDataManager {
      * @return a unique key for the element name and namespace pair.
      */
     private static String getProviderKey(String elementName, String namespace) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
         return buf.toString();
     }
@@ -343,7 +347,7 @@ public class PrivateDataManager {
         }
 
         public String getChildElementXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append("<query xmlns=\"jabber:iq:private\">");
             if (privateData != null) {
                 privateData.toXML();

@@ -67,7 +67,7 @@ public abstract class IQ extends Packet {
     }
 
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<iq ");
         if (getPacketID() != null) {
             buf.append("id=\"" + getPacketID() + "\" ");
