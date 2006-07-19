@@ -1,0 +1,167 @@
+<html>
+<head>
+	<title>Smack: Privacy - Jive Software</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">
+Privacy
+</div>
+
+<div class="nav">
+&laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p class="subheader">What is?</p>
+<p>
+<tt>Privacy</tt> is a method for users to block communications from particular other users. In XMPP this is done by managing one's privacy lists.<br />
+Server-side privacy lists enable successful completion of the following use cases:
+<ul>
+<li>Retrieving one's privacy lists. 
+<li>Adding, removing, and editing one's privacy lists. 
+<li>Setting, changing, or declining active lists. 
+<li>Setting, changing, or declining the default list (i.e., the list that is active by default). 
+<li>Allowing or blocking messages based on JID, group, or subscription type (or globally). 
+<li>Allowing or blocking inbound presence notifications based on JID, group, or subscription type (or globally). 
+<li>Allowing or blocking outbound presence notifications based on JID, group, or subscription type (or globally). 
+<li>Allowing or blocking IQ stanzas based on JID, group, or subscription type (or globally). 
+<li>Allowing or blocking all communications based on JID, group, or subscription type (or globally). 
+</ul>
+<p>
+
+<p class="subheader">How can I use it?</p>
+
+<p>
+The API implementation releases three main public classes:
+<ul>
+	<li><tt>PrivacyListManager</tt>: this is the main API class to retrieve and handle server privacy lists. 
+    <li><tt>PrivacyList</tt>: witch represents one privacy list, with a name, a set of privacy items. For example, the list with visible or invisible.
+	<li><tt>PrivacyItem</tt>: block or allow one aspect of privacy. For example, to allow my friend to see my presence.
+</ul>
+<ol>
+<li> Right from the start, a client MAY <b>get his/her privacy list</b> that is stored in the server:<br />
+<div class="code">
+<pre>
+	<font color="gray"><i>// Create a privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Retrieve server privacy lists</i></font>
+	PrivacyList[] lists = privacyManager.getPrivacyLists();
+</pre> 
+</div>
+Now the client is able to show every <tt>PrivacyItem</tt> of the server and also for every list if it is active, default or none of them. The client is a listener of privacy changes.<br />
+<br />
+<li> In order to <b>add a new list in the server</b>, the client MAY implement something like:
+<div class="code">
+<pre>
+	<font color="gray"><i>// Set the name of the list</i></font>
+	String listName = <font color="green">"newList"</font>;
+
+	<font color="gray"><i>// Create the list of <tt>PrivacyItem</tt> that will allow or deny some privacy aspect</i></font>
+	String user = <font color="green">"tybalt@example.com"</font>;
+	String groupName = <font color="green">"enemies"</font>;
+	ArrayList privacyItems = new ArrayList();
+
+	PrivacyItem item = new PrivacyItem(PrivacyRule.<font color="navy"><i>JID</i></font>, <font color="navy">true</font>, 1);
+	item.setValue(user);
+	privacyItems.add(item);
+
+	item = new PrivacyItem(PrivacyRule.<font color="navy"><i>SUBSCRIPTION</i></font>, <font color="navy">true</font>, 2);
+	item.setValue(PrivacyRule.<font color="navy"><i>SUBSCRIPTION_BOTH</i></font>);
+	privacyItems.add(item);
+     	
+	item = new PrivacyItem(PrivacyRule.<font color="navy"><i>GROUP</i></font>, <font color="navy">false</font>, 3);
+	item.setValue(groupName);
+	item.setFilterMessage(<font color="navy">true</font>);
+	privacyItems.add(item);
+
+	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Create the new list.</i></font>
+	privacyManager.createPrivacyList(listName, Arrays.<i>asList</i>(privacyItems));
+</pre> 
+</div>
+
+<li> To <b>modify an existent list</b>, the client code MAY be like:
+<div class="code">
+<pre>
+	<font color="gray"><i>// Set the name of the list</i></font>
+	String listName = <font color="green">"existingList"</font>;
+	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Sent the new list to the server.</i></font>
+	privacyManager.updatePrivacyList(listName, items);
+</pre> 
+</div>
+Notice <tt>items</tt> was defined at the example 2 and MUST contain all the elements in the list (not the "delta").
+
+<li> In order to <b>delete an existing list</b>, the client MAY perform something like:
+<div class="code">
+<pre>
+	<font color="gray"><i>// Set the name of the list</i></font>
+	String listName = <font color="green">"existingList"</font>;
+	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Remove the list.</i></font>
+	privacyManager.deletePrivacyList(listName);
+</pre> 
+</div>
+
+<li> In order to <b>decline the use of an active list</b>, the client MAY perform something like:
+<div class="code">
+<pre>
+	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Decline the use of the active list.</i></font>
+	privacyManager.declineActiveList();
+</pre> 
+</div>
+
+<li> In order to <b>decline the use of a default list</b>, the client MAY perform something like:
+<div class="code">
+<pre>
+	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Decline the use of the default list.</i></font>
+	privacyManager.declineDefaultList();
+</pre> 
+</div>
+
+</ol>
+
+<p class="subheader">Listening for Privacy Changes</p>
+<p>
+In order to handle privacy changes, clients SHOULD listen manager's updates.
+When a list is changed the manager notifies every added listener. Listeners MUST implement the <tt>PrivacyListListener</tt> interface. 
+
+
+
+Clients may need to react when a privacy list is modified. The <tt>PrivacyListManager</tt> lets you add listerners that will be notified when a list has been changed. Listeners should implement the <tt>PrivacyListListener</tt> interface.<br />
+The most important notification is <tt>updatedPrivacyList</tt> that is performed when a privacy list changes its privacy items.<br />
+
+The listener becomes notified after performing:
+<div class="code">
+<pre>
+	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
+	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
+	<font color="gray"><i>// Add the listener (this) to get notified</i></font>
+	privacyManager.addListener(<font color="navy">this</font>);
+</pre> 
+</div>
+</p>
+
+<p class="subheader">References</p>
+<ul>
+    <li><a href="http://www.xmpp.org/specs/rfc3921.html#privacy">Blocking communication</a> from the RFC3921.
+</ul>
+</p>
+
+<br clear="all" /><br><br>
+
+<div class="footer">
+Copyright &copy; Jive Software 2002-2006
+</div>
+
+</body>
+</html>

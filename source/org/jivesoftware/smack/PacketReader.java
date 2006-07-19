@@ -607,7 +607,7 @@ class PacketReader {
                 iqPacket.setTo(from);
                 iqPacket.setFrom(to);
                 iqPacket.setType(IQ.Type.ERROR);
-                iqPacket.setError(new XMPPError(501, "feature-not-implemented"));
+                iqPacket.setError(new XMPPError(XMPPError.Condition.feature_not_implemented));
                 connection.sendPacket(iqPacket);
                 return null;
             }

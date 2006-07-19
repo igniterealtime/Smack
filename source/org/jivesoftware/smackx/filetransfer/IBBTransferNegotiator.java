@@ -377,7 +377,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         private void sendCancelMessage(Message message) {
             IQ error = FileTransferNegotiator.createIQ(message.getPacketID(), message.getFrom(), message.getTo(),
                     IQ.Type.ERROR);
-            error.setError(new XMPPError(504));
+            error.setError(new XMPPError(XMPPError.Condition.remote_server_timeout, "Cancel Message Transfer"));
             connection.sendPacket(error);
         }
 

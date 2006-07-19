@@ -21,9 +21,7 @@
 package org.jivesoftware.smack.util;
 
 import java.beans.PropertyDescriptor;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.HashMap;
+import java.util.*;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
 
@@ -31,7 +29,6 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
@@ -69,7 +66,7 @@ public class PacketParserUtils {
         String subject = null;
         String body = null;
         String thread = null;
-        Map properties = null;
+        Map<String, Object> properties = null;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -115,8 +112,7 @@ public class PacketParserUtils {
         message.setThread(thread);
         // Set packet properties.
         if (properties != null) {
-            for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
-                String name = (String)i.next();
+            for (String name : properties.keySet()) {
                 message.setProperty(name, properties.get(name));
             }
         }
@@ -186,10 +182,9 @@ public class PacketParserUtils {
                 else if (elementName.equals("properties") &&
                         namespace.equals(PROPERTIES_NAMESPACE))
                 {
-                    Map properties = parseProperties(parser);
+                    Map<String,Object> properties = parseProperties(parser);
                     // Set packet properties.
-                    for (Iterator i=properties.keySet().iterator(); i.hasNext(); ) {
-                        String name = (String)i.next();
+                    for (String name : properties.keySet()) {
                         presence.setProperty(name, properties.get(name));
                     }
                 }
@@ -219,8 +214,8 @@ public class PacketParserUtils {
      * @return a map of the properties.
      * @throws Exception if an error occurs while parsing the properties.
      */
-    public static Map parseProperties(XmlPullParser parser) throws Exception {
-        Map properties = new HashMap();
+    public static Map<String, Object> parseProperties(XmlPullParser parser) throws Exception {
+        Map<String, Object> properties = new HashMap<String, Object>();
         while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
@@ -257,7 +252,7 @@ public class PacketParserUtils {
                                 value = new Double(valueText);
                             }
                             else if ("boolean".equals(type)) {
-                                value = new Boolean(valueText);
+                                value = Boolean.valueOf(valueText);
                             }
                             else if ("string".equals(type)) {
                                 value = valueText;
@@ -297,25 +292,52 @@ public class PacketParserUtils {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     public static XMPPError parseError(XmlPullParser parser) throws Exception {
-        String errorCode = "-1";
+        final String errorNamespace = "urn:ietf:params:xml:ns:xmpp-stanzas";
+    	String errorCode = "-1";
+        String type = null;
         String message = null;
+        String condition = null;
+        List<PacketExtension> extensions = new ArrayList<PacketExtension>();
+
+        // Parse the error header
         for (int i=0; i<parser.getAttributeCount(); i++) {
             if (parser.getAttributeName(i).equals("code")) {
                 errorCode = parser.getAttributeValue("", "code");
             }
-        }
-        // Get the error text in a safe way since we are not sure about the error message format
-        try {
-            message = parser.nextText();
-        }
-        catch (XmlPullParserException ex) {}
-        while (true) {
-            if (parser.getEventType() == XmlPullParser.END_TAG && parser.getName().equals("error")) {
-                break;
+            if (parser.getAttributeName(i).equals("type")) {
+            	type = parser.getAttributeValue("", "type");
             }
-            parser.next();
         }
-        return new XMPPError(Integer.parseInt(errorCode), message);
+        boolean done = false;
+        // Parse the text and condition tags
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("text")) {
+               		parser.next();
+					message = parser.getText();
+					parser.next();
+                }
+                else {
+                	// Condition tag, it can be xmpp error or an application defined error.
+                    String elementName = parser.getName();
+                    String namespace = parser.getNamespace();
+                    if (errorNamespace.equals(namespace)) {
+                    	condition = elementName;
+                    }
+                    else {
+                    	extensions.add(parsePacketExtension(elementName, namespace, parser));
+                    }
+                }
+            }
+                else if (eventType == XmlPullParser.END_TAG) {
+                    if (parser.getName().equals("error")) {
+                        done = true;
+                    }
+                }
+        }
+        return new XMPPError(Integer.parseInt(errorCode), XMPPError.Type
+				.fromString(type), condition, message, extensions);
     }
 
     /**
@@ -387,7 +409,7 @@ public class PacketParserUtils {
                 // String to the correct object type.
                 Object value = decode(propertyType, stringValue);
                 // Set the value of the bean.
-                descriptor.getWriteMethod().invoke(object, new Object[] { value });
+                descriptor.getWriteMethod().invoke(object, value);
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals(elementName)) {
@@ -430,5 +452,4 @@ public class PacketParserUtils {
         }
         return null;
     }
-
 }

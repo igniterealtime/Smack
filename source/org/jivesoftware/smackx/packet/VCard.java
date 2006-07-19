@@ -522,7 +522,9 @@ public class VCard extends IQ {
             result = (VCard) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
 
             if (result == null) {
-                throw new XMPPException(new XMPPError(408, "Timeout getting VCard information"));
+                String errorMessage = "Timeout getting VCard information";
+                throw new XMPPException(errorMessage, new XMPPError(
+                        XMPPError.Condition.request_timeout, errorMessage));
             }
             if (result.getError() != null) {
                 throw new XMPPException(result.getError());

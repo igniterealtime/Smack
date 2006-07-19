@@ -277,16 +277,16 @@ public class XMPPConnection {
             }
         }
         catch (UnknownHostException uhe) {
-            throw new XMPPException(
-                "Could not connect to " + host + ":" + port + ".",
-                new XMPPError(504),
-                uhe);
+            String errorMessage = "Could not connect to " + host + ":" + port + ".";
+            throw new XMPPException(errorMessage, new XMPPError(
+                    XMPPError.Condition.remote_server_timeout, errorMessage),
+                    uhe);
         }
         catch (IOException ioe) {
-            throw new XMPPException(
-                "XMPPError connecting to " + host + ":" + port + ".",
-                new XMPPError(502),
-                ioe);
+            String errorMessage = "XMPPError connecting to " + host + ":"
+                    + port + ".";
+            throw new XMPPException(errorMessage, new XMPPError(
+                    XMPPError.Condition.remote_server_error, errorMessage), ioe);
         }
         this.serviceName = config.getServiceName();
         try {
@@ -966,9 +966,10 @@ public class XMPPConnection {
         }
         catch (IOException ioe) {
             throw new XMPPException(
-                "XMPPError establishing connection with server.",
-                new XMPPError(502),
-                ioe);
+                    "XMPPError establishing connection with server.",
+                    new XMPPError(XMPPError.Condition.remote_server_error,
+                            "XMPPError establishing connection with server."),
+                    ioe);
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.

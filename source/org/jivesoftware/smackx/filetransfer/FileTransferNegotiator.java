@@ -223,12 +223,13 @@ public class FileTransferNegotiator {
                 .getFeatureNegotiationForm());
 
         if (streamMethodField == null) {
-            XMPPError error = new XMPPError(400);
+            String errorMessage = "No stream methods contained in packet.";
+            XMPPError error = new XMPPError(XMPPError.Condition.bad_request, errorMessage);
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                     IQ.Type.ERROR);
             iqPacket.setError(error);
             connection.sendPacket(iqPacket);
-            throw new XMPPException("No stream methods contained in packet.", error);
+            throw new XMPPException(errorMessage, error);
         }
 
         // select the appropriate protocol
@@ -278,8 +279,9 @@ public class FileTransferNegotiator {
         }
 
         if (!isByteStream && !isIBB) {
-            XMPPError error = new XMPPError(400);
-            throw new XMPPException("No acceptable transfer mechanism", error);
+            XMPPError error = new XMPPError(XMPPError.Condition.bad_request,
+                    "No acceptable transfer mechanism");
+            throw new XMPPException(error.getMessage(), error);
         }
 
         if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
@@ -299,7 +301,7 @@ public class FileTransferNegotiator {
      * @param si The Stream Initiation request to reject.
      */
     public void rejectStream(final StreamInitiation si) {
-        XMPPError error = new XMPPError(403, "Offer Declined");
+        XMPPError error = new XMPPError(XMPPError.Condition.forbidden, "Offer Declined");
         IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                 IQ.Type.ERROR);
         iqPacket.setError(error);
@@ -409,8 +411,9 @@ public class FileTransferNegotiator {
         }
 
         if (!isByteStream && !isIBB) {
-            XMPPError error = new XMPPError(400);
-            throw new XMPPException("No acceptable transfer mechanism", error);
+            XMPPError error = new XMPPError(XMPPError.Condition.bad_request,
+                    "No acceptable transfer mechanism");
+            throw new XMPPException(error.getMessage(), error);
         }
 
         if (isByteStream && isIBB) {

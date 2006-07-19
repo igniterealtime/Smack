@@ -5,6 +5,7 @@
     <!-- Classes that will be loaded when Smack starts -->
     <startupClasses>
         <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
+        <className>org.jivesoftware.smack.PrivacyListManager</className>        
         <className>org.jivesoftware.smackx.XHTMLManager</className>
         <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
         <className>org.jivesoftware.smackx.filetransfer.FileTransferManager</className>

@@ -220,8 +220,9 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             }
         }
         if (selectedHost == null || socket == null ||  !socket.isConnected()) {
-            throw new XMPPException(
-                    "Could not establish socket with any provided host", new XMPPError(406));
+            String errorMessage = "Could not establish socket with any provided host";
+            throw new XMPPException(errorMessage, new XMPPError(
+                    XMPPError.Condition.no_acceptable, errorMessage));
         }
 
         return new SelectedHostInfo(selectedHost, socket);

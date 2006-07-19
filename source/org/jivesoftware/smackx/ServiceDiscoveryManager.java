@@ -184,7 +184,7 @@ public class ServiceDiscoveryManager {
                         // Return <item-not-found/> error since client doesn't contain
                         // the specified node
                         response.setType(IQ.Type.ERROR);
-                        response.setError(new XMPPError(404, "item-not-found"));
+                        response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                     }
                     connection.sendPacket(response);
                 }
@@ -236,7 +236,7 @@ public class ServiceDiscoveryManager {
                         else {
                             // Return <item-not-found/> error since specified node was not found
                             response.setType(IQ.Type.ERROR);
-                            response.setError(new XMPPError(404, "item-not-found"));
+                            response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                         }
                     }
                     connection.sendPacket(response);

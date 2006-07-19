@@ -180,4 +180,11 @@
         <className>org.jivesoftware.smackx.provider.IBBProviders$Data</className>
     </extensionProvider>
 
+    <!-- Privacy -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:privacy</namespace>
+        <className>org.jivesoftware.smack.provider.PrivacyProvider</className>
+    </iqProvider>
+
 </smackProviders>
