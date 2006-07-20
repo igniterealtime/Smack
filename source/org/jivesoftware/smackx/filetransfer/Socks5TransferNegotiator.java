@@ -86,9 +86,9 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
     private final XMPPConnection connection;
 
-    private List proxies;
+    private List<String> proxies;
 
-    private List streamHosts;
+    private List<String> streamHosts;
 
     // locks the proxies during their initialization process
     private final Object proxyLock = new Object();
@@ -473,31 +473,48 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         return bs;
     }
 
+
+
+    /**
+     * Checks the service discovery item returned from a server component to verify if it is
+     * a File Transfer proxy or not.
+     *
+     * @param manager the service discovery manager which will be used to query the component
+     * @param item the discovered item on the server relating
+     * @return returns the JID of the proxy if it is a proxy or null if the item is not a proxy.
+     */
+    private String checkIsProxy(ServiceDiscoveryManager manager, Item item) {
+        DiscoverInfo info;
+        try {
+            info = manager.discoverInfo(item.getEntityID());
+        }
+        catch (XMPPException e) {
+            return null;
+        }
+        Iterator itx = info.getIdentities();
+        while (itx.hasNext()) {
+            DiscoverInfo.Identity identity = (Identity) itx.next();
+            if ("proxy".equalsIgnoreCase(identity.getCategory())
+                    && "bytestreams".equalsIgnoreCase(
+                    identity.getType())) {
+                return info.getFrom();
+            }
+        }
+        return null;
+    }
+
     private void initProxies() {
-        proxies = new ArrayList();
+        proxies = new ArrayList<String>();
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
-
-        DiscoverItems discoItems;
         try {
-            discoItems = manager.discoverItems(connection.getServiceName());
-
-            DiscoverItems.Item item;
-            DiscoverInfo info;
-            DiscoverInfo.Identity identity;
-
+            DiscoverItems discoItems = manager.discoverItems(connection.getServiceName());
             Iterator it = discoItems.getItems();
             while (it.hasNext()) {
-                item = (Item) it.next();
-                info = manager.discoverInfo(item.getEntityID());
-                Iterator itx = info.getIdentities();
-                while (itx.hasNext()) {
-                    identity = (Identity) itx.next();
-                    if (identity.getCategory().equalsIgnoreCase("proxy")
-                            && identity.getType().equalsIgnoreCase(
-                            "bytestreams")) {
-                        proxies.add(info.getFrom());
-                    }
+                DiscoverItems.Item item = (Item) it.next();
+                String proxy = checkIsProxy(manager, item);
+                if(proxy != null) {
+                    proxies.add(proxy);
                 }
             }
         }
@@ -507,7 +524,6 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         if (proxies.size() > 0) {
             initStreamHosts();
         }
-
     }
 
     private void initStreamHosts() {
