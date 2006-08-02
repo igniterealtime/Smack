@@ -25,7 +25,9 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -129,7 +131,7 @@ public final class SmackConfiguration {
     public static int getPacketReplyTimeout() {
         // The timeout value must be greater than 0 otherwise we will answer the default value
         if (packetReplyTimeout <= 0) {
-            packetReplyTimeout = 5000; 
+            packetReplyTimeout = 5000;
         }
         return packetReplyTimeout;
     }
@@ -204,6 +206,13 @@ public final class SmackConfiguration {
         ClassLoader[] classLoaders = new ClassLoader[2];
         classLoaders[0] = SmackConfiguration.class.getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        return classLoaders;
+        // Clean up possible null values. Note that #getClassLoader may return a null value.
+        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
+        for (ClassLoader classLoader : classLoaders) {
+            if (classLoader != null) {
+                loaders.add(classLoader);
+            }
+        }
+        return (ClassLoader[]) loaders.toArray();
     }
 }

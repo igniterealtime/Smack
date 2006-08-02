@@ -384,7 +384,14 @@ public class ProviderManager {
         ClassLoader[] classLoaders = new ClassLoader[2];
         classLoaders[0] = ProviderManager.class.getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        return classLoaders;
+        // Clean up possible null values. Note that #getClassLoader may return a null value.
+        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
+        for (ClassLoader classLoader : classLoaders) {
+            if (classLoader != null) {
+                loaders.add(classLoader);
+            }
+        }
+        return (ClassLoader[]) loaders.toArray();
     }
 
     private ProviderManager() {
