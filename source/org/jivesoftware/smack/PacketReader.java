@@ -477,7 +477,8 @@ class PacketReader {
                 }
             }
         }
-        if (!startTLSReceived) {
+        // Release the lock after TLS has been negotiated or we are not insterested in TLS 
+        if (!startTLSReceived || !connection.getConfiguration().isTLSEnabled()) {
             releaseConnectionIDLock();
         }
     }

@@ -1070,6 +1070,15 @@ public class XMPPConnection {
     }
 
     /**
+     * Returns the configuration used while connecting to the server.
+     *
+     * @return the configuration used while connecting to the server.
+     */
+    ConnectionConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    /**
      * Notification message saying that the server supports TLS so confirm the server that we
      * want to secure the connection.
      */
