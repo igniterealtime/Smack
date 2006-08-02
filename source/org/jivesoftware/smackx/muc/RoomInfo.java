@@ -23,6 +23,8 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 
+import java.util.Iterator;
+
 /**
  * Represents the room information that was discovered using Service Discovery. It's possible to
  * obtain information about a room before joining the room but only for rooms that are public (i.e.
@@ -88,7 +90,13 @@ public class RoomInfo {
         if (form != null) {
             this.description =
                     form.getField("muc#roominfo_description").getValues().next();
-            this.subject = form.getField("muc#roominfo_subject").getValues().next();
+            Iterator<String> values = form.getField("muc#roominfo_subject").getValues();
+            if (values.hasNext()) {
+                this.subject = values.next();
+            }
+            else {
+                this.subject = "";
+            }
             this.occupantsCount =
                     Integer.parseInt(form.getField("muc#roominfo_occupants").getValues()
                     .next());
