@@ -28,7 +28,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.util.StringUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -42,12 +45,31 @@ public class AccountManager {
     private Registration info = null;
 
     /**
+     * Flag that indicates whether the server supports In-Band Registration.
+     * In-Band Registration may be advertised as a stream feature. If no stream feature
+     * was advertised from the server then try sending an IQ packet to discover if In-Band
+     * Registration is available.
+     */
+    private boolean accountCreationSupported = false;
+
+    /**
      * Creates a new AccountManager instance.
      *
      * @param connection a connection to a XMPP server.
      */
     public AccountManager(XMPPConnection connection) {
         this.connection = connection;
+    }
+
+    /**
+     * Sets whether the server supports In-Band Registration. In-Band Registration may be
+     * advertised as a stream feature. If no stream feature was advertised from the server
+     * then try sending an IQ packet to discover if In-Band Registration is available.
+     *
+     * @param accountCreationSupported true if the server supports In-Band Registration.
+     */
+    void setSupportsAccountCreation(boolean accountCreationSupported) {
+        this.accountCreationSupported = accountCreationSupported;
     }
 
     /**
@@ -58,11 +80,19 @@ public class AccountManager {
      * @return true if the server support creating new accounts.
      */
     public boolean supportsAccountCreation() {
+        // Check if we already know that the server supports creating new accounts
+        if (accountCreationSupported) {
+            return true;
+        }
+        // No information is known yet (e.g. no stream feature was received from the server
+        // indicating that it supports creating new accounts) so send an IQ packet as a way
+        // to discover if this feature is supported
         try {
             if (info == null) {
                 getRegistrationInfo();
+                accountCreationSupported = info.getType() != IQ.Type.ERROR;
             }
-            return info.getType() != IQ.Type.ERROR;
+            return accountCreationSupported;
         }
         catch (XMPPException xe) {
             return false;

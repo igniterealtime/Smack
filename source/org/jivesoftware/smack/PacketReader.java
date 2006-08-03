@@ -470,6 +470,9 @@ class PacketReader {
                     // The server supports stream compression
                     connection.setAvailableCompressionMethods(parseCompressionMethods(parser));
                 }
+                else if (parser.getName().equals("register")) {
+                    connection.getAccountManager().setSupportsAccountCreation(true);
+                }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("features")) {
