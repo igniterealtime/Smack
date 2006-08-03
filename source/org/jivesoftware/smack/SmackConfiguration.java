@@ -213,6 +213,6 @@ public final class SmackConfiguration {
                 loaders.add(classLoader);
             }
         }
-        return (ClassLoader[]) loaders.toArray();
+        return loaders.toArray(new ClassLoader[loaders.size()]);
     }
 }

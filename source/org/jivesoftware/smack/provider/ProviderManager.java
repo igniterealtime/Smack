@@ -391,7 +391,7 @@ public class ProviderManager {
                 loaders.add(classLoader);
             }
         }
-        return (ClassLoader[]) loaders.toArray();
+        return loaders.toArray(new ClassLoader[loaders.size()]);
     }
 
     private ProviderManager() {
