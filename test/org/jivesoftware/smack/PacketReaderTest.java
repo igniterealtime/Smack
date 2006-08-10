@@ -52,8 +52,10 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.MockPacketFilter;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.test.SmackTestCase;
 
 
@@ -94,6 +96,29 @@ public class PacketReaderTest extends SmackTestCase {
         assertEquals("The received IQ is not of type ERROR", IQ.Type.ERROR, response.getType());
         assertEquals("The error code is not 501", 501, response.getError().getCode());
         collector.cancel();
+    }
+
+    /**
+     * Tests that PacketReader adds new listeners and also removes them correctly.
+     */
+    public void testRemoveListener() {
+        PacketListener listener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                //Ignore
+            }
+        };
+        // Keep number of current listeners
+        int listenersSize = getConnection(0).packetReader.listeners.size();
+        // Add a new listener
+        getConnection(0).addPacketListener(listener, new MockPacketFilter(true));
+        // Check that the listener was added
+        assertEquals("Listener was not added", listenersSize + 1,
+                getConnection(0).packetReader.listeners.size());
+        // Remove the listener
+        getConnection(0).removePacketListener(listener);
+        // Check that the number of listeners is correct (i.e. the listener was removed)
+        assertEquals("Listener was not removed", listenersSize,
+                getConnection(0).packetReader.listeners.size());
     }
 
     protected int getMaxConnections() {

@@ -50,7 +50,7 @@ class PacketReader {
     private boolean done = false;
     private final VolatileMemberCollection<PacketCollector> collectors =
             new VolatileMemberCollection<PacketCollector>(50);
-    private final VolatileMemberCollection listeners = new VolatileMemberCollection(50);
+    protected final VolatileMemberCollection listeners = new VolatileMemberCollection(50);
     protected final List<ConnectionListener> connectionListeners =
             new ArrayList<ConnectionListener>();
 
@@ -814,10 +814,13 @@ class PacketReader {
 
         public void remove(E member) {
             synchronized (mutex) {
-                int index = collectors.lastIndexOf(member);
-                if (index >= 0) {
-                    collectors.set(index, null);
-                    nullArray[++nullIndex] = index;
+                for (int i = collectors.size()-1; i >= 0; i--) {
+                    E element = collectors.get(i);
+                    if (element != null && element.equals(member)) {
+                        collectors.set(i, null);
+                        nullArray[++nullIndex] = i;
+                        return;
+                    }
                 }
             }
         }
@@ -859,6 +862,21 @@ class PacketReader {
                     return toReturn;
                 }
             };
+        }
+
+        /**
+         * Returns the number of elements in this collection.
+         *
+         * @return the number of elements in this collection
+         */
+        public int size() {
+            int size = 0;
+            for (E element : collectors) {
+                if (element != null) {
+                    size++;
+                }
+            }
+            return size;
         }
     }
 
