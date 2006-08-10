@@ -591,6 +591,31 @@ public class RosterTest extends SmackTestCase {
     }
 
     /**
+     * Tests that the server and Smack are able to handle nicknames that include
+     * < > characters.
+     */
+    public void testNotCommonNickname() throws Exception {
+        // Add a new roster entry
+        Roster roster = getConnection(0).getRoster();
+        roster.createEntry(getBareJID(1), "Thiago <12001200>", null);
+
+        Thread.sleep(500);
+
+        assertEquals("Created entry was never received", 1, roster.getEntryCount());
+
+        // Create another connection for the same user of connection 0
+        XMPPConnection conn2 = new XMPPConnection(getServiceName());
+        conn2.login(getUsername(0), getUsername(0), "Home");
+
+        // Retrieve roster and verify that new contact is there and nickname is correct
+        Roster roster2 = conn2.getRoster();
+        assertEquals("Created entry was never received", 1, roster2.getEntryCount());
+        RosterEntry entry = roster2.getEntry(getBareJID(1));
+        assertNotNull("New entry was not returned from the server", entry);
+        assertEquals("Roster item name is incorrect", "Thiago <12001200>", entry.getName());
+    }
+
+    /**
      * Clean up all the entries in the roster
      */
     private void cleanUpRoster() {

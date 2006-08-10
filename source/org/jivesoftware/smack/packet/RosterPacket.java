@@ -200,7 +200,7 @@ public class RosterPacket extends IQ {
             StringBuilder buf = new StringBuilder();
             buf.append("<item jid=\"").append(user).append("\"");
             if (name != null) {
-                buf.append(" name=\"").append(name).append("\"");
+                buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
             }
             if (itemType != null) {
                 buf.append(" subscription=\"").append(itemType).append("\"");
