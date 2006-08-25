@@ -52,11 +52,13 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.MockPacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
+
+import java.util.Date;
 
 
 public class PacketReaderTest extends SmackTestCase {
@@ -74,7 +76,7 @@ public class PacketReaderTest extends SmackTestCase {
      * with error code 501.
      */
     public void testIQNotImplemented() {
-        
+
         // Create a new type of IQ to send. The new IQ will include a
         // non-existant namespace to cause the "feature-not-implemented" answer
         IQ iqPacket = new IQ() {
@@ -119,6 +121,47 @@ public class PacketReaderTest extends SmackTestCase {
         // Check that the number of listeners is correct (i.e. the listener was removed)
         assertEquals("Listener was not removed", listenersSize,
                 getConnection(0).packetReader.listeners.size());
+    }
+
+    /**
+     * Checks that parser still works when receiving an error text with no description.
+     */
+    public void testErrorWithNoText() {
+        // Send a regular message from user0 to user1
+        Message packet = new Message();
+        packet.setFrom(getFullJID(0));
+        packet.setTo(getFullJID(1));
+        packet.setBody("aloha");
+
+        // User1 will always reply to user0 when a message is received
+        getConnection(1).addPacketListener(new PacketListener() {
+            public void processPacket(Packet packet) {
+                System.out.println(new Date() + " " + packet);
+
+                Message message = new Message(packet.getFrom());
+                message.setFrom(getFullJID(1));
+                message.setBody("HELLO");
+                getConnection(1).sendPacket(message);
+            }
+        }, new PacketTypeFilter(Message.class));
+
+        // User0 listen for replies from user1
+        PacketCollector collector = getConnection(0).createPacketCollector(
+                new FromMatchesFilter(getFullJID(1)));
+        // User0 sends the regular message to user1
+        getConnection(0).sendPacket(packet);
+        // Check that user0 got a reply from user1
+        assertNotNull("No message was received", collector.nextResult(1000));
+
+        // Send a message with an empty error text
+        packet = new Message();
+        packet.setFrom(getFullJID(0));
+        packet.setTo(getFullJID(1));
+        packet.setBody("aloha");
+        packet.setError(new XMPPError(XMPPError.Condition.feature_not_implemented, null));
+        getConnection(0).sendPacket(packet);
+        // Check that user0 got a reply from user1
+        assertNotNull("No message was received", collector.nextResult(1000));
     }
 
     protected int getMaxConnections() {
