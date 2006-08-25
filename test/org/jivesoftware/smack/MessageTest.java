@@ -73,6 +73,42 @@ public class MessageTest extends SmackTestCase {
     }
 
     /**
+     * Send messages with invalid XML characters to offline users. Check that offline users
+     * are receiving them from the server.
+     */
+    public void testOfflineMessageInvalidXML() {
+        // Make user2 unavailable
+        getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
+
+        try {
+            Thread.sleep(500);
+
+            // User1 sends some messages to User2 which is not available at the moment
+            Chat chat = getConnection(0).createChat(getBareJID(1));
+            chat.sendMessage("Test \f 1");
+            chat.sendMessage("Test \r 1");
+
+            Thread.sleep(500);
+
+            // User2 becomes available again
+            PacketCollector collector = getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.CHAT));
+            getConnection(1).sendPacket(new Presence(Presence.Type.available));
+
+            // Check that offline messages are retrieved by user2 which is now available
+            Message message = (Message) collector.nextResult(2500);
+            assertNotNull(message);
+            message = (Message) collector.nextResult(2000);
+            assertNotNull(message);
+            message = (Message) collector.nextResult(1000);
+            assertNull(message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    /**
      * Check that two clients are able to send messages with a body of 4K characters and their
      * connections are not being closed.
      */
