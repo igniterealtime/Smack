@@ -314,9 +314,7 @@ public class PacketParserUtils {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("text")) {
-               		parser.next();
-					message = parser.getText();
-					parser.next();
+                    message = parser.nextText();
                 }
                 else {
                 	// Condition tag, it can be xmpp error or an application defined error.
