@@ -42,7 +42,7 @@ public abstract class FileTransfer {
 
 	private String peer;
 
-	private org.jivesoftware.smackx.filetransfer.FileTransfer.Status status = Status.INITIAL;
+	private Status status = Status.initial;
 
     private final Object statusMonitor = new Object();
 
@@ -129,15 +129,15 @@ public abstract class FileTransfer {
 	}
 
 	/**
-	 * Returns true if the transfer has been cancled, if it has stopped because
+	 * Returns true if the transfer has been cancelled, if it has stopped because
 	 * of a an error, or the transfer completed succesfully.
 	 *
-	 * @return Returns true if the transfer has been cancled, if it has stopped
+	 * @return Returns true if the transfer has been cancelled, if it has stopped
 	 *         because of a an error, or the transfer completed succesfully.
 	 */
 	public boolean isDone() {
-		return status == Status.CANCLED || status == Status.ERROR
-				|| status == Status.COMPLETE;
+		return status == Status.cancelled || status == Status.error
+				|| status == Status.complete || status == Status.refused;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public abstract class FileTransfer {
 	}
 
 	/**
-	 * When {@link #getStatus()} returns that there was an {@link Status#ERROR}
+	 * When {@link #getStatus()} returns that there was an {@link Status#error}
 	 * during the transfer, the type of error can be retrieved through this
 	 * method.
 	 *
@@ -223,13 +223,13 @@ public abstract class FileTransfer {
 			} catch (IOException e) {
 				throw new XMPPException("error reading from input stream", e);
 			}
-		} while (count != -1 && !getStatus().equals(Status.CANCLED));
+		} while (count != -1 && !getStatus().equals(Status.cancelled));
 
 		// the connection was likely terminated abrubtly if these are not equal
-		if (!getStatus().equals(Status.CANCLED) && getError() == Error.NONE
+		if (!getStatus().equals(Status.cancelled) && getError() == Error.none
 				&& amountWritten != fileSize) {
-            setStatus(Status.ERROR);
-			this.error = Error.CONNECTION;
+            setStatus(Status.error);
+			this.error = Error.connection;
 		}
 	}
 
@@ -239,19 +239,19 @@ public abstract class FileTransfer {
 	 * @author Alexander Wenckus
 	 *
 	 */
-	public static class Status {
+	public enum Status {
 
 		/**
 		 * An error occured during the transfer.
 		 *
 		 * @see FileTransfer#getError()
 		 */
-		public static final Status ERROR = new Status("Error");
+		error("Error"),
 
 		/**
          * The initial status of the file transfer.
          */
-        public static final Status INITIAL = new Status("Initial");
+        initial("Initial"),
 
         /**
 		 * The file transfer is being negotiated with the peer. The party
@@ -259,48 +259,48 @@ public abstract class FileTransfer {
 		 * request. If they accept, then the process of stream negotiation will
 		 * begin. If they refuse the file will not be transfered.
 		 *
-		 * @see #NEGOTIATING_STREAM
+		 * @see #negotiating_stream
 		 */
-		public static final Status NEGOTIATING_TRANSFER = new Status("Negotiating Transfer");
+		negotiating_transfer("Negotiating Transfer"),
 
 		/**
 		 * The peer has refused the file transfer request halting the file
 		 * transfer negotiation process.
 		 */
-		public static final Status REFUSED = new Status("Refused");
+		refused("Refused"),
 
 		/**
 		 * The stream to transfer the file is being negotiated over the chosen
 		 * stream type. After the stream negotiating process is complete the
 		 * status becomes negotiated.
 		 *
-		 * @see #NEGOTIATED
+		 * @see #negotiated
 		 */
-		public static final Status NEGOTIATING_STREAM = new Status("Negotiating Stream");
+		negotiating_stream("Negotiating Stream"),
 
 		/**
 		 * After the stream negotitation has completed the intermediate state
 		 * between the time when the negotiation is finished and the actual
 		 * transfer begins.
 		 */
-		public static final Status NEGOTIATED = new Status("Negotiated");
+		negotiated("Negotiated"),
 
 		/**
 		 * The transfer is in progress.
 		 *
 		 * @see FileTransfer#getProgress()
 		 */
-		public static final Status IN_PROGRESS = new Status("In Progress");
+		in_progress("In Progress"),
 
 		/**
 		 * The transfer has completed successfully.
 		 */
-		public static final Status COMPLETE = new Status("Complete");
+		complete("Complete"),
 
 		/**
 		 * The file transfer was canceled
 		 */
-		public static final Status CANCLED = new Status("Cancled");
+		cancelled("Cancelled");
 
         private String status;
 
@@ -321,42 +321,37 @@ public abstract class FileTransfer {
         return amountWritten;
     }
 
-    public static class Error {
+    public enum Error {
 		/**
 		 * No error
 		 */
-		public static final Error NONE = new Error("No error");
+		none("No error"),
 
 		/**
 		 * The peer did not find any of the provided stream mechanisms
 		 * acceptable.
 		 */
-		public static final Error NOT_ACCEPTABLE = new Error(
-				"The peer did not find any of the provided stream mechanisms acceptable.");
+		not_acceptable("The peer did not find any of the provided stream mechanisms acceptable."),
 
 		/**
 		 * The provided file to transfer does not exist or could not be read.
 		 */
-		public static final Error BAD_FILE = new Error(
-				"The provided file to transfer does not exist or could not be read.");
+		bad_file("The provided file to transfer does not exist or could not be read."),
 
 		/**
 		 * The remote user did not respond or the connection timed out.
 		 */
-		public static final Error NO_RESPONSE = new Error(
-				"The remote user did not respond or the connection timed out.");
+		no_response("The remote user did not respond or the connection timed out."),
 
 		/**
 		 * An error occured over the socket connected to send the file.
 		 */
-		public static final Error CONNECTION = new Error(
-				"An error occured over the socket connected to send the file.");
+		connection("An error occured over the socket connected to send the file."),
 
 		/**
 		 * An error occured while sending or recieving the file
 		 */
-		protected static final Error STREAM = new Error(
-				"An error occured while sending or recieving the file");
+		stream("An error occured while sending or recieving the file.");
 
 		private final String msg;
 

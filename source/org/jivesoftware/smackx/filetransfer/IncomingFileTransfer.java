@@ -47,8 +47,6 @@ public class IncomingFileTransfer extends FileTransfer {
 
     private FileTransferRequest recieveRequest;
 
-    private Thread transferThread;
-
     private InputStream inputStream;
 
     protected IncomingFileTransfer(FileTransferRequest request,
@@ -119,7 +117,7 @@ public class IncomingFileTransfer extends FileTransfer {
             throw new IllegalArgumentException("File cannot be null");
         }
 
-        transferThread = new Thread(new Runnable() {
+        Thread transferThread = new Thread(new Runnable() {
             public void run() {
                 try {
                     inputStream = negotiateStream();
@@ -132,22 +130,22 @@ public class IncomingFileTransfer extends FileTransfer {
                 OutputStream outputStream = null;
                 try {
                     outputStream = new FileOutputStream(file);
-                    setStatus(Status.IN_PROGRESS);
+                    setStatus(Status.in_progress);
                     writeToStream(inputStream, outputStream);
                 }
                 catch (XMPPException e) {
-                    setStatus(FileTransfer.Status.ERROR);
-                    setError(Error.STREAM);
+                    setStatus(Status.error);
+                    setError(Error.stream);
                     setException(e);
                 }
                 catch (FileNotFoundException e) {
-                    setStatus(FileTransfer.Status.ERROR);
-                    setError(Error.BAD_FILE);
+                    setStatus(Status.error);
+                    setError(Error.bad_file);
                     setException(e);
                 }
 
-                if (getStatus().equals(Status.IN_PROGRESS))
-                    setStatus(Status.COMPLETE);
+                if (getStatus().equals(Status.in_progress))
+                    setStatus(Status.complete);
                 try {
                     if (inputStream != null) {
                         inputStream.close();
@@ -157,31 +155,31 @@ public class IncomingFileTransfer extends FileTransfer {
                     }
                 }
                 catch (IOException e) {
+                    /** We need to do something here **/
                 }
             }
         }, "File Transfer " + streamID);
         transferThread.start();
-
     }
 
     private void handleXMPPException(XMPPException e) {
-        setStatus(FileTransfer.Status.ERROR);
+        setStatus(FileTransfer.Status.error);
         setException(e);
     }
 
     private InputStream negotiateStream() throws XMPPException {
-        setStatus(Status.NEGOTIATING_TRANSFER);
+        setStatus(Status.negotiating_transfer);
         StreamNegotiator streamNegotiator = negotiator
                 .selectStreamNegotiator(recieveRequest);
-        setStatus(Status.NEGOTIATING_STREAM);
+        setStatus(Status.negotiating_stream);
         InputStream inputStream = streamNegotiator
                 .createIncomingStream(recieveRequest.getStreamInitiation());
-        setStatus(Status.NEGOTIATED);
+        setStatus(Status.negotiated);
         return inputStream;
     }
 
     public void cancel() {
-        setStatus(Status.CANCLED);
+        setStatus(Status.cancelled);
     }
 
 }

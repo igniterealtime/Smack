@@ -86,7 +86,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 *         file.
 	 */
 	protected OutputStream getOutputStream() {
-		if (getStatus().equals(FileTransfer.Status.NEGOTIATED)) {
+		if (getStatus().equals(FileTransfer.Status.negotiated)) {
 			return outputStream;
 		} else {
 			return null;
@@ -214,7 +214,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 					return;
 				}
 
-                if (!updateStatus(Status.NEGOTIATED, Status.IN_PROGRESS)) {
+                if (!updateStatus(Status.negotiated, Status.in_progress)) {
 					return;
 				}
 
@@ -223,11 +223,11 @@ public class OutgoingFileTransfer extends FileTransfer {
 					inputStream = new FileInputStream(file);
 					writeToStream(inputStream, outputStream);
 				} catch (FileNotFoundException e) {
-					setStatus(FileTransfer.Status.ERROR);
-					setError(Error.BAD_FILE);
+					setStatus(FileTransfer.Status.error);
+					setError(Error.bad_file);
 					setException(e);
 				} catch (XMPPException e) {
-					setStatus(FileTransfer.Status.ERROR);
+					setStatus(FileTransfer.Status.error);
 					setException(e);
 				} finally {
 					try {
@@ -241,7 +241,7 @@ public class OutgoingFileTransfer extends FileTransfer {
                         /* Do Nothing */
 					}
 				}
-                updateStatus(Status.IN_PROGRESS, FileTransfer.Status.COMPLETE);
+                updateStatus(Status.in_progress, FileTransfer.Status.complete);
 				}
 
 		}, "File Transfer " + streamID);
@@ -249,16 +249,16 @@ public class OutgoingFileTransfer extends FileTransfer {
 	}
 
 	private void handleXMPPException(XMPPException e) {
-		setStatus(FileTransfer.Status.ERROR);
+		setStatus(FileTransfer.Status.error);
 		XMPPError error = e.getXMPPError();
 		if (error != null) {
 			int code = error.getCode();
 			if (code == 403) {
-				setStatus(Status.REFUSED);
+				setStatus(Status.refused);
 				return;
 			} else if (code == 400) {
-				setStatus(Status.ERROR);
-				setError(Error.NOT_ACCEPTABLE);
+				setStatus(Status.error);
+				setError(Error.not_acceptable);
 			}
 		}
 		setException(e);
@@ -283,7 +283,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 			String description) throws XMPPException {
 		// Negotiate the file transfer profile
 
-        if (!updateStatus(Status.INITIAL, Status.NEGOTIATING_TRANSFER)) {
+        if (!updateStatus(Status.initial, Status.negotiating_transfer)) {
             throw new XMPPException("Illegal state change");
         }
 		StreamNegotiator streamNegotiator = negotiator.negotiateOutgoingTransfer(
@@ -291,26 +291,26 @@ public class OutgoingFileTransfer extends FileTransfer {
 				RESPONSE_TIMEOUT);
 
 		if (streamNegotiator == null) {
-			setStatus(Status.ERROR);
-			setError(Error.NO_RESPONSE);
+			setStatus(Status.error);
+			setError(Error.no_response);
 			return null;
 		}
 
         // Negotiate the stream
-        if (!updateStatus(Status.NEGOTIATING_TRANSFER, Status.NEGOTIATING_STREAM)) {
+        if (!updateStatus(Status.negotiating_transfer, Status.negotiating_stream)) {
             throw new XMPPException("Illegal state change");
         }
 		outputStream = streamNegotiator.createOutgoingStream(streamID,
                 initiator, getPeer());
 
-        if (!updateStatus(Status.NEGOTIATING_STREAM, Status.NEGOTIATED)) {
+        if (!updateStatus(Status.negotiating_stream, Status.negotiated)) {
             throw new XMPPException("Illegal state change");
 		}
 		return outputStream;
 	}
 
 	public void cancel() {
-		setStatus(Status.CANCLED);
+		setStatus(Status.cancelled);
 	}
 
 	/**
