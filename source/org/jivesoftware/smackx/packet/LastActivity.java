@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.PacketCollector;
@@ -34,21 +33,14 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * A last activity IQ for retrieving information about the last activity associated with a Jabber ID.
  * LastActivity (JEP-012) allows for retrieval of how long a particular user has been idle and the
- * message the specified when doing so.
- * To get the last activity of a user, simple send the LastActivity packet to them, as in the
- * following code example:
- * <p/>
- * <pre>
- * XMPPConnection con = new XMPPConnection("jabber.org");
- * con.login("john", "doe");
- * LastActivity activity = LastActivity.getLastActivity(con, "xray@jabber.org");
- * </pre>
+ * message the specified when doing so. Use {@link org.jivesoftware.smackx.LastActivityManager}
+ * to get the last activity of a user.
  *
  * @author Derek DeMoro
  */
 public class LastActivity extends IQ {
 
-    public long lastActivity;
+    public long lastActivity = -1;
     public String message;
 
     public LastActivity() {
@@ -57,12 +49,17 @@ public class LastActivity extends IQ {
 
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:last\"></query>");
+		buf.append("<query xmlns=\"jabber:iq:last\"");
+		if (lastActivity != -1) {
+			buf.append(" seconds=\"").append(lastActivity).append("\"");
+
+		}
+		buf.append("></query>");
         return buf.toString();
     }
 
 
-    private void setLastActivity(long lastActivity) {
+    public void setLastActivity(long lastActivity) {
         this.lastActivity = lastActivity;
     }
 
@@ -134,6 +131,8 @@ public class LastActivity extends IQ {
      * @param jid the JID of the user.
      * @return the LastActivity packet of the jid.
      * @throws XMPPException thrown if a server error has occured.
+     * @deprecated This method only retreives the lapsed time since the last logout of a particular jid. 
+     * Replaced by {@link  org.jivesoftware.smackx.LastActivityManager#getLastActivity(XMPPConnection, String)  getLastActivity}
      */
     public static LastActivity getLastActivity(XMPPConnection con, String jid) throws XMPPException {
         LastActivity activity = new LastActivity();
