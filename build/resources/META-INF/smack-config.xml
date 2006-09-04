@@ -9,6 +9,7 @@
         <className>org.jivesoftware.smackx.XHTMLManager</className>
         <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
         <className>org.jivesoftware.smackx.filetransfer.FileTransferManager</className>
+        <className>org.jivesoftware.smackx.LastActivityManager</className>
     </startupClasses>
 
     <!-- Paket reply timeout in milliseconds -->
