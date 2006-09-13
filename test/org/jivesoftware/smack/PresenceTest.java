@@ -14,6 +14,8 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.SmackTestCase;
 
+import java.util.Iterator;
+
 /**
  * Ensure that the server is delivering messages to the correct client based on the client's
  * presence priority.
@@ -146,6 +148,66 @@ public class PresenceTest extends SmackTestCase {
         assertNull("Not available connection received an unknown message",
                 chat1.nextMessage(1000));
 
+    }
+
+    /**
+     * User1 is connected from 2 resources. User1 adds User0 to his roster. Ensure
+     * that presences are correctly retrieved for User1. User1 logs off from one resource
+     * and ensure that presences are still correct for User1.
+     */
+    public void testMultipleResources() throws Exception {
+        // Create another connection for the same user of connection 1
+        XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        conn4.login(getUsername(1), getUsername(1), "Home");
+
+        // Add a new roster entry
+        Roster roster = getConnection(0).getRoster();
+        roster.createEntry(getBareJID(1), "gato1", null);
+
+        // Wait up to 2 seconds
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 && (
+                roster.getPresence(getBareJID(1)) == null)) {
+            Thread.sleep(100);
+        }
+
+        // Check that a presence is returned for the new contact
+        Presence presence = roster.getPresence(getBareJID(1));
+        assertNotNull("Returned a null Presence for an existing user", presence);
+
+        presence = roster.getPresenceResource(getBareJID(1) + "/Home");
+        assertNotNull("Returned a null Presence for Home resource", presence);
+
+        presence = roster.getPresenceResource(getFullJID(1));
+        assertNotNull("Returned a null Presence for Smack resource", presence);
+
+        Iterator<Presence> presences = roster.getPresences(getBareJID(1));
+        assertNotNull("No presence was found for user1", presences);
+        assertTrue("No presence was found for user1", presences.hasNext());
+        presences.next();
+        assertTrue("Only one presence was found for user1", presences.hasNext());
+
+        // User1 logs out from one resource
+        conn4.close();
+
+        // Wait up to 1 second
+        Thread.sleep(700);
+
+        // Check that a presence is returned for the new contact
+        presence = roster.getPresence(getBareJID(1));
+        assertNotNull("Returned a null Presence for an existing user", presence);
+
+        presence = roster.getPresenceResource(getFullJID(1));
+        assertNotNull("Returned a null Presence for Smack resource", presence);
+
+        presence = roster.getPresenceResource(getBareJID(1) + "/Home");
+        assertNull("Returned a Presence for no longer connected resource", presence);
+
+        presences = roster.getPresences(getBareJID(1));
+        assertNotNull("No presence was found for user1", presences);
+        assertTrue("No presence was found for user1", presences.hasNext());
+        presences.next();
+        assertFalse("More than one presence was found for user1", presences.hasNext());
     }
 
     protected int getMaxConnections() {
