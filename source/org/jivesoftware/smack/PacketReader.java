@@ -31,6 +31,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
@@ -55,7 +57,7 @@ class PacketReader {
             new ArrayList<ConnectionListener>();
 
     private String connectionID = null;
-    private final Object connectionIDLock = new Object();
+    private Semaphore connectionSemaphore;
 
     protected PacketReader(XMPPConnection connection) {
         this.connection = connection;
@@ -135,31 +137,21 @@ class PacketReader {
      *      for more than five seconds.
      */
     public void startup() throws XMPPException {
+        connectionSemaphore = new Semaphore(1);
+
         readerThread.start();
         listenerThread.start();
         // Wait for stream tag before returing. We'll wait a couple of seconds before
         // giving up and throwing an error.
         try {
-            synchronized(connectionIDLock) {
-                if (connectionID == null) {
-                    // A waiting thread may be woken up before the wait time or a notify
-                    // (although this is a rare thing). Therefore, we continue waiting
-                    // until either a connectionID has been set (and hence a notify was
-                    // made) or the total wait time has elapsed.
-                    long waitTime = SmackConfiguration.getPacketReplyTimeout();
-                    long start = System.currentTimeMillis();
-                    while (connectionID == null && !done) {
-                        if (waitTime <= 0) {
-                            break;
-                        }
-                        // Wait 3 times the standard time since TLS may take a while
-                        connectionIDLock.wait(waitTime * 3);
-                        long now = System.currentTimeMillis();
-                        waitTime -= now - start;
-                        start = now;
-                    }
-                }
-            }
+            connectionSemaphore.acquire();
+
+            // A waiting thread may be woken up before the wait time or a notify
+            // (although this is a rare thing). Therefore, we continue waiting
+            // until either a connectionID has been set (and hence a notify was
+            // made) or the total wait time has elapsed.
+            int waitTime = SmackConfiguration.getPacketReplyTimeout();
+            connectionSemaphore.tryAcquire(3 * waitTime, TimeUnit.MILLISECONDS);
         }
         catch (InterruptedException ie) {
             // Ignore.
@@ -215,7 +207,7 @@ class PacketReader {
                 listener.connectionClosedOnError(e);
             }
         }
-				
+
         // Make sure that the listenerThread is awake to shutdown properly
         synchronized (listenerThread) {
             listenerThread.notify();
@@ -309,7 +301,7 @@ class PacketReader {
                         throw new XMPPException(parseStreamError(parser));
                     }
                     else if (parser.getName().equals("features")) {
-                    	parseFeatures(parser);
+                        parseFeatures(parser);
                     }
                     else if (parser.getName().equals("proceed")) {
                         // Secure the connection by negotiating TLS
@@ -390,9 +382,7 @@ class PacketReader {
      *
      */
     private void releaseConnectionIDLock() {
-        synchronized(connectionIDLock) {
-            connectionIDLock.notifyAll();
-        }
+        connectionSemaphore.release();
     }
 
     /**
