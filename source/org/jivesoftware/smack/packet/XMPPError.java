@@ -23,7 +23,6 @@ package org.jivesoftware.smack.packet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -67,7 +66,7 @@ public class XMPPError {
     private Type type;
     private String condition;
     private String message;
-    private List applicationExtensions = null;
+    private List<PacketExtension> applicationExtensions = null;
 
 
     /**
@@ -77,7 +76,7 @@ public class XMPPError {
      * If the Condition is not predefined, invocations should be like 
      *     new XMPPError(new XMPPError.Condition("my_own_error"));
      * 
-     * @param code the error code.
+     * @param condition the error condition.
      */
     public XMPPError(Condition condition) {
     	this.init(condition);
@@ -91,8 +90,8 @@ public class XMPPError {
      * If the Condition is not predefined, invocations should be like 
      *     new XMPPError(new XMPPError.Condition("my_own_error"), "Error Explanation");
      *
-     * @param code the error code.
-     * @param message a message describing the error.
+     * @param condition the error condition.
+     * @param messageText a message describing the error.
      */
     public XMPPError(Condition condition, String messageText) {
         this.init(condition);
@@ -103,7 +102,7 @@ public class XMPPError {
      * Creates a new  error with the specified code and no message.
      *
      * @param code the error code.
-     * @Deprecated new errors should be created using the constructor XMPPError(condition)
+     * @deprecated new errors should be created using the constructor XMPPError(condition)
      */
     public XMPPError(int code) {
         this.code = code;
@@ -116,7 +115,7 @@ public class XMPPError {
      *
      * @param code the error code.
      * @param message a message describing the error.
-     * @Deprecated new errors should be created using the constructor XMPPError(condition, message)
+     * @deprecated new errors should be created using the constructor XMPPError(condition, message)
      */
     public XMPPError(int code, String message) {
         this.code = code;
@@ -135,7 +134,8 @@ public class XMPPError {
      * @param condition the error condition.
      * @param message a message describing the error.
      */
-    public XMPPError(int code, Type type, String condition, String message, List extension) {
+    public XMPPError(int code, Type type, String condition, String message,
+            List<PacketExtension> extension) {
         this.code = code;
         this.type = type;
         this.condition = condition;
@@ -205,7 +205,7 @@ public class XMPPError {
         buf.append("<error code=\"").append(code).append("\"");
         if (type != null) {
             buf.append(" type=\"");
-            buf.append(type.value);
+            buf.append(type.name());
             buf.append("\"");
         }
         buf.append(">");
@@ -218,8 +218,7 @@ public class XMPPError {
         	buf.append(message);
         	buf.append("</text>");
         }
-        for (Iterator extensions = this.getExtensions(); extensions.hasNext();) {
-        	PacketExtension element = (PacketExtension) extensions.next();
+        for (PacketExtension element : this.getExtensions()) {
         	buf.append(element.toXML());
 		}
         buf.append("</error>");
@@ -228,6 +227,9 @@ public class XMPPError {
 
     public String toString() {
         StringBuffer txt = new StringBuffer();
+        if (condition != null) {
+            txt.append(condition);
+        }
         txt.append("(").append(code).append(")");
         if (message != null) {
             txt.append(" ").append(message);
@@ -242,11 +244,11 @@ public class XMPPError {
      *
      * @return an Iterator for the error extensions.
      */
-    public synchronized Iterator getExtensions() {
+    public synchronized List<PacketExtension> getExtensions() {
         if (applicationExtensions == null) {
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(new ArrayList(applicationExtensions)).iterator();
+        return Collections.unmodifiableList(applicationExtensions);
     }
 
     /**
@@ -261,8 +263,7 @@ public class XMPPError {
         if (applicationExtensions == null || elementName == null || namespace == null) {
             return null;
         }
-        for (Iterator i=applicationExtensions.iterator(); i.hasNext(); ) {
-            PacketExtension ext = (PacketExtension)i.next();
+        for (PacketExtension ext : applicationExtensions) {
             if (elementName.equals(ext.getElementName()) && namespace.equals(ext.getNamespace())) {
                 return ext;
             }
@@ -277,7 +278,7 @@ public class XMPPError {
      */
     public synchronized void addExtension(PacketExtension extension) {
         if (applicationExtensions == null) {
-        	applicationExtensions = new ArrayList();
+        	applicationExtensions = new ArrayList<PacketExtension>();
         }
         applicationExtensions.add(extension);
     }
@@ -287,7 +288,7 @@ public class XMPPError {
      *
      * @param extension a packet extension.
      */
-    public synchronized void setExtension(List extension) {
+    public synchronized void setExtension(List<PacketExtension> extension) {
     	applicationExtensions = extension;
     }
       
@@ -303,55 +304,12 @@ public class XMPPError {
      *      <li>XMPPError.Type.CONTINUE - proceed (the condition was only a warning)
      * </ul>
      */
-    public static class Type {
-
-        public static final Type WAIT = new Type("wait");
-        public static final Type CANCEL = new Type("cancel");
-        public static final Type MODIFY = new Type("modify");
-        public static final Type AUTH = new Type("auth");
-        public static final Type CONTINUE = new Type("continue");
-
-        /**
-         * Converts a String into the corresponding types. Valid String values
-         * that can be converted to types are: "wait", "cancel", "modify", "auth" or a user defined.
-         *
-         * @param type the String value to covert.
-         * @return the corresponding Type.
-         */
-        public static Type fromString(String type) {
-            if (type == null) {
-                return null;
-            }
-            type = type.toLowerCase();
-            if (CANCEL.toString().equals(type)) {
-                return CANCEL;
-            }
-            else if (CONTINUE.toString().equals(type)) {
-                return CONTINUE;
-            }
-            else if (WAIT.toString().equals(type)) {
-                return WAIT;
-            }
-            else if (MODIFY.toString().equals(type)) {
-                return MODIFY;
-            }
-            else if (AUTH.toString().equals(type)) {
-                return AUTH;
-            }
-            else {
-                return null;
-            }
-        }
-
-        private String value;
-
-        private Type(String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
+    public static enum Type {
+        WAIT,
+        CANCEL,
+        MODIFY,
+        AUTH,
+        CONTINUE
     }
     
     /**
@@ -403,7 +361,7 @@ public class XMPPError {
     	private int code;
         private Type type;
         private Condition condition;
-        private static HashMap instances = errorSpecifications();
+        private static HashMap<Condition, ErrorSpecification> instances = errorSpecifications();
 
         private ErrorSpecification(Condition condition, Type type, int code) {
         	this.code = code;
@@ -411,8 +369,8 @@ public class XMPPError {
         	this.condition = condition;
         }
                
-        private static HashMap errorSpecifications() {
-			HashMap instances = new HashMap(22);
+        private static HashMap<Condition, ErrorSpecification> errorSpecifications() {
+			HashMap<Condition, ErrorSpecification> instances = new HashMap<Condition, ErrorSpecification>(22);
 			instances.put(Condition.interna_server_error, new ErrorSpecification(
 					Condition.interna_server_error, Type.WAIT, 500));
 			instances.put(Condition.forbidden, new ErrorSpecification(Condition.forbidden,
@@ -466,7 +424,7 @@ public class XMPPError {
 		}
 
         protected static ErrorSpecification specFor(Condition condition) {
-        	return (ErrorSpecification) instances.get(condition);
+        	return instances.get(condition);
         }
         
         /**

@@ -20,15 +20,18 @@
 
 package org.jivesoftware.smack.util;
 
-import java.beans.PropertyDescriptor;
-import java.util.*;
-import java.io.ObjectInputStream;
-import java.io.ByteArrayInputStream;
-
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.beans.PropertyDescriptor;
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
@@ -335,7 +338,7 @@ public class PacketParserUtils {
                 }
         }
         return new XMPPError(Integer.parseInt(errorCode), XMPPError.Type
-				.fromString(type), condition, message, extensions);
+				.valueOf(type.toUpperCase()), condition, message, extensions);
     }
 
     /**

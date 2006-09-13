@@ -1,10 +1,6 @@
 package org.jivesoftware.smack.packet;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A Privacy IQ Packet, is used by the {@see PrivacyListManager} and {@see PrivacyProvider} to allow 
@@ -34,7 +30,7 @@ public class Privacy extends IQ {
 	private String defaultName;
 	/** itemLists holds the set of privacy items classified in lists. It is a map where the 
 	 * key is the name of the list and the value a collection with privacy items. **/
-	private Map itemLists = new HashMap();
+	private Map<String, List<PrivacyItem>> itemLists = new HashMap<String, List<PrivacyItem>>();
 
     /**
      * Set or update a privacy list with {@link PrivacyItem}.
@@ -43,7 +39,7 @@ public class Privacy extends IQ {
      * @param listItem the {@link PrivacyItem} that rules the list.
      * @return the privacy List.
      */
-    public List setPrivacyList(String listName, List listItem) {
+    public List setPrivacyList(String listName, List<PrivacyItem> listItem) {
         // Add new list to the itemLists
         this.getItemLists().put(listName, listItem);
         return listItem;
@@ -54,9 +50,9 @@ public class Privacy extends IQ {
      *
      * @return the active List.
      */
-    public List setActivePrivacyList() {
+    public List<PrivacyItem> setActivePrivacyList() {
         this.setActiveName(this.getDefaultName());
-        return (List) this.getItemLists().get(this.getActiveName());
+        return this.getItemLists().get(this.getActiveName());
     }
 
     /**
@@ -81,12 +77,12 @@ public class Privacy extends IQ {
      *
      * @return list with {@link PrivacyItem} or <tt>null</tt> if none was found.
      */
-    public List getActivePrivacyList() {
+    public List<PrivacyItem> getActivePrivacyList() {
         // Check if we have the default list
         if (this.getActiveName() == null) {
         	return null;
         } else {
-        	return (List) this.getItemLists().get(this.getActiveName());
+        	return this.getItemLists().get(this.getActiveName());
         }
     }
 
@@ -95,12 +91,12 @@ public class Privacy extends IQ {
      *
      * @return list with {@link PrivacyItem} or <tt>null</tt> if none was found.
      */
-    public List getDefaultPrivacyList() {
+    public List<PrivacyItem> getDefaultPrivacyList() {
         // Check if we have the default list
         if (this.getDefaultName() == null) {
         	return null;
         } else {
-        	return (List) this.getItemLists().get(this.getDefaultName());
+        	return this.getItemLists().get(this.getDefaultName());
         }
     }
 
@@ -110,8 +106,8 @@ public class Privacy extends IQ {
      * @param listName the name of the list to get.
      * @return a List with {@link PrivacyItem}
      */
-    public List getPrivacyList(String listName) {
-        return (List) this.getItemLists().get(listName);
+    public List<PrivacyItem> getPrivacyList(String listName) {
+        return this.getItemLists().get(listName);
     }
 
     /**
@@ -121,10 +117,10 @@ public class Privacy extends IQ {
      * @return a List with {@link PrivacyItem}
      */
     public PrivacyItem getItem(String listName, int order) {
-    	Iterator values = getPrivacyList(listName).iterator();
+    	Iterator<PrivacyItem> values = getPrivacyList(listName).iterator();
     	PrivacyItem itemFound = null;
     	while (itemFound == null && values.hasNext()) {
-    		PrivacyItem element = (PrivacyItem) values.next();
+    		PrivacyItem element = values.next();
 			if (element.getOrder() == order) {
 				itemFound = element;
 			}
@@ -211,7 +207,7 @@ public class Privacy extends IQ {
      * @return a map where the key is the name of the list and the value the 
      * collection of privacy items.
      */
-	public Map getItemLists() {
+	public Map<String, List<PrivacyItem>> getItemLists() {
 		return itemLists;
 	}
 
@@ -245,7 +241,7 @@ public class Privacy extends IQ {
     /** 
      * Sets whether the receiver allows or declines the use of a default list.
      * 
-     * @param declineActiveList indicates if the receiver declines the use of a default list.
+     * @param declineDefaultList indicates if the receiver declines the use of a default list.
      */
 	public void setDeclineDefaultList(boolean declineDefaultList) {
 		this.declineDefaultList = declineDefaultList;
@@ -256,7 +252,7 @@ public class Privacy extends IQ {
      * 
      * @return a Set with Strings containing every list names.
      */
-	public Set getPrivacyListNames() {
+	public Set<String> getPrivacyListNames() {
 		return this.itemLists.keySet();
 	}
 	
@@ -282,20 +278,16 @@ public class Privacy extends IQ {
         }
         
         // Add the list with their privacy items
-        int listNameSize = this.getItemLists().size();
-        Iterator listItemsPairs = this.getItemLists().entrySet().iterator();
-        for (int i = 0; i < listNameSize; i++) {
-          Map.Entry entry = (Map.Entry) listItemsPairs.next();
-          String listName = (String) entry.getKey();
-          List items = (List) entry.getValue();
+        for (Map.Entry<String, List<PrivacyItem>> entry : this.getItemLists().entrySet()) {
+          String listName = entry.getKey();
+          List<PrivacyItem> items = entry.getValue();
 			// Begin the list tag
 			if (items.isEmpty()) {
 				buf.append("<list name=\"").append(listName).append("\"/>");
 			} else {
 				buf.append("<list name=\"").append(listName).append("\">");
 			}
-	        for (Iterator itemIterator = items.iterator(); itemIterator.hasNext();) {
-	        	PrivacyItem item = (PrivacyItem) itemIterator.next();
+	        for (PrivacyItem item : items) {
 	        	// Append the item xml representation
 	        	buf.append(item.toXML());
 	        }
@@ -308,8 +300,7 @@ public class Privacy extends IQ {
         // Add packet extensions, if any are defined.
         buf.append(getExtensionsXML());
         buf.append("</query>");
-        String generatedXML = buf.toString();
-        return generatedXML;
+        return buf.toString();
     }
     
 }

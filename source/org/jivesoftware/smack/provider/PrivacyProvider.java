@@ -1,12 +1,12 @@
 package org.jivesoftware.smack.provider;
 
-import java.util.ArrayList;
-
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Privacy;
 import org.jivesoftware.smack.packet.PrivacyItem;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.ArrayList;
 
 /**
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
@@ -64,7 +64,7 @@ public class PrivacyProvider implements IQProvider {
 	public void parseList(XmlPullParser parser, Privacy privacy) throws Exception {
         boolean done = false;
         String listName = parser.getAttributeValue("", "name");
-        ArrayList items = new ArrayList();
+        ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {

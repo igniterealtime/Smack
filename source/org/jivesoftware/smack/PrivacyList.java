@@ -27,7 +27,7 @@ public class PrivacyList {
     /** Holds the list name used to print **/
     private String listName;
     /** Holds the list of {@see PrivacyItem} **/
-    private List items;
+    private List<PrivacyItem> items;
     
     protected PrivacyList(boolean isActiveList, boolean isDefaultList,
             String listName, List<PrivacyItem> privacyItems) {
@@ -46,7 +46,7 @@ public class PrivacyList {
         return isDefaultList;
     }
 
-    public List getItems() {
+    public List<PrivacyItem> getItems() {
         return items;
     }
 

@@ -196,7 +196,7 @@ public class PrivacyItem {
      * 
      * @return the type of communication it represent.
      */
-    public String getType() {
+    public Type getType() {
     	if (this.getRule() == null) {
     		return null;
     	} else {
@@ -298,7 +298,7 @@ public class PrivacyItem {
     	  * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
     	  * Available values are: [jid|group|subscription]
     	  */
-         private String type;
+         private Type type;
          /** 
           * The value hold the element identifier to apply the action.
           * If the type is "jid", then the 'value' attribute MUST contain a valid Jabber ID.
@@ -310,24 +310,10 @@ public class PrivacyItem {
          private String value;
 
          /**
-          * JID being analyzed should have a resource match, domain match or bare JID match.
-          */
-         public static final String GROUP = "group";
-          /**
-           * JID being analyzed should belong to a roster group of the list's owner.
-           */
-     	public static final String JID = "jid";
-          /**
-           * JID being analyzed should belong to a contact present in the owner's roster with
-           * the specified subscription status.
-           */
-     	public static final String SUBSCRIPTION = "subscription";
-
-     	/** 
      	 * If the type is "subscription", then the 'value' attribute MUST be one of "both", 
      	 * "to", "from", or "none"
      	 */
-     	public static final String SUBSCRIPTION_BOTH = "subscription";
+     	public static final String SUBSCRIPTION_BOTH = "both";
      	public static final String SUBSCRIPTION_TO = "to";
      	public static final String SUBSCRIPTION_FROM = "from";
      	public static final String SUBSCRIPTION_NONE = "none";
@@ -336,25 +322,11 @@ public class PrivacyItem {
           * Returns the type constant associated with the String value.
           */
          protected static PrivacyRule fromString(String value) {
-        	 String type = null;
              if (value == null) {
                  return null;
              }
-             if (SUBSCRIPTION.equalsIgnoreCase(value)) {
-            	 type = SUBSCRIPTION;
-             }
-             else if (GROUP.equalsIgnoreCase(value)) {
-            	 type = GROUP;
-             }
-             else if (JID.equalsIgnoreCase(value)) {
-            	 type = JID;
-             }
-             // Default to available.
-             else {
-                 return null;
-             }
              PrivacyRule rule = new PrivacyRule();
-             rule.setType(type);
+             rule.setType(Type.valueOf(value.toLowerCase()));
              return rule;
          }
          
@@ -364,16 +336,16 @@ public class PrivacyItem {
           * 
           * @return the type of communication it represent.
           */
-         public String getType() {
+         public Type getType() {
      		return type;
      	}
 
          /** 
           * Sets the action associated with the item, it can allow or deny the communication.
           * 
-          * @param allow indicates if the receiver allows or denies the communication.
+          * @param type indicates if the receiver allows or denies the communication.
           */
-         private void setType(String type) {
+         private void setType(Type type) {
      		this.type = type;
      	}
 
@@ -419,9 +391,9 @@ public class PrivacyItem {
           * @param value is the identifier to apply the action.
           */
          private void setSuscriptionValue(String value) {
-        	 String setValue = null;
+        	 String setValue;
              if (value == null) {
-            	 setValue = null;
+            	 // Do nothing
              }
              if (SUBSCRIPTION_BOTH.equalsIgnoreCase(value)) {
             	 setValue = SUBSCRIPTION_BOTH;
@@ -448,7 +420,26 @@ public class PrivacyItem {
           * @return if the receiver represents a subscription rule.
           */
          public boolean isSuscription () {
-     		return this.getValue() == SUBSCRIPTION;
+     		return this.getType() == Type.subscription;
      	}
+    }
+    
+    /**
+     * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
+     */
+    protected static enum Type {
+        /**
+         * JID being analyzed should belong to a roster group of the list's owner.
+         */
+        group,
+        /**
+         * JID being analyzed should have a resource match, domain match or bare JID match.
+         */
+        jid,
+        /**
+         * JID being analyzed should belong to a contact present in the owner's roster with
+         * the specified subscription status.
+         */
+        subscription
     }
 }

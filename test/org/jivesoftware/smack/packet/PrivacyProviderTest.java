@@ -1,12 +1,12 @@
 package org.jivesoftware.smack.packet;
 
-import java.io.StringReader;
-
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.StringReader;
 
 /** 
  * Test the PrivacyProvider class with valids privacy xmls
@@ -131,7 +131,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             // check each privacy item
             PrivacyItem item = packet.getItem("testGroup", 4);
             assertEquals("Enemies", item.getValue());
-            assertEquals("group", item.getType());
+            assertEquals(PrivacyItem.Type.group, item.getType());
             assertEquals(false, item.isAllow());
             assertEquals(true, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -141,7 +141,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testFilter", 1);
             assertEquals("tybalt@example.com", item.getValue());
-            assertEquals("jid", item.getType());
+            assertEquals(PrivacyItem.Type.jid, item.getType());
             assertEquals(false, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -162,7 +162,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             // TEST THE testSubscription LIST
             item = packet.getItem("testSubscription", 10);
             assertEquals("both", item.getValue());
-            assertEquals("subscription", item.getType());
+            assertEquals(PrivacyItem.Type.subscription, item.getType());
             assertEquals(true, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -172,7 +172,7 @@ public class PrivacyProviderTest extends SmackTestCase {
 
             item = packet.getItem("testSubscription", 11);
             assertEquals("to", item.getValue());
-            assertEquals("subscription", item.getType());
+            assertEquals(PrivacyItem.Type.subscription, item.getType());
             assertEquals(true, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -182,7 +182,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testSubscription", 12);
             assertEquals("from", item.getValue());
-            assertEquals("subscription", item.getType());
+            assertEquals(PrivacyItem.Type.subscription, item.getType());
             assertEquals(true, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -192,7 +192,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testSubscription", 5);
             assertEquals("none", item.getValue());
-            assertEquals("subscription", item.getType());
+            assertEquals(PrivacyItem.Type.subscription, item.getType());
             assertEquals(false, item.isAllow());
             assertEquals(true, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -214,7 +214,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testJID", 6);
             assertEquals("juliet@example.com", item.getValue());
-            assertEquals("jid", item.getType());
+            assertEquals(PrivacyItem.Type.jid, item.getType());
             assertEquals(true, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -224,7 +224,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testJID", 7);
             assertEquals("benvolio@example.org/palm", item.getValue());
-            assertEquals("jid", item.getType());
+            assertEquals(PrivacyItem.Type.jid, item.getType());
             assertEquals(false, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -234,7 +234,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testJID", 42);
             assertEquals(null, item.getValue());
-            assertEquals("jid", item.getType());
+            assertEquals(PrivacyItem.Type.jid, item.getType());
             assertEquals(true, item.isAllow());
             assertEquals(false, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());
@@ -256,7 +256,7 @@ public class PrivacyProviderTest extends SmackTestCase {
             
             item = packet.getItem("testGroup", 4);
             assertEquals("Enemies", item.getValue());
-            assertEquals("group", item.getType());
+            assertEquals(PrivacyItem.Type.group, item.getType());
             assertEquals(false, item.isAllow());
             assertEquals(true, item.isFilterMessage());
             assertEquals(false, item.isFilterIQ());

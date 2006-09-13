@@ -1,5 +1,7 @@
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.PrivacyItem;
+
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public interface PrivacyListListener {
      * @param listName the name of the new or updated privacy list.
      * @param listItem the PrivacyItems that rules the list.
      */
-    public void setPrivacyList(String listName, List listItem);
+    public void setPrivacyList(String listName, List<PrivacyItem> listItem);
 
     /**
      * A privacy list has been modified by another. It gets notified.
