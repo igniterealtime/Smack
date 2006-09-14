@@ -1,7 +1,7 @@
 /**
  * $RCSfile$
  * $Revision$
- * $Date: $
+ * $Date$
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -19,19 +19,17 @@
  */
 package org.jivesoftware.smack.test;
 
+import junit.framework.TestCase;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
+
+import javax.net.SocketFactory;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-
-import javax.net.SocketFactory;
-
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.xmlpull.v1.*;
-import org.xmlpull.mxp1.MXParser;
-
-import junit.framework.TestCase;
 
 /**
  * Base class for all the test cases which provides a pre-configured execution context. This 
@@ -196,6 +194,7 @@ public abstract class SmackTestCase extends TestCase {
                 else {
                     connections[i] = new XMPPConnection(config, getSocketFactory());
                 }
+                connections[i].connect();
             }
             // Use the host name that the server reports. This is a good idea in most
             // cases, but could fail if the user set a hostname in their XMPP server
@@ -232,11 +231,12 @@ public abstract class SmackTestCase extends TestCase {
         super.tearDown();
 
         for (int i = 0; i < getMaxConnections(); i++) {
+            if (getConnection(i).isConnected()) {
             // Delete the created account for the test
             getConnection(i).getAccountManager().deleteAccount();
             // Close the connection
-            getConnection(i).close();
-
+                getConnection(i).disconnect();
+            }
         }
     }
 

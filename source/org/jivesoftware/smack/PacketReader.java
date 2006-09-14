@@ -44,12 +44,12 @@ import java.util.concurrent.TimeUnit;
  */
 class PacketReader {
 
-    private final Thread readerThread;
-    private final Thread listenerThread;
+    private Thread readerThread;
+    private Thread listenerThread;
 
     private XMPPConnection connection;
     private XmlPullParser parser;
-    private boolean done = false;
+    private boolean done;
     private final VolatileMemberCollection<PacketCollector> collectors =
             new VolatileMemberCollection<PacketCollector>(50);
     protected final VolatileMemberCollection listeners = new VolatileMemberCollection(50);
@@ -61,10 +61,20 @@ class PacketReader {
 
     protected PacketReader(XMPPConnection connection) {
         this.connection = connection;
+        this.init();
+    }
+
+    /**
+     * Initializes the reader in order to be used. The reader is initialized during the
+     * first connection and when reconnecting due to an abruptly disconnection.
+     */
+    protected void init() {
+        done = false;
+        connectionID = null;
 
         readerThread = new Thread() {
             public void run() {
-                parsePackets();
+                parsePackets(this);
             }
         };
         readerThread.setName("Smack Packet Reader");
@@ -73,7 +83,7 @@ class PacketReader {
         listenerThread = new Thread() {
             public void run() {
                 try {
-                    processListeners();
+                    processListeners(this);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -195,7 +205,8 @@ class PacketReader {
      */
     void notifyConnectionError(Exception e) {
         done = true;
-        connection.close();
+        // Closes the connection temporary. A reconnection is possible
+        connection.shutdown();
         // Print the stack trace to help catch the problem
         e.printStackTrace();
         // Notify connection listeners of the error.
@@ -205,6 +216,26 @@ class PacketReader {
             listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
             for (ConnectionListener listener : listenersCopy) {
                 listener.connectionClosedOnError(e);
+            }
+        }
+
+        // Make sure that the listenerThread is awake to shutdown properly
+        synchronized (listenerThread) {
+            listenerThread.notify();
+        }
+    }
+
+    /**
+     * Sends a notification indicating that the connection was reconnected successfully.
+     */
+    protected void notifyReconnection() {
+        // Notify connection listeners of the reconnection.
+        List<ConnectionListener> listenersCopy;
+        synchronized (connectionListeners) {
+            // Make a copy since it's possible that a listener will be removed from the list
+            listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
+            for (ConnectionListener listener : listenersCopy) {
+                listener.reconectionSuccessful();
             }
         }
 
@@ -232,9 +263,11 @@ class PacketReader {
 
     /**
      * Process listeners.
+     *
+     * @param thread the thread that is being used by the reader to process incoming packets.
      */
-    private void processListeners() {
-        while (!done) {
+    private void processListeners(Thread thread) {
+        while (!done && thread == listenerThread) {
             boolean processedPacket = false;
             Iterator it = listeners.getIterator();
             while (it.hasNext()) {
@@ -257,8 +290,10 @@ class PacketReader {
 
     /**
      * Parse top-level packets in order to process them further.
+     *
+     * @param thread the thread that is being used by the reader to parse incoming packets.
      */
-    private void parsePackets() {
+    private void parsePackets(Thread thread) {
         try {
             int eventType = parser.getEventType();
             do {
@@ -356,12 +391,12 @@ class PacketReader {
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("stream")) {
-                        // Close the connection.
-                        connection.close();
+                        // Disconnect the connection
+                        connection.disconnect();
                     }
                 }
                 eventType = parser.next();
-            } while (!done && eventType != XmlPullParser.END_DOCUMENT);
+            } while (!done && eventType != XmlPullParser.END_DOCUMENT && thread == readerThread);
         }
         catch (Exception e) {
             if (!done) {
@@ -470,7 +505,7 @@ class PacketReader {
                 }
             }
         }
-        // Release the lock after TLS has been negotiated or we are not insterested in TLS 
+        // Release the lock after TLS has been negotiated or we are not insterested in TLS
         if (!startTLSReceived || !connection.getConfiguration().isTLSEnabled()) {
             releaseConnectionIDLock();
         }
@@ -873,7 +908,7 @@ class PacketReader {
     /**
      * A wrapper class to associate a packet collector with a listener.
      */
-    private static class ListenerWrapper {
+    protected static class ListenerWrapper {
 
         private PacketListener packetListener;
         private PacketCollector packetCollector;

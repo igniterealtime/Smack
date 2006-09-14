@@ -20,11 +20,10 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Ensure that stream compression (JEP-138) is correctly supported by Smack.
@@ -50,6 +49,7 @@ public class CompressionTest extends SmackTestCase {
         config.setSASLAuthenticationEnabled(true);
 
         XMPPConnection connection = new XMPPConnection(config);
+        connection.connect();
 
         // Login with the test account
         connection.login("user0", "user0");
@@ -57,7 +57,7 @@ public class CompressionTest extends SmackTestCase {
         assertTrue("Connection is not using stream compression", connection.isUsingCompression());
 
         // Close connection
-        connection.close();
+        connection.disconnect();
     }
 
     protected int getMaxConnections() {
@@ -70,6 +70,7 @@ public class CompressionTest extends SmackTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         XMPPConnection setupConnection = new XMPPConnection(getHost(), getPort());
+        setupConnection.connect();
         if (!setupConnection.getAccountManager().supportsAccountCreation())
             fail("Server does not support account creation");
 
@@ -90,11 +91,12 @@ public class CompressionTest extends SmackTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         XMPPConnection setupConnection = new XMPPConnection(getHost(), getPort());
+        setupConnection.connect();
         setupConnection.login("user0", "user0");
         // Delete the created account for the test
         setupConnection.getAccountManager().deleteAccount();
         // Close the setupConnection
-        setupConnection.close();
+        setupConnection.disconnect();
     }
 
 }

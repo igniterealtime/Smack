@@ -37,6 +37,7 @@ public class PresenceTest extends SmackTestCase {
         try {
             // User_1 will log in again using another resource
             conn = new XMPPConnection(getHost(), getPort());
+            conn.connect();
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             // Change the presence priorities of User_1
             getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 1,
@@ -71,8 +72,7 @@ public class PresenceTest extends SmackTestCase {
                     chat2.nextMessage(1000));
 
             // User_1 closes his connection
-            chat2 = null;
-            conn.close();
+            conn.disconnect();
             Thread.sleep(150);
 
             // Test delivery of message to the unique presence of the user_1
@@ -85,6 +85,7 @@ public class PresenceTest extends SmackTestCase {
 
             // User_1 will log in again using another resource
             conn = new XMPPConnection(getHost(), getPort());
+            conn.connect();
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             conn.sendPacket(new Presence(Presence.Type.available, null, 1,
                     Presence.Mode.available));
@@ -119,7 +120,7 @@ public class PresenceTest extends SmackTestCase {
         }
         finally {
             if (conn != null) {
-                conn.close();
+                conn.disconnect();
             }
         }
     }
@@ -128,6 +129,7 @@ public class PresenceTest extends SmackTestCase {
      * User1 logs from 2 resources but only one is available. User0 sends a message
      * to the full JID of the unavailable resource. User1 in the not available resource
      * should receive the message.
+     * TODO Fix this in Wildfire but before check if XMPP spec requests this feature
      */
     public void testNotAvailablePresence() throws XMPPException {
         // Change the presence to unavailable of User_1
@@ -135,6 +137,7 @@ public class PresenceTest extends SmackTestCase {
 
         // User_1 will log in again using another resource (that is going to be available)
         XMPPConnection conn = new XMPPConnection(getHost(), getPort());
+        conn.connect();
         conn.login(getUsername(1), getUsername(1), "OtherPlace");
 
         // Create chats between participants
@@ -158,6 +161,7 @@ public class PresenceTest extends SmackTestCase {
     public void testMultipleResources() throws Exception {
         // Create another connection for the same user of connection 1
         XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        conn4.connect();
         conn4.login(getUsername(1), getUsername(1), "Home");
 
         // Add a new roster entry
@@ -188,7 +192,7 @@ public class PresenceTest extends SmackTestCase {
         assertTrue("Only one presence was found for user1", presences.hasNext());
 
         // User1 logs out from one resource
-        conn4.close();
+        conn4.disconnect();
 
         // Wait up to 1 second
         Thread.sleep(700);

@@ -29,7 +29,6 @@ import java.awt.event.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -90,7 +89,7 @@ public class EnhancedDebuggerWindow {
 
     private JFrame frame = null;
     private JTabbedPane tabbedPane = null;
-    private java.util.List debuggers = new ArrayList();
+    private java.util.List<EnhancedDebugger> debuggers = new ArrayList<EnhancedDebugger>();
 
     private EnhancedDebuggerWindow() {
     }
@@ -178,6 +177,12 @@ public class EnhancedDebuggerWindow {
                 connectionClosedOnErrorIcon);
     }
 
+    synchronized static void connectionEstablished(EnhancedDebugger debugger) {
+        getInstance().tabbedPane.setIconAt(
+                getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
+                connectionActiveIcon);
+    }
+    
     /**
      * Creates the main debug window that provides information about Smack and also shows
      * a tab panel for each connection that is being debugged.
@@ -264,7 +269,7 @@ public class EnhancedDebuggerWindow {
                 if (tabbedPane.getSelectedIndex() < tabbedPane.getComponentCount() - 1) {
                     int index = tabbedPane.getSelectedIndex();
                     // Notify to the debugger to stop debugging
-                    EnhancedDebugger debugger = (EnhancedDebugger) debuggers.get(index);
+                    EnhancedDebugger debugger = debuggers.get(index);
                     debugger.cancel();
                     // Remove the debugger from the root window
                     tabbedPane.remove(debugger.tabbedPane);
@@ -281,18 +286,17 @@ public class EnhancedDebuggerWindow {
         menuItem = new JMenuItem("Close All Not Active");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList debuggersToRemove = new ArrayList();
+                ArrayList<EnhancedDebugger> debuggersToRemove = new ArrayList<EnhancedDebugger>();
                 // Remove all the debuggers of which their connections are no longer valid
                 for (int index = 0; index < tabbedPane.getComponentCount() - 1; index++) {
-                    EnhancedDebugger debugger = (EnhancedDebugger) debuggers.get(index);
+                    EnhancedDebugger debugger = debuggers.get(index);
                     if (!debugger.isConnectionActive()) {
                         // Notify to the debugger to stop debugging
                         debugger.cancel();
                         debuggersToRemove.add(debugger);
                     }
                 }
-                for (Iterator it = debuggersToRemove.iterator(); it.hasNext();) {
-                    EnhancedDebugger debugger = (EnhancedDebugger) it.next();
+                for (EnhancedDebugger debugger : debuggersToRemove) {
                     // Remove the debugger from the root window
                     tabbedPane.remove(debugger.tabbedPane);
                     debuggers.remove(debugger);
@@ -324,8 +328,7 @@ public class EnhancedDebuggerWindow {
      */
     public void rootWindowClosing(WindowEvent evt) {
         // Notify to all the debuggers to stop debugging
-        for (Iterator it = debuggers.iterator(); it.hasNext();) {
-            EnhancedDebugger debugger = (EnhancedDebugger) it.next();
+        for (EnhancedDebugger debugger : debuggers) {
             debugger.cancel();
         }
         // Release any reference to the debuggers

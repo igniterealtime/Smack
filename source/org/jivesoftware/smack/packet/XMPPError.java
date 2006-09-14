@@ -20,10 +20,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
@@ -79,8 +76,8 @@ public class XMPPError {
      * @param condition the error condition.
      */
     public XMPPError(Condition condition) {
-    	this.init(condition);
-    	this.message = null;
+        this.init(condition);
+        this.message = null;
     }
 
     /**
@@ -97,7 +94,7 @@ public class XMPPError {
         this.init(condition);
         this.message = messageText;
     }
-    
+
     /**
      * Creates a new  error with the specified code and no message.
      *
@@ -108,7 +105,7 @@ public class XMPPError {
         this.code = code;
         this.message = null;
     }
-    
+
     /**
      * Creates a new error with the specified code and message.
      * deprecated
@@ -121,8 +118,7 @@ public class XMPPError {
         this.code = code;
         this.message = message;
     }
-    
-    
+
     /**
      * Creates a new error with the specified code, type, condition and message.
      * This constructor is used when the condition is not recognized automatically by XMPPError
@@ -156,7 +152,7 @@ public class XMPPError {
             // If there is a default error specification for the received condition,
             // it get configured with the infered type and code.
             this.type = defaultErrorSpecification.getType();
-            this.code = defaultErrorSpecification.getCode();    
+            this.code = defaultErrorSpecification.getCode();
         }
     }
     /**
@@ -167,7 +163,7 @@ public class XMPPError {
     public String getCondition() {
         return condition;
     }
-    
+
     /**
      * Returns the error type.
      *
@@ -176,7 +172,7 @@ public class XMPPError {
     public Type getType() {
         return type;
     }
-    
+
     /**
      * Returns the error code.
      *
@@ -210,17 +206,17 @@ public class XMPPError {
         }
         buf.append(">");
         if (condition != null) {
-        	buf.append("<").append(condition);
-        	buf.append(" xmlns=\"urn:ietf:params:xml:ns:xmpp-stanzas\"/>");
+            buf.append("<").append(condition);
+            buf.append(" xmlns=\"urn:ietf:params:xml:ns:xmpp-stanzas\"/>");
         }
         if (message != null) {
-        	buf.append("<text xml:lang=\"en\" xmlns=\"urn:ietf:params:xml:ns:xmpp-stanzas\">");
-        	buf.append(message);
-        	buf.append("</text>");
+            buf.append("<text xml:lang=\"en\" xmlns=\"urn:ietf:params:xml:ns:xmpp-stanzas\">");
+            buf.append(message);
+            buf.append("</text>");
         }
         for (PacketExtension element : this.getExtensions()) {
-        	buf.append(element.toXML());
-		}
+            buf.append(element.toXML());
+        }
         buf.append("</error>");
         return buf.toString();
     }
@@ -270,7 +266,7 @@ public class XMPPError {
         }
         return null;
     }
-    
+
     /**
      * Adds a packet extension to the error.
      *
@@ -278,7 +274,7 @@ public class XMPPError {
      */
     public synchronized void addExtension(PacketExtension extension) {
         if (applicationExtensions == null) {
-        	applicationExtensions = new ArrayList<PacketExtension>();
+            applicationExtensions = new ArrayList<PacketExtension>();
         }
         applicationExtensions.add(extension);
     }
@@ -289,10 +285,9 @@ public class XMPPError {
      * @param extension a packet extension.
      */
     public synchronized void setExtension(List<PacketExtension> extension) {
-    	applicationExtensions = extension;
+        applicationExtensions = extension;
     }
-      
-    
+
     /**
      * A class to represent the type of the Error. The types are:
      *
@@ -311,7 +306,7 @@ public class XMPPError {
         AUTH,
         CONTINUE
     }
-    
+
     /**
      * A class to represent predefined error conditions.
      */
@@ -341,7 +336,7 @@ public class XMPPError {
         public static final Condition undefined_condition = new Condition("undefined-condition");
         public static final Condition unexpected_condition = new Condition("unexpected-condition");
         public static final Condition request_timeout = new Condition("request-timeout");
-        
+
         private String value;
 
         public Condition(String value) {
@@ -353,80 +348,80 @@ public class XMPPError {
         }
     }
 
-    
+
     /**
      * A class to represent the error specification used to infer common usage.
      */
     private static class ErrorSpecification {
-    	private int code;
+        private int code;
         private Type type;
         private Condition condition;
-        private static HashMap<Condition, ErrorSpecification> instances = errorSpecifications();
+        private static Map<Condition, ErrorSpecification> instances = errorSpecifications();
 
         private ErrorSpecification(Condition condition, Type type, int code) {
-        	this.code = code;
-        	this.type = type;
-        	this.condition = condition;
+            this.code = code;
+            this.type = type;
+            this.condition = condition;
         }
-               
-        private static HashMap<Condition, ErrorSpecification> errorSpecifications() {
-			HashMap<Condition, ErrorSpecification> instances = new HashMap<Condition, ErrorSpecification>(22);
-			instances.put(Condition.interna_server_error, new ErrorSpecification(
-					Condition.interna_server_error, Type.WAIT, 500));
-			instances.put(Condition.forbidden, new ErrorSpecification(Condition.forbidden,
-					Type.AUTH, 403));
-			instances.put(Condition.bad_request, new XMPPError.ErrorSpecification(
-					Condition.bad_request, Type.MODIFY, 400));
-			instances.put(Condition.item_not_found, new XMPPError.ErrorSpecification(
-					Condition.item_not_found, Type.CANCEL, 404));
-			instances.put(Condition.conflict, new XMPPError.ErrorSpecification(
-					Condition.conflict, Type.CANCEL, 409));
-			instances.put(Condition.feature_not_implemented, new XMPPError.ErrorSpecification(
-					Condition.feature_not_implemented, Type.CANCEL, 501));
-			instances.put(Condition.gone, new XMPPError.ErrorSpecification(
-					Condition.gone, Type.MODIFY, 302));
-			instances.put(Condition.jid_malformed, new XMPPError.ErrorSpecification(
-					Condition.jid_malformed, Type.MODIFY, 400));
-			instances.put(Condition.no_acceptable, new XMPPError.ErrorSpecification(
-					Condition.no_acceptable, Type.MODIFY, 406));
-			instances.put(Condition.not_allowed, new XMPPError.ErrorSpecification(
-					Condition.not_allowed, Type.CANCEL, 405));
-			instances.put(Condition.not_authorized, new XMPPError.ErrorSpecification(
-					Condition.not_authorized, Type.AUTH, 401));
-			instances.put(Condition.payment_required, new XMPPError.ErrorSpecification(
-					Condition.payment_required, Type.AUTH, 402));
-			instances.put(Condition.recipient_unavailable, new XMPPError.ErrorSpecification(
-					Condition.recipient_unavailable, Type.WAIT, 404));
-			instances.put(Condition.redirect, new XMPPError.ErrorSpecification(
-					Condition.redirect, Type.MODIFY, 302));
-			instances.put(Condition.registration_required, new XMPPError.ErrorSpecification(
-					Condition.registration_required, Type.AUTH, 407));
-			instances.put(Condition.remote_server_not_found, new XMPPError.ErrorSpecification(
-					Condition.remote_server_not_found, Type.CANCEL, 404));
-			instances.put(Condition.remote_server_timeout, new XMPPError.ErrorSpecification(
-					Condition.remote_server_timeout, Type.WAIT, 504));
-			instances.put(Condition.remote_server_error, new XMPPError.ErrorSpecification(
-					Condition.remote_server_error, Type.CANCEL, 502));
-			instances.put(Condition.resource_constraint, new XMPPError.ErrorSpecification(
-					Condition.resource_constraint, Type.WAIT, 500));
-			instances.put(Condition.service_unavailable, new XMPPError.ErrorSpecification(
-					Condition.service_unavailable, Type.CANCEL, 503));
-			instances.put(Condition.subscription_required, new XMPPError.ErrorSpecification(
-					Condition.subscription_required, Type.AUTH, 407));
-			instances.put(Condition.undefined_condition, new XMPPError.ErrorSpecification(
-					Condition.undefined_condition, Type.WAIT, 500));
-			instances.put(Condition.unexpected_condition, new XMPPError.ErrorSpecification(
-					Condition.unexpected_condition, Type.WAIT, 400));
+
+        private static Map<Condition, ErrorSpecification> errorSpecifications() {
+            Map<Condition, ErrorSpecification> instances = new HashMap<Condition, ErrorSpecification>(22);
+            instances.put(Condition.interna_server_error, new ErrorSpecification(
+                    Condition.interna_server_error, Type.WAIT, 500));
+            instances.put(Condition.forbidden, new ErrorSpecification(Condition.forbidden,
+                    Type.AUTH, 403));
+            instances.put(Condition.bad_request, new XMPPError.ErrorSpecification(
+                    Condition.bad_request, Type.MODIFY, 400));
+            instances.put(Condition.item_not_found, new XMPPError.ErrorSpecification(
+                    Condition.item_not_found, Type.CANCEL, 404));
+            instances.put(Condition.conflict, new XMPPError.ErrorSpecification(
+                    Condition.conflict, Type.CANCEL, 409));
+            instances.put(Condition.feature_not_implemented, new XMPPError.ErrorSpecification(
+                    Condition.feature_not_implemented, Type.CANCEL, 501));
+            instances.put(Condition.gone, new XMPPError.ErrorSpecification(
+                    Condition.gone, Type.MODIFY, 302));
+            instances.put(Condition.jid_malformed, new XMPPError.ErrorSpecification(
+                    Condition.jid_malformed, Type.MODIFY, 400));
+            instances.put(Condition.no_acceptable, new XMPPError.ErrorSpecification(
+                    Condition.no_acceptable, Type.MODIFY, 406));
+            instances.put(Condition.not_allowed, new XMPPError.ErrorSpecification(
+                    Condition.not_allowed, Type.CANCEL, 405));
+            instances.put(Condition.not_authorized, new XMPPError.ErrorSpecification(
+                    Condition.not_authorized, Type.AUTH, 401));
+            instances.put(Condition.payment_required, new XMPPError.ErrorSpecification(
+                    Condition.payment_required, Type.AUTH, 402));
+            instances.put(Condition.recipient_unavailable, new XMPPError.ErrorSpecification(
+                    Condition.recipient_unavailable, Type.WAIT, 404));
+            instances.put(Condition.redirect, new XMPPError.ErrorSpecification(
+                    Condition.redirect, Type.MODIFY, 302));
+            instances.put(Condition.registration_required, new XMPPError.ErrorSpecification(
+                    Condition.registration_required, Type.AUTH, 407));
+            instances.put(Condition.remote_server_not_found, new XMPPError.ErrorSpecification(
+                    Condition.remote_server_not_found, Type.CANCEL, 404));
+            instances.put(Condition.remote_server_timeout, new XMPPError.ErrorSpecification(
+                    Condition.remote_server_timeout, Type.WAIT, 504));
+            instances.put(Condition.remote_server_error, new XMPPError.ErrorSpecification(
+                    Condition.remote_server_error, Type.CANCEL, 502));
+            instances.put(Condition.resource_constraint, new XMPPError.ErrorSpecification(
+                    Condition.resource_constraint, Type.WAIT, 500));
+            instances.put(Condition.service_unavailable, new XMPPError.ErrorSpecification(
+                    Condition.service_unavailable, Type.CANCEL, 503));
+            instances.put(Condition.subscription_required, new XMPPError.ErrorSpecification(
+                    Condition.subscription_required, Type.AUTH, 407));
+            instances.put(Condition.undefined_condition, new XMPPError.ErrorSpecification(
+                    Condition.undefined_condition, Type.WAIT, 500));
+            instances.put(Condition.unexpected_condition, new XMPPError.ErrorSpecification(
+                    Condition.unexpected_condition, Type.WAIT, 400));
             instances.put(Condition.request_timeout, new XMPPError.ErrorSpecification(
                     Condition.request_timeout, Type.CANCEL, 408));
-			
-			return instances;
-		}
+
+            return instances;
+        }
 
         protected static ErrorSpecification specFor(Condition condition) {
-        	return instances.get(condition);
+            return instances.get(condition);
         }
-        
+
         /**
          * Returns the error condition.
          *
@@ -435,7 +430,7 @@ public class XMPPError {
         protected Condition getCondition() {
             return condition;
         }
-        
+
         /**
          * Returns the error type.
          *
@@ -444,7 +439,7 @@ public class XMPPError {
         protected Type getType() {
             return type;
         }
-        
+
         /**
          * Returns the error code.
          *

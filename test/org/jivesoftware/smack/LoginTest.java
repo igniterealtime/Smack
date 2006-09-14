@@ -32,10 +32,11 @@ public class LoginTest extends SmackTestCase {
     public void testInvalidLogin() {
         try {
             XMPPConnection connection = new XMPPConnection(getHost(), getPort());
+            connection.connect();
             try {
                 // Login with an invalid user
                 connection.login("invaliduser" , "invalidpass");
-                connection.close();
+                connection.disconnect();
                 fail("Invalid user was able to log into the server");
             }
             catch (XMPPException e) {
@@ -60,6 +61,8 @@ public class LoginTest extends SmackTestCase {
         try {
             XMPPConnection conn1 = new XMPPConnection(getHost(), getPort());
             XMPPConnection conn2 = new XMPPConnection(getHost(), getPort());
+            conn1.connect();
+            conn2.connect();
             try {
                 // Try to login anonymously
                 conn1.loginAnonymously();
@@ -76,8 +79,8 @@ public class LoginTest extends SmackTestCase {
                 fail(e.getMessage());
             }
             // Close the connection
-            conn1.close();
-            conn2.close();
+            conn1.disconnect();
+            conn2.disconnect();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -93,10 +96,13 @@ public class LoginTest extends SmackTestCase {
             ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
             config.setSASLAuthenticationEnabled(false);
             XMPPConnection conn1 = new XMPPConnection(config);
+            conn1.connect();
 
             config = new ConnectionConfiguration(getHost(), getPort());
             config.setSASLAuthenticationEnabled(false);
             XMPPConnection conn2 = new XMPPConnection(config);
+            conn2.connect();
+            
             try {
                 // Try to login anonymously
                 conn1.loginAnonymously();
@@ -113,8 +119,8 @@ public class LoginTest extends SmackTestCase {
                 fail(e.getMessage());
             }
             // Close the connection
-            conn1.close();
-            conn2.close();
+            conn1.disconnect();
+            conn2.disconnect();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -128,6 +134,7 @@ public class LoginTest extends SmackTestCase {
     public void testLoginWithNoResource() {
         try {
             XMPPConnection conn = new XMPPConnection(getHost(), getPort());
+            conn.connect();
             try {
                 conn.getAccountManager().createAccount("user_1", "user_1");
             } catch (XMPPException e) {
@@ -142,7 +149,7 @@ public class LoginTest extends SmackTestCase {
                 assertNotNull("JID assigned by server is missing", conn.getUser());
                 assertNotNull("JID assigned by server does not have a resource",
                         StringUtils.parseResource(conn.getUser()));
-                conn.close();
+                conn.disconnect();
             }
             else {
                 fail("User with no resource was able to log into the server");

@@ -71,24 +71,27 @@ public class PrivacyListManager {
         // the connection is closed
         connection.addConnectionListener(new ConnectionListener() {
             public void connectionClosed() {
-            // Unregister this instance since the connection has been closed
+                // Unregister this instance since the connection has been closed
                 instances.remove(connection);
             }
 
             public void connectionClosedOnError(Exception e) {
                 // ignore
             }
+
             public void reconnectionFailed(Exception e) {
                 // ignore
             }
-            public void attemptToReconnectIn(int seconds) {
+
+            public void reconnectingIn(int seconds) {
                 // ignore
             }
-            public void conectionReestablished() {
+
+            public void reconectionSuccessful() {
                 // ignore
             }
         });
-        
+
         connection.addPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
 

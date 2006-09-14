@@ -35,6 +35,7 @@ import org.jivesoftware.smackx.packet.StreamInitiation;
 
 import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages the negotiation of file transfers according to JEP-0096. If a file is
@@ -64,7 +65,8 @@ public class FileTransferNegotiator {
 
     private static final String[] PROTOCOLS = {BYTE_STREAM, INBAND_BYTE_STREAM};
 
-    private static final Map transferObject = new HashMap();
+    private static final Map<XMPPConnection, FileTransferNegotiator> transferObject =
+            new ConcurrentHashMap<XMPPConnection, FileTransferNegotiator>();
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
@@ -92,7 +94,7 @@ public class FileTransferNegotiator {
         }
 
         if (transferObject.containsKey(connection)) {
-            return (FileTransferNegotiator) transferObject.get(connection);
+            return transferObject.get(connection);
         }
         else {
             FileTransferNegotiator transfer = new FileTransferNegotiator(
@@ -114,12 +116,12 @@ public class FileTransferNegotiator {
             final boolean isEnabled) {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
-        for (int i = 0; i < NAMESPACE.length; i++) {
+        for (String ns : NAMESPACE) {
             if (isEnabled) {
-                manager.addFeature(NAMESPACE[i]);
+                manager.addFeature(ns);
             }
             else {
-                manager.removeFeature(NAMESPACE[i]);
+                manager.removeFeature(ns);
             }
         }
     }
@@ -132,9 +134,8 @@ public class FileTransferNegotiator {
      * @return True if all related services are enabled, false if they are not.
      */
     public static boolean isServiceEnabled(final XMPPConnection connection) {
-        for (int i = 0; i < NAMESPACE.length; i++) {
-            if (!ServiceDiscoveryManager.getInstanceFor(connection)
-                    .includesFeature(NAMESPACE[i]))
+        for (String ns : NAMESPACE) {
+            if (!ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(ns))
                 return false;
         }
         return true;
@@ -198,14 +199,26 @@ public class FileTransferNegotiator {
             public void connectionClosedOnError(Exception e) {
                 cleanup(connection);
             }
+
+            public void reconnectionFailed(Exception e) {
+                // ignore
+            }
+
+            public void reconectionSuccessful() {
+                // ignore
+            }
+
+            public void reconnectingIn(int seconds) {
+                // ignore
+            }
         });
     }
 
     private void cleanup(final XMPPConnection connection) {
-        transferObject.remove(connection);
-
-        byteStreamTransferManager.cleanup();
-        inbandTransferManager.cleanup();
+        if (transferObject.remove(connection) != null) {
+            byteStreamTransferManager.cleanup();
+            inbandTransferManager.cleanup();
+        }
     }
 
     /**

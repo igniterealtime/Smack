@@ -218,6 +218,30 @@ public class EnhancedDebugger implements SmackDebugger {
                 });
 
             }
+            public void reconnectingIn(final int seconds){
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        statusField.setValue("Attempt to reconnect in " + seconds + " seconds");
+                    }
+                });
+            }
+
+            public void reconectionSuccessful() {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        statusField.setValue("Reconnection stablished");
+                        EnhancedDebuggerWindow.connectionEstablished(EnhancedDebugger.this);
+                    }
+                });
+            }
+
+            public void reconnectionFailed(Exception e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        statusField.setValue("Reconnection failed");
+                    }
+                });
+            }
         };
     }
 
@@ -551,7 +575,7 @@ public class EnhancedDebugger implements SmackDebugger {
         connPanel.add(
                 label,
                 new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
-        field = new JFormattedTextField(new Integer(connection.getPort()));
+        field = new JFormattedTextField(connection.getPort());
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setEditable(false);
@@ -618,16 +642,9 @@ public class EnhancedDebugger implements SmackDebugger {
         packetsPanel.setBorder(BorderFactory.createTitledBorder("Transmitted Packets"));
 
         statisticsTable =
-                new DefaultTableModel(new Object[][]{{"IQ", new Integer(0), new Integer(0)}, {
-                        "Message", new Integer(0), new Integer(0)
-                }, {
-                        "Presence", new Integer(0), new Integer(0)
-                }, {
-                        "Other", new Integer(0), new Integer(0)
-                }, {
-                        "Total", new Integer(0), new Integer(0)
-                }
-                }, new Object[]{"Type", "Received", "Sent"}) {
+                new DefaultTableModel(new Object[][]{{"IQ", 0, 0}, {"Message", 0, 0},
+                        {"Presence", 0, 0}, {"Other", 0, 0}, {"Total", 0, 0}},
+                        new Object[]{"Type", "Received", "Sent"}) {
                     public boolean isCellEditable(int rowIndex, int mColIndex) {
                         return false;
                     }
@@ -719,7 +736,7 @@ public class EnhancedDebugger implements SmackDebugger {
     private void addReadPacketToTable(final SimpleDateFormat dateFormatter, final Packet packet) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                String messageType = null;
+                String messageType;
                 String from = packet.getFrom();
                 String type = "";
                 Icon packetTypeIcon;
@@ -780,7 +797,7 @@ public class EnhancedDebugger implements SmackDebugger {
     private void addSentPacketToTable(final SimpleDateFormat dateFormatter, final Packet packet) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                String messageType = null;
+                String messageType;
                 String to = packet.getTo();
                 String type = "";
                 Icon packetTypeIcon;
@@ -840,9 +857,10 @@ public class EnhancedDebugger implements SmackDebugger {
             // Surround this setting in a try/catch for compatibility with Java 1.4. This setting is required
             // for Java 1.5
             try {
-                tFactory.setAttribute("indent-number", new Integer(2));
+                tFactory.setAttribute("indent-number", 2);
             }
             catch (IllegalArgumentException e) {
+                // Ignore
             }
             Transformer transformer = tFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");

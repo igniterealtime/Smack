@@ -367,6 +367,7 @@ public class RosterTest extends SmackTestCase {
 
             // Log in from another resource so we can test the roster
             XMPPConnection con2 = new XMPPConnection(getHost(), getPort());
+            con2.connect();
             con2.login(getUsername(0), getUsername(0), "MyNewResource");
 
             Roster roster2 = con2.getRoster();
@@ -386,7 +387,7 @@ public class RosterTest extends SmackTestCase {
             assertTrue("NewGroup group was not found", groupNames.contains("NewGroup"));
 
             // Close the new connection
-            con2.close();
+            con2.disconnect();
             Thread.sleep(500);
 
             cleanUpRoster();
@@ -480,6 +481,7 @@ public class RosterTest extends SmackTestCase {
 
         // Create another connection for the same user of connection 1
         XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        conn4.connect();
         conn4.login(getUsername(1), getUsername(1), "Home");
 
         // Add a new roster entry
@@ -506,6 +508,7 @@ public class RosterTest extends SmackTestCase {
 
         // Check that the right presence is returned for a user+resource
         presence = roster.getPresenceResource(getFullJID(1));
+        assertNotNull("Presence not found for user " + getFullJID(1), presence);
         assertEquals(
             "Returned the wrong Presence",
             StringUtils.parseResource(presence.getFrom()),
@@ -525,7 +528,7 @@ public class RosterTest extends SmackTestCase {
         assertEquals("Wrong number of returned presences", count, 2);
 
         // Close the connection so one presence must go
-        conn4.close();
+        conn4.disconnect();
 
         // Check that the returned presences are correct
         presences = roster.getPresences(getBareJID(1));
@@ -548,6 +551,7 @@ public class RosterTest extends SmackTestCase {
     public void testMultipleResources() throws Exception {
         // Create another connection for the same user of connection 1
         XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        conn4.connect();
         conn4.login(getUsername(1), getUsername(1), "Home");
 
         // Add a new roster entry
@@ -605,6 +609,7 @@ public class RosterTest extends SmackTestCase {
 
         // Create another connection for the same user of connection 0
         XMPPConnection conn2 = new XMPPConnection(getServiceName());
+        conn2.connect();
         conn2.login(getUsername(0), getUsername(0), "Home");
 
         // Retrieve roster and verify that new contact is there and nickname is correct
@@ -677,6 +682,46 @@ public class RosterTest extends SmackTestCase {
             getConnection(2).getRoster().getGroupCount());
     }
 
+    /**
+     * Tests the creation of a roster and then simulates abrupt termination. Cached presences
+     * must go offline. At reconnection, presences must go back to online.
+     * <ol>
+     *     <li> Create some entries
+     *     <li> Breack the connection
+     *     <li> Check offline presences
+     *     <li> Whait for automatic reconnection
+     *     <li> Check online presences
+     * </ol>
+     */
+    public void testOfflinePresencesAfterDisconnection() throws Exception {
+        // Add a new roster entry
+        Roster roster = getConnection(0).getRoster();
+        roster.createEntry(getBareJID(1), "gato11", null);
+        roster.createEntry(getBareJID(2), "gato12", null);
+
+        // Wait up to 2 seconds to let the server process presence subscriptions
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 && (
+                roster.getPresence(getBareJID(1)) == null ||
+                        roster.getPresence(getBareJID(2)) == null)) {
+            Thread.sleep(100);
+        }
+
+        Thread.sleep(200);
+
+        // Brakes the connection
+        getConnection(0).packetReader.notifyConnectionError(new Exception("Simulated Error"));
+
+        Presence presence = roster.getPresence(getBareJID(1));
+        assertNull("Presence should be offline after a connection termination", presence);
+        // Reconnection should occur in 10 seconds
+        Thread.sleep(12200);
+        presence = roster.getPresence(getBareJID(1));
+        assertNotNull("Presence not found for user", presence);
+        assertEquals("Presence should be online after a connection reconnection",
+                Presence.Type.available, presence.getType());
+    }
+    
     protected int getMaxConnections() {
         return 3;
     }

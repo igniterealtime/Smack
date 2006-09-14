@@ -22,7 +22,7 @@ package org.jivesoftware.smack;
 
 /**
  * Interface that allows for implementing classes to listen for connection closing
- * events. Listeners are registered with XMPPConnection objects.
+ * and reconnection events. Listeners are registered with XMPPConnection objects.
  *
  * @see XMPPConnection#addConnectionListener
  * @see XMPPConnection#removeConnectionListener
@@ -32,14 +32,36 @@ package org.jivesoftware.smack;
 public interface ConnectionListener {
 
     /**
-     * Notification that the connection was closed normally.
+     * Notification that the connection was closed normally or that the reconnection
+     * process has been aborted.
      */
     public void connectionClosed();
 
     /**
-     * Notification that the connection was closed due to an exception.
+     * Notification that the connection was closed due to an exception. When
+     * abruptly disconnected it is possible for the connection to try reconnecting
+     * to the server.
      *
      * @param e the exception.
      */
     public void connectionClosedOnError(Exception e);
+    
+    /**
+     * The connection will retry to reconnect in the specified number of seconds.
+     * 
+     * @param seconds remaining seconds before attempting a reconnection.
+     */
+    public void reconnectingIn(int seconds);
+    
+    /**
+     * The connection has reconnected successfully to the server. Connections will
+     * reconnect to the server when the previous socket connection was abruptly closed.
+     */
+    public void reconectionSuccessful();
+    
+    /**
+     * An attempt to connect to the server has failed. The connection will keep trying
+     * reconnecting to the server in a moment.
+     */
+    public void reconnectionFailed(Exception e);
 }

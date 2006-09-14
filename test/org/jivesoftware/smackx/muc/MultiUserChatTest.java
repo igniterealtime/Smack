@@ -250,6 +250,7 @@ public class MultiUserChatTest extends SmackTestCase {
         try {
             // Anonymous user joins the new room
             XMPPConnection anonConnection = new XMPPConnection(getHost(), getPort());
+            anonConnection.connect();
             anonConnection.loginAnonymously();
             MultiUserChat muc2 = new MultiUserChat(anonConnection, room);
             muc2.join("testbot2");
@@ -265,7 +266,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
             // Anonymous user leaves the room
             muc2.leave();
-            anonConnection.close();
+            anonConnection.disconnect();
             Thread.sleep(250);
             // User1 checks the presence of Anonymous user in the room
             presence = muc.getOccupantPresence(room + "/testbot2");
@@ -1766,6 +1767,7 @@ public class MultiUserChatTest extends SmackTestCase {
             XMPPConnection[] conns = new XMPPConnection[20];
             for (int i = 0; i < conns.length; i++) {
                 conns[i] = new XMPPConnection(getServiceName());
+                conns[i].connect();
                 conns[i].login(getUsername(1), getUsername(1), "resource-" + i);
             }
 
@@ -1788,7 +1790,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // Each connection leaves the room and closes the connection
             for (int i = 0; i < mucs.length; i++) {
                 mucs[i].leave();
-                conns[i].close();
+                conns[i].disconnect();
             }
 
         } catch (Exception e) {

@@ -20,6 +20,7 @@
 
 package org.jivesoftware.smack;
 
+import javax.net.SocketFactory;
 import java.io.File;
 
 /**
@@ -54,6 +55,16 @@ public class ConnectionConfiguration implements Cloneable {
 
     private boolean debuggerEnabled = XMPPConnection.DEBUG_ENABLED;
 
+    // Flag that indicates if a reconnection should be attempted when abruptly disconnected
+    private boolean reconnectionAllowed = true;
+    
+    // Holds the socket factory that is used to generate the socket in the connection
+    private SocketFactory socketFactory;
+    
+    // Holds the authentication information for future reconnections
+    private String username;
+    private String password;
+    
     public ConnectionConfiguration(String host, int port, String serviceName) {
         this.host = host;
         this.port = port;
@@ -353,5 +364,62 @@ public class ConnectionConfiguration implements Cloneable {
 
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+    
+    /**
+     * Sets if the reconnection mechanism is allowed to be used. By default
+     * reconnection is allowed.
+     * 
+     * @param isAllowed if the reconnection mechanism is allowed to use.
+     */
+    public void setReconnectionAllowed(boolean isAllowed) {
+        this.reconnectionAllowed = isAllowed;
+    }
+    /**
+     * Returns if the reconnection mechanism is allowed to be used. By default
+     * reconnection is allowed.
+     *
+     * @return if the reconnection mechanism is allowed to be used.
+     */
+    public boolean isReconnectionAllowed() {
+        return this.reconnectionAllowed;
+    }
+    
+    /**
+     * Sets the socket factory used to create new xmppConnection sockets.
+     * This is mainly used when reconnection is necessary.
+     * 
+     * @param socketFactory used to create new sockets.
+     */
+    public void setSocketFactory(SocketFactory socketFactory) {
+        this.socketFactory = socketFactory;
+    }
+    
+    
+    /**
+     * Returns the socket factory used to create new xmppConnection sockets.
+     * This is mainly used when reconnection is necessary.
+     * 
+     * @return socketFactory used to create new sockets.
+     */
+    public SocketFactory getSocketFactory() {
+        return this.socketFactory;
+    }
+    
+    protected void setUsernameAndPassword(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    /** 
+     * Returns the username used to login
+     */
+    protected String getUsername() {
+        return this.username;
+    }
+    /** 
+     * Returns the password used to login
+     */
+    protected String getPassword() {
+        return this.password;
     }
 }

@@ -108,6 +108,26 @@ public class ConsoleDebugger implements SmackDebugger {
                         ")");
                 e.printStackTrace();
             }
+            public void reconnectionFailed(Exception e) {
+                System.out.println(
+                        dateFormatter.format(new Date()) +
+                        " Reconnection failed due to an exception (" +
+                        connection.hashCode() +
+                        ")");
+                e.printStackTrace();
+            }
+            public void reconectionSuccessful() {
+                System.out.println(
+                        dateFormatter.format(new Date()) + " Connection reconnected (" +
+                        connection.hashCode() +
+                        ")");
+            }
+            public void reconnectingIn(int seconds) {
+                System.out.println(
+                        dateFormatter.format(new Date()) + " Connection (" +
+                        connection.hashCode() +
+                        ") will reconnect in " + seconds);
+            }
         };
     }
 

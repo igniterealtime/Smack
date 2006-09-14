@@ -150,8 +150,19 @@ public class ServiceDiscoveryManager {
             }
 
             public void connectionClosedOnError(Exception e) {
-                // Unregister this instance since the connection has been closed
-                instances.remove(connection);
+                // ignore
+            }
+
+            public void reconnectionFailed(Exception e) {
+                // ignore
+            }
+
+            public void reconnectingIn(int seconds) {
+                // ignore
+            }
+
+            public void reconectionSuccessful() {
+                // ignore
             }
         });
 

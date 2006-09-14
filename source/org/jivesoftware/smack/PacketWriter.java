@@ -39,13 +39,14 @@ import java.util.List;
 class PacketWriter {
 
     private Thread writerThread;
+    private Thread keepAliveThread;
     private Writer writer;
     private XMPPConnection connection;
     final private LinkedList<Packet> queue;
-    private boolean done = false;
+    private boolean done;
     
-    final private List<ListenerWrapper> listeners = new ArrayList<ListenerWrapper>();
-    private boolean listenersDeleted = false;
+    final protected List<ListenerWrapper> listeners = new ArrayList<ListenerWrapper>();
+    private boolean listenersDeleted;
 
     /**
      * Timestamp when the last stanza was sent to the server. This information is used
@@ -70,13 +71,24 @@ class PacketWriter {
      * @param connection the connection.
      */
     protected PacketWriter(XMPPConnection connection) {
-        this.connection = connection;
-        this.writer = connection.writer;
         this.queue = new LinkedList<Packet>();
+        this.connection = connection;
+        init();
+    }
+
+    /** 
+    * Initializes the writer in order to be used. It is called at the first connection and also 
+    * is invoked if the connection is disconnected by an error.
+    */ 
+    protected void init() {
+        this.writer = connection.writer;
+        listenersDeleted = false;
+        interceptorDeleted = false;
+        done = false;
 
         writerThread = new Thread() {
             public void run() {
-                writePackets();
+                writePackets(this);
             }
         };
         writerThread.setName("Smack Packet Writer");
@@ -205,8 +217,11 @@ class PacketWriter {
         // out a space character each time it runs to keep the TCP/IP connection open.
         int keepAliveInterval = SmackConfiguration.getKeepAliveInterval();
         if (keepAliveInterval > 0) {
-            Thread keepAliveThread = new Thread(new KeepAliveTask(keepAliveInterval));
+            KeepAliveTask target = new KeepAliveTask(keepAliveInterval);
+            keepAliveThread = new Thread(target);
+            target.setThread(keepAliveThread);
             keepAliveThread.setDaemon(true);
+            keepAliveThread.setName("Smack Keep Alive");
             keepAliveThread.start();
         }
     }
@@ -247,12 +262,12 @@ class PacketWriter {
         }
     }
 
-    private void writePackets() {
+    private void writePackets(Thread thisThread) {
         try {
             // Open the stream.
             openStream();
             // Write out packets from the queue.
-            while (!done) {
+            while (!done && (writerThread == thisThread)) {
                 Packet packet = nextPacket();
                 if (packet != null) {
                     synchronized (writer) {
@@ -370,7 +385,7 @@ class PacketWriter {
     /**
      * A wrapper class to associate a packet filter with a listener.
      */
-    private static class ListenerWrapper {
+    protected static class ListenerWrapper {
 
         private PacketListener packetListener;
         private PacketFilter packetFilter;
@@ -444,11 +459,16 @@ class PacketWriter {
     private class KeepAliveTask implements Runnable {
 
         private int delay;
+        private Thread thread;
 
         public KeepAliveTask(int delay) {
             this.delay = delay;
         }
 
+        protected void setThread(Thread thread) {
+            this.thread = thread;
+        }
+        
         public void run() {
             try {
                 // Sleep 15 seconds before sending first heartbeat. This will give time to
@@ -458,7 +478,7 @@ class PacketWriter {
             catch (InterruptedException ie) {
                 // Do nothing
             }
-            while (!done) {
+            while (!done && keepAliveThread == thread) {
                 synchronized (writer) {
                     // Send heartbeat if no packet has been sent to the server for a given time
                     if (System.currentTimeMillis() - lastActive >= delay) {

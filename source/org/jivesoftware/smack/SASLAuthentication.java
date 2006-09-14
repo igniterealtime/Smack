@@ -68,14 +68,14 @@ public class SASLAuthentication implements UserAuthentication {
     /**
      * Boolean indicating if SASL negotiation has finished and was successful.
      */
-    private boolean saslNegotiated = false;
+    private boolean saslNegotiated;
     /**
      * Boolean indication if SASL authentication has failed. When failed the server may end
      * the connection.
      */
-    private boolean saslFailed = false;
-    private boolean resourceBinded = false;
-    private boolean sessionSupported = false;
+    private boolean saslFailed;
+    private boolean resourceBinded;
+    private boolean sessionSupported;
 
     static {
         // Register SASL mechanisms supported by Smack
@@ -126,6 +126,7 @@ public class SASLAuthentication implements UserAuthentication {
     SASLAuthentication(XMPPConnection connection) {
         super();
         this.connection = connection;
+        this.init();
     }
 
     /**
@@ -412,5 +413,17 @@ public class SASLAuthentication implements UserAuthentication {
      */
     void sessionsSupported() {
         sessionSupported = true;
+    }
+    
+    /**
+     * Initializes the internal state in order to be able to be reused. The authentication
+     * is used by the connection at the first login and then reused after the connection
+     * is disconnected and then reconnected.
+     */
+    protected void init() {
+        saslNegotiated = false;
+        saslFailed = false;
+        resourceBinded = false;
+        sessionSupported = false;
     }
 }

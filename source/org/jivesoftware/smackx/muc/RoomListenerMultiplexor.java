@@ -109,6 +109,18 @@ class RoomListenerMultiplexor implements ConnectionListener {
         cancel();
     }
 
+    public void reconnectingIn(int seconds) {
+        // ignore
+    }
+
+    public void reconectionSuccessful() {
+        // ignore
+    }
+
+    public void reconnectionFailed(Exception e) {
+        // ignore
+    }
+
     /**
      * Initializes the listeners to detect received room invitations and to detect when the
      * connection gets closed. As soon as a room invitation is received the invitations

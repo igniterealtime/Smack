@@ -86,6 +86,7 @@ public class MessengerLoginTest extends TestCase {
 
         try {
             XMPPConnection con = new XMPPConnection(host, port);
+            con.connect();
             con.login(username, password, resource);
         }
         catch (XMPPException e) {
