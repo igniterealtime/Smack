@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Represents extended presence information about roles, affiliations, full JIDs, 
@@ -130,7 +131,7 @@ public class MUCUser implements PacketExtension {
     public Destroy getDestroy() {
         return destroy;
     }
-    
+
     /**
      * Sets the invitation for another user to a room. The sender of the invitation
      * must be an occupant of the room. The invitation will be sent to the room which in turn
@@ -203,7 +204,7 @@ public class MUCUser implements PacketExtension {
         private String reason;
         private String from;
         private String to;
-        
+
         /**
          * Returns the bare JID of the inviter or, optionally, the room JID. (e.g. 
          * 'crone1@shakespeare.lit/desktop'). 
@@ -288,7 +289,7 @@ public class MUCUser implements PacketExtension {
         private String reason;
         private String from;
         private String to;
-        
+
         /**
          * Returns the bare JID of the invitee that rejected the invitation. (e.g. 
          * 'crone1@shakespeare.lit/desktop'). 
@@ -375,7 +376,7 @@ public class MUCUser implements PacketExtension {
         private String jid;
         private String nick;
         private String role;
-        
+
         /**
          * Creates a new item child. 
          * 
@@ -386,7 +387,7 @@ public class MUCUser implements PacketExtension {
             this.affiliation = affiliation;
             this.role = role;
         }
-        
+
         /**
          * Returns the actor (JID of an occupant in the room) that was kicked or banned.
          * 
@@ -496,7 +497,7 @@ public class MUCUser implements PacketExtension {
                 buf.append(" affiliation=\"").append(getAffiliation()).append("\"");
             }
             if (getJid() != null) {
-                buf.append(" jid=\"").append(getJid()).append("\"");
+                buf.append(" jid=\"").append(StringUtils.escapeJID(getJid())).append("\"");
             }
             if (getNick() != null) {
                 buf.append(" nick=\"").append(getNick()).append("\"");
@@ -513,7 +514,7 @@ public class MUCUser implements PacketExtension {
                     buf.append("<reason>").append(getReason()).append("</reason>");
                 }
                 if (getActor() != null) {
-                    buf.append("<actor jid=\"").append(getActor()).append("\"/>");
+                    buf.append("<actor jid=\"").append(StringUtils.escapeJID(getActor())).append("\"/>");
                 }
                 buf.append("</item>");
             }
@@ -528,7 +529,7 @@ public class MUCUser implements PacketExtension {
      * @author Gaston Dombiak
      */
     public static class Status {
-        private String code; 
+        private String code;
 
         /**
          * Creates a new instance of Status with the specified code.  
@@ -538,7 +539,7 @@ public class MUCUser implements PacketExtension {
         public Status(String code) {
             this.code = code;
         }
-                
+
         /**
          * Returns the code that uniquely identifies the reason of the error. The code 
          * assists in presenting notification messages. 
@@ -566,8 +567,8 @@ public class MUCUser implements PacketExtension {
     public static class Destroy {
         private String reason;
         private String jid;
-        
-        
+
+
         /**
          * Returns the JID of an alternate location since the current room is being destroyed.
          * 
@@ -608,7 +609,7 @@ public class MUCUser implements PacketExtension {
             StringBuilder buf = new StringBuilder();
             buf.append("<destroy");
             if (getJid() != null) {
-                buf.append(" jid=\"").append(getJid()).append("\"");
+                buf.append(" jid=\"").append(StringUtils.escapeJID(getJid())).append("\"");
             }
             if (getReason() == null) {
                 buf.append("/>");

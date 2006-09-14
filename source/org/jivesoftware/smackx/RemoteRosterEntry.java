@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smackx;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 import java.util.*;
 
 /**
@@ -100,7 +102,7 @@ public class RemoteRosterEntry {
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<item jid=\"").append(user).append("\"");
+        buf.append("<item jid=\"").append(StringUtils.escapeJID(user)).append("\"");
         if (name != null) {
             buf.append(" name=\"").append(name).append("\"");
         }

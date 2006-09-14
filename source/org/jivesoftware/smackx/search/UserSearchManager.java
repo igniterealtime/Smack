@@ -49,7 +49,7 @@ public class UserSearchManager {
     /**
      * Creates a new UserSearchManager.
      *
-     * @param con           the XMPPConnection to use.
+     * @param con the XMPPConnection to use.
      */
     public UserSearchManager(XMPPConnection con) {
         this.con = con;
@@ -71,7 +71,7 @@ public class UserSearchManager {
      * Submits a search form to the server and returns the resulting information
      * in the form of <code>ReportedData</code>
      *
-     * @param searchForm the <code>Form</code> to submit for searching.
+     * @param searchForm    the <code>Form</code> to submit for searching.
      * @param searchService the name of the search service to use.
      * @return the ReportedData returned by the server.
      * @throws XMPPException thrown if a server error has occurred.
@@ -88,18 +88,27 @@ public class UserSearchManager {
      * @throws XMPPException thrown if a server error has occurred.
      */
     public Collection getSearchServices() throws XMPPException {
-        List searchServices = new ArrayList();
+        final List<String> searchServices = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         DiscoverItems items = discoManager.discoverItems(con.getServiceName());
-        for (Iterator it = items.getItems(); it.hasNext();) {
-            DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+        Iterator iter = items.getItems();
+        while (iter.hasNext()) {
+            DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
             try {
-                DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
+                DiscoverInfo info = null;
+                try {
+                    info = discoManager.discoverInfo(item.getEntityID());
+                }
+                catch (XMPPException e) {
+                    // Ignore Case
+                    continue;
+                }
+
                 if (info.containsFeature("jabber:iq:search")) {
                     searchServices.add(item.getEntityID());
                 }
             }
-            catch (XMPPException e) {
+            catch (Exception e) {
                 // No info found.
                 break;
             }

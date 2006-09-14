@@ -112,7 +112,7 @@ public abstract class Packet {
      *      value has not been set.
      */
     public String getTo() {
-        return to;
+        return StringUtils.escapeJID(to);
     }
 
     /**
@@ -134,7 +134,7 @@ public abstract class Packet {
      *      valud has not been set.
      */
     public String getFrom() {
-        return from;
+        return StringUtils.escapeJID(from);
     }
 
     /**

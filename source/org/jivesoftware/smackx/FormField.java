@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smackx;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -288,7 +290,7 @@ public class FormField {
         }
         // Loop through all the values and append them to the string buffer
         for (Iterator<String> i = getValues(); i.hasNext();) {
-            buf.append("<value>").append(i.next()).append("</value>");
+            buf.append("<value>").append(StringUtils.escapeForXML(i.next())).append("</value>");
         }
         // Loop through all the values and append them to the string buffer
         for (Iterator i = getOptions(); i.hasNext();) {

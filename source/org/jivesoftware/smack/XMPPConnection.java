@@ -425,6 +425,7 @@ public class XMPPConnection {
         }
         // Do partial version of nameprep on the username.
         username = username.toLowerCase().trim();
+        username = StringUtils.escapeNode(username);
 
         String response;
         if (configuration.isSASLAuthenticationEnabled() &&
