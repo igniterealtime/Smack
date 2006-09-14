@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see XMPPConnection#getRoster()
  * @author Matt Tucker
  */
-public class Roster {
+public class Roster implements ConnectionListener {
 
     /**
      * The default subscription processing mode to use when a Roster is created. By default
@@ -63,6 +63,7 @@ public class Roster {
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
     boolean rosterInitialized = false;
+    private PresencePacketListener presencePacket;
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
@@ -107,7 +108,10 @@ public class Roster {
         connection.addPacketListener(new RosterPacketListener(), rosterFilter);
         // Listen for any presence packets.
         PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
-        connection.addPacketListener(new PresencePacketListener(), presenceFilter);
+        presencePacket = new PresencePacketListener();
+        connection.addPacketListener(presencePacket, presenceFilter);
+        // Listen for connection events
+        connection.addConnectionListener(this);
     }
 
     /**
@@ -302,6 +306,25 @@ public class Roster {
             allEntries.addAll(unfiledEntries);
         }
         return Collections.unmodifiableCollection(allEntries);
+    }
+
+    /**
+     * Changes the presence of available contacts offline by simulating an unavailable
+     * presence sent from the server. After a disconnection, every Presence is set
+     * to offline.
+     */
+    private void setOfflinePresences() {
+        Presence packetUnavailable;
+        for (String user : new ArrayList<String>(presenceMap.keySet())) {
+            Map<String, Presence> resources = presenceMap.get(user);
+            if (resources != null) {
+                for (String resource : new ArrayList<String>(resources.keySet())) {
+                    packetUnavailable = new Presence(Presence.Type.unavailable);
+                    packetUnavailable.setFrom(user + "/" + resource);
+                    presencePacket.processPacket(packetUnavailable);
+                }
+            }
+        }
     }
 
     /**
@@ -770,10 +793,10 @@ public class Roster {
                         }
                     }
                 }
-                // Remove all the groups with no entries. We have to do this because 
-                // RosterGroup.removeEntry removes the entry immediately (locally) and the 
-                // group could remain empty. 
-                // TODO Check the performance/logic for rosters with large number of groups 
+                // Remove all the groups with no entries. We have to do this because
+                // RosterGroup.removeEntry removes the entry immediately (locally) and the
+                // group could remain empty.
+                // TODO Check the performance/logic for rosters with large number of groups
                 for (RosterGroup group : getGroups()) {
                     if (group.getEntryCount() == 0) {
                         groups.remove(group.getName());
@@ -790,5 +813,27 @@ public class Roster {
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
         }
+    }
+
+    public void connectionClosed() {
+        // Changes the presence available contacts to unavailable
+        this.setOfflinePresences();
+    }
+
+    public void connectionClosedOnError(Exception e) {
+        // Changes the presence available contacts to unavailable
+        this.setOfflinePresences();
+    }
+
+    public void reconnectingIn(int seconds) {
+        // Ignore
+    }
+
+    public void reconnectionFailed(Exception e) {
+        // Ignore
+    }
+
+    public void reconectionSuccessful() {
+        // Ignore
     }
 }
