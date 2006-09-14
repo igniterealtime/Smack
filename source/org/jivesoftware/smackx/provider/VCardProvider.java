@@ -125,10 +125,11 @@ public class VCardProvider implements IQProvider {
             if (nodes == null) return;
             for (int i = 0; i < nodes.getLength(); i++) {
                 Element element = (Element) nodes.item(i);
-                if ("HOME".equals(element.getParentNode().getFirstChild().getNodeName())) {
-                    vCard.setEmailHome(getTextContent(element));
-                } else {
+                if ("WORK".equals(element.getParentNode().getFirstChild().getNodeName())) {
                     vCard.setEmailWork(getTextContent(element));
+                }
+                else {
+                    vCard.setEmailHome(getTextContent(element));
                 }
             }
         }
