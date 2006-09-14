@@ -51,12 +51,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * <pre>
  * // Create a connection to the jivesoftware.com XMPP server.
  * XMPPConnection con = new XMPPConnection("jivesoftware.com");
+ * // Connect to the server
+ * con.connect();
  * // Most servers require you to login before performing other tasks.
  * con.login("jsmith", "mypass");
  * // Start a new conversation with John Doe and send him a message.
  * Chat chat = con.createChat("jdoe@jabber.org");
  * chat.sendMessage("Hey, how's it going?");
+ * // Disconnect from the server
+ * con.disconnect();
  * </pre>
+ *
+ * XMPPConnections can be reused between connections. This means that an XMPPConnection
+ * may be connected, disconnected and then connected again. Listeners of the XMPPConnection
+ * will remain accross connections.<p>
+ *
+ * If a connected XMPPConnection gets disconnected abruptly then it will try to reconnect
+ * again. To stop the reconnection process just use {@link #disconnect()}. Once stopped
+ * you can use {@link #connect()} to manually connect to the server.
  *
  * @author Matt Tucker
  */
@@ -113,7 +125,15 @@ public class XMPPConnection {
     String connectionID;
     private String user = null;
     private boolean connected = false;
+    /**
+     * Flag that indicates if the user is currently authenticated with the server.
+     */
     private boolean authenticated = false;
+    /**
+     * Flag that indicates if the user was authenticated with the server when the connection
+     * to the server was closed (abruptly or not).
+     */
+    private boolean wasAuthenticated = false;
     private boolean anonymous = false;
     private boolean usingTLS = false;
 
@@ -122,7 +142,7 @@ public class XMPPConnection {
 
     Roster roster = null;
     private AccountManager accountManager = null;
-    private SASLAuthentication saslAuthentication = new SASLAuthentication(this);
+    protected SASLAuthentication saslAuthentication = new SASLAuthentication(this);
 
     Writer writer;
     Reader reader;
@@ -147,22 +167,20 @@ public class XMPPConnection {
      * Holds the initial configuration used while creating the connection.
      */
     private ConnectionConfiguration configuration;
-
+    
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
      * performed to try to determine the IP address and port corresponding to the
      * serviceName; if that lookup fails, it's assumed that server resides at serviceName
      * with the default port of 5222. This is the preferred constructor for connecting
-     * to an XMPP server.
+     * to an XMPP server.<p>
+     *
+     * Note that XMPPConnection constructors do not establish the connection to the server,
+     * to make it effective use the connect method. {@link #connect()}.
      *
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
-     * @throws XMPPException if an error occurs while trying to establish the connection.
-     *      Two possible errors can occur which will be wrapped by an XMPPException --
-     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
-     *      502). The error codes and wrapped exceptions can be used to present more
-     *      appropiate error messages to end-users.
      */
-    public XMPPConnection(String serviceName) throws XMPPException {
+    public XMPPConnection(String serviceName) {
         // Perform DNS lookup to get host and port to use
         DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
         // Create the configuration for this new connection
@@ -172,53 +190,46 @@ public class XMPPConnection {
         config.setCompressionEnabled(false);
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
-        // Set the new connection configuration
-        connectUsingConfiguration(config, null);
+        init(config, null);
     }
 
     /**
-     * Creates a new connection to the XMPP server at the specifiec host and port.
+     * Creates a new connection to the XMPP server at the specifiec host and port.<p>
+     *
+     * Note that XMPPConnection constructors do not establish the connection to the server,
+     * to make it effective use the connect method. {@link #connect()}.
      *
      * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
-     * @throws XMPPException if an error occurs while trying to establish the connection.
-     *      Two possible errors can occur which will be wrapped by an XMPPException --
-     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
-     *      502). The error codes and wrapped exceptions can be used to present more
-     *      appropiate error messages to end-users.
      */
-    public XMPPConnection(String host, int port) throws XMPPException {
+    public XMPPConnection(String host, int port) {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port);
         config.setTLSEnabled(true);
         config.setCompressionEnabled(false);
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
-        // Set the new connection configuration
-        connectUsingConfiguration(config, null);
+        init(config, null);
     }
 
     /**
-     * Creates a new connection to the specified XMPP server on the given host and port.
+     * Creates a new connection to the specified XMPP server on the given host and port.<p>
+     *
+     * Note that XMPPConnection constructors do not establish the connection to the server,
+     * to make it effective use the connect method. {@link #connect()}.
      *
      * @param host the host name, or null for the loopback address.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
-     * @throws XMPPException if an error occurs while trying to establish the connection.
-     *      Two possible errors can occur which will be wrapped by an XMPPException --
-     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
-     *      502). The error codes and wrapped exceptions can be used to present more
-     *      appropiate error messages to end-users.
      */
-    public XMPPConnection(String host, int port, String serviceName) throws XMPPException {
+    public XMPPConnection(String host, int port, String serviceName) {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port, serviceName);
         config.setTLSEnabled(true);
         config.setCompressionEnabled(false);
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
-        // Set the new connection configuration
-        connectUsingConfiguration(config, null);
+        init(config, null);
     }
 
     /**
@@ -227,53 +238,44 @@ public class XMPPConnection {
      *
      * A custom SocketFactory allows fine-grained control of the actual connection to the
      * XMPP server. A typical use for a custom SocketFactory is when connecting through a
-     * SOCKS proxy.
+     * SOCKS proxy.<p>
+     *
+     * Note that XMPPConnection constructors do not establish the connection to the server,
+     * to make it effective use the connect method. {@link #connect()}.
      *
      * @param host the host name, or null for the loopback address.
      * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
      * @param socketFactory a SocketFactory that will be used to create the socket to the XMPP
      *        server.
-     * @throws XMPPException if an error occurs while trying to establish the connection.
-     *      Two possible errors can occur which will be wrapped by an XMPPException --
-     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
-     *      502). The error codes and wrapped exceptions can be used to present more
-     *      appropiate error messages to end-users.
      */
-    public XMPPConnection(String host, int port, String serviceName, SocketFactory socketFactory)
-            throws XMPPException
-    {
+    public XMPPConnection(String host, int port, String serviceName, SocketFactory socketFactory) {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port, serviceName);
         config.setTLSEnabled(true);
         config.setCompressionEnabled(false);
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
-        // Set the new connection configuration
-        connectUsingConfiguration(config, socketFactory);
+        init(config, socketFactory);
     }
 
-    public XMPPConnection(ConnectionConfiguration config) throws XMPPException {
-        // Set the new connection configuration
-        connectUsingConfiguration(config, null);
+    public XMPPConnection(ConnectionConfiguration config) {
+        init(config, null);
     }
 
-    public XMPPConnection(ConnectionConfiguration config, SocketFactory socketFactory)
-            throws XMPPException {
-        // Set the new connection configuration
-        connectUsingConfiguration(config, socketFactory);
+    public XMPPConnection(ConnectionConfiguration config, SocketFactory socketFactory) {
+        init(config, socketFactory);
     }
 
-    private void connectUsingConfiguration(ConnectionConfiguration config,
-            SocketFactory socketFactory) throws XMPPException {
+    private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {
         this.host = config.getHost();
         this.port = config.getPort();
         try {
-            if (socketFactory == null) {
+            if (config.getSocketFactory() == null) {
                 this.socket = new Socket(host, port);
             }
             else {
-                this.socket = socketFactory.createSocket(host, port);
+                this.socket = config.getSocketFactory().createSocket(host, port);
             }
         }
         catch (UnknownHostException uhe) {
@@ -289,15 +291,7 @@ public class XMPPConnection {
                     XMPPError.Condition.remote_server_error, errorMessage), ioe);
         }
         this.serviceName = config.getServiceName();
-        try {
-            // Keep a copy to be sure that once the configuration has been passed to the
-            // constructor it cannot be modified
-            this.configuration = (ConnectionConfiguration) config.clone();
-        }
-        catch (CloneNotSupportedException e) {
-            // Do nothing
-        }
-        init();
+        initConnection();
     }
 
     /**
@@ -403,7 +397,11 @@ public class XMPPConnection {
      * presence may optionally be sent. If <tt>sendPresence</tt>
      * is false, a presence packet must be sent manually later. If more than five seconds
      * (default timeout) elapses in each step of the authentication process without a
-     * response from the server, or if an error occurs, a XMPPException will be thrown.
+     * response from the server, or if an error occurs, a XMPPException will be thrown.<p>
+     *
+     * Before logging in (i.e. authenticate) to the server the connection must be connected.
+     * For compatibility and easiness of use the connection will automatically connect to the
+     * server if not already connected.
      *
      * @param username the username.
      * @param password the password.
@@ -456,19 +454,24 @@ public class XMPPConnection {
             useCompression();
         }
 
-        // Create the roster.
-        this.roster = new Roster(this);
+        // Create the roster if it is not a reconnection.
+        if (this.roster == null) {
+            this.roster = new Roster(this);
+        }
         roster.reload();
 
         // Set presence to online.
         if (sendPresence) {
             packetWriter.sendPacket(new Presence(Presence.Type.available));
         }
-
+        
         // Indicate that we're now authenticated.
         authenticated = true;
         anonymous = false;
 
+        // Stores the autentication for future reconnection
+        this.getConfiguration().setUsernameAndPassword(username, password);
+        
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
         // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
@@ -642,9 +645,12 @@ public class XMPPConnection {
 
     /**
      * Closes the connection by setting presence to unavailable then closing the stream to
-     * the XMPP server. Once a connection has been closed, it cannot be re-opened.
+     * the XMPP server. The shutdown logic will be used during a planned disconnection or when
+     * dealing with an unexpected disconnection. Unlike {@link #disconnect()} the connection's
+     * {@link PacketReader}, {@link PacketWriter} and {@link Roster} will not be removed thus
+     * connection's state is kept.
      */
-    public void close() {
+    protected void shutdown() {
         // Set presence to offline.
         packetWriter.sendPacket(new Presence(Presence.Type.unavailable));
         packetReader.shutdown();
@@ -675,8 +681,32 @@ public class XMPPConnection {
         catch (Exception e) {
             // Ignore.
         }
+        
+        this.setWasAuthenticated(authenticated);
         authenticated = false;
         connected = false;
+        
+        saslAuthentication.init();
+    }
+    
+    /**
+     * Closes the connection by setting presence to unavailable then closing the stream to
+     * the XMPP server. The XMPPConnection can still be used for connecting to the server
+     * again.
+     * 
+     * The difference between disconnect and shutdown is that disconnect makes a complete reset
+     * of the connection state whereas shutdown only cleans the connection and keeps alive
+     * packet reader listeners, previous login and roster presences.
+     */
+    public void disconnect() {
+        this.shutdown();
+        
+        this.roster = null;
+        
+        this.wasAuthenticated = false;
+        
+        packetWriter = null;
+        packetReader = null;
     }
 
     /**
@@ -834,29 +864,53 @@ public class XMPPConnection {
         }
     }
 
+    /** 
+     * Initializes the connection configuration. This method is only executed
+     * when the XMPPConnection is created.
+     */
+    private void init(ConnectionConfiguration config, SocketFactory socketFactory) {
+        try {
+            // Keep a copy to be sure that once the configuration has been passed to the
+            // constructor it cannot be modified
+            this.configuration = (ConnectionConfiguration) config.clone();
+            this.configuration.setSocketFactory(socketFactory);
+        }
+        catch (CloneNotSupportedException e) {
+            // Do nothing
+        }
+    }
+    
     /**
      * Initializes the connection by creating a packet reader and writer and opening a
      * XMPP stream to the server.
      *
      * @throws XMPPException if establishing a connection to the server fails.
      */
-    private void init() throws XMPPException {
+    private void initConnection() throws XMPPException {
         // Set the reader and writer instance variables
         initReaderAndWriter();
 
-        try
-        {
-            packetWriter = new PacketWriter(this);
-            packetReader = new PacketReader(this);
+        try {
+            boolean isFirstInitialization = packetReader == null || packetWriter == null;
 
-            // If debugging is enabled, we should start the thread that will listen for
-            // all packets and then log them.
-            if (configuration.isDebuggerEnabled()) {
-                packetReader.addPacketListener(debugger.getReaderListener(), null);
-                if (debugger.getWriterListener() != null) {
-                    packetWriter.addPacketListener(debugger.getWriterListener(), null);
+            if (isFirstInitialization) {
+                packetWriter = new PacketWriter(this);
+                packetReader = new PacketReader(this);
+
+                // If debugging is enabled, we should start the thread that will listen for
+                // all packets and then log them.
+                if (configuration.isDebuggerEnabled()) {
+                    packetReader.addPacketListener(debugger.getReaderListener(), null);
+                    if (debugger.getWriterListener() != null) {
+                        packetWriter.addPacketListener(debugger.getWriterListener(), null);
+                    }
                 }
             }
+            else {
+                packetWriter.init();
+                packetReader.init();
+            }
+
             // Start the packet writer. This will open a XMPP stream to the server
             packetWriter.startup();
             // Start the packet reader. The startup() method will block until we
@@ -869,99 +923,123 @@ public class XMPPConnection {
             // Start keep alive process (after TLS was negotiated - if available)
             packetWriter.startKeepAliveProcess();
 
-            // Notify that a new connection has been established
-            connectionEstablished(this);
 
-            // Add a listener for all message packets so that we can deliver errant
-            // messages to the best Chat instance available.
-            addPacketListener(new PacketListener() {
-                public void processPacket(Packet packet) {
-                    Message message = (Message)packet;
-                    // Ignore any messages with a thread ID, as they will likely
-                    // already be associated with a Chat. This will miss messages
-                    // with new thread ID values, but we can only assume that a
-                    // listener is registered to deal with this case.
-                    if (message.getThread() == null &&
-                            message.getType() != Message.Type.GROUP_CHAT &&
-                            message.getType() != Message.Type.HEADLINE) {
-                        WeakReference<Chat> chatRef =
-                                chats.get(StringUtils.parseBareAddress(message.getFrom()));
-                        if (chatRef != null) {
-                            // Do some extra clean-up if the reference was cleared.
-                            Chat chat = chatRef.get();
-                            if (chat == null) {
-                                chats.remove(message.getFrom());
-                            }
-                            else {
-                                chat.deliver(message);
+            if (isFirstInitialization) {
+                // Notify that a new connection has been established
+                connectionEstablished(this);
+
+                // Add a listener for all message packets so that we can deliver errant
+                // messages to the best Chat instance available.
+                addPacketListener(new PacketListener() {
+                    public void processPacket(Packet packet) {
+                        Message message = (Message) packet;
+                        // Ignore any messages with a thread ID, as they will likely
+                        // already be associated with a Chat. This will miss messages
+                        // with new thread ID values, but we can only assume that a
+                        // listener is registered to deal with this case.
+                        if (message.getThread() == null &&
+                                message.getType() != Message.Type.GROUP_CHAT &&
+                                message.getType() != Message.Type.HEADLINE) {
+                            WeakReference<Chat> chatRef =
+                                    chats.get(StringUtils.parseBareAddress(message.getFrom()));
+                            if (chatRef != null) {
+                                // Do some extra clean-up if the reference was cleared.
+                                Chat chat = chatRef.get();
+                                if (chat == null) {
+                                    chats.remove(message.getFrom());
+                                }
+                                else {
+                                    chat.deliver(message);
+                                }
                             }
                         }
                     }
-                }
-            }, new PacketTypeFilter(Message.class));
+                }, new PacketTypeFilter(Message.class));
+            }
+            else {
+                packetReader.notifyReconnection();
+            }
+
         }
         catch (XMPPException ex) {
             // An exception occurred in setting up the connection. Make sure we shut down the
             // readers and writers and close the socket.
 
             if (packetWriter != null) {
-                try { packetWriter.shutdown(); } catch (Throwable ignore) { /* ignore */ }
+                try {
+                    packetWriter.shutdown();
+                }
+                catch (Throwable ignore) { /* ignore */ }
                 packetWriter = null;
             }
             if (packetReader != null) {
-                try { packetReader.shutdown(); } catch (Throwable ignore) { /* ignore */ }
+                try {
+                    packetReader.shutdown();
+                }
+                catch (Throwable ignore) { /* ignore */ }
                 packetReader = null;
             }
             if (reader != null) {
-                try { reader.close(); } catch (Throwable ignore) { /* ignore */ }
+                try {
+                    reader.close();
+                }
+                catch (Throwable ignore) { /* ignore */ }
                 reader = null;
             }
             if (writer != null) {
-                try { writer.close(); } catch (Throwable ignore) {  /* ignore */}
+                try {
+                    writer.close();
+                }
+                catch (Throwable ignore) {  /* ignore */}
                 writer = null;
             }
             if (socket != null) {
-                try { socket.close(); } catch (Exception e) { /* ignore */ }
+                try {
+                    socket.close();
+                }
+                catch (Exception e) { /* ignore */ }
                 socket = null;
             }
+            this.setWasAuthenticated(authenticated);
             authenticated = false;
             connected = false;
 
-            throw ex;		// Everything stoppped. Now throw the exception.
+            throw ex;        // Everything stoppped. Now throw the exception.
         }
     }
 
     private void initReaderAndWriter() throws XMPPException {
         try {
             if (!usingCompression) {
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+                reader =
+                        new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                writer = new BufferedWriter(
+                        new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
             }
             else {
                 try {
                     Class<?> zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
-                    //ZOutputStream out = new ZOutputStream(socket.getOutputStream(), JZlib.Z_BEST_COMPRESSION);
                     Constructor<?> constructor =
                             zoClass.getConstructor(OutputStream.class, Integer.TYPE);
                     Object out = constructor.newInstance(socket.getOutputStream(), 9);
-                    //out.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
                     Method method = zoClass.getMethod("setFlushMode", Integer.TYPE);
                     method.invoke(out, 1);
-                    writer = new BufferedWriter(new OutputStreamWriter((OutputStream) out, "UTF-8"));
+                    writer =
+                            new BufferedWriter(new OutputStreamWriter((OutputStream) out, "UTF-8"));
 
                     Class<?> ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
-                    //ZInputStream in = new ZInputStream(socket.getInputStream());
                     constructor = ziClass.getConstructor(InputStream.class);
                     Object in = constructor.newInstance(socket.getInputStream());
-                    //in.setFlushMode(JZlib.Z_PARTIAL_FLUSH);
                     method = ziClass.getMethod("setFlushMode", Integer.TYPE);
                     method.invoke(in, 1);
                     reader = new BufferedReader(new InputStreamReader((InputStream) in, "UTF-8"));
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-                    writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+                    reader = new BufferedReader(
+                            new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                    writer = new BufferedWriter(
+                            new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
                 }
             }
         }
@@ -1002,7 +1080,8 @@ public class XMPPConnection {
                     }
                     catch (Exception ex) {
                         try {
-                            debuggerClass = Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
+                            debuggerClass =
+                                    Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
                         }
                         catch (Exception ex2) {
                             ex2.printStackTrace();
@@ -1012,8 +1091,8 @@ public class XMPPConnection {
                 // Create a new debugger instance. If an exception occurs then disable the debugging
                 // option
                 try {
-                    Constructor<?> constructor =
-                        debuggerClass.getConstructor(XMPPConnection.class, Writer.class, Reader.class);
+                    Constructor<?> constructor = debuggerClass
+                            .getConstructor(XMPPConnection.class, Writer.class, Reader.class);
                     debugger = (SmackDebugger) constructor.newInstance(this, writer, reader);
                     reader = debugger.getReader();
                     writer = debugger.getWriter();
@@ -1071,11 +1150,11 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns the configuration used while connecting to the server.
+     * Returns the configuration used to connect to the server.
      *
-     * @return the configuration used while connecting to the server.
+     * @return the configuration used to connect to the server.
      */
-    ConnectionConfiguration getConfiguration() {
+    protected ConnectionConfiguration getConfiguration() {
         return configuration;
     }
 
@@ -1242,6 +1321,50 @@ public class XMPPConnection {
         // Notify that compression has been denied
         synchronized (this) {
             this.notify();
+        }
+    }
+    /** 
+     * Establishes a connection to the XMPP server and performs an automatic login
+     * only if the previous connection state was logged (authenticated). It basically
+     * creates and maintains a socket connection to the server.<p>
+     * 
+     * Listeners will be preserved from a previous connection if the reconnection
+     * occurs after an abrupt termination.
+     * 
+     * @throws XMPPException if an error occurs while trying to establish the connection.
+     *      Two possible errors can occur which will be wrapped by an XMPPException --
+     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
+     *      502). The error codes and wrapped exceptions can be used to present more
+     *      appropiate error messages to end-users.
+     */
+    public void connect() throws XMPPException {
+        // Stablishes the connection, readers and writers
+        connectUsingConfiguration(configuration);
+        // Automatically makes the login if the user was previouslly connected successfully
+        // to the server and the connection was terminated abruptly
+        if (connected && wasAuthenticated) {
+            // Make the login
+            try {
+                if (isAnonymous()) {
+                    // Make the anonymous login
+                    loginAnonymously();
+                } else {
+                    login(getConfiguration().getUsername(), getConfiguration().getPassword());
+                }
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /** 
+     * Sets if the connection has already logged in the server.
+     * 
+     * @param wasAuthenticated
+     */
+    private void setWasAuthenticated(boolean wasAuthenticated) {
+        if (!this.wasAuthenticated) {
+            this.wasAuthenticated = wasAuthenticated;
         }
     }
 }
