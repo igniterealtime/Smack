@@ -91,11 +91,11 @@ public class UserSearchManager {
         final List<String> searchServices = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         DiscoverItems items = discoManager.discoverItems(con.getServiceName());
-        Iterator iter = items.getItems();
+        Iterator<DiscoverItems.Item> iter = items.getItems();
         while (iter.hasNext()) {
-            DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
+            DiscoverItems.Item item = iter.next();
             try {
-                DiscoverInfo info = null;
+                DiscoverInfo info;
                 try {
                     info = discoManager.discoverInfo(item.getEntityID());
                 }

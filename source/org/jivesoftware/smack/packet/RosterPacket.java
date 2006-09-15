@@ -198,7 +198,7 @@ public class RosterPacket extends IQ {
 
         public String toXML() {
             StringBuilder buf = new StringBuilder();
-            buf.append("<item jid=\"").append(StringUtils.escapeJID(user)).append("\"");
+            buf.append("<item jid=\"").append(user).append("\"");
             if (name != null) {
                 buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
             }

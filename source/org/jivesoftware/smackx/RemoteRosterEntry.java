@@ -20,15 +20,13 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.util.*;
 
 /**
  * Represents a roster item, which consists of a JID and , their name and
  * the groups the roster item belongs to. This roster item does not belong
- * to the local roster. Therefore, it does not persist in the server.<p> 
- * 
+ * to the local roster. Therefore, it does not persist in the server.<p>
+ *
  * The idea of a RemoteRosterEntry is to be used as part of a roster exchange.
  *
  * @author Gaston Dombiak
@@ -37,7 +35,7 @@ public class RemoteRosterEntry {
 
     private String user;
     private String name;
-    private List groupNames = new ArrayList();
+    private final List<String> groupNames = new ArrayList<String>();
 
     /**
      * Creates a new remote roster entry.
@@ -51,7 +49,7 @@ public class RemoteRosterEntry {
         this.user = user;
         this.name = name;
 		if (groups != null) {
-			groupNames = new ArrayList(Arrays.asList(groups));
+            groupNames.addAll(Arrays.asList(groups));
 		}
     }
 
@@ -93,23 +91,19 @@ public class RemoteRosterEntry {
      */
     public String[] getGroupArrayNames() {
         synchronized (groupNames) {
-            return (String[])
-                (Collections
-                    .unmodifiableList(groupNames)
-                    .toArray(new String[groupNames.size()]));
+            return Collections.unmodifiableList(groupNames).toArray(new String[groupNames.size()]);
         }
     }
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<item jid=\"").append(StringUtils.escapeJID(user)).append("\"");
+        buf.append("<item jid=\"").append(user).append("\"");
         if (name != null) {
             buf.append(" name=\"").append(name).append("\"");
         }
         buf.append(">");
         synchronized (groupNames) {
-            for (int i = 0; i < groupNames.size(); i++) {
-                String groupName = (String) groupNames.get(i);
+            for (String groupName : groupNames) {
                 buf.append("<group>").append(groupName).append("</group>");
             }
         }

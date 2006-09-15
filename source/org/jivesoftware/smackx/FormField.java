@@ -20,8 +20,6 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,7 +29,7 @@ import java.util.List;
  * Represents a field of a form. The field could be used to represent a question to complete,
  * a completed question or a data returned from a search. The exact interpretation of the field
  * depends on the context where the field is used.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class FormField {
@@ -55,31 +53,31 @@ public class FormField {
     private final List<String> values = new ArrayList<String>();
 
     /**
-     * Creates a new FormField with the variable name that uniquely identifies the field 
-     * in the context of the form. 
-     *  
+     * Creates a new FormField with the variable name that uniquely identifies the field
+     * in the context of the form.
+     *
      * @param variable the variable name of the question.
      */
     public FormField(String variable) {
         this.variable = variable;
     }
-    
+
     /**
-     * Creates a new FormField of type FIXED. The fields of type FIXED do not define a variable 
-     * name. 
-     *  
+     * Creates a new FormField of type FIXED. The fields of type FIXED do not define a variable
+     * name.
+     *
      */
     public FormField() {
-        this.type = FormField.TYPE_FIXED; 
+        this.type = FormField.TYPE_FIXED;
     }
-    
+
     /**
      * Returns a description that provides extra clarification about the question. This information
-     * could be presented to the user either in tool-tip, help button, or as a section of text 
-     * before the question.<p> 
-     * 
+     * could be presented to the user either in tool-tip, help button, or as a section of text
+     * before the question.<p>
+     *
      * If the question is of type FIXED then the description should remain empty.
-     * 
+     *
      * @return description that provides extra clarification about the question.
      */
     public String getDescription() {
@@ -87,9 +85,9 @@ public class FormField {
     }
 
     /**
-     * Returns the label of the question which should give enough information to the user to 
+     * Returns the label of the question which should give enough information to the user to
      * fill out the form.
-     * 
+     *
      * @return label of the question.
      */
     public String getLabel() {
@@ -98,9 +96,9 @@ public class FormField {
 
     /**
      * Returns an Iterator for the available options that the user has in order to answer
-     * the question. 
-     * 
-     * @return Iterator for the available options. 
+     * the question.
+     *
+     * @return Iterator for the available options.
      */
     public Iterator<Option> getOptions() {
         synchronized (options) {
@@ -110,7 +108,7 @@ public class FormField {
 
     /**
      * Returns true if the question must be answered in order to complete the questionnaire.
-     * 
+     *
      * @return true if the question must be answered in order to complete the questionnaire.
      */
     public boolean isRequired() {
@@ -119,23 +117,23 @@ public class FormField {
 
     /**
      * Returns an indicative of the format for the data to answer. Valid formats are:
-     * 
+     *
      * <ul>
      *  <li>text-single -> single line or word of text
-     *  <li>text-private -> instead of showing the user what they typed, you show ***** to 
+     *  <li>text-private -> instead of showing the user what they typed, you show ***** to
      * protect it
      *  <li>text-multi -> multiple lines of text entry
      *  <li>list-single -> given a list of choices, pick one
      *  <li>list-multi -> given a list of choices, pick one or more
      *  <li>boolean -> 0 or 1, true or false, yes or no. Default value is 0
-     *  <li>fixed -> fixed for putting in text to show sections, or just advertise your web 
+     *  <li>fixed -> fixed for putting in text to show sections, or just advertise your web
      * site in the middle of the form
      *  <li>hidden -> is not given to the user at all, but returned with the questionnaire
-     *  <li>jid-single -> Jabber ID - choosing a JID from your roster, and entering one based 
+     *  <li>jid-single -> Jabber ID - choosing a JID from your roster, and entering one based
      * on the rules for a JID.
      *  <li>jid-multi -> multiple entries for JIDs
      * </ul>
-     * 
+     *
      * @return format for the data to answer.
      */
     public String getType() {
@@ -144,10 +142,10 @@ public class FormField {
 
     /**
      * Returns an Iterator for the default values of the question if the question is part
-     * of a form to fill out. Otherwise, returns an Iterator for the answered values of 
-     * the question. 
-     * 
-     * @return an Iterator for the default values or answered values of the question. 
+     * of a form to fill out. Otherwise, returns an Iterator for the answered values of
+     * the question.
+     *
+     * @return an Iterator for the default values or answered values of the question.
      */
     public Iterator<String> getValues() {
         synchronized (values) {
@@ -157,7 +155,7 @@ public class FormField {
 
     /**
      * Returns the variable name that the question is filling out.
-     * 
+     *
      * @return the variable name of the question.
      */
     public String getVariable() {
@@ -166,11 +164,11 @@ public class FormField {
 
     /**
      * Sets a description that provides extra clarification about the question. This information
-     * could be presented to the user either in tool-tip, help button, or as a section of text 
-     * before the question.<p> 
-     * 
+     * could be presented to the user either in tool-tip, help button, or as a section of text
+     * before the question.<p>
+     *
      * If the question is of type FIXED then the description should remain empty.
-     * 
+     *
      * @param description provides extra clarification about the question.
      */
     public void setDescription(String description) {
@@ -178,9 +176,9 @@ public class FormField {
     }
 
     /**
-     * Sets the label of the question which should give enough information to the user to 
+     * Sets the label of the question which should give enough information to the user to
      * fill out the form.
-     * 
+     *
      * @param label the label of the question.
      */
     public void setLabel(String label) {
@@ -189,7 +187,7 @@ public class FormField {
 
     /**
      * Sets if the question must be answered in order to complete the questionnaire.
-     * 
+     *
      * @param required if the question must be answered in order to complete the questionnaire.
      */
     public void setRequired(boolean required) {
@@ -198,23 +196,23 @@ public class FormField {
 
     /**
      * Sets an indicative of the format for the data to answer. Valid formats are:
-     * 
+     *
      * <ul>
      *  <li>text-single -> single line or word of text
-     *  <li>text-private -> instead of showing the user what they typed, you show ***** to 
+     *  <li>text-private -> instead of showing the user what they typed, you show ***** to
      * protect it
      *  <li>text-multi -> multiple lines of text entry
      *  <li>list-single -> given a list of choices, pick one
      *  <li>list-multi -> given a list of choices, pick one or more
      *  <li>boolean -> 0 or 1, true or false, yes or no. Default value is 0
-     *  <li>fixed -> fixed for putting in text to show sections, or just advertise your web 
+     *  <li>fixed -> fixed for putting in text to show sections, or just advertise your web
      * site in the middle of the form
      *  <li>hidden -> is not given to the user at all, but returned with the questionnaire
-     *  <li>jid-single -> Jabber ID - choosing a JID from your roster, and entering one based 
+     *  <li>jid-single -> Jabber ID - choosing a JID from your roster, and entering one based
      * on the rules for a JID.
      *  <li>jid-multi -> multiple entries for JIDs
      * </ul>
-     * 
+     *
      * @param type an indicative of the format for the data to answer.
      */
     public void setType(String type) {
@@ -222,9 +220,9 @@ public class FormField {
     }
 
     /**
-     * Adds a default value to the question if the question is part of a form to fill out. 
+     * Adds a default value to the question if the question is part of a form to fill out.
      * Otherwise, adds an answered value to the question.
-     *  
+     *
      * @param value a default value or an answered value of the question.
      */
     public void addValue(String value) {
@@ -234,9 +232,9 @@ public class FormField {
     }
 
     /**
-     * Adds a default values to the question if the question is part of a form to fill out. 
+     * Adds a default values to the question if the question is part of a form to fill out.
      * Otherwise, adds an answered values to the question.
-     *  
+     *
      * @param newValues default values or an answered values of the question.
      */
     public void addValues(List<String> newValues) {
@@ -254,11 +252,11 @@ public class FormField {
             values.removeAll(new ArrayList<String>(values));
         }
     }
-    
+
     /**
-     * Adss an available options to the question that the user has in order to answer 
+     * Adss an available options to the question that the user has in order to answer
      * the question.
-     *  
+     *
      * @param option a new available option for the question.
      */
     public void addOption(Option option) {
@@ -290,7 +288,7 @@ public class FormField {
         }
         // Loop through all the values and append them to the string buffer
         for (Iterator<String> i = getValues(); i.hasNext();) {
-            buf.append("<value>").append(StringUtils.escapeForXML(i.next())).append("</value>");
+            buf.append("<value>").append(i.next()).append("</value>");
         }
         // Loop through all the values and append them to the string buffer
         for (Iterator i = getOptions(); i.hasNext();) {

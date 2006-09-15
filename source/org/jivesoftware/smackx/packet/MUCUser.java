@@ -21,12 +21,11 @@
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.StringUtils;
 
 /**
- * Represents extended presence information about roles, affiliations, full JIDs, 
+ * Represents extended presence information about roles, affiliations, full JIDs,
  * or status codes scoped by the 'http://jabber.org/protocol/muc#user' namespace.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class MUCUser implements PacketExtension {
@@ -76,7 +75,7 @@ public class MUCUser implements PacketExtension {
      * Returns the invitation for another user to a room. The sender of the invitation
      * must be an occupant of the room. The invitation will be sent to the room which in turn
      * will forward the invitation to the invitee.
-     *  
+     *
      * @return an invitation for another user to a room.
      */
     public Invite getInvite() {
@@ -84,9 +83,9 @@ public class MUCUser implements PacketExtension {
     }
 
     /**
-     * Returns the rejection to an invitation from another user to a room. The rejection will be 
+     * Returns the rejection to an invitation from another user to a room. The rejection will be
      * sent to the room which in turn will forward the refusal to the inviter.
-     *  
+     *
      * @return a rejection to an invitation from another user to a room.
      */
     public Decline getDecline() {
@@ -95,7 +94,7 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Returns the item child that holds information about roles, affiliation, jids and nicks.
-     * 
+     *
      * @return an item child that holds information about roles, affiliation, jids and nicks.
      */
     public Item getItem() {
@@ -103,9 +102,9 @@ public class MUCUser implements PacketExtension {
     }
 
     /**
-     * Returns the password to use to enter Password-Protected Room. A Password-Protected Room is 
+     * Returns the password to use to enter Password-Protected Room. A Password-Protected Room is
      * a room that a user cannot enter without first providing the correct password.
-     * 
+     *
      * @return the password to use to enter Password-Protected Room.
      */
     public String getPassword() {
@@ -114,7 +113,7 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Returns the status which holds a code that assists in presenting notification messages.
-     * 
+     *
      * @return the status which holds a code that assists in presenting notification messages.
      */
     public Status getStatus() {
@@ -123,9 +122,9 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Returns the notification that the room has been destroyed. After a room has been destroyed,
-     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for 
+     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for
      * the room destruction if provided by the room owner.
-     *  
+     *
      * @return a notification that the room has been destroyed.
      */
     public Destroy getDestroy() {
@@ -136,7 +135,7 @@ public class MUCUser implements PacketExtension {
      * Sets the invitation for another user to a room. The sender of the invitation
      * must be an occupant of the room. The invitation will be sent to the room which in turn
      * will forward the invitation to the invitee.
-     * 
+     *
      * @param invite the invitation for another user to a room.
      */
     public void setInvite(Invite invite) {
@@ -144,9 +143,9 @@ public class MUCUser implements PacketExtension {
     }
 
     /**
-     * Sets the rejection to an invitation from another user to a room. The rejection will be 
+     * Sets the rejection to an invitation from another user to a room. The rejection will be
      * sent to the room which in turn will forward the refusal to the inviter.
-     *  
+     *
      * @param decline the rejection to an invitation from another user to a room.
      */
     public void setDecline(Decline decline) {
@@ -155,7 +154,7 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Sets the item child that holds information about roles, affiliation, jids and nicks.
-     * 
+     *
      * @param item the item child that holds information about roles, affiliation, jids and nicks.
      */
     public void setItem(Item item) {
@@ -163,9 +162,9 @@ public class MUCUser implements PacketExtension {
     }
 
     /**
-     * Sets the password to use to enter Password-Protected Room. A Password-Protected Room is 
+     * Sets the password to use to enter Password-Protected Room. A Password-Protected Room is
      * a room that a user cannot enter without first providing the correct password.
-     * 
+     *
      * @param string the password to use to enter Password-Protected Room.
      */
     public void setPassword(String string) {
@@ -174,8 +173,8 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Sets the status which holds a code that assists in presenting notification messages.
-     * 
-     * @param status the status which holds a code that assists in presenting notification 
+     *
+     * @param status the status which holds a code that assists in presenting notification
      * messages.
      */
     public void setStatus(Status status) {
@@ -184,9 +183,9 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Sets the notification that the room has been destroyed. After a room has been destroyed,
-     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for 
+     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for
      * the room destruction if provided by the room owner.
-     *  
+     *
      * @param destroy the notification that the room has been destroyed.
      */
     public void setDestroy(Destroy destroy) {
@@ -196,7 +195,7 @@ public class MUCUser implements PacketExtension {
     /**
      * Represents an invitation for another user to a room. The sender of the invitation
      * must be an occupant of the room. The invitation will be sent to the room which in turn
-     * will forward the invitation to the invitee. 
+     * will forward the invitation to the invitee.
      *
      * @author Gaston Dombiak
      */
@@ -206,9 +205,9 @@ public class MUCUser implements PacketExtension {
         private String to;
 
         /**
-         * Returns the bare JID of the inviter or, optionally, the room JID. (e.g. 
-         * 'crone1@shakespeare.lit/desktop'). 
-         * 
+         * Returns the bare JID of the inviter or, optionally, the room JID. (e.g.
+         * 'crone1@shakespeare.lit/desktop').
+         *
          * @return the room's occupant that sent the invitation.
          */
         public String getFrom() {
@@ -217,7 +216,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the message explaining the invitation.
-         * 
+         *
          * @return the message explaining the invitation.
          */
         public String getReason() {
@@ -226,7 +225,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the bare JID of the invitee. (e.g. 'hecate@shakespeare.lit')
-         * 
+         *
          * @return the bare JID of the invitee.
          */
         public String getTo() {
@@ -234,9 +233,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Sets the bare JID of the inviter or, optionally, the room JID. (e.g. 
+         * Sets the bare JID of the inviter or, optionally, the room JID. (e.g.
          * 'crone1@shakespeare.lit/desktop')
-         * 
+         *
          * @param from the bare JID of the inviter or, optionally, the room JID.
          */
         public void setFrom(String from) {
@@ -245,7 +244,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the message explaining the invitation.
-         * 
+         *
          * @param reason the message explaining the invitation.
          */
         public void setReason(String reason) {
@@ -254,7 +253,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the bare JID of the invitee. (e.g. 'hecate@shakespeare.lit')
-         * 
+         *
          * @param to the bare JID of the invitee.
          */
         public void setTo(String to) {
@@ -277,11 +276,11 @@ public class MUCUser implements PacketExtension {
             buf.append("</invite>");
             return buf.toString();
         }
-    };
+    }
 
     /**
-     * Represents a rejection to an invitation from another user to a room. The rejection will be 
-     * sent to the room which in turn will forward the refusal to the inviter. 
+     * Represents a rejection to an invitation from another user to a room. The rejection will be
+     * sent to the room which in turn will forward the refusal to the inviter.
      *
      * @author Gaston Dombiak
      */
@@ -291,9 +290,9 @@ public class MUCUser implements PacketExtension {
         private String to;
 
         /**
-         * Returns the bare JID of the invitee that rejected the invitation. (e.g. 
-         * 'crone1@shakespeare.lit/desktop'). 
-         * 
+         * Returns the bare JID of the invitee that rejected the invitation. (e.g.
+         * 'crone1@shakespeare.lit/desktop').
+         *
          * @return the bare JID of the invitee that rejected the invitation.
          */
         public String getFrom() {
@@ -302,7 +301,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the message explaining why the invitation was rejected.
-         * 
+         *
          * @return the message explaining the reason for the rejection.
          */
         public String getReason() {
@@ -311,7 +310,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the bare JID of the inviter. (e.g. 'hecate@shakespeare.lit')
-         * 
+         *
          * @return the bare JID of the inviter.
          */
         public String getTo() {
@@ -319,9 +318,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Sets the bare JID of the invitee that rejected the invitation. (e.g. 
-         * 'crone1@shakespeare.lit/desktop'). 
-         * 
+         * Sets the bare JID of the invitee that rejected the invitation. (e.g.
+         * 'crone1@shakespeare.lit/desktop').
+         *
          * @param from the bare JID of the invitee that rejected the invitation.
          */
         public void setFrom(String from) {
@@ -330,7 +329,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the message explaining why the invitation was rejected.
-         * 
+         *
          * @param reason the message explaining the reason for the rejection.
          */
         public void setReason(String reason) {
@@ -339,7 +338,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the bare JID of the inviter. (e.g. 'hecate@shakespeare.lit')
-         * 
+         *
          * @param to the bare JID of the inviter.
          */
         public void setTo(String to) {
@@ -362,7 +361,7 @@ public class MUCUser implements PacketExtension {
             buf.append("</decline>");
             return buf.toString();
         }
-    };
+    }
 
     /**
      * Item child that holds information about roles, affiliation, jids and nicks.
@@ -378,8 +377,8 @@ public class MUCUser implements PacketExtension {
         private String role;
 
         /**
-         * Creates a new item child. 
-         * 
+         * Creates a new item child.
+         *
          * @param affiliation the actor's affiliation to the room
          * @param role the privilege level of an occupant within a room.
          */
@@ -390,7 +389,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the actor (JID of an occupant in the room) that was kicked or banned.
-         * 
+         *
          * @return the JID of an occupant in the room that was kicked or banned.
          */
         public String getActor() {
@@ -400,7 +399,7 @@ public class MUCUser implements PacketExtension {
         /**
          * Returns the reason for the item child. The reason is optional and could be used to
          * explain the reason why a user (occupant) was kicked or banned.
-         *  
+         *
          * @return the reason for the item child.
          */
         public String getReason() {
@@ -408,11 +407,11 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Returns the occupant's affiliation to the room. The affiliation is a semi-permanent 
-         * association or connection with a room. The possible affiliations are "owner", "admin", 
-         * "member", and "outcast" (naturally it is also possible to have no affiliation). An 
+         * Returns the occupant's affiliation to the room. The affiliation is a semi-permanent
+         * association or connection with a room. The possible affiliations are "owner", "admin",
+         * "member", and "outcast" (naturally it is also possible to have no affiliation). An
          * affiliation lasts across a user's visits to a room.
-         * 
+         *
          * @return the actor's affiliation to the room
          */
         public String getAffiliation() {
@@ -420,9 +419,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Returns the <room@service/nick> by which an occupant is identified within the context 
-         * of a room. If the room is non-anonymous, the JID will be included in the item. 
-         * 
+         * Returns the <room@service/nick> by which an occupant is identified within the context
+         * of a room. If the room is non-anonymous, the JID will be included in the item.
+         *
          * @return the room JID by which an occupant is identified within the room.
          */
         public String getJid() {
@@ -430,9 +429,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Returns the new nickname of an occupant that is changing his/her nickname. The new 
-         * nickname is sent as part of the unavailable presence.  
-         * 
+         * Returns the new nickname of an occupant that is changing his/her nickname. The new
+         * nickname is sent as part of the unavailable presence.
+         *
          * @return the new nickname of an occupant that is changing his/her nickname.
          */
         public String getNick() {
@@ -440,11 +439,11 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Returns the temporary position or privilege level of an occupant within a room. The 
-         * possible roles are "moderator", "participant", and "visitor" (it is also possible to 
-         * have no defined role). A role lasts only for the duration of an occupant's visit to 
-         * a room. 
-         * 
+         * Returns the temporary position or privilege level of an occupant within a room. The
+         * possible roles are "moderator", "participant", and "visitor" (it is also possible to
+         * have no defined role). A role lasts only for the duration of an occupant's visit to
+         * a room.
+         *
          * @return the privilege level of an occupant within a room.
          */
         public String getRole() {
@@ -453,7 +452,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the actor (JID of an occupant in the room) that was kicked or banned.
-         * 
+         *
          * @param actor the actor (JID of an occupant in the room) that was kicked or banned.
          */
         public void setActor(String actor) {
@@ -463,7 +462,7 @@ public class MUCUser implements PacketExtension {
         /**
          * Sets the reason for the item child. The reason is optional and could be used to
          * explain the reason why a user (occupant) was kicked or banned.
-         * 
+         *
          * @param reason the reason why a user (occupant) was kicked or banned.
          */
         public void setReason(String reason) {
@@ -471,9 +470,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Sets the <room@service/nick> by which an occupant is identified within the context 
+         * Sets the <room@service/nick> by which an occupant is identified within the context
          * of a room. If the room is non-anonymous, the JID will be included in the item.
-         *  
+         *
          * @param jid the JID by which an occupant is identified within a room.
          */
         public void setJid(String jid) {
@@ -481,9 +480,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Sets the new nickname of an occupant that is changing his/her nickname. The new 
+         * Sets the new nickname of an occupant that is changing his/her nickname. The new
          * nickname is sent as part of the unavailable presence.
-         *   
+         *
          * @param nick the new nickname of an occupant that is changing his/her nickname.
          */
         public void setNick(String nick) {
@@ -497,7 +496,7 @@ public class MUCUser implements PacketExtension {
                 buf.append(" affiliation=\"").append(getAffiliation()).append("\"");
             }
             if (getJid() != null) {
-                buf.append(" jid=\"").append(StringUtils.escapeJID(getJid())).append("\"");
+                buf.append(" jid=\"").append(getJid()).append("\"");
             }
             if (getNick() != null) {
                 buf.append(" nick=\"").append(getNick()).append("\"");
@@ -514,16 +513,16 @@ public class MUCUser implements PacketExtension {
                     buf.append("<reason>").append(getReason()).append("</reason>");
                 }
                 if (getActor() != null) {
-                    buf.append("<actor jid=\"").append(StringUtils.escapeJID(getActor())).append("\"/>");
+                    buf.append("<actor jid=\"").append(getActor()).append("\"/>");
                 }
                 buf.append("</item>");
             }
             return buf.toString();
         }
-    };
+    }
 
     /**
-     * Status code assists in presenting notification messages. The following link provides the 
+     * Status code assists in presenting notification messages. The following link provides the
      * list of existing error codes (@link http://www.jabber.org/jeps/jep-0045.html#errorstatus).
      *
      * @author Gaston Dombiak
@@ -532,8 +531,8 @@ public class MUCUser implements PacketExtension {
         private String code;
 
         /**
-         * Creates a new instance of Status with the specified code.  
-         * 
+         * Creates a new instance of Status with the specified code.
+         *
          * @param code the code that uniquely identifies the reason of the error.
          */
         public Status(String code) {
@@ -541,9 +540,9 @@ public class MUCUser implements PacketExtension {
         }
 
         /**
-         * Returns the code that uniquely identifies the reason of the error. The code 
-         * assists in presenting notification messages. 
-         * 
+         * Returns the code that uniquely identifies the reason of the error. The code
+         * assists in presenting notification messages.
+         *
          * @return the code that uniquely identifies the reason of the error.
          */
         public String getCode() {
@@ -555,13 +554,13 @@ public class MUCUser implements PacketExtension {
             buf.append("<status code=\"").append(getCode()).append("\"/>");
             return buf.toString();
         }
-    };
+    }
 
     /**
      * Represents a notification that the room has been destroyed. After a room has been destroyed,
-     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for 
-     * the room destruction if provided by the room owner. 
-     * 
+     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for
+     * the room destruction if provided by the room owner.
+     *
      * @author Gaston Dombiak
      */
     public static class Destroy {
@@ -571,7 +570,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the JID of an alternate location since the current room is being destroyed.
-         * 
+         *
          * @return the JID of an alternate location.
          */
         public String getJid() {
@@ -580,7 +579,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Returns the reason for the room destruction.
-         * 
+         *
          * @return the reason for the room destruction.
          */
         public String getReason() {
@@ -589,7 +588,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the JID of an alternate location since the current room is being destroyed.
-         * 
+         *
          * @param jid the JID of an alternate location.
          */
         public void setJid(String jid) {
@@ -598,7 +597,7 @@ public class MUCUser implements PacketExtension {
 
         /**
          * Sets the reason for the room destruction.
-         * 
+         *
          * @param reason the reason for the room destruction.
          */
         public void setReason(String reason) {
@@ -609,7 +608,7 @@ public class MUCUser implements PacketExtension {
             StringBuilder buf = new StringBuilder();
             buf.append("<destroy");
             if (getJid() != null) {
-                buf.append(" jid=\"").append(StringUtils.escapeJID(getJid())).append("\"");
+                buf.append(" jid=\"").append(getJid()).append("\"");
             }
             if (getReason() == null) {
                 buf.append("/>");

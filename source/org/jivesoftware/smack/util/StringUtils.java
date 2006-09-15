@@ -47,7 +47,7 @@ public class StringUtils {
         if (XMPPAddress == null) {
             return null;
         }
-        int atIndex = XMPPAddress.lastIndexOf("@");
+        int atIndex = XMPPAddress.indexOf("@");
         if (atIndex <= 0) {
             return "";
         }
@@ -68,7 +68,7 @@ public class StringUtils {
         if (XMPPAddress == null) {
             return null;
         }
-        int atIndex = XMPPAddress.lastIndexOf("@");
+        int atIndex = XMPPAddress.indexOf("@");
         // If the String ends with '@', return the empty string.
         if (atIndex + 1 > XMPPAddress.length()) {
             return "";
@@ -127,8 +127,6 @@ public class StringUtils {
         }
     }
 
-
-
     /**
      * Escapes the node portion of a JID according to "JID Escaping" (JEP-0106).
      * Escaping replaces characters prohibited by node-prep with escape sequences,
@@ -168,9 +166,15 @@ public class StringUtils {
         for (int i=0, n=node.length(); i<n; i++) {
             char c = node.charAt(i);
             switch (c) {
-
+                case '"': buf.append("\\22"); break;
+                case '&': buf.append("\\26"); break;
+                case '\'': buf.append("\\27"); break;
+                case '/': buf.append("\\2f"); break;
+                case ':': buf.append("\\3a"); break;
+                case '<': buf.append("\\3c"); break;
+                case '>': buf.append("\\3e"); break;
                 case '@': buf.append("\\40"); break;
-
+                case '\\': buf.append("\\5c"); break;
                 default: {
                     if (Character.isWhitespace(c)) {
                         buf.append("\\20");
@@ -182,43 +186,6 @@ public class StringUtils {
             }
         }
         return buf.toString();
-    }
-
-    /**
-     * Escapes a complete JID by examing the Node itself and escaping
-     * when neccessary.
-     * @param jid the users JID
-     * @return the escaped JID.
-     */
-    public static String escapeJID(String jid){
-        if(jid == null){
-            return null;
-        }
-
-        final StringBuilder builder = new StringBuilder();
-        String node = parseName(jid);
-        String restOfJID = jid.substring(node.length());
-        builder.append(escapeNode(node));
-        builder.append(restOfJID);
-        return builder.toString();
-    }
-
-    /**
-     * Unescapes a complete JID by examing the node itself and unescaping when necessary.
-     * @param jid the users jid.
-     * @return the unescaped JID.
-     */
-    public static String unescapeJID(String jid){
-        if(jid == null){
-            return null;
-        }
-
-        final StringBuilder builder = new StringBuilder();
-        String node = parseName(jid);
-        String restOfJID = jid.substring(node.length());
-        builder.append(unescapeNode(node));
-        builder.append(restOfJID);
-        return builder.toString();
     }
 
     /**

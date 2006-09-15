@@ -43,7 +43,7 @@ public abstract class Packet {
 
     /**
      * Constant used as packetID to indicate that a packet has no id. To indicate that a packet
-     * has no id set this constant as the packet's id. When the packet is asked for its id the 
+     * has no id set this constant as the packet's id. When the packet is asked for its id the
      * answer will be <tt>null</tt>.
      */
     public static final String ID_NOT_AVAILABLE = "ID_NOT_AVAILABLE";
@@ -86,7 +86,7 @@ public abstract class Packet {
         if (ID_NOT_AVAILABLE.equals(packetID)) {
             return null;
         }
-        
+
         if (packetID == null) {
             packetID = nextID();
         }
@@ -94,7 +94,7 @@ public abstract class Packet {
     }
 
     /**
-     * Sets the unique ID of the packet. To indicate that a packet has no id 
+     * Sets the unique ID of the packet. To indicate that a packet has no id
      * pass the constant ID_NOT_AVAILABLE as the packet's id value.
      *
      * @param packetID the unique ID for the packet.
@@ -122,8 +122,7 @@ public abstract class Packet {
      * @param to who the packet is being sent to.
      */
     public void setTo(String to) {
-        // Use escaped version of the JID in case the user included invalid characters.
-        this.to = StringUtils.escapeJID(to);
+        this.to = to;
     }
 
     /**
@@ -146,8 +145,7 @@ public abstract class Packet {
      * @param from who the packet is being sent to.
      */
     public void setFrom(String from) {
-        // Use escaped version of the JID in case the user included invalid characters.
-        this.from = StringUtils.escapeJID(from);
+        this.from = from;
     }
 
     /**

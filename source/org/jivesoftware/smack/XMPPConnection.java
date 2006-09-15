@@ -40,10 +40,10 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -89,8 +89,8 @@ public class XMPPConnection {
      */
     public static boolean DEBUG_ENABLED = false;
 
-    private final static List<ConnectionEstablishedListener> connectionEstablishedListeners =
-            new CopyOnWriteArrayList<ConnectionEstablishedListener>();
+    private final static Set<ConnectionEstablishedListener> connectionEstablishedListeners =
+            new CopyOnWriteArraySet<ConnectionEstablishedListener>();
 
     static {
         // Use try block since we may not have permission to get a system
@@ -167,7 +167,7 @@ public class XMPPConnection {
      * Holds the initial configuration used while creating the connection.
      */
     private ConnectionConfiguration configuration;
-    
+
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
      * performed to try to determine the IP address and port corresponding to the
@@ -396,7 +396,6 @@ public class XMPPConnection {
         }
         // Do partial version of nameprep on the username.
         username = username.toLowerCase().trim();
-        username = StringUtils.escapeNode(username);
 
         String response;
         if (configuration.isSASLAuthenticationEnabled() &&
@@ -437,14 +436,14 @@ public class XMPPConnection {
         if (sendPresence) {
             packetWriter.sendPacket(new Presence(Presence.Type.available));
         }
-        
+
         // Indicate that we're now authenticated.
         authenticated = true;
         anonymous = false;
 
         // Stores the autentication for future reconnection
         this.getConfiguration().setUsernameAndPassword(username, password);
-        
+
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
         // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
@@ -654,30 +653,30 @@ public class XMPPConnection {
         catch (Exception e) {
             // Ignore.
         }
-        
+
         this.setWasAuthenticated(authenticated);
         authenticated = false;
         connected = false;
-        
+
         saslAuthentication.init();
     }
-    
+
     /**
      * Closes the connection by setting presence to unavailable then closing the stream to
      * the XMPP server. The XMPPConnection can still be used for connecting to the server
      * again.
-     * 
+     *
      * The difference between disconnect and shutdown is that disconnect makes a complete reset
      * of the connection state whereas shutdown only cleans the connection and keeps alive
      * packet reader listeners, previous login and roster presences.
      */
     public void disconnect() {
         this.shutdown();
-        
+
         this.roster = null;
-        
+
         this.wasAuthenticated = false;
-        
+
         packetWriter = null;
         packetReader = null;
     }
@@ -819,9 +818,7 @@ public class XMPPConnection {
      * @param connectionEstablishedListener a listener interested on connection established events.
      */
     public static void addConnectionEstablishedListener(ConnectionEstablishedListener connectionEstablishedListener) {
-        if (!connectionEstablishedListeners.contains(connectionEstablishedListener)) {
-            connectionEstablishedListeners.add(connectionEstablishedListener);
-        }
+        connectionEstablishedListeners.add(connectionEstablishedListener);
     }
 
     /**
@@ -878,7 +875,7 @@ public class XMPPConnection {
             // Do nothing
         }
     }
-    
+
     /**
      * Initializes the connection by creating a packet reader and writer and opening a
      * XMPP stream to the server.
@@ -1317,14 +1314,14 @@ public class XMPPConnection {
             this.notify();
         }
     }
-    /** 
+    /**
      * Establishes a connection to the XMPP server and performs an automatic login
      * only if the previous connection state was logged (authenticated). It basically
      * creates and maintains a socket connection to the server.<p>
-     * 
+     *
      * Listeners will be preserved from a previous connection if the reconnection
      * occurs after an abrupt termination.
-     * 
+     *
      * @throws XMPPException if an error occurs while trying to establish the connection.
      *      Two possible errors can occur which will be wrapped by an XMPPException --
      *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
@@ -1350,10 +1347,10 @@ public class XMPPConnection {
             }
         }
     }
-    
-    /** 
+
+    /**
      * Sets whether the connection has already logged in the server.
-     * 
+     *
      * @param wasAuthenticated true if the connection has already been authenticated.
      */
     private void setWasAuthenticated(boolean wasAuthenticated) {
