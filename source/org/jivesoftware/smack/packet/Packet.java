@@ -112,7 +112,7 @@ public abstract class Packet {
      *      value has not been set.
      */
     public String getTo() {
-        return StringUtils.escapeJID(to);
+        return to;
     }
 
     /**
@@ -122,7 +122,8 @@ public abstract class Packet {
      * @param to who the packet is being sent to.
      */
     public void setTo(String to) {
-        this.to = to;
+        // Use escaped version of the JID in case the user included invalid characters.
+        this.to = StringUtils.escapeJID(to);
     }
 
     /**
@@ -134,7 +135,7 @@ public abstract class Packet {
      *      valud has not been set.
      */
     public String getFrom() {
-        return StringUtils.escapeJID(from);
+        return from;
     }
 
     /**
@@ -145,7 +146,8 @@ public abstract class Packet {
      * @param from who the packet is being sent to.
      */
     public void setFrom(String from) {
-        this.from = from;
+        // Use escaped version of the JID in case the user included invalid characters.
+        this.from = StringUtils.escapeJID(from);
     }
 
     /**
