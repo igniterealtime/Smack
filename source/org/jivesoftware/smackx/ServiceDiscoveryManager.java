@@ -59,7 +59,7 @@ public class ServiceDiscoveryManager {
 
     // Create a new ServiceDiscoveryManager on every established connection
     static {
-        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+        XMPPConnection.addConnectionEstablishedListener(new ConnectionEstablishedListener() {
             public void connectionEstablished(XMPPConnection connection) {
                 new ServiceDiscoveryManager(connection);
             }

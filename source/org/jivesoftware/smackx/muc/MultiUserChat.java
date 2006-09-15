@@ -76,7 +76,7 @@ public class MultiUserChat {
     private List<PacketListener> connectionListeners = new ArrayList<PacketListener>();
 
     static {
-        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+        XMPPConnection.addConnectionEstablishedListener(new ConnectionEstablishedListener() {
             public void connectionEstablished(final XMPPConnection connection) {
                 // Set on every established connection that this client supports the Multi-User
                 // Chat protocol. This information will be used when another client tries to

@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles the reconnection process. Every time a connection is broken, it automatically
- * tries to reconnect it. The reconnection is been executed when the first connection
- * error is detected.<p>
+ * Handles the automatic reconnection process. Every time a connection is dropped without
+ * the application explicitly closing it, the manager automatically tries to reconnect to
+ * the server.<p>
  *
- * The reconnection mechanism will try to reconnect periodically in this way:
+ * The reconnection mechanism will try to reconnect periodically:
  * <ol>
- * <li>First it will try 6 times every 10 seconds.
- * <li>Then it will try 10 times every 1 minute.
- * <li>Finally it will try indefinitely every 5 minutes.
+ *      <li>First it will try 6 times every 10 seconds.
+ *      <li>Then it will try 10 times every 1 minute.
+ *      <li>Finally it will try indefinitely every 5 minutes.
  * </ol>
  *
  * @author Francisco Vives
@@ -35,7 +35,7 @@ public class ReconnectionManager implements ConnectionListener {
         // Create a new PrivacyListManager on every established connection. In the init()
         // method of PrivacyListManager, we'll add a listener that will delete the
         // instance when the connection is closed.
-        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+        XMPPConnection.addConnectionEstablishedListener(new ConnectionEstablishedListener() {
             public void connectionEstablished(XMPPConnection connection) {
                 connection.addConnectionListener(new ReconnectionManager(connection));
             }
@@ -48,7 +48,9 @@ public class ReconnectionManager implements ConnectionListener {
 
 
     /**
-     * Returns if the reconnection mechanism is allowed to use.
+     * Returns true if the reconnection mechanism is enabled.
+     *
+     * @return true if automatic reconnections are allowed.
      */
     private boolean isReconnectionAllowed() {
         return !done && !connection.isConnected()
@@ -103,15 +105,16 @@ public class ReconnectionManager implements ConnectionListener {
                 private int firstReconnectionPeriod = 7; // 6 attempts
                 private int secondReconnectionPeriod = 10 + firstReconnectionPeriod; // 16 attempts
                 private int firstReconnectionTime = 10; // 10 seconds
-                private int secondReconnectionTime = 1 * 60; // 1 minute
+                private int secondReconnectionTime = 60; // 1 minute
                 private int lastReconnectionTime =
                         getSecondBetweenReconnection(); // user defined in seconds
                 private int remainingSeconds = 0; // The seconds remaining to a reconnection
                 private int notificationPeriod = 1000; // 1 second
 
                 /**
-                 * Answer the time it should wait until the next reconnection
-                 * attempt
+                 * Returns the amount of time until the next reconnection attempt.
+                 *
+                 * @return the amount of time until the next reconnection attempt.
                  */
                 private int timeDelay() {
                     if (attempts > secondReconnectionPeriod) {
@@ -173,6 +176,8 @@ public class ReconnectionManager implements ConnectionListener {
 
     /**
      * Fires listeners when a reconnection attempt has failed.
+     *
+     * @param exception the exception that occured.
      */
     protected void notifyReconnectionFailed(Exception exception) {
         List<ConnectionListener> listenersCopy;
@@ -190,6 +195,8 @@ public class ReconnectionManager implements ConnectionListener {
 
     /**
      * Fires listeners when The XMPPConnection will retry a reconnection. Expressed in seconds.
+     *
+     * @param seconds the number of seconds that a reconnection will be attempted in.
      */
     protected void notifyAttemptToReconnectIn(int seconds) {
         List<ConnectionListener> listenersCopy;

@@ -75,7 +75,7 @@ public class LastActivityManager {
 
     // Enable the LastActivity support on every established connection
     static {
-        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
+        XMPPConnection.addConnectionEstablishedListener(new ConnectionEstablishedListener() {
             public void connectionEstablished(XMPPConnection connection) {
                 new LastActivityManager(connection);
             }

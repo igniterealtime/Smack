@@ -39,11 +39,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -64,10 +64,10 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * XMPPConnections can be reused between connections. This means that an XMPPConnection
  * may be connected, disconnected and then connected again. Listeners of the XMPPConnection
- * will remain accross connections.<p>
+ * will be retained accross connections.<p>
  *
  * If a connected XMPPConnection gets disconnected abruptly then it will try to reconnect
- * again. To stop the reconnection process just use {@link #disconnect()}. Once stopped
+ * again. To stop the reconnection process, use {@link #disconnect()}. Once stopped
  * you can use {@link #connect()} to manually connect to the server.
  *
  * @author Matt Tucker
@@ -90,7 +90,7 @@ public class XMPPConnection {
     public static boolean DEBUG_ENABLED = false;
 
     private final static List<ConnectionEstablishedListener> connectionEstablishedListeners =
-            new ArrayList<ConnectionEstablishedListener>();
+            new CopyOnWriteArrayList<ConnectionEstablishedListener>();
 
     static {
         // Use try block since we may not have permission to get a system
@@ -265,33 +265,6 @@ public class XMPPConnection {
 
     public XMPPConnection(ConnectionConfiguration config, SocketFactory socketFactory) {
         init(config, socketFactory);
-    }
-
-    private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {
-        this.host = config.getHost();
-        this.port = config.getPort();
-        try {
-            if (config.getSocketFactory() == null) {
-                this.socket = new Socket(host, port);
-            }
-            else {
-                this.socket = config.getSocketFactory().createSocket(host, port);
-            }
-        }
-        catch (UnknownHostException uhe) {
-            String errorMessage = "Could not connect to " + host + ":" + port + ".";
-            throw new XMPPException(errorMessage, new XMPPError(
-                    XMPPError.Condition.remote_server_timeout, errorMessage),
-                    uhe);
-        }
-        catch (IOException ioe) {
-            String errorMessage = "XMPPError connecting to " + host + ":"
-                    + port + ".";
-            throw new XMPPException(errorMessage, new XMPPError(
-                    XMPPError.Condition.remote_server_error, errorMessage), ioe);
-        }
-        this.serviceName = config.getServiceName();
-        initConnection();
     }
 
     /**
@@ -845,11 +818,9 @@ public class XMPPConnection {
      *
      * @param connectionEstablishedListener a listener interested on connection established events.
      */
-    public static void addConnectionListener(ConnectionEstablishedListener connectionEstablishedListener) {
-        synchronized (connectionEstablishedListeners) {
-            if (!connectionEstablishedListeners.contains(connectionEstablishedListener)) {
-                connectionEstablishedListeners.add(connectionEstablishedListener);
-            }
+    public static void addConnectionEstablishedListener(ConnectionEstablishedListener connectionEstablishedListener) {
+        if (!connectionEstablishedListeners.contains(connectionEstablishedListener)) {
+            connectionEstablishedListeners.add(connectionEstablishedListener);
         }
     }
 
@@ -858,15 +829,43 @@ public class XMPPConnection {
      *
      * @param connectionEstablishedListener a listener interested on connection established events.
      */
-    public static void removeConnectionListener(ConnectionEstablishedListener connectionEstablishedListener) {
-        synchronized (connectionEstablishedListeners) {
-            connectionEstablishedListeners.remove(connectionEstablishedListener);
-        }
+    public static void removeConnectionEstablishedListener(ConnectionEstablishedListener connectionEstablishedListener) {
+        connectionEstablishedListeners.remove(connectionEstablishedListener);
     }
 
-    /** 
+    private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {
+        this.host = config.getHost();
+        this.port = config.getPort();
+        try {
+            if (config.getSocketFactory() == null) {
+                this.socket = new Socket(host, port);
+            }
+            else {
+                this.socket = config.getSocketFactory().createSocket(host, port);
+            }
+        }
+        catch (UnknownHostException uhe) {
+            String errorMessage = "Could not connect to " + host + ":" + port + ".";
+            throw new XMPPException(errorMessage, new XMPPError(
+                    XMPPError.Condition.remote_server_timeout, errorMessage),
+                    uhe);
+        }
+        catch (IOException ioe) {
+            String errorMessage = "XMPPError connecting to " + host + ":"
+                    + port + ".";
+            throw new XMPPException(errorMessage, new XMPPError(
+                    XMPPError.Condition.remote_server_error, errorMessage), ioe);
+        }
+        this.serviceName = config.getServiceName();
+        initConnection();
+    }
+
+    /**
      * Initializes the connection configuration. This method is only executed
      * when the XMPPConnection is created.
+     *
+     * @param config the connection configuration options.
+     * @param socketFactory a factory used for creating sockets to the XMPP server.
      */
     private void init(ConnectionConfiguration config, SocketFactory socketFactory) {
         try {
@@ -925,8 +924,10 @@ public class XMPPConnection {
 
 
             if (isFirstInitialization) {
-                // Notify that a new connection has been established
-                connectionEstablished(this);
+                // Notify listeners that a new connection has been established
+                for (ConnectionEstablishedListener listener : connectionEstablishedListeners) {
+                    listener.connectionEstablished(this);
+                }
 
                 // Add a listener for all message packets so that we can deliver errant
                 // messages to the best Chat instance available.
@@ -1110,20 +1111,6 @@ public class XMPPConnection {
         }
     }
 
-    /**
-     * Fires listeners on connection established events.
-     */
-    private static void connectionEstablished(XMPPConnection connection) {
-        ConnectionEstablishedListener[] listeners;
-        synchronized (connectionEstablishedListeners) {
-            listeners = new ConnectionEstablishedListener[connectionEstablishedListeners.size()];
-            connectionEstablishedListeners.toArray(listeners);
-        }
-        for (ConnectionEstablishedListener listener : listeners) {
-            listener.connectionEstablished(connection);
-        }
-    }
-
     /***********************************************
      * TLS code below
      **********************************************/
@@ -1180,6 +1167,8 @@ public class XMPPConnection {
      * The server has indicated that TLS negotiation can start. We now need to secure the
      * existing plain connection and perform a handshake. This method won't return until the
      * connection has finished the handshake or an error occured while securing the connection.
+     *
+     * @throws Exception if an exception occurs.
      */
     void proceedTLSReceived() throws Exception {
         SSLContext context = SSLContext.getInstance("TLS");
@@ -1300,6 +1289,8 @@ public class XMPPConnection {
 
     /**
      * Start using stream compression since the server has acknowledged stream compression.
+     *
+     * @throws Exception if there is an exception starting stream compression.
      */
     void startStreamCompression() throws Exception {
         // Secure the plain connection
@@ -1317,8 +1308,11 @@ public class XMPPConnection {
         }
     }
 
+    /**
+     * Notifies the XMPP connection that stream compression was denied so that
+     * the connection process can proceed.
+     */
     void streamCompressionDenied() {
-        // Notify that compression has been denied
         synchronized (this) {
             this.notify();
         }
@@ -1358,9 +1352,9 @@ public class XMPPConnection {
     }
     
     /** 
-     * Sets if the connection has already logged in the server.
+     * Sets whether the connection has already logged in the server.
      * 
-     * @param wasAuthenticated
+     * @param wasAuthenticated true if the connection has already been authenticated.
      */
     private void setWasAuthenticated(boolean wasAuthenticated) {
         if (!this.wasAuthenticated) {
