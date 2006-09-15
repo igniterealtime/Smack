@@ -20,11 +20,14 @@
 
 package org.jivesoftware.smackx;
 
-import java.util.Iterator;
-
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.packet.*;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.packet.XHTMLExtension;
+
+import java.util.Iterator;
 
 /**
  * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to 
@@ -40,8 +43,8 @@ public class XHTMLManager {
     // Enable the XHTML support on every established connection
     // The ServiceDiscoveryManager class should have been already initialized
     static {
-        XMPPConnection.addConnectionListener(new ConnectionEstablishedListener() {
-            public void connectionEstablished(XMPPConnection connection) {
+        XMPPConnection.addConnectionListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 XHTMLManager.setServiceEnabled(connection, true);
             }
         });

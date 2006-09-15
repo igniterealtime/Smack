@@ -89,8 +89,8 @@ public class XMPPConnection {
      */
     public static boolean DEBUG_ENABLED = false;
 
-    private final static Set<ConnectionEstablishedListener> connectionEstablishedListeners =
-            new CopyOnWriteArraySet<ConnectionEstablishedListener>();
+    private final static Set<ConnectionCreationListener> connectionEstablishedListeners =
+            new CopyOnWriteArraySet<ConnectionCreationListener>();
 
     static {
         // Use try block since we may not have permission to get a system
@@ -812,22 +812,24 @@ public class XMPPConnection {
     }
 
     /**
-     * Adds a connection established listener that will be notified when a new connection
-     * is established.
+     * Adds a new listener that will be notified when new XMPPConnections are created. Note
+     * that newly created connections will not be actually connected to the server.
      *
-     * @param connectionEstablishedListener a listener interested on connection established events.
+     * @param connectionCreationListener a listener interested on new connections.
      */
-    public static void addConnectionEstablishedListener(ConnectionEstablishedListener connectionEstablishedListener) {
-        connectionEstablishedListeners.add(connectionEstablishedListener);
+    public static void addConnectionCreationListener(
+            ConnectionCreationListener connectionCreationListener) {
+        connectionEstablishedListeners.add(connectionCreationListener);
     }
 
     /**
-     * Removes a listener on new established connections.
+     * Removes a listener that was interested in connection creation events.
      *
-     * @param connectionEstablishedListener a listener interested on connection established events.
+     * @param connectionCreationListener a listener interested on new connections.
      */
-    public static void removeConnectionEstablishedListener(ConnectionEstablishedListener connectionEstablishedListener) {
-        connectionEstablishedListeners.remove(connectionEstablishedListener);
+    public static void removeConnectionCreationListener(
+            ConnectionCreationListener connectionCreationListener) {
+        connectionEstablishedListeners.remove(connectionCreationListener);
     }
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {
@@ -922,8 +924,8 @@ public class XMPPConnection {
 
             if (isFirstInitialization) {
                 // Notify listeners that a new connection has been established
-                for (ConnectionEstablishedListener listener : connectionEstablishedListeners) {
-                    listener.connectionEstablished(this);
+                for (ConnectionCreationListener listener : connectionEstablishedListeners) {
+                    listener.connectionCreated(this);
                 }
 
                 // Add a listener for all message packets so that we can deliver errant

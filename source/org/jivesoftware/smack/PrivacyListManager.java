@@ -35,8 +35,8 @@ public class PrivacyListManager {
         // Create a new PrivacyListManager on every established connection. In the init()
         // method of PrivacyListManager, we'll add a listener that will delete the
         // instance when the connection is closed.
-        XMPPConnection.addConnectionEstablishedListener(new ConnectionEstablishedListener() {
-            public void connectionEstablished(XMPPConnection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 new PrivacyListManager(connection);
             }
         });
