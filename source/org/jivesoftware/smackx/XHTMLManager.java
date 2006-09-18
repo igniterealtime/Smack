@@ -43,7 +43,7 @@ public class XHTMLManager {
     // Enable the XHTML support on every established connection
     // The ServiceDiscoveryManager class should have been already initialized
     static {
-        XMPPConnection.addConnectionListener(new ConnectionCreationListener() {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
                 XHTMLManager.setServiceEnabled(connection, true);
             }
