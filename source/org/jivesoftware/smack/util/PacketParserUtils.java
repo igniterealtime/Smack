@@ -35,8 +35,8 @@ import java.util.Map;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
- * between many clients must be placed in this utility class.   
- * 
+ * between many clients must be placed in this utility class.
+ *
  * @author Gaston Dombiak
  */
 public class PacketParserUtils {
@@ -337,8 +337,16 @@ public class PacketParserUtils {
                     }
                 }
         }
-        return new XMPPError(Integer.parseInt(errorCode), XMPPError.Type
-				.valueOf(type.toUpperCase()), condition, message, extensions);
+        // Parse the error type.
+        XMPPError.Type errorType = XMPPError.Type.CANCEL;
+        try {
+            errorType = XMPPError.Type.valueOf(type.toUpperCase());
+        }
+        catch (IllegalArgumentException iae) {
+            // Print stack trace. We shouldn't be getting an illegal error type.
+            iae.printStackTrace();
+        }
+        return new XMPPError(Integer.parseInt(errorCode), errorType, condition, message, extensions);
     }
 
     /**
