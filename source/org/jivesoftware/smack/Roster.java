@@ -31,6 +31,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
@@ -99,10 +100,10 @@ public class Roster implements ConnectionListener {
     Roster(final XMPPConnection connection) {
         this.connection = connection;
         groups = new ConcurrentHashMap<String,RosterGroup>();
-        unfiledEntries = new ArrayList<RosterEntry>();
-        entries = new ArrayList<RosterEntry>();
-        rosterListeners = new ArrayList<RosterListener>();
-        presenceMap = new HashMap<String, Map<String, Presence>>();
+        unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
+        entries = new CopyOnWriteArrayList<RosterEntry>();
+        rosterListeners = new CopyOnWriteArrayList<RosterListener>();
+        presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
         PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
         connection.addPacketListener(new RosterPacketListener(), rosterFilter);
@@ -160,10 +161,8 @@ public class Roster implements ConnectionListener {
      * @param rosterListener a roster listener.
      */
     public void addRosterListener(RosterListener rosterListener) {
-        synchronized (rosterListeners) {
-            if (!rosterListeners.contains(rosterListener)) {
-                rosterListeners.add(rosterListener);
-            }
+        if (!rosterListeners.contains(rosterListener)) {
+        rosterListeners.add(rosterListener);
         }
     }
 
@@ -174,9 +173,7 @@ public class Roster implements ConnectionListener {
      * @param rosterListener a roster listener.
      */
     public void removeRosterListener(RosterListener rosterListener) {
-        synchronized (rosterListeners) {
-            rosterListeners.remove(rosterListener);
-        }
+        rosterListeners.remove(rosterListener);
     }
 
     /**
@@ -189,14 +186,12 @@ public class Roster implements ConnectionListener {
      * @return a new group.
      */
     public RosterGroup createGroup(String name) {
-        synchronized (groups) {
-            if (groups.containsKey(name)) {
-                throw new IllegalArgumentException("Group with name " + name + " alread exists.");
-            }
-            RosterGroup group = new RosterGroup(name, connection);
-            groups.put(name, group);
-            return group;
+        if (groups.containsKey(name)) {
+            throw new IllegalArgumentException("Group with name " + name + " alread exists.");
         }
+        RosterGroup group = new RosterGroup(name, connection);
+        groups.put(name, group);
+        return group;
     }
 
     /**
@@ -207,6 +202,7 @@ public class Roster implements ConnectionListener {
      * @param name the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *      the roster entry won't belong to a group.
+     * @throws XMPPException if an XMPP exception occurs.
      */
     public void createEntry(String user, String name, String [] groups) throws XMPPException {
         // Create and send roster entry creation packet.
@@ -248,14 +244,13 @@ public class Roster implements ConnectionListener {
      * to send an updated subscription status.
      *
      * @param entry a roster entry.
+     * @throws XMPPException if an XMPP error occurs.
      */
     public void removeEntry(RosterEntry entry) throws XMPPException {
         // Only remove the entry if it's in the entry list.
         // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
-        synchronized (entries) {
-            if (!entries.contains(entry)) {
-                return;
-            }
+        if (!entries.contains(entry)) {
+            return;
         }
         RosterPacket packet = new RosterPacket();
         packet.setType(IQ.Type.SET);
@@ -302,9 +297,8 @@ public class Roster implements ConnectionListener {
             allEntries.addAll(rosterGroup.getEntries());
         }
         // Add the roster unfiled entries to the answer
-        synchronized (unfiledEntries) {
-            allEntries.addAll(unfiledEntries);
-        }
+        allEntries.addAll(unfiledEntries);
+
         return Collections.unmodifiableCollection(allEntries);
     }
 
@@ -334,9 +328,7 @@ public class Roster implements ConnectionListener {
      * @return the number of unfiled entries in the roster.
      */
     public int getUnfiledEntryCount() {
-        synchronized (unfiledEntries) {
-            return unfiledEntries.size();
-        }
+        return unfiledEntries.size();
     }
 
     /**
@@ -346,9 +338,7 @@ public class Roster implements ConnectionListener {
      * @return the unfiled roster entries.
      */
     public Collection<RosterEntry> getUnfiledEntries() {
-        synchronized (unfiledEntries) {
-            return Collections.unmodifiableList(new ArrayList<RosterEntry>(unfiledEntries));
-        }
+        return Collections.unmodifiableList(unfiledEntries);
     }
 
     /**
@@ -364,11 +354,9 @@ public class Roster implements ConnectionListener {
             return null;
         }
         String userLowerCase = user.toLowerCase();
-        synchronized (entries) {
-            for (RosterEntry entry : entries) {
-                if (entry.getUser().equals(userLowerCase)) {
-                    return entry;
-                }
+        for (RosterEntry entry : entries) {
+            if (entry.getUser().equals(userLowerCase)) {
+                return entry;
             }
         }
         return null;
@@ -539,13 +527,9 @@ public class Roster implements ConnectionListener {
      * @param deletedEntries the collection of address of the deleted contacts.
      */
     private void fireRosterChangedEvent(Collection addedEntries, Collection updatedEntries,
-                                        Collection deletedEntries) {
-        RosterListener [] listeners;
-        synchronized (rosterListeners) {
-            listeners = new RosterListener[rosterListeners.size()];
-            rosterListeners.toArray(listeners);
-        }
-        for (RosterListener listener : listeners) {
+            Collection deletedEntries)
+    {
+        for (RosterListener listener : rosterListeners) {
             if (!addedEntries.isEmpty()) {
                 listener.entriesAdded(addedEntries);
             }
@@ -560,14 +544,11 @@ public class Roster implements ConnectionListener {
 
     /**
      * Fires roster presence changed event to roster listeners.
+     *
+     * @param user the user with a presence change. 
      */
     private void fireRosterPresenceEvent(String user) {
-        RosterListener [] listeners;
-        synchronized (rosterListeners) {
-            listeners = new RosterListener[rosterListeners.size()];
-            rosterListeners.toArray(listeners);
-        }
-        for (RosterListener listener : listeners) {
+        for (RosterListener listener : rosterListeners) {
             listener.presenceChanged(user);
         }
     }
@@ -624,11 +605,9 @@ public class Roster implements ConnectionListener {
                     userPresences.put(StringUtils.parseResource(from), presence);
                 }
                 // If the user is in the roster, fire an event.
-                synchronized (entries) {
-                    for (RosterEntry entry : entries) {
-                        if (entry.getUser().equals(key)) {
-                            fireRosterPresenceEvent(from);
-                        }
+                for (RosterEntry entry : entries) {
+                    if (entry.getUser().equals(key)) {
+                        fireRosterPresenceEvent(from);
                     }
                 }
             }
@@ -644,11 +623,9 @@ public class Roster implements ConnectionListener {
                     }
                 }
                 // If the user is in the roster, fire an event.
-                synchronized (entries) {
-                    for (RosterEntry entry : entries) {
-                        if (entry.getUser().equals(key)) {
-                            fireRosterPresenceEvent(from);
-                        }
+                for (RosterEntry entry : entries) {
+                    if (entry.getUser().equals(key)) {
+                        fireRosterPresenceEvent(from);
                     }
                 }
             }
@@ -705,10 +682,8 @@ public class Roster implements ConnectionListener {
                         entries.remove(entry);
                     }
                     // Remove the entry from the unfiled entry list.
-                    synchronized (unfiledEntries) {
-                        if (unfiledEntries.contains(entry)) {
-                            unfiledEntries.remove(entry);
-                        }
+                    if (unfiledEntries.contains(entry)) {
+                        unfiledEntries.remove(entry);
                     }
                     // Removing the user from the roster, so remove any presence information
                     // about them.
@@ -736,16 +711,12 @@ public class Roster implements ConnectionListener {
                     // If the roster entry belongs to any groups, remove it from the
                     // list of unfiled entries.
                     if (!item.getGroupNames().isEmpty()) {
-                        synchronized (unfiledEntries) {
-                            unfiledEntries.remove(entry);
-                        }
+                        unfiledEntries.remove(entry);
                     }
                     // Otherwise add it to the list of unfiled entries.
                     else {
-                        synchronized (unfiledEntries) {
-                            if (!unfiledEntries.contains(entry)) {
-                                unfiledEntries.add(entry);
-                            }
+                        if (!unfiledEntries.contains(entry)) {
+                            unfiledEntries.add(entry);
                         }
                     }
                 }
@@ -788,9 +759,7 @@ public class Roster implements ConnectionListener {
                     RosterGroup group = getGroup(groupName);
                     group.removeEntryLocal(entry);
                     if (group.getEntryCount() == 0) {
-                        synchronized (groups) {
-                            groups.remove(groupName);
-                        }
+                        groups.remove(groupName);
                     }
                 }
                 // Remove all the groups with no entries. We have to do this because
