@@ -297,7 +297,7 @@ public class PacketParserUtils {
     public static XMPPError parseError(XmlPullParser parser) throws Exception {
         final String errorNamespace = "urn:ietf:params:xml:ns:xmpp-stanzas";
     	String errorCode = "-1";
-        String type = null;
+        String type = "";
         String message = null;
         String condition = null;
         List<PacketExtension> extensions = new ArrayList<PacketExtension>();
