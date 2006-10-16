@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.util.DNSUtil;
+
 import javax.net.SocketFactory;
 import java.io.File;
 
@@ -64,8 +66,46 @@ public class ConnectionConfiguration implements Cloneable {
     // Holds the authentication information for future reconnections
     private String username;
     private String password;
-    
+
+    /**
+     * Creates a new ConnectionConfiguration for a connection that will connect
+     * to the desired service name. A DNS SRV lookup will be performed to find out the
+     * actual host address and port to use for the connection.
+     *
+     * @param serviceName the name of the service provided by an XMPP server.
+     */
+    public ConnectionConfiguration(String serviceName) {
+        // Perform DNS lookup to get host and port to use
+        DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
+        init(address.getHost(), address.getPort(), serviceName);
+    }
+
+    /**
+     * Creates a new ConnectionConfiguration for a connection that will connect
+     * to the desired host, port and service name. It is expected for the XMPP server to
+     * be running at the specified address and to be using the specified service name.
+     * Anyway, if the service name is incorrect the correct one will be used instead.
+     *
+     * @param host the host where the XMPP server is running.
+     * @param port the port where the XMPP is listening.
+     * @param serviceName the name of the service provided by an XMPP server.
+     */
     public ConnectionConfiguration(String host, int port, String serviceName) {
+        init(host, port, serviceName);
+    }
+
+    /**
+     * Creates a new ConnectionConfiguration for a connection that will connect
+     * to the desired host and port.
+     *
+     * @param host the host where the XMPP server is running.
+     * @param port the port where the XMPP is listening.
+     */
+    public ConnectionConfiguration(String host, int port) {
+        init(host, port, host);
+    }
+
+    private void init(String host, int port, String serviceName) {
         this.host = host;
         this.port = port;
         this.serviceName = serviceName;
@@ -82,10 +122,6 @@ public class ConnectionConfiguration implements Cloneable {
         truststoreType = "jks";
         // Set the default password of the cacert file that is "changeit"
         truststorePassword = "changeit";
-    }
-
-    public ConnectionConfiguration(String host, int port) {
-        this(host, port, host);
     }
 
     /**
