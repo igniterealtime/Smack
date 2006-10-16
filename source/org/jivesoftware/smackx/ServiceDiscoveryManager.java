@@ -185,10 +185,10 @@ public class ServiceDiscoveryManager {
                             getNodeInformationProvider(discoverItems.getNode());
                     if (nodeInformationProvider != null) {
                         // Specified node was found
-                        Iterator items = nodeInformationProvider.getNodeItems();
+                        List<DiscoverItems.Item> items = nodeInformationProvider.getNodeItems();
                         if (items != null) {
-                            while (items.hasNext()) {
-                                response.addItem((DiscoverItems.Item) items.next());
+                            for (DiscoverItems.Item item : items) {
+                                response.addItem(item);
                             }
                         }
                     } else if(discoverItems.getNode() != null) {
@@ -237,10 +237,18 @@ public class ServiceDiscoveryManager {
                                 getNodeInformationProvider(discoverInfo.getNode());
                         if (nodeInformationProvider != null) {
                             // Node was found. Add node features
-                            Iterator features = nodeInformationProvider.getNodeFeatures();
+                            List<String> features = nodeInformationProvider.getNodeFeatures();
                             if (features != null) {
-                                while (features.hasNext()) {
-                                    response.addFeature((String) features.next());
+                                for(String feature : features) {
+                                    response.addFeature(feature);
+                                }
+                            }
+                            // Add node identities
+                            List<DiscoverInfo.Identity> identities =
+                                    nodeInformationProvider.getNodeIdentities();
+                            if (identities != null) {
+                                for (DiscoverInfo.Identity identity : identities) {
+                                    response.addIdentity(identity);
                                 }
                             }
                         }

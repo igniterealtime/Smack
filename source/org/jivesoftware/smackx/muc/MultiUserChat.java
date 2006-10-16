@@ -87,16 +87,20 @@ public class MultiUserChat {
                 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
                     discoNode,
                     new NodeInformationProvider() {
-                        public Iterator<DiscoverItems.Item> getNodeItems() {
+                        public List<DiscoverItems.Item> getNodeItems() {
                             List<DiscoverItems.Item> answer = new ArrayList<DiscoverItems.Item>();
                             Iterator<String> rooms=MultiUserChat.getJoinedRooms(connection);
                             while (rooms.hasNext()) {
                                 answer.add(new DiscoverItems.Item(rooms.next()));
                             }
-                            return answer.iterator();
+                            return answer;
                         }
 
-                        public Iterator<String> getNodeFeatures() {
+                        public List<String> getNodeFeatures() {
+                            return null;
+                        }
+
+                        public List<DiscoverInfo.Identity> getNodeIdentities() {
                             return null;
                         }
                     });
