@@ -340,7 +340,9 @@ public class PacketParserUtils {
         // Parse the error type.
         XMPPError.Type errorType = XMPPError.Type.CANCEL;
         try {
-            errorType = XMPPError.Type.valueOf(type.toUpperCase());
+            if (type != null) {
+                errorType = XMPPError.Type.valueOf(type.toUpperCase());
+            }
         }
         catch (IllegalArgumentException iae) {
             // Print stack trace. We shouldn't be getting an illegal error type.

@@ -47,7 +47,7 @@ public class StringUtils {
         if (XMPPAddress == null) {
             return null;
         }
-        int atIndex = XMPPAddress.indexOf("@");
+        int atIndex = XMPPAddress.lastIndexOf("@");
         if (atIndex <= 0) {
             return "";
         }
@@ -68,13 +68,13 @@ public class StringUtils {
         if (XMPPAddress == null) {
             return null;
         }
-        int atIndex = XMPPAddress.indexOf("@");
+        int atIndex = XMPPAddress.lastIndexOf("@");
         // If the String ends with '@', return the empty string.
         if (atIndex + 1 > XMPPAddress.length()) {
             return "";
         }
         int slashIndex = XMPPAddress.indexOf("/");
-        if (slashIndex > 0) {
+        if (slashIndex > 0 && slashIndex > atIndex) {
             return XMPPAddress.substring(atIndex + 1, slashIndex);
         }
         else {
