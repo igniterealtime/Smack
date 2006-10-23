@@ -29,7 +29,7 @@
     <property name="version.minor" value="0" />
     <property name="version.revision" value="0" />
 
-    <property name="version.name" value="${version.major}.${version.minor}.${version.revision}" />
+    <property name="version.name" value="${version.major}_${version.minor}_${version.revision}" />
 
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/classes" />
