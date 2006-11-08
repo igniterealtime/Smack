@@ -24,8 +24,11 @@ import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Trust manager that checks all certificates presented by the server. This class
@@ -36,6 +39,8 @@ import java.util.Date;
  * @author Gaston Dombiak
  */
 class ServerTrustManager implements X509TrustManager {
+
+    private static Pattern cnPattern = Pattern.compile("(?i)(cn=)([^,]*)");
 
     private ConnectionConfiguration configuration;
 
@@ -74,7 +79,7 @@ class ServerTrustManager implements X509TrustManager {
 
         int nSize = x509Certificates.length;
 
-        String peerIdentity = getPeerIdentity(x509Certificates[0]);
+        List<String> peerIdentities = getPeerIdentity(x509Certificates[0]);
 
         if (configuration.isVerifyChainEnabled()) {
             // Working down the chain, for every certificate in the chain,
@@ -94,12 +99,12 @@ class ServerTrustManager implements X509TrustManager {
                         }
                         catch (GeneralSecurityException generalsecurityexception) {
                             throw new CertificateException(
-                                    "signature verification failed of " + peerIdentity);
+                                    "signature verification failed of " + peerIdentities);
                         }
                     }
                     else {
                         throw new CertificateException(
-                                "subject/issuer verification failed of " + peerIdentity);
+                                "subject/issuer verification failed of " + peerIdentities);
                     }
                 }
                 principalLast = principalSubject;
@@ -115,7 +120,7 @@ class ServerTrustManager implements X509TrustManager {
                 if (!trusted && nSize == 1 && configuration.isSelfSignedCertificateEnabled())
                 {
                     System.out.println("Accepting self-signed certificate of remote server: " +
-                            peerIdentity);
+                            peerIdentities);
                     trusted = true;
                 }
             }
@@ -123,7 +128,7 @@ class ServerTrustManager implements X509TrustManager {
                 e.printStackTrace();
             }
             if (!trusted) {
-                throw new CertificateException("root certificate not trusted of " + peerIdentity);
+                throw new CertificateException("root certificate not trusted of " + peerIdentities);
             }
         }
 
@@ -131,16 +136,16 @@ class ServerTrustManager implements X509TrustManager {
             // Verify that the first certificate in the chain corresponds to
             // the server we desire to authenticate.
             // Check if the certificate uses a wildcard indicating that subdomains are valid
-            if (peerIdentity.startsWith("*.")) {
+            if (peerIdentities.size() == 1 && peerIdentities.get(0).startsWith("*.")) {
                 // Remove the wildcard
-                peerIdentity = peerIdentity.substring(2);
+                String peerIdentity = peerIdentities.get(0).replace("*.", "");
                 // Check if the requested subdomain matches the certified domain
                 if (!server.endsWith(peerIdentity)) {
-                    throw new CertificateException("target verification failed of " + peerIdentity);
+                    throw new CertificateException("target verification failed of " + peerIdentities);
                 }
             }
-            else if (!server.equals(peerIdentity)) {
-                throw new CertificateException("target verification failed of " + peerIdentity);
+            else if (!peerIdentities.contains(server)) {
+                throw new CertificateException("target verification failed of " + peerIdentities);
             }
         }
 
@@ -170,15 +175,72 @@ class ServerTrustManager implements X509TrustManager {
      * @param x509Certificate the certificate the holds the identity of the remote server.
      * @return the identity of the remote server as defined in the specified certificate.
      */
-    public static String getPeerIdentity(X509Certificate x509Certificate) {
-        Principal principalSubject = x509Certificate.getSubjectDN();
-        // TODO Look the identity in the subjectAltName extension if available
-        String name = principalSubject.getName();
-        if (name.startsWith("CN=")) {
-            // Remove the CN= prefix
-            name = name.substring(3);
+    public static List<String> getPeerIdentity(X509Certificate x509Certificate) {
+        // Look the identity in the subjectAltName extension if available
+        List<String> names = getSubjectAlternativeNames(x509Certificate);
+        if (names.isEmpty()) {
+            String name = x509Certificate.getSubjectDN().getName();
+            Matcher matcher = cnPattern.matcher(name);
+            if (matcher.find()) {
+                name = matcher.group(2);
+            }
+            // Create an array with the unique identity
+            names = new ArrayList<String>();
+            names.add(name);
         }
-        return name;
+        return names;
+    }
+
+    /**
+     * Returns the JID representation of an XMPP entity contained as a SubjectAltName extension
+     * in the certificate. If none was found then return <tt>null</tt>.
+     *
+     * @param certificate the certificate presented by the remote entity.
+     * @return the JID representation of an XMPP entity contained as a SubjectAltName extension
+     *         in the certificate. If none was found then return <tt>null</tt>.
+     */
+    private static List<String> getSubjectAlternativeNames(X509Certificate certificate) {
+        List<String> identities = new ArrayList<String>();
+        try {
+            Collection<List<?>> altNames = certificate.getSubjectAlternativeNames();
+            // Check that the certificate includes the SubjectAltName extension
+            if (altNames == null) {
+                return Collections.emptyList();
+            }
+            // Use the type OtherName to search for the certified server name
+            /*for (List item : altNames) {
+                Integer type = (Integer) item.get(0);
+                if (type == 0) {
+                    // Type OtherName found so return the associated value
+                    try {
+                        // Value is encoded using ASN.1 so decode it to get the server's identity
+                        ASN1InputStream decoder = new ASN1InputStream((byte[]) item.toArray()[1]);
+                        DEREncodable encoded = decoder.readObject();
+                        encoded = ((DERSequence) encoded).getObjectAt(1);
+                        encoded = ((DERTaggedObject) encoded).getObject();
+                        encoded = ((DERTaggedObject) encoded).getObject();
+                        String identity = ((DERUTF8String) encoded).getString();
+                        // Add the decoded server name to the list of identities
+                        identities.add(identity);
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        // Ignore
+                    }
+                    catch (IOException e) {
+                        // Ignore
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                // Other types are not good for XMPP so ignore them
+                System.out.println("SubjectAltName of invalid type found: " + certificate);
+            }*/
+        }
+        catch (CertificateParsingException e) {
+            e.printStackTrace();
+        }
+        return identities;
     }
 
 }
