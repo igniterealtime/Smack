@@ -442,7 +442,7 @@ public class XMPPConnection {
         anonymous = false;
 
         // Stores the autentication for future reconnection
-        this.getConfiguration().setUsernameAndPassword(username, password);
+        this.getConfiguration().setLoginInfo(username, password, resource, sendPresence);
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
@@ -785,11 +785,15 @@ public class XMPPConnection {
 
     /**
      * Adds a connection listener to this connection that will be notified when
-     * the connection closes or fails.
+     * the connection closes or fails. The connection needs to already be connected
+     * or otherwise an IllegalStateException will be thrown.
      *
      * @param connectionListener a connection listener.
      */
     public void addConnectionListener(ConnectionListener connectionListener) {
+        if (!isConnected()) {
+            throw new IllegalStateException("Not connected to server.");
+        }
         if (connectionListener == null) {
             return;
         }
@@ -885,12 +889,15 @@ public class XMPPConnection {
      * @throws XMPPException if establishing a connection to the server fails.
      */
     private void initConnection() throws XMPPException {
+        boolean isFirstInitialization = packetReader == null || packetWriter == null;
+        if (!isFirstInitialization) {
+            usingCompression = false;
+        }
+
         // Set the reader and writer instance variables
         initReaderAndWriter();
 
         try {
-            boolean isFirstInitialization = packetReader == null || packetWriter == null;
-
             if (isFirstInitialization) {
                 packetWriter = new PacketWriter(this);
                 packetReader = new PacketReader(this);
@@ -1342,7 +1349,8 @@ public class XMPPConnection {
                     // Make the anonymous login
                     loginAnonymously();
                 } else {
-                    login(getConfiguration().getUsername(), getConfiguration().getPassword());
+                    login(getConfiguration().getUsername(), getConfiguration().getPassword(),
+                            getConfiguration().getResource(), getConfiguration().isSendPresence());
                 }
             } catch (XMPPException e) {
                 e.printStackTrace();

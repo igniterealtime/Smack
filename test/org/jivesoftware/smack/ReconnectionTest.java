@@ -39,6 +39,39 @@ public class ReconnectionTest extends SmackTestCase {
         executeSomeServerInteraction(connection);
     }
 
+    public void testAutomaticReconnectionWithCompression() throws Exception {
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(true);
+        config.setSASLAuthenticationEnabled(true);
+
+        XMPPConnection connection = new XMPPConnection(config);
+        // Connect to the server
+        connection.connect();
+        // Log into the server
+        connection.login(getUsername(0), getUsername(0), "MyOtherResource");
+
+        assertTrue("Failed to use compression", connection.isUsingCompression());
+
+        XMPPConnectionTestListener listener = new XMPPConnectionTestListener();
+        connection.addConnectionListener(listener);
+
+        // Simulates an error in the connection
+        connection.packetReader.notifyConnectionError(new Exception("Simulated Error"));
+        Thread.sleep(12000);
+        // After 10 seconds, the reconnection manager must reestablishes the connection
+        assertEquals("The ConnectionListener.connectionStablished() notification was not fired",
+                true, listener.reconnected);
+        assertEquals("The ConnectionListener.reconnectingIn() notification was not fired", 10,
+                listener.attemptsNotifications);
+        assertEquals("The ReconnectionManager algorithm has reconnected without waiting until 0", 0,
+                listener.remainingSeconds);
+
+        // Executes some server interaction testing the connection
+        executeSomeServerInteraction(connection);
+    }
+
     /**
      * Tests a manual reconnection.
      * Simulates a connection error, disables the reconnection mechanism and then reconnects.

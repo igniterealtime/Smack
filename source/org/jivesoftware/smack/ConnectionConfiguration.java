@@ -66,7 +66,8 @@ public class ConnectionConfiguration implements Cloneable {
     // Holds the authentication information for future reconnections
     private String username;
     private String password;
-
+    private String resource;
+    private boolean sendPresence;
     /**
      * Creates a new ConnectionConfiguration for a connection that will connect
      * to the desired service name. A DNS SRV lookup will be performed to find out the
@@ -441,21 +442,49 @@ public class ConnectionConfiguration implements Cloneable {
     public SocketFactory getSocketFactory() {
         return this.socketFactory;
     }
-    
-    protected void setUsernameAndPassword(String username, String password) {
+
+    protected void setLoginInfo(String username, String password, String resource,
+            boolean sendPresence) {
         this.username = username;
         this.password = password;
+        this.resource = resource;
+        this.sendPresence = sendPresence;
     }
-    /** 
-     * Returns the username used to login
+
+    /**
+     * Returns the username to use when trying to reconnect to the server.
+     *
+     * @return the username to use when trying to reconnect to the server.
      */
     protected String getUsername() {
         return this.username;
     }
-    /** 
-     * Returns the password used to login
+
+    /**
+     * Returns the password to use when trying to reconnect to the server.
+     *
+     * @return the password to use when trying to reconnect to the server.
      */
     protected String getPassword() {
         return this.password;
+    }
+
+
+    /**
+     * Returns the resource to use when trying to reconnect to the server.
+     *
+     * @return the resource to use when trying to reconnect to the server.
+     */
+    protected String getResource() {
+        return resource;
+    }
+
+    /**
+     * Returns true if an available presence should be sent when logging in while reconnecting.
+     *
+     * @return true if an available presence should be sent when logging in while reconnecting
+     */
+    protected boolean isSendPresence() {
+        return sendPresence;
     }
 }
