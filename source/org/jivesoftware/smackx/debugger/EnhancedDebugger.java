@@ -226,7 +226,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 });
             }
 
-            public void reconectionSuccessful() {
+            public void reconnectionSuccessful() {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         statusField.setValue("Reconnection stablished");

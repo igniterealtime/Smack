@@ -87,7 +87,7 @@ public class PrivacyListManager {
                 // ignore
             }
 
-            public void reconectionSuccessful() {
+            public void reconnectionSuccessful() {
                 // ignore
             }
         });

@@ -113,7 +113,7 @@ class RoomListenerMultiplexor implements ConnectionListener {
         // ignore
     }
 
-    public void reconectionSuccessful() {
+    public void reconnectionSuccessful() {
         // ignore
     }
 

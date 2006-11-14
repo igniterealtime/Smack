@@ -116,7 +116,7 @@ public class ConsoleDebugger implements SmackDebugger {
                         ")");
                 e.printStackTrace();
             }
-            public void reconectionSuccessful() {
+            public void reconnectionSuccessful() {
                 System.out.println(
                         dateFormatter.format(new Date()) + " Connection reconnected (" +
                         connection.hashCode() +

@@ -235,7 +235,7 @@ class PacketReader {
             // Make a copy since it's possible that a listener will be removed from the list
             listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
             for (ConnectionListener listener : listenersCopy) {
-                listener.reconectionSuccessful();
+                listener.reconnectionSuccessful();
             }
         }
 

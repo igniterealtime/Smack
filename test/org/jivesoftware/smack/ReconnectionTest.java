@@ -209,7 +209,7 @@ public class ReconnectionTest extends SmackTestCase {
 
         }
 
-        public void reconectionSuccessful() {
+        public void reconnectionSuccessful() {
             reconnected = true;
         }
 

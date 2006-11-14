@@ -234,7 +234,7 @@ public class ReconnectionManager implements ConnectionListener {
     /**
      * The connection has successfull gotten connected.
      */
-    public void reconectionSuccessful() {
+    public void reconnectionSuccessful() {
         // ignore
     }
 

@@ -161,7 +161,7 @@ public class ServiceDiscoveryManager {
                 // ignore
             }
 
-            public void reconectionSuccessful() {
+            public void reconnectionSuccessful() {
                 // ignore
             }
         });

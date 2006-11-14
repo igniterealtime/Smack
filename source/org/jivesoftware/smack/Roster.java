@@ -802,7 +802,7 @@ public class Roster implements ConnectionListener {
         // Ignore
     }
 
-    public void reconectionSuccessful() {
+    public void reconnectionSuccessful() {
         // Ignore
     }
 }
