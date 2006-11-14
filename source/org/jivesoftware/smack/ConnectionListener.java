@@ -57,11 +57,13 @@ public interface ConnectionListener {
      * The connection has reconnected successfully to the server. Connections will
      * reconnect to the server when the previous socket connection was abruptly closed.
      */
-    public void reconectionSuccessful();
+    public void reconnectionSuccessful();
     
     /**
      * An attempt to connect to the server has failed. The connection will keep trying
      * reconnecting to the server in a moment.
+     *
+     * @param e the exception that caused the reconnection to fail.
      */
     public void reconnectionFailed(Exception e);
 }
