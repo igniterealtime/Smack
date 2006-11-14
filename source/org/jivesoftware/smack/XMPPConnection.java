@@ -783,14 +783,6 @@ public class XMPPConnection {
         return packetReader.createPacketCollector(packetFilter);
     }
 
-    public PacketCollector createPacketCollector(PacketFilter packetFilter, boolean debugMode) {
-        if(debugMode) {
-            return new DebuggingPacketCollector(packetReader, packetFilter);
-        } else {
-            return packetReader.createPacketCollector(packetFilter);
-        }
-    }
-
     /**
      * Adds a connection listener to this connection that will be notified when
      * the connection closes or fails. The connection needs to already be connected
