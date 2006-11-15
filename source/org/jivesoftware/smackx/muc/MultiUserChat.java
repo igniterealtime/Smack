@@ -2622,7 +2622,7 @@ public class MultiUserChat {
             // ignore
         }
 
-        public void reconectionSuccessful() {
+        public void reconnectionSuccessful() {
             // ignore
         }
 

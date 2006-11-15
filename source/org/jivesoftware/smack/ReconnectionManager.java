@@ -1,5 +1,7 @@
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.StreamError;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,12 @@ import java.util.List;
  * Handles the automatic reconnection process. Every time a connection is dropped without
  * the application explicitly closing it, the manager automatically tries to reconnect to
  * the server.<p>
- *
+ * <p/>
  * The reconnection mechanism will try to reconnect periodically:
  * <ol>
- *      <li>First it will try 6 times every 10 seconds.
- *      <li>Then it will try 10 times every 1 minute.
- *      <li>Finally it will try indefinitely every 5 minutes.
+ * <li>First it will try 6 times every 10 seconds.
+ * <li>Then it will try 10 times every 1 minute.
+ * <li>Finally it will try indefinitely every 5 minutes.
  * </ol>
  *
  * @author Francisco Vives
@@ -218,6 +220,16 @@ public class ReconnectionManager implements ConnectionListener {
 
     public void connectionClosedOnError(Exception e) {
         done = false;
+        if (e instanceof XMPPException) {
+            XMPPException xmppEx = (XMPPException) e;
+            StreamError error = xmppEx.getStreamError();
+            String reason = error.getCode();
+
+            if ("conflict".equals(reason)) {
+                return;
+            }
+        }
+
         if (this.isReconnectionAllowed()) {
             this.reconnect();
         }
