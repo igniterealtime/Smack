@@ -223,10 +223,14 @@ public class ReconnectionManager implements ConnectionListener {
         if (e instanceof XMPPException) {
             XMPPException xmppEx = (XMPPException) e;
             StreamError error = xmppEx.getStreamError();
-            String reason = error.getCode();
 
-            if ("conflict".equals(reason)) {
-                return;
+            // Make sure the error is not null
+            if (error != null) {
+                String reason = error.getCode();
+
+                if ("conflict".equals(reason)) {
+                    return;
+                }
             }
         }
 
