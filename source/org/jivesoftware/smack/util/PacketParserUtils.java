@@ -364,7 +364,7 @@ public class PacketParserUtils {
             throws Exception
     {
         // See if a provider is registered to handle the extension.
-        Object provider = ProviderManager.getExtensionProvider(elementName, namespace);
+        Object provider = ProviderManager.getInstance().getExtensionProvider(elementName, namespace);
         if (provider != null) {
             if (provider instanceof PacketExtensionProvider) {
                 return ((PacketExtensionProvider)provider).parseExtension(parser);
@@ -438,6 +438,7 @@ public class PacketParserUtils {
      * @param type the type of the property.
      * @param value the encode String value to decode.
      * @return the String value decoded into the specified type.
+     * @throws Exception If decoding failed due to an error.
      */
     private static Object decode(Class type, String value) throws Exception {
         if (type.getName().equals("java.lang.String")) {

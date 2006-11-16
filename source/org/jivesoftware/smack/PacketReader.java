@@ -603,7 +603,7 @@ class PacketReader {
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 else {
-                    Object provider = ProviderManager.getIQProvider(elementName, namespace);
+                    Object provider = ProviderManager.getInstance().getIQProvider(elementName, namespace);
                     if (provider != null) {
                         if (provider instanceof IQProvider) {
                             iqPacket = ((IQProvider)provider).parseIQ(parser);

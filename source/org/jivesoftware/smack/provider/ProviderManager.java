@@ -105,16 +105,53 @@ import java.util.concurrent.ConcurrentHashMap;
  * set the properties of the class using the values in the packet extension sub-element. When an
  * extension provider is not registered for an element name and namespace combination, Smack will
  * store all top-level elements of the sub-packet in DefaultPacketExtension object and then
- * attach it to the packet.
+ * attach it to the packet.<p>
+ *
+ * It is possible to provide a custom provider manager instead of the default implementation
+ * provided by Smack. If you want to provide your own provider manager then you need to do it
+ * before creating any {@link org.jivesoftware.smack.XMPPConnection} by sending the static
+ * {@link #setInstance(ProviderManager)} message. Trying to change the provider manager after
+ * an XMPPConnection was created will result in an {@link IllegalStateException} error.
  *
  * @author Matt Tucker
  */
 public class ProviderManager {
 
-    private static Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
-    private static Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
+    private static ProviderManager instance;
 
-    static {
+    private Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
+    private Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
+
+    /**
+     * Returns the only ProviderManager valid instance.  Use {@link #setInstance(ProviderManager)}
+     * to configure your own provider manager. If non was provided then an instance of this
+     * class will be used.
+     *
+     * @return the only ProviderManager valid instance.
+     */
+    public static synchronized ProviderManager getInstance() {
+        if (instance == null) {
+            instance = new ProviderManager();
+        }
+        return instance;
+    }
+
+    /**
+     * Sets the only ProviderManager valid instance to be used by all XMPPConnections. If you
+     * want to provide your own provider manager then you need to do it before creating
+     * any XMPPConnection. Otherwise an IllegalStateException will be thrown.
+     *
+     * @param providerManager the only ProviderManager valid instance to be used.
+     * @throws IllegalStateException if a provider manager was already configued.
+     */
+    public static synchronized void setInstance(ProviderManager providerManager) {
+        if (instance != null) {
+            throw new IllegalStateException("ProviderManager singleton already set");
+        }
+        instance = providerManager;
+    }
+
+    protected void initialize() {
         // Load IQ processing providers.
         try {
             // Get an array of class loaders to try loading the providers files from.
@@ -155,7 +192,7 @@ public class ProviderManager {
                                             // Add the provider to the map.
                                             Class provider = Class.forName(className);
                                             if (IQProvider.class.isAssignableFrom(provider)) {
-                                                iqProviders.put(key, (IQProvider)provider.newInstance());
+                                                iqProviders.put(key, provider.newInstance());
                                             }
                                             else if (IQ.class.isAssignableFrom(provider)) {
                                                 iqProviders.put(key, provider);
@@ -243,7 +280,7 @@ public class ProviderManager {
      * @param namespace the XML namespace.
      * @return the IQ provider.
      */
-    public static Object getIQProvider(String elementName, String namespace) {
+    public Object getIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return iqProviders.get(key);
     }
@@ -255,7 +292,7 @@ public class ProviderManager {
      *
      * @return all IQProvider instances.
      */
-    public static Collection<Object> getIQProviders() {
+    public Collection<Object> getIQProviders() {
         return Collections.unmodifiableCollection(iqProviders.values());
     }
 
@@ -268,7 +305,7 @@ public class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the IQ provider.
      */
-    public static void addIQProvider(String elementName, String namespace,
+    public void addIQProvider(String elementName, String namespace,
             Object provider)
     {
         if (!(provider instanceof IQProvider || (provider instanceof Class &&
@@ -289,7 +326,7 @@ public class ProviderManager {
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
      */
-    public static void removeIQProvider(String elementName, String namespace) {
+    public void removeIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         iqProviders.remove(key);
     }
@@ -309,11 +346,11 @@ public class ProviderManager {
      *
      * <p>Note: this method is generally only called by the internal Smack classes.
      *
-     * @param elementName
-     * @param namespace
+     * @param elementName element name associated with extension provider.
+     * @param namespace namespace associated with extension provider.
      * @return the extenion provider.
      */
-    public static Object getExtensionProvider(String elementName, String namespace) {
+    public Object getExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return extensionProviders.get(key);
     }
@@ -327,7 +364,7 @@ public class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the extension provider.
      */
-    public static void addExtensionProvider(String elementName, String namespace,
+    public void addExtensionProvider(String elementName, String namespace,
             Object provider)
     {
         if (!(provider instanceof PacketExtensionProvider || provider instanceof Class)) {
@@ -346,7 +383,7 @@ public class ProviderManager {
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
      */
-    public static void removeExtensionProvider(String elementName, String namespace) {
+    public void removeExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         extensionProviders.remove(key);
     }
@@ -358,7 +395,7 @@ public class ProviderManager {
      *
      * @return all PacketExtensionProvider instances.
      */
-    public static Collection<Object> getExtensionProviders() {
+    public Collection<Object> getExtensionProviders() {
         return Collections.unmodifiableCollection(extensionProviders.values());
     }
 
@@ -369,7 +406,7 @@ public class ProviderManager {
      * @param namespace the namespace.
      * @return a unique key for the element name and namespace pair.
      */
-    private static String getProviderKey(String elementName, String namespace) {
+    private String getProviderKey(String elementName, String namespace) {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
         return buf.toString();
@@ -380,7 +417,7 @@ public class ProviderManager {
      *
      * @return an array of ClassLoader instances.
      */
-    private static ClassLoader[] getClassLoaders() {
+    private ClassLoader[] getClassLoaders() {
         ClassLoader[] classLoaders = new ClassLoader[2];
         classLoaders[0] = ProviderManager.class.getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
@@ -395,6 +432,7 @@ public class ProviderManager {
     }
 
     private ProviderManager() {
-
+        super();
+        initialize();
     }
 }
