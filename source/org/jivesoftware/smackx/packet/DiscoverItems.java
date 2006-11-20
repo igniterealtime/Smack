@@ -22,10 +22,10 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A DiscoverItems IQ packet, which is used by XMPP clients to request and receive items 
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class DiscoverItems extends IQ {
 
-    private final List<DiscoverItems.Item> items = new ArrayList<DiscoverItems.Item>();
+    private final List<Item> items = new CopyOnWriteArrayList<Item>();
     private String node;
 
     /**
@@ -59,8 +59,7 @@ public class DiscoverItems extends IQ {
      */
     public Iterator<DiscoverItems.Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList<DiscoverItems.Item>(items))
-                    .iterator();
+            return Collections.unmodifiableList(items).iterator();
         }
     }
 
@@ -100,8 +99,7 @@ public class DiscoverItems extends IQ {
         }
         buf.append(">");
         synchronized (items) {
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
+            for (Item item : items) {
                 buf.append(item.toXML());
             }
         }

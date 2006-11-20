@@ -35,7 +35,7 @@ public class DiscoverItemsProvider implements IQProvider {
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         DiscoverItems discoverItems = new DiscoverItems();
         boolean done = false;
-        DiscoverItems.Item item = null;
+        DiscoverItems.Item item;
         String jid = "";
         String name = "";
         String action = "";
@@ -44,7 +44,7 @@ public class DiscoverItemsProvider implements IQProvider {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("item")) {
+                if ("item".equals(parser.getName())) {
                     // Initialize the variables from the parsed XML
                     jid = parser.getAttributeValue("", "jid");
                     name = parser.getAttributeValue("", "name");
@@ -52,7 +52,7 @@ public class DiscoverItemsProvider implements IQProvider {
                     action = parser.getAttributeValue("", "action");
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
+                if ("item".equals(parser.getName())) {
                     // Create a new Item and add it to DiscoverItems.
                     item = new DiscoverItems.Item(jid);
                     item.setName(name);
@@ -60,7 +60,7 @@ public class DiscoverItemsProvider implements IQProvider {
                     item.setAction(action);
                     discoverItems.addItem(item);
                 }
-                if (parser.getName().equals("query")) {
+                if ("query".equals(parser.getName())) {
                     done = true;
                 }
             }

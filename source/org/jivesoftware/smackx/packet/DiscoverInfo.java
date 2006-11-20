@@ -22,10 +22,10 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A DiscoverInfo IQ packet, which is used by XMPP clients to request and receive information 
@@ -38,8 +38,8 @@ import java.util.List;
  */
 public class DiscoverInfo extends IQ {
 
-    private final List<Feature> features = new ArrayList<Feature>();
-    private final List<Identity> identities = new ArrayList<Identity>();
+    private final List<Feature> features = new CopyOnWriteArrayList<Feature>();
+    private final List<Identity> identities = new CopyOnWriteArrayList<Identity>();
     private String node;
 
     /**
@@ -48,7 +48,7 @@ public class DiscoverInfo extends IQ {
      * @param feature the discovered feature
      */
     public void addFeature(String feature) {
-        addFeature(new DiscoverInfo.Feature(feature));
+        addFeature(new Feature(feature));
     }
 
     private void addFeature(Feature feature) {
@@ -64,7 +64,7 @@ public class DiscoverInfo extends IQ {
      */
     Iterator<Feature> getFeatures() {
         synchronized (features) {
-            return Collections.unmodifiableList(new ArrayList<Feature>(features)).iterator();
+            return Collections.unmodifiableList(features).iterator();
         }
     }
 
@@ -86,7 +86,7 @@ public class DiscoverInfo extends IQ {
      */
     public Iterator<Identity> getIdentities() {
         synchronized (identities) {
-            return Collections.unmodifiableList(new ArrayList<Identity>(identities)).iterator();
+            return Collections.unmodifiableList(identities).iterator();
         }
     }
 

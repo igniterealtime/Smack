@@ -445,16 +445,24 @@ public class MultiUserChat {
 
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
-            new AndFilter(
-                new FromMatchesFilter(room + "/" + nickname),
-                new PacketTypeFilter(Presence.class));
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Send join packet.
-        connection.sendPacket(joinPresence);
-        // Wait up to a certain number of seconds for a reply.
-        Presence presence = (Presence) response.nextResult(timeout);
-        // Stop queuing results
-        response.cancel();
+                new AndFilter(
+                        new FromMatchesFilter(room + "/" + nickname),
+                        new PacketTypeFilter(Presence.class));
+        PacketCollector response = null;
+        Presence presence;
+        try {
+            response = connection.createPacketCollector(responseFilter);
+            // Send join packet.
+            connection.sendPacket(joinPresence);
+            // Wait up to a certain number of seconds for a reply.
+            presence = (Presence) response.nextResult(timeout);
+        }
+        finally {
+            // Stop queuing results
+            if (response != null) {
+                response.cancel();
+            }
+        }
 
         if (presence == null) {
             throw new XMPPException("No response from server.");
@@ -795,6 +803,9 @@ public class MultiUserChat {
 
     /**
      * Fires invitation rejection listeners.
+     *
+     * @param invitee the user being invited.
+     * @param reason the reason for the rejection
      */
     private void fireInvitationRejectionListeners(String invitee, String reason) {
         InvitationRejectionListener[] listeners;
