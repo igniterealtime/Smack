@@ -96,7 +96,7 @@ public class ReconnectionManager implements ConnectionListener {
      * </ol>
      */
     protected void reconnect() {
-        if (this.isReconnectionAllowed() && reconnectionThread == null) {
+        if (this.isReconnectionAllowed()) {
             // Since there is no thread running, creates a new one to attempt
             // the reconnection.
             reconnectionThread = new Thread() {
