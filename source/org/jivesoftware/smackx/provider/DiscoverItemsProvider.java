@@ -43,26 +43,24 @@ public class DiscoverItemsProvider implements IQProvider {
         discoverItems.setNode(parser.getAttributeValue("", "node"));
         while (!done) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if ("item".equals(parser.getName())) {
-                    // Initialize the variables from the parsed XML
-                    jid = parser.getAttributeValue("", "jid");
-                    name = parser.getAttributeValue("", "name");
-                    node = parser.getAttributeValue("", "node");
-                    action = parser.getAttributeValue("", "action");
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if ("item".equals(parser.getName())) {
-                    // Create a new Item and add it to DiscoverItems.
-                    item = new DiscoverItems.Item(jid);
-                    item.setName(name);
-                    item.setNode(node);
-                    item.setAction(action);
-                    discoverItems.addItem(item);
-                }
-                if ("query".equals(parser.getName())) {
-                    done = true;
-                }
+
+            if (eventType == XmlPullParser.START_TAG && "item".equals(parser.getName())) {
+                // Initialize the variables from the parsed XML
+                jid = parser.getAttributeValue("", "jid");
+                name = parser.getAttributeValue("", "name");
+                node = parser.getAttributeValue("", "node");
+                action = parser.getAttributeValue("", "action");
+            }
+            else if (eventType == XmlPullParser.END_TAG && "item".equals(parser.getName())) {
+                // Create a new Item and add it to DiscoverItems.
+                item = new DiscoverItems.Item(jid);
+                item.setName(name);
+                item.setNode(node);
+                item.setAction(action);
+                discoverItems.addItem(item);
+            }
+            else if (eventType == XmlPullParser.END_TAG && "query".equals(parser.getName())) {
+                done = true;
             }
         }
 
