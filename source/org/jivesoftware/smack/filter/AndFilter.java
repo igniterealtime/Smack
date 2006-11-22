@@ -22,6 +22,9 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Packet;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * Implements the logical AND operation over two or more packet filters.
  * In other words, packets pass this filter if they pass <b>all</b> of the filters.
@@ -31,38 +34,33 @@ import org.jivesoftware.smack.packet.Packet;
 public class AndFilter implements PacketFilter {
 
     /**
-     * The current number of elements in the filter.
-     */
-    private int size;
-
-    /**
      * The list of filters.
      */
-    private PacketFilter [] filters;
+    private List<PacketFilter> filters = new ArrayList<PacketFilter>();
 
     /**
      * Creates an empty AND filter. Filters should be added using the
      * {@link #addFilter(PacketFilter)} method.
      */
     public AndFilter() {
-        size = 0;
-        filters = new PacketFilter[3];
+
     }
 
     /**
-     * Creates an AND filter using the two specified filters.
+     * Creates an AND filter using the specified filters.
      *
-     * @param filter1 the first packet filter.
-     * @param filter2 the second packet filter.
+     * @param filters the filters to add.
      */
-    public AndFilter(PacketFilter filter1, PacketFilter filter2) {
-        if (filter1 == null || filter2 == null) {
-            throw new IllegalArgumentException("Parameters cannot be null.");
+    public AndFilter(PacketFilter... filters) {
+        if (filters == null) {
+            throw new IllegalArgumentException("Parameter cannot be null.");
         }
-        size = 2;
-        filters = new PacketFilter[2];
-        filters[0] = filter1;
-        filters[1] = filter2;
+        for(PacketFilter filter : filters) {
+            if(filter == null) {
+                throw new IllegalArgumentException("Parameter cannot be null.");
+            }
+            this.filters.add(filter);
+        }
     }
 
     /**
@@ -75,22 +73,12 @@ public class AndFilter implements PacketFilter {
         if (filter == null) {
             throw new IllegalArgumentException("Parameter cannot be null.");
         }
-        // If there is no more room left in the filters array, expand it.
-        if (size == filters.length) {
-            PacketFilter [] newFilters = new PacketFilter[filters.length+2];
-            for (int i=0; i<filters.length; i++) {
-                newFilters[i] = filters[i];
-            }
-            filters = newFilters;
-        }
-        // Add the new filter to the array.
-        filters[size] = filter;
-        size++;
+        filters.add(filter);
     }
 
     public boolean accept(Packet packet) {
-        for (int i=0; i<size; i++) {
-            if (!filters[i].accept(packet)) {
+        for (PacketFilter filter : filters) {
+            if (!filter.accept(packet)) {
                 return false;
             }
         }

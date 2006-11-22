@@ -66,10 +66,6 @@ import org.jivesoftware.smack.test.SmackTestCase;
  */
 public class MessageEventManagerTest extends SmackTestCase {
 
-    /**
-     * Constructor for MessageEventManagerTest.
-     * @param name
-     */
     public MessageEventManagerTest(String name) {
         super(name);
     }
@@ -83,10 +79,10 @@ public class MessageEventManagerTest extends SmackTestCase {
      */
     public void testSendMessageEventRequest() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("An interesting body comes here...");
         // Add to the message all the notifications requests (offline, delivered, displayed,
@@ -112,7 +108,7 @@ public class MessageEventManagerTest extends SmackTestCase {
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
 
         MessageEventManager messageEventManager = new MessageEventManager(getConnection(0));
         messageEventManager
@@ -139,7 +135,7 @@ public class MessageEventManagerTest extends SmackTestCase {
         });
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("An interesting body comes here...");
         // Add to the message all the notifications requests (offline, delivered, displayed,
@@ -166,8 +162,8 @@ public class MessageEventManagerTest extends SmackTestCase {
      * 5. User_2 will simulate that he/she has cancelled the reply
      */
     public void testRequestsAndNotifications() {
-        final ArrayList results = new ArrayList();
-        ArrayList resultsExpected = new ArrayList();
+        final ArrayList<String> results = new ArrayList<String>();
+        ArrayList<String> resultsExpected = new ArrayList<String>();
         resultsExpected.add("deliveredNotificationRequested");
         resultsExpected.add("composingNotificationRequested");
         resultsExpected.add("displayedNotificationRequested");
@@ -178,7 +174,7 @@ public class MessageEventManagerTest extends SmackTestCase {
         resultsExpected.add("cancelledNotification");
 
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
 
         MessageEventManager messageEventManager1 = new MessageEventManager(getConnection(0));
         messageEventManager1
@@ -241,7 +237,7 @@ public class MessageEventManagerTest extends SmackTestCase {
         });
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("An interesting body comes here...");
         // Add to the message all the notifications requests (offline, delivered, displayed,

@@ -22,8 +22,6 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -34,15 +32,12 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -148,14 +143,6 @@ public class XMPPConnection {
     Reader reader;
 
     /**
-     * A map between JIDs and the most recently created Chat object with that JID.
-     * Reference to the Chat is stored via a WeakReference so that the map
-     * does not interfere with garbage collection. The map of chats must be stored
-     * with each connection.
-     */
-    Map<String, WeakReference<Chat>> chats = new ConcurrentHashMap<String, WeakReference<Chat>>();
-
-    /**
      * Collection of available stream compression methods offered by the server.
      */
     private Collection compressionMethods;
@@ -167,6 +154,7 @@ public class XMPPConnection {
      * Holds the initial configuration used while creating the connection.
      */
     private ConnectionConfiguration configuration;
+    private ChatManager chatManager;
 
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
@@ -564,18 +552,16 @@ public class XMPPConnection {
     }
 
     /**
-     * Creates a new chat with the specified participant. The participant should
-     * be a valid XMPP user such as <tt>jdoe@jivesoftware.com</tt> or
-     * <tt>jdoe@jivesoftware.com/work</tt>.
+     * Returns a chat manager instance for this connection. The ChatManager manages all incoming and
+     * outgoing chats on the current connection.
      *
-     * @param participant the person to start the conversation with.
-     * @return a new Chat object.
+     * @return a chat manager instance for this connection.
      */
-    public Chat createChat(String participant) {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
+    public synchronized ChatManager getChatManager() {
+        if(this.chatManager == null) {
+            this.chatManager = new ChatManager(this);
         }
-        return new Chat(this, participant);
+        return this.chatManager;
     }
 
     /**
@@ -934,34 +920,6 @@ public class XMPPConnection {
                 for (ConnectionCreationListener listener : connectionEstablishedListeners) {
                     listener.connectionCreated(this);
                 }
-
-                // Add a listener for all message packets so that we can deliver errant
-                // messages to the best Chat instance available.
-                addPacketListener(new PacketListener() {
-                    public void processPacket(Packet packet) {
-                        Message message = (Message) packet;
-                        // Ignore any messages with a thread ID, as they will likely
-                        // already be associated with a Chat. This will miss messages
-                        // with new thread ID values, but we can only assume that a
-                        // listener is registered to deal with this case.
-                        if (message.getThread() == null &&
-                                message.getType() != Message.Type.GROUP_CHAT &&
-                                message.getType() != Message.Type.HEADLINE) {
-                            WeakReference<Chat> chatRef =
-                                    chats.get(StringUtils.parseBareAddress(message.getFrom()));
-                            if (chatRef != null) {
-                                // Do some extra clean-up if the reference was cleared.
-                                Chat chat = chatRef.get();
-                                if (chat == null) {
-                                    chats.remove(message.getFrom());
-                                }
-                                else {
-                                    chat.deliver(message);
-                                }
-                            }
-                        }
-                    }
-                }, new PacketTypeFilter(Message.class));
             }
             else {
                 packetReader.notifyReconnection();

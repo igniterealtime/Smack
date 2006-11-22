@@ -53,9 +53,6 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
@@ -78,10 +75,6 @@ public class MultiUserChatTest extends SmackTestCase {
 
     private MultiUserChat muc;
 
-    /**
-     * Constructor for MultiUserChatTest.
-     * @param arg0
-     */
     public MultiUserChatTest(String arg0) {
         super(arg0);
     }
@@ -440,8 +433,8 @@ public class MultiUserChatTest extends SmackTestCase {
             assertFalse("No room was found", rooms.isEmpty());
             // Check that we have discovered the room used by this test
             boolean found = false;
-            for (Iterator it = rooms.iterator(); it.hasNext();) {
-                HostedRoom hostedRoom = (HostedRoom) it.next();
+            for (Object room1 : rooms) {
+                HostedRoom hostedRoom = (HostedRoom) room1;
                 if (room.equals(hostedRoom.getJid())) {
                     found = true;
                     break;
@@ -461,14 +454,12 @@ public class MultiUserChatTest extends SmackTestCase {
             MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
 
-            getConnection(0).addPacketListener(new PacketListener() {
-                public void processPacket(Packet packet) {
-                    Message message = (Message) packet;
-                    Chat chat2 = new Chat(getConnection(0), message.getFrom(), message.getThread());
+            getConnection(0).getChatManager().addChatListener(new ChatListener() {
+                public void chatCreated(Chat chat2, boolean createdLocally) {
                     assertEquals(
                         "Sender of chat is incorrect",
                         room + "/testbot2",
-                        message.getFrom());
+                        chat2.getParticipant());
                     try {
                         chat2.sendMessage("ACK");
                     }
@@ -476,16 +467,15 @@ public class MultiUserChatTest extends SmackTestCase {
                         fail(e.getMessage());
                     }
                 }
-            },
-                new AndFilter(
-                    new MessageTypeFilter(Message.Type.CHAT),
-                    new PacketTypeFilter(Message.class)));
+            });
 
             // Start a private chat with another participant            
-            Chat chat = muc2.createPrivateChat(room + "/testbot");
+            Chat chat = muc2.createPrivateChat(room + "/testbot", null);
+            PacketCollector collector = chat.createCollector();
             chat.sendMessage("Hello there");
 
-            Message response = chat.nextMessage(2000);
+            Message response = (Message) collector.nextResult(2000);
+            assertNotNull("No response", response);
             assertEquals("Sender of response is incorrect", room + "/testbot", response.getFrom());
             assertEquals("Body of response is incorrect", "ACK", response.getBody());
 
@@ -1561,8 +1551,8 @@ public class MultiUserChatTest extends SmackTestCase {
             // Check that the owner list is correct
             Collection affiliates = muc.getOwners();
             assertEquals("Room does not have 2 owners", 2, affiliates.size());
-            for (Iterator it =affiliates.iterator(); it.hasNext();) {
-                Affiliate affiliate = (Affiliate)it.next();
+            for (Object affiliate1 : affiliates) {
+                Affiliate affiliate = (Affiliate) affiliate1;
                 if (getBareJID(0).equals(affiliate.getJid())) {
                     assertEquals("Wrong affiliation", "owner", affiliate.getAffiliation());
                     assertEquals("Wrong role", "moderator", affiliate.getRole());
@@ -1600,8 +1590,8 @@ public class MultiUserChatTest extends SmackTestCase {
             // Check that the moderator list is correct
             Collection occupants = muc.getModerators();
             assertEquals("Room does not have 2 moderators", 2, occupants.size());
-            for (Iterator it =occupants.iterator(); it.hasNext();) {
-                Occupant occupant = (Occupant)it.next();
+            for (Object occupant1 : occupants) {
+                Occupant occupant = (Occupant) occupant1;
                 if (getFullJID(0).equals(occupant.getJid())) {
                     assertEquals("Wrong affiliation", "owner", occupant.getAffiliation());
                     assertEquals("Wrong role", "moderator", occupant.getRole());
@@ -1854,7 +1844,7 @@ public class MultiUserChatTest extends SmackTestCase {
         answerForm.setAnswer("muc#roomconfig_moderatedroom", true);
         // Keep the room owner
         try {
-            List owners = new ArrayList();
+            List<String> owners = new ArrayList<String>();
             owners.add(getBareJID(0));
             answerForm.setAnswer("muc#roomconfig_roomowners", owners);
         }
@@ -1884,6 +1874,7 @@ public class MultiUserChatTest extends SmackTestCase {
             muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
         }
         catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
     }

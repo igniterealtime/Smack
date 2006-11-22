@@ -21,6 +21,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smack.filter.ThreadFilter;
 
 /**
  * Simple test to measure server performance.
@@ -35,14 +36,17 @@ public class FloodTest extends SmackTestCase {
 
     public void testMessageFlood() {
         try {
-            Chat chat11 = getConnection(0).createChat(getBareJID(1));
-            Chat chat12 = new Chat(getConnection(1), getBareJID(0), chat11.getThreadID());
+            Chat chat11 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
+            PacketCollector chat12 = getConnection(1).createPacketCollector(
+                    new ThreadFilter(chat11.getThreadID()));
 
-            Chat chat21 = getConnection(0).createChat(getBareJID(2));
-            Chat chat22 = new Chat(getConnection(2), getBareJID(0), chat21.getThreadID());
+            Chat chat21 = getConnection(0).getChatManager().createChat(getBareJID(2), null);
+            PacketCollector chat22 = getConnection(2).createPacketCollector(
+                    new ThreadFilter(chat21.getThreadID()));
 
-            Chat chat31 = getConnection(0).createChat(getBareJID(3));
-            Chat chat32 = new Chat(getConnection(3), getBareJID(0), chat31.getThreadID());
+            Chat chat31 = getConnection(0).getChatManager().createChat(getBareJID(3), null);
+            PacketCollector chat32 = getConnection(3).createPacketCollector(
+                    new ThreadFilter(chat31.getThreadID()));
 
             for (int i=0; i<500; i++) {
                 chat11.sendMessage("Hello_1" + i);
@@ -50,9 +54,9 @@ public class FloodTest extends SmackTestCase {
                 chat31.sendMessage("Hello_3" + i);
             }
             for (int i=0; i<500; i++) {
-                assertNotNull("Some message was lost (" + i + ")", chat12.nextMessage(1000));
-                assertNotNull("Some message was lost (" + i + ")", chat22.nextMessage(1000));
-                assertNotNull("Some message was lost (" + i + ")", chat32.nextMessage(1000));
+                assertNotNull("Some message was lost (" + i + ")", chat12.nextResult(1000));
+                assertNotNull("Some message was lost (" + i + ")", chat22.nextResult(1000));
+                assertNotNull("Some message was lost (" + i + ")", chat32.nextResult(1000));
             }
         }
         catch (Exception e) {

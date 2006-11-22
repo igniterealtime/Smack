@@ -54,6 +54,8 @@ package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.SmackTestCase;
 
@@ -64,10 +66,6 @@ import org.jivesoftware.smack.test.SmackTestCase;
  */
 public class FormTest extends SmackTestCase {
 
-    /**
-     * Constructor for FormTest.
-     * @param arg0
-     */
     public FormTest(String arg0) {
         super(arg0);
     }
@@ -113,10 +111,13 @@ public class FormTest extends SmackTestCase {
         formToSend.addField(field);
 
         // Create the chats between the two participants
-        Chat chat = getConnection(0).createChat(getBareJID(1));
-        Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat.getThreadID());
+        Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
+        PacketCollector collector = getConnection(0).createPacketCollector(
+                new ThreadFilter(chat.getThreadID()));
+        PacketCollector collector2 = getConnection(1).createPacketCollector(
+                new ThreadFilter(chat.getThreadID()));
 
-        Message msg = chat.createMessage();
+        Message msg = new Message();
         msg.setBody("To enter a case please fill out this form and send it back to me");
         msg.addExtension(formToSend.getDataFormToSend());
 
@@ -125,7 +126,7 @@ public class FormTest extends SmackTestCase {
             chat.sendMessage(msg);
 
             // Get the message with the form to fill out
-            Message msg2 = chat2.nextMessage(2000);
+            Message msg2 = (Message)collector2.nextResult(2000);
             // Retrieve the form to fill out
             Form formToRespond = Form.getFormFrom(msg2);
             assertNotNull(formToRespond);
@@ -148,15 +149,18 @@ public class FormTest extends SmackTestCase {
             completedForm.setAnswer("time", true);
             completedForm.setAnswer("age", 20);
             // Create a new message to send with the completed form
-            msg2 = chat2.createMessage();
+            msg2 = new Message();
+            msg2.setTo(msg.getFrom());
+            msg2.setThread(msg.getThread());
+            msg2.setType(Message.Type.chat);
             msg2.setBody("To enter a case please fill out this form and send it back to me");
             // Add the completed form to the message
             msg2.addExtension(completedForm.getDataFormToSend());
             // Send the message with the completed form
-            chat2.sendMessage(msg2);
+            getConnection(1).sendPacket(msg2);
 
             // Get the message with the completed form
-            Message msg3 = chat.nextMessage(2000);
+            Message msg3 = (Message) collector.nextResult(2000);
             // Retrieve the completed form
             completedForm = Form.getFormFrom(msg3);
             assertNotNull(completedForm);
@@ -172,6 +176,10 @@ public class FormTest extends SmackTestCase {
         }
         catch (XMPPException ex) {
             fail(ex.getMessage());
+        }
+        finally {
+            collector.cancel();
+            collector2.cancel();
         }
     }
 

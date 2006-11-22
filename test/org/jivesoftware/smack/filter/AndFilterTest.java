@@ -63,7 +63,7 @@ public class AndFilterTest extends TestCase {
     public void testNullArgs() {
         PacketFilter filter = null;
         try {
-            AndFilter and = new AndFilter(filter, filter);
+            new AndFilter(filter, filter);
             fail("Should have thrown IllegalArgumentException");
         }
         catch (IllegalArgumentException e) {

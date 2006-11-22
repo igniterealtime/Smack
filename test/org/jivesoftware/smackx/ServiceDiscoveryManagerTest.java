@@ -66,10 +66,6 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
  */
 public class ServiceDiscoveryManagerTest extends SmackTestCase {
 
-    /**
-     * Constructor for ServiceDiscoveryManagerTest.
-     * @param arg0
-     */
     public ServiceDiscoveryManagerTest(String arg0) {
         super(arg0);
     }

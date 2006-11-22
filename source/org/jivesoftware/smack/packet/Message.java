@@ -48,7 +48,7 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public class Message extends Packet {
 
-    private Type type = Type.NORMAL;
+    private Type type = Type.normal;
     private String subject = null;
     private String body = null;
     private String thread = null;
@@ -138,7 +138,8 @@ public class Message extends Packet {
 
     /**
      * Sets the body of the message. The body is the main message contents.
-     * @param body
+     * 
+     * @param body the body of the message.
      */
     public void setBody(String body) {
         this.body = body;
@@ -176,7 +177,7 @@ public class Message extends Packet {
         if (getFrom() != null) {
             buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
         }
-        if (type != Type.NORMAL) {
+        if (type != Type.normal) {
             buf.append(" type=\"").append(type).append("\"");
         }
         buf.append(">");
@@ -190,7 +191,7 @@ public class Message extends Packet {
             buf.append("<thread>").append(thread).append("</thread>");
         }
         // Append the error subpacket if the message type is an error.
-        if (type == Type.ERROR) {
+        if (type == Type.error) {
             XMPPError error = getError();
             if (error != null) {
                 buf.append(error.toXML());
@@ -205,69 +206,41 @@ public class Message extends Packet {
     /**
      * Represents the type of a message.
      */
-    public static class Type {
+    public enum Type {
 
         /**
          * (Default) a normal text message used in email like interface.
          */
-        public static final Type NORMAL = new Type("normal");
+        normal,
 
         /**
          * Typically short text message used in line-by-line chat interfaces.
          */
-        public static final Type CHAT = new Type("chat");
+        chat,
 
         /**
          * Chat message sent to a groupchat server for group chats.
          */
-        public static final Type GROUP_CHAT = new Type("groupchat");
+        groupchat,
 
         /**
          * Text message to be displayed in scrolling marquee displays.
          */
-        public static final Type HEADLINE = new Type("headline");
+        headline,
 
         /**
          * indicates a messaging error.
          */
-        public static final Type ERROR = new Type("error");
+        error;
 
-        /**
-         * Converts a String value into its Type representation.
-         *
-         * @param type the String value.
-         * @return the Type corresponding to the String.
-         */
-        public static Type fromString(String type) {
-            if (type == null) {
-                return NORMAL;
+        public static Type fromString(String name) {
+            try {
+                return Type.valueOf(name);
             }
-            type = type.toLowerCase();
-            if (CHAT.toString().equals(type)) {
-                return CHAT;
-            }
-            else if (GROUP_CHAT.toString().equals(type)) {
-                return GROUP_CHAT;
-            }
-            else if (HEADLINE.toString().equals(type)) {
-                return HEADLINE;
-            }
-            else if (ERROR.toString().equals(type)) {
-                return ERROR;
-            }
-            else {
-                return NORMAL;
+            catch (Exception e) {
+                return normal;
             }
         }
 
-        private String value;
-
-        private Type(String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
     }
 }

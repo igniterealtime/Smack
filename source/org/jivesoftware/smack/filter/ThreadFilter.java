@@ -45,11 +45,6 @@ public class ThreadFilter implements PacketFilter {
     }
 
     public boolean accept(Packet packet) {
-        if (packet instanceof Message) {
-            return thread.equals(((Message)packet).getThread());
-        }
-        else {
-            return false;
-        }
+        return packet instanceof Message && thread.equals(((Message) packet).getThread());
     }
 }

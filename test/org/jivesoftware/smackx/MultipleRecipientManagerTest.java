@@ -49,11 +49,11 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
     public void testSending() throws XMPPException {
 
         PacketCollector collector1 =
-                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector2 =
-                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector3 =
-                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
 
         Message message = new Message();
         message.setBody("Hola");
@@ -114,13 +114,13 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
      */
     public void testReplying() throws XMPPException {
         PacketCollector collector0 =
-                getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector1 =
-                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector2 =
-                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector3 =
-                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
 
         // Send the intial message with multiple recipients
         Message message = new Message();
@@ -196,11 +196,11 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
      */
     public void testNoReply() throws XMPPException {
         PacketCollector collector1 =
-                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector2 =
-                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
         PacketCollector collector3 =
-                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.NORMAL));
+                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
 
         // Send the intial message with multiple recipients
         Message message = new Message();

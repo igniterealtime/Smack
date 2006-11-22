@@ -65,10 +65,6 @@ import org.jivesoftware.smack.test.SmackTestCase;
  */
 public class MessageEventTest extends SmackTestCase {
 
-    /**
-     * Constructor for MessageEventTest.
-     * @param name
-     */
     public MessageEventTest(String name) {
         super(name);
     }
@@ -82,10 +78,10 @@ public class MessageEventTest extends SmackTestCase {
      */
     public void testSendMessageEventRequest() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("An interesting body comes here...");
         // Create a MessageEvent Package and add it to the message
@@ -118,7 +114,7 @@ public class MessageEventTest extends SmackTestCase {
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
 
         // Create a Listener that listens for Messages with the extension "jabber:x:roster"
         // This listener will listen on the conn2 and answer an ACK if everything is ok
@@ -143,7 +139,7 @@ public class MessageEventTest extends SmackTestCase {
         getConnection(0).addPacketListener(packetListener, packetFilter);
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("An interesting body comes here...");
         // Create a MessageEvent Package and add it to the message

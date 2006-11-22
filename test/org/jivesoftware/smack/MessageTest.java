@@ -48,14 +48,16 @@ public class MessageTest extends SmackTestCase {
             Thread.sleep(500);
 
             // User1 sends some messages to User2 which is not available at the moment
-            Chat chat = getConnection(0).createChat(getBareJID(1));
+            Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
+            PacketCollector collector = getConnection(1).createPacketCollector(
+                    new MessageTypeFilter(Message.Type.chat));
             chat.sendMessage("Test 1");
             chat.sendMessage("Test 2");
 
             Thread.sleep(500);
 
             // User2 becomes available again
-            PacketCollector collector = getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.CHAT));
+
             getConnection(1).sendPacket(new Presence(Presence.Type.available));
 
             // Check that offline messages are retrieved by user2 which is now available
@@ -66,7 +68,8 @@ public class MessageTest extends SmackTestCase {
             message = (Message) collector.nextResult(1000);
             assertNull(message);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
         }
@@ -84,14 +87,16 @@ public class MessageTest extends SmackTestCase {
             Thread.sleep(500);
 
             // User1 sends some messages to User2 which is not available at the moment
-            Chat chat = getConnection(0).createChat(getBareJID(1));
+            Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
+            PacketCollector collector = getConnection(1).createPacketCollector(
+                    new MessageTypeFilter(Message.Type.chat));
             chat.sendMessage("Test \f 1");
             chat.sendMessage("Test \r 1");
 
             Thread.sleep(500);
 
             // User2 becomes available again
-            PacketCollector collector = getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.CHAT));
+
             getConnection(1).sendPacket(new Presence(Presence.Type.available));
 
             // Check that offline messages are retrieved by user2 which is now available
@@ -102,7 +107,8 @@ public class MessageTest extends SmackTestCase {
             message = (Message) collector.nextResult(1000);
             assertNull(message);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
         }
@@ -114,12 +120,13 @@ public class MessageTest extends SmackTestCase {
      */
     public void testHugeMessage() {
         // User2 becomes available again
-        PacketCollector collector = getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.CHAT));
+        PacketCollector collector = getConnection(1).createPacketCollector(
+                new MessageTypeFilter(Message.Type.chat));
 
         // Create message with a body of 4K characters
-        Message msg = new Message(getFullJID(1), Message.Type.CHAT);
+        Message msg = new Message(getFullJID(1), Message.Type.chat);
         StringBuilder sb = new StringBuilder(5000);
-        for (int i=0; i<=4000; i++) {
+        for (int i = 0; i <= 4000; i++) {
             sb.append("X");
         }
         msg.setBody(sb.toString());

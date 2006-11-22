@@ -20,10 +20,6 @@ import org.jivesoftware.smackx.*;
  */
 public class RosterExchangeTest extends SmackTestCase {
 
-    /**
-     * Constructor for RosterExchangeTest.
-     * @param arg0
-     */
     public RosterExchangeTest(String arg0) {
         super(arg0);
     }
@@ -35,10 +31,10 @@ public class RosterExchangeTest extends SmackTestCase {
      */
     public void testSendRosterEntries() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("This message contains roster items.");
         // Create a RosterExchange Package and add it to the message
@@ -62,40 +58,12 @@ public class RosterExchangeTest extends SmackTestCase {
     */
     public void testSendAndReceiveRosterEntries() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
-        final Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat1.getThreadID());
-
-        // Create a Listener that listens for Messages with the extension "jabber:x:roster"
-        // This listener will listen on the conn2 and answer an ACK if everything is ok
-        PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:roster");
-        PacketListener packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Message message = (Message) packet;
-                assertNotNull("Body is null", message.getBody());
-                try {
-                    RosterExchange rosterExchange =
-                        (RosterExchange) message.getExtension("x", "jabber:x:roster");
-                    assertNotNull("Message without extension \"jabber:x:roster\"", rosterExchange);
-                    assertTrue(
-                        "Roster without entries",
-                        rosterExchange.getRosterEntries().hasNext());
-                    for (Iterator it = rosterExchange.getRosterEntries(); it.hasNext();) {
-                        RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) it.next();
-                    }
-                } catch (ClassCastException e) {
-                    fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
-                }
-                try {
-                    chat2.sendMessage("ok");
-                } catch (Exception e) {
-                    fail("An error occured sending ack " + e.getMessage());
-                }
-            }
-        };
-        getConnection(1).addPacketListener(packetListener, packetFilter);
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
+        final PacketCollector chat2 = getConnection(1).createPacketCollector(
+                new ThreadFilter(chat1.getThreadID()));
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("This message contains roster items.");
         // Create a RosterExchange Package and add it to the message
@@ -110,8 +78,20 @@ public class RosterExchangeTest extends SmackTestCase {
             fail("An error occured sending the message with the roster");
         }
         // Wait for 2 seconds for a reply
-        msg = chat1.nextMessage(2000);
-        assertNotNull("No reply received", msg);
+        Packet packet = chat2.nextResult(2000);
+        Message message = (Message) packet;
+        assertNotNull("Body is null", message.getBody());
+        try {
+            rosterExchange =
+                    (RosterExchange) message.getExtension("x", "jabber:x:roster");
+            assertNotNull("Message without extension \"jabber:x:roster\"", rosterExchange);
+            assertTrue(
+                    "Roster without entries",
+                    rosterExchange.getRosterEntries().hasNext());
+        }
+        catch (ClassCastException e) {
+            fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
+        }
     }
 
     /**
@@ -122,47 +102,12 @@ public class RosterExchangeTest extends SmackTestCase {
      */
     public void testSendAndAcceptRosterEntries() {
         // Create a chat for each connection
-        Chat chat1 = getConnection(0).createChat(getBareJID(1));
-        final Chat chat2 = new Chat(getConnection(1), getBareJID(0), chat1.getThreadID());
-
-        // Create a Listener that listens for Messages with the extension "jabber:x:roster"
-        // This listener will listen on the conn2, save the roster entries and answer an ACK if everything is ok
-        PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:roster");
-        PacketListener packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Message message = (Message) packet;
-                assertNotNull("Body is null", message.getBody());
-                try {
-                    RosterExchange rosterExchange =
-                        (RosterExchange) message.getExtension("x", "jabber:x:roster");
-                    assertNotNull("Message without extension \"jabber:x:roster\"", rosterExchange);
-                    assertTrue(
-                        "Roster without entries",
-                        rosterExchange.getRosterEntries().hasNext());
-                    // Add the roster entries to user2's roster
-                    for (Iterator it = rosterExchange.getRosterEntries(); it.hasNext();) {
-                        RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) it.next();
-                        getConnection(1).getRoster().createEntry(
-                            remoteRosterEntry.getUser(),
-                            remoteRosterEntry.getName(),
-                            remoteRosterEntry.getGroupArrayNames());
-                    }
-                } catch (ClassCastException e) {
-                    fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
-                } catch (Exception e) {
-                    fail(e.toString());
-                }
-                try {
-                    chat2.sendMessage("ok");
-                } catch (Exception e) {
-                    fail("An error occured sending ack " + e.getMessage());
-                }
-            }
-        };
-        getConnection(1).addPacketListener(packetListener, packetFilter);
+        Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
+        final PacketCollector chat2 = getConnection(1).createPacketCollector(
+                new ThreadFilter(chat1.getThreadID()));
 
         // Create the message to send with the roster
-        Message msg = chat1.createMessage();
+        Message msg = new Message();
         msg.setSubject("Any subject you want");
         msg.setBody("This message contains roster items.");
         // Create a RosterExchange Package and add it to the message
@@ -177,12 +122,32 @@ public class RosterExchangeTest extends SmackTestCase {
             fail("An error occured sending the message with the roster");
         }
         // Wait for 10 seconds for a reply
-        msg = chat1.nextMessage(5000);
-        assertNotNull("No reply received", msg);
+        Packet packet = chat2.nextResult(5000);
+        Message message = (Message) packet;
+        assertNotNull("Body is null", message.getBody());
         try {
-            Thread.sleep(200);
-        } catch (Exception e) {
+            rosterExchange =
+                    (RosterExchange) message.getExtension("x", "jabber:x:roster");
+            assertNotNull("Message without extension \"jabber:x:roster\"", rosterExchange);
+            assertTrue(
+                    "Roster without entries",
+                    rosterExchange.getRosterEntries().hasNext());
+            // Add the roster entries to user2's roster
+            for (Iterator it = rosterExchange.getRosterEntries(); it.hasNext();) {
+                RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) it.next();
+                getConnection(1).getRoster().createEntry(
+                        remoteRosterEntry.getUser(),
+                        remoteRosterEntry.getName(),
+                        remoteRosterEntry.getGroupArrayNames());
+            }
         }
+        catch (ClassCastException e) {
+            fail("ClassCastException - Most probable cause is that smack providers is misconfigured");
+        }
+        catch (Exception e) {
+            fail(e.toString());
+        }
+
         assertTrue("Roster2 has no entries", getConnection(1).getRoster().getEntryCount() > 0);
     }
 

@@ -20,15 +20,12 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.StringUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A chat is a series of messages sent between two users. Each chat has a unique
@@ -37,73 +34,28 @@ import java.util.Set;
  * don't send thread IDs at all. Therefore, if a message without a thread ID
  * arrives it is routed to the most recently created Chat with the message
  * sender.
- *
- * @see XMPPConnection#createChat(String)
+ * 
  * @author Matt Tucker
  */
 public class Chat {
 
-    /**
-     * A prefix helps to make sure that ID's are unique across mutliple instances.
-     */
-    private static String prefix = StringUtils.randomString(5);
-
-    /**
-     * Keeps track of the current increment, which is appended to the prefix to
-     * forum a unique ID.
-     */
-    private static long id = 0;
-
-    /**
-     * Returns the next unique id. Each id made up of a short alphanumeric
-     * prefix along with a unique numeric value.
-     *
-     * @return the next id.
-     */
-    private static synchronized String nextID() {
-        return prefix + Long.toString(id++);
-    }
-
-    private XMPPConnection connection;
+    private ChatManager chatManager;
     private String threadID;
     private String participant;
-    private PacketFilter messageFilter;
-    private PacketCollector messageCollector;
     private final Set<WeakReference<PacketListener>> listeners =
-            new HashSet<WeakReference<PacketListener>>();
-
-    /**
-     * Creates a new chat with the specified user.
-     *
-     * @param connection the connection the chat will use.
-     * @param participant the user to chat with.
-     */
-    public Chat(XMPPConnection connection, String participant) {
-        // Automatically assign the next chat ID.
-        this(connection, participant, nextID());
-    }
+            new CopyOnWriteArraySet<WeakReference<PacketListener>>();
 
     /**
      * Creates a new chat with the specified user and thread ID.
      *
-     * @param connection the connection the chat will use.
+     * @param chatManager the chatManager the chat will use.
      * @param participant the user to chat with.
      * @param threadID the thread ID to use.
      */
-    public Chat(XMPPConnection connection, String participant, String threadID) {
-        this.connection = connection;
+    Chat(ChatManager chatManager, String participant, String threadID) {
+        this.chatManager = chatManager;
         this.participant = participant;
         this.threadID = threadID;
-
-        // Register with the map of chats so that messages with no thread ID
-        // set will be delivered to this Chat.
-        connection.chats.put(StringUtils.parseBareAddress(participant),
-                new WeakReference<Chat>(this));
-
-        // Filter the messages whose thread equals Chat's id
-        messageFilter = new ThreadFilter(threadID);
-
-        messageCollector = connection.createPacketCollector(messageFilter);
     }
 
     /**
@@ -140,30 +92,15 @@ public class Chat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(String text) throws XMPPException {
-        Message message = createMessage();
-        message.setBody(text);
-        connection.sendPacket(message);
-    }
-
-    /**
-     * Creates a new Message to the chat participant. The message returned
-     * will have its thread property set with this chat ID.
-     *
-     * @return a new message addressed to the chat participant and
-     *      using the correct thread value.
-     * @see #sendMessage(Message)
-     */
-    public Message createMessage() {
-        Message message = new Message(participant, Message.Type.CHAT);
+        Message message = new Message(participant, Message.Type.chat);
         message.setThread(threadID);
-        return message;
+        message.setBody(text);
+        chatManager.sendMessage(this, message);
     }
 
     /**
      * Sends a message to the other chat participant. The thread ID, recipient,
-     * and message type of the message will automatically set to those of this chat
-     * in case the Message was not created using the {@link #createMessage() createMessage}
-     * method.
+     * and message type of the message will automatically set to those of this chat.
      *
      * @param message the message to send.
      * @throws XMPPException if an error occurs sending the message.
@@ -172,47 +109,9 @@ public class Chat {
         // Force the recipient, message type, and thread ID since the user elected
         // to send the message through this chat object.
         message.setTo(participant);
-        message.setType(Message.Type.CHAT);
+        message.setType(Message.Type.chat);
         message.setThread(threadID);
-        connection.sendPacket(message);
-    }
-
-    /**
-     * Polls for and returns the next message, or <tt>null</tt> if there isn't
-     * a message immediately available. This method provides significantly different
-     * functionalty than the {@link #nextMessage()} method since it's non-blocking.
-     * In other words, the method call will always return immediately, whereas the
-     * nextMessage method will return only when a message is available (or after
-     * a specific timeout).
-     *
-     * @return the next message if one is immediately available and
-     *      <tt>null</tt> otherwise.
-     */
-    public Message pollMessage() {
-        return (Message)messageCollector.pollResult();
-    }
-
-    /**
-     * Returns the next available message in the chat. The method call will block
-     * (not return) until a message is available.
-     *
-     * @return the next message.
-     */
-    public Message nextMessage() {
-        return (Message)messageCollector.nextResult();
-    }
-
-    /**
-     * Returns the next available message in the chat. The method call will block
-     * (not return) until a packet is available or the <tt>timeout</tt> has elapased.
-     * If the timeout elapses without a result, <tt>null</tt> will be returned.
-     *
-     * @param timeout the maximum amount of time to wait for the next message.
-     * @return the next message, or <tt>null</tt> if the timeout elapses without a
-     *      message becoming available.
-     */
-    public Message nextMessage(long timeout) {
-        return (Message)messageCollector.nextResult(timeout);
+        chatManager.sendMessage(this, message);
     }
 
     /**
@@ -222,12 +121,21 @@ public class Chat {
      * @param listener a packet listener.
      */
     public void addMessageListener(PacketListener listener) {
-        connection.addPacketListener(listener, messageFilter);
-        // Keep track of the listener so that we can manually deliver extra
-        // messages to it later if needed.
-        synchronized (listeners) {
-            listeners.add(new WeakReference<PacketListener>(listener));
+        if(listener == null) {
+            return;
         }
+        listeners.add(new WeakReference<PacketListener>(listener));
+    }
+
+    /**
+     * Creates a {@link org.jivesoftware.smack.PacketCollector} which will accumulate the Messages
+     * for this chat. Always cancel PacketCollectors when finished with them as they will accumulate
+     * messages indefinitely.
+     *
+     * @return the PacketCollector which returns Messages for this chat.
+     */
+    public PacketCollector createCollector() {
+        return chatManager.createPacketCollector(this);
     }
 
     /**
@@ -244,31 +152,16 @@ public class Chat {
         // probably never had one.
         message.setThread(threadID);
 
-        messageCollector.processPacket(message);
-        synchronized (listeners) {
-            for (Iterator<WeakReference<PacketListener>> i=listeners.iterator(); i.hasNext(); ) {
-                WeakReference<PacketListener> listenerRef = i.next();
-                PacketListener listener;
-                if ((listener = listenerRef.get()) != null) {
-                    listener.processPacket(message);
-                }
-                // If the reference was cleared, remove it from the set.
-                else {
-                   i.remove();
-                }
+        for (Iterator<WeakReference<PacketListener>> i = listeners.iterator(); i.hasNext();) {
+            WeakReference<PacketListener> listenerRef = i.next();
+            PacketListener listener;
+            if ((listener = listenerRef.get()) != null) {
+                listener.processPacket(message);
             }
-        }
-    }
-
-    public void finalize() throws Throwable {
-        super.finalize();
-        try {
-            if (messageCollector != null) {
-                messageCollector.cancel();
+            // If the reference was cleared, remove it from the set.
+            else {
+                i.remove();
             }
-        }
-        catch (Exception e) {
-            // Ignore.
         }
     }
 }

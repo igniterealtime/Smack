@@ -64,7 +64,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             Thread.sleep(500);
 
             // User1 sends some messages to User2 which is not available at the moment
-            Chat chat = getConnection(0).createChat(getBareJID(1));
+            Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
             chat.sendMessage("Test 1");
             chat.sendMessage("Test 2");
 
@@ -76,7 +76,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             // Check the message headers
             Iterator headers = offlineManager.getHeaders();
             assertTrue("No message header was found", headers.hasNext());
-            List stamps = new ArrayList();
+            List<String> stamps = new ArrayList<String>();
             while (headers.hasNext()) {
                 OfflineMessageHeader header = (OfflineMessageHeader) headers.next();
                 assertEquals("Incorrect sender", getFullJID(0), header.getJid());
@@ -87,7 +87,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             // Get the offline messages
             Iterator messages = offlineManager.getMessages(stamps);
             assertTrue("No message was found", messages.hasNext());
-            stamps = new ArrayList();
+            stamps = new ArrayList<String>();
             while (messages.hasNext()) {
                 Message message = (Message) messages.next();
                 OfflineMessageInfo info = (OfflineMessageInfo) message.getExtension("offline",
@@ -102,7 +102,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
 
             // User2 becomes available again
             PacketCollector collector = getConnection(1).createPacketCollector(
-                    new MessageTypeFilter(Message.Type.CHAT));
+                    new MessageTypeFilter(Message.Type.chat));
             getConnection(1).sendPacket(new Presence(Presence.Type.available));
 
             // Check that no offline messages was sent to the user
@@ -133,7 +133,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             Thread.sleep(500);
 
             // User1 sends some messages to User2 which is not available at the moment
-            Chat chat = getConnection(0).createChat(getBareJID(1));
+            Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
             chat.sendMessage("Test 1");
             chat.sendMessage("Test 2");
 
@@ -145,7 +145,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             // Get all offline messages
             Iterator messages = offlineManager.getMessages();
             assertTrue("No message was found", messages.hasNext());
-            List stamps = new ArrayList();
+            List<String> stamps = new ArrayList<String>();
             while (messages.hasNext()) {
                 Message message = (Message) messages.next();
                 OfflineMessageInfo info = (OfflineMessageInfo) message.getExtension("offline",
@@ -160,7 +160,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
 
             // User2 becomes available again
             PacketCollector collector = getConnection(1).createPacketCollector(
-                    new MessageTypeFilter(Message.Type.CHAT));
+                    new MessageTypeFilter(Message.Type.chat));
             getConnection(1).sendPacket(new Presence(Presence.Type.available));
 
             // Check that no offline messages was sent to the user
