@@ -22,9 +22,9 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Message;
 
-import java.lang.ref.WeakReference;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -42,8 +42,7 @@ public class Chat {
     private ChatManager chatManager;
     private String threadID;
     private String participant;
-    private final Set<WeakReference<PacketListener>> listeners =
-            new CopyOnWriteArraySet<WeakReference<PacketListener>>();
+    private final Set<PacketListener> listeners = new CopyOnWriteArraySet<PacketListener>();
 
     /**
      * Creates a new chat with the specified user and thread ID.
@@ -124,7 +123,20 @@ public class Chat {
         if(listener == null) {
             return;
         }
-        listeners.add(new WeakReference<PacketListener>(listener));
+        listeners.add(listener);
+    }
+
+    public void removeMessageListener(PacketListener listener) {
+        listeners.remove(listener);
+    }
+
+    /**
+     * Returns an unmodifiable collection of all of the listeners registered with this chat.
+     *
+     * @return an unmodifiable collection of all of the listeners registered with this chat.
+     */
+    public Collection<PacketListener> getListeners() {
+        return Collections.unmodifiableCollection(listeners);
     }
 
     /**
@@ -152,16 +164,8 @@ public class Chat {
         // probably never had one.
         message.setThread(threadID);
 
-        for (Iterator<WeakReference<PacketListener>> i = listeners.iterator(); i.hasNext();) {
-            WeakReference<PacketListener> listenerRef = i.next();
-            PacketListener listener;
-            if ((listener = listenerRef.get()) != null) {
-                listener.processPacket(message);
-            }
-            // If the reference was cleared, remove it from the set.
-            else {
-                i.remove();
-            }
+        for (PacketListener listener : listeners) {
+            listener.processPacket(message);
         }
     }
 }

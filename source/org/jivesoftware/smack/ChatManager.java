@@ -1,11 +1,23 @@
 /**
- * $RCSfile:  $
- * $Revision:  $
- * $Date:  $
+ * $RCSfile$
+ * $Revision: 2407 $
+ * $Date: 2004-11-02 15:37:00 -0800 (Tue, 02 Nov 2004) $
  *
- * Copyright (C) 2006 Jive Software. All rights reserved.
- * This software is the proprietary information of Jive Software. Use is subject to license terms.
+ * Copyright 2003-2004 Jive Software.
+ *
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.util.StringUtils;
@@ -20,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
  * in memory on its own so it is neccesary to keep a reference to the chat object itself. To be
- * made aware of new chats, register a listener by calling {@link #addChatListener(ChatListener)}.
+ * made aware of new chats, register a listener by calling {@link #addChatListener(ChatManagerListener)}.
  *
  * @author Alexander Wenckus
  */
@@ -58,25 +70,23 @@ public class ChatManager {
     private Map<String, Chat> jidChats = new ReferenceMap<String, Chat>(ReferenceMap.HARD,
             ReferenceMap.WEAK);
 
-    private Set<ChatListener> chatListeners = new CopyOnWriteArraySet<ChatListener>();
+    private Set<ChatManagerListener> chatManagerListeners = new CopyOnWriteArraySet<ChatManagerListener>();
 
     private XMPPConnection connection;
 
     ChatManager(XMPPConnection connection) {
         this.connection = connection;
 
-        PacketFilter filter = new AndFilter(new PacketTypeFilter(Message.class),
-                new PacketFilter() {
-
-                    public boolean accept(Packet packet) {
-                        if (!(packet instanceof Message)) {
-                            return false;
-                        }
-                        Message.Type messageType = ((Message) packet).getType();
-                        return messageType != Message.Type.groupchat &&
-                                messageType != Message.Type.headline;
-                    }
-                });
+        PacketFilter filter = new PacketFilter() {
+            public boolean accept(Packet packet) {
+                if (!(packet instanceof Message)) {
+                    return false;
+                }
+                Message.Type messageType = ((Message) packet).getType();
+                return messageType != Message.Type.groupchat &&
+                        messageType != Message.Type.headline;
+            }
+        };
         // Add a listener for all message packets so that we can deliver errant
         // messages to the best Chat instance available.
         connection.addPacketListener(new PacketListener() {
@@ -119,7 +129,7 @@ public class ChatManager {
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
 
-        for(ChatListener listener : chatListeners) {
+        for(ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
         }
 
@@ -146,8 +156,8 @@ public class ChatManager {
      *
      * @param listener the listener.
      */
-    public void addChatListener(ChatListener listener) {
-        chatListeners.add(listener);
+    public void addChatListener(ChatManagerListener listener) {
+        chatManagerListeners.add(listener);
     }
 
     /**
@@ -155,8 +165,8 @@ public class ChatManager {
      *
      * @param listener the listener that is being removed
      */
-    public void removeChatListener(ChatListener listener) {
-        chatListeners.remove(listener);
+    public void removeChatListener(ChatManagerListener listener) {
+        chatManagerListeners.remove(listener);
     }
 
     /**
@@ -166,8 +176,8 @@ public class ChatManager {
      * @return an unmodifiable collection of all chat listeners currently registered with this
      * manager.
      */
-    public Collection<ChatListener> getChatListeners() {
-        return Collections.unmodifiableCollection(chatListeners);
+    public Collection<ChatManagerListener> getChatListeners() {
+        return Collections.unmodifiableCollection(chatManagerListeners);
     }
 
     private void deliverMessage(Chat chat, Message message) {

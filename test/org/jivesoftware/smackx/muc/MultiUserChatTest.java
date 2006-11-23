@@ -454,7 +454,7 @@ public class MultiUserChatTest extends SmackTestCase {
             MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
             muc2.join("testbot2");
 
-            getConnection(0).getChatManager().addChatListener(new ChatListener() {
+            getConnection(0).getChatManager().addChatListener(new ChatManagerListener() {
                 public void chatCreated(Chat chat2, boolean createdLocally) {
                     assertEquals(
                         "Sender of chat is incorrect",

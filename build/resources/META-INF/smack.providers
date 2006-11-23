@@ -29,6 +29,13 @@
         <namespace>jabber:x:event</namespace>
         <className>org.jivesoftware.smackx.provider.MessageEventProvider</className>
     </extensionProvider>
+
+    <!-- Chat State -->
+    <!--<extensionProvider>-->
+        <!--<elementName>active</elementName>-->
+        <!--<namespace>http://jabber.org/protocol/chatstates</namespace>-->
+        <!--<className></className>-->
+    <!--</extensionProvider>-->
     
     <!-- XHTML -->
     <extensionProvider>
