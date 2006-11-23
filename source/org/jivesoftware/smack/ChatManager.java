@@ -37,6 +37,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Alexander Wenckus
  */
 public class ChatManager {
+
     /**
      * Returns the next unique id. Each id made up of a short alphanumeric
      * prefix along with a unique numeric value.
@@ -70,7 +71,11 @@ public class ChatManager {
     private Map<String, Chat> jidChats = new ReferenceMap<String, Chat>(ReferenceMap.HARD,
             ReferenceMap.WEAK);
 
-    private Set<ChatManagerListener> chatManagerListeners = new CopyOnWriteArraySet<ChatManagerListener>();
+    private Set<ChatManagerListener> chatManagerListeners
+            = new CopyOnWriteArraySet<ChatManagerListener>();
+
+    private Map<PacketInterceptor, PacketFilter> interceptors
+            = new WeakHashMap<PacketInterceptor, PacketFilter>();
 
     private XMPPConnection connection;
 
@@ -115,7 +120,7 @@ public class ChatManager {
      * @param listener the listener which will listen for new messages from this chat.
      * @return the created chat.
      */
-    public Chat createChat(String userJID, PacketListener listener) {
+    public Chat createChat(String userJID, MessageListener listener) {
         String threadID = nextID();
 
         Chat chat = createChat(userJID, threadID, true);
@@ -186,7 +191,12 @@ public class ChatManager {
     }
 
     void sendMessage(Chat chat, Message message) {
-        // Here we will run any interceptors
+        for(Map.Entry<PacketInterceptor, PacketFilter> interceptor : interceptors.entrySet()) {
+            PacketFilter filter = interceptor.getValue();
+            if(filter != null && filter.accept(message)) {
+                interceptor.getKey().interceptPacket(message);
+            }
+        }
         connection.sendPacket(message);
     }
 
@@ -195,4 +205,18 @@ public class ChatManager {
                 new FromContainsFilter(chat.getParticipant())));
     }
 
+    /**
+     * Adds an interceptor which intercepts any messages sent through chats.
+     *
+     * @param packetInterceptor the interceptor.
+     */
+    public void addOutgoingMessageInterceptor(PacketInterceptor packetInterceptor) {
+        addOutgoingMessageInterceptor(packetInterceptor, null);
+    }
+
+    public void addOutgoingMessageInterceptor(PacketInterceptor packetInterceptor, PacketFilter filter) {
+        if (packetInterceptor != null) {
+            interceptors.put(packetInterceptor, filter);
+        }
+    }
 }

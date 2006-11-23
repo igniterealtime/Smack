@@ -42,7 +42,7 @@ public class Chat {
     private ChatManager chatManager;
     private String threadID;
     private String participant;
-    private final Set<PacketListener> listeners = new CopyOnWriteArraySet<PacketListener>();
+    private final Set<MessageListener> listeners = new CopyOnWriteArraySet<MessageListener>();
 
     /**
      * Creates a new chat with the specified user and thread ID.
@@ -119,14 +119,15 @@ public class Chat {
      *
      * @param listener a packet listener.
      */
-    public void addMessageListener(PacketListener listener) {
+    public void addMessageListener(MessageListener listener) {
         if(listener == null) {
             return;
         }
+        // TODO these references should be weak.
         listeners.add(listener);
     }
 
-    public void removeMessageListener(PacketListener listener) {
+    public void removeMessageListener(MessageListener listener) {
         listeners.remove(listener);
     }
 
@@ -135,7 +136,7 @@ public class Chat {
      *
      * @return an unmodifiable collection of all of the listeners registered with this chat.
      */
-    public Collection<PacketListener> getListeners() {
+    public Collection<MessageListener> getListeners() {
         return Collections.unmodifiableCollection(listeners);
     }
 
@@ -164,8 +165,8 @@ public class Chat {
         // probably never had one.
         message.setThread(threadID);
 
-        for (PacketListener listener : listeners) {
-            listener.processPacket(message);
+        for (MessageListener listener : listeners) {
+            listener.processMessage(this, message);
         }
     }
 }

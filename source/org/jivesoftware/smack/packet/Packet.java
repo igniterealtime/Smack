@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Base class for XMPP packets. Every packet has a unique ID (which is automatically
@@ -72,7 +73,9 @@ public abstract class Packet {
     private String packetID = null;
     private String to = null;
     private String from = null;
-    private List<PacketExtension> packetExtensions = null;
+    private final List<PacketExtension> packetExtensions
+            = new CopyOnWriteArrayList<PacketExtension>();
+
     private Map<String,Object> properties = null;
     private XMPPError error = null;
 
@@ -180,8 +183,19 @@ public abstract class Packet {
     }
 
     /**
+     * Returns the first extension of this packet that has the given namespace.
+     *
+     * @param namespace the namespace of the extension that is desired.
+     * @return the packet extension with the given namespace.
+     */
+    public PacketExtension getExtension(String namespace) {
+        return getExtension(null, namespace);
+    }
+
+    /**
      * Returns the first packet extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist. Packet extensions are
+     * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null
+     * than only the provided namespace is attempted to be matched. Packet extensions are
      * are arbitrary XML sub-documents in standard XMPP packets. By default, a 
      * DefaultPacketExtension instance will be returned for each extension. However, 
      * PacketExtensionProvider instances can be registered with the 
@@ -189,16 +203,18 @@ public abstract class Packet {
      * class to handle custom parsing. In that case, the type of the Object
      * will be determined by the provider.
      *
-     * @param elementName the XML element name of the packet extension.
+     * @param elementName the XML element name of the packet extension. (May be null)
      * @param namespace the XML element namespace of the packet extension.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
-    public synchronized PacketExtension getExtension(String elementName, String namespace) {
-        if (packetExtensions == null || elementName == null || namespace == null) {
+    public PacketExtension getExtension(String elementName, String namespace) {
+        if (namespace == null) {
             return null;
         }
         for (PacketExtension ext : packetExtensions) {
-            if (elementName.equals(ext.getElementName()) && namespace.equals(ext.getNamespace())) {
+            if ((elementName == null || elementName.equals(ext.getElementName()))
+                    && namespace.equals(ext.getNamespace()))
+            {
                 return ext;
             }
         }
@@ -210,10 +226,7 @@ public abstract class Packet {
      *
      * @param extension a packet extension.
      */
-    public synchronized void addExtension(PacketExtension extension) {
-        if (packetExtensions == null) {
-            packetExtensions = new ArrayList<PacketExtension>();
-        }
+    public void addExtension(PacketExtension extension) {
         packetExtensions.add(extension);
     }
 
@@ -222,10 +235,8 @@ public abstract class Packet {
      *
      * @param extension the packet extension to remove.
      */
-    public synchronized void removeExtension(PacketExtension extension)  {
-        if (packetExtensions != null) {
-            packetExtensions.remove(extension);
-        }
+    public void removeExtension(PacketExtension extension)  {
+        packetExtensions.remove(extension);
     }
 
     /**

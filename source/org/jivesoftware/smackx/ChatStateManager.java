@@ -20,22 +20,128 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.packet.ChatStateExtension;
+
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.Collection;
 
 /**
+ * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
+ * packet extensions and the disco response neccesary for compliance with
+ * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
+ * @see org.jivesoftware.smackx.ChatState
+ * @see org.jivesoftware.smackx.packet.ChatStateExtension
+ * @author Alexander Wenckus
  */
 public class ChatStateManager {
 
+    private static Map<XMPPConnection, ChatStateManager> managers =
+            new WeakHashMap<XMPPConnection, ChatStateManager>();
+
     /**
-     * 
-     * @param currentState
-     * @param chat
+     * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
+     * not yet exist.
+     *
+     * @param connection the connection to return the ChatStateManager/
+     * @return the ChatStateManager related the the connection.
      */
-    public void setCurrentState(ChatState currentState, Chat chat) {
-        Message message = new Message();
+    public static ChatStateManager getInstance(XMPPConnection connection) {
+        ChatStateManager manager = managers.get(connection);
+        if(manager == null) {
+            manager = new ChatStateManager(connection);
+            manager.init();
+            managers.put(connection, manager);
+        }
+
+        return manager;
     }
 
+    private XMPPConnection connection;
 
+    private OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
+
+    private IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
+
+    private ChatStateManager(XMPPConnection connection) {
+        this.connection = connection;
+    }
+
+    private void init() {
+        PacketFilter filter = new NotFilter(
+                new PacketExtensionFilter("http://jabber.org/protocol/chatstates"));
+        connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor,
+                filter);
+        connection.getChatManager().addChatListener(incomingInterceptor);
+    }
+
+    /**
+     * Sets the current state of the provided chat. This method will send an empty bodied Message
+     * packet with the state attached as a {@link org.jivesoftware.smack.packet.PacketExtension}.
+     *
+     * @param newState the new state of the chat
+     * @param chat the chat.
+     * @throws org.jivesoftware.smack.XMPPException when there is an error sending the message
+     * packet.
+     */
+    public void setCurrentState(ChatState newState, Chat chat) throws XMPPException {
+        Message message = new Message();
+        ChatStateExtension extension = new ChatStateExtension(newState);
+        message.addExtension(extension);
+
+        chat.sendMessage(message);
+    }
+
+    private void fireNewChatState(Chat chat, ChatState state) {
+        Collection<MessageListener> listeners = chat.getListeners();
+        for(MessageListener listener : listeners) {
+            if(listener instanceof ChatStateListener) {
+                ((ChatStateListener)listener).stateChanged(chat, state);
+            }
+        }
+    }
+
+    private class OutgoingMessageInterceptor implements PacketInterceptor {
+
+        public void interceptPacket(Packet packet) {
+            if (!(packet instanceof Message)) {
+                return;
+            }
+            Message message = (Message)packet;
+            message.addExtension(new ChatStateExtension(ChatState.active));
+        }
+    }
+
+    private class IncomingMessageInterceptor implements ChatManagerListener, MessageListener {
+
+        public void chatCreated(final Chat chat, boolean createdLocally) {
+            chat.addMessageListener(this);
+        }
+
+        public void processMessage(Chat chat, Message message) {
+            PacketExtension extension
+                    = message.getExtension("http://jabber.org/protocol/chatstates");
+            if(extension == null) {
+                return;
+            }
+
+            ChatState state;
+            try {
+                state = ChatState.valueOf(extension.getElementName());
+            }
+            catch (Exception ex) {
+                return;
+            }
+
+            fireNewChatState(chat, state);
+        }
+    }
 }

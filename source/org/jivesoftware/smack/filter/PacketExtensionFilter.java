@@ -45,6 +45,16 @@ public class PacketExtensionFilter implements PacketFilter {
         this.namespace = namespace;
     }
 
+    /**
+     * Creates a new packet extension filter. Packets will pass the filter if they have a packet
+     * extension that matches the specified namespace.
+     *
+     * @param namespace the XML namespace of the packet extension.
+     */
+    public PacketExtensionFilter(String namespace) {
+        this(null, namespace);
+    }
+
     public boolean accept(Packet packet) {
         return packet.getExtension(elementName, namespace) != null;
     }
