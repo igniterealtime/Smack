@@ -37,9 +37,6 @@
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
     <option name="DEPLOY_AFTER_MAKE" value="0" />
-    <excludeFromCompile>
-      <file url="file://$PROJECT_DIR$/../../../SmackTester/src/LeakTest.java" />
-    </excludeFromCompile>
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -288,10 +285,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Smack.iml" filepath="$PROJECT_DIR$/Smack.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../SmackTester/SmackTester.iml" filepath="$PROJECT_DIR$/../../../SmackTester/SmackTester.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="JDK 1.5.0" />
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA 5784" project-jdk-type="IDEA JDK" />
   <component name="ProjectRunConfigurationManager" />
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
