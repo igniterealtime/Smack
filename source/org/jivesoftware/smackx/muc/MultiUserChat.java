@@ -1789,7 +1789,7 @@ public class MultiUserChat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(String text) throws XMPPException {
-        Message message = new Message(room, Message.Type.GROUP_CHAT);
+        Message message = new Message(room, Message.Type.groupchat);
         message.setBody(text);
         connection.sendPacket(message);
     }
@@ -1804,7 +1804,7 @@ public class MultiUserChat {
      * @return new Chat for sending private messages to a given room occupant.
      */
     public Chat createPrivateChat(String occupant) {
-        return new Chat(connection, occupant);
+        return connection.getChatManager().createChat(occupant, null);
     }
 
     /**
@@ -1813,7 +1813,7 @@ public class MultiUserChat {
      * @return a new Message addressed to the chat room.
      */
     public Message createMessage() {
-        return new Message(room, Message.Type.GROUP_CHAT);
+        return new Message(room, Message.Type.groupchat);
     }
 
     /**
@@ -1901,7 +1901,7 @@ public class MultiUserChat {
      *          room subject will throw an error with code 403 (i.e. Forbidden)
      */
     public void changeSubject(final String subject) throws XMPPException {
-        Message message = new Message(room, Message.Type.GROUP_CHAT);
+        Message message = new Message(room, Message.Type.groupchat);
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
         PacketFilter responseFilter =
@@ -2078,7 +2078,7 @@ public class MultiUserChat {
         messageFilter =
             new AndFilter(
                 new FromMatchesFilter(room),
-                new MessageTypeFilter(Message.Type.GROUP_CHAT));
+                new MessageTypeFilter(Message.Type.groupchat));
         messageFilter = new AndFilter(messageFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
                 Message msg = (Message) packet;
@@ -2171,7 +2171,7 @@ public class MultiUserChat {
                 MUCUser mucUser = getMUCUserExtension(packet);
                 // Check if the MUCUser informs that the invitee has declined the invitation
                 if (mucUser.getDecline() != null &&
-                        ((Message) packet).getType() != Message.Type.ERROR) {
+                        ((Message) packet).getType() != Message.Type.error) {
                     // Fire event for invitation rejection listeners
                     fireInvitationRejectionListeners(
                         mucUser.getDecline().getFrom(),
@@ -2659,7 +2659,7 @@ public class MultiUserChat {
                         (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
                     // Check if the MUCUser extension includes an invitation
                     if (mucUser.getInvite() != null &&
-                            ((Message) packet).getType() != Message.Type.ERROR) {
+                            ((Message) packet).getType() != Message.Type.error) {
                         // Fire event for invitation listeners
                         fireInvitationListeners(packet.getFrom(), mucUser.getInvite().getFrom(),
                                 mucUser.getInvite().getReason(), mucUser.getPassword(), (Message) packet);
