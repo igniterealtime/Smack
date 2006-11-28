@@ -121,11 +121,29 @@ public class ChatManager {
      * @return the created chat.
      */
     public Chat createChat(String userJID, MessageListener listener) {
-        String threadID = nextID();
+        String threadID;
+        do  {
+            threadID = nextID();
+        } while (threadChats.get(threadID) != null);
 
-        Chat chat = createChat(userJID, threadID, true);
+        return createChat(userJID, threadID, listener);
+    }
+
+    /**
+     * Creates a new chat using the specified thread ID, then returns it.
+     * 
+     * @param userJID the jid of the user this chat is with
+     * @param thread the thread of the created chat.
+     * @param listener the listener to add to the chat
+     * @return the created chat.
+     */
+    public Chat createChat(String userJID, String thread, MessageListener listener) {
+        Chat chat = threadChats.get(thread);
+        if(chat != null) {
+            throw new IllegalArgumentException("ThreadID is already used");
+        }
+        chat = createChat(userJID, thread, true);
         chat.addMessageListener(listener);
-
         return chat;
     }
 
