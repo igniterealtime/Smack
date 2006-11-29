@@ -432,19 +432,12 @@ public class Roster implements ConnectionListener {
         else {
             // Find the resource with the highest priority
             // Might be changed to use the resource with the highest availability instead.
-            Iterator<String> it = userPresences.keySet().iterator();
-            Presence p;
             Presence presence = null;
 
-            while (it.hasNext()) {
-                p = userPresences.get(it.next());
-                if (presence == null) {
+            for (String resource : userPresences.keySet()) {
+                Presence p = userPresences.get(resource);
+                if (presence == null || p.getPriority() > presence.getPriority()) {
                     presence = p;
-                }
-                else {
-                    if (p.getPriority() > presence.getPriority()) {
-                        presence = p;
-                    }
                 }
             }
             return presence;
