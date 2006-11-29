@@ -309,10 +309,10 @@ public class Roster implements ConnectionListener {
      */
     private void setOfflinePresences() {
         Presence packetUnavailable;
-        for (String user : new ArrayList<String>(presenceMap.keySet())) {
+        for (String user : presenceMap.keySet()) {
             Map<String, Presence> resources = presenceMap.get(user);
             if (resources != null) {
-                for (String resource : new ArrayList<String>(resources.keySet())) {
+                for (String resource : resources.keySet()) {
                     packetUnavailable = new Presence(Presence.Type.unavailable);
                     packetUnavailable.setFrom(user + "/" + resource);
                     presencePacket.processPacket(packetUnavailable);
