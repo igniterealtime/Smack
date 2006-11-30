@@ -1801,10 +1801,12 @@ public class MultiUserChat {
      * to the intended recipient's full JID.
      *
      * @param occupant occupant unique room JID (e.g. 'darkcave@macbeth.shakespeare.lit/Paul').
+     * @param listener the listener is a message listener that will handle messages for the newly
+     * created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
-    public Chat createPrivateChat(String occupant) {
-        return connection.getChatManager().createChat(occupant, null);
+    public Chat createPrivateChat(String occupant, MessageListener listener) {
+        return connection.getChatManager().createChat(occupant, listener);
     }
 
     /**
@@ -2516,8 +2518,8 @@ public class MultiUserChat {
 
     /**
      * An InvitationsMonitor monitors a given connection to detect room invitations. Every
-     * time the InvitationsMonitor detects a new invitation it will fire the invitation listeners. 
-     * 
+     * time the InvitationsMonitor detects a new invitation it will fire the invitation listeners.
+     *
      * @author Gaston Dombiak
      */
     private static class InvitationsMonitor implements ConnectionListener {
@@ -2534,14 +2536,14 @@ public class MultiUserChat {
 
         /**
          * Returns a new or existing InvitationsMonitor for a given connection.
-         * 
+         *
          * @param conn the connection to monitor for room invitations.
          * @return a new or existing InvitationsMonitor for a given connection.
          */
         public static InvitationsMonitor getInvitationsMonitor(XMPPConnection conn) {
             synchronized (monitors) {
                 if (!monitors.containsKey(conn)) {
-                    // We need to use a WeakReference because the monitor references the 
+                    // We need to use a WeakReference because the monitor references the
                     // connection and this could prevent the GC from collecting the monitor
                     // when no other object references the monitor
                     monitors.put(conn, new WeakReference<InvitationsMonitor>(new InvitationsMonitor(conn)));
@@ -2562,17 +2564,17 @@ public class MultiUserChat {
         }
 
         /**
-         * Adds a listener to invitation notifications. The listener will be fired anytime 
+         * Adds a listener to invitation notifications. The listener will be fired anytime
          * an invitation is received.<p>
-         * 
-         * If this is the first monitor's listener then the monitor will be initialized in 
+         *
+         * If this is the first monitor's listener then the monitor will be initialized in
          * order to start listening to room invitations.
-         * 
+         *
          * @param listener an invitation listener.
          */
         public void addInvitationListener(InvitationListener listener) {
             synchronized (invitationsListeners) {
-                // If this is the first monitor's listener then initialize the listeners 
+                // If this is the first monitor's listener then initialize the listeners
                 // on the connection to detect room invitations
                 if (invitationsListeners.size() == 0) {
                     init();
@@ -2584,13 +2586,13 @@ public class MultiUserChat {
         }
 
         /**
-         * Removes a listener to invitation notifications. The listener will be fired anytime 
+         * Removes a listener to invitation notifications. The listener will be fired anytime
          * an invitation is received.<p>
-         * 
+         *
          * If there are no more listeners to notifiy for room invitations then the monitor will
          * be stopped. As soon as a new listener is added to the monitor, the monitor will resume
          * monitoring the connection for new room invitations.
-         * 
+         *
          * @param listener an invitation listener.
          */
         public void removeInvitationListener(InvitationListener listener) {
@@ -2599,7 +2601,7 @@ public class MultiUserChat {
                     invitationsListeners.remove(listener);
                 }
                 // If there are no more listeners to notifiy for room invitations
-                // then proceed to cancel/release this monitor 
+                // then proceed to cancel/release this monitor
                 if (invitationsListeners.size() == 0) {
                     cancel();
                 }
@@ -2642,13 +2644,13 @@ public class MultiUserChat {
         }
 
         /**
-         * Initializes the listeners to detect received room invitations and to detect when the 
-         * connection gets closed. As soon as a room invitation is received the invitations 
+         * Initializes the listeners to detect received room invitations and to detect when the
+         * connection gets closed. As soon as a room invitation is received the invitations
          * listeners will be fired. When the connection gets closed the monitor will remove
-         * his listeners on the connection.       
+         * his listeners on the connection.
          */
         private void init() {
-            // Listens for all messages that include a MUCUser extension and fire the invitation 
+            // Listens for all messages that include a MUCUser extension and fire the invitation
             // listeners if the message includes an invitation.
             invitationFilter =
                 new PacketExtensionFilter("x", "http://jabber.org/protocol/muc#user");
