@@ -29,8 +29,8 @@ import org.xmlpull.v1.XmlPullParser;
  * Represents a chat state which is an extension to message packets which is used to indicate
  * the current status of a chat participant.
  *
- * @see org.jivesoftware.smackx.ChatState
  * @author Alexander Wenckus
+ * @see org.jivesoftware.smackx.ChatState
  */
 public class ChatStateExtension implements PacketExtension {
 
@@ -57,10 +57,17 @@ public class ChatStateExtension implements PacketExtension {
         return "<" + getElementName() + " xmlns=\"" + getNamespace() + "\" />";
     }
 
-    public class Provider implements PacketExtensionProvider {
+    public static class Provider implements PacketExtensionProvider {
 
         public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-            return null;
+            ChatState state;
+            try {
+                state = ChatState.valueOf(parser.getName());
+            }
+            catch (Exception ex) {
+                state = ChatState.active;
+            }
+            return new ChatStateExtension(state);
         }
     }
 }

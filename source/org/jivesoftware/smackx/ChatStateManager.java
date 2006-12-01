@@ -38,9 +38,9 @@ import java.util.Collection;
  * packet extensions and the disco response neccesary for compliance with
  * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
+ * @author Alexander Wenckus
  * @see org.jivesoftware.smackx.ChatState
  * @see org.jivesoftware.smackx.packet.ChatStateExtension
- * @author Alexander Wenckus
  */
 public class ChatStateManager {
 
@@ -51,18 +51,20 @@ public class ChatStateManager {
      * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
      * not yet exist.
      *
-     * @param connection the connection to return the ChatStateManager/
+     * @param connection the connection to return the ChatStateManager
      * @return the ChatStateManager related the the connection.
      */
-    public static ChatStateManager getInstance(XMPPConnection connection) {
-        ChatStateManager manager = managers.get(connection);
-        if(manager == null) {
-            manager = new ChatStateManager(connection);
-            manager.init();
-            managers.put(connection, manager);
-        }
+    public static ChatStateManager getInstance(final XMPPConnection connection) {
+        synchronized (connection) {
+            ChatStateManager manager = managers.get(connection);
+            if (manager == null) {
+                manager = new ChatStateManager(connection);
+                manager.init();
+                managers.put(connection, manager);
+            }
 
-        return manager;
+            return manager;
+        }
     }
 
     private XMPPConnection connection;
@@ -89,8 +91,9 @@ public class ChatStateManager {
      *
      * @param newState the new state of the chat
      * @param chat the chat.
-     * @throws org.jivesoftware.smack.XMPPException when there is an error sending the message
-     * packet.
+     * @throws org.jivesoftware.smack.XMPPException
+     *          when there is an error sending the message
+     *          packet.
      */
     public void setCurrentState(ChatState newState, Chat chat) throws XMPPException {
         Message message = new Message();
@@ -102,9 +105,9 @@ public class ChatStateManager {
 
     private void fireNewChatState(Chat chat, ChatState state) {
         Collection<MessageListener> listeners = chat.getListeners();
-        for(MessageListener listener : listeners) {
-            if(listener instanceof ChatStateListener) {
-                ((ChatStateListener)listener).stateChanged(chat, state);
+        for (MessageListener listener : listeners) {
+            if (listener instanceof ChatStateListener) {
+                ((ChatStateListener) listener).stateChanged(chat, state);
             }
         }
     }
@@ -115,7 +118,7 @@ public class ChatStateManager {
             if (!(packet instanceof Message)) {
                 return;
             }
-            Message message = (Message)packet;
+            Message message = (Message) packet;
             message.addExtension(new ChatStateExtension(ChatState.active));
         }
     }
@@ -129,7 +132,7 @@ public class ChatStateManager {
         public void processMessage(Chat chat, Message message) {
             PacketExtension extension
                     = message.getExtension("http://jabber.org/protocol/chatstates");
-            if(extension == null) {
+            if (extension == null) {
                 return;
             }
 
