@@ -30,7 +30,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
- * The single <code>PacketListener</code> used by each {@link MultiplexedMultiUserChat}
+ * The single <code>PacketListener</code> used by each {@link MultiUserChat}
  * for all basic processing of presence, and message packets targeted to that chat.
  *
  * @author Larry Kirschner
@@ -38,7 +38,7 @@ import org.jivesoftware.smack.packet.Presence;
 class PacketMultiplexListener implements PacketListener {
 
     private static final PacketFilter MESSAGE_FILTER =
-            new MessageTypeFilter(Message.Type.GROUP_CHAT);
+            new MessageTypeFilter(Message.Type.groupchat);
     private static final PacketFilter PRESENCE_FILTER = new PacketTypeFilter(Presence.class);
     private static final PacketFilter SUBJECT_FILTER = new PacketFilter() {
         public boolean accept(Packet packet) {
