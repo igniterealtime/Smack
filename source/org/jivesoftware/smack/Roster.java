@@ -587,7 +587,7 @@ public class Roster implements ConnectionListener {
                 Map<String, Presence> userPresences;
                 // Get the user presence map
                 if (presenceMap.get(key) == null) {
-                    userPresences = new HashMap<String, Presence>();
+                    userPresences = new ConcurrentHashMap<String, Presence>();
                     presenceMap.put(key, userPresences);
                 }
                 else {
