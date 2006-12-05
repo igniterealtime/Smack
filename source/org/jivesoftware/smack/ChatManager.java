@@ -106,6 +106,10 @@ public class ChatManager {
                 }
                 else {
                     chat = getThreadChat(message.getThread());
+                    if (chat == null) {
+                        // Try to locate the chat based on the sender of the message
+                        chat = getUserChat(StringUtils.parseBareAddress(message.getFrom()));
+                    }
                 }
 
                 if(chat == null) {
