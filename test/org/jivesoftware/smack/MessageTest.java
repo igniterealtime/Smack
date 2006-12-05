@@ -77,9 +77,12 @@ public class MessageTest extends SmackTestCase {
 
     /**
      * Send messages with invalid XML characters to offline users. Check that offline users
-     * are receiving them from the server.
+     * are receiving them from the server.<p>
+     *
+     * Test case commented out since some servers may just close the connection while others
+     * are more tolerant and accept stanzas with invalid XML characters.
      */
-    public void testOfflineMessageInvalidXML() {
+    /*public void testOfflineMessageInvalidXML() {
         // Make user2 unavailable
         getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
 
@@ -112,7 +115,7 @@ public class MessageTest extends SmackTestCase {
             e.printStackTrace();
             fail(e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Check that two clients are able to send messages with a body of 4K characters and their
