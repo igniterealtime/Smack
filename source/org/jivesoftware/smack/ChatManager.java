@@ -20,11 +20,14 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.collections.ReferenceMap;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromContainsFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.collections.ReferenceMap;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -214,6 +217,10 @@ public class ChatManager {
             if(filter != null && filter.accept(message)) {
                 interceptor.getKey().interceptPacket(message);
             }
+        }
+        // Ensure that messages being sent have a proper FROM value
+        if (message.getFrom() == null) {
+            message.setFrom(connection.getUser());
         }
         connection.sendPacket(message);
     }
