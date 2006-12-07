@@ -60,18 +60,19 @@ import junit.framework.TestCase;
 public class CacheTest extends TestCase {
 
     public void testMaxSize() {
-        Cache cache = new Cache(100, -1);
-        for (int i=0; i<1000; i++) {
-            cache.put(new Integer(i), "value");
+        Cache<Integer, String> cache = new Cache<Integer, String>(100, -1);
+        for (int i=0; i < 1000; i++) {
+            cache.put(i, "value");
             assertTrue("Cache size must never be larger than 100.", cache.size() <= 100);
         }
     }
 
     public void testLRU() {
-        Cache cache = new Cache(100, -1);
-        for (int i=0; i<1000; i++) {
-            cache.put(new Integer(i), "value");
-            assertTrue("LRU algorithm for cache key of '0' failed.", cache.get(new Integer(0)) != null);
+        Cache<Integer, String> cache = new Cache<Integer, String>(100, -1);
+        for (int i=0; i < 1000; i++) {
+            cache.put(i, "value");
+            assertTrue("LRU algorithm for cache key of '0' failed.",
+                    cache.get(new Integer(0)) != null);
         }
     }
 }

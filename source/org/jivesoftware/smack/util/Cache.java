@@ -19,6 +19,8 @@
 
 package org.jivesoftware.smack.util;
 
+import org.jivesoftware.smack.util.collections.AbstractMapEntry;
+
 import java.util.*;
 
 /**
@@ -46,12 +48,12 @@ import java.util.*;
  *
  * @author Matt Tucker
  */
-public class Cache implements Map {
+public class Cache<K, V> implements Map<K, V> {
 
     /**
      * The map the keys and values are stored in.
      */
-    protected Map map;
+    protected Map<K, CacheObject<V>> map;
 
     /**
      * Linked list to maintain order that cache objects are accessed
@@ -103,20 +105,20 @@ public class Cache implements Map {
 
         // Our primary data structure is a hash map. The default capacity of 11
         // is too small in almost all cases, so we set it bigger.
-        map = new HashMap(103);
+        map = new HashMap<K, CacheObject<V>>(103);
 
         lastAccessedList = new LinkedList();
         ageList = new LinkedList();
     }
 
-    public synchronized Object put(Object key, Object value) {
-        Object oldValue = null;
+    public synchronized V put(K key, V value) {
+        V oldValue = null;
         // Delete an old entry if it exists.
         if (map.containsKey(key)) {
             oldValue = remove(key, true);
         }
 
-        CacheObject cacheObject = new CacheObject(value);
+        CacheObject<V> cacheObject = new CacheObject<V>(value);
         map.put(key, cacheObject);
         // Make an entry into the cache order list.
         // Store the cache order list entry so that we can get back to it
@@ -133,12 +135,12 @@ public class Cache implements Map {
         return oldValue;
     }
 
-    public synchronized Object get(Object key) {
+    public synchronized V get(Object key) {
         // First, clear all entries that have been in cache longer than the
         // maximum defined age.
         deleteExpiredEntries();
 
-        CacheObject cacheObject = (CacheObject) map.get(key);
+        CacheObject<V> cacheObject = map.get(key);
         if (cacheObject == null) {
             // The object didn't exist in cache, so increment cache misses.
             cacheMisses++;
@@ -157,7 +159,7 @@ public class Cache implements Map {
         return cacheObject.object;
     }
 
-    public synchronized Object remove(Object key) {
+    public synchronized V remove(Object key) {
         return remove(key, false);
     }
 
@@ -165,8 +167,9 @@ public class Cache implements Map {
      * Remove operation with a flag so we can tell coherence if the remove was
      * caused by cache internal processing such as eviction or loading
      */
-    public synchronized Object remove(Object key, boolean internal) {
-        CacheObject cacheObject = (CacheObject) map.remove(key);
+    public synchronized V remove(Object key, boolean internal) {
+        //noinspection SuspiciousMethodCalls
+        CacheObject<V> cacheObject =  map.remove(key);
         // If the object is not in cache, stop trying to remove it.
         if (cacheObject == null) {
             return null;
@@ -183,8 +186,8 @@ public class Cache implements Map {
 
     public synchronized void clear() {
         Object[] keys = map.keySet().toArray();
-        for (int i = 0; i < keys.length; i++) {
-            remove(keys[i]);
+        for (Object key : keys) {
+            remove(key);
         }
 
         // Now, reset all containers.
@@ -212,17 +215,35 @@ public class Cache implements Map {
         return map.isEmpty();
     }
 
-    public synchronized Collection values() {
+    public synchronized Collection<V> values() {
         // First, clear all entries that have been in cache longer than the
         // maximum defined age.
         deleteExpiredEntries();
 
-        Object[] cacheObjects = map.values().toArray();
-        Object[] values = new Object[cacheObjects.length];
-        for (int i = 0; i < cacheObjects.length; i++) {
-            values[i] = ((CacheObject) cacheObjects[i]).object;
-        }
-        return Collections.unmodifiableList(Arrays.asList(values));
+        return Collections.unmodifiableCollection(new AbstractCollection<V>() {
+            Collection<CacheObject<V>> values = map.values();
+            public Iterator<V> iterator() {
+                return new Iterator<V>() {
+                    Iterator<CacheObject<V>> it = values.iterator();
+
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    public V next() {
+                        return it.next().object;
+                    }
+
+                    public void remove() {
+                        it.remove();
+                    }
+                };
+            }
+
+            public int size() {
+                return values.size();
+            }
+        });
     }
 
     public synchronized boolean containsKey(Object key) {
@@ -233,15 +254,15 @@ public class Cache implements Map {
         return map.containsKey(key);
     }
 
-    public void putAll(Map map) {
-        for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            Object value = entry.getValue();
+    public void putAll(Map<? extends K, ? extends V> map) {
+        for (Entry<? extends K, ? extends V> entry : map.entrySet()) {
+            V value = entry.getValue();
             // If the map is another DefaultCache instance than the
             // entry values will be CacheObject instances that need
             // to be converted to the normal object form.
             if (value instanceof CacheObject) {
-                value = ((CacheObject) value).object;
+                //noinspection unchecked
+                value = ((CacheObject<V>) value).object;
             }
             put(entry.getKey(), value);
         }
@@ -252,12 +273,13 @@ public class Cache implements Map {
         // maximum defined age.
         deleteExpiredEntries();
 
-        CacheObject cacheObject = new CacheObject(value);
+        //noinspection unchecked
+        CacheObject<V> cacheObject = new CacheObject<V>((V) value);
 
         return map.containsValue(cacheObject);
     }
 
-    public synchronized Set entrySet() {
+    public synchronized Set<Map.Entry<K, V>> entrySet() {
         // Warning -- this method returns CacheObject instances and not Objects
         // in the same form they were put into cache.
 
@@ -265,10 +287,40 @@ public class Cache implements Map {
         // maximum defined age.
         deleteExpiredEntries();
 
-        return Collections.unmodifiableSet(map.entrySet());
+        return new AbstractSet<Map.Entry<K, V>>() {
+            private final Set<Map.Entry<K, CacheObject<V>>> set = map.entrySet();
+
+            public Iterator<Entry<K, V>> iterator() {
+                return new Iterator<Entry<K, V>>() {
+                    private final Iterator<Entry<K, CacheObject<V>>> it = set.iterator();
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    public Entry<K, V> next() {
+                        Map.Entry<K, CacheObject<V>> entry = it.next();
+                        return new AbstractMapEntry<K, V>(entry.getKey(), entry.getValue().object) {
+                            @Override
+                            public V setValue(V value) {
+                                throw new UnsupportedOperationException("Cannot set");
+                            }
+                        };
+                    }
+
+                    public void remove() {
+                        it.remove();
+                    }
+                };
+
+            }
+
+            public int size() {
+                return set.size();
+            }
+        };
     }
 
-    public synchronized Set keySet() {
+    public synchronized Set<K> keySet() {
         // First, clear all entries that have been in cache longer than the
         // maximum defined age.
         deleteExpiredEntries();
@@ -381,12 +433,12 @@ public class Cache implements Map {
      *
      * This class is optimized for speed rather than strictly correct encapsulation.
      */
-    private static class CacheObject {
+    private static class CacheObject<V> {
 
        /**
         * Underlying object wrapped by the CacheObject.
         */
-        public Object object;
+        public V object;
 
         /**
          * A reference to the node in the cache order list. We keep the reference
@@ -413,7 +465,7 @@ public class Cache implements Map {
          *
          * @param object the underlying Object to wrap.
          */
-        public CacheObject(Object object) {
+        public CacheObject(V object) {
             this.object = object;
         }
 
@@ -427,11 +479,8 @@ public class Cache implements Map {
 
             final CacheObject cacheObject = (CacheObject) o;
 
-            if (!object.equals(cacheObject.object)) {
-                return false;
-            }
+            return object.equals(cacheObject.object);
 
-            return true;
         }
 
         public int hashCode() {
@@ -489,6 +538,7 @@ public class Cache implements Map {
          * Adds a node to the beginning of the list.
          *
          * @param node the node to add to the beginning of the list.
+         * @return the node
          */
         public LinkedListNode addFirst(LinkedListNode node) {
             node.next = head.next;
