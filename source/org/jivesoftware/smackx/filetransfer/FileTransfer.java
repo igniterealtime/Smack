@@ -184,13 +184,13 @@ public abstract class FileTransfer {
 		this.exception = exception;
 	}
 
-	protected final void setStatus(Status status) {
+	protected void setStatus(Status status) {
         synchronized (statusMonitor) {
 		    this.status = status;
 	    }
     }
 
-    protected final boolean updateStatus(Status oldStatus, Status newStatus) {
+    protected boolean updateStatus(Status oldStatus, Status newStatus) {
         synchronized (statusMonitor) {
             if (oldStatus != status) {
                 return false;

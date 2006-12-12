@@ -35,18 +35,19 @@ import java.io.*;
 public class OutgoingFileTransfer extends FileTransfer {
 
 	private static int RESPONSE_TIMEOUT = 60 * 1000;
+    private NegotiationProgress callback;
 
-	/**
-	 * Returns the time in milliseconds after which the file transfer
-	 * negotiation process will timeout if the other user has not responded.
-	 *
-	 * @return Returns the time in milliseconds after which the file transfer
-	 *         negotiation process will timeout if the remote user has not
-	 *         responded.
-	 */
-	public static int getResponseTimeout() {
-		return RESPONSE_TIMEOUT;
-	}
+    /**
+     * Returns the time in milliseconds after which the file transfer
+     * negotiation process will timeout if the other user has not responded.
+     *
+     * @return Returns the time in milliseconds after which the file transfer
+     *         negotiation process will timeout if the remote user has not
+     *         responded.
+     */
+    public static int getResponseTimeout() {
+        return RESPONSE_TIMEOUT;
+    }
 
 	/**
 	 * Sets the time in milliseconds after which the file transfer negotiation
@@ -129,10 +130,8 @@ public class OutgoingFileTransfer extends FileTransfer {
 
 	/**
 	 * This methods handles the transfer and stream negotiation process. It
-	 * returns immediately and its progress can be monitored through the
-	 * {@link NegotiationProgress} callback. When the negotiation process is
-	 * complete the OutputStream can be retrieved from the callback via the
-	 * {@link NegotiationProgress#getOutputStream()} method.
+	 * returns immediately and its progress will be updated through the
+	 * {@link NegotiationProgress} callback.
 	 *
 	 * @param fileName
 	 *            The name of the file that will be transmitted. It is
@@ -149,20 +148,26 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 */
 	public synchronized void sendFile(final String fileName,
 			final long fileSize, final String description,
-			NegotiationProgress progress) {
-		checkTransferThread();
+			final NegotiationProgress progress)
+    {
+        if(progress == null) {
+            throw new IllegalArgumentException("Callback progress cannot be null.");
+        }
+        checkTransferThread();
 		if (isDone() || outputStream != null) {
 			throw new IllegalStateException(
 					"The negotation process has already"
 							+ " been attempted for this file transfer");
 		}
-		progress.delegate = this;
-		transferThread = new Thread(new Runnable() {
+        this.callback = progress;
+        transferThread = new Thread(new Runnable() {
 			public void run() {
 				try {
 					OutgoingFileTransfer.this.outputStream = negotiateStream(
 							fileName, fileSize, description);
-				} catch (XMPPException e) {
+                    progress.outputStreamEstablished(OutgoingFileTransfer.this.outputStream);
+                }
+                catch (XMPPException e) {
 					handleXMPPException(e);
 				}
 			}
@@ -177,7 +182,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 		}
 	}
 
-	/**
+    /**
 	 * This method handles the stream negotiation process and transmits the file
 	 * to the remote user. It returns immediatly and the progress of the file
 	 * transfer can be monitored through several methods:
@@ -188,6 +193,8 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * <LI>{@link FileTransfer#isDone()}
 	 * </UL>
 	 *
+     * @param file the file to transfer to the remote entity.
+     * @param description a description for the file to transfer.
 	 * @throws XMPPException
 	 *             If there is an error during the negotiation process or the
 	 *             sending of the file.
@@ -249,19 +256,23 @@ public class OutgoingFileTransfer extends FileTransfer {
 	}
 
 	private void handleXMPPException(XMPPException e) {
-		setStatus(FileTransfer.Status.error);
 		XMPPError error = e.getXMPPError();
 		if (error != null) {
 			int code = error.getCode();
 			if (code == 403) {
 				setStatus(Status.refused);
 				return;
-			} else if (code == 400) {
+			}
+            else if (code == 400) {
 				setStatus(Status.error);
 				setError(Error.not_acceptable);
-			}
-		}
-		setException(e);
+            }
+            else {
+                setStatus(FileTransfer.Status.error);
+            }
+        }
+
+        setException(e);
 	}
 
 	/**
@@ -313,43 +324,64 @@ public class OutgoingFileTransfer extends FileTransfer {
 		setStatus(Status.cancelled);
 	}
 
-	/**
+    @Override
+    protected boolean updateStatus(Status oldStatus, Status newStatus) {
+        boolean isUpdated = super.updateStatus(oldStatus, newStatus);
+        if(callback != null && isUpdated) {
+            callback.statusUpdated(oldStatus, newStatus);
+        }
+        return isUpdated;
+    }
+
+    @Override
+    protected void setStatus(Status status) {
+        Status oldStatus = getStatus();
+        super.setStatus(status);
+        if(callback != null) {
+            callback.statusUpdated(oldStatus, status);
+        }
+    }
+
+    @Override
+    protected void setException(Exception exception) {
+        super.setException(exception);
+        if(callback != null) {
+            callback.errorEstablishingStream(exception);
+        }
+    }
+
+    /**
 	 * A callback class to retrive the status of an outgoing transfer
 	 * negotiation process.
 	 *
 	 * @author Alexander Wenckus
 	 *
 	 */
-	public static class NegotiationProgress {
-
-		private OutgoingFileTransfer delegate;
+	public interface NegotiationProgress {
 
 		/**
-		 * Returns the current status of the negotiation process.
-		 *
-		 * @return Returns the current status of the negotiation process.
-		 */
-		public Status getStatus() {
-			if (delegate == null) {
-				throw new IllegalStateException("delegate not yet set");
-			}
-			return delegate.getStatus();
-		}
+		 * Called when the status changes
+         *
+         * @param oldStatus the previous status of the file transfer.
+         * @param newStatus the new status of the file transfer.
+         */
+		void statusUpdated(Status oldStatus, Status newStatus);
 
 		/**
 		 * Once the negotiation process is completed the output stream can be
 		 * retrieved.
-		 *
-		 * @return Once the negotiation process is completed the output stream
-		 *         can be retrieved.
-		 *
+         *
+         * @param stream the established stream which can be used to transfer the file to the remote
+         * entity
 		 */
-		public OutputStream getOutputStream() {
-			if (delegate == null) {
-				throw new IllegalStateException("delegate not yet set");
-			}
-			return delegate.getOutputStream();
-		}
-	}
+		void outputStreamEstablished(OutputStream stream);
+
+        /**
+         * Called when an exception occurs during the negotiation progress.
+         *
+         * @param e the exception that occured.
+         */
+        void errorEstablishingStream(Exception e);
+    }
 
 }
