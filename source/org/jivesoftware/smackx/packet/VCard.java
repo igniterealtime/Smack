@@ -471,7 +471,7 @@ public class VCard extends IQ {
      * @throws XMPPException thrown if there was an issue setting the VCard in the server.
      */
     public void save(XMPPConnection connection) throws XMPPException {
-        checkAuthenticated(connection);
+        checkAuthenticated(connection, true);
 
         setType(IQ.Type.SET);
         setFrom(connection.getUser());
@@ -495,7 +495,7 @@ public class VCard extends IQ {
      * and not anonymous.
      */
     public void load(XMPPConnection connection) throws XMPPException {
-        checkAuthenticated(connection);
+        checkAuthenticated(connection, true);
 
         setFrom(connection.getUser());
         doLoad(connection, connection.getUser());
@@ -505,7 +505,7 @@ public class VCard extends IQ {
      * Load VCard information for a given user. Connection should be authenticated and not anonymous.
      */
     public void load(XMPPConnection connection, String user) throws XMPPException {
-        checkAuthenticated(connection);
+        checkAuthenticated(connection, false);
 
         setTo(user);
         doLoad(connection, user);
@@ -561,14 +561,14 @@ public class VCard extends IQ {
         }
     }
 
-    private void checkAuthenticated(XMPPConnection connection) {
+    private void checkAuthenticated(XMPPConnection connection, boolean checkForAnonymous) {
         if (connection == null) {
             throw new IllegalArgumentException("No connection was provided");
         }
         if (!connection.isAuthenticated()) {
             throw new IllegalArgumentException("Connection is not authenticated");
         }
-        if (connection.isAnonymous()) {
+        if (checkForAnonymous && connection.isAnonymous()) {
             throw new IllegalArgumentException("Connection cannot be anonymous");
         }
     }
