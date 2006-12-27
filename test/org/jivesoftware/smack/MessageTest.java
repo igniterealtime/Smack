@@ -37,10 +37,37 @@ public class MessageTest extends SmackTestCase {
     }
 
     /**
+     * Will a user recieve a message from another after only sending the user a directed presence,
+     * or will Wildfire intercept for offline storage?
+     */
+    public void testDirectPresence() {
+        getConnection(1).sendPacket(new Presence(Presence.Type.available));
+
+        Presence presence = new Presence(Presence.Type.available);
+        presence.setTo(getFullJID(1));
+        getConnection(0).sendPacket(presence);
+
+        PacketCollector collector = getConnection(0)
+                .createPacketCollector(new MessageTypeFilter(Message.Type.chat));
+        try {
+            getConnection(1).getChatManager().createChat(getBareJID(0), null).sendMessage("Test 1");
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+        Message message = (Message) collector.nextResult(2500);
+        assertNotNull("Message not recieved from remote user", message);
+    }
+
+    /**
      * Check that when a client becomes unavailable all messages sent to the client are stored offline. So that when
      * the client becomes available again the offline messages are received.
      */
     public void testOfflineMessage() {
+        getConnection(0).sendPacket(new Presence(Presence.Type.available));
+        getConnection(1).sendPacket(new Presence(Presence.Type.available));
         // Make user2 unavailable
         getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
 
@@ -122,6 +149,8 @@ public class MessageTest extends SmackTestCase {
      * connections are not being closed.
      */
     public void testHugeMessage() {
+        getConnection(0).sendPacket(new Presence(Presence.Type.available));
+        getConnection(1).sendPacket(new Presence(Presence.Type.available));
         // User2 becomes available again
         PacketCollector collector = getConnection(1).createPacketCollector(
                 new MessageTypeFilter(Message.Type.chat));
@@ -153,5 +182,11 @@ public class MessageTest extends SmackTestCase {
 
     protected int getMaxConnections() {
         return 2;
+    }
+
+
+    @Override
+    protected boolean sendInitialPresence() {
+        return false;
     }
 }

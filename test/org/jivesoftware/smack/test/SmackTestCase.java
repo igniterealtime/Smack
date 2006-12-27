@@ -60,7 +60,7 @@ public abstract class SmackTestCase extends TestCase {
 
     /**
      * Constructor for SmackTestCase.
-     * @param arg0
+     * @param arg0 arg for SmackTestCase
      */
     public SmackTestCase(String arg0) {
         super(arg0);
@@ -216,7 +216,7 @@ public abstract class SmackTestCase extends TestCase {
                     }
                 }
                 // Login with the new test account
-                getConnection(i).login("user" + i, "user" + i);
+                getConnection(i).login("user" + i, "user" + i, "smack", sendInitialPresence());
             }
             // Let the server process the available presences
             Thread.sleep(150);
@@ -238,6 +238,10 @@ public abstract class SmackTestCase extends TestCase {
                 getConnection(i).disconnect();
             }
         }
+    }
+
+    protected boolean sendInitialPresence() {
+        return true;
     }
 
     /**
@@ -269,6 +273,7 @@ public abstract class SmackTestCase extends TestCase {
             }
         }
         catch (Exception e) {
+            /* Do Nothing */
         }
     }
 
@@ -320,6 +325,7 @@ public abstract class SmackTestCase extends TestCase {
                 systemStream.close();
             }
             catch (Exception e) {
+                /* Do Nothing */
             }
         }
         return parsedOK;
