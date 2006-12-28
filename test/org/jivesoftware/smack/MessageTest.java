@@ -44,7 +44,7 @@ public class MessageTest extends SmackTestCase {
         getConnection(1).sendPacket(new Presence(Presence.Type.available));
 
         Presence presence = new Presence(Presence.Type.available);
-        presence.setTo(getFullJID(1));
+        presence.setTo(getBareJID(1));
         getConnection(0).sendPacket(presence);
 
         PacketCollector collector = getConnection(0)
