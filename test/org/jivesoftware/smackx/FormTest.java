@@ -53,8 +53,8 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -127,6 +127,7 @@ public class FormTest extends SmackTestCase {
 
             // Get the message with the form to fill out
             Message msg2 = (Message)collector2.nextResult(2000);
+            assertNotNull("Messge not found", msg2);
             // Retrieve the form to fill out
             Form formToRespond = Form.getFormFrom(msg2);
             assertNotNull(formToRespond);
@@ -161,6 +162,7 @@ public class FormTest extends SmackTestCase {
 
             // Get the message with the completed form
             Message msg3 = (Message) collector.nextResult(2000);
+            assertNotNull("Messge not found", msg3);
             // Retrieve the completed form
             completedForm = Form.getFormFrom(msg3);
             assertNotNull(completedForm);

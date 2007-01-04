@@ -1,8 +1,8 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.VCard;
 import org.jivesoftware.smackx.provider.VCardProvider;
 
@@ -63,7 +63,7 @@ public class VCardTest extends SmackTestCase {
 
     public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
         VCard card = VCardProvider._createVCardFromXml("<vcard><EMAIL><USERID>foo@fee.www.bar</USERID></EMAIL></vcard>");
-        assertEquals("foo@fee.www.bar", card.getEmailWork());
+        assertEquals("foo@fee.www.bar", card.getEmailHome());
     }
 
     public void testNoWorkHomeSpecifier_TEL() throws Throwable {
