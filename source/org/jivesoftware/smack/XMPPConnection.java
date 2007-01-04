@@ -25,10 +25,8 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.StringUtils;
 
-import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
@@ -44,8 +42,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Creates a connection to a XMPP server. A simple use of this API might
  * look like the following:
  * <pre>
- * // Create a connection to the jivesoftware.com XMPP server.
- * XMPPConnection con = new XMPPConnection("jivesoftware.com");
+ * // Create a connection to the igniterealtime.org XMPP server.
+ * XMPPConnection con = new XMPPConnection("igniterealtime.org");
  * // Connect to the server
  * con.connect();
  * // Most servers require you to login before performing other tasks.
@@ -117,7 +115,7 @@ public class XMPPConnection {
      */
     String serviceName;
 
-    String connectionID;
+    String connectionID = null;
     private String user = null;
     private boolean connected = false;
     /**
@@ -158,119 +156,59 @@ public class XMPPConnection {
 
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
-     * performed to try to determine the IP address and port corresponding to the
-     * serviceName; if that lookup fails, it's assumed that server resides at serviceName
-     * with the default port of 5222. This is the preferred constructor for connecting
-     * to an XMPP server.<p>
+     * performed to determine the IP address and port corresponding to the
+     * service name; if that lookup fails, it's assumed that server resides at
+     * <tt>serviceName</tt> with the default port of 5222. Encrypted connections (TLS)
+     * will be used if available, stream compression is disabled, and standard SASL
+     * mechanisms will be used for authentication.<p>
      *
-     * Note that XMPPConnection constructors do not establish the connection to the server,
-     * to make it effective use the connect method. {@link #connect()}.
+     * This is the simplest constructor for connecting to an XMPP server. Alternatively,
+     * you can get fine-grained control over connection settings using the
+     * {@link #XMPPConnection(ConnectionConfiguration)} constructor.<p>
      *
-     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
+     * Note that XMPPConnection constructors do not establish a connection to the server
+     * and you must call {@link #connect()}.
+     *
+     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
      */
     public XMPPConnection(String serviceName) {
-        // Perform DNS lookup to get host and port to use
-        DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
         // Create the configuration for this new connection
-        ConnectionConfiguration config =
-                new ConnectionConfiguration(address.getHost(), address.getPort(), serviceName);
+        ConnectionConfiguration config = new ConnectionConfiguration(serviceName);
         config.setTLSEnabled(true);
         config.setCompressionEnabled(false);
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
-        init(config, null);
+        this.configuration = config;
     }
 
     /**
-     * Creates a new connection to the XMPP server at the specifiec host and port.<p>
+     * Creates a new XMPP connection using the specified connection configuration.<p>
      *
-     * Note that XMPPConnection constructors do not establish the connection to the server,
-     * to make it effective use the connect method. {@link #connect()}.
+     * Manually specifying connection configuration information is suitable for
+     * advanced users of the API. In many cases, using the
+     * {@link #XMPPConnection(String)} constructor is a better approach.<p>
      *
-     * @param host the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
-     * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
+     * Note that XMPPConnection constructors do not establish a connection to the server
+     * and you must call {@link #connect()}.
+     *
+     * @param config the connection configuration.
      */
-    public XMPPConnection(String host, int port) {
-        // Create the configuration for this new connection
-        ConnectionConfiguration config = new ConnectionConfiguration(host, port);
-        config.setTLSEnabled(true);
-        config.setCompressionEnabled(false);
-        config.setSASLAuthenticationEnabled(true);
-        config.setDebuggerEnabled(DEBUG_ENABLED);
-        init(config, null);
-    }
-
-    /**
-     * Creates a new connection to the specified XMPP server on the given host and port.<p>
-     *
-     * Note that XMPPConnection constructors do not establish the connection to the server,
-     * to make it effective use the connect method. {@link #connect()}.
-     *
-     * @param host the host name, or null for the loopback address.
-     * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
-     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
-     */
-    public XMPPConnection(String host, int port, String serviceName) {
-        // Create the configuration for this new connection
-        ConnectionConfiguration config = new ConnectionConfiguration(host, port, serviceName);
-        config.setTLSEnabled(true);
-        config.setCompressionEnabled(false);
-        config.setSASLAuthenticationEnabled(true);
-        config.setDebuggerEnabled(DEBUG_ENABLED);
-        init(config, null);
-    }
-
-    /**
-     * Creates a new connection to the specified XMPP server on the given port using the
-     * specified SocketFactory.<p>
-     *
-     * A custom SocketFactory allows fine-grained control of the actual connection to the
-     * XMPP server. A typical use for a custom SocketFactory is when connecting through a
-     * SOCKS proxy.<p>
-     *
-     * Note that XMPPConnection constructors do not establish the connection to the server,
-     * to make it effective use the connect method. {@link #connect()}.
-     *
-     * @param host the host name, or null for the loopback address.
-     * @param port the port on the server that should be used; e.g. <tt>5222</tt>.
-     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>jivesoftware.com</tt>.
-     * @param socketFactory a SocketFactory that will be used to create the socket to the XMPP
-     *        server.
-     */
-    public XMPPConnection(String host, int port, String serviceName, SocketFactory socketFactory) {
-        // Create the configuration for this new connection
-        ConnectionConfiguration config = new ConnectionConfiguration(host, port, serviceName);
-        config.setTLSEnabled(true);
-        config.setCompressionEnabled(false);
-        config.setSASLAuthenticationEnabled(true);
-        config.setDebuggerEnabled(DEBUG_ENABLED);
-        init(config, socketFactory);
-    }
-
     public XMPPConnection(ConnectionConfiguration config) {
-        init(config, null);
-    }
-
-    public XMPPConnection(ConnectionConfiguration config, SocketFactory socketFactory) {
-        init(config, socketFactory);
-    }
-
-    /**
-     * Package-private default constructor. This constructor is only intended
-     * for unit testing. Normal classes extending XMPPConnection should override
-     * one of the other constructors.
-     */
-    XMPPConnection() {
+        this.configuration = config;
     }
 
     /**
      * Returns the connection ID for this connection, which is the value set by the server
      * when opening a XMPP stream. If the server does not set a connection ID, this value
-     * will be null.
+     * will be null. This value will be <tt>null</tt> if not connected to the server.
      *
-     * @return the ID of this connection returned from the XMPP server.
+     * @return the ID of this connection returned from the XMPP server or <tt>null</tt> if
+     *      not connected to the server.
      */
     public String getConnectionID() {
+        if (!isConnected()) {
+            return null;
+        }
         return connectionID;
     }
 
@@ -847,25 +785,6 @@ public class XMPPConnection {
         }
         this.serviceName = config.getServiceName();
         initConnection();
-    }
-
-    /**
-     * Initializes the connection configuration. This method is only executed
-     * when the XMPPConnection is created.
-     *
-     * @param config the connection configuration options.
-     * @param socketFactory a factory used for creating sockets to the XMPP server.
-     */
-    private void init(ConnectionConfiguration config, SocketFactory socketFactory) {
-        try {
-            // Keep a copy to be sure that once the configuration has been passed to the
-            // constructor it cannot be modified
-            this.configuration = (ConnectionConfiguration) config.clone();
-            this.configuration.setSocketFactory(socketFactory);
-        }
-        catch (CloneNotSupportedException e) {
-            // Do nothing
-        }
     }
 
     /**

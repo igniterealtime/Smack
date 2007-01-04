@@ -68,10 +68,11 @@ public class ConnectionConfiguration implements Cloneable {
     private String password;
     private String resource;
     private boolean sendPresence;
+
     /**
-     * Creates a new ConnectionConfiguration for a connection that will connect
-     * to the desired service name. A DNS SRV lookup will be performed to find out the
-     * actual host address and port to use for the connection.
+     * Creates a new ConnectionConfiguration for the specified service name.
+     * A DNS SRV lookup will be performed to find out the actual host address
+     * and port to use for the connection.
      *
      * @param serviceName the name of the service provided by an XMPP server.
      */
@@ -82,10 +83,14 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Creates a new ConnectionConfiguration for a connection that will connect
-     * to the desired host, port and service name. It is expected for the XMPP server to
-     * be running at the specified address and to be using the specified service name.
-     * Anyway, if the service name is incorrect the correct one will be used instead.
+     * Creates a new ConnectionConfiguration using the specified host, port and
+     * service name. This is useful for manually overriding the DNS SRV lookup
+     * process that's used with the {@link #ConnectionConfiguration(String)}
+     * constructor. For example, say that an XMPP server is running at localhost
+     * in an internal network on port 5222 but is configured to think that it's
+     * "example.com" for testing purposes. This constructor is necessary to connect
+     * to the server in that case since a DNS SRV lookup for example.com would not
+     * point to the local testing server.
      *
      * @param host the host where the XMPP server is running.
      * @param port the port where the XMPP is listening.

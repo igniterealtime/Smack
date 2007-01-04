@@ -153,14 +153,14 @@ public class ReconnectionTest extends SmackTestCase {
         assertEquals("Failed the manual connection", true, connection.isAnonymous());
     }
 
-    private XMPPConnection createConnection() throws Exception {
+    private XMPPConnection createXMPPConnection() throws Exception {
         XMPPConnection connection;
         // Create the configuration
         ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
         config.setTLSEnabled(true);
         config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
         config.setSASLAuthenticationEnabled(true);
-        connection = new XMPPConnection(config, getSocketFactory());
+        connection = new XMPPConnection(config);
 
         return connection;
     }

@@ -366,7 +366,7 @@ public class RosterTest extends SmackTestCase {
 
 
             // Log in from another resource so we can test the roster
-            XMPPConnection con2 = new XMPPConnection(getHost(), getPort());
+            XMPPConnection con2 = createConnection();
             con2.connect();
             con2.login(getUsername(0), getUsername(0), "MyNewResource");
 

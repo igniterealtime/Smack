@@ -242,7 +242,7 @@ public class MultiUserChatTest extends SmackTestCase {
     public void testAnonymousParticipant() {
         try {
             // Anonymous user joins the new room
-            XMPPConnection anonConnection = new XMPPConnection(getHost(), getPort());
+            XMPPConnection anonConnection = new XMPPConnection(getServiceName());
             anonConnection.connect();
             anonConnection.loginAnonymously();
             MultiUserChat muc2 = new MultiUserChat(anonConnection, room);

@@ -152,7 +152,9 @@ public class DNSUtil {
                 port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
                 host = srvRecordEntries[srvRecordEntries.length-1];
             }
-            catch (Exception e2) { }
+            catch (Exception e2) {
+                // Ignore.
+            }
         }
         // Host entries in DNS should end with a ".".
         if (host.endsWith(".")) {
@@ -212,11 +214,7 @@ public class DNSUtil {
             if (!host.equals(address.host)) {
                 return false;
             }
-            if (port != address.port) {
-                return false;
-            }
-
-            return true;
+            return port == address.port;
         }
     }
 }

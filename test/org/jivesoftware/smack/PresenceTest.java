@@ -36,7 +36,7 @@ public class PresenceTest extends SmackTestCase {
         XMPPConnection conn = null;
         try {
             // User_1 will log in again using another resource
-            conn = new XMPPConnection(getHost(), getPort());
+            conn = createConnection();
             conn.connect();
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             // Change the presence priorities of User_1
@@ -84,7 +84,7 @@ public class PresenceTest extends SmackTestCase {
                     Presence.Mode.available));
 
             // User_1 will log in again using another resource
-            conn = new XMPPConnection(getHost(), getPort());
+            conn = createConnection();
             conn.connect();
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             conn.sendPacket(new Presence(Presence.Type.available, null, 1,
@@ -136,7 +136,7 @@ public class PresenceTest extends SmackTestCase {
         getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
 
         // User_1 will log in again using another resource (that is going to be available)
-        XMPPConnection conn = new XMPPConnection(getHost(), getPort());
+        XMPPConnection conn = createConnection();
         conn.connect();
         conn.login(getUsername(1), getUsername(1), "OtherPlace");
 

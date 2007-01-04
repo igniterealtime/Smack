@@ -69,7 +69,7 @@ public class CompressionTest extends SmackTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        XMPPConnection setupConnection = new XMPPConnection(getHost(), getPort());
+        XMPPConnection setupConnection = new XMPPConnection(getServiceName());
         setupConnection.connect();
         if (!setupConnection.getAccountManager().supportsAccountCreation())
             fail("Server does not support account creation");
@@ -90,7 +90,7 @@ public class CompressionTest extends SmackTestCase {
      */
     protected void tearDown() throws Exception {
         super.tearDown();
-        XMPPConnection setupConnection = new XMPPConnection(getHost(), getPort());
+        XMPPConnection setupConnection = createConnection();
         setupConnection.connect();
         setupConnection.login("user0", "user0");
         // Delete the created account for the test
@@ -98,5 +98,4 @@ public class CompressionTest extends SmackTestCase {
         // Close the setupConnection
         setupConnection.disconnect();
     }
-
 }

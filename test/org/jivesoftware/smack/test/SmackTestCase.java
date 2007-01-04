@@ -108,6 +108,24 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
+     * Creates a new XMPPConnection using the connection preferences. This is useful when
+     * not using a connection from the connection pool in a test case.
+     *
+     * @return a new XMPP connection.
+     */
+    protected XMPPConnection createConnection() {
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(host, port);
+        config.setTLSEnabled(true);
+        config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
+        config.setSASLAuthenticationEnabled(true);
+        if (getSocketFactory() == null) {
+            config.setSocketFactory(getSocketFactory());
+        }
+        return new XMPPConnection(config);
+    }
+
+    /**
      * Returns the name of the user (e.g. johndoe) that is using the connection 
      * located at the requested position.
      * 
@@ -183,17 +201,7 @@ public abstract class SmackTestCase extends TestCase {
         try {
             // Connect to the server
             for (int i = 0; i < getMaxConnections(); i++) {
-                // Create the configuration for this new connection
-                ConnectionConfiguration config = new ConnectionConfiguration(host, port);
-                config.setTLSEnabled(true);
-                config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
-                config.setSASLAuthenticationEnabled(true);
-                if (getSocketFactory() == null) {
-                    connections[i] = new XMPPConnection(config);
-                }
-                else {
-                    connections[i] = new XMPPConnection(config, getSocketFactory());
-                }
+                connections[i] = createConnection();
                 connections[i].connect();
             }
             // Use the host name that the server reports. This is a good idea in most
