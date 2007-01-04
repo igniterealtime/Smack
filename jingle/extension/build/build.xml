@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="jingle" default="all">
+  
+  
+  <property file="jingle.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.5" value="${jdk.home.1.5}/bin"/>
+  <path id="jdk.classpath.1.5">
+    <fileset dir="${jdk.home.1.5}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.5}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.5}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.5"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module JingleExtension -->
+  
+  <dirname property="module.jingleextension.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.jingleextension" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jingleextension" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jingleextension" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.jingleextension" value="${compiler.args}"/>
+  
+  <property name="jingleextension.output.dir" value="${module.jingleextension.basedir}/../../classes"/>
+  <property name="jingleextension.testoutput.dir" value="${module.jingleextension.basedir}/../../classes"/>
+  
+  <path id="jingleextension.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jingleextension.module.classpath">
+    <path refid="${module.jdk.classpath.jingleextension}"/>
+    <pathelement location="${module.jingleextension.basedir}/../merge/jstun-0.6.1.jar"/>
+    <pathelement location="${module.jingleextension.basedir}/../lib/smackx.jar"/>
+    <pathelement location="${module.jingleextension.basedir}/../lib/smack.jar"/>
+    <pathelement location="${module.jingleextension.basedir}/../lib/smackx-debug.jar"/>
+    <pathelement location="${module.jingleextension.basedir}/../lib/junit.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jingleextension">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jingleextension">
+    <patternset refid="excluded.from.module.jingleextension"/>
+  </patternset>
+  
+  <path id="jingleextension.module.sourcepath">
+    <dirset dir="${module.jingleextension.basedir}/../../../jingle-extension">
+      <include name="source"/>
+    </dirset>
+  </path>
+  
+  <path id="jingleextension.module.test.sourcepath">
+    <dirset dir="${module.jingleextension.basedir}/../../../jingle-extension">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.jingleextension" depends="compile.module.jingleextension.production,compile.module.jingleextension.tests" description="Compile module JingleExtension"/>
+  
+  <target name="compile.module.jingleextension.production" description="Compile module JingleExtension; production classes">
+    <mkdir dir="${jingleextension.output.dir}"/>
+    <javac destdir="${jingleextension.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jingleextension}/javac">
+      <compilerarg line="${compiler.args.jingleextension}"/>
+      <bootclasspath refid="jingleextension.module.bootclasspath"/>
+      <classpath refid="jingleextension.module.classpath"/>
+      <src refid="jingleextension.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jingleextension"/>
+    </javac>
+    
+    <copy todir="${jingleextension.output.dir}">
+      <fileset dir="${module.jingleextension.basedir}/../../source">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.jingleextension.tests" depends="compile.module.jingleextension.production" description="compile module JingleExtension; test classes" unless="skip.tests">
+    <mkdir dir="${jingleextension.testoutput.dir}"/>
+    <javac destdir="${jingleextension.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jingleextension}/javac">
+      <compilerarg line="${compiler.args.jingleextension}"/>
+      <classpath refid="jingleextension.module.classpath"/>
+      <classpath location="${jingleextension.output.dir}"/>
+      <src refid="jingleextension.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jingleextension"/>
+    </javac>
+    
+    <copy todir="${jingleextension.testoutput.dir}">
+      <fileset dir="${module.jingleextension.basedir}/../../test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.jingleextension" description="cleanup module">
+    <delete dir="${jingleextension.output.dir}"/>
+    <delete dir="${jingleextension.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.jingleextension" description="cleanup all"/>
+  
+  <target name="all" depends="init, clean, compile.module.jingleextension" description="build all"/>
+</project>
