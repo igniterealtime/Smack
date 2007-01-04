@@ -233,9 +233,16 @@ public abstract class SmackTestCase extends TestCase {
         for (int i = 0; i < getMaxConnections(); i++) {
             if (getConnection(i).isConnected()) {
             // Delete the created account for the test
-            getConnection(i).getAccountManager().deleteAccount();
-            // Close the connection
-                getConnection(i).disconnect();
+                try {
+                    getConnection(i).getAccountManager().deleteAccount();
+                }
+                catch (XMPPException e) {
+                    e.printStackTrace();
+                }
+                if (getConnection(i).isConnected()) {
+                    // Close the connection
+                    getConnection(i).disconnect();
+                }
             }
         }
     }
