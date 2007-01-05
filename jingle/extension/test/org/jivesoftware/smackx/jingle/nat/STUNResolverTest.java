@@ -162,6 +162,14 @@ public class STUNResolverTest extends SmackTestCase {
         System.out.println(stunServers.size() + " servers loaded");
     }
 
+    public void testGetSTUNServer() {
+
+        System.out.println(STUN.serviceAvailable(getConnection(0)));
+        STUN stun = STUN.getSTUNServer(getConnection(0));
+        System.out.println(stun.getHost() + ":" +stun.getPort());
+
+    }
+
     /**
      * Test for resolve()
      *
