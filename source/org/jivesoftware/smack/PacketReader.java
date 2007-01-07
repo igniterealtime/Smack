@@ -706,7 +706,7 @@ class PacketReader {
                     item.setItemStatus(status);
                     // Set type.
                     String subscription = parser.getAttributeValue("", "subscription");
-                    RosterPacket.ItemType type = RosterPacket.ItemType.fromString(subscription);
+                    RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription);
                     item.setItemType(type);
                 }
                 if (parser.getName().equals("group") && item!= null) {

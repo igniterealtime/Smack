@@ -265,74 +265,31 @@ public class RosterPacket extends IQ {
         }
     }
 
-    /**
-     * The subscription type of a roster item.
-     */
-    public static class ItemType {
+    public static enum ItemType {
 
         /**
          * The user and subscriber have no interest in each other's presence.
          */
-        public static final ItemType NONE = new ItemType("none");
+        none,
 
         /**
          * The user is interested in receiving presence updates from the subscriber.
          */
-        public static final ItemType TO = new ItemType("to");
+        to,
 
         /**
          * The subscriber is interested in receiving presence updates from the user.
          */
-        public static final ItemType FROM = new ItemType("from");
+        from,
 
         /**
          * The user and subscriber have a mutual interest in each other's presence.
          */
-        public static final ItemType BOTH = new ItemType("both");
+        both,
 
         /**
          * The user wishes to stop receiving presence updates from the subscriber.
          */
-        public static final ItemType REMOVE = new ItemType("remove");
-
-        public static ItemType fromString(String value) {
-            if (value == null) {
-                return null;
-            }
-            value = value.toLowerCase();
-            if ("none".equals(value)) {
-                return NONE;
-            }
-            else if ("to".equals(value)) {
-                return TO;
-            }
-            else if ("from".equals(value)) {
-                return FROM;
-            }
-            else if ("both".equals(value)) {
-                return BOTH;
-            }
-            else if ("remove".equals(value)) {
-                return REMOVE;
-            }
-            else {
-                return null;
-            }
-        }
-
-        private String value;
-
-        /**
-         * Returns the item type associated with the specified string.
-         *
-         * @param value the item type.
-         */
-        public ItemType(String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
+        remove
     }
 }

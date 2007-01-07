@@ -1,3 +1,22 @@
+/**
+ * $Revision$
+ * $Date$
+ *
+ * Copyright 2006-2007 Jive Software.
+ *
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.filter.*;
@@ -224,6 +243,7 @@ public class PrivacyListManager {
 	 * Answer a privacy containing the list structre without {@link PrivacyItem}.
 	 * 
 	 * @return a Privacy with the list names.
+     * @throws XMPPException if an error occurs.
 	 */ 
 	private Privacy getPrivacyWithListNames() throws XMPPException {
 		
@@ -237,7 +257,8 @@ public class PrivacyListManager {
     /**
      * Answer the active privacy list.
      * 
-     * @return the {@see PrivacyList} of the active list.
+     * @return the privacy list of the active list.
+     * @throws XMPPException if an error occurs.
      */ 
     public PrivacyList getActiveList() throws XMPPException {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
@@ -252,7 +273,8 @@ public class PrivacyListManager {
     /**
      * Answer the default privacy list.
      * 
-     * @return the {@see PrivacyList} of the default list.
+     * @return the privacy list of the default list.
+     * @throws XMPPException if an error occurs.
      */ 
     public PrivacyList getDefaultList() throws XMPPException {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
@@ -268,7 +290,8 @@ public class PrivacyListManager {
      * Answer the privacy list items under listName with the allowed and blocked permissions.
      * 
      * @param listName the name of the list to get the allowed and blocked permissions.
-     * @return a list of {@link PrivacyItem} under the list listName.
+     * @return a list of privacy items under the list listName.
+     * @throws XMPPException if an error occurs.
      */ 
     private List<PrivacyItem> getPrivacyListItems(String listName) throws XMPPException {
         
@@ -286,7 +309,8 @@ public class PrivacyListManager {
 	 * Answer the privacy list items under listName with the allowed and blocked permissions.
 	 * 
 	 * @param listName the name of the list to get the allowed and blocked permissions.
-	 * @return a {@link PrivacyList} under the list listName.
+	 * @return a privacy list under the list listName.
+     * @throws XMPPException if an error occurs.
 	 */ 
 	public PrivacyList getPrivacyList(String listName) throws XMPPException {
 		
@@ -296,7 +320,8 @@ public class PrivacyListManager {
     /**
      * Answer every privacy list with the allowed and blocked permissions.
      * 
-     * @return a List of {@link PrivacyList}.
+     * @return an array of privacy lists.
+     * @throws XMPPException if an error occurs.
      */ 
     public PrivacyList[] getPrivacyLists() throws XMPPException {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
@@ -334,6 +359,8 @@ public class PrivacyListManager {
 
 	/**
 	 * Client declines the use of active lists.
+     *
+     * @throws XMPPException if an error occurs.
 	 */ 
 	public void declineActiveList() throws XMPPException {
 		
@@ -363,6 +390,8 @@ public class PrivacyListManager {
 	
 	/**
 	 * Client declines the use of default lists.
+     *
+     * @throws XMPPException if an error occurs.
 	 */ 
 	public void declineDefaultList() throws XMPPException {
 		
@@ -378,7 +407,8 @@ public class PrivacyListManager {
 	 * The client has created a new list. It send the new one to the server.
 	 * 
      * @param listName the list that has changed its content.
-     * @param privacyItems a List with every {@link PrivacyItem} in the list.
+     * @param privacyItems a List with every privacy item in the list.
+     * @throws XMPPException if an error occurs.
 	 */ 
 	public void createPrivacyList(String listName, List<PrivacyItem> privacyItems) throws XMPPException {
 
@@ -387,11 +417,12 @@ public class PrivacyListManager {
 
     /**
      * The client has edited an existing list. It updates the server content with the resulting 
-     * list of {@link PrivacyItem}. The {@link PrivacyItem} list MUST contain all elements in the 
+     * list of privacy items. The {@link PrivacyItem} list MUST contain all elements in the 
      * list (not the "delta").
      * 
      * @param listName the list that has changed its content.
-     * @param privacyItems a List with every {@link PrivacyItem} in the list.
+     * @param privacyItems a List with every privacy item in the list.
+     * @throws XMPPException if an error occurs.
      */ 
     public void updatePrivacyList(String listName, List<PrivacyItem> privacyItems) throws XMPPException {
 
@@ -407,6 +438,7 @@ public class PrivacyListManager {
 	 * Remove a privacy list.
 	 * 
      * @param listName the list that has changed its content.
+     * @throws XMPPException if an error occurs.
 	 */ 
 	public void deletePrivacyList(String listName) throws XMPPException {
 		

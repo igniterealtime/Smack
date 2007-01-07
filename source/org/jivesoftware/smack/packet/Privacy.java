@@ -1,12 +1,32 @@
+/**
+ * $Revision$
+ * $Date$
+ *
+ * Copyright 2006-2007 Jive Software.
+ *
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jivesoftware.smack.packet;
 
 import java.util.*;
 
 /**
- * A Privacy IQ Packet, is used by the {@see PrivacyListManager} and {@see PrivacyProvider} to allow 
- * and block communications from other users. It contains the appropriate structure to suit 
- * user-defined privacy lists. Different configured Privacy packages are used in the Server – 
- * Manager communication in order to:
+ * A Privacy IQ Packet, is used by the {@link org.jivesoftware.smack.PrivacyListManager}
+ * and {@link org.jivesoftware.smack.provider.PrivacyProvider} to allow and block
+ * communications from other users. It contains the appropriate structure to suit
+ * user-defined privacy lists. Different configured Privacy packages are used in the
+ * Server – Manager communication in order to:
  * <ul>
  * <li>Retrieving one's privacy lists. 
  * <li>Adding, removing, and editing one's privacy lists. 
@@ -14,11 +34,10 @@ import java.util.*;
  * <li>Setting, changing, or declining the default list (i.e., the list that is active by default). 
  * </ul>
  * Privacy Items can handle different kind of blocking communications based on JID, group, 
- * subscription type or globally {@see PrivacyItem}
+ * subscription type or globally {@link PrivacyItem}
  * 
  * @author Francisco Vives
  */
-
 public class Privacy extends IQ {
 	/** declineActiveList is true when the user declines the use of the active list **/
 	private boolean declineActiveList=false;
@@ -33,7 +52,7 @@ public class Privacy extends IQ {
 	private Map<String, List<PrivacyItem>> itemLists = new HashMap<String, List<PrivacyItem>>();
 
     /**
-     * Set or update a privacy list with {@link PrivacyItem}.
+     * Set or update a privacy list with privacy items.
      *
      * @param listName the name of the new privacy list.
      * @param listItem the {@link PrivacyItem} that rules the list.
@@ -113,6 +132,7 @@ public class Privacy extends IQ {
     /**
      * Returns the privacy item in the specified order.
      *
+     * @param listName the name of the privacy list.
      * @param order the order of the element.
      * @return a List with {@link PrivacyItem}
      */
@@ -128,7 +148,6 @@ public class Privacy extends IQ {
     	return itemFound;
     }
 
-
     /**
      * Sets a given privacy list as the new user default list.
      *
@@ -143,21 +162,19 @@ public class Privacy extends IQ {
         	return false; 
         }
     }
-    
-        
-        /**
-         * Remove the list.
-         *
-         * @param listName name of the list to remove.
-         */
+
+    /**
+     * Remove the list.
+     *
+     * @param listName name of the list to remove.
+     */
      public void deleteList(String listName) {
     	 this.getItemLists().remove(listName);
      }
-    
-    
+
     /**
      * Returns the name associated with the active list set for the session. Communications
-     * will be verified against the active list.<p> 
+     * will be verified against the active list.
      *
      * @return the name of the active list.
      */
@@ -167,7 +184,7 @@ public class Privacy extends IQ {
 
     /**
      * Sets the name associated with the active list set for the session. Communications
-     * will be verified against the active list.<p> 
+     * will be verified against the active list.
      * 
      * @param activeName is the name of the active list.
      */

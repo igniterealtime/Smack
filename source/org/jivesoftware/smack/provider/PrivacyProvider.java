@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
  * Parses the <tt>query</tt> sub-document and creates an instance of {@link Privacy}.
  * For each <tt>item</tt> in the <tt>list</tt> element, it creates an instance 
- * of {@link PrivacyItem} and {@link PrivacyRule}.
+ * of {@link PrivacyItem} and {@link org.jivesoftware.smack.packet.PrivacyItem.PrivacyRule}.
  * 
  * @author Francisco Vives
  */

@@ -256,7 +256,7 @@ public class Roster implements ConnectionListener {
         packet.setType(IQ.Type.SET);
         RosterPacket.Item item = RosterEntry.toRosterItem(entry);
         // Set the item type as REMOVE so that the server will delete the entry
-        item.setItemType(RosterPacket.ItemType.REMOVE);
+        item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
         PacketCollector collector = connection.createPacketCollector(
         new PacketIDFilter(packet.getPacketID()));
@@ -669,7 +669,7 @@ public class Roster implements ConnectionListener {
                         item.getItemType(), item.getItemStatus(), connection);
 
                 // If the packet is of the type REMOVE then remove the entry
-                if (RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
+                if (RosterPacket.ItemType.remove.equals(item.getItemType())) {
                     // Remove the entry from the entry list.
                     if (entries.contains(entry)) {
                         entries.remove(entry);
@@ -721,7 +721,7 @@ public class Roster implements ConnectionListener {
                 }
 
                 // If the packet is not of the type REMOVE then add the entry to the groups
-                if (!RosterPacket.ItemType.REMOVE.equals(item.getItemType())) {
+                if (!RosterPacket.ItemType.remove.equals(item.getItemType())) {
                     // Create the new list of groups the user belongs to.
                     List<String> newGroupNames = new ArrayList<String>();
                     for (String groupName : item.getGroupNames()) {

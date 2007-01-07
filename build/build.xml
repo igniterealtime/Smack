@@ -32,10 +32,10 @@
     <property name="version.name" value="${version.major}_${version.minor}_${version.revision}" />
 
     <property file="${basedir}/build/build.properties" />
-    <property name="compile.dir" value="${basedir}/classes" />
-    <property name="compile.test.dir" value="${basedir}/classes-test" />
-    <property name="jar.dest.dir" value="${basedir}" />
-    <property name="javadoc.dest.dir" value="${basedir}/javadoc" />
+    <property name="compile.dir" value="${basedir}/target/classes" />
+    <property name="compile.test.dir" value="${basedir}/target/classes-test" />
+    <property name="jar.dest.dir" value="${basedir}/target" />
+    <property name="javadoc.dest.dir" value="${basedir}/target/javadoc" />
     <property name="build.lib.dir" value="${basedir}/build/lib" />
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
     <property name="test.dir" value="${basedir}/test" />

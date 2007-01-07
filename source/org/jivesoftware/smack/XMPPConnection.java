@@ -543,7 +543,7 @@ public class XMPPConnection {
      * Closes the connection by setting presence to unavailable then closing the stream to
      * the XMPP server. The shutdown logic will be used during a planned disconnection or when
      * dealing with an unexpected disconnection. Unlike {@link #disconnect()} the connection's
-     * {@link PacketReader}, {@link PacketWriter} and {@link Roster} will not be removed thus
+     * packet reader, packet writer, and {@link Roster} will not be removed; thus
      * connection's state is kept.
      */
     protected void shutdown() {

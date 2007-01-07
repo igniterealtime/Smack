@@ -42,8 +42,8 @@
                 <property name="release-dev.name" value="smack-dev-${version.name}" />
             </else>
         </if>
-        <property name="release.dir" value="${basedir}/release/${release.name}" />
-        <property name="release-dev.dir" value="${basedir}/release/${release-dev.name}" />
+        <property name="release.dir" value="${basedir}/target/release/${release.name}" />
+        <property name="release-dev.dir" value="${basedir}/target/release/${release-dev.name}" />
         <!-- create release dirs -->
         <mkdir dir="${release.dir}" />
         <mkdir dir="${release-dev.dir}" />
@@ -71,10 +71,10 @@
         </copy>
         <!-- Copy Javadocs -->
         <copy todir="${release.dir}/javadoc">
-            <fileset dir="${basedir}/javadoc" includes="**/*.*" />
+            <fileset dir="${basedir}/target/javadoc" includes="**/*.*" />
         </copy>
         <copy todir="${release-dev.dir}/javadoc">
-            <fileset dir="${basedir}/javadoc" includes="**/*.*" />
+            <fileset dir="${basedir}/target/javadoc" includes="**/*.*" />
         </copy>
         <!-- Copy documentation -->
         <copy todir="${release.dir}/documentation">
