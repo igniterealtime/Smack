@@ -466,6 +466,7 @@ class PacketReader {
 
     private void parseFeatures(XmlPullParser parser) throws Exception {
         boolean startTLSReceived = false;
+        boolean startTLSRequired = false;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -473,8 +474,6 @@ class PacketReader {
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("starttls")) {
                     startTLSReceived = true;
-                    // Confirm the server that we want to use TLS
-                    connection.startTLSReceived();
                 }
                 else if (parser.getName().equals("mechanisms")) {
                     // The server is reporting available SASL mechanisms. Store this information
@@ -500,13 +499,36 @@ class PacketReader {
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("features")) {
+                if (parser.getName().equals("starttls")) {
+                    // Confirm the server that we want to use TLS
+                    connection.startTLSReceived(startTLSRequired);
+                }
+                else if (parser.getName().equals("required") && startTLSReceived) {
+                    startTLSRequired = true;
+                }
+                else if (parser.getName().equals("features")) {
                     done = true;
                 }
             }
         }
+
+        // If TLS is required but the server doesn't offer it, disconnect
+        // from the server and throw an error. First check if we've already negotiated TLS
+        // and are secure, however (features get parsed a second time after TLS is established).
+        if (!connection.isSecureConnection()) {
+            if (!startTLSReceived && connection.getConfiguration().getSecurityMode() ==
+                    ConnectionConfiguration.SecurityMode.required)
+            {
+                throw new XMPPException("Server does not support security (TLS), " +
+                        "but security required by connection configuration.",
+                        new XMPPError(XMPPError.Condition.forbidden));
+            }
+        }
+        
         // Release the lock after TLS has been negotiated or we are not insterested in TLS
-        if (!startTLSReceived || !connection.getConfiguration().isTLSEnabled()) {
+        if (!startTLSReceived || connection.getConfiguration().getSecurityMode() ==
+                ConnectionConfiguration.SecurityMode.disabled)
+        {
             releaseConnectionIDLock();
         }
     }

@@ -42,7 +42,6 @@ public class ReconnectionTest extends SmackTestCase {
     public void testAutomaticReconnectionWithCompression() throws Exception {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
-        config.setTLSEnabled(true);
         config.setCompressionEnabled(true);
         config.setSASLAuthenticationEnabled(true);
 
@@ -157,7 +156,6 @@ public class ReconnectionTest extends SmackTestCase {
         XMPPConnection connection;
         // Create the configuration
         ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
-        config.setTLSEnabled(true);
         config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
         config.setSASLAuthenticationEnabled(true);
         connection = new XMPPConnection(config);

@@ -44,7 +44,6 @@ public class CompressionTest extends SmackTestCase {
 
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
-        config.setTLSEnabled(true);
         config.setCompressionEnabled(true);
         config.setSASLAuthenticationEnabled(true);
 

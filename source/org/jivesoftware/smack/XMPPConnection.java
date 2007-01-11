@@ -174,7 +174,6 @@ public class XMPPConnection {
     public XMPPConnection(String serviceName) {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(serviceName);
-        config.setTLSEnabled(true);
         config.setCompressionEnabled(false);
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
@@ -1031,9 +1030,19 @@ public class XMPPConnection {
     /**
      * Notification message saying that the server supports TLS so confirm the server that we
      * want to secure the connection.
+     *
+     * @param required true when the server indicates that TLS is required.
      */
-    void startTLSReceived() {
-        if (!configuration.isTLSEnabled()) {
+    void startTLSReceived(boolean required) {
+        if (required && configuration.getSecurityMode() ==
+                ConnectionConfiguration.SecurityMode.disabled)
+        {
+            packetReader.notifyConnectionError(new IllegalStateException(
+                    "TLS required by server but not allowed by connection configuration"));
+            return;
+        }
+        
+        if (configuration.getSecurityMode() == ConnectionConfiguration.SecurityMode.disabled) {
             // Do not secure the connection using TLS since TLS was disabled
             return;
         }

@@ -30,7 +30,7 @@ import java.io.File;
  * configure the path to the trustore file that keeps the trusted CA root certificates and
  * enable or disable all or some of the checkings done while verifying server certificates.<p>
  *
- * It is also possible to configure it TLs, SASL or compression are going to be used or not.
+ * It is also possible to configure if TLS, SASL, and compression are used or not.
  *
  * @author Gaston Dombiak
  */
@@ -44,7 +44,6 @@ public class ConnectionConfiguration implements Cloneable {
     private String truststorePath;
     private String truststoreType;
     private String truststorePassword;
-    private boolean tlsEnabled = true;
     private boolean verifyChainEnabled = false;
     private boolean verifyRootCAEnabled = false;
     private boolean selfSignedCertificateEnabled = false;
@@ -68,6 +67,7 @@ public class ConnectionConfiguration implements Cloneable {
     private String password;
     private String resource;
     private boolean sendPresence;
+    private SecurityMode securityMode = SecurityMode.enabled;
 
     /**
      * Creates a new ConnectionConfiguration for the specified service name.
@@ -118,7 +118,7 @@ public class ConnectionConfiguration implements Cloneable {
 
         // Build the default path to the cacert truststore file. By default we are
         // going to use the file located in $JREHOME/lib/security/cacerts.
-        String javaHome =  System.getProperty("java.home");
+        String javaHome = System.getProperty("java.home");
         StringBuilder buffer = new StringBuilder();
         buffer.append(javaHome).append(File.separator).append("lib");
         buffer.append(File.separator).append("security");
@@ -141,7 +141,8 @@ public class ConnectionConfiguration implements Cloneable {
 
     /**
      * Returns the host to use when establishing the connection. The host and port to use
-     * might have been resolved by a DNS lookup as specified by the XMPP spec.
+     * might have been resolved by a DNS lookup as specified by the XMPP spec (and therefore
+     * may not match the {@link #getServiceName service name}.
      *
      * @return the host to use when establishing the connection.
      */
@@ -160,30 +161,28 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Returns true if the client is going to try to secure the connection using TLS after
-     * the connection has been established.
+     * Returns the TLS security mode used when making the connection. By default,
+     * the mode is {@link SecurityMode#enabled}.
      *
-     * @return true if the client is going to try to secure the connection using TLS after
-     *         the connection has been established.
+     * @return the security mode.
      */
-    public boolean isTLSEnabled() {
-        return tlsEnabled;
+    public SecurityMode getSecurityMode() {
+        return securityMode;
     }
 
     /**
-     * Sets if the client is going to try to secure the connection using TLS after
-     * the connection has been established.
+     * Sets the TLS security mode used when making the connection. By default,
+     * the mode is {@link SecurityMode#enabled}.
      *
-     * @param tlsEnabled if the client is going to try to secure the connection using TLS after
-     *         the connection has been established.
+     * @param securityMode the security mode.
      */
-    public void setTLSEnabled(boolean tlsEnabled) {
-        this.tlsEnabled = tlsEnabled;
+    public void setSecurityMode(SecurityMode securityMode) {
+        this.securityMode = securityMode;
     }
 
     /**
-     * Retuns the path to the truststore file. The truststore file contains the root
-     * certificates of several well?known CAs. By default Smack is going to use
+     * Retuns the path to the trust store file. The trust store file contains the root
+     * certificates of several well known CAs. By default, will attempt to use the
      * the file located in $JREHOME/lib/security/cacerts.
      *
      * @return the path to the truststore file.
@@ -193,7 +192,7 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the path to the truststore file. The truststore file contains the root
+     * Sets the path to the trust store file. The truststore file contains the root
      * certificates of several well?known CAs. By default Smack is going to use
      * the file located in $JREHOME/lib/security/cacerts.
      *
@@ -203,17 +202,27 @@ public class ConnectionConfiguration implements Cloneable {
         this.truststorePath = truststorePath;
     }
 
+    /**
+     * Returns the trust store type, or <tt>null</tt> if it's not set.
+     *
+     * @return the trust store type.
+     */
     public String getTruststoreType() {
         return truststoreType;
     }
 
+    /**
+     * Sets the trust store type.
+     *
+     * @param truststoreType the trust store type.
+     */
     public void setTruststoreType(String truststoreType) {
         this.truststoreType = truststoreType;
     }
 
     /**
-     * Returns the password to use to access the truststore file. It is assumed that all
-     * certificates share the same password of the truststore file.
+     * Returns the password to use to access the trust store file. It is assumed that all
+     * certificates share the same password in the trust store.
      *
      * @return the password to use to access the truststore file.
      */
@@ -222,9 +231,8 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the password to use to access the truststore file. It is assumed that all
-     * certificates share the same password of the truststore file.
-     *
+     * Sets the password to use to access the trust store file. It is assumed that all
+     * certificates share the same password in the trust store.
      *
      * @param truststorePassword the password to use to access the truststore file.
      */
@@ -373,9 +381,9 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets if the client is going to use SASL authentication when logging into the
+     * Sets whether the client will use SASL authentication when logging into the
      * server. If SASL authenticatin fails then the client will try to use non-sasl authentication.
-     * By default SASL is enabled.
+     * By default, SASL is enabled.
      *
      * @param saslAuthenticationEnabled if the client is going to use SASL authentication when
      *        logging into the server.
@@ -403,10 +411,6 @@ public class ConnectionConfiguration implements Cloneable {
     public void setDebuggerEnabled(boolean debuggerEnabled) {
         this.debuggerEnabled = debuggerEnabled;
     }
-
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
     
     /**
      * Sets if the reconnection mechanism is allowed to be used. By default
@@ -429,18 +433,17 @@ public class ConnectionConfiguration implements Cloneable {
     
     /**
      * Sets the socket factory used to create new xmppConnection sockets.
-     * This is mainly used when reconnection is necessary.
-     * 
+     * This is useful when connecting through SOCKS5 proxies.
+     *
      * @param socketFactory used to create new sockets.
      */
     public void setSocketFactory(SocketFactory socketFactory) {
         this.socketFactory = socketFactory;
     }
-    
-    
+
     /**
      * Returns the socket factory used to create new xmppConnection sockets.
-     * This is mainly used when reconnection is necessary.
+     * This is useful when connecting through SOCKS5 proxies.
      * 
      * @return socketFactory used to create new sockets.
      */
@@ -448,12 +451,31 @@ public class ConnectionConfiguration implements Cloneable {
         return this.socketFactory;
     }
 
-    protected void setLoginInfo(String username, String password, String resource,
-            boolean sendPresence) {
-        this.username = username;
-        this.password = password;
-        this.resource = resource;
-        this.sendPresence = sendPresence;
+    /**
+     * An enumeration for TLS security modes that are available when making a connection
+     * to the XMPP server.
+     */
+    public static enum SecurityMode {
+
+        /**
+         * Securirty via TLS encryption is required in order to connect. If the server
+         * does not offer TLS or if the TLS negotiaton fails, the connection to the server
+         * will fail.
+         */
+        required,
+
+        /**
+         * Security via TLS encryption is used whenever it's available. This is the
+         * default setting.
+         */
+        enabled,
+
+        /**
+         * Security via TLS encryption is disabled and only un-encrypted connections will
+         * be used. If only TLS encryption is available from the server, the connection
+         * will fail.
+         */
+        disabled
     }
 
     /**
@@ -461,7 +483,7 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return the username to use when trying to reconnect to the server.
      */
-    protected String getUsername() {
+    String getUsername() {
         return this.username;
     }
 
@@ -470,17 +492,16 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return the password to use when trying to reconnect to the server.
      */
-    protected String getPassword() {
+    String getPassword() {
         return this.password;
     }
-
 
     /**
      * Returns the resource to use when trying to reconnect to the server.
      *
      * @return the resource to use when trying to reconnect to the server.
      */
-    protected String getResource() {
+    String getResource() {
         return resource;
     }
 
@@ -489,7 +510,14 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return true if an available presence should be sent when logging in while reconnecting
      */
-    protected boolean isSendPresence() {
+    boolean isSendPresence() {
         return sendPresence;
+    }
+
+    void setLoginInfo(String username, String password, String resource, boolean sendPresence) {
+        this.username = username;
+        this.password = password;
+        this.resource = resource;
+        this.sendPresence = sendPresence;
     }
 }

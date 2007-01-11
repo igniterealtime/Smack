@@ -26,8 +26,9 @@ import org.jivesoftware.smack.packet.Packet;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
@@ -42,7 +43,7 @@ class PacketWriter {
     private Thread keepAliveThread;
     private Writer writer;
     private XMPPConnection connection;
-    final private LinkedList<Packet> queue;
+    final private Queue<Packet> queue;
     private boolean done;
     
     final protected List<ListenerWrapper> listeners = new ArrayList<ListenerWrapper>();
@@ -71,7 +72,7 @@ class PacketWriter {
      * @param connection the connection.
      */
     protected PacketWriter(XMPPConnection connection) {
-        this.queue = new LinkedList<Packet>();
+        this.queue = new ConcurrentLinkedQueue<Packet>();
         this.connection = connection;
         init();
     }
@@ -106,8 +107,8 @@ class PacketWriter {
             // may modify the content of the packet.
             processInterceptors(packet);
 
-            synchronized(queue) {
-                queue.addFirst(packet);
+            queue.add(packet);
+            synchronized (queue) {
                 queue.notifyAll();
             }
 
@@ -236,6 +237,9 @@ class PacketWriter {
      */
     public void shutdown() {
         done = true;
+        synchronized (queue) {
+            queue.notifyAll();
+        }
     }
 
     /**
@@ -244,22 +248,19 @@ class PacketWriter {
      * @return the next packet for writing.
      */
     private Packet nextPacket() {
-        synchronized(queue) {
-            while (!done && queue.size() == 0) {
-                try {
-                    queue.wait(2000);
-                }
-                catch (InterruptedException ie) {
-                    // Do nothing
+        Packet packet = null;
+        // Wait until there's a packet or we're done.
+        while (!done && (packet = queue.poll()) == null) {
+            try {
+                synchronized (queue) {
+                    queue.wait();
                 }
             }
-            if (queue.size() > 0) {
-                return queue.removeLast();
-            }
-            else {
-                return null;
+            catch (InterruptedException ie) {
+                // Do nothing
             }
         }
+        return packet;
     }
 
     private void writePackets(Thread thisThread) {
@@ -278,6 +279,20 @@ class PacketWriter {
                     }
                 }
             }
+            // Flush out the rest of the queue.
+            try {
+                synchronized (writer) {
+                   while (!queue.isEmpty()) {
+                       Packet packet = queue.remove();
+                        writer.write(packet.toXML());
+                    }
+                    writer.flush();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
             // Close the stream.
             try {
                 writer.write("</stream:stream>");

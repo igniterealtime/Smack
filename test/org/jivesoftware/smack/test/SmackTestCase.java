@@ -116,9 +116,7 @@ public abstract class SmackTestCase extends TestCase {
     protected XMPPConnection createConnection() {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port);
-        config.setTLSEnabled(true);
         config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
-        config.setSASLAuthenticationEnabled(true);
         if (getSocketFactory() == null) {
             config.setSocketFactory(getSocketFactory());
         }
