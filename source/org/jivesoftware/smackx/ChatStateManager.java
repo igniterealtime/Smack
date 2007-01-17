@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.util.collections.ReferenceMap;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
@@ -45,6 +46,9 @@ public class ChatStateManager {
 
     private static Map<XMPPConnection, ChatStateManager> managers =
             new WeakHashMap<XMPPConnection, ChatStateManager>();
+
+    private static PacketFilter filter = new NotFilter(
+                new PacketExtensionFilter("http://jabber.org/protocol/chatstates"));
 
     /**
      * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
@@ -72,13 +76,17 @@ public class ChatStateManager {
 
     private IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
 
+    /**
+     * Maps chat to last chat state.
+     */
+    private Map<Chat, ChatState> chatStates = new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK,
+            ReferenceMap.HARD);
+
     private ChatStateManager(XMPPConnection connection) {
         this.connection = connection;
     }
 
     private void init() {
-        PacketFilter filter = new NotFilter(
-                new PacketExtensionFilter("http://jabber.org/protocol/chatstates"));
         connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor,
                 filter);
         connection.getChatManager().addChatListener(incomingInterceptor);
@@ -98,11 +106,23 @@ public class ChatStateManager {
      *          packet.
      */
     public void setCurrentState(ChatState newState, Chat chat) throws XMPPException {
+        if(!updateChatState(chat, newState)) {
+            return;
+        }
         Message message = new Message();
         ChatStateExtension extension = new ChatStateExtension(newState);
         message.addExtension(extension);
 
         chat.sendMessage(message);
+    }
+
+    private boolean updateChatState(Chat chat, ChatState newState) {
+        ChatState lastChatState = chatStates.get(chat);
+        if (lastChatState == null || lastChatState != newState) {
+            chatStates.put(chat, lastChatState);
+            return true;
+        }
+        return false;
     }
 
     private void fireNewChatState(Chat chat, ChatState state) {
@@ -116,11 +136,14 @@ public class ChatStateManager {
     private class OutgoingMessageInterceptor implements PacketInterceptor {
 
         public void interceptPacket(Packet packet) {
-            if (!(packet instanceof Message)) {
+            Message message = (Message) packet;
+            Chat chat = connection.getChatManager().getThreadChat(message.getThread());
+            if (chat == null) {
                 return;
             }
-            Message message = (Message) packet;
-            message.addExtension(new ChatStateExtension(ChatState.active));
+            if (updateChatState(chat, ChatState.active)) {
+                message.addExtension(new ChatStateExtension(ChatState.active));
+            }
         }
     }
 

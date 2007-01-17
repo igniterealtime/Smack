@@ -169,4 +169,12 @@ public class Chat {
             listener.processMessage(this, message);
         }
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Chat
+                && threadID.equals(((Chat)obj).getThreadID())
+                && participant.equals(((Chat)obj).getParticipant());
+    }
 }

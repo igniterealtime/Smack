@@ -177,7 +177,7 @@ public class ChatManager {
         return jidChats.get(userJID);
     }
 
-    private Chat getThreadChat(String thread) {
+    public Chat getThreadChat(String thread) {
         return threadChats.get(thread);
     }
 
