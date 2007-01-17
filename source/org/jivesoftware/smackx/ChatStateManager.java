@@ -31,7 +31,6 @@ import org.jivesoftware.smackx.packet.ChatStateExtension;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.Collection;
 
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
@@ -83,6 +82,9 @@ public class ChatStateManager {
         connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor,
                 filter);
         connection.getChatManager().addChatListener(incomingInterceptor);
+
+        ServiceDiscoveryManager.getInstanceFor(connection)
+                .addFeature("http://jabber.org/protocol/chatstates");
     }
 
     /**
@@ -104,8 +106,7 @@ public class ChatStateManager {
     }
 
     private void fireNewChatState(Chat chat, ChatState state) {
-        Collection<MessageListener> listeners = chat.getListeners();
-        for (MessageListener listener : listeners) {
+        for (MessageListener listener : chat.getListeners()) {
             if (listener instanceof ChatStateListener) {
                 ((ChatStateListener) listener).stateChanged(chat, state);
             }
