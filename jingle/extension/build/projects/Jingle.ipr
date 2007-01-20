@@ -296,9 +296,6 @@
   <component name="libraryTable">
     <library name="Smack">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/../lib/jcert.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../lib/jnet.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../lib/jsse.jar!/" />
         <root url="jar://$PROJECT_DIR$/../merge/xpp.jar!/" />
       </CLASSES>
       <JAVADOC />
