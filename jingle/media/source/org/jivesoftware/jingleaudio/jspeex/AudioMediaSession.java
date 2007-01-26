@@ -152,7 +152,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     public void stopTrasmit() {
-        // Do nothing
+        mediaSession.close();
     }
 
     /**
