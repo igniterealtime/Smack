@@ -24,9 +24,11 @@ import de.javawi.jstun.test.demo.ice.Candidate;
 import de.javawi.jstun.test.demo.ice.ICENegociator;
 import de.javawi.jstun.util.UtilityException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPConnection;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Random;
 
 /**
  * ICE Resolver for Jingle transport method that results in sending data between two entities using the Interactive Connectivity Establishment (ICE) methodology. (XEP-0176)
@@ -37,34 +39,97 @@ import java.util.List;
  */
 public class ICEResolver extends TransportResolver {
 
-    public ICEResolver() {
+    XMPPConnection connection;
+    Random random = new Random();
+    long sid;
+    String server = "stun.xten.net";
+    int port = 3478;
+
+    public ICEResolver(XMPPConnection connection, String server, int port) {
         super();
+        this.connection = connection;
+        this.server = server;
+        this.port = port;
         this.setType(Type.ice);
     }
 
     public void initialize() throws XMPPException {
         if (!isResolving() && !isResolved()) {
             System.out.println("Initialized");
-            
-            ICENegociator cc = new ICENegociator((short) 1);
+
+            ICENegociator cc = new ICENegociator((short) 1, server, port);
             // gather candidates
             cc.gatherCandidateAddresses();
             // priorize candidates
             cc.prioritizeCandidates();
-            // get SortedCandidates
-            //List<Candidate> sortedCandidates = cc.getSortedCandidates();
 
             for (Candidate candidate : cc.getSortedCandidates())
                 try {
-                    TransportCandidate transportCandidate = new TransportCandidate.Ice(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority());
+                    Candidate.CandidateType type = candidate.getCandidateType();
+                    String typeString = "local";
+                    if (type.equals(Candidate.CandidateType.ServerReflexive))
+                        typeString = "srflx";
+                    else if (type.equals(Candidate.CandidateType.PeerReflexive))
+                        typeString = "prflx";
+                    else if (type.equals(Candidate.CandidateType.Relayed))
+                        typeString = "relay";
+                    else
+                        typeString = "host";
+
+                    TransportCandidate transportCandidate = new TransportCandidate.Ice(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), typeString);
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
+                    transportCandidate.setPort(getFreePort());
                     this.addCandidate(transportCandidate);
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
-                } catch (UtilityException e) {
-                    e.printStackTrace();
-                } catch (UnknownHostException e) {
+
+                }
+                catch (UtilityException e) {
                     e.printStackTrace();
                 }
+                catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+            if (RTPBridge.serviceAvailable(connection)) {
+                try {
+                    String localIp = cc.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
+
+                    sid = Math.abs(random.nextLong());
+
+                    RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
+
+                    TransportCandidate localCandidate = new TransportCandidate.Ice(
+                            rtpBridge.getIp(), 1, cc.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortA(), "1", 0, "relay");
+                    localCandidate.setLocalIp(localIp);
+
+                    TransportCandidate remoteCandidate = new TransportCandidate.Ice(
+                            rtpBridge.getIp(), 1, cc.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortB(), "1", 0, "relay");
+                    remoteCandidate.setLocalIp(localIp);
+
+                    localCandidate.setSymmetric(remoteCandidate);
+                    remoteCandidate.setSymmetric(localCandidate);
+
+                    localCandidate.setPassword(rtpBridge.getPass());
+                    remoteCandidate.setPassword(rtpBridge.getPass());
+
+                    localCandidate.setSessionId(rtpBridge.getSid());
+                    remoteCandidate.setSessionId(rtpBridge.getSid());
+
+                    localCandidate.setConnection(this.connection);
+                    remoteCandidate.setConnection(this.connection);
+
+                    addCandidate(localCandidate);
+
+                }
+                catch (UtilityException e) {
+                    e.printStackTrace();
+                }
+                catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
         }
         this.setInitialized();
     }

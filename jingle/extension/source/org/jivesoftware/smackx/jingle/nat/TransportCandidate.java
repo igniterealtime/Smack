@@ -452,6 +452,8 @@ public abstract class TransportCandidate {
 
         private int network;
 
+        private String type;
+
         public Ice() {
             super();
         }
@@ -468,10 +470,11 @@ public abstract class TransportCandidate {
          * @param username   user name, as it is used in ICE
          * @param preference preference for this transportElement, as it is used
          *                   in ICE
+         * @param type       type as defined in ICE-12
          */
         public Ice(String ip, int generation, int network,
                    String password, int port, String username,
-                   int preference) {
+                   int preference, String type) {
             super(ip, port, generation);
 
             proto = Protocol.UDP;
@@ -481,6 +484,7 @@ public abstract class TransportCandidate {
             this.password = password;
             this.username = username;
             this.preference = preference;
+            this.type = type;
         }
 
         /**
@@ -590,6 +594,22 @@ public abstract class TransportCandidate {
          */
         public void setPreference(int preference) {
             this.preference = preference;
+        }
+
+        /**
+         * Get the Candidate Type
+         * @return candidate Type
+         */
+        public String getType() {
+            return type;
+        }
+
+        /**
+         * Set the Candidate Type
+         * @param type candidate type.
+         */
+        public void setType(String type) {
+            this.type = type;
         }
 
         /*

@@ -59,15 +59,15 @@ public class STUNResolverTest extends SmackTestCase {
         int highestPref = 100;
 
         TransportCandidate cand1 = new TransportCandidate.Ice("192.168.2.1", 3, 2,
-                "password", 3468, "username1", 1);
+                "password", 3468, "username1", 1, "");
         TransportCandidate cand2 = new TransportCandidate.Ice("192.168.5.1", 2, 10,
-                "password", 3469, "username2", 15);
+                "password", 3469, "username2", 15, "");
         TransportCandidate candH = new TransportCandidate.Ice("192.168.2.11", 1, 2,
-                "password", 3468, "usernameH", highestPref);
+                "password", 3468, "usernameH", highestPref, "");
         TransportCandidate cand3 = new TransportCandidate.Ice("192.168.2.10", 2, 10,
-                "password", 3469, "username3", 2);
+                "password", 3469, "username3", 2, "");
         TransportCandidate cand4 = new TransportCandidate.Ice("192.168.4.1", 3, 2,
-                "password", 3468, "username4", 78);
+                "password", 3468, "username4", 78, "");
 
         STUNResolver stunResolver = new STUNResolver() {
         };
@@ -89,17 +89,17 @@ public class STUNResolverTest extends SmackTestCase {
         int highestPref = 100;
 
         TransportCandidate cand1 = new TransportCandidate.Ice("192.168.2.1", 3, 2,
-                "password", 3468, "username1", 1);
+                "password", 3468, "username1", 1, "");
         TransportCandidate cand2 = new TransportCandidate.Ice("192.168.5.1", 2, 10,
-                "password", 3469, "username2", 15);
+                "password", 3469, "username2", 15, "");
         TransportCandidate candH = new TransportCandidate.Ice("192.168.2.11", 1, 2,
-                "password", 3468, "usernameH", highestPref);
+                "password", 3468, "usernameH", highestPref, "");
         TransportCandidate cand3 = new TransportCandidate.Ice("192.168.2.10", 2, 10,
-                "password", 3469, "username3", 2);
+                "password", 3469, "username3", 2, "");
         TransportCandidate cand4 = new TransportCandidate.Ice("192.168.4.1", 3, 2,
-                "password", 3468, "username4", 78);
+                "password", 3468, "username4", 78, "");
 
-        ICEResolver iceResolver = new ICEResolver() {
+        ICEResolver iceResolver = new ICEResolver(getConnection(0), "stun.xten.net", 3478) {
         };
         iceResolver.addCandidate(cand1);
         iceResolver.addCandidate(cand2);
@@ -131,12 +131,14 @@ public class STUNResolverTest extends SmackTestCase {
 
             for (Candidate candidate : cc.getSortedCandidates())
                 try {
-                    TransportCandidate transportCandidate = new TransportCandidate.Ice(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority());
+                    TransportCandidate transportCandidate = new TransportCandidate.Ice(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), "");
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
-                } catch (UtilityException e) {
+                }
+                catch (UtilityException e) {
                     e.printStackTrace();
-                } catch (UnknownHostException e) {
+                }
+                catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
             Candidate candidate = cc.getSortedCandidates().get(0);
@@ -166,7 +168,7 @@ public class STUNResolverTest extends SmackTestCase {
 
         System.out.println(STUN.serviceAvailable(getConnection(0)));
         STUN stun = STUN.getSTUNServer(getConnection(0));
-        System.out.println(stun.getHost() + ":" +stun.getPort());
+        System.out.println(stun.getHost() + ":" + stun.getPort());
 
     }
 
@@ -206,7 +208,8 @@ public class STUNResolverTest extends SmackTestCase {
             Thread.sleep(55000);
             assertTrue(valCounter() > 0);
             stunResolver.resolve();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -282,7 +285,7 @@ public class STUNResolverTest extends SmackTestCase {
                             }
 
                             public void sessionEstablished(PayloadType pt,
-                                                           TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                                    TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
                                 incCounter();
                                 System.out
                                         .println("Responder: the session is fully established.");
@@ -297,7 +300,8 @@ public class STUNResolverTest extends SmackTestCase {
                             }
                         });
                         session1.start(request);
-                    } catch (XMPPException e) {
+                    }
+                    catch (XMPPException e) {
                         e.printStackTrace();
                     }
                 }
@@ -319,7 +323,7 @@ public class STUNResolverTest extends SmackTestCase {
                 }
 
                 public void sessionEstablished(PayloadType pt,
-                                               TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
                     incCounter();
                     System.out.println("Initiator: the session is fully established.");
                     System.out.println("+ Payload Type: " + pt.getId());
@@ -338,7 +342,8 @@ public class STUNResolverTest extends SmackTestCase {
 
             assertTrue(valCounter() == 2);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }

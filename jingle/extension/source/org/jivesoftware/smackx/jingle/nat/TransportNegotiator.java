@@ -21,8 +21,8 @@ import java.util.List;
 
 /**
  * Transport negotiator.
- *
- *
+ * <p/>
+ * <p/>
  * This class is responsible for managing the transport negotiation process,
  * handling all the packet interchange and the stage control.
  *
@@ -74,7 +74,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param transResolver The JingleTransportManager to use
      */
     public TransportNegotiator(JingleSession js,
-                               TransportResolver transResolver) {
+            TransportResolver transResolver) {
         super(js.getConnection());
 
         session = js;
@@ -201,7 +201,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         System.out.println("CHECK");
         offeredCandidate.addListener(new TransportResolverListener.Checker() {
             public void candidateChecked(TransportCandidate cand,
-                                         final boolean validCandidate) {
+                    final boolean validCandidate) {
                 if (validCandidate) {
                     addValidRemoteCandidate(offeredCandidate);
                 }
@@ -252,7 +252,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                     try {
                         Thread.sleep(CANDIDATES_ACCEPT_PERIOD
                                 + TransportResolver.CHECK_TIMEOUT);
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
@@ -439,31 +440,37 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 setState(inviting);
                 jout = getState().eventInvite();
 
-            } else {
+            }
+            else {
                 if (iq instanceof Jingle) {
                     // If there is no specific jmf action associated, then we
                     // are being invited to a new session...
                     setState(accepting);
                     jout = getState().eventInitiate((Jingle) iq);
-                } else {
+                }
+                else {
                     throw new IllegalStateException(
                             "Invitation IQ received is not a Jingle packet in Transport negotiator.");
                 }
             }
-        } else {
+        }
+        else {
             if (iq == null) {
                 return null;
-            } else {
+            }
+            else {
                 if (iq.getType().equals(IQ.Type.ERROR)) {
                     // Process errors
                     getState().eventError(iq);
-                } else if (iq.getType().equals(IQ.Type.RESULT)) {
+                }
+                else if (iq.getType().equals(IQ.Type.RESULT)) {
                     // Process ACKs
                     if (isExpectedId(iq.getPacketID())) {
                         jout = getState().eventAck(iq);
                         removeExpectedId(iq.getPacketID());
                     }
-                } else if (iq instanceof Jingle) {
+                }
+                else if (iq instanceof Jingle) {
                     // Get the action from the Jingle packet
                     Jingle jin = (Jingle) iq;
                     Jingle.Action action = jin.getAction();
@@ -471,11 +478,14 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                     if (action != null) {
                         if (action.equals(Jingle.Action.TRANSPORTACCEPT)) {
                             jout = getState().eventAccept(jin);
-                        } else if (action.equals(Jingle.Action.TRANSPORTDECLINE)) {
+                        }
+                        else if (action.equals(Jingle.Action.TRANSPORTDECLINE)) {
                             jout = getState().eventDecline(jin);
-                        } else if (action.equals(Jingle.Action.TRANSPORTINFO)) {
+                        }
+                        else if (action.equals(Jingle.Action.TRANSPORTINFO)) {
                             jout = getState().eventInfo(jin);
-                        } else if (action.equals(Jingle.Action.TRANSPORTMODIFY)) {
+                        }
+                        else if (action.equals(Jingle.Action.TRANSPORTMODIFY)) {
                             jout = getState().eventModify(jin);
                         }
                     }
@@ -486,7 +496,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         // Save the Id for any ACK
         if (id != null) {
             addExpectedId(id);
-        } else {
+        }
+        else {
             if (jout != null) {
                 addExpectedId(jout.getPacketID());
             }
@@ -502,7 +513,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param remote TransportCandidate that has been agreed.
      */
     private void triggerTransportEstablished(TransportCandidate local,
-                                             TransportCandidate remote) {
+            TransportCandidate remote) {
         ArrayList listeners = getListenersList();
         for (Object listener : listeners) {
             JingleListener li = (JingleListener) listener;
@@ -584,6 +595,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * connection...
      */
     public final class Accepting extends JingleNegotiator.State {
+
         public Accepting(TransportNegotiator neg) {
             super(neg);
         }
@@ -751,7 +763,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             ArrayList cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 return (TransportCandidate) cands.get(0);
-            } else {
+            }
+            else {
                 System.out.println("No Remote Candidate");
                 return null;
             }
@@ -803,13 +816,13 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
             ArrayList<TransportCandidate.Ice> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
-                int lowest = 65560;
+                int highest = -1;
                 TransportCandidate.Ice chose = null;
                 for (TransportCandidate.Ice transportCandidate : cands) {
                     System.out.println("Pref: " + transportCandidate.getPreference() + " :" + transportCandidate.getIp());
-                    if (transportCandidate.getPreference() < lowest) {
+                    if (transportCandidate.getPreference() > highest) {
                         chose = transportCandidate;
-                        lowest = transportCandidate.getPreference();
+                        highest = transportCandidate.getPreference();
                     }
                 }
                 result = chose;
@@ -822,20 +835,24 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          * Return true for ICE candidates.
          */
         public boolean acceptableTransportCandidate(TransportCandidate tc) {
-
             try {
+                TransportCandidate.Ice ice = (TransportCandidate.Ice) tc;
+                if (ice.getType().equals("relay")) return true;
+                if(true) return false;
                 InetAddress.getByName(tc.getIp()).isReachable(3000);
-                DatagramSocket socket = new DatagramSocket(0);    
+                DatagramSocket socket = new DatagramSocket(0);
                 socket.connect(InetAddress.getByName(tc.getIp()), tc.getPort());
                 return true;
-            } catch (SocketException e) {
-                e.printStackTrace();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            }
+            catch (SocketException e) {
                 e.printStackTrace();
             }
-
+            catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
             return false;
         }
     }

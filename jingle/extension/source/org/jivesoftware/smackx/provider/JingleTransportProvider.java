@@ -50,10 +50,12 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
                 if (name.equals(JingleTransportCandidate.NODENAME)) {
                     JingleTransportCandidate jtc = parseCandidate(parser);
                     if (jtc != null) trans.addCandidate(jtc);
-                } else {
+                }
+                else {
                     throw new Exception("Unknown tag \"" + name + "\" in transport element.");
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (name.equals(JingleTransport.NODENAME)) {
                     done = true;
                 }
@@ -107,6 +109,7 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             String port = parser.getAttributeValue("", "port");
             String preference = parser.getAttributeValue("", "preference");
             String proto = parser.getAttributeValue("", "proto");
+            String type = parser.getAttributeValue("", "type");
 
             if (channel != null) {
                 mt.setChannel(new TransportCandidate.Channel(channel));
@@ -115,13 +118,15 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             if (generation != null) {
                 try {
                     mt.setGeneration(Integer.parseInt(generation));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
             }
 
             if (ip != null) {
                 mt.setIp(ip);
-            } else {
+            }
+            else {
                 return null;
             }
 
@@ -132,7 +137,8 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             if (network != null) {
                 try {
                     mt.setNetwork(Integer.parseInt(network));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
             }
 
@@ -147,19 +153,25 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             if (port != null) {
                 try {
                     mt.setPort(Integer.parseInt(port));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
             }
 
             if (preference != null) {
                 try {
                     mt.setPreference(Integer.parseInt(preference));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
             }
 
             if (proto != null) {
                 mt.setProto(new TransportCandidate.Protocol(proto));
+            }
+
+            if (type != null) {
+                mt.setType(type);
             }
 
             return new JingleTransport.Ice.Candidate(mt);
@@ -207,7 +219,8 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             if (generation != null) {
                 try {
                     mt.setGeneration(Integer.parseInt(generation));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
             }
 
@@ -222,7 +235,8 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             if (port != null) {
                 try {
                     mt.setPort(Integer.parseInt(port));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
             }
             return new JingleTransport.RawUdp.Candidate(mt);

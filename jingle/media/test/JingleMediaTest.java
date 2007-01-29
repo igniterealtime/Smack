@@ -53,10 +53,16 @@ public class JingleMediaTest extends TestCase {
             x1.connect();
             x1.login("barata6", "barata6");
 
+            ICETransportManager icetm0 = new ICETransportManager(x0, "stun.xten.net", 3478);
+            ICETransportManager icetm1 = new ICETransportManager(x1, "stun.xten.net", 3478);
+
             final JingleManager jm0 = new JingleManager(
-                    x0, new ICETransportManager());
+                    x0, icetm0);
             final JingleManager jm1 = new JingleManager(
-                    x1, new ICETransportManager());
+                    x1, icetm1);
+
+            jm0.addCreationListener(icetm0);
+            jm1.addCreationListener(icetm1);
 
             JingleMediaManager jingleMediaManager0 = new JmfMediaManager();
             JingleMediaManager jingleMediaManager1 = new JmfMediaManager();
@@ -70,7 +76,8 @@ public class JingleMediaTest extends TestCase {
                     try {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
                         session.start(request);
-                    } catch (XMPPException e) {
+                    }
+                    catch (XMPPException e) {
                         e.printStackTrace();
                     }
 
@@ -89,7 +96,8 @@ public class JingleMediaTest extends TestCase {
             x0.disconnect();
             x1.disconnect();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -128,7 +136,8 @@ public class JingleMediaTest extends TestCase {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
 
                         session.start(request);
-                    } catch (XMPPException e) {
+                    }
+                    catch (XMPPException e) {
                         e.printStackTrace();
                     }
 
@@ -147,7 +156,8 @@ public class JingleMediaTest extends TestCase {
             x0.disconnect();
             x1.disconnect();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -178,8 +188,8 @@ public class JingleMediaTest extends TestCase {
                         jm0.addCreationListener(btm0);
                         jm1.addCreationListener(btm1);
 
-                        JingleMediaManager jingleMediaManager = new SpeexMediaManager();
-                        JingleMediaManager jingleMediaManager2 = new SpeexMediaManager();
+                        JingleMediaManager jingleMediaManager = new JmfMediaManager();
+                        JingleMediaManager jingleMediaManager2 = new JmfMediaManager();
 
                         jm0.setMediaManager(jingleMediaManager);
                         jm1.setMediaManager(jingleMediaManager2);
@@ -191,7 +201,8 @@ public class JingleMediaTest extends TestCase {
                                     IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
 
                                     session.start(request);
-                                } catch (XMPPException e) {
+                                }
+                                catch (XMPPException e) {
                                     e.printStackTrace();
                                 }
 
@@ -211,7 +222,8 @@ public class JingleMediaTest extends TestCase {
                         x0.disconnect();
                         x1.disconnect();
 
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -222,7 +234,8 @@ public class JingleMediaTest extends TestCase {
 
         try {
             Thread.sleep(250000);
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
@@ -262,7 +275,8 @@ public class JingleMediaTest extends TestCase {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
 
                         session.start(request);
-                    } catch (XMPPException e) {
+                    }
+                    catch (XMPPException e) {
                         e.printStackTrace();
                     }
 
@@ -292,7 +306,8 @@ public class JingleMediaTest extends TestCase {
             x0.disconnect();
             x1.disconnect();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -310,7 +325,8 @@ public class JingleMediaTest extends TestCase {
 
                 try {
                     Thread.sleep(10000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -319,10 +335,12 @@ public class JingleMediaTest extends TestCase {
 
                 try {
                     Thread.sleep(3000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -342,7 +360,8 @@ public class JingleMediaTest extends TestCase {
 
                 try {
                     Thread.sleep(10000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -351,11 +370,13 @@ public class JingleMediaTest extends TestCase {
 
                 try {
                     Thread.sleep(3000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

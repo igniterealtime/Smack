@@ -24,6 +24,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.jingleaudio.JMFInit;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,10 +102,9 @@ public class JmfMediaManager extends JingleMediaManager {
             // should be and put it there.
             runLinuxPreInstall();
 
-            if (jmfProperties.length() == 0) {
-                //JMFInit init = new JMFInit(null);
-                //init.setVisible(false);
-            }
+            //if (jmfProperties.length() == 0) {
+                JMFInit init = new JMFInit(null, false);
+            //}
 
         }
         finally {

@@ -314,6 +314,7 @@ public class JingleTransport implements PacketExtension {
                     buf.append(" username=\"").append(tci.getUsername()).append("\"");
                     buf.append(" password=\"").append(tci.getPassword()).append("\"");
                     buf.append(" preference=\"").append(tci.getPreference()).append("\"");
+                    buf.append(" type=\"").append(tci.getType()).append("\"");
 
                     // Optional elements
                     if (transportCandidate.getName() != null) {
