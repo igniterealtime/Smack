@@ -838,7 +838,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             try {
                 TransportCandidate.Ice ice = (TransportCandidate.Ice) tc;
                 if (ice.getType().equals("relay")) return true;
-                if(true) return false;
                 InetAddress.getByName(tc.getIp()).isReachable(3000);
                 DatagramSocket socket = new DatagramSocket(0);
                 socket.connect(InetAddress.getByName(tc.getIp()), tc.getPort());
