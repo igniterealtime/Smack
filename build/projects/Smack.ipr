@@ -284,10 +284,12 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../jingle/extension/build/projects/JingleExtension.iml" filepath="$PROJECT_DIR$/../../jingle/extension/build/projects/JingleExtension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../jingle/media/build/projects/JingleMedia.iml" filepath="$PROJECT_DIR$/../../jingle/media/build/projects/JingleMedia.iml" />
       <module fileurl="file://$PROJECT_DIR$/Smack.iml" filepath="$PROJECT_DIR$/Smack.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="JDK 1.5.0" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK" />
   <component name="ProjectRunConfigurationManager" />
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
