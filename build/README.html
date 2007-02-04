@@ -90,9 +90,9 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 <p>
 <b><a name="javaSetup">Configure Java</a></b>
 <ul>
-	Java 2 (JDK 1.2 or later) must be installed and setup on your machine. To test the installation,
+	Java 5 (JDK 1.5 or later) must be installed and setup on your machine. To test the installation,
 	open a shell in a Unix or a MS-DOS prompt in Windows. Check your version of
-	Java with "java -version" -- it must version 1.2 or greater.
+	Java with "java -version" -- it must version 1.5 or greater.
 	If Java isn't installed, download a copy from the 
 	<a href="http://java.sun.com/">Java website</a>.
 	<p>
@@ -109,10 +109,10 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 				<li>Set the JAVA_HOME environment variable by adding the
 					following line to the file:
 					<p></font><code>
-					export JAVA_HOME=/usr/local/jdk1.3
+					export JAVA_HOME=/usr/local/jdk1.5
 					</code><font face="verdana, arial, helvetica" size=2>
 					<p>
-					The value "/usr/local/jdk1.3" should be replaced with your actual
+					The value "/usr/local/jdk1.5" should be replaced with your actual
 					Java directory. Be sure there are no spaces after the end of 
 					the directory name. Do not add an extra slash after the directory name.
 				<li>Save changes to the file and then "source" it:
@@ -123,7 +123,7 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 					The JAVA_HOME variable should now be configured correctly.					 
 			</ol>
 	 	<p>
-		<li> WindowsNT/2000 
+		<li> Windows 
 			<ol>
 				<li>Navigate to your desktop and right click on "My Computer";
 					choose properties.
@@ -132,27 +132,12 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 				<li>Click the "New..." button in the System variables section.
 					Enter the variable name "JAVA_HOME" and set the variable 
 					value to the full path of your Java installation. For example,
-					"c:\jdk1.3". Be sure to not add an extra slash to the end
+					"c:\jdk1.5". Be sure to not add an extra slash to the end
 					of the directory name.
 				<li>Click "OK" in all of the menus to accept the changes.
 				<li>Close any open command prompt windows. The next time you
 					open a command prompt, the "JAVA_HOME" variable will be set
 					correctly.
-			</ol>
-		<p>
-		<li> Windows95/98
-			<ol>
-				<li>Open your autoexec.bat file (often at "c:\autoexec.bat") using Notepad.
-				<li>Add a line to the end of the file that resembles the following:
-					<p></font><code>
-					set JAVA_HOME=c:\jdk1.3
-					</code><font face="verdana, arial, helvetica" size=2>
-					<p>
-					The value "c:\jdk1.3" should be replaced with your actual
-					Java directory. Be sure there are no spaces between
-					the "=" sign or after the end of the directory name. Do
-					not add an extra slash after the directory name.
-				<li>Save changes to autoexec.bat and restart your computer.					
 			</ol>
 	</ul>
 </ul>
@@ -248,7 +233,7 @@ ant compile <br>
 <p><i>Description:</i></p>
 
 Compiles all the Smack source code.
-The build directory is the "classes" directory under your Smack source distribution.
+The build directory is the "target/classes" directory under your Smack source distribution.
 
 <p>[<a href="#tasks">return to task list</a>]
 </ul>

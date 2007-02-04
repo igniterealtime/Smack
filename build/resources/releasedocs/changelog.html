@@ -3,381 +3,272 @@
 <html>
 <head>
 	<title>Smack Changelog</title>
-    <style type="text/css">
-        BODY {
-            font-size : 100%;
-        }
-        BODY, TD, TH {
-            font-family : tahoma, verdana, arial, helvetica, sans-serif;
-            font-size : 0.8em;
-        }
-        A:hover {
-            text-decoration : none;
-        }
-        .pageheader {
-            font-family : arial, helvetica, sans-serif;
-            font-size : 14pt;
-            font-weight: bold;
-        }
-        .header {
-            font-family : tahoma, arial, helvetica, sans-serif;
-            font-size : 1.4em;
-            font-weight: bold;
-            border-bottom : 1px #ccc solid;
-            padding-bottom : 2px;
-        }
-        .bugNum {
-            color: #666;
-        }
-        .subheader {
-            font-weight: bold;
-            color: #600;
-        }
-        TT {
-            font-family : courier new;
-            font-weight : bold;
-            color : #060;
-        }
-        PRE {
-            font-family : courier new;
-            font-size : 100%;
-        }
-        .footer {
-            font-size : 0.8em;
-            color : #666;
-            text-align : center;
-        }
-    </style>
+<style type="text/css">
+/* global font and body settings */
+body {
+	font-size : 100%;
+	background-color : #d3d6d9;
+	padding: 0px;
+	margin: 0px 0px 30px 0px;
+}
+body, td, th {
+	font-family : arial, helvetica, sans-serif;
+	font-size : 10pt;
+}
+pre, tt, code {
+	font-family : courier new, monospaced;
+	font-size : 9pt;
+}
+#pageContainer {
+	display: block;
+	position: relative;
+	clear: both;
+	background-color: #fff;
+	border: 1px solid #999;
+	padding: 40px;
+	margin: 30px;
+	-moz-border-radius: 6px;
+}
+#pageHeader {
+	display: block;
+	position: relative;
+	height: 80px;
+	background-color: #e7eaee;
+	border: 1px solid #cccccc;
+	border-bottom: none;
+	-moz-border-radius: 5px 5px 0px 0px;
+	margin: 10px 0px 0px 0px;
+}
+#pageBody {
+	margin: 0px 18px 0px 20px;
+}
+
+
+
+/* anchors */
+a:link {
+	color: #11568c;
+}
+a:visited {
+	color: #571c8d;
+}
+a:hover {
+	color: #7a1d42;
+	text-decoration : underline;
+}
+a:active {
+	color: #7a1d42;
+}
+
+
+
+/* page header elements (logo and navigation) */
+.navigation {
+	display: block;
+	position: relative;
+	height: 20px;
+	background-color: #335588;
+	border: 1px solid #cccccc;
+	border-top: none;
+	color: #ffffff;
+	font-size: 11px;
+	line-height: 18px;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 25px 0px;
+	overflow: hidden;
+}
+.navigation a {
+	margin: 0px 20px 0px 20px;
+}
+.navigation a:link { color: #ffffff; }
+.navigation a:visited { color: #ffffff; }
+.navigation a:hover { color: #ffffff; }
+.navigation a:active { color: #ffffff; }
+
+
+
+/* headings */
+h1 {
+	display: block;
+	position: relative;
+	font-size : 1.7em;
+	font-weight : bold;
+	color: #670e15;
+	padding: 0px;
+	margin: 30px 0px 0px 20px;
+}
+h2 {
+	font-size : 1.3em;
+	font-weight : bold;
+	margin: 40px 0px 6px 0px;
+	padding: 0px;
+	color: #335588;
+}
+h3 {
+	font-size : 1.0em;
+	font-weight : bold;
+	margin: 25px 0px 3px 0px;
+	padding: 0px;
+	color: #334466;
+}
+
+/* general elements */
+p {
+	margin: 0px 0px 15px 0px;
+}
+
+ul {
+	margin: 5px 0px 15px 15px;
+}
+li {
+	padding-bottom : 4px;
+}
+tt {
+	font-family : courier new;
+	font-weight : bold;
+	color : #060;
+}
+hr {
+	display: block;
+	height: 1px;
+	background-color: #999999;
+	border: none;
+	margin: 40px 0px 20px 0px;
+}
+
+.footer {
+	font-size : 8pt;
+	color : #666;
+	text-align : center;
+	margin-top : 2em;
+	padding-top : 0.5em;
+	border-top : 1px #CCC solid;
+}
+</style>
 </head>
 <body>
 
-<div class="header">
-Smack Changelog
+<div id="pageContainer">
+
+	<div id="pageHeader">
+		<h1>Smack Changelog</h1>
+	</div>
+	<div class="navigation">
+	<a href="README.html">Readme</a>|<a href="changelog.html"><strong>Changelog</strong></a>
+	</div>
+
+	<div id="pageBody">
+
+
+<h2>3.0.0 Beta 1 -- <span style="font-weight: normal;">February 7, 2006</span></h2>
+
+<h3>Important Changes</h3>
+<ul>
+    <li>Java 5 is now required.</li>
+    <li>Several API changes are not backwards compatible. In particular, connection handling has
+        been significantly updated, the GroupChat class has been dropped in favor of the standardized
+        MultiUserChat, and the Chat class has an updated API.</li>
+    <li>Some additional API changes may be made through the beta period.</li>
+
+</ul>
+
+<h3>New Features</h3>
+<ul>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-31'>SMACK-31</a>] - Added support for privacy lists. <b>(4 votes)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-94'>SMACK-94</a>] - Added support for last activity of online users. <b>(1 vote)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-121'>SMACK-121</a>] - Added support for stream errors.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-136'>SMACK-136</a>] - Added support for XEP-0048: bookmark storage.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-144'>SMACK-144</a>] - Added bookmark manager for central bookmark management.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-150'>SMACK-150</a>] - Added support for handling node features in disco.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-167'>SMACK-167</a>] - Added support for XEP-0106: JID Escaping</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-171'>SMACK-171</a>] - The presence of available contacts is now changed to offline when the connection is closed.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-172'>SMACK-172</a>] - Added support for re-connection when the connection is abruptly closed.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-182'>SMACK-182</a>] - ProviderManager is now pluggable (for Eclipse ECF).</li>
+</ul>
+
+<h3>Bug Fixes</h3>
+<ul>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-6'>SMACK-6</a>] - Don't force use of collectors in Chat class.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-10'>SMACK-10</a>] - Flush pending packets before closing the connection. <b>(4 votes)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-51'>SMACK-51</a>] - Use unique Thread names among connections.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-54'>SMACK-54</a>] - Add #equals and #hashCode to Occupant.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-86'>SMACK-86</a>] - Made presence checks case in-sensitive.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-93'>SMACK-93</a>] - XHTML provider wasn't handling some tags correctly.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-138'>SMACK-138</a>] - Added caching to file transfer negotiation operations.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-143'>SMACK-143</a>] - Updated XMPPError to be compliant with RFC3920.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-145'>SMACK-145</a>] - XHTML parsing could fail in some cases.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-146'>SMACK-146</a>] - DNS lookups were failing with some DNS servers.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-147'>SMACK-147</a>] - Removed invisibility presence mode.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-148'>SMACK-148</a>] - Socks 5 listening thread was not cleaning up correctly. <b>(2 votes)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-149'>SMACK-149</a>] - Fixed possible memory leaking in PacketReader.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-151'>SMACK-151</a>] - Now use getBytes("UTF-8") instead of getBytes().</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-152'>SMACK-152</a>] - The FN field is duplicated when loading vCards from the server.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-153'>SMACK-153</a>] - Optimized performance by replacing StringBuffer with StringBuilder.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-154'>SMACK-154</a>] - Fixed roster test cases that were sometimes failing.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-155'>SMACK-155</a>] - Optimized MUC performance by reducing number of packet collectors and listeners.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-158'>SMACK-158</a>] - FileTransfer isDone() method was returning true even when the transfer was refused.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-159'>SMACK-159</a>] - Filenames were not escaped for file transfers.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-160'>SMACK-160</a>] - Now use stream:feature to discover registration support.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-161'>SMACK-161</a>] - Improved connection speed.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-162'>SMACK-162</a>] - Fixed NPE in SmackConfiguration.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-163'>SMACK-163</a>] - Fixed NPE in RoomInfo when subject was null.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-164'>SMACK-164</a>] - Contact name was not being escaped.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-165'>SMACK-165</a>] - Listeners were not being removed from PacketReader.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-166'>SMACK-166</a>] - Packet reader thread was freezing when parsing an error text with no description.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-168'>SMACK-168</a>] - Fixed possible delay in PacketReader when negotiating TLS.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-173'>SMACK-173</a>] - Renamed ConnectionEstablishedListener to ConnectionCreationListener.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-176'>SMACK-176</a>] - Fixed incorrect property initialization.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-177'>SMACK-177</a>] - Removed synchronization from Roster.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-178'>SMACK-178</a>] - Added NodeInformation#getNodeIdentities() to return identities of hosted nodes</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-181'>SMACK-181</a>] - Improved parsing of certificates to get signed domains.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-183'>SMACK-183</a>] - Documentation fixes.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-184'>SMACK-184</a>] - Simplified XMPPConnection constructors.</li>
+</ul>
+
+<h2>2.2.1 -- <span style="font-weight: normal;">June 12, 2006</span></h2>
+
+<ul>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-141'>SMACK-141</a>] - Fixed SSL exception while creating new XMPPConnections. <b>(1 vote)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-127'>SMACK-127</a>] - Fixed incorrect file transfer progress.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-130'>SMACK-130</a>] - Fixed VCard escaping problem that was crashing connections.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-134'>SMACK-134</a>] - VCards were not being saved when avatar was the only element.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-131'>SMACK-131</a>] - Illegal XML characters are now properly escaped in the presence status.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-133'>SMACK-133</a>] - Illegal XML characters are now properly escaped in groups names.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-132'>SMACK-132</a>] - Fixed IBB problem triggered when buffersize was increased.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-135'>SMACK-135</a>] - Moved to new Base64 implementation to fix line break issue in old implementation.</li>
+</ul>
+
+<h2>2.2.0 -- <span style="font-weight: normal;">March 9, 2006</span></h2>
+<ul>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-122'>SMACK-122</a>] - Added support for JEP-96: File Transfer.  <b>(1 vote)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-72'>SMACK-72</a>] - Added support for JEP-47: In-Band Bytestreams. <b>(2 votes)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-122'>SMACK-122</a>] - Added support for JEP-65: SOCKS5 Bytestreams.  <b>(1 vote)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-112'>SMACK-112</a>] - Added support for JEP-38 Stream Compression.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-117'>SMACK-117</a>] - Added support for JEP-33: Extended Stanza Addressing.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-27'>SMACK-27</a>] - Certification validation is now pluggable.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-118'>SMACK-118</a>] - Added methods to dynamically remove providers.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-125'>SMACK-125</a>] - Added support for deaf occupant in MUC rooms.</li>
+
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-109'>SMACK-109</a>] - Optimized client performance. <b>(1 vote)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-113'>SMACK-113</a>] - Added support for choosing if TLS should be used or not.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-114'>SMACK-114</a>] - Added support for choosing if SASL should be used or not.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-123'>SMACK-123</a>] - A thread is no longer used for packet writer listeners.</li>
+
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-110'>SMACK-110</a>] - Resource binding and session establishment are now requested only if the server offered them.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-111'>SMACK-111</a>] - Fixed concurrency issue with date formatter.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-116'>SMACK-116</a>] - Fixed vCard issues.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-119'>SMACK-119</a>] - Fixed AccessControlException when using vCard from an applet.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-120'>SMACK-120</a>] - Listener thread was not being shutdown properly.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-124'>SMACK-124</a>] - Parsing resource binding packets was requiring smackx.jar file to be in the classpath.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-97'>SMACK-97</a>] - Fixed functional test failures in PresencePriorityTest and RosterTest.</li>
+</ul>
+
+    <div class="footer">
+    Copyright &copy; Jive Software, 2004-2007
+    </div>
+
+	</div>
 </div>
-
-<p>
-<b>2.2.1</b> -- June 12, 2006
-<p>
-<ul>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-141'>SMACK-141</a>] - Fixed SSL exception while creating new XMPPConnections. <b>(1 vote)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-127'>SMACK-127</a>] - Fixed incorrect file transfer progress.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-130'>SMACK-130</a>] - Fixed VCard escaping problem that was crashing connections.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-134'>SMACK-134</a>] - VCards were not being saved when avatar was the only element.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-131'>SMACK-131</a>] - Illegal XML characters are now properly escaped in the presence status.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-133'>SMACK-133</a>] - Illegal XML characters are now properly escaped in groups names.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-132'>SMACK-132</a>] - Fixed IBB problem triggered when buffersize was increased.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-135'>SMACK-135</a>] - Moved to new Base64 implementation to fix line break issue in old implementation.</li>
-</ul>
-
-<p>
-<b>2.2.0</b> -- March 9, 2006
-<p>
-<ul>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-122'>SMACK-122</a>] - Added support for JEP-96: File Transfer.  <b>(1 vote)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-72'>SMACK-72</a>] - Added support for JEP-47: In-Band Bytestreams. <b>(2 votes)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-122'>SMACK-122</a>] - Added support for JEP-65: SOCKS5 Bytestreams.  <b>(1 vote)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-112'>SMACK-112</a>] - Added support for JEP-38 Stream Compression.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-117'>SMACK-117</a>] - Added support for JEP-33: Extended Stanza Addressing.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-27'>SMACK-27</a>] - Certification validation is now pluggable.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-118'>SMACK-118</a>] - Added methods to dynamically remove providers.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-125'>SMACK-125</a>] - Added support for deaf occupant in MUC rooms.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-109'>SMACK-109</a>] - Optimized client performance. <b>(1 vote)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-113'>SMACK-113</a>] - Added support for choosing if TLS should be used or not.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-114'>SMACK-114</a>] - Added support for choosing if SASL should be used or not.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-123'>SMACK-123</a>] - A thread is no longer used for packet writer listeners.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-110'>SMACK-110</a>] - Resource binding and session establishment are now requested only if the server offered them.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-111'>SMACK-111</a>] - Fixed concurrency issue with date formatter.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-116'>SMACK-116</a>] - Fixed vCard issues.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-119'>SMACK-119</a>] - Fixed AccessControlException when using vCard from an applet.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-120'>SMACK-120</a>] - Listener thread was not being shutdown properly.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-124'>SMACK-124</a>] - Parsing resource binding packets was requiring smackx.jar file to be in the classpath.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-97'>SMACK-97</a>] - Fixed functional test failures in PresencePriorityTest and RosterTest.</li>
-</ul>
-
-<p>
-<b>2.1.0</b> -- November 17, 2005
-<p>
-<font color="red"><b>! Warning: This release includes changes to the API.</b></font>
-<ul>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-29'>SMACK-29</a>] - XMPPConnection was not resolving the xmpp-client service.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-87'>SMACK-87</a>] - DNS is now used to look up XMPP address.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-82'>SMACK-82</a>] - Connections are now secured using TLS only when server supports TLS.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-85'>SMACK-85</a>] - Improved performance by removing unnecessary delays that might occur while doing resource binding.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-89'>SMACK-89</a>] - An XMPPException is now thrown when SASL authentication fails.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-90'>SMACK-90</a>] - Old SSL connections no longer indicate XMPP 1.0 compliance.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-92'>SMACK-92</a>] - Adding existing roster entry to a new group was not working.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-98'>SMACK-98</a>] - Unsubscribe presence packets were not being acknowledged.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-101'>SMACK-101</a>] - Invitation rejection listeners were being fired with packets of type error.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-102'>SMACK-102</a>] - Invitation listeners were being fired with packets of type error.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-103'>SMACK-103</a>] - LastActivtity was throwing number format exception in certain cases.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-64'>SMACK-64</a>] - Added support for JEP-55: Jabber Search. <b>(5 votes)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-84'>SMACK-84</a>] - Added support for ANONYMOUS SASL.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-96'>SMACK-96</a>] - Added support for discovering shared groups of the logged user.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-104'>SMACK-104</a>] - Added support for intercepting and modifying packets to be sent to the server.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-107'>SMACK-107</a>] - Added support for stream errors.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-105'>SMACK-105</a>] - Added support for knowing if a contact has to answer a presence subscription request.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-55'>SMACK-55</a>] - <font color="red"><b>!</b></font> Modified parameters of <tt>ParticipantStatusListener#nicknameChanged</tt> method. <b>(1 vote)</b></li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-81'>SMACK-81</a>] - <font color="red"><b>!</b></font> Modified <tt>ParticipantStatusListener</tt> interface to include reason and actor information when kicking or banning users.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-106'>SMACK-106</a>] - <font color="red"><b>!</b></font> Modified <tt>RosterListener</tt> interface to include more specific events (e.g entries added, deleted or modified).</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-83'>SMACK-83</a>] - Allowed to perform SASL authentication over plain connections.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-95'>SMACK-95</a>] - Data stored in the enhanced debugger can now be limited.</li>
-</ul>
-
-<p>
-<b>2.0.0</b> -- August 27, 2005
-<p>
-<ul>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-76'>SMACK-76</a>] - Added TLS support.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-24'>SMACK-24</a>] - Added SASL support.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-77'>SMACK-77</a>] - Added Resource Binding support.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-78'>SMACK-78</a>] - Added Session Establishment support.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-79'>SMACK-79</a>] - Created convenience class to make it easier to connect to GoogleTalk.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-73'>SMACK-73</a>] - Rollback local changes when server rejects adding/removing group entries.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-75'>SMACK-75</a>] - Modified XMPPConnection and SSLXMPPConnection constructors to include new service name parameter.</li>
-</ul>
-
-<p>
-<b>1.5.1</b> -- August 12, 2005
-<p>
-<ul>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-60'>SMACK-60</a>] - Presence priorities out of range were crashing the connection.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-63'>SMACK-63</a>] - Sometimes XMPPConnection#getRoster() was taking too long.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-66'>SMACK-66</a>] - Wrong attribute name and date format when requesting history since a given date.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-70'>SMACK-70</a>] - IQ Time now uses a 0-23 hour format.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-25'>SMACK-25</a>] - Added support for JEP-13: Flexible Offline Message Retrieval.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-58'>SMACK-58</a>] - Added support for JEP-54: vCards. Thanks to Kirill Maximov.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-53'>SMACK-53</a>] - Added support for JEP-92: Software Version.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-61'>SMACK-61</a>] - Added new debugger that prints on the stdout.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-71'>SMACK-71</a>] - Created new FromMatchesFilter that checks for exact matching.</li>
-
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-52'>SMACK-52</a>] - Added constructor to XMPPConnection for better connection control.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-56'>SMACK-56</a>] - Reported data can now hold more than one value.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-57'>SMACK-57</a>] - RoomInfo now includes the room JID.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-59'>SMACK-59</a>] - Date format for delayed dates is configurable.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-62'>SMACK-62</a>] - The username and password fields are now optional in Registration.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-67'>SMACK-67</a>] - Parsing of delayed dates was improved to be smarter.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-68'>SMACK-68</a>] - PacketParserUtils#parseProperties is now public.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-69'>SMACK-69</a>] - Adding or removing entries from a group can now throw an XMPPException.</li>
-</ul>
-
-<p>
-<b>1.5.0</b> -- March 30, 2005
-<p>
-<ul>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-7'>SMACK-7</a>] - Fixed issue that caused Smack to fail when X11 was not installed on Unix.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-32'>SMACK-32</a>] - Getting the system classloader could raise a security exception.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-33'>SMACK-33</a>] - MUCOwner.Item now includes the "role" attribute.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-37'>SMACK-37</a>] - Fixing timing issue that could make logins slow.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-42'>SMACK-42</a>] - The pretty print of the EnhancedDebugger was not working well with Java 1.5.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-43'>SMACK-43</a>] - Occupant#getNick() answers null when the info is available.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-46'>SMACK-46</a>] - Support for cancelling notifications in message events was missing.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-48'>SMACK-48</a>] - PacketListeners were not being removed from the connection when the chat finishes.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-50'>SMACK-50</a>] - XML representation of Presence packets did not include error element.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-4'>SMACK-4</a>] - Implemented room management in batch mode.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-11'>SMACK-11</a>] - Implemented discovery of extended information of MUC rooms.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-13'>SMACK-13</a>] - Implemented discovery of MUC rooms hosted by a service.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-38'>SMACK-38</a>] - Notify when an occupant joins or leaves a group chat room.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-39'>SMACK-39</a>] - Added support for discovering MUC services.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-41'>SMACK-41</a>] - Added support for JEP-91: Delayed Delivery.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-49'>SMACK-49</a>] - Modified Smack to use latest minimal version of XPP.</li>
-
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-40'>SMACK-40</a>] - Packet extensions can now be sent when inviting a user to a room.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-44'>SMACK-44</a>] - PacketReader can now parse errors that follow XMPP 1.0.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-45'>SMACK-45</a>] - Sorted the list of providers in the EnhancedDebugger window.</li>
-<li>[<a href='http://www.jivesoftware.org/issues/browse/SMACK-47'>SMACK-47</a>] - Added a public API for parsing Messages and Presences.</li>
-</ul>
-
-<p>
-<b>1.4.1</b> - November 15, 2004
-<p>
-<ul>
-    <li><font color="#777777">(SMACK-21)</font> The reader and listener threads in PacketReader are now stopped if an error occurs while starting up PacketReader. Thanks to Steve Reichert.
-    <li><font color="#777777">(SMACK-22)</font> XMPP addresses are now treated as case insensitive.
-    <li><font color="#777777">(SMACK-3)</font> Fixed possible NullPointerException when parsing invalid XHTML text.
-    <li><font color="#777777">(SMACK-8)</font> Answer an item-not-found error when Smack receives a service discovery for information and node is not null.
-    <li><font color="#777777">(SMACK-17)</font> An incorrect namespace was being used for granting and revoking admin/owner privileges.
-    <li><font color="#777777">(SMACK-19)</font> The roster should be able to hold any valid JID format. Thanks to Adam Olsen.
-    <li><font color="#777777">(SMACK-20</font> Parsing MUCOwner packets could freeze the client.
-    <li><font color="#777777">(SMACK-18)</font> Implemented JEP-128. A service discovery for information can now include a dataform or any possible packet extension.
-    <li><font color="#777777">(SMACK-15)</font> Allow registration entries with blank values.
-    <li><font color="#777777">(SMACK-16)</font> Added <tt>String getAccountAttribute(String)</tt> method to AccountManager class.
-    <li><font color="#777777">(SMACK-23)</font> Connection listeners can now be removed while notifying that the connection is being closed. Fixes ConcurrentModificationException triggered on close.
-</ul>
-
-<p>
-<b>1.4.0</b> - August 10, 2004
-<p>
-<ul>
-    <li><font color="#777777">(SMACK-99)</font> Added support for Multi User Chat (JEP 45) as a Smack Extension.
-    <li><font color="#777777">(SMACK-125)</font> Added support for Data Forms (JEP 04) as a Smack Extension.
-    <li><font color="#777777">(SMACK-143)</font> Fixed memory leak problem by closing ObjectOutputStream while writing out Object properties.
-    <li><font color="#777777">(SMACK-145)</font> Fixed memory leak problem by cancelling unused collectors.
-    <li><font color="#777777">(SMACK-138)</font> Fixed error parsing properties of Messages.
-    <li><font color="#777777">(SMACK-135)</font> Invalid characters in the TO and FROM fields of any packet were escaped in order to 
-	prevent the connection from closing. Thanks to Ian Sollars.
-    <li><font color="#777777">(SMACK-140)</font> Added new constructor to XMPPConnection <tt>XMPPConnection(String host, int port, 
-	SocketFactory socketFactory)</tt> that allows a user to pass in the SocketFactory to use.
-    <li><font color="#777777">(SMACK-131)</font> Remove cached presence info when user was deleted from roster.
-    <li><font color="#777777">(SMACK-123)</font> TimerTask was removed to make Smack JDK 1.2 compatible again.
-    <li><font color="#777777">(SMACK-130)</font> Use notifyAll() instead of notify() in PacketWriter.
-    <li><font color="#777777">(SMACK-137)</font> Fixed security exception with unsigned applets using try/catch around System.getProperty.
-    <li><font color="#777777">(SMACK-127)</font> IQ packets can now have extensions.
-    <li><font color="#777777">(SMACK-128)</font> Registration can now include a registration data form.
-    <li><font color="#777777">(SMACK-136)</font> Keep-alive process should flush stream.
-    <li><font color="#777777">(SMACK-121)</font> Delay of keep-alive is now configurable.
-    <li><font color="#777777">(SMACK-149)</font> A disco info request directed to a Smack client didn't answer the client's identity.
-    <li><font color="#777777">(SMACK-150)</font> Added <tt>canPublishItems(String entityID)</tt> method to ServiceDiscoveryManager in 
-	order to discover whether a server supports publishing of items or not.
-    <li><font color="#777777">(SMACK-133)</font> Node attribute was missing in DiscoverInfo and DiscoverItems XML representations.
-    <li><font color="#777777">(SMACK-134)</font> Added <tt>setNodeInformationProvider(String node, NodeInformationProvider listener)</tt> 
-	method to ServiceDiscoveryManager and created new <tt>NodeInformationProvider</tt> interface in order to provide information about 
-	nodes defined in the client.
-    <li><font color="#777777">(SMACK-139)</font> Added new menu option to the enhanced debugger in order to close all the tabs of which 
-	their connections are not active anymore.
-    <li><font color="#777777">(SMACK-124)</font> Don't set L&F in debuggers.
-    <li><font color="#777777">(SMACK-122)</font> Added documentation about the new enhanced debugger.
-    <li><font color="#777777">(SMACK-142)</font> Base class for existing test cases was created.
-</ul>
-
-<p>
-<b>1.3.0</b> - March 11, 2004
-<p>
-<ul>
-    <li><font color="#777777">(SMACK-103, SMACK-105)</font> Fixed bugs with error packets (sending and receiving).    	   	
-    <li><font color="#777777">(SMACK-109)</font> Renaming RosterGroups fails. 		
-   	<li><font color="#777777">(SMACK-91)</font> Add support for Service Discovery (JEP 30) as a Smack Extension. 		
-   	<li><font color="#777777">(SMACK-94)</font> Host name as reported by server should be used in the Connection object. 		
-   	<li><font color="#777777">(SMACK-97)</font> SUBSCRIPTION_* constants are misspelled in the Roster class.	
-   	<li><font color="#777777">(SMACK-107)</font> Allow packet reply timeout to be set. 				
-   	<li><font color="#777777">(SMACK-41)</font> Unrecognized IQs should generate a "not implemented" error. 		
-   	<li><font color="#777777">(SMACK-116)</font> Roster entries are not being removed from the group immediately when deleted. 		
-   	<li><font color="#777777">(SMACK-100)</font> Incoming packets should only have ID's if they are set. 			
-   	<li><font color="#777777">(SMACK-104)</font> Fixed bug parsing server information. 		
-   	<li><font color="#777777">(SMACK-112)</font> Add a mechanism to set the roster's subscription mode before login. 		
-   	<li><font color="#777777">(SMACK-117)</font> PacketWriter never terminates daemon threads. 		
-   	<li><font color="#777777">(SMACK-113)</font> Once a debugger gets closed it still collects packets - OutOfMemory problem. 		
-   	<li><font color="#777777">(SMACK-102)</font> Add methods to get all packet providers. 		
-   	<li><font color="#777777">(SMACK-95)</font> Add group chat invitation support as a Smack Extension. 		
-   	<li><font color="#777777">(SMACK-93)</font> New debug window with many enhancements. 		
-   	<li><font color="#777777">(SMACK-110)</font> Added keep-alives so the TCP-IP timeouts wouldn't break connections to a server. 		
-   	<li><font color="#777777">(SMACK-101)</font> Add version number information to API. 		
-   	<li><font color="#777777">(SMACK-96)</font> Make AndFilter and OrFilter chainable. 		
-   	<li><font color="#777777">(SMACK-108)</font> Handle multiple presences when a user is connected from different resources. 		
-   	<li><font color="#777777">(SMACK-111)</font> Add listener support for new connections. 		
-   	<li><font color="#777777">(SMACK-92)</font> Add support for "Discovering Support for XHTML-IM". 		
-   	<li><font color="#777777">(SMACK-106)</font> Chat objects no longer have to depend on a threadID (this is settable).
-    <li><font color="#777777">(SMACK-120)</font> Chat.getChatID() is now Chat.getThreadID().
-</ul>
-
-<p>
-<b>1.2.1</b> - September 28, 2003
-<p>
-<ul>
-    <li><font color="#777777">(SMACK-79)</font> Added XHTML message support as a Smack extension, which allows sending
-        richly formatted messages.
-    <li><font color="#777777">(SMACK-88)</font> Fixed bug with parsing registation packets that contain extra data.
-    <li><font color="#777777">(SMACK-90)</font> Added support for getting registration instructions.
-    <li><font color="#777777">(SMACK-85)</font> Exceptions in the PacketWriter now correctly generates a connection
-        error event.
-    <li><font color="#777777">(SMACK-84)</font> Added <tt>isSecureConnection()</tt> method to XMPPConnection class.
-    <li><font color="#777777">(SMACK-86)</font> Added <tt>isJoined()</tt> method to GroupChat class. 
-    <li><font color="#777777">(SMACK-87, SMACK-82)</font> Added the following methods related to rosters:
-        <tt>Roster.contains(String user)</tt>, <tt>Roster.getEntry(String user)</tt>, 
-        <tt>RosterGroup.getEntry(String user)</tt>, <tt>Roster.removeEntry(RosterEntry entry)</tt>.
-    <li><font color="#777777">(SMACK-73)</font> Fixed bugs handling roster remove and update operations.    
-</ul>
-
-<p>
-<b>1.2.0</b> - August 29, 2003
-<p>
-<ul>
-    <li><font color="red"><b>!</b></font> A package structure and documentation has been added for Smack extensions,
-        which cover extensions to the XMPP protocol. The initial extensions are
-        for message events (JEP 22), roster item exchange (JEP 93), entity
-        time (JEP 90), and private data storage (JEP 49). 
-    <li><font color="red"><b>!</b></font> The smack.providers file is now loaded from META-INF/smack.providers
-        rather than WEB-INF/smack.providers. This location makes much more sense
-        for generic JAR files, but may break existing provider implementations
-        until the provider file is moved.
-    <li>Fixed IQ error sub-packets.
-    <li>The default packet extension handler didn't deal with empty 
-        elements well and also had a bug with attribute handling.
-    <li>Added a ConnectionListener feature which allows clients
-        to be notified of normally closed connections, and connections
-        closed due to errors.
-    <li>Fixed bug where the roster list could become corrupted after 
-        moving a user back and forther between groups.
-    <li>Fixed bug where in some cases presence packets were not getting
-        tracked by the Roster class correctly.
-    <li>RosterListener has a new notification method that is called every time
-        the presence of a user in the roster is updated.
-    <li>Added Roster.getEntries() method to return all entries in the roster.
-    <li>Added RosterGroup.contains(String) method to check to see if an XMPP
-        address is part of the group.
-    <li>Minor fixes to Javadocs.
-    <li>Content can be copied and cleared from the debug window using
-        a pop-up menu.
-    <li>The Chat constructor that took an existing chatID as an argument
-        did not propertly initialize support for message listeners. 
-    <li>Added support for anonymous logins.
-    <li>IQ is now an abstract class.
-    <li>Fixed bug where XHTML messgaes could cause parsing errors. 
-</ul>
-
-<p>
-<b>1.1.1</b> - June 25, 2003
-<p>
-<ul>
-    <li>Setting Object packet properties was broken.
-    <li>Added getRoom() method to GroupChat.
-</ul>
-
-<p>
-<b>1.1.0</b> - June 19, 2003
-<p>
-<ul>
-    <li>New system to handle custom IQ packets and custom packet extensions through
-	    the new provider sub-package.
-	<li>Added packet filters for packet extensions.
-    <li>Added additional options for responding to subscription requests.
-    <li>Added method to retrieve the roster item count from roster packets.
-	<li>Added ability to set the ItemStatus on a roster packet.
-	<li>Added remove option to roster packet.
-	<li>Various documentation fixes/improvements.
-	<li>Fixed NullPointer exception on the setName method of the RosterEntry class.
-	<li>Groupchat class was listening for wrong message types -- fixed.
-    <li>Changed properties element name to "properties" instead of "x". <b>Note:</b> this will
-	    break compatability between earlier versions if they are trying to send packet
-		properties back and forth. However, we thought it was best to make this change now.
-    <li>Turning on debugging via a system property wasn't working.
-	<li>Fixed spelling error in Roster class method name.
-	<li>Fixed stream not being closed properly.
-	<li>The "to contains" and "from contains" filters now ignore case.
-</ul>
-
-<p>
-<b>1.0.1</b> - April 30, 2003
-<p>
-<ul>
-    <li>Fixed bug that caused applets using Smack to crash with a security exception.
-</ul>
-
-<p>
-<b>1.0.0</b> - April 25, 2003
-<p>
-<ul>
-    <li>Initial official release.
-</ul>
 
 </body>
 </html>

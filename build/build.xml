@@ -28,8 +28,23 @@
     <property name="version.major" value="3" />
     <property name="version.minor" value="0" />
     <property name="version.revision" value="0" />
+    <property name="version.extra" value="beta1" /> 
 
-    <property name="version.name" value="${version.major}_${version.minor}_${version.revision}" />
+    <if>
+        <equals arg1="${version.extra}" arg2=""/>
+        <then>
+            <property name="version.name"
+                      value="${version.major}.${version.minor}.${version.revision}"/>
+        </then>
+        <else>
+            <property name="version.name"
+                      value="${version.major}.${version.minor}.${version.revision}.${version.extra}"/>
+        </else>
+    </if>
+
+    <tstamp>
+        <format property="builddate" pattern="MM/dd/yyyy"/>
+    </tstamp>
 
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/target/classes" />

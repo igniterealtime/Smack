@@ -104,9 +104,17 @@
         <!-- Copy readme.html and changelog.html -->
         <copy todir="${release.dir}">
             <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
+            <filterset>
+                <filter token="builddate" value="${builddate}"/>
+                <filter token="version" value="${version.name}"/>
+            </filterset>
         </copy>
         <copy todir="${release-dev.dir}">
             <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
+            <filterset>
+                <filter token="builddate" value="${builddate}"/>
+                <filter token="version" value="${version.name}"/>
+            </filterset>
         </copy>
         <!-- Package -->
         <if>
