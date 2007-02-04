@@ -588,10 +588,6 @@ public class XMPPConnection {
      * Closes the connection by setting presence to unavailable then closing the stream to
      * the XMPP server. The XMPPConnection can still be used for connecting to the server
      * again.
-     *
-     * The difference between disconnect and shutdown is that disconnect makes a complete reset
-     * of the connection state whereas shutdown only cleans the connection and keeps alive
-     * packet reader listeners, previous login and roster presences.
      */
     public void disconnect() {
         this.shutdown();

@@ -112,31 +112,31 @@
         <if>
             <equals arg1="${dailybuild}" arg2="true" />
             <then>
-                <zip destfile="${basedir}/release/${release-dev.name}.zip"
+                <zip destfile="${basedir}/target/release/${release-dev.name}.zip"
                     basedir="${release-dev.dir}/.."
                     includes="${release-dev.name}/**/*.*"
                 />
-                <tar destfile="${basedir}/release/${release-dev.name}.tar.gz"
+                <tar destfile="${basedir}/target/release/${release-dev.name}.tar.gz"
                     basedir="${release-dev.dir}/.."
                     includes="${release-dev.name}/**/*.*"
                     compression="gzip"
                 />
             </then>
             <else>
-                <zip destfile="${basedir}/release/${release.name}.zip"
+                <zip destfile="${basedir}/target/release/${release.name}.zip"
                     basedir="${release.dir}/.."
                     includes="${release.name}/**/*.*"
                 />
-                <tar destfile="${basedir}/release/${release.name}.tar.gz"
+                <tar destfile="${basedir}/target/release/${release.name}.tar.gz"
                     basedir="${release.dir}/.."
                     includes="${release.name}/**/*.*"
                     compression="gzip"
                 />
-                <zip destfile="${basedir}/release/${release-dev.name}.zip"
+                <zip destfile="${basedir}/target/release/${release-dev.name}.zip"
                     basedir="${release-dev.dir}/.."
                     includes="${release-dev.name}/**/*.*"
                 />
-                <tar destfile="${basedir}/release/${release-dev.name}.tar.gz"
+                <tar destfile="${basedir}/target/release/${release-dev.name}.tar.gz"
                     basedir="${release-dev.dir}/.."
                     includes="${release-dev.name}/**/*.*"
                     compression="gzip"

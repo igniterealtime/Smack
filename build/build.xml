@@ -278,7 +278,7 @@
 
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" if="release.exists" depends="release-exists">
+    <target name="release" description="Builds a release" if="release.exists" depends="release-exists">
         <antcall target="jar">
             <param name="no.test" value="true" />
         </antcall>
