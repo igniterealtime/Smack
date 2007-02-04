@@ -37,6 +37,7 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -91,6 +92,10 @@ public class XMPPConnection {
     private final static Set<ConnectionCreationListener> connectionEstablishedListeners =
             new CopyOnWriteArraySet<ConnectionCreationListener>();
 
+    // Counter to uniquely identify connections that are created. This is distinct from the
+    // connection ID, which is a value sent by the server once a connection is made.
+    private static AtomicInteger connectionCounter = new AtomicInteger(0);
+
     static {
         // Use try block since we may not have permission to get a system
         // property (for example, when an applet).
@@ -121,6 +126,7 @@ public class XMPPConnection {
      */
     String serviceName;
 
+    int connectionCounterValue = connectionCounter.getAndIncrement();
     String connectionID = null;
     private String user = null;
     private boolean connected = false;

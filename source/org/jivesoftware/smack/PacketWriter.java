@@ -92,7 +92,7 @@ class PacketWriter {
                 writePackets(this);
             }
         };
-        writerThread.setName("Smack Packet Writer");
+        writerThread.setName("Smack Packet Writer (" + connection.connectionCounterValue + ")");
         writerThread.setDaemon(true);
     }
 
@@ -222,7 +222,7 @@ class PacketWriter {
             keepAliveThread = new Thread(target);
             target.setThread(keepAliveThread);
             keepAliveThread.setDaemon(true);
-            keepAliveThread.setName("Smack Keep Alive");
+            keepAliveThread.setName("Smack Keep Alive (" + connection.connectionCounterValue + ")");
             keepAliveThread.start();
         }
     }

@@ -77,7 +77,7 @@ class PacketReader {
                 parsePackets(this);
             }
         };
-        readerThread.setName("Smack Packet Reader");
+        readerThread.setName("Smack Packet Reader (" + connection.connectionCounterValue + ")");
         readerThread.setDaemon(true);
 
         listenerThread = new Thread() {
@@ -90,7 +90,7 @@ class PacketReader {
                 }
             }
         };
-        listenerThread.setName("Smack Listener Processor");
+        listenerThread.setName("Smack Listener Processor (" + connection.connectionCounterValue + ")");
         listenerThread.setDaemon(true);
 
         resetParser();
