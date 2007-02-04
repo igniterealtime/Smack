@@ -7,7 +7,7 @@
 <body>
 
 <div class="header">
-Messaging using Chat and GroupChat
+Messaging using Chats
 </div>
 
 <div class="nav">
@@ -15,16 +15,9 @@ Messaging using Chat and GroupChat
 </div>
 
 <p>
-Sending messages back and forth is at the core of instant messaging. Two classes
-aid in sending and receiving messages:
-<ul>
-	<li> <tt>org.jivesoftware.smack.Chat</tt> -- used to send messages between two people.
-	<li> <tt>org.jivesoftware.smack.GroupChat</tt> -- used to join a chat room to send messages between many people.
-</ul>
-
-Both the Chat and GroupChat classes use the <tt>org.jivesoftware.smack.packet.Message</tt> packet
-class to send messages. In certain circumstances, you may wish to bypass the higher-level
-Chat and GroupChat classes to send and listen for messages directly.
+Sending messages back and forth is at the core of instant messaging. Although individual messages
+can be sent and received as packets, it's generally easier to treat the string of messages
+as a chat using the <tt>org.jivesoftware.smack.Chat</tt> class.
 </p>
 
 <p class="subheader">
@@ -37,8 +30,13 @@ them a text message:<p>
 
 <div class="code"><pre>
 <font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
-Chat newChat = connection.createChat(<font color="green">"jsmith@jivesoftware.com"</font>);
-newChat.sendMessage(<font color="green">"Howdy!"</font>);
+Chat newChat = connection.createChat(<font color="green">"jsmith@jivesoftware.com"</font>, new MessageListener() {
+
+    public void processMessage(Chat chat, Message message) {
+        System.out.println(<font color="green">"Received message: "</font> + message);
+    }
+});
+chat.sendMessage(<font color="green">"Howdy!"</font>);
 </pre></div><p>
 
 The <tt>Chat.sendMessage(String)</tt> method is a convenience method that creates a Message
@@ -48,60 +46,29 @@ that you wish to set additional values on a Message before sending it, use the
 following code snippet:<p>
 
 <div class="code"><pre>
-<font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
-Chat newChat = connection.createChat(<font color="green">"jsmith@jivesoftware.com"</font>);
 Message newMessage = newChat.createMessage();
 newMessage.setBody(<font color="green">"Howdy!"</font>);
 message.setProperty(<font color="green">"favoriteColor"</font>, <font color="green">"red"</font>);
 newChat.sendMessage(newMessage);
 </pre></div><p>
 
-The Chat object allows you to easily listen for replies from the other chat participant.
-The following code snippet is a parrot-bot -- it echoes back everything the other user types.<p>
+You'll also notice in the example above that we specified a MessageListener when creating a chat.
+The listener is notified any time a new message arrives from the other user in the chat.
+The following code snippet uses the listener as a parrot-bot -- it echoes back everything the other user types.<p>
 
 <div class="code"><pre>
-<font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
-Chat newChat = connection.createChat(<font color="green">"jsmith@jivesoftware.com"</font>);
-newMessage.setBody(<font color="green">"Hi, I'm an annoying parrot-bot! Type something back to me."</font>);
-<b>while</b> (<b>true</b>) {
-    <font color="gray"><i>// Wait for the next message the user types to us.</i></font>
-    Message message = newChat.nextMessage();
-    <font color="gray"><i>// Send back the same text the other user sent us.</i></font>
-    newChat.sendMessage(message.getBody());
-}
+<font color="gray"><i>    // Assume a MessageListener we've setup with a chat.</i></font>
+
+    public void processMessage(Chat chat, Message message) {
+        <font color="gray"><i>// Send back the same text the other user sent us.</i></font>
+        chat.sendMessage(message.getBody());
+    }
 </pre></div><p>
-
-The code above uses the <tt>Chat.nextMessage()</tt> method to get the next message, which
-will wait indefinitely until another message comes in. There are other methods to wait
-a specific amount of time for a new message, or you can add a listener that will be notified
-every time a new message arrives.
-
-<p class="subheader">
-GroupChat
-</p>
-
-A group chat connects to a chat room on a server and allows you to send and receive messages
-from a group of people. Before you can send or receive messages, you must join the room using
-a nickname. The following code snippet connects to a chat room and sends a
-message.<p>
-
-<div class="code"><pre>
-<font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
-GroupChat newGroupChat = connection.createGroupChat(<font color="green">"test@jivesoftware.com"</font>);
-<font color="gray"><i>// Join the group chat using the nickname "jsmith".</i></font>
-newGroupChat.join(<font color="green">"jsmith"</font>);
-<font color="gray"><i>// Send a message to all the other people in the chat room.</i></font>
-newGroupChat.sendMessage(<font color="green">"Howdy!"</font>);
-</pre></div><p>
-
-In general, sending and receiving messages in a group chat works very similarly to 
-the <tt>Chat</tt> class. Method are also provided to get the list of the other
-users in the room.<p>
 
 <br clear="all" /><br><br>
 
 <div class="footer">
-Copyright &copy; Jive Software 2002-2005
+Copyright &copy; Jive Software 2002-2007
 </div>
 
 </body>

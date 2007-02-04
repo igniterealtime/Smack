@@ -23,33 +23,32 @@ important classes and concepts.
 Requirements
 </p>
 
-The only requirement for Smack is JDK 1.2 or later<sup>
-<a style="text-decoration:none;" href="#ssenote">1</a></sup>. 
-An XML parser is embedded in the smack.jar file and no other third party 
-libraries are required.<p>
+The only requirement for Smack is JDK 1.5 or later. An XML parser is embedded in the
+smack.jar file and no other third party  libraries are required.<p>
 
-<sup>1</sup> <font size="-1"><i>JDK 1.2 and 1.3 users that wish to use SSL connections must have the 
-<a href="http://java.sun.com/products/jsse/index-103.html">JSSE</a> library in their classpath.</i></font>
 
 <p class="subheader">
 Establishing a Connection
 </p>
 
 The <tt>XMPPConnection</tt> class is used to create a connection to an 
-XMPP server. To create an SSL connection, use the SSLXMPPConnection class.
-Below are code examples for making a connection:<p>
+XMPP server. Below are code examples for making a connection:<p>
 
 <div class="code">
 <pre>
 <font color="gray"><i>// Create a connection to the jabber.org server.</i></font>
 XMPPConnection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+conn1.connect();
 
 <font color="gray"><i>// Create a connection to the jabber.org server on a specific port.</i></font>
-XMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>, 5222);
-
-<font color="gray"><i>// Create an SSL connection to jabber.org.</i></font>
-XMPPConnection connection = <font color="navy"><b>new</b></font> SSLXMPPConnection(<font color="green">"jabber.org"</font>); 
+ConnectionConfiguration config = new ConnectionConfiguration(<font color="green">"jabber.org"</font>, 5222);
+XMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(config);
+conn2.connect();
 </pre></div>
+
+<p>Note that maximum security will be used when connecting to the server by default (and when possible),
+    including use of TLS encryption. The ConnectionConfiguration class provides advanced control
+    over the connection created, such as the ability to disable or require encryption.</p>
 
 <p>Once you've created a connection, you should login using a username and password
 with the <tt>XMPPConnection.login(String username, String password)</tt> method.
