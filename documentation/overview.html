@@ -25,17 +25,24 @@ Smack Key Advantages
 
 <ul>
 	<li>Extremely simple to use, yet powerful API. Sending a text message to a user
-	    can be accomplished in three lines of code:
+	    can be accomplished in only a few lines of code:
 
 <div class="code"><pre>
 XMPPConnection connection = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+connection.connect();
 connection.login(<font color="green">"mtucker"</font>, <font color="green">"password"</font>);
-connection.createChat(<font color="green">"jsmith@jivesoftware.com"</font>).sendMessage(<font color="green">"Howdy!"</font>);
+Chat chat = connection.getChatManager().createChat(<font color="green">"jsmith@jivesoftware.com"</font>, new MessageListener() {
+
+    public void processMessage(Chat chat, Message message) {
+        System.out.println(<font color="green">"Received message: "</font> + message);
+    }
+});
+chat.sendMessage(<font color="green">"Howdy!"</font>);
 </pre></div>
 
 
 	<li>Doesn't force you to code at the packet level, as other libraries do. Smack provides 
-		intelligent higher level constructs such as the <tt>Chat</tt> and <tt>GroupChat</tt> 
+		intelligent higher level constructs such as the <tt>Chat</tt> and <tt>Roster</tt> 
 		classes, which let you program more efficiently.
 
 	<li>Does not require that you're familiar with the XMPP XML format, or even that you're familiar with XML.
@@ -65,7 +72,7 @@ use that as a reference while reading through this documentation.
  
 <br clear="all" /><br><br>
 <div class="footer">
-Copyright &copy; Jive Software 2002-2005
+Copyright &copy; Jive Software 2002-2007
 </div>
 
 </body>

@@ -49,8 +49,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * // Most servers require you to login before performing other tasks.
  * con.login("jsmith", "mypass");
  * // Start a new conversation with John Doe and send him a message.
- * Chat chat = con.createChat("jdoe@jabber.org");
- * chat.sendMessage("Hey, how's it going?");
+ * Chat chat = connection.getChatManager().createChat("jdoe@igniterealtime.org"</font>, new MessageListener() {
+ *
+ *     public void processMessage(Chat chat, Message message) {
+ *         // Print out any messages we get back to standard out.
+ *         System.out.println(<font color="green">"Received message: "</font> + message);
+ *     }
+ * });
+ * chat.sendMessage(<font color="green">"Howdy!"</font>);
  * // Disconnect from the server
  * con.disconnect();
  * </pre>
