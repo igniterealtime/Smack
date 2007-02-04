@@ -36,7 +36,6 @@
     <property name="compile.test.dir" value="${basedir}/target/classes-test" />
     <property name="jar.dest.dir" value="${basedir}/target" />
     <property name="javadoc.dest.dir" value="${basedir}/target/javadoc" />
-    <property name="build.lib.dir" value="${basedir}/build/lib" />
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
     <property name="test.dir" value="${basedir}/test" />
     <property name="resources.dir" value="${basedir}/build/resources" />
@@ -84,9 +83,6 @@
         >
             <src path="${basedir}/source" />
             <classpath>
-                <fileset dir="${build.lib.dir}">
-                    <include name="*.jar"/>
-                </fileset>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
                 </fileset>
@@ -108,9 +104,6 @@
         >
             <src path="${test.dir}" />
             <classpath>
-                <fileset dir="${build.lib.dir}">
-                    <include name="*.jar"/>
-                </fileset>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
                 </fileset>
@@ -190,9 +183,6 @@
             overview="${basedir}/source/overview.html"
         >
             <classpath>
-                <fileset dir="${build.lib.dir}">
-                    <include name="*.jar"/>
-                </fileset>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
                 </fileset>
@@ -249,9 +239,6 @@
             <sysproperty key="smack.debug" value="${test.smack.debug}" />
 
             <classpath>
-                <fileset dir="${build.lib.dir}">
-                    <include name="*.jar"/>
-                </fileset>
                 <fileset dir="${basedir}/build">
                     <include name="xmlunit.jar"/>
                 </fileset>
