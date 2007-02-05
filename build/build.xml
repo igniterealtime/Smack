@@ -33,15 +33,18 @@
     <if>
         <equals arg1="${version.extra}" arg2=""/>
         <then>
-            <property name="version.name"
+            <property name="version"
                       value="${version.major}.${version.minor}.${version.revision}"/>
+            <property name="version.filename"
+                      value="${version.major}_${version.minor}_${version.revision}"/>
         </then>
         <else>
-            <property name="version.name"
+            <property name="version"
                       value="${version.major}.${version.minor}.${version.revision}.${version.extra}"/>
+            <property name="version.filename"
+                      value="${version.major}_${version.minor}_${version.revision}_${version.extra}"/>
         </else>
     </if>
-
     <tstamp>
         <format property="builddate" pattern="MM/dd/yyyy"/>
     </tstamp>
@@ -194,7 +197,7 @@
             sourcepath="${basedir}/source"
             destdir="${javadoc.dest.dir}"
             author="true"
-            windowtitle="Smack ${version.name} Documentation"
+            windowtitle="Smack ${version} Documentation"
             overview="${basedir}/source/overview.html"
         >
             <classpath>
