@@ -324,7 +324,7 @@
         <delete file="${basedir}/smackx.jar" />
         <delete file="${basedir}/smackx-debug.jar" />
         <delete file="${basedir}/smack-test.jar" />
-        <delete dir="${basedir}/release" />
+        <delete dir="${basedir}/target" />
     </target>
 
 </project>
