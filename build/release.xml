@@ -38,8 +38,8 @@
                 <property name="release-dev.name" value="smack-dev-${build.date}" />
             </then>
             <else>
-                <property name="release.name" value="smack-${version.filename}" />
-                <property name="release-dev.name" value="smack-dev-${version.filename}" />
+                <property name="release.name" value="smack_${version.filename}" />
+                <property name="release-dev.name" value="smack-dev_${version.filename}" />
             </else>
         </if>
         <property name="release.dir" value="${basedir}/target/release/${release.name}" />
