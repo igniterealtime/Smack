@@ -54,13 +54,16 @@ package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPConnection;
 
-import java.net.InetAddress;
+import java.io.IOException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Arrays;
 
 /**
  * Transport candidate.
- *
+ * <p/>
  * A candidate represents the possible transport for data interchange between
  * the two endpoints.
  *
@@ -87,8 +90,28 @@ public abstract class TransportCandidate {
 
     private TransportCandidate symmetric;
 
+    private CandidateEcho candidateEcho = null;
+
+    private Thread echoThread = null;
+
     // Listeners for events
     private final List<TransportResolverListener.Checker> listeners = new ArrayList();
+
+    public void addCandidateEcho() throws SocketException, UnknownHostException {
+        candidateEcho = new CandidateEcho(this);
+        echoThread = new Thread(candidateEcho);
+        echoThread.start();
+    }
+
+    public void removeCandidateEcho() {
+        candidateEcho.cancel();
+        candidateEcho = null;
+        echoThread = null;
+    }
+
+    public CandidateEcho getCandidateEcho() {
+        return candidateEcho;
+    }
 
     public String getIp() {
         return ip;
@@ -231,11 +254,14 @@ public abstract class TransportCandidate {
     public boolean isNull() {
         if (ip == null) {
             return true;
-        } else if (ip.length() == 0) {
+        }
+        else if (ip.length() == 0) {
             return true;
-        } else if (port < 0) {
+        }
+        else if (port < 0) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -318,14 +344,16 @@ public abstract class TransportCandidate {
             if (other.getIp() != null) {
                 return false;
             }
-        } else if (!getIp().equals(other.getIp())) {
+        }
+        else if (!getIp().equals(other.getIp())) {
             return false;
         }
         if (getName() == null) {
             if (other.getName() != null) {
                 return false;
             }
-        } else if (!getName().equals(other.getName())) {
+        }
+        else if (!getName().equals(other.getName())) {
             return false;
         }
         if (getPort() != other.getPort()) {
@@ -356,7 +384,8 @@ public abstract class TransportCandidate {
                 try {
                     candAddress = InetAddress.getByName(getIp());
                     isUsable = true;//candAddress.isReachable(CHECK_TIMEOUT);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     isUsable = false;
                 }
                 triggerCandidateChecked(isUsable);
@@ -473,8 +502,8 @@ public abstract class TransportCandidate {
          * @param type       type as defined in ICE-12
          */
         public Ice(String ip, int generation, int network,
-                   String password, int port, String username,
-                   int preference, String type) {
+                String password, int port, String username,
+                int preference, String type) {
             super(ip, port, generation);
 
             proto = Protocol.UDP;
@@ -598,6 +627,7 @@ public abstract class TransportCandidate {
 
         /**
          * Get the Candidate Type
+         *
          * @return candidate Type
          */
         public String getType() {
@@ -606,6 +636,7 @@ public abstract class TransportCandidate {
 
         /**
          * Set the Candidate Type
+         *
          * @param type candidate type.
          */
         public void setType(String type) {
@@ -633,14 +664,16 @@ public abstract class TransportCandidate {
                 if (other.getChannel() != null) {
                     return false;
                 }
-            } else if (!getChannel().equals(other.getChannel())) {
+            }
+            else if (!getChannel().equals(other.getChannel())) {
                 return false;
             }
             if (getId() == null) {
                 if (other.getId() != null) {
                     return false;
                 }
-            } else if (!getId().equals(other.getId())) {
+            }
+            else if (!getId().equals(other.getId())) {
                 return false;
             }
             if (getNetwork() != other.getNetwork()) {
@@ -650,7 +683,8 @@ public abstract class TransportCandidate {
                 if (other.getPassword() != null) {
                     return false;
                 }
-            } else if (!getPassword().equals(other.password)) {
+            }
+            else if (!getPassword().equals(other.password)) {
                 return false;
             }
             if (getPreference() != other.getPreference()) {
@@ -660,14 +694,16 @@ public abstract class TransportCandidate {
                 if (other.getProto() != null) {
                     return false;
                 }
-            } else if (!getProto().equals(other.getProto())) {
+            }
+            else if (!getProto().equals(other.getProto())) {
                 return false;
             }
             if (getUsername() == null) {
                 if (other.getUsername() != null) {
                     return false;
                 }
-            } else if (!getUsername().equals(other.getUsername())) {
+            }
+            else if (!getUsername().equals(other.getUsername())) {
                 return false;
             }
             return true;
@@ -676,9 +712,11 @@ public abstract class TransportCandidate {
         public boolean isNull() {
             if (super.isNull()) {
                 return true;
-            } else if (getProto().isNull()) {
+            }
+            else if (getProto().isNull()) {
                 return true;
-            } else if (getChannel().isNull()) {
+            }
+            else if (getChannel().isNull()) {
                 return true;
             }
             return false;
@@ -697,7 +735,8 @@ public abstract class TransportCandidate {
                 TransportCandidate.Ice tc = (TransportCandidate.Ice) arg;
                 if (getPreference() < tc.getPreference()) {
                     return -1;
-                } else if (getPreference() > tc.getPreference()) {
+                }
+                else if (getPreference() > tc.getPreference()) {
                     return 1;
                 }
             }
@@ -740,15 +779,20 @@ public abstract class TransportCandidate {
             value = value.toLowerCase();
             if (value.equals("udp")) {
                 return UDP;
-            } else if (value.equals("tcp")) {
+            }
+            else if (value.equals("tcp")) {
                 return TCP;
-            } else if (value.equals("tcp-act")) {
+            }
+            else if (value.equals("tcp-act")) {
                 return TCPACT;
-            } else if (value.equals("tcp-pass")) {
+            }
+            else if (value.equals("tcp-pass")) {
                 return TCPPASS;
-            } else if (value.equals("ssltcp")) {
+            }
+            else if (value.equals("ssltcp")) {
                 return SSLTCP;
-            } else {
+            }
+            else {
                 return UDP;
             }
         }
@@ -773,7 +817,8 @@ public abstract class TransportCandidate {
                 if (other.value != null) {
                     return false;
                 }
-            } else if (!value.equals(other.value)) {
+            }
+            else if (!value.equals(other.value)) {
                 return false;
             }
             return true;
@@ -787,9 +832,11 @@ public abstract class TransportCandidate {
         public boolean isNull() {
             if (value == null) {
                 return true;
-            } else if (value.length() == 0) {
+            }
+            else if (value.length() == 0) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         }
@@ -824,9 +871,11 @@ public abstract class TransportCandidate {
             value = value.toLowerCase();
             if (value.equals("myrtpvoice")) {
                 return MYRTPVOICE;
-            } else if (value.equals("tcp")) {
+            }
+            else if (value.equals("tcp")) {
                 return MYRTCPVOICE;
-            } else {
+            }
+            else {
                 return MYRTPVOICE;
             }
         }
@@ -851,7 +900,8 @@ public abstract class TransportCandidate {
                 if (other.value != null) {
                     return false;
                 }
-            } else if (!value.equals(other.value)) {
+            }
+            else if (!value.equals(other.value)) {
                 return false;
             }
             return true;
@@ -865,11 +915,143 @@ public abstract class TransportCandidate {
         public boolean isNull() {
             if (value == null) {
                 return true;
-            } else if (value.length() == 0) {
+            }
+            else if (value.length() == 0) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         }
     }
+
+    public class CandidateEcho implements Runnable {
+
+        DatagramSocket socket = null;
+        byte password[] = null;
+        List<DatagramListener> listeners = new ArrayList<DatagramListener>();
+        boolean enabled = true;
+
+        public CandidateEcho(TransportCandidate candidate) throws UnknownHostException, SocketException {
+            this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName(candidate.getLocalIp()));
+            Random r = new Random();
+            password = longToByteArray((Math.abs(r.nextLong())));
+        }
+
+        public void run() {
+            try {
+                while (true) {
+
+                    DatagramPacket packet = new DatagramPacket(new byte[8], 8);
+
+                    socket.receive(packet);
+
+                    for (DatagramListener listener : listeners) {
+                        listener.datagramReceived(packet);
+                    }
+
+                    packet.setAddress(packet.getAddress());
+                    packet.setPort(packet.getPort());
+                    if (!Arrays.equals(packet.getData(), password))
+                        for (int i = 0; i < 3; i++)
+                            socket.send(packet);
+                }
+            }
+            catch (UnknownHostException uhe) {
+                if (enabled) {
+                }
+            }
+            catch (SocketException se) {
+                if (enabled) {
+                }
+            }
+            catch (IOException ioe) {
+                if (enabled) {
+                }
+            }
+        }
+
+        public void cancel() {
+            this.enabled = false;
+            socket.close();
+        }
+
+        public boolean test(final InetAddress address, final int port) {
+            return test(address,port,2000);
+        }
+
+        public boolean test(final InetAddress address, final int port, int timeout) {
+
+            final TestResults testResults = new TestResults();
+
+            DatagramListener listener = new DatagramListener() {
+                public boolean datagramReceived(DatagramPacket datagramPacket) {
+                    if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
+                        if (Arrays.equals(datagramPacket.getData(), password)) {
+                            testResults.setResult(true);
+                            return true;
+                        }
+                    }
+                    testResults.setResult(false);
+                    return false;
+                }
+            };
+
+            this.addListener(listener);
+
+            DatagramPacket packet = new DatagramPacket(password, password.length);
+
+            packet.setAddress(address);
+            packet.setPort(port);
+
+            try {
+                for (int i = 0; i < 3; i++)
+                    socket.send(packet);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(timeout);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return testResults.isReachable();
+        }
+
+        public void addListener(DatagramListener listener) {
+            listeners.add(listener);
+        }
+
+        public void removeListener(DatagramListener listener) {
+            listeners.remove(listener);
+        }
+
+        public class TestResults {
+
+            private boolean result;
+
+            public boolean isReachable() {
+                return result;
+            }
+
+            public void setResult(boolean result) {
+                this.result = result;
+            }
+        }
+
+    }
+
+    public static byte[] longToByteArray(long valor) {
+        byte[] result = new byte[8];
+        for (int i = 0; i < result.length; i++) {
+            result[7 - i] = (byte) (valor & 0xFF);
+            valor = valor >> 8;
+        }
+        return result;
+    }
+
 }
