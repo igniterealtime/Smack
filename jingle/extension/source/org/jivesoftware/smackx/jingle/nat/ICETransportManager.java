@@ -53,7 +53,11 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
     // Implement a Session Listener to relay candidates after establishment
 
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
-        RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
+          if (lc instanceof TransportCandidate.Ice) {
+            if (((TransportCandidate.Ice) lc).getType().equals("relay")) {
+                RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
+            }
+        }
     }
 
     public void sessionDeclined(String reason, JingleSession jingleSession) {
