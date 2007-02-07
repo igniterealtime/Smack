@@ -147,7 +147,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
         for (TransportCandidate candidate : offeredCandidates)
             if (candidate.getCandidateEcho() != null)
-                candidate.getCandidateEcho().cancel();
+                candidate.removeCandidateEcho();
 
     }
 
@@ -851,11 +851,10 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 for (TransportCandidate candidate : localCandidates) {
                     TransportCandidate.CandidateEcho echo = candidate.getCandidateEcho();
                     if (echo != null) {
-                        if (echo.test(InetAddress.getByName(ice.getId()), ice.getPort(), 300))
+                        if (echo.test(InetAddress.getByName(ice.getIp()), ice.getPort(), 500))
                             return true;
                     }
                 }
-
                 InetAddress.getByName(tc.getIp()).isReachable(3000);
                 DatagramSocket socket = new DatagramSocket(0);
                 socket.connect(InetAddress.getByName(tc.getIp()), tc.getPort());
