@@ -11,6 +11,8 @@ import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 import java.net.UnknownHostException;
+import java.net.SocketException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
@@ -347,6 +349,41 @@ public class STUNResolverTest extends SmackTestCase {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
+    }
+
+    public void testEcho() {
+
+        TransportCandidate.Fixed c1 = new TransportCandidate.Fixed("localhost", 22222);
+        TransportCandidate.Fixed c2 = new TransportCandidate.Fixed("localhost", 22444);
+
+        try {
+            c1.addCandidateEcho();
+            c2.addCandidateEcho();
+
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            TransportCandidate.CandidateEcho ce1 = c1.getCandidateEcho();
+            TransportCandidate.CandidateEcho ce2 = c2.getCandidateEcho();
+
+            for (int i = 0; i < 10; i++) {
+                assertTrue(ce1.test(InetAddress.getByName("localhost"), 22444,100));
+                assertTrue(ce2.test(InetAddress.getByName("localhost"), 22222,100));
+                System.out.println("Bind OK");
+            }
+
+        }
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
     }
 
     protected int getMaxConnections() {
