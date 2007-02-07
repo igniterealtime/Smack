@@ -27,6 +27,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPConnection;
 
 import java.net.UnknownHostException;
+import java.net.SocketException;
 import java.util.List;
 import java.util.Random;
 
@@ -80,6 +81,12 @@ public class ICEResolver extends TransportResolver {
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                     transportCandidate.setPort(getFreePort());
                     this.addCandidate(transportCandidate);
+                    try {
+                        transportCandidate.addCandidateEcho();
+                    }
+                    catch (SocketException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
 
                 }

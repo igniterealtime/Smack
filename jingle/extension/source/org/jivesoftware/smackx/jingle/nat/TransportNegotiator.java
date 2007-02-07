@@ -41,13 +41,13 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     private final TransportResolver resolver;
 
     // Transport candidates we have offered
-    private final List offeredCandidates = new ArrayList();
+    private final List<TransportCandidate> offeredCandidates = new ArrayList<TransportCandidate>();
 
     // List of remote transport candidates
-    private final List remoteCandidates = new ArrayList();
+    private final List<TransportCandidate> remoteCandidates = new ArrayList<TransportCandidate>();
 
     // Valid remote candidates
-    private final List validRemoteCandidates = new ArrayList();
+    private final List<TransportCandidate> validRemoteCandidates = new ArrayList<TransportCandidate>();
 
     // The best local candidate we have offered (and accepted by the other part)
     private TransportCandidate acceptedLocalCandidate;
@@ -103,7 +103,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @return true if the transport candidate is acceptable
      */
-    public abstract boolean acceptableTransportCandidate(TransportCandidate tc);
+    public abstract boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates);
 
     /**
      * Obtain the best local candidate we want to offer.
@@ -167,7 +167,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     private void addRemoteCandidate(TransportCandidate rc) {
         // Add the candidate to the list
         if (rc != null) {
-            if (acceptableTransportCandidate(rc)) {
+            if (acceptableTransportCandidate(rc, offeredCandidates)) {
                 synchronized (remoteCandidates) {
                     remoteCandidates.add(rc);
                 }
@@ -773,7 +773,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         /**
          * Return true for fixed candidates.
          */
-        public boolean acceptableTransportCandidate(TransportCandidate tc) {
+        public boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates) {
             return tc instanceof TransportCandidate.Fixed;
         }
     }
@@ -834,17 +834,23 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         /**
          * Return true for ICE candidates.
          */
-        public boolean acceptableTransportCandidate(TransportCandidate tc) {
+        public boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates) {
             try {
                 TransportCandidate.Ice ice = (TransportCandidate.Ice) tc;
                 if (ice.getType().equals("relay")) return true;
+
+                for (TransportCandidate candidate : localCandidates) {
+                    TransportCandidate.CandidateEcho echo = candidate.getCandidateEcho();
+                    if (echo != null) {
+                        if (echo.test(InetAddress.getByName(ice.getId()), ice.getPort(), 300))
+                            return true;
+                    }
+                }
+
                 InetAddress.getByName(tc.getIp()).isReachable(3000);
                 DatagramSocket socket = new DatagramSocket(0);
                 socket.connect(InetAddress.getByName(tc.getIp()), tc.getPort());
                 return true;
-            }
-            catch (SocketException e) {
-                e.printStackTrace();
             }
             catch (UnknownHostException e) {
                 e.printStackTrace();
