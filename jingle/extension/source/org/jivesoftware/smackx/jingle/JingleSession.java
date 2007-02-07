@@ -1000,6 +1000,7 @@ public abstract class JingleSession extends JingleNegotiator {
                 sli.sessionEstablished(pt, rc, lc,this);
             }
         }
+        lc.getCandidateEcho().cancel();
         if (jingleMediaManager != null) {
             jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc);
             if (jingleMediaSession != null) {
