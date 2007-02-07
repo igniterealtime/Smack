@@ -1074,7 +1074,7 @@ public abstract class JingleSession extends JingleNegotiator {
     public void close() {
         destroyMediaNeg();
         destroyTransportNeg();
-        removePacketListener();
+        removePacketListener();        
         System.out.println("Negociation Closed");
         super.close();
     }

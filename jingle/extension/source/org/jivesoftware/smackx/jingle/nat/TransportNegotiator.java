@@ -142,6 +142,15 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         return acceptedLocalCandidate;
     }
 
+    public void close() {
+        super.close();
+
+        for (TransportCandidate candidate : offeredCandidates)
+            if (candidate.getCandidateEcho() != null)
+                candidate.getCandidateEcho().cancel();
+
+    }
+
     /**
      * Obtain the best common transport candidate obtained in the negotiation.
      *
