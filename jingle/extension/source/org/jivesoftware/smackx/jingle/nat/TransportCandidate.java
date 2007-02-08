@@ -368,9 +368,7 @@ public abstract class TransportCandidate {
      * check if the transport candidate the other endpoint has provided is
      * usable.
      * <p/>
-     * This method provides a basic check where it sends a "ping" to the remote
-     * address provided in the candidate. If the "ping" succedess, the candidate
-     * is accepted. Subclasses should provide better methods if they can...
+     * Subclasses should provide better methods if they can...
      */
     public void check() {
         //TODO candidate is being checked trigger
@@ -383,7 +381,7 @@ public abstract class TransportCandidate {
                 InetAddress candAddress;
                 try {
                     candAddress = InetAddress.getByName(getIp());
-                    isUsable = true;//candAddress.isReachable(CHECK_TIMEOUT);
+                    isUsable = candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
                 }
                 catch (Exception e) {
                     isUsable = false;
@@ -933,18 +931,21 @@ public abstract class TransportCandidate {
         boolean enabled = true;
 
         public CandidateEcho(TransportCandidate candidate) throws UnknownHostException, SocketException {
-            this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName(candidate.getLocalIp()));
+            this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName("0.0.0.0"));
             Random r = new Random();
             password = longToByteArray((Math.abs(r.nextLong())));
         }
 
         public void run() {
             try {
+                System.out.println("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
                 while (true) {
 
                     DatagramPacket packet = new DatagramPacket(new byte[8], 8);
 
                     socket.receive(packet);
+
+                    System.out.println("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
                     for (DatagramListener listener : listeners) {
                         listener.datagramReceived(packet);
@@ -977,7 +978,7 @@ public abstract class TransportCandidate {
         }
 
         public boolean test(final InetAddress address, final int port) {
-            return test(address,port,2000);
+            return test(address, port, 2000);
         }
 
         public boolean test(final InetAddress address, final int port, int timeout) {
@@ -1018,6 +1019,8 @@ public abstract class TransportCandidate {
             catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            this.removeListener(listener);
 
             return testResults.isReachable();
         }
