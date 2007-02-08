@@ -371,8 +371,11 @@ public class STUNResolverTest extends SmackTestCase {
             TransportCandidate.CandidateEcho ce2 = c2.getCandidateEcho();
 
             for (int i = 0; i < 10; i++) {
-                assertTrue(ce1.test(InetAddress.getByName("localhost"), 22444,100));
-                assertTrue(ce2.test(InetAddress.getByName("localhost"), 22222,100));
+                assertTrue(ce1.test(InetAddress.getByName("localhost"), 22444, 100));
+                System.out.println("Bind OK");
+            }
+            for (int i = 0; i < 10; i++) {
+                assertTrue(ce2.test(InetAddress.getByName("localhost"), 22222, 100));
                 System.out.println("Bind OK");
             }
 
