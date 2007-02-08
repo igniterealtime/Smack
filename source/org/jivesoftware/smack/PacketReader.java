@@ -185,7 +185,14 @@ class PacketReader {
                 // Make a copy since it's possible that a listener will be removed from the list
                 listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
                 for (ConnectionListener listener : listenersCopy) {
-                    listener.connectionClosed();
+                    try {
+                        listener.connectionClosed();
+                    }
+                    catch (Exception e) {
+                        // Cath and print any exception so we can recover
+                        // from a faulty listener and finish the shutdown process
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -193,7 +200,7 @@ class PacketReader {
 
         // Make sure that the listenerThread is awake to shutdown properly
         synchronized (listenerThread) {
-            listenerThread.notify();
+            listenerThread.notifyAll();
         }
     }
 
@@ -215,13 +222,20 @@ class PacketReader {
             // Make a copy since it's possible that a listener will be removed from the list
             listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
             for (ConnectionListener listener : listenersCopy) {
-                listener.connectionClosedOnError(e);
+                try {
+                    listener.connectionClosedOnError(e);
+                }
+                catch (Exception e2) {
+                    // Cath and print any exception so we can recover
+                    // from a faulty listener
+                    e2.printStackTrace();
+                }
             }
         }
 
         // Make sure that the listenerThread is awake to shutdown properly
         synchronized (listenerThread) {
-            listenerThread.notify();
+            listenerThread.notifyAll();
         }
     }
 
@@ -235,13 +249,20 @@ class PacketReader {
             // Make a copy since it's possible that a listener will be removed from the list
             listenersCopy = new ArrayList<ConnectionListener>(connectionListeners);
             for (ConnectionListener listener : listenersCopy) {
-                listener.reconnectionSuccessful();
+                try {
+                    listener.reconnectionSuccessful();
+                }
+                catch (Exception e) {
+                    // Cath and print any exception so we can recover
+                    // from a faulty listener
+                    e.printStackTrace();
+                }
             }
         }
 
         // Make sure that the listenerThread is awake to shutdown properly
         synchronized (listenerThread) {
-            listenerThread.notify();
+            listenerThread.notifyAll();
         }
     }
 
