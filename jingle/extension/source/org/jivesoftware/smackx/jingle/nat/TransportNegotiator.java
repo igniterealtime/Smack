@@ -32,7 +32,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     // The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
-    private final static int CANDIDATES_ACCEPT_PERIOD = 4000;
+    private final static int CANDIDATES_ACCEPT_PERIOD = 3000;
 
     // The session this nenotiator belongs to
     private final JingleSession session;
@@ -828,7 +828,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 int highest = -1;
                 TransportCandidate.Ice chose = null;
                 for (TransportCandidate.Ice transportCandidate : cands) {
-                    System.out.println("Pref: " + transportCandidate.getPreference() + " :" + transportCandidate.getIp());
                     if (transportCandidate.getPreference() > highest) {
                         chose = transportCandidate;
                         highest = transportCandidate.getPreference();
@@ -844,29 +843,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          * Return true for ICE candidates.
          */
         public boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates) {
-            try {
-                TransportCandidate.Ice ice = (TransportCandidate.Ice) tc;
-                if (ice.getType().equals("relay")) return true;
-
-                for (TransportCandidate candidate : localCandidates) {
-                    TransportCandidate.CandidateEcho echo = candidate.getCandidateEcho();
-                    if (echo != null) {
-                        if (echo.test(InetAddress.getByName(ice.getIp()), ice.getPort(), 500))
-                            return true;
-                    }
-                }
-                InetAddress.getByName(tc.getIp()).isReachable(3000);
-                DatagramSocket socket = new DatagramSocket(0);
-                socket.connect(InetAddress.getByName(tc.getIp()), tc.getPort());
-                return true;
-            }
-            catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
+            return tc instanceof TransportCandidate.Ice;
         }
     }
 }
