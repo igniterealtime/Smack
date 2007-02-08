@@ -865,7 +865,6 @@ public abstract class JingleSession extends JingleNegotiator {
             public boolean accept(Packet packet) {
 
                 final int cc = ccc++;
-                System.out.println("filter:" + cc);
 
                 if (packet instanceof IQ) {
                     IQ iq = (IQ) packet;
@@ -1020,8 +1019,6 @@ public abstract class JingleSession extends JingleNegotiator {
                 sli.sessionEstablished(pt, rc, lc, this);
             }
         }
-        if (lc.getCandidateEcho() != null)
-            lc.removeCandidateEcho();
         if (jingleMediaManager != null) {
             jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc);
             if (jingleMediaSession != null) {
