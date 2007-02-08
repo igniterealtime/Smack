@@ -88,7 +88,7 @@ public abstract class TransportResolver {
     public Type type = Type.rawupd;
 
     // the time, in milliseconds, before a check aborts
-    public static final int CHECK_TIMEOUT = 3000;
+    public static final int CHECK_TIMEOUT = 2000;
 
     // Listeners for events
     private final ArrayList listeners = new ArrayList();
