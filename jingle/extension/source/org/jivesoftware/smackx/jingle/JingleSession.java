@@ -118,6 +118,8 @@ public abstract class JingleSession extends JingleNegotiator {
 
     static int ccc = 0;
 
+    private boolean closed = false; 
+
     /**
      * Full featured JingleSession constructor
      *
@@ -605,7 +607,7 @@ public abstract class JingleSession extends JingleNegotiator {
      *
      * @param iq The IQ to acknowledge
      */
-    private IQ sendAck(IQ iq) {
+    public IQ sendAck(IQ iq) {
         IQ result = null;
 
         if (iq != null) {
@@ -1074,17 +1076,12 @@ public abstract class JingleSession extends JingleNegotiator {
      */
     public void terminate() throws XMPPException {
         System.out.println("State: " + this.getState());
-        if (!invalidState()) {
-            Jingle result = null;
-            Jingle jout = new Jingle(Jingle.Action.SESSIONTERMINATE);
-            jout.setType(IQ.Type.SET);
-            sendFormattedJingle(jout);
-            triggerSessionClosed("Closed Locally");
-            close();
-        }
-        else {
-            throw new IllegalStateException("Session Not Started");
-        }
+        Jingle result = null;
+        Jingle jout = new Jingle(Jingle.Action.SESSIONTERMINATE);
+        jout.setType(IQ.Type.SET);
+        sendFormattedJingle(jout);
+        triggerSessionClosed("Closed Locally");
+        close();
     }
 
     /**
@@ -1095,7 +1092,12 @@ public abstract class JingleSession extends JingleNegotiator {
         destroyTransportNeg();
         removePacketListener();
         System.out.println("Negociation Closed");
+        closed=true;
         super.close();
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 
     // Packet and error creation
@@ -1142,7 +1144,7 @@ public abstract class JingleSession extends JingleNegotiator {
         XMPPError error = new XMPPError(new XMPPError.Condition(errStr));
         iqError.setError(error);
 
-        System.out.println(iqError.toXML());
+        System.out.println("Created Error Packet:" + iqError.toXML());
 
         return iqError;
     }

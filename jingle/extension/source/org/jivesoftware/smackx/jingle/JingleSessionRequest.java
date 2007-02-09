@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * A Jingle session request.
- *
+ * <p/>
  * This class is a facade of a received Jingle request. The user can have direct
  * access to the Jingle packet (<i>JingleSessionRequest.getJingle() </i>) of
  * the request or can use the convencience methods provided by this class.
@@ -76,6 +76,8 @@ public class JingleSessionRequest {
             session = manager.createIncomingJingleSession(this,
                     pts);
             session.setInitialSessionRequest(this);
+            // Acknowledge the IQ reception
+            session.sendAck(this.getJingle());
         }
         return session;
     }

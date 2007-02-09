@@ -174,7 +174,7 @@ public class IncomingJingleSession extends JingleSession {
      *
      * @return
      */
-    JingleSessionRequest getInitialSessionRequest() {
+    public JingleSessionRequest getInitialSessionRequest() {
         return initialSessionRequest;
     }
 
@@ -183,7 +183,7 @@ public class IncomingJingleSession extends JingleSession {
      *
      * @param initialRequest the initial Jingle packet
      */
-    void setInitialSessionRequest(JingleSessionRequest initialRequest) {
+    public void setInitialSessionRequest(JingleSessionRequest initialRequest) {
         this.initialSessionRequest = initialRequest;
     }
 
@@ -227,7 +227,7 @@ public class IncomingJingleSession extends JingleSession {
      * "Pending" state: we are waiting for the transport and content
      * negotiators.
      */
-    private class Pending extends JingleNegotiator.State {
+    public class Pending extends JingleNegotiator.State {
 
         JingleMediaListener jingleMediaListener;
 
@@ -373,7 +373,7 @@ public class IncomingJingleSession extends JingleSession {
     /**
      * "Active" state: we have an agreement about the session.
      */
-    private class Active extends JingleNegotiator.State {
+    public class Active extends JingleNegotiator.State {
         public Active(JingleNegotiator neg) {
             super(neg);
         }
