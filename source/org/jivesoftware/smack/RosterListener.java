@@ -36,21 +36,21 @@ public interface RosterListener {
      *
      * @param addresses the XMPP addresses of the contacts that have been added to the roster.
      */
-    public void entriesAdded(Collection addresses);
+    public void entriesAdded(Collection<String> addresses);
 
     /**
      * Called when a roster entries are updated.
      *
      * @param addresses the XMPP addresses of the contacts whose entries have been updated.
      */
-    public void entriesUpdated(Collection addresses);
+    public void entriesUpdated(Collection<String> addresses);
 
     /**
      * Called when a roster entries are removed.
      *
      * @param addresses the XMPP addresses of the contacts that have been removed from the roster.
      */
-    public void entriesDeleted(Collection addresses);
+    public void entriesDeleted(Collection<String> addresses);
 
     /**
      * Called when the presence of a roster entry is changed.

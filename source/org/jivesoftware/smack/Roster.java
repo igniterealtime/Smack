@@ -519,8 +519,8 @@ public class Roster implements ConnectionListener {
      * @param updatedEntries the collection of address of the updated contacts.
      * @param deletedEntries the collection of address of the deleted contacts.
      */
-    private void fireRosterChangedEvent(Collection addedEntries, Collection updatedEntries,
-            Collection deletedEntries)
+    private void fireRosterChangedEvent(Collection<String> addedEntries, Collection<String> updatedEntries,
+            Collection<String> deletedEntries)
     {
         for (RosterListener listener : rosterListeners) {
             if (!addedEntries.isEmpty()) {
