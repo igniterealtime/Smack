@@ -530,7 +530,15 @@ public class JingleManagerTest extends SmackTestCase {
                             + request.getFrom() + ": rejecting.");
 
                     // We reject the request
-                    request.reject();
+                    try {
+                        IncomingJingleSession session = request.accept(null);
+                        session.start();
+                        session.terminate();
+                    }
+                    catch (XMPPException e) {
+                        e.printStackTrace(); 
+                    }
+
                 }
             });
 
@@ -561,9 +569,9 @@ public class JingleManagerTest extends SmackTestCase {
                 }
             });
 
-            session0.start(null);
+            session0.start();
 
-            Thread.sleep(20000);
+            Thread.sleep(10000);
 
             assertTrue(valCounter() > 0);
 
