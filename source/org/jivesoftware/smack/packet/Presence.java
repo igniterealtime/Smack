@@ -61,7 +61,7 @@ public class Presence extends Packet {
     private Type type = Type.available;
     private String status = null;
     private int priority = -1;
-    private Mode mode = Mode.available;
+    private Mode mode = null;
 
     /**
      * Creates a new presence update. Status, priority, and mode are left un-set.

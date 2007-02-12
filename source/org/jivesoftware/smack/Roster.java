@@ -447,7 +447,17 @@ public class Roster implements ConnectionListener {
                 }
                 // If equal priority, choose "most available" by the mode value.
                 else if (p.getPriority() == presence.getPriority()) {
-                    if (p.getMode().compareTo(presence.getMode()) < 0) {
+                    Presence.Mode pMode = p.getMode();
+                    // Default to presence mode of available.
+                    if (pMode == null) {
+                        pMode = Presence.Mode.available;
+                    }
+                    Presence.Mode presenceMode = presence.getMode();
+                    // Default to presence mode of available.
+                    if (presenceMode == null) {
+                        presenceMode = Presence.Mode.available;
+                    }
+                    if (pMode.compareTo(presenceMode) < 0) {
                         presence = p;
                     }
                 }
