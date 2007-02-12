@@ -22,6 +22,8 @@ package org.jivesoftware.smack;
 
 import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -54,15 +56,26 @@ class ServerTrustManager implements X509TrustManager {
         this.configuration = configuration;
         this.server = server;
 
+        InputStream in = null;
         try {
             trustStore = KeyStore.getInstance(configuration.getTruststoreType());
-            trustStore.load(new FileInputStream(configuration.getTruststorePath()),
-                    configuration.getTruststorePassword().toCharArray());
+            in = new FileInputStream(configuration.getTruststorePath());
+            trustStore.load(in, configuration.getTruststorePassword().toCharArray());
         }
         catch (Exception e) {
             e.printStackTrace();
             // Disable root CA checking
             configuration.setVerifyRootCAEnabled(false);
+        }
+        finally {
+            if (in != null) {
+                try {
+                    in.close();
+                }
+                catch (IOException ioe) {
+                    // Ignore.
+                }
+            }
         }
     }
 
