@@ -3,7 +3,7 @@
  * $Revision: 2407 $
  * $Date: 2004-11-02 23:37:00 +0000 (Tue, 02 Nov 2004) $
  *
- * Copyright 2003-2004 Jive Software.
+ * Copyright 2003-2007 Jive Software.
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
