@@ -403,28 +403,33 @@ public class Roster implements ConnectionListener {
     }
 
     /**
-     * Returns the presence info for a particular user, or <tt>null</tt> if the user
-     * is unavailable (offline) or if no presence information is available, such as
-     * when you are not subscribed to the user's presence updates.<p>
+     * Returns the presence info for a particular user. If the user is offline, or
+     * if no presence data is available (such as when you are not subscribed to the
+     * user's presence updates), unavailable presence will be returned.<p>
      *
-     * If the user has several presences (one for each resource) then answer the presence
-     * with the highest priority.<p>
+     * If the user has several presences (one for each resource), then the presence with
+     * highest priority will be returned. If multiple presences have the same priority,
+     * the one with the "most available" presence mode will be returned. In order,
+     * that's {@link Presence.Mode#chat free to chat}, {@link Presence.Mode#available available},
+     * {@link Presence.Mode#away away}, {@link Presence.Mode#xa extended away}, and
+     * {@link Presence.Mode#dnd do not disturb}.<p>
      *
      * Note that presence information is received asynchronously. So, just after logging
-     * in to the server, presence values for users in the roster might be <tt>null</tt>
+     * in to the server, presence values for users in the roster may be unavailable
      * even if they are actually online. In other words, the value returned by this
      * method should only be treated as a snapshot in time, and may not accurately reflect
      * other user's presence instant by instant. If you need to track presence over time,
      * such as when showing a visual representation of the roster, consider using a
      * {@link RosterListener}.
      *
-     * @param user a fully qualified xmpp ID. The address could be in any valid format (e.g.
-     * "domain/resource", "user@domain" or "user@domain/resource").
-     * @return the user's current presence, or <tt>null</tt> if the user is unavailable
+     * @param user an XMPP ID. The address could be in any valid format (e.g.
+     *      "domain/resource", "user@domain" or "user@domain/resource"). Any resource
+     *      information that's part of the ID will be discarded.
+     * @return the user's current presence, or unavailable presence if the user is offline
      *      or if no presence information is available..
      */
     public Presence getPresence(String user) {
-        String key = getPresenceMapKey(user);
+        String key = getPresenceMapKey(StringUtils.parseBareAddress(user));
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             return null;
@@ -436,29 +441,41 @@ public class Roster implements ConnectionListener {
 
             for (String resource : userPresences.keySet()) {
                 Presence p = userPresences.get(resource);
+                // Chose presence with highest priority first.
                 if (presence == null || p.getPriority() > presence.getPriority()) {
                     presence = p;
                 }
+                // If equal priority, choose "most available" by the mode value.
+                else if (p.getPriority() == presence.getPriority()) {
+                    if (p.getMode().compareTo(presence.getMode()) < 0) {
+                        presence = p;
+                    }
+                }
             }
-            return presence;
+            if (presence == null) {
+                return new Presence(Presence.Type.unavailable);
+            }
+            else {
+                return presence;
+            }
         }
     }
 
     /**
-     * Returns the presence info for a particular user's resource, or <tt>null</tt> if the user
-     * is unavailable (offline) or if no presence information is available, such as
+     * Returns the presence info for a particular user's resource, or unavailable presence
+     * if the user is offline or if no presence information is available, such as
      * when you are not subscribed to the user's presence updates.
      *
-     * @param userResource a fully qualified xmpp ID including a resource.
-     * @return the user's current presence, or <tt>null</tt> if the user is unavailable
-     * or if no presence information is available.
+     * @param userWithResource a fully qualified XMPP ID including a resource (user@domain/resource).
+     * @return the user's current presence, or unavailable presence if the user is offline
+     *      or if no presence information is available.
      */
-    public Presence getPresenceResource(String userResource) {
-        String key = getPresenceMapKey(userResource);
-        String resource = StringUtils.parseResource(userResource);
+    public Presence getPresenceResource(String userWithResource) {
+        String key = getPresenceMapKey(userWithResource);
+        String resource = StringUtils.parseResource(userWithResource);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            return null;
+            return new Presence(Presence.Type.unavailable);
         }
         else {
             return userPresences.get(resource);
@@ -466,20 +483,20 @@ public class Roster implements ConnectionListener {
     }
 
     /**
-     * Returns an iterator (of Presence objects) for all the user's current presences
-     * or <tt>null</tt> if the user is unavailable (offline) or if no presence information
+     * Returns an iterator (of Presence objects) for all of a user's current presences
+     * or an unavailable presence if the user is unavailable (offline) or if no presence information
      * is available, such as when you are not subscribed to the user's presence updates.
      *
-     * @param user a fully qualified xmpp ID, e.g. jdoe@example.com
+     * @param user a XMPP ID, e.g. jdoe@example.com.
      * @return an iterator (of Presence objects) for all the user's current presences,
-     *      or <tt>null</tt> if the user is unavailable or if no presence information
+     *      or an unavailable presence if the user is offline or if no presence information
      *      is available.
      */
     public Iterator<Presence> getPresences(String user) {
         String key = getPresenceMapKey(user);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            return null;
+            return Arrays.asList(new Presence(Presence.Type.unavailable)).iterator();
         }
         else {
             synchronized (userPresences) {
@@ -489,14 +506,14 @@ public class Roster implements ConnectionListener {
     }
 
     /**
-     * Returns the key to use in the presenceMap for a fully qualified xmpp ID. The roster
+     * Returns the key to use in the presenceMap for a fully qualified XMPP ID. The roster
      * can contain any valid address format such us "domain/resource", "user@domain" or
      * "user@domain/resource". If the roster contains an entry associated with the fully qualified
-     * xmpp ID then use the fully qualified xmpp ID as the key in presenceMap, otherwise use the
-     * bare address. Note: When the key in presenceMap is a fully qualified xmpp ID, the
+     * XMPP ID then use the fully qualified XMPP ID as the key in presenceMap, otherwise use the
+     * bare address. Note: When the key in presenceMap is a fully qualified XMPP ID, the
      * userPresences is useless since it will always contain one entry for the user.
      *
-     * @param user the fully qualified xmpp ID, e.g. jdoe@example.com/Work.
+     * @param user the bare or fully qualified XMPP ID, e.g. jdoe@example.com or jdoe@example.com/Work.
      * @return the key to use in the presenceMap for the fully qualified xmpp ID.
      */
     private String getPresenceMapKey(String user) {
@@ -538,11 +555,11 @@ public class Roster implements ConnectionListener {
     /**
      * Fires roster presence changed event to roster listeners.
      *
-     * @param user the user with a presence change. 
+     * @param presence the presence change. 
      */
-    private void fireRosterPresenceEvent(String user) {
+    private void fireRosterPresenceEvent(Presence presence) {
         for (RosterListener listener : rosterListeners) {
-            listener.presenceChanged(user);
+            listener.presenceChanged(presence);
         }
     }
 
@@ -600,7 +617,7 @@ public class Roster implements ConnectionListener {
                 // If the user is in the roster, fire an event.
                 for (RosterEntry entry : entries) {
                     if (entry.getUser().equals(key)) {
-                        fireRosterPresenceEvent(from);
+                        fireRosterPresenceEvent(presence);
                     }
                 }
             }
@@ -618,7 +635,7 @@ public class Roster implements ConnectionListener {
                 // If the user is in the roster, fire an event.
                 for (RosterEntry entry : entries) {
                     if (entry.getUser().equals(key)) {
-                        fireRosterPresenceEvent(from);
+                        fireRosterPresenceEvent(presence);
                     }
                 }
             }

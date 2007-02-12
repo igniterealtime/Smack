@@ -269,7 +269,7 @@ public class XMPPConnection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server, then set our presence to available. If more than five seconds
+     * the server, then sets presence to available. If more than five seconds
      * (default timeout) elapses in each step of the authentication process without
      * a response from the server, or if an error occurs, a XMPPException will be thrown.
      *

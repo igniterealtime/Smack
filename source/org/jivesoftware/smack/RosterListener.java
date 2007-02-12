@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2004 Jive Software.
+ * Copyright 2003-2007 Jive Software.
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@
  */
 
 package org.jivesoftware.smack;
+
+import org.jivesoftware.smack.packet.Presence;
 
 import java.util.Collection;
 
@@ -53,11 +55,25 @@ public interface RosterListener {
     public void entriesDeleted(Collection<String> addresses);
 
     /**
-     * Called when the presence of a roster entry is changed.
+     * Called when the presence of a roster entry is changed. Care should be taken
+     * when using the presence data delivered as part of this event. Specifically,
+     * when a user account is online with multiple resources, the UI should account
+     * for that. For example, say a user is online with their desktop computer and
+     * mobile phone. If the user logs out of the IM client on their mobile phone, the
+     * user should not be shown in the roster (contact list) as offline since they're
+     * still available as another resource.<p>
      *
-     * @param XMPPAddress the XMPP address of the user who's presence has changed,
-     *      including the resource.
+     * To get the current "best presence" for a user after the presence update, query the roster:
+     * <pre>
+     *    String user = presence.getFrom();
+     *    Presence bestPresence = roster.getPresence(user);
+     * </pre>
+     *
+     * That will return the presence value for the user with the highest priority and
+     * availability.
+     *
+     * @param presence the presence that changed.
+     * @see Roster#getPresence(String)
      */
-    public void presenceChanged(String XMPPAddress);
+    public void presenceChanged(Presence presence);
 }
-

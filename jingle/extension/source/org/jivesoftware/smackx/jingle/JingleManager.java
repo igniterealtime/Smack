@@ -24,6 +24,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
@@ -261,10 +262,13 @@ public class JingleManager implements JingleSessionListener {
             public void entriesDeleted(Collection addresses) {
             }
 
-            public void presenceChanged(String XMPPAddress) {
+            public void presenceChanged(Presence presence) {
+                String xmppAddress = presence.getFrom();
                 JingleSession aux = null;
                 for (JingleSession jingleSession : jingleSessions) {
-                    if (jingleSession.getInitiator().equals(XMPPAddress) || jingleSession.getResponder().equals(XMPPAddress)) {
+                    if (jingleSession.getInitiator().equals(xmppAddress) ||
+                            jingleSession.getResponder().equals(xmppAddress))
+                    {
                         aux = jingleSession;
                     }
                 }

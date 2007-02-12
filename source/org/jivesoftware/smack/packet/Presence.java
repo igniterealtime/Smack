@@ -270,14 +270,14 @@ public class Presence extends Packet {
     public enum Mode {
 
         /**
-         * Available (the default).
-         */
-        available,
-
-        /**
          * Free to chat.
          */
         chat,
+
+        /**
+         * Available (the default).
+         */
+        available,
 
         /**
          * Away.
