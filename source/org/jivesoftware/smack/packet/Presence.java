@@ -150,7 +150,9 @@ public class Presence extends Packet {
     }
 
     /**
-     * Returns the mode of the presence update.
+     * Returns the mode of the presence update, or <tt>null</tt> if the mode is not set.
+     * A null presence mode value is interpreted to be the same thing as
+     * {@link Presence.Mode#available}.
      *
      * @return the mode.
      */
@@ -159,8 +161,8 @@ public class Presence extends Packet {
     }
 
     /**
-     * Sets the mode of the presence update. For the standard "available" state, set
-     * the mode to <tt>null</tt>.
+     * Sets the mode of the presence update. A null presence mode value is interpreted
+     * to be the same thing as {@link Presence.Mode#available}.
      *
      * @param mode the mode.
      */
