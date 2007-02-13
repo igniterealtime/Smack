@@ -432,7 +432,7 @@ public class Roster implements ConnectionListener {
         String key = getPresenceMapKey(StringUtils.parseBareAddress(user));
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            return null;
+            return new Presence(Presence.Type.unavailable);
         }
         else {
             // Find the resource with the highest priority
