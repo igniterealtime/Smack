@@ -556,10 +556,12 @@ public class XMPPConnection {
      * dealing with an unexpected disconnection. Unlike {@link #disconnect()} the connection's
      * packet reader, packet writer, and {@link Roster} will not be removed; thus
      * connection's state is kept.
+     *
+     * @param unavailablePresence the presence packet to send during shutdown.
      */
-    protected void shutdown() {
+    protected void shutdown(Presence unavailablePresence) {
         // Set presence to offline.
-        packetWriter.sendPacket(new Presence(Presence.Type.unavailable));
+        packetWriter.sendPacket(unavailablePresence);
         packetReader.shutdown();
         packetWriter.shutdown();
         // Wait 150 ms for processes to clean-up, then shutdown.
@@ -602,7 +604,21 @@ public class XMPPConnection {
      * again.
      */
     public void disconnect() {
-        this.shutdown();
+        disconnect(new Presence(Presence.Type.unavailable));
+    }
+
+    /**
+     * Closes the connection. A custom unavailable presence is sent to the server, followed
+     * by closing the stream. The XMPPConnection can still be used for connecting to the server
+     * again. A custom unavilable presence is useful for communicating offline presence
+     * information such as "On vacation". Typically, just the status text of the presence
+     * packet is set with online information, but most XMPP servers will deliver the full
+     * presence packet with whatever data is set.
+     *
+     * @param unavailablePresence the presence packet to send during shutdown. 
+     */
+    public void disconnect(Presence unavailablePresence) {
+        this.shutdown(unavailablePresence);
 
         this.roster = null;
 

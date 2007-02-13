@@ -213,7 +213,7 @@ class PacketReader {
     void notifyConnectionError(Exception e) {
         done = true;
         // Closes the connection temporary. A reconnection is possible
-        connection.shutdown();
+        connection.shutdown(new Presence(Presence.Type.unavailable));
         // Print the stack trace to help catch the problem
         e.printStackTrace();
         // Notify connection listeners of the error.
