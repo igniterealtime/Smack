@@ -149,12 +149,12 @@ public class VCard extends IQ {
      * Set generic, unescapable VCard field. If unescabale is set to true, XML maybe a part of the
      * value.
      *
-     * @param value value of field
-     * @param field field to set. See {@link #getField(String)}
+     * @param value         value of field
+     * @param field         field to set. See {@link #getField(String)}
      * @param isUnescapable True if the value should not be escaped, and false if it should.
      */
     public void setField(String field, String value, boolean isUnescapable) {
-        if(!isUnescapable) {
+        if (!isUnescapable) {
             otherSimpleFields.put(field, value);
         }
         else {
@@ -333,10 +333,7 @@ public class VCard extends IQ {
             e.printStackTrace();
         }
 
-        String encodedImage = StringUtils.encodeBase64(bytes);
-        avatar = encodedImage;
-
-        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>", true);
+        setAvatar(bytes);
     }
 
     /**
@@ -345,6 +342,13 @@ public class VCard extends IQ {
      * @param bytes the bytes of the avatar.
      */
     public void setAvatar(byte[] bytes) {
+        if (bytes == null) {
+            // Remove avatar (if any) from mappings
+            otherUnescapableFields.remove("PHOTO");
+            return;
+        }
+
+        // Otherwise, add to mappings.
         String encodedImage = StringUtils.encodeBase64(bytes);
         avatar = encodedImage;
 
@@ -413,12 +417,13 @@ public class VCard extends IQ {
             int bytes = (int) file.length();
             byte[] buffer = new byte[bytes];
             int readBytes = bis.read(buffer);
-            if(readBytes != buffer.length) {
+            if (readBytes != buffer.length) {
                 throw new IOException("Entire file not read");
             }
             return buffer;
-        } finally {
-            if(bis != null) {
+        }
+        finally {
+            if (bis != null) {
                 bis.close();
             }
         }
@@ -467,6 +472,7 @@ public class VCard extends IQ {
      * and not anonymous.<p>
      * <p/>
      * NOTE: the method is asynchronous and does not wait for the returned value.
+     *
      * @param connection the XMPPConnection to use.
      * @throws XMPPException thrown if there was an issue setting the VCard in the server.
      */
