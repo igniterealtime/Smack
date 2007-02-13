@@ -488,7 +488,13 @@ public class Roster implements ConnectionListener {
             return new Presence(Presence.Type.unavailable);
         }
         else {
-            return userPresences.get(resource);
+            Presence presence = userPresences.get(resource);
+            if (presence == null) {
+                return new Presence(Presence.Type.unavailable);
+            }
+            else {
+                return presence;
+            }
         }
     }
 
