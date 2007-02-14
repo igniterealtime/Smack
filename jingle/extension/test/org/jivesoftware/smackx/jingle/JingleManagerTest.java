@@ -535,6 +535,7 @@ public class JingleManagerTest extends SmackTestCase {
                         IncomingJingleSession session = request.accept(getTestPayloads1());
                         session.setInitialSessionRequest(request);
                         session.start();
+                        session.terminate();
                     }
                     catch (XMPPException e) {
                         e.printStackTrace();
@@ -575,7 +576,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             Thread.sleep(50000);
 
-            session0.terminate();
+            //session0.terminate();
 
             Thread.sleep(10000);
 

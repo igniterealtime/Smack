@@ -57,6 +57,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.listeners.JingleMediaListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleTransportListener;
+import org.jivesoftware.smackx.jingle.listeners.JingleSessionStateListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.MediaNegotiator;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
@@ -68,12 +69,13 @@ import org.jivesoftware.smackx.packet.JingleContentDescription;
 import org.jivesoftware.smackx.packet.JingleContentDescription.JinglePayloadType;
 import org.jivesoftware.smackx.packet.JingleError;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
  * An incoming Jingle Session implementation.
  * This class has especific bahavior to accept and establish a received Jingle Session Request.
- *
+ * <p/>
  * This class is not directly used by users. Instead, users should refer to the
  * JingleManager class, that will create the appropiate instance...
  *
@@ -90,6 +92,8 @@ public class IncomingJingleSession extends JingleSession {
 
     private JingleSessionRequest initialSessionRequest;
 
+    private boolean accepted = false;
+
     /**
      * Constructor for a Jingle incoming session
      *
@@ -98,7 +102,7 @@ public class IncomingJingleSession extends JingleSession {
      * @param resolver  The transport resolver
      */
     protected IncomingJingleSession(XMPPConnection conn, String responder,
-                                    List payloadTypes, TransportResolver resolver) {
+            List payloadTypes, TransportResolver resolver) {
 
         super(conn, responder, conn.getUser());
 
@@ -115,6 +119,7 @@ public class IncomingJingleSession extends JingleSession {
         if (resolver.getType().equals(TransportResolver.Type.ice)) {
             setTransportNeg(new TransportNegotiator.Ice(this, resolver));
         }
+        
     }
 
     /**
@@ -126,7 +131,7 @@ public class IncomingJingleSession extends JingleSession {
      * @param jingleMediaManager The Media Manager for this Session
      */
     protected IncomingJingleSession(XMPPConnection conn, String responder,
-                                    List payloadTypes, TransportResolver resolver, JingleMediaManager jingleMediaManager) {
+            List payloadTypes, TransportResolver resolver, JingleMediaManager jingleMediaManager) {
         this(conn, responder, payloadTypes, resolver);
         this.jingleMediaManager = jingleMediaManager;
     }
@@ -151,11 +156,13 @@ public class IncomingJingleSession extends JingleSession {
 
                 updatePacketListener();
                 respond(packet);
-            } else {
+            }
+            else {
                 throw new IllegalStateException(
                         "Session request with null Jingle packet.");
             }
-        } else {
+        }
+        else {
             throw new IllegalStateException("Starting session without null state.");
         }
     }
@@ -249,7 +256,7 @@ public class IncomingJingleSession extends JingleSession {
 
             jingleTransportListener = new JingleTransportListener() {
                 public void transportEstablished(TransportCandidate local,
-                                                 TransportCandidate remote) {
+                        TransportCandidate remote) {
                     checkFullyEstablished();
                 }
 
@@ -340,7 +347,8 @@ public class IncomingJingleSession extends JingleSession {
                             .getAcceptedLocalCandidate())) {
                         setState(active);
                     }
-                } else {
+                }
+                else {
                     throw new JingleException(JingleError.MALFORMED_STANZA);
                 }
             }
@@ -374,6 +382,7 @@ public class IncomingJingleSession extends JingleSession {
      * "Active" state: we have an agreement about the session.
      */
     public class Active extends JingleNegotiator.State {
+
         public Active(JingleNegotiator neg) {
             super(neg);
         }

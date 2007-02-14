@@ -48,8 +48,6 @@ public class JingleMediaTest extends SmackTestCase {
 
         try {
 
-            //XMPPConnection.DEBUG_ENABLED = true;
-
             XMPPConnection x0 = getConnection(0);
             XMPPConnection x1 = getConnection(1);
 

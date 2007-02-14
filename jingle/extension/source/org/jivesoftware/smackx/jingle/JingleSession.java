@@ -60,10 +60,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smackx.jingle.listeners.JingleListener;
-import org.jivesoftware.smackx.jingle.listeners.JingleMediaListener;
-import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
-import org.jivesoftware.smackx.jingle.listeners.JingleTransportListener;
+import org.jivesoftware.smackx.jingle.listeners.*;
 import org.jivesoftware.smackx.jingle.media.*;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportNegotiator;
@@ -74,10 +71,7 @@ import org.jivesoftware.smackx.packet.JingleContentInfo;
 import org.jivesoftware.smackx.packet.JingleError;
 import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * An abstract Jingle session.
@@ -116,9 +110,9 @@ public abstract class JingleSession extends JingleNegotiator {
 
     protected JingleMediaSession jingleMediaSession = null;
 
-    static int ccc = 0;
-
     private boolean closed = false;
+
+    private List<JingleSessionStateListener> stateListeners = new ArrayList<JingleSessionStateListener>();
 
     /**
      * Full featured JingleSession constructor
@@ -279,6 +273,54 @@ public abstract class JingleSession extends JingleNegotiator {
     }
 
     /**
+     * Adds a State Listener for the Session. It will be called twice every time the Session State changed. One before State change and other after.
+     *
+     * @param listener listener to be added
+     */
+    public void addStateListener(JingleSessionStateListener listener) {
+        stateListeners.add(listener);
+    }
+
+    /**
+     * Removes a JingleStateListener
+     *
+     * @param listener listener to be removed
+     */
+    public void removedStateListener(JingleSessionStateListener listener) {
+        stateListeners.remove(listener);
+    }
+
+    /**
+     * Removes all JingleSessionStateListeners.
+     */
+    public void removeAllStateListeners() {
+        stateListeners.clear();
+    }
+
+    /**
+     * Overides JingleNegiociator Method to add listener capabilities
+     * @param newState new State
+     */
+    protected void setState(State newState) {
+        boolean proceed = true;
+        State old = getState();
+
+        for (JingleSessionStateListener listener : stateListeners)
+            try {
+                listener.beforeChange(old, newState);
+            }
+            catch (JingleException e) {
+                proceed = false;
+            }
+
+        if (proceed)
+            super.setState(newState);
+
+        for (JingleSessionStateListener listener : stateListeners)
+            listener.afterChanged(old, getState());
+    }
+
+    /**
      * Obtain the transport negotiator for this session.
      *
      * @return the transport negotiator instance
@@ -342,8 +384,6 @@ public abstract class JingleSession extends JingleNegotiator {
      */
     public IQ dispatchIncomingPacket(IQ iq, String id) throws XMPPException {
         IQ jout = null;
-
-        if (iq != null) System.out.println("L: " + iq.toXML());
 
         if (invalidState()) {
             throw new IllegalStateException(
@@ -422,9 +462,6 @@ public abstract class JingleSession extends JingleNegotiator {
      */
     public synchronized IQ respond(IQ iq) throws XMPPException {
         IQ response = null;
-
-        if (iq != null)
-            System.out.println("TT: " + iq.toXML());
 
         if (isValid()) {
             String responseId = null;
@@ -875,8 +912,6 @@ public abstract class JingleSession extends JingleNegotiator {
         packetFilter = new PacketFilter() {
             public boolean accept(Packet packet) {
 
-                final int cc = ccc++;
-
                 if (packet instanceof IQ) {
                     IQ iq = (IQ) packet;
 
@@ -1100,7 +1135,7 @@ public abstract class JingleSession extends JingleNegotiator {
         destroyMediaNeg();
         destroyTransportNeg();
         removePacketListener();
-        System.out.println("Negociation Closed: "+getConnection().getUser());
+        System.out.println("Negociation Closed: " + getConnection().getUser());
         closed = true;
         super.close();
     }

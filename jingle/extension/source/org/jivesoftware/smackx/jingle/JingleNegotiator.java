@@ -93,7 +93,8 @@ public abstract class JingleNegotiator {
     public Class getStateClass() {
         if (state != null) {
             return state.getClass();
-        } else {
+        }
+        else {
             return Object.class;
         }
     }
@@ -122,6 +123,7 @@ public abstract class JingleNegotiator {
 
     /**
      * Add expected ID
+     *
      * @param id
      */
     public void addExpectedId(String id) {
@@ -130,19 +132,22 @@ public abstract class JingleNegotiator {
 
     /**
      * Check if the passed ID is the expected ID
+     *
      * @param id
      * @return
      */
     public boolean isExpectedId(String id) {
         if (id != null) {
             return id.equals(expectedAckId);
-        } else {
+        }
+        else {
             return false;
         }
     }
 
     /**
      * Remove and expected ID
+     *
      * @param id
      */
     public void removeExpectedId(String id) {
