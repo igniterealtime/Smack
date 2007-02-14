@@ -68,6 +68,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.*;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.provider.JingleProvider;
+import org.jivesoftware.jingleaudio.jmf.JmfMediaManager;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -361,7 +362,7 @@ public class JingleManagerTest extends SmackTestCase {
                             }
 
                             public void sessionEstablished(PayloadType pt,
-                                                           TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                                    TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
                                 incCounter();
                                 System.out
                                         .println("Responder: the session is fully established.");
@@ -441,7 +442,7 @@ public class JingleManagerTest extends SmackTestCase {
                             }
 
                             public void sessionEstablished(PayloadType pt,
-                                                           TransportCandidate rc, final TransportCandidate lc, JingleSession jingleSession) {
+                                    TransportCandidate rc, final TransportCandidate lc, JingleSession jingleSession) {
                                 incCounter();
                                 System.out
                                         .println("Responder: the session is fully established.");
@@ -481,7 +482,7 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
                 public void sessionEstablished(PayloadType pt,
-                                               TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
                     incCounter();
                     System.out.println("Initiator: the session is fully established.");
                     System.out.println("+ Payload Type: " + pt.getId());
@@ -515,8 +516,8 @@ public class JingleManagerTest extends SmackTestCase {
         resetCounter();
 
         try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 54222);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 54567);
+            TransportResolver tr1 = new FixedResolver("127.0.0.1", 22222);
+            TransportResolver tr2 = new FixedResolver("127.0.0.1", 22444);
 
             final JingleManager man0 = new JingleManager(getConnection(0), tr1);
             final JingleManager man1 = new JingleManager(getConnection(1), tr2);
@@ -527,16 +528,16 @@ public class JingleManagerTest extends SmackTestCase {
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
                     System.out.println("Session request detected, from "
-                            + request.getFrom() + ": rejecting.");
+                            + request.getFrom());
 
                     // We reject the request
                     try {
-                        IncomingJingleSession session = request.accept(null);
+                        IncomingJingleSession session = request.accept(getTestPayloads1());
+                        session.setInitialSessionRequest(request);
                         session.start();
-                        session.terminate();
                     }
                     catch (XMPPException e) {
-                        e.printStackTrace(); 
+                        e.printStackTrace();
                     }
 
                 }
@@ -549,6 +550,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             session0.addListener(new JingleSessionListener() {
                 public void sessionClosed(String reason, JingleSession jingleSession) {
+                    System.out.println("The session has been closed");
                 }
 
                 public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
@@ -562,7 +564,7 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
                 public void sessionEstablished(PayloadType pt,
-                                               TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {
@@ -570,6 +572,10 @@ public class JingleManagerTest extends SmackTestCase {
             });
 
             session0.start();
+
+            Thread.sleep(50000);
+
+            session0.terminate();
 
             Thread.sleep(10000);
 
@@ -594,13 +600,10 @@ public class JingleManagerTest extends SmackTestCase {
             ProviderManager.getInstance().addIQProvider(RTPBridge.NAME,
                     RTPBridge.NAMESPACE, new RTPBridge.Provider());
 
-            XMPPConnection x2 = new XMPPConnection("thiago");
-            x2.connect();
-            x2.login("barata6", "barata6");
-
-            RTPBridge response = RTPBridge.getRTPBridge(x2, "102");
+            RTPBridge response = RTPBridge.getRTPBridge(getConnection(0), "102");
 
             class Listener implements Runnable {
+
                 private byte[] buf = new byte[5000];
                 private DatagramSocket dataSocket;
                 private DatagramPacket packet;
@@ -617,7 +620,8 @@ public class JingleManagerTest extends SmackTestCase {
                             dataSocket.receive(packet);
                             incCounter();
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -660,14 +664,18 @@ public class JingleManagerTest extends SmackTestCase {
                 ds0.close();
                 ds1.close();
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
-            } finally {
+            }
+            finally {
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
         }
 
     }
@@ -683,13 +691,8 @@ public class JingleManagerTest extends SmackTestCase {
 
             XMPPConnection.DEBUG_ENABLED = true;
 
-            XMPPConnection x0 = new XMPPConnection("thiago");
-            XMPPConnection x1 = new XMPPConnection("thiago");
-
-            x0.connect();
-            x0.login("barata7", "barata7");
-            x1.connect();
-            x1.login("barata6", "barata6");
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
 
             final JingleManager jm0 = new JingleManager(
                     x0, new STUNResolver() {
@@ -765,14 +768,15 @@ public class JingleManagerTest extends SmackTestCase {
                         });
 
                         session.start();
-                    } catch (XMPPException e) {
+                    }
+                    catch (XMPPException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
 
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession("barata6@thiago/Smack");
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.addListener(new JingleSessionListener() {
 
@@ -807,7 +811,8 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() == 2);
             //Thread.sleep(15000);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -824,23 +829,16 @@ public class JingleManagerTest extends SmackTestCase {
 
             //XMPPConnection.DEBUG_ENABLED = true;
 
-            XMPPConnection x0 = new XMPPConnection("thiago");
-            XMPPConnection x1 = new XMPPConnection("thiago");
-
-            x0.connect();
-            x0.login("barata7", "barata7");
-            x1.connect();
-            x1.login("barata6", "barata6");
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
 
             final JingleManager jm0 = new JingleManager(
                     x0, new FixedResolver("127.0.0.1", 20004));
             final JingleManager jm1 = new JingleManager(
                     x1, new FixedResolver("127.0.0.1", 20040));
 
-//            JingleManager jm0 = new JingleSessionManager(
-//                    x0, new ICEResolver());
-//            JingleManager jm1 = new JingleSessionManager(
-//                    x1, new ICEResolver());
+            //JingleManager jm0 = new ICETransportManager(x0, "stun.xten.net", 3478);
+            //JingleManager jm1 = new ICETransportManager(x1, "stun.xten.net", 3478);
 
             JingleMediaManager jingleMediaManager = new JingleMediaManager() {
                 // Media Session Implementation
@@ -890,14 +888,15 @@ public class JingleManagerTest extends SmackTestCase {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
 
                         session.start(request);
-                    } catch (XMPPException e) {
+                    }
+                    catch (XMPPException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
 
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession("barata6@thiago/Smack");
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.start();
 
@@ -911,7 +910,8 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() == 8);
             //Thread.sleep(15000);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -977,7 +977,7 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
                 public void sessionEstablished(PayloadType pt,
-                                               TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {

@@ -118,7 +118,7 @@ public abstract class JingleSession extends JingleNegotiator {
 
     static int ccc = 0;
 
-    private boolean closed = false; 
+    private boolean closed = false;
 
     /**
      * Full featured JingleSession constructor
@@ -343,6 +343,8 @@ public abstract class JingleSession extends JingleNegotiator {
     public IQ dispatchIncomingPacket(IQ iq, String id) throws XMPPException {
         IQ jout = null;
 
+        if (iq != null) System.out.println("L: " + iq.toXML());
+
         if (invalidState()) {
             throw new IllegalStateException(
                     "Illegal state in dispatch packet in Session manager.");
@@ -377,12 +379,16 @@ public abstract class JingleSession extends JingleNegotiator {
                             jout = getState().eventInfo(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONINITIATE)) {
-                            jout = getState().eventInitiate(jin);
+                            if (getState() != null)
+                                jout = getState().eventInitiate(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
                             jout = getState().eventRedirect(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONTERMINATE)) {
+
+                            System.out.println("SESSION PACKET");
+
                             jout = getState().eventTerminate(jin);
                         }
                     }
@@ -416,6 +422,9 @@ public abstract class JingleSession extends JingleNegotiator {
      */
     public synchronized IQ respond(IQ iq) throws XMPPException {
         IQ response = null;
+
+        if (iq != null)
+            System.out.println("TT: " + iq.toXML());
 
         if (isValid()) {
             String responseId = null;
@@ -887,10 +896,10 @@ public abstract class JingleSession extends JingleNegotiator {
                     if (iq instanceof Jingle) {
                         Jingle jin = (Jingle) iq;
 
-                        //System.out.println("Jingle: " + iq.toXML());
+                        System.out.println("Jingle: " + iq.toXML());
 
                         String sid = jin.getSid();
-                        if (!sid.equals(getSid())) {
+                        if (sid == null || !sid.equals(getSid())) {
                             System.out.println("Ignored Jingle(SID) " + sid + "|" + getSid() + " :" + iq.toXML());
                             return false;
                         }
@@ -1091,8 +1100,8 @@ public abstract class JingleSession extends JingleNegotiator {
         destroyMediaNeg();
         destroyTransportNeg();
         removePacketListener();
-        System.out.println("Negociation Closed");
-        closed=true;
+        System.out.println("Negociation Closed: "+getConnection().getUser());
+        closed = true;
         super.close();
     }
 

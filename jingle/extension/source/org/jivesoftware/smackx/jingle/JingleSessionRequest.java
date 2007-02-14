@@ -77,7 +77,9 @@ public class JingleSessionRequest {
                     pts);
             session.setInitialSessionRequest(this);
             // Acknowledge the IQ reception
-            session.sendAck(this.getJingle());
+            session.setSid(this.getSessionID());
+            //session.sendAck(this.getJingle());
+            //session.respond(this.getJingle());
         }
         return session;
     }
@@ -93,6 +95,11 @@ public class JingleSessionRequest {
         synchronized (manager) {
             session = manager.createIncomingJingleSession(this);
             session.setInitialSessionRequest(this);
+            // Acknowledge the IQ reception
+            session.setSid(this.getSessionID());
+            //session.sendAck(this.getJingle());
+            //session.updatePacketListener();
+            //session.respond(this.getJingle());
         }
         return session;
     }
