@@ -4,6 +4,7 @@ import org.jivesoftware.jingleaudio.jmf.JmfMediaManager;
 import org.jivesoftware.jingleaudio.jspeex.SpeexMediaManager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.jingle.IncomingJingleSession;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleSessionRequest;
@@ -37,7 +38,11 @@ import java.net.InetAddress;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class JingleMediaTest extends TestCase {
+public class JingleMediaTest extends SmackTestCase {
+
+    public JingleMediaTest(final String name) {
+        super(name);
+    }
 
     public void testCompleteJmf() {
 
@@ -45,13 +50,8 @@ public class JingleMediaTest extends TestCase {
 
             //XMPPConnection.DEBUG_ENABLED = true;
 
-            XMPPConnection x0 = new XMPPConnection("thiago");
-            XMPPConnection x1 = new XMPPConnection("thiago");
-
-            x0.connect();
-            x0.login("barata7", "barata7");
-            x1.connect();
-            x1.login("barata6", "barata6");
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
 
             ICETransportManager icetm0 = new ICETransportManager(x0, "stun.xten.net", 3478);
             ICETransportManager icetm1 = new ICETransportManager(x1, "stun.xten.net", 3478);
@@ -84,11 +84,11 @@ public class JingleMediaTest extends TestCase {
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession("barata6@thiago/Smack");
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.start();
 
-            Thread.sleep(50000);
+            Thread.sleep(60000);
             js0.terminate();
 
             Thread.sleep(6000);
@@ -109,13 +109,8 @@ public class JingleMediaTest extends TestCase {
 
             //XMPPConnection.DEBUG_ENABLED = true;
 
-            XMPPConnection x0 = new XMPPConnection("thiago");
-            XMPPConnection x1 = new XMPPConnection("thiago");
-
-            x0.connect();
-            x0.login("barata7", "barata7");
-            x1.connect();
-            x1.login("barata6", "barata6");
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
 
             final JingleManager jm0 = new JingleManager(
                     x0, new STUNTransportManager());
@@ -144,7 +139,7 @@ public class JingleMediaTest extends TestCase {
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession("barata6@thiago/Smack");
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.start();
 
@@ -171,13 +166,8 @@ public class JingleMediaTest extends TestCase {
                 public void run() {
                     try {
 
-                        XMPPConnection x0 = new XMPPConnection("thiago");
-                        XMPPConnection x1 = new XMPPConnection("thiago");
-
-                        x0.connect();
-                        x0.login("user" + String.valueOf(n), "user" + String.valueOf(n));
-                        x1.connect();
-                        x1.login("user" + String.valueOf(n + 1), "user" + String.valueOf(n + 1));
+                        XMPPConnection x0 = getConnection(n);
+                        XMPPConnection x1 = getConnection(n + 1);
 
                         BridgedTransportManager btm0 = new BridgedTransportManager(x0);
                         BridgedTransportManager btm1 = new BridgedTransportManager(x1);
@@ -209,7 +199,7 @@ public class JingleMediaTest extends TestCase {
                             }
                         });
 
-                        OutgoingJingleSession js0 = jm0.createOutgoingJingleSession("user" + String.valueOf(n + 1) + "@thiago/Smack");
+                        OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
                         js0.start();
 
@@ -236,7 +226,7 @@ public class JingleMediaTest extends TestCase {
             Thread.sleep(250000);
         }
         catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();  
         }
     }
 
@@ -245,13 +235,8 @@ public class JingleMediaTest extends TestCase {
 
             //XMPPConnection.DEBUG_ENABLED = true;
 
-            XMPPConnection x0 = new XMPPConnection("thiago");
-            XMPPConnection x1 = new XMPPConnection("thiago");
-
-            x0.connect();
-            x0.login("barata5", "barata5");
-            x1.connect();
-            x1.login("barata4", "barata4");
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
 
             BridgedTransportManager btm0 = new BridgedTransportManager(x0);
             BridgedTransportManager btm1 = new BridgedTransportManager(x1);
@@ -283,7 +268,7 @@ public class JingleMediaTest extends TestCase {
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession("barata4@thiago/Smack");
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.start();
 
@@ -293,7 +278,7 @@ public class JingleMediaTest extends TestCase {
 
             Thread.sleep(3000);
 
-            js0 = jm0.createOutgoingJingleSession("barata4@thiago/Smack");
+            js0 =  jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.start();
 
@@ -379,5 +364,9 @@ public class JingleMediaTest extends TestCase {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    protected int getMaxConnections() {
+        return 2;
     }
 }
