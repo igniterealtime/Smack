@@ -222,7 +222,7 @@ public abstract class SmackTestCase extends TestCase {
                     }
                 }
                 // Login with the new test account
-                getConnection(i).login("user" + i, "user" + i, "smack", sendInitialPresence());
+                getConnection(i).login("user" + i, "user" + i, "Smack", sendInitialPresence());
             }
             // Let the server process the available presences
             Thread.sleep(150);
