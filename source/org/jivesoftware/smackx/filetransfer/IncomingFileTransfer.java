@@ -94,7 +94,7 @@ public class IncomingFileTransfer extends FileTransfer {
      * </UL>
      *
      * @param file The location to save the file.
-     * @throws XMPPException
+     * @throws XMPPException when the file transfer fails
      * @throws IllegalArgumentException This exception is thrown when the the provided file is
      *                                  either null, or cannot be written to.
      */
@@ -144,18 +144,24 @@ public class IncomingFileTransfer extends FileTransfer {
                     setException(e);
                 }
 
-                if (getStatus().equals(Status.in_progress))
+                if (getStatus().equals(Status.in_progress)) {
                     setStatus(Status.complete);
-                try {
-                    if (inputStream != null) {
+                }
+                if (inputStream != null) {
+                    try {
                         inputStream.close();
                     }
-                    if (outputStream != null) {
-                        outputStream.close();
+                    catch(Throwable io) {
+                        /* Ignore */
                     }
                 }
-                catch (IOException e) {
-                    /** We need to do something here **/
+                if (outputStream != null) {
+                    try {
+                    outputStream.close();
+                    }
+                    catch (Throwable io) {
+                        /* Ignore */
+                    }
                 }
             }
         }, "File Transfer " + streamID);
