@@ -92,8 +92,6 @@ public class IncomingJingleSession extends JingleSession {
 
     private JingleSessionRequest initialSessionRequest;
 
-    private boolean accepted = false;
-
     /**
      * Constructor for a Jingle incoming session
      *
@@ -119,7 +117,7 @@ public class IncomingJingleSession extends JingleSession {
         if (resolver.getType().equals(TransportResolver.Type.ice)) {
             setTransportNeg(new TransportNegotiator.Ice(this, resolver));
         }
-        
+
     }
 
     /**
