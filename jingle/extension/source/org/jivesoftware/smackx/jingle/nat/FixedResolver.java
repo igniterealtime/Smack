@@ -28,7 +28,6 @@ public class FixedResolver extends TransportResolver {
      * @param port a port
      */
     public void setFixedCandidate(String ip, int port) {
-        System.out.println("FIXED");
         fixedCandidate = new TransportCandidate.Fixed(ip, port);
     }
 

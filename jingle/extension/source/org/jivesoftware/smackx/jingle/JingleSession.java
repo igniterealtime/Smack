@@ -426,9 +426,6 @@ public abstract class JingleSession extends JingleNegotiator {
                             jout = getState().eventRedirect(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONTERMINATE)) {
-
-                            System.out.println("SESSION PACKET");
-
                             jout = getState().eventTerminate(jin);
                         }
                     }
@@ -766,11 +763,9 @@ public abstract class JingleSession extends JingleNegotiator {
             return true;
         }
         if (obj == null) {
-            System.out.println("NULL");
             return false;
         }
         if (getClass() != obj.getClass()) {
-            System.out.println("CLASS DIFF");
             return false;
         }
 
@@ -885,6 +880,7 @@ public abstract class JingleSession extends JingleNegotiator {
     protected void removePacketListener() {
         if (packetListener != null) {
             getConnection().removePacketListener(packetListener);
+            
             System.out.println("REMOVE PACKET LISTENER");
         }
     }
@@ -962,7 +958,6 @@ public abstract class JingleSession extends JingleNegotiator {
         };
 
         getConnection().addPacketListener(packetListener, packetFilter);
-        System.out.println("updatePacketListener");
     }
 
     // Listeners

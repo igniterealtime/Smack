@@ -316,7 +316,6 @@ public abstract class TransportResolver {
      */
     public Iterator getCandidates() {
         synchronized (candidates) {
-            System.out.println("CNUM: " + candidates.size());
             return Collections.unmodifiableList(new ArrayList(candidates)).iterator();
         }
     }

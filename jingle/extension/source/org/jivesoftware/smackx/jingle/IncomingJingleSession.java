@@ -143,7 +143,6 @@ public class IncomingJingleSession extends JingleSession {
     public void start(JingleSessionRequest initialJingleSessionRequest) throws XMPPException {
         if (invalidState()) {
             Jingle packet = initialJingleSessionRequest.getJingle();
-            System.out.println("invalidState");
             if (packet != null) {
 
                 // Initialize the session information
@@ -226,6 +225,16 @@ public class IncomingJingleSession extends JingleSession {
             triggerSessionClosedOnError(new JingleException(iq.getError().getMessage()));
             super.eventError(iq);
         }
+
+        /**
+         * Terminate the connection.
+         *
+         * @see org.jivesoftware.smackx.jingle.JingleNegotiator.State#eventTerminate(org.jivesoftware.smackx.packet.Jingle)
+         */
+        public Jingle eventTerminate(Jingle jin) throws XMPPException {
+            triggerSessionClosed("Closed Remotely");
+            return super.eventTerminate(jin);
+        }
     }
 
     /**
@@ -273,7 +282,6 @@ public class IncomingJingleSession extends JingleSession {
          */
         public void eventEnter() {
             // Add the listeners to the sub-negotiators...
-            System.out.println("Pending eventEnter");
             addMediaListener(jingleMediaListener);
             addTransportListener(jingleTransportListener);
             super.eventEnter();
@@ -374,6 +382,16 @@ public class IncomingJingleSession extends JingleSession {
             triggerSessionClosedOnError(new XMPPException(iq.getError()));
             super.eventError(iq);
         }
+
+        /**
+         * Terminate the connection.
+         *
+         * @see org.jivesoftware.smackx.jingle.JingleNegotiator.State#eventTerminate(org.jivesoftware.smackx.packet.Jingle)
+         */
+        public Jingle eventTerminate(Jingle jin) throws XMPPException {
+            triggerSessionClosed("Closed Remotely");
+            return super.eventTerminate(jin);
+        }
     }
 
     /**
@@ -398,7 +416,6 @@ public class IncomingJingleSession extends JingleSession {
                     .getAcceptedLocalCandidate();
 
             // Trigger the session established flag
-            System.out.println("eventEntered");
             triggerSessionEstablished(bestCommonAudioPt, bestRemoteCandidate,
                     acceptedLocalCandidate);
 

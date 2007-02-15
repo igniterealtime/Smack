@@ -73,7 +73,7 @@ import java.util.List;
 /**
  * An outgoing Jingle session implementation.
  * This class has especific bahavior to Request and establish a new Jingle Session.
- *
+ * <p/>
  * This class is not directly used by users. Instead, users should refer to the
  * JingleManager class, that will create the appropiate instance...
  *
@@ -98,7 +98,7 @@ public class OutgoingJingleSession extends JingleSession {
      * @param resolver     The transport resolver.
      */
     protected OutgoingJingleSession(XMPPConnection conn, String responder,
-                                    List payloadTypes, TransportResolver resolver) {
+            List payloadTypes, TransportResolver resolver) {
 
         super(conn, conn.getUser(), responder);
 
@@ -129,7 +129,7 @@ public class OutgoingJingleSession extends JingleSession {
      * @param jingleMediaManager The Media Manager for this Session
      */
     protected OutgoingJingleSession(XMPPConnection conn, String responder,
-                                    List payloadTypes, TransportResolver resolver, JingleMediaManager jingleMediaManager) {
+            List payloadTypes, TransportResolver resolver, JingleMediaManager jingleMediaManager) {
         this(conn, responder, payloadTypes, resolver);
         this.jingleMediaManager = jingleMediaManager;
     }
@@ -150,11 +150,13 @@ public class OutgoingJingleSession extends JingleSession {
             try {
                 updatePacketListener();
                 respond((Jingle) null);
-            } catch (XMPPException e) {
+            }
+            catch (XMPPException e) {
                 e.printStackTrace();
                 close();
             }
-        } else {
+        }
+        else {
             throw new IllegalStateException("Starting session without null state.");
         }
     }
@@ -223,6 +225,16 @@ public class OutgoingJingleSession extends JingleSession {
             triggerSessionRedirect(redirArg);
             return null;
         }
+
+        /**
+         * Terminate the connection.
+         *
+         * @see org.jivesoftware.smackx.jingle.JingleNegotiator.State#eventTerminate(org.jivesoftware.smackx.packet.Jingle)
+         */
+        public Jingle eventTerminate(Jingle jin) throws XMPPException {
+            triggerSessionClosed("Closed Remotely");
+            return super.eventTerminate(jin);
+        }
     }
 
     /**
@@ -232,6 +244,7 @@ public class OutgoingJingleSession extends JingleSession {
      * Note: the transition from/to this state is done with listeners...
      */
     public class Pending extends JingleNegotiator.State {
+
         JingleMediaListener jingleMediaListener;
 
         JingleTransportListener jingleTransportListener;
@@ -252,7 +265,7 @@ public class OutgoingJingleSession extends JingleSession {
 
             jingleTransportListener = new JingleTransportListener() {
                 public void transportEstablished(TransportCandidate local,
-                                                 TransportCandidate remote) {
+                        TransportCandidate remote) {
                     checkFullyEstablished();
                 }
 
@@ -338,7 +351,8 @@ public class OutgoingJingleSession extends JingleSession {
                             .getAcceptedLocalCandidate())) {
                         setState(active);
                     }
-                } else {
+                }
+                else {
                     throw new JingleException(JingleError.NEGOTIATION_ERROR);
                 }
             }
@@ -374,7 +388,7 @@ public class OutgoingJingleSession extends JingleSession {
          * @throws XMPPException
          */
         public Jingle eventTerminate(Jingle jin) throws XMPPException {
-            triggerSessionDeclined(null);
+            triggerSessionClosed("Closed Remotely");
             return super.eventTerminate(jin);
         }
 
@@ -393,6 +407,7 @@ public class OutgoingJingleSession extends JingleSession {
      * State when we have an established session.
      */
     public class Active extends JingleNegotiator.State {
+
         public Active(JingleNegotiator neg) {
             super(neg);
         }
@@ -410,7 +425,6 @@ public class OutgoingJingleSession extends JingleSession {
                     .getAcceptedLocalCandidate();
 
             // Trigger the session established flag
-            System.out.println("eventEntered");
             triggerSessionEstablished(bestCommonAudioPt, bestRemoteCandidate,
                     acceptedLocalCandidate);
 

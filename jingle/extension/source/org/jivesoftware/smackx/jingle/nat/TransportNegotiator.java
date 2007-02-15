@@ -207,7 +207,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param offeredCandidate a transport candidates to check
      */
     private void checkRemoteCandidate(final TransportCandidate offeredCandidate) {
-        System.out.println("CHECK");
         offeredCandidate.addListener(new TransportResolverListener.Checker() {
             public void candidateChecked(TransportCandidate cand,
                     final boolean validCandidate) {
@@ -336,7 +335,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      */
     private void addRemoteCandidates(List rc) {
         if (rc != null) {
-            System.out.println("SIZE OF LISTA: " + rc.size());
             if (rc.size() > 0) {
                 for (Object aRc : rc) {
                     addRemoteCandidate((TransportCandidate) aRc);
@@ -358,8 +356,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             Iterator iTrans = jin.getTransports();
             while (iTrans.hasNext()) {
                 org.jivesoftware.smackx.packet.JingleTransport trans = (org.jivesoftware.smackx.packet.JingleTransport) iTrans.next();
-
-                System.out.println("LISTA SIZE: " + trans.getCandidatesCount());
 
                 Iterator iCand = trans.getCandidates();
                 while (iCand.hasNext()) {

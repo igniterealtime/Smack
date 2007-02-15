@@ -400,7 +400,7 @@ public class RTPBridge extends IQ {
             return false;
         }
 
-        System.out.println("service listing");
+        System.out.println("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(xmppConnection);
