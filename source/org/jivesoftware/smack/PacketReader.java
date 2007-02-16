@@ -31,9 +31,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
@@ -51,9 +49,9 @@ class PacketReader {
     private XMPPConnection connection;
     private XmlPullParser parser;
     private boolean done;
-    private List<PacketCollector> collectors = new CopyOnWriteArrayList<PacketCollector>();
-    protected final List<ListenerWrapper> listeners = new CopyOnWriteArrayList<ListenerWrapper>();
-    protected final List<ConnectionListener> connectionListeners =
+    private Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
+    protected final Map<PacketListener, ListenerWrapper> listeners = new ConcurrentHashMap<PacketListener, ListenerWrapper>();
+    protected final Collection<ConnectionListener> connectionListeners =
             new CopyOnWriteArrayList<ConnectionListener>();
 
     private String connectionID = null;
@@ -123,7 +121,7 @@ class PacketReader {
      */
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
         ListenerWrapper wrapper = new ListenerWrapper(this, packetListener, packetFilter);
-        listeners.add(wrapper);
+        listeners.put(packetListener, wrapper);
     }
 
     /**
@@ -132,15 +130,10 @@ class PacketReader {
      * @param packetListener the packet listener to remove.
      */
     public void removePacketListener(PacketListener packetListener) {
-        // Find the index of the wrapper in the list of listeners. This operation will
-        // work because of a special equals() implementation in the ListenerWrapper class.
-        int index = listeners.indexOf(packetListener);
-        if (index == -1) {
-            return;
+        ListenerWrapper wrapper = listeners.remove(packetListener);
+        if (wrapper != null) {
+            wrapper.cancel();
         }
-        ListenerWrapper wrapper = listeners.remove(index);
-        // Cancel the wrapper since it's been removed.
-        wrapper.cancel();
     }
 
     /**
@@ -285,7 +278,7 @@ class PacketReader {
     private void processListeners(Thread thread) {
         while (!done && thread == listenerThread) {
             boolean processedPacket = false;
-            for (ListenerWrapper wrapper: listeners) {
+            for (ListenerWrapper wrapper: listeners.values()) {
                 processedPacket = processedPacket || wrapper.notifyListener();
             }
             if (!processedPacket) {
