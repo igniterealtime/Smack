@@ -491,7 +491,7 @@ public class RosterTest extends SmackTestCase {
         // Wait up to 2 seconds
         long initial = System.currentTimeMillis();
         while (System.currentTimeMillis() - initial < 2000 &&
-                (roster.getPresence(getBareJID(1)) == null)) {
+                (roster.getPresence(getBareJID(1)).getType() == Presence.Type.unavailable)) {
             Thread.sleep(100);
         }
 
@@ -501,22 +501,20 @@ public class RosterTest extends SmackTestCase {
 
         // Check that the right presence is returned for a user+resource
         presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
-        assertEquals(
-            "Returned the wrong Presence",
-            StringUtils.parseResource(presence.getFrom()),
-            "Home");
+        assertEquals("Returned the wrong Presence", "Home",
+                StringUtils.parseResource(presence.getFrom()));
 
         // Check that the right presence is returned for a user+resource
         presence = roster.getPresenceResource(getFullJID(1));
         assertNotNull("Presence not found for user " + getFullJID(1), presence);
-        assertEquals(
-            "Returned the wrong Presence",
-            StringUtils.parseResource(presence.getFrom()),
-            "Smack");
+        assertEquals("Returned the wrong Presence", "Smack",
+                StringUtils.parseResource(presence.getFrom()));
 
-        // Check that the no presence is returned for a non-existent user+resource
+        // Check the returned presence for a non-existent user+resource
         presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
-        assertNull("Returned a Presence for a non-existing user", presence);
+        assertNotNull("No presence was returned for a non-existing user", presence);
+        assertEquals("Returned Presence for a non-existing user has the incorrect type",
+                Presence.Type.unavailable, presence.getType());
 
         // Check that the returned presences are correct
         Iterator presences = roster.getPresences(getBareJID(1));
@@ -580,18 +578,23 @@ public class RosterTest extends SmackTestCase {
         // Wait up to 2 seconds
         initial = System.currentTimeMillis();
         while (System.currentTimeMillis() - initial < 2000 && (
-                roster.getPresence(getBareJID(0)) != null ||
-                        getConnection(1).getRoster().getPresence(getBareJID(0)) != null)) {
+                roster.getPresence(getBareJID(0)).getType() != Presence.Type.unavailable ||
+                        getConnection(1).getRoster().getPresence(getBareJID(0)).getType() !=
+                                Presence.Type.unavailable)) {
             Thread.sleep(100);
         }
 
         // Check that no presence is returned for the removed contact
         presence = roster.getPresence(getBareJID(0));
-        assertNull("Presence found for removed contact", presence);
+        assertNotNull("No presence was returned for removed contact", presence);
+        assertEquals("Returned Presence for removed contact has incorrect type",
+                Presence.Type.unavailable, presence.getType());
 
         // Check that no presence is returned for the removed contact
         presence = getConnection(1).getRoster().getPresence(getBareJID(0));
-        assertNull("Presence found for removed contact", presence);
+        assertNotNull("No presence was returned for removed contact", presence);
+        assertEquals("Returned Presence for removed contact has incorrect type",
+                Presence.Type.unavailable, presence.getType());
     }
 
     /**
@@ -713,7 +716,9 @@ public class RosterTest extends SmackTestCase {
         getConnection(0).packetReader.notifyConnectionError(new Exception("Simulated Error"));
 
         Presence presence = roster.getPresence(getBareJID(1));
-        assertNull("Presence should be offline after a connection termination", presence);
+        assertNotNull("Unavailable presence not found for offline user", presence);
+        assertEquals("Unavailable presence not found for offline user", Presence.Type.unavailable,
+                presence.getType());
         // Reconnection should occur in 10 seconds
         Thread.sleep(12200);
         presence = roster.getPresence(getBareJID(1));

@@ -53,7 +53,10 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
@@ -1842,6 +1845,7 @@ public class MultiUserChatTest extends SmackTestCase {
         Form form = muc.getConfigurationForm();
         Form answerForm = form.createAnswerForm();
         answerForm.setAnswer("muc#roomconfig_moderatedroom", true);
+        answerForm.setAnswer("muc#roomconfig_whois", Arrays.asList("moderators"));
         // Keep the room owner
         try {
             List<String> owners = new ArrayList<String>();
