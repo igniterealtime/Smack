@@ -184,13 +184,8 @@ public class ReconnectionManager implements ConnectionListener {
     protected void notifyReconnectionFailed(Exception exception) {
         List<ConnectionListener> listenersCopy;
         if (isReconnectionAllowed()) {
-            synchronized (connection.packetReader.connectionListeners) {
-                // Makes a copy since it's possible that a listener will be removed from the list
-                listenersCopy = new ArrayList<ConnectionListener>(
-                        connection.packetReader.connectionListeners);
-                for (ConnectionListener listener : listenersCopy) {
-                    listener.reconnectionFailed(exception);
-                }
+            for (ConnectionListener listener : connection.packetReader.connectionListeners) {
+                listener.reconnectionFailed(exception);
             }
         }
     }
@@ -201,15 +196,9 @@ public class ReconnectionManager implements ConnectionListener {
      * @param seconds the number of seconds that a reconnection will be attempted in.
      */
     protected void notifyAttemptToReconnectIn(int seconds) {
-        List<ConnectionListener> listenersCopy;
         if (isReconnectionAllowed()) {
-            synchronized (connection.packetReader.connectionListeners) {
-                // Makes a copy since it's possible that a listener will be removed from the list
-                listenersCopy = new ArrayList<ConnectionListener>(
-                        connection.packetReader.connectionListeners);
-                for (ConnectionListener listener : listenersCopy) {
-                    listener.reconnectingIn(seconds);
-                }
+            for (ConnectionListener listener : connection.packetReader.connectionListeners) {
+                listener.reconnectingIn(seconds);
             }
         }
     }

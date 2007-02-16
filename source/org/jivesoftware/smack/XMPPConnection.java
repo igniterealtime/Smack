@@ -744,10 +744,8 @@ public class XMPPConnection {
         if (connectionListener == null) {
             return;
         }
-        synchronized (packetReader.connectionListeners) {
-            if (!packetReader.connectionListeners.contains(connectionListener)) {
-                packetReader.connectionListeners.add(connectionListener);
-            }
+        if (!packetReader.connectionListeners.contains(connectionListener)) {
+            packetReader.connectionListeners.add(connectionListener);
         }
     }
 
@@ -757,9 +755,7 @@ public class XMPPConnection {
      * @param connectionListener a connection listener.
      */
     public void removeConnectionListener(ConnectionListener connectionListener) {
-        synchronized (packetReader.connectionListeners) {
-            packetReader.connectionListeners.remove(connectionListener);
-        }
+        packetReader.connectionListeners.remove(connectionListener);
     }
 
     /**
