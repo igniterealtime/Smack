@@ -88,6 +88,32 @@ public class Presence extends Packet {
     }
 
     /**
+     * Returns true if the {@link Type presence type} is available (online) and
+     * false if the user is unavailable (offline), or if this is a presence packet
+     * involved in a subscription operation. This is a convenience method
+     * equivalent to <tt>getType() == Presence.Type.available</tt>.
+     *
+     * @return true if the presence type is available.
+     */
+    public boolean isAvailable() {
+        return type == Type.available;    
+    }
+
+    /**
+     * Returns true if the presence type is {@link Type#available available} and the presence
+     * mode is {@link Mode#away away}, {@link Mode#xa extended away}, or
+     * {@link Mode#dnd do not disturb}. False will be returned when the type or mode
+     * is any other value, including when the presence type is unavailable (offline).
+     * This is a convenience method equivalent to
+     * <tt>type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd)</tt>.
+     *
+     * @return true if the presence type is available and the presence mode is away, xa, or dnd.
+     */
+    public boolean isAway() {
+        return type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd); 
+    }
+
+    /**
      * Returns the type of this presence packet.
      *
      * @return the type of the presence packet.
