@@ -2624,11 +2624,11 @@ public class MultiUserChat {
         }
 
         public void connectionClosed() {
-          //  cancel();
+            cancel();
         }
 
         public void connectionClosedOnError(Exception e) {
-          //  cancel();
+            // ignore              
         }
 
         public void reconnectingIn(int seconds) {
