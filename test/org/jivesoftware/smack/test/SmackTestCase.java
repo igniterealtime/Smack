@@ -237,18 +237,25 @@ public abstract class SmackTestCase extends TestCase {
         super.tearDown();
 
         for (int i = 0; i < getMaxConnections(); i++) {
+            try {
+                // If not connected, connect so that we can delete the account.
+                if (!getConnection(i).isConnected()) {
+                    XMPPConnection con = getConnection(i);
+                    con.connect();
+                    con.login(getUsername(i), getUsername(i));
+                }
+                else if (!getConnection(i).isAuthenticated()) {
+                    getConnection(i).login(getUsername(i), getUsername(i));     
+                }
+                // Delete the created account for the test
+                getConnection(i).getAccountManager().deleteAccount();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
             if (getConnection(i).isConnected()) {
-            // Delete the created account for the test
-                try {
-                    getConnection(i).getAccountManager().deleteAccount();
-                }
-                catch (XMPPException e) {
-                    e.printStackTrace();
-                }
-                if (getConnection(i).isConnected()) {
-                    // Close the connection
-                    getConnection(i).disconnect();
-                }
+                // Close the connection
+                getConnection(i).disconnect();
             }
         }
     }
