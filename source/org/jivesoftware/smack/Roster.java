@@ -47,7 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @see XMPPConnection#getRoster()
  * @author Matt Tucker
  */
-public class Roster implements ConnectionListener {
+public class Roster {
 
     /**
      * The default subscription processing mode to use when a Roster is created. By default
@@ -64,7 +64,7 @@ public class Roster implements ConnectionListener {
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
     boolean rosterInitialized = false;
-    private PresencePacketListener presencePacket;
+    private PresencePacketListener presencePacketListener;
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
@@ -109,10 +109,32 @@ public class Roster implements ConnectionListener {
         connection.addPacketListener(new RosterPacketListener(), rosterFilter);
         // Listen for any presence packets.
         PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
-        presencePacket = new PresencePacketListener();
-        connection.addPacketListener(presencePacket, presenceFilter);
+        presencePacketListener = new PresencePacketListener();
+        connection.addPacketListener(presencePacketListener, presenceFilter);
         // Listen for connection events
-        connection.addConnectionListener(this);
+        connection.addConnectionListener(new ConnectionListener() {
+            public void connectionClosed() {
+                // Changes the presence available contacts to unavailable
+                setOfflinePresences();
+            }
+
+            public void connectionClosedOnError(Exception e) {
+                // Changes the presence available contacts to unavailable
+                setOfflinePresences();
+            }
+
+            public void reconnectingIn(int seconds) {
+                // Ignore
+            }
+
+            public void reconnectionFailed(Exception e) {
+                // Ignore
+            }
+
+            public void reconnectionSuccessful() {
+                // Ignore
+            }
+        });
     }
 
     /**
@@ -303,25 +325,6 @@ public class Roster implements ConnectionListener {
     }
 
     /**
-     * Changes the presence of available contacts offline by simulating an unavailable
-     * presence sent from the server. After a disconnection, every Presence is set
-     * to offline.
-     */
-    private void setOfflinePresences() {
-        Presence packetUnavailable;
-        for (String user : presenceMap.keySet()) {
-            Map<String, Presence> resources = presenceMap.get(user);
-            if (resources != null) {
-                for (String resource : resources.keySet()) {
-                    packetUnavailable = new Presence(Presence.Type.unavailable);
-                    packetUnavailable.setFrom(user + "/" + resource);
-                    presencePacket.processPacket(packetUnavailable);
-                }
-            }
-        }
-    }
-
-    /**
      * Returns a count of the unfiled entries in the roster. An unfiled entry is
      * an entry that doesn't belong to any groups.
      *
@@ -365,8 +368,9 @@ public class Roster implements ConnectionListener {
     /**
      * Returns true if the specified XMPP address is an entry in the roster.
      *
-     * @param user the XMPP address of the user (eg "jsmith@example.com"). The address could be
-     * in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
+     * @param user the XMPP address of the user (eg "jsmith@example.com"). The
+     *      address could be in any valid format (e.g. "domain/resource",
+     *      "user@domain" or "user@domain/resource").
      * @return true if the XMPP address is an entry in the roster.
      */
     public boolean contains(String user) {
@@ -500,8 +504,9 @@ public class Roster implements ConnectionListener {
 
     /**
      * Returns an iterator (of Presence objects) for all of a user's current presences
-     * or an unavailable presence if the user is unavailable (offline) or if no presence information
-     * is available, such as when you are not subscribed to the user's presence updates.
+     * or an unavailable presence if the user is unavailable (offline) or if no presence
+     * information is available, such as when you are not subscribed to the user's presence
+     * updates.
      *
      * @param user a XMPP ID, e.g. jdoe@example.com.
      * @return an iterator (of Presence objects) for all the user's current presences,
@@ -515,22 +520,29 @@ public class Roster implements ConnectionListener {
             return Arrays.asList(new Presence(Presence.Type.unavailable)).iterator();
         }
         else {
-            synchronized (userPresences) {
-                return new HashMap<String, Presence>(userPresences).values().iterator();
-            }
+            return userPresences.values().iterator();
         }
     }
 
     /**
-     * Returns the key to use in the presenceMap for a fully qualified XMPP ID. The roster
-     * can contain any valid address format such us "domain/resource", "user@domain" or
-     * "user@domain/resource". If the roster contains an entry associated with the fully qualified
-     * XMPP ID then use the fully qualified XMPP ID as the key in presenceMap, otherwise use the
-     * bare address. Note: When the key in presenceMap is a fully qualified XMPP ID, the
-     * userPresences is useless since it will always contain one entry for the user.
+     * Cleans up all resources used by the roster.
+     */
+    void cleanup() {
+        rosterListeners.clear();
+    }
+
+    /**
+     * Returns the key to use in the presenceMap for a fully qualified XMPP ID.
+     * The roster can contain any valid address format such us "domain/resource",
+     * "user@domain" or "user@domain/resource". If the roster contains an entry
+     * associated with the fully qualified XMPP ID then use the fully qualified XMPP
+     * ID as the key in presenceMap, otherwise use the bare address. Note: When the
+     * key in presenceMap is a fully qualified XMPP ID, the userPresences is useless
+     * since it will always contain one entry for the user.
      *
-     * @param user the bare or fully qualified XMPP ID, e.g. jdoe@example.com or jdoe@example.com/Work.
-     * @return the key to use in the presenceMap for the fully qualified xmpp ID.
+     * @param user the bare or fully qualified XMPP ID, e.g. jdoe@example.com or
+     *      jdoe@example.com/Work.
+     * @return the key to use in the presenceMap for the fully qualified XMPP ID.
      */
     private String getPresenceMapKey(String user) {
         if (user == null) {
@@ -541,6 +553,25 @@ public class Roster implements ConnectionListener {
             key = StringUtils.parseBareAddress(user);
         }
         return key.toLowerCase();
+    }
+
+    /**
+     * Changes the presence of available contacts offline by simulating an unavailable
+     * presence sent from the server. After a disconnection, every Presence is set
+     * to offline.
+     */
+    private void setOfflinePresences() {
+        Presence packetUnavailable;
+        for (String user : presenceMap.keySet()) {
+            Map<String, Presence> resources = presenceMap.get(user);
+            if (resources != null) {
+                for (String resource : resources.keySet()) {
+                    packetUnavailable = new Presence(Presence.Type.unavailable);
+                    packetUnavailable.setFrom(user + "/" + resource);
+                    presencePacketListener.processPacket(packetUnavailable);
+                }
+            }
+        }
     }
 
     /**
@@ -614,8 +645,9 @@ public class Roster implements ConnectionListener {
             String from = presence.getFrom();
             String key = getPresenceMapKey(from);
 
-            // If an "available" packet, add it to the presence map. Each presence map will hold
-            // for a particular user a map with the presence packets saved for each resource.
+            // If an "available" presence, add it to the presence map. Each presence
+            // map will hold for a particular user a map with the presence
+            // packets saved for each resource.
             if (presence.getType() == Presence.Type.available) {
                 Map<String, Presence> userPresences;
                 // Get the user presence map
@@ -626,10 +658,11 @@ public class Roster implements ConnectionListener {
                 else {
                     userPresences = presenceMap.get(key);
                 }
+                // See if an offline presence was being stored in the map. If so, remove
+                // it since we now have an online presence.
+                userPresences.remove("");
                 // Add the new presence, using the resources as a key.
-                synchronized (userPresences) {
-                    userPresences.put(StringUtils.parseResource(from), presence);
-                }
+                userPresences.put(StringUtils.parseResource(from), presence);
                 // If the user is in the roster, fire an event.
                 for (RosterEntry entry : entries) {
                     if (entry.getUser().equals(key)) {
@@ -637,13 +670,26 @@ public class Roster implements ConnectionListener {
                     }
                 }
             }
-            // If an "unavailable" packet, remove any entries in the presence map.
+            // If an "unavailable" packet.
             else if (presence.getType() == Presence.Type.unavailable) {
-                if (presenceMap.get(key) != null) {
-                    Map<String, Presence> userPresences = presenceMap.get(key);
-                    synchronized (userPresences) {
-                        userPresences.remove(StringUtils.parseResource(from));
+                // If no resource, this is likely an offline presence as part of
+                // a roster presence flood. In that case, we store it.
+                if ("".equals(StringUtils.parseResource(from))) {
+                    Map<String, Presence> userPresences;
+                    // Get the user presence map
+                    if (presenceMap.get(key) == null) {
+                        userPresences = new ConcurrentHashMap<String, Presence>();
+                        presenceMap.put(key, userPresences);
                     }
+                    else {
+                        userPresences = presenceMap.get(key);
+                    }
+                    userPresences.put("", presence);
+                }
+                // Otherwise, this is a normal offline presence.
+                else if (presenceMap.get(key) != null) {
+                    Map<String, Presence> userPresences = presenceMap.get(key);
+                    userPresences.remove(StringUtils.parseResource(from));
                     if (userPresences.isEmpty()) {
                         presenceMap.remove(key);
                     }
@@ -808,27 +854,5 @@ public class Roster implements ConnectionListener {
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
         }
-    }
-
-    public void connectionClosed() {
-        // Changes the presence available contacts to unavailable
-        this.setOfflinePresences();
-    }
-
-    public void connectionClosedOnError(Exception e) {
-        // Changes the presence available contacts to unavailable
-        this.setOfflinePresences();
-    }
-
-    public void reconnectingIn(int seconds) {
-        // Ignore
-    }
-
-    public void reconnectionFailed(Exception e) {
-        // Ignore
-    }
-
-    public void reconnectionSuccessful() {
-        // Ignore
     }
 }

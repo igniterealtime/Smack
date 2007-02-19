@@ -630,11 +630,12 @@ public class XMPPConnection {
      * @param unavailablePresence the presence packet to send during shutdown. 
      */
     public void disconnect(Presence unavailablePresence) {
-        this.shutdown(unavailablePresence);
+        shutdown(unavailablePresence);
 
-        this.roster = null;
+        roster.cleanup();
+        roster = null;
 
-        this.wasAuthenticated = false;
+        wasAuthenticated = false;
 
         packetWriter.cleanup();
         packetWriter = null;

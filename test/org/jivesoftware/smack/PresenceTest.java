@@ -1,7 +1,7 @@
 /**
  * $RCSfile$
- * $Revision: $
- * $Date: $
+ * $Revision$
+ * $Date$
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -181,21 +181,23 @@ public class PresenceTest extends SmackTestCase {
         // Wait up to 2 seconds
         long initial = System.currentTimeMillis();
         while (System.currentTimeMillis() - initial < 2000 && (
-                roster.getPresence(getBareJID(1)) == null)) {
+                !roster.getPresence(getBareJID(1)).isAvailable()))
+        {
             Thread.sleep(100);
         }
 
         // Check that a presence is returned for the new contact
         Presence presence = roster.getPresence(getBareJID(1));
-        assertNotNull("Returned a null Presence for an existing user", presence);
+        assertTrue("Returned an offline Presence for an existing user", presence.isAvailable());
 
         presence = roster.getPresenceResource(getBareJID(1) + "/Home");
-        assertNotNull("Returned a null Presence for Home resource", presence);
+        assertTrue("Returned an offline Presence for Home resource", presence.isAvailable());
 
         presence = roster.getPresenceResource(getFullJID(1));
-        assertNotNull("Returned a null Presence for Smack resource", presence);
+        assertTrue("Returned an offline Presence for Smack resource", presence.isAvailable());
 
         Iterator<Presence> presences = roster.getPresences(getBareJID(1));
+        assertTrue("Returned an offline Presence for an existing user", presence.isAvailable());
         assertNotNull("No presence was found for user1", presences);
         assertTrue("No presence was found for user1", presences.hasNext());
         presences.next();
@@ -209,19 +211,55 @@ public class PresenceTest extends SmackTestCase {
 
         // Check that a presence is returned for the new contact
         presence = roster.getPresence(getBareJID(1));
-        assertNotNull("Returned a null Presence for an existing user", presence);
+        assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
 
         presence = roster.getPresenceResource(getFullJID(1));
-        assertNotNull("Returned a null Presence for Smack resource", presence);
+        assertTrue("Returned a null Presence for Smack resource", presence.isAvailable());
 
         presence = roster.getPresenceResource(getBareJID(1) + "/Home");
-        assertNull("Returned a Presence for no longer connected resource", presence);
+        assertTrue("Returned a Presence for no longer connected resource", !presence.isAvailable());
 
         presences = roster.getPresences(getBareJID(1));
         assertNotNull("No presence was found for user1", presences);
-        assertTrue("No presence was found for user1", presences.hasNext());
-        presences.next();
+        Presence value = presences.next();
+        assertTrue("No presence was found for user1", value.isAvailable());
         assertFalse("More than one presence was found for user1", presences.hasNext());
+    }
+
+    /**
+     * User1 logs in, then sets offline presence information (presence with status text). User2
+     * logs in and checks to see if offline presence is returned.
+     */
+    public void testOfflineStatusPresence() throws Exception {
+        // Add a new roster entry for other user.
+        Roster roster = getConnection(0).getRoster();
+        roster.createEntry(getBareJID(1), "gato1", null);
+
+        // Wait up to 2 seconds
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 && (
+                roster.getPresence(getBareJID(1)).getType().equals(Presence.Type.unavailable))) {
+            Thread.sleep(100);
+        }
+
+        // Sign out of conn0.
+        getConnection(0).disconnect();
+
+        // Sign out of conn1 with status
+        Presence offlinePresence = new Presence(Presence.Type.unavailable);
+        offlinePresence.setStatus("Offline test");
+        getConnection(1).disconnect(offlinePresence);
+
+        // See if conneciton 0 can get offline status.
+        XMPPConnection con0 = getConnection(0);
+        con0.connect();
+        con0.login(getUsername(0), getUsername(0));
+
+        // Wait 500 ms
+        Thread.sleep(500);
+        Presence presence = con0.getRoster().getPresence(getBareJID(1));
+        assertTrue("Offline presence status not received.",
+                "Offline test".equals(presence.getStatus()));
     }
 
     protected int getMaxConnections() {
