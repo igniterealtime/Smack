@@ -159,8 +159,7 @@ hr {
 
 	<div id="pageBody">
 
-
-<h2>3.0.0 Beta 1 -- <span style="font-weight: normal;">February 6, 2006</span></h2>
+<h2>3.0.0 Beta 2 -- <span style="font-weight: normal;">February 19, 2007</span></h2>
 
 <h3>Important Changes</h3>
 <ul>
@@ -169,8 +168,32 @@ hr {
         been significantly updated, the GroupChat class has been dropped in favor of the standardized
         MultiUserChat, and the Chat class has an updated API.</li>
     <li>Some additional API changes may be made through the beta period.</li>
-
 </ul>
+
+<h3>New Features</h3>
+<ul>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-74'>SMACK-74</a>] - Added support for unavailable presences with status text. <b>(4 votes)</b></li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-191'>SMACK-191</a>] - RosterListener API improvements.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-194'>SMACK-194</a>] - Roster.getPresence(String) now considers mode after priority to determine the presence value to return.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-195'>SMACK-195</a>] - Added the ability to disconnect with a custom presence value (for offline status).</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-200'>SMACK-200</a>] - Added convenience methods to Presence class.</li>
+</ul>
+
+<h3>Bug Fixes</h3>
+<ul>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-188'>SMACK-188</a>] - Resources are now closed after reading the keystore.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-189'>SMACK-189</a>] - The listener was remaining blocked forever in some cases.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-190'>SMACK-190</a>] - Exceptions while notifying packet reader listeners was stopping the notification thread.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-192'>SMACK-192</a>] - Roster.getPresence(String) now forces use of the bare JID.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-193'>SMACK-193</a>] - New presence packets now default to a null presence mode.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-196'>SMACK-196</a>] - Now set closed to true at the start of the connection shutdown method and not the end.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-197'>SMACK-197</a>] - The source build was failing.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-198'>SMACK-198</a>] - File transfer streams were not being closed properly in some cases.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-199'>SMACK-199</a>] - MultiUserChat invitation listeners are no longer removed on disconnects.</li>
+<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-201'>SMACK-201</a>] - Roster no longer exposes that it implements ConnectionListener.</li>
+</ul>
+
+<h2>3.0.0 Beta 1 -- <span style="font-weight: normal;">February 6, 2007</span></h2>
 
 <h3>New Features</h3>
 <ul>
