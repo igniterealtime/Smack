@@ -147,7 +147,7 @@ public class XMPPConnection {
 
     Roster roster = null;
     private AccountManager accountManager = null;
-    protected SASLAuthentication saslAuthentication = new SASLAuthentication(this);
+    private SASLAuthentication saslAuthentication = new SASLAuthentication(this);
 
     Writer writer;
     Reader reader;
