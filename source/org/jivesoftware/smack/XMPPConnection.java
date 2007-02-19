@@ -601,7 +601,13 @@ public class XMPPConnection {
     /**
      * Closes the connection by setting presence to unavailable then closing the stream to
      * the XMPP server. The XMPPConnection can still be used for connecting to the server
-     * again.
+     * again.<p>
+     *
+     * This method cleans up all resources used by the connection. Therefore, the roster,
+     * listeners and other stateful objects cannot be re-used by simply calling connect()
+     * on this connection again. This is unlike the behavior during unexpected disconnects
+     * (and subsequent connections). In that case, all state is preserved to allow for
+     * more seamless error recovery.
      */
     public void disconnect() {
         disconnect(new Presence(Presence.Type.unavailable));
@@ -613,7 +619,13 @@ public class XMPPConnection {
      * again. A custom unavilable presence is useful for communicating offline presence
      * information such as "On vacation". Typically, just the status text of the presence
      * packet is set with online information, but most XMPP servers will deliver the full
-     * presence packet with whatever data is set.
+     * presence packet with whatever data is set.<p>
+     *
+     * This method cleans up all resources used by the connection. Therefore, the roster,
+     * listeners and other stateful objects cannot be re-used by simply calling connect()
+     * on this connection again. This is unlike the behavior during unexpected disconnects
+     * (and subsequent connections). In that case, all state is preserved to allow for
+     * more seamless error recovery.
      *
      * @param unavailablePresence the presence packet to send during shutdown. 
      */
@@ -624,7 +636,9 @@ public class XMPPConnection {
 
         this.wasAuthenticated = false;
 
+        packetWriter.cleanup();
         packetWriter = null;
+        packetReader.cleanup();
         packetReader = null;
     }
 

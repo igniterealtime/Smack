@@ -50,7 +50,8 @@ class PacketReader {
     private XmlPullParser parser;
     private boolean done;
     private Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
-    protected final Map<PacketListener, ListenerWrapper> listeners = new ConcurrentHashMap<PacketListener, ListenerWrapper>();
+    protected final Map<PacketListener, ListenerWrapper> listeners =
+            new ConcurrentHashMap<PacketListener, ListenerWrapper>();
     protected final Collection<ConnectionListener> connectionListeners =
             new CopyOnWriteArrayList<ConnectionListener>();
 
@@ -195,6 +196,15 @@ class PacketReader {
         synchronized (listenerThread) {
             listenerThread.notifyAll();
         }
+    }
+
+    /**
+     * Cleans up all resources used by the packet reader.
+     */
+    void cleanup() {
+        connectionListeners.clear();
+        listeners.clear();
+        collectors.clear();
     }
 
     /**
@@ -824,7 +834,7 @@ class PacketReader {
     /**
      * A wrapper class to associate a packet collector with a listener.
      */
-    protected static class ListenerWrapper {
+    private static class ListenerWrapper {
 
         private PacketListener packetListener;
         private PacketCollector packetCollector;

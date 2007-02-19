@@ -25,10 +25,10 @@ import org.jivesoftware.smack.packet.Packet;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
@@ -43,11 +43,11 @@ class PacketWriter {
     private Thread keepAliveThread;
     private Writer writer;
     private XMPPConnection connection;
-    final private Queue<Packet> queue;
+    private final Queue<Packet> queue;
     private boolean done;
     
-    final protected List<ListenerWrapper> listeners = new ArrayList<ListenerWrapper>();
-    private boolean listenersDeleted;
+    private final Map<PacketListener, ListenerWrapper> listeners =
+            new ConcurrentHashMap<PacketListener, ListenerWrapper>();
 
     /**
      * Timestamp when the last stanza was sent to the server. This information is used
@@ -56,15 +56,12 @@ class PacketWriter {
     private long lastActive = System.currentTimeMillis();
 
     /**
-     * List of PacketInterceptor that will be notified when a new packet is about to be
+     * List of PacketInterceptors that will be notified when a new packet is about to be
      * sent to the server. These interceptors may modify the packet before it is being
      * actually sent to the server.
      */
-    final private List interceptors = new ArrayList();
-    /**
-     * Flag that indicates if an interceptor was deleted. This is an optimization flag.
-     */
-    private boolean interceptorDeleted = false;
+    private final Map<PacketInterceptor, InterceptorWrapper> interceptors =
+            new ConcurrentHashMap<PacketInterceptor, InterceptorWrapper>();
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -83,8 +80,6 @@ class PacketWriter {
     */ 
     protected void init() {
         this.writer = connection.writer;
-        listenersDeleted = false;
-        interceptorDeleted = false;
         done = false;
 
         writerThread = new Thread() {
@@ -130,9 +125,7 @@ class PacketWriter {
      * @param packetFilter the packet filter to use.
      */
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
-        synchronized (listeners) {
-            listeners.add(new ListenerWrapper(packetListener, packetFilter));
-        }
+        listeners.put(packetListener, new ListenerWrapper(packetListener, packetFilter));
     }
 
     /**
@@ -141,17 +134,7 @@ class PacketWriter {
      * @param packetListener the packet listener to remove.
      */
     public void removePacketListener(PacketListener packetListener) {
-        synchronized (listeners) {
-            for (int i=0; i<listeners.size(); i++) {
-                ListenerWrapper wrapper = listeners.get(i);
-                if (wrapper != null && wrapper.packetListener.equals(packetListener)) {
-                    listeners.set(i, null);
-                    // Set the flag to indicate that the listener list needs
-                    // to be cleaned up.
-                    listenersDeleted = true;
-                }
-            }
-        }
+        listeners.remove(packetListener);
     }
 
     /**
@@ -160,9 +143,7 @@ class PacketWriter {
      * @return the count of packet listeners.
      */
     public int getPacketListenerCount() {
-        synchronized (listeners) {
-            return listeners.size();
-        }
+        return listeners.size();
     }
 
     /**
@@ -175,9 +156,7 @@ class PacketWriter {
      * @param packetFilter the packet filter to use.
      */
     public void addPacketInterceptor(PacketInterceptor packetInterceptor, PacketFilter packetFilter) {
-        synchronized (interceptors) {
-            interceptors.add(new InterceptorWrapper(packetInterceptor, packetFilter));
-        }
+        interceptors.put(packetInterceptor, new InterceptorWrapper(packetInterceptor, packetFilter));
     }
 
     /**
@@ -186,17 +165,7 @@ class PacketWriter {
      * @param packetInterceptor the packet interceptor to remove.
      */
     public void removePacketInterceptor(PacketInterceptor packetInterceptor) {
-        synchronized (interceptors) {
-            for (int i=0; i<interceptors.size(); i++) {
-                InterceptorWrapper wrapper = (InterceptorWrapper)interceptors.get(i);
-                if (wrapper != null && wrapper.packetInterceptor.equals(packetInterceptor)) {
-                    interceptors.set(i, null);
-                    // Set the flag to indicate that the interceptor list needs
-                    // to be cleaned up.
-                    interceptorDeleted = true;
-                }
-            }
-        }
+        interceptors.remove(packetInterceptor);
     }
 
     /**
@@ -243,6 +212,14 @@ class PacketWriter {
     }
 
     /**
+     * Cleans up all resources used by the packet writer.
+     */
+    void cleanup() {
+        interceptors.clear();
+        listeners.clear();
+    }
+
+    /**
      * Returns the next available packet from the queue for writing.
      *
      * @return the next packet for writing.
@@ -279,7 +256,9 @@ class PacketWriter {
                     }
                 }
             }
-            // Flush out the rest of the queue.
+            // Flush out the rest of the queue. If the queue is extremely large, it's possible
+            // we won't have time to entirely flush it before the socket is forced closed
+            // by the shutdown process.
             try {
                 synchronized (writer) {
                    while (!queue.isEmpty()) {
@@ -292,6 +271,9 @@ class PacketWriter {
             catch (Exception e) {
                 e.printStackTrace();
             }
+
+            // Delete the queue contents (hopefully nothing is left).
+            queue.clear();
 
             // Close the stream.
             try {
@@ -320,28 +302,13 @@ class PacketWriter {
 
     /**
      * Process listeners.
+     *
+     * @param packet the packet to process.
      */
     private void processListeners(Packet packet) {
-        // Clean up null entries in the listeners list if the flag is set. List
-        // removes are done seperately so that the main notification process doesn't
-        // need to synchronize on the list.
-        synchronized (listeners) {
-            if (listenersDeleted) {
-                for (int i=listeners.size()-1; i>=0; i--) {
-                    if (listeners.get(i) == null) {
-                        listeners.remove(i);
-                    }
-                }
-                listenersDeleted = false;
-            }
-        }
         // Notify the listeners of the new sent packet
-        int size = listeners.size();
-        for (int i=0; i<size; i++) {
-            ListenerWrapper listenerWrapper = listeners.get(i);
-            if (listenerWrapper != null) {
-                listenerWrapper.notifyListener(packet);
-            }
+        for (ListenerWrapper listenerWrapper : listeners.values()) {
+            listenerWrapper.notifyListener(packet);
         }
     }
 
@@ -355,26 +322,8 @@ class PacketWriter {
      */
     private void processInterceptors(Packet packet) {
         if (packet != null) {
-            // Clean up null entries in the interceptors list if the flag is set. List
-            // removes are done seperately so that the main notification process doesn't
-            // need to synchronize on the list.
-            synchronized (interceptors) {
-                if (interceptorDeleted) {
-                    for (int i=interceptors.size()-1; i>=0; i--) {
-                        if (interceptors.get(i) == null) {
-                            interceptors.remove(i);
-                        }
-                    }
-                    interceptorDeleted = false;
-                }
-            }
-            // Notify the interceptors of the new packet to be sent
-            int size = interceptors.size();
-            for (int i=0; i<size; i++) {
-                InterceptorWrapper interceptorWrapper = (InterceptorWrapper)interceptors.get(i);
-                if (interceptorWrapper != null) {
-                    interceptorWrapper.notifyListener(packet);
-                }
+            for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
+                interceptorWrapper.notifyListener(packet);
             }
         }
     }
@@ -400,7 +349,7 @@ class PacketWriter {
     /**
      * A wrapper class to associate a packet filter with a listener.
      */
-    protected static class ListenerWrapper {
+    private static class ListenerWrapper {
 
         private PacketListener packetListener;
         private PacketFilter packetFilter;
