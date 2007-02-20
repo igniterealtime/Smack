@@ -57,6 +57,7 @@
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
     <property name="test.dir" value="${basedir}/test" />
     <property name="resources.dir" value="${basedir}/build/resources" />
+	<property name="jingle.extension.merge.lib.dir" value="${basedir}/jingle/extension/build/merge" />	
 
     <!-- Test props - override these defaults in the properties file or in command line -->
     <property name="test.host" value="localhost" />
@@ -105,7 +106,46 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-        </javac>
+        </javac>		
+		<mkdir dir="${compile.dir}/jingle/extension" />
+		<javac
+            destdir="${compile.dir}/jingle/extension"
+            includeAntRuntime="no"
+            debug="on"
+            source="1.5"
+            target="1.5"
+        >
+            <src path="${basedir}/jingle/extension/source" />
+            <classpath>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+				<fileset dir="${basedir}/jingle/extension/build/merge">
+                    <include name="*.jar"/>
+                </fileset>
+				<pathelement path="${compile.dir}"/>
+            </classpath>
+        </javac>		
+		<mkdir dir="${compile.dir}/jingle/media" />
+		<javac
+            destdir="${compile.dir}/jingle/media"
+            includeAntRuntime="no"
+            debug="on"
+            source="1.5"
+            target="1.5"
+        >
+            <src path="${basedir}/jingle/media/source" />
+            <classpath>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+				<fileset dir="${basedir}/jingle/media/build/lib">
+                    <include name="*.jar"/>
+                </fileset>
+				<pathelement path="${compile.dir}"/>
+				<pathelement path="${compile.dir}/jingle/extension"/>
+            </classpath>
+        </javac>				
     </target>
 
     <!-- compile-test -->
@@ -137,7 +177,6 @@
     <!-- jar -->
     <!-- ======================================================================================= -->
     <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
-
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
         <jar destfile="${jar.dest.dir}/smack.jar"
             basedir="${compile.dir}"
@@ -167,6 +206,23 @@
         >
             <manifest>
                 <attribute name="Class-Path" value="smack.jar" />
+            </manifest>
+        </jar>
+		<jar destfile="${jar.dest.dir}/jingleExtension.jar"
+            basedir="${compile.dir}/jingle/extension"
+            includes="org/jivesoftware/smackx/**/*.class"
+        >
+            <manifest>
+                <attribute name="Class-Path" value="smack.jar, smackx.jar" />
+            </manifest>
+            <zipfileset src="${jingle.extension.merge.lib.dir}/jstun-0.6.1.jar"/>
+        </jar>
+		<jar destfile="${jar.dest.dir}/jingleMedia.jar"
+            basedir="${compile.dir}/jingle/media"
+            includes="org/jivesoftware/**/*.class"
+        >
+            <manifest>
+                <attribute name="Class-Path" value="smack.jar,smackx.jar,jingleExtension.jar" />
             </manifest>
         </jar>
         <delete file="${compile.dir}/META-INF/smack-config.xml" />
@@ -325,6 +381,8 @@
         <delete file="${basedir}/smackx.jar" />
         <delete file="${basedir}/smackx-debug.jar" />
         <delete file="${basedir}/smack-test.jar" />
+		<delete file="${basedir}/jingleExtension.jar" />
+		<delete file="${basedir}/jingleMedia.jar" />
         <delete dir="${basedir}/target" />
     </target>
 
