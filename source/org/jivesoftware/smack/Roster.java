@@ -36,16 +36,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Represents a user's roster, which is the collection of users a person receives
  * presence updates for. Roster items are categorized into groups for easier management.<p>
- *
+ * <p/>
  * Others users may attempt to subscribe to this user using a subscription request. Three
  * modes are supported for handling these requests: <ul>
- *      <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
- *      <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
- *      <li>{@link SubscriptionMode#manual manual} -- manually process all subscription requests.</li>
+ * <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
+ * <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
+ * <li>{@link SubscriptionMode#manual manual} -- manually process all subscription requests.</li>
  * </ul>
  *
- * @see XMPPConnection#getRoster()
  * @author Matt Tucker
+ * @see XMPPConnection#getRoster()
  */
 public class Roster {
 
@@ -99,7 +99,7 @@ public class Roster {
      */
     Roster(final XMPPConnection connection) {
         this.connection = connection;
-        groups = new ConcurrentHashMap<String,RosterGroup>();
+        groups = new ConcurrentHashMap<String, RosterGroup>();
         unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
         entries = new CopyOnWriteArrayList<RosterEntry>();
         rosterListeners = new CopyOnWriteArrayList<RosterListener>();
@@ -141,7 +141,7 @@ public class Roster {
      * Returns the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
      * The default subscription mode is {@link SubscriptionMode#accept_all}.<p>
-     *
+     * <p/>
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
      * {@link org.jivesoftware.smack.packet.Presence.Type#subscribe}.
@@ -156,7 +156,7 @@ public class Roster {
      * Sets the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
      * The default subscription mode is {@link SubscriptionMode#accept_all}.<p>
-     *
+     * <p/>
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
      * {@link org.jivesoftware.smack.packet.Presence.Type#subscribe}.
@@ -184,7 +184,7 @@ public class Roster {
      */
     public void addRosterListener(RosterListener rosterListener) {
         if (!rosterListeners.contains(rosterListener)) {
-        rosterListeners.add(rosterListener);
+            rosterListeners.add(rosterListener);
         }
     }
 
@@ -200,7 +200,7 @@ public class Roster {
 
     /**
      * Creates a new group.<p>
-     *
+     * <p/>
      * Note: you must add at least one entry to the group for the group to be kept
      * after a logout/login. This is due to the way that XMPP stores group information.
      *
@@ -220,13 +220,13 @@ public class Roster {
      * Creates a new roster entry and presence subscription. The server will asynchronously
      * update the roster with the subscription status.
      *
-     * @param user the user. (e.g. johndoe@jabber.org)
-     * @param name the nickname of the user.
+     * @param user   the user. (e.g. johndoe@jabber.org)
+     * @param name   the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
-     *      the roster entry won't belong to a group.
+     *               the roster entry won't belong to a group.
      * @throws XMPPException if an XMPP exception occurs.
      */
-    public void createEntry(String user, String name, String [] groups) throws XMPPException {
+    public void createEntry(String user, String name, String[] groups) throws XMPPException {
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
         rosterPacket.setType(IQ.Type.SET);
@@ -243,7 +243,7 @@ public class Roster {
         PacketCollector collector = connection.createPacketCollector(
                 new PacketIDFilter(rosterPacket.getPacketID()));
         connection.sendPacket(rosterPacket);
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         collector.cancel();
         if (response == null) {
             throw new XMPPException("No response from the server.");
@@ -281,9 +281,9 @@ public class Roster {
         item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
         PacketCollector collector = connection.createPacketCollector(
-        new PacketIDFilter(packet.getPacketID()));
+                new PacketIDFilter(packet.getPacketID()));
         connection.sendPacket(packet);
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         collector.cancel();
         if (response == null) {
             throw new XMPPException("No response from the server.");
@@ -349,7 +349,7 @@ public class Roster {
      * <tt>null</tt> if the user is not an entry in the roster.
      *
      * @param user the XMPP address of the user (eg "jsmith@example.com"). The address could be
-     * in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
+     *             in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
      * @return the roster entry or <tt>null</tt> if it does not exist.
      */
     public RosterEntry getEntry(String user) {
@@ -369,8 +369,8 @@ public class Roster {
      * Returns true if the specified XMPP address is an entry in the roster.
      *
      * @param user the XMPP address of the user (eg "jsmith@example.com"). The
-     *      address could be in any valid format (e.g. "domain/resource",
-     *      "user@domain" or "user@domain/resource").
+     *             address could be in any valid format (e.g. "domain/resource",
+     *             "user@domain" or "user@domain/resource").
      * @return true if the XMPP address is an entry in the roster.
      */
     public boolean contains(String user) {
@@ -385,7 +385,7 @@ public class Roster {
      * @return the roster group with the specified name.
      */
     public RosterGroup getGroup(String name) {
-       return groups.get(name);
+        return groups.get(name);
     }
 
     /**
@@ -410,14 +410,14 @@ public class Roster {
      * Returns the presence info for a particular user. If the user is offline, or
      * if no presence data is available (such as when you are not subscribed to the
      * user's presence updates), unavailable presence will be returned.<p>
-     *
+     * <p/>
      * If the user has several presences (one for each resource), then the presence with
      * highest priority will be returned. If multiple presences have the same priority,
      * the one with the "most available" presence mode will be returned. In order,
      * that's {@link Presence.Mode#chat free to chat}, {@link Presence.Mode#available available},
      * {@link Presence.Mode#away away}, {@link Presence.Mode#xa extended away}, and
      * {@link Presence.Mode#dnd do not disturb}.<p>
-     *
+     * <p/>
      * Note that presence information is received asynchronously. So, just after logging
      * in to the server, presence values for users in the roster may be unavailable
      * even if they are actually online. In other words, the value returned by this
@@ -427,16 +427,18 @@ public class Roster {
      * {@link RosterListener}.
      *
      * @param user an XMPP ID. The address could be in any valid format (e.g.
-     *      "domain/resource", "user@domain" or "user@domain/resource"). Any resource
-     *      information that's part of the ID will be discarded.
+     *             "domain/resource", "user@domain" or "user@domain/resource"). Any resource
+     *             information that's part of the ID will be discarded.
      * @return the user's current presence, or unavailable presence if the user is offline
-     *      or if no presence information is available..
+     *         or if no presence information is available..
      */
     public Presence getPresence(String user) {
         String key = getPresenceMapKey(StringUtils.parseBareAddress(user));
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            return new Presence(Presence.Type.unavailable);
+            Presence presence = new Presence(Presence.Type.unavailable);
+            presence.setFrom(user);
+            return presence;
         }
         else {
             // Find the resource with the highest priority
@@ -467,7 +469,9 @@ public class Roster {
                 }
             }
             if (presence == null) {
-                return new Presence(Presence.Type.unavailable);
+                presence = new Presence(Presence.Type.unavailable);
+                presence.setFrom(user);
+                return presence;
             }
             else {
                 return presence;
@@ -482,19 +486,23 @@ public class Roster {
      *
      * @param userWithResource a fully qualified XMPP ID including a resource (user@domain/resource).
      * @return the user's current presence, or unavailable presence if the user is offline
-     *      or if no presence information is available.
+     *         or if no presence information is available.
      */
     public Presence getPresenceResource(String userWithResource) {
         String key = getPresenceMapKey(userWithResource);
         String resource = StringUtils.parseResource(userWithResource);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            return new Presence(Presence.Type.unavailable);
+            Presence presence = new Presence(Presence.Type.unavailable);
+            presence.setFrom(userWithResource);
+            return presence;
         }
         else {
             Presence presence = userPresences.get(resource);
             if (presence == null) {
-                return new Presence(Presence.Type.unavailable);
+                presence = new Presence(Presence.Type.unavailable);
+                presence.setFrom(userWithResource);
+                return presence;
             }
             else {
                 return presence;
@@ -510,14 +518,16 @@ public class Roster {
      *
      * @param user a XMPP ID, e.g. jdoe@example.com.
      * @return an iterator (of Presence objects) for all the user's current presences,
-     *      or an unavailable presence if the user is offline or if no presence information
-     *      is available.
+     *         or an unavailable presence if the user is offline or if no presence information
+     *         is available.
      */
     public Iterator<Presence> getPresences(String user) {
         String key = getPresenceMapKey(user);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            return Arrays.asList(new Presence(Presence.Type.unavailable)).iterator();
+            Presence presence = new Presence(Presence.Type.unavailable);
+            presence.setFrom(user);
+            return Arrays.asList(presence).iterator();
         }
         else {
             return userPresences.values().iterator();
@@ -541,7 +551,7 @@ public class Roster {
      * since it will always contain one entry for the user.
      *
      * @param user the bare or fully qualified XMPP ID, e.g. jdoe@example.com or
-     *      jdoe@example.com/Work.
+     *             jdoe@example.com/Work.
      * @return the key to use in the presenceMap for the fully qualified XMPP ID.
      */
     private String getPresenceMapKey(String user) {
@@ -579,13 +589,12 @@ public class Roster {
      * specified collections of contacts have been added, updated or deleted
      * from the roster.
      *
-     * @param addedEntries the collection of address of the added contacts.
+     * @param addedEntries   the collection of address of the added contacts.
      * @param updatedEntries the collection of address of the updated contacts.
      * @param deletedEntries the collection of address of the deleted contacts.
      */
     private void fireRosterChangedEvent(Collection<String> addedEntries, Collection<String> updatedEntries,
-            Collection<String> deletedEntries)
-    {
+            Collection<String> deletedEntries) {
         for (RosterListener listener : rosterListeners) {
             if (!addedEntries.isEmpty()) {
                 listener.entriesAdded(addedEntries);
@@ -602,7 +611,7 @@ public class Roster {
     /**
      * Fires roster presence changed event to roster listeners.
      *
-     * @param presence the presence change. 
+     * @param presence the presence change.
      */
     private void fireRosterPresenceEvent(Presence presence) {
         for (RosterListener listener : rosterListeners) {
@@ -619,7 +628,7 @@ public class Roster {
          * Automatically accept all subscription and unsubscription requests. This is
          * the default mode and is suitable for simple client. More complex client will
          * likely wish to handle subscription requests manually.
-        */
+         */
         accept_all,
 
         /**
@@ -640,8 +649,9 @@ public class Roster {
      * Listens for all presence packets and processes them.
      */
     private class PresencePacketListener implements PacketListener {
+
         public void processPacket(Packet packet) {
-            Presence presence = (Presence)packet;
+            Presence presence = (Presence) packet;
             String from = presence.getFrom();
             String key = getPresenceMapKey(from);
 

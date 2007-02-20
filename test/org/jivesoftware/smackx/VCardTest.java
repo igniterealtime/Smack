@@ -62,23 +62,23 @@ public class VCardTest extends SmackTestCase {
     }
 
     public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
-        VCard card = VCardProvider._createVCardFromXml("<vcard><EMAIL><USERID>foo@fee.www.bar</USERID></EMAIL></vcard>");
+        VCard card = VCardProvider.createVCardFromXML("<vcard><EMAIL><USERID>foo@fee.www.bar</USERID></EMAIL></vcard>");
         assertEquals("foo@fee.www.bar", card.getEmailHome());
     }
 
     public void testNoWorkHomeSpecifier_TEL() throws Throwable {
-        VCard card = VCardProvider._createVCardFromXml("<vcard><TEL><FAX/><NUMBER>3443233</NUMBER></TEL></vcard>");
+        VCard card = VCardProvider.createVCardFromXML("<vcard><TEL><FAX/><NUMBER>3443233</NUMBER></TEL></vcard>");
         assertEquals("3443233", card.getPhoneWork("FAX"));
     }
 
     public void testNoWorkHomeSpecifier_ADDR() throws Throwable {
-        VCard card = VCardProvider._createVCardFromXml("<vcard><ADR><STREET>Some street</STREET><FF>ddss</FF></ADR></vcard>");
+        VCard card = VCardProvider.createVCardFromXML("<vcard><ADR><STREET>Some street</STREET><FF>ddss</FF></ADR></vcard>");
         assertEquals("Some street", card.getAddressFieldWork("STREET"));
         assertEquals("ddss", card.getAddressFieldWork("FF"));
     }
 
     public void testFN() throws Throwable {
-        VCard card = VCardProvider._createVCardFromXml("<vcard><FN>kir max</FN></vcard>");
+        VCard card = VCardProvider.createVCardFromXML("<vcard><FN>kir max</FN></vcard>");
         assertEquals("kir max", card.getField("FN"));
        // assertEquals("kir max", card.getFullName());
     }

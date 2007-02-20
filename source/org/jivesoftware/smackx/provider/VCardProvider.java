@@ -39,62 +39,69 @@ import java.util.List;
  * vCard provider.
  *
  * @author Gaston Dombiak
+ * @author Derek DeMoro
  */
 public class VCardProvider implements IQProvider {
 
-    private final static String PREFERRED_ENCODING = "UTF-8";
+    private static final String PREFERRED_ENCODING = "UTF-8";
 
-  public IQ parseIQ(XmlPullParser parser) throws Exception {
-      StringBuilder sb = new StringBuilder();
-      try {
-          int event = parser.getEventType();
-          // get the content
-          while (true) {
-              switch (event) {
-                  case XmlPullParser.TEXT:
-                      // We must re-escape the xml so that the DOM won't throw an exception
-                      sb.append(StringUtils.escapeForXML(parser.getText()));
-                      break;
-                  case XmlPullParser.START_TAG:
-                      sb.append('<').append(parser.getName()).append('>');
-                      break;
-                  case XmlPullParser.END_TAG:
-                      sb.append("</").append(parser.getName()).append('>');
-                      break;
-                  default:
-              }
+    public IQ parseIQ(XmlPullParser parser) throws Exception {
+        final StringBuilder sb = new StringBuilder();
+        try {
+            int event = parser.getEventType();
+            // get the content
+            while (true) {
+                switch (event) {
+                    case XmlPullParser.TEXT:
+                        // We must re-escape the xml so that the DOM won't throw an exception
+                        sb.append(StringUtils.escapeForXML(parser.getText()));
+                        break;
+                    case XmlPullParser.START_TAG:
+                        sb.append('<').append(parser.getName()).append('>');
+                        break;
+                    case XmlPullParser.END_TAG:
+                        sb.append("</").append(parser.getName()).append('>');
+                        break;
+                    default:
+                }
 
-              if (event == XmlPullParser.END_TAG && "vCard".equals(parser.getName())) break;
+                if (event == XmlPullParser.END_TAG && "vCard".equals(parser.getName())) break;
 
-              event = parser.next();
-          }
-      } catch (XmlPullParserException e) {
-          e.printStackTrace();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
+                event = parser.next();
+            }
+        }
+        catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
 
-      String xmlText = sb.toString();
-      return _createVCardFromXml(xmlText);
-  }
+        String xmlText = sb.toString();
+        return createVCardFromXML(xmlText);
+    }
 
-    public static VCard _createVCardFromXml(String xmlText) {
-      VCard vCard = new VCard();
-      try {
-          DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-          DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-          Document document = documentBuilder.parse(
-                  new ByteArrayInputStream(xmlText.getBytes(PREFERRED_ENCODING)));
+    /**
+     * Builds a users vCard from xml file.
+     *
+     * @param xml the xml representing a users vCard.
+     * @return the VCard.
+     * @throws
+     */
+    public static VCard createVCardFromXML(String xml) throws Exception {
+        VCard vCard = new VCard();
 
-          new VCardReader(vCard, document).initializeFields();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.parse(
+                new ByteArrayInputStream(xml.getBytes(PREFERRED_ENCODING)));
 
-      } catch (Exception e) {
-          e.printStackTrace(System.err);
-      }
-      return vCard;
-  }
+        new VCardReader(vCard, document).initializeFields();
+        return vCard;
+    }
 
     private static class VCardReader {
+
         private final VCard vCard;
         private final Document document;
 
@@ -158,8 +165,8 @@ public class VCardProvider implements IQProvider {
                 }
                 if (code == null || value == null) continue;
                 if ("HOME".equals(type)) {
-                        vCard.setPhoneHome(code, value);
-                    }
+                    vCard.setPhoneHome(code, value);
+                }
                 else { // By default, setup work phone
                     vCard.setPhoneWork(code, value);
                 }
@@ -180,18 +187,18 @@ public class VCardProvider implements IQProvider {
                 List code = new ArrayList();
                 List value = new ArrayList();
                 NodeList childNodes = addressNode.getChildNodes();
-                for(int j = 0; j < childNodes.getLength(); j++) {
+                for (int j = 0; j < childNodes.getLength(); j++) {
                     Node node = childNodes.item(j);
                     if (node.getNodeType() != Node.ELEMENT_NODE) continue;
                     String nodeName = node.getNodeName();
                     if (isWorkHome(nodeName)) {
                         type = nodeName;
-                            }
-                            else {
+                    }
+                    else {
                         code.add(nodeName);
                         value.add(getTextContent(node));
-                            }
-                        }
+                    }
+                }
                 for (int j = 0; j < value.size(); j++) {
                     if ("HOME".equals(type)) {
                         vCard.setAddressFieldHome((String) code.get(j), (String) value.get(j));
@@ -221,7 +228,8 @@ public class VCardProvider implements IQProvider {
                     String field = element.getNodeName();
                     if (element.getChildNodes().getLength() == 0) {
                         vCard.setField(field, "");
-                    } else if (element.getChildNodes().getLength() == 1 &&
+                    }
+                    else if (element.getChildNodes().getLength() == 1 &&
                             element.getChildNodes().item(0) instanceof Text) {
                         vCard.setField(field, getTextContent(element));
                     }
