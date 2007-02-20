@@ -633,8 +633,10 @@ public class XMPPConnection {
     public void disconnect(Presence unavailablePresence) {
         shutdown(unavailablePresence);
 
-        roster.cleanup();
-        roster = null;
+        if (roster != null) {
+            roster.cleanup();
+            roster = null;
+        }
 
         wasAuthenticated = false;
 
