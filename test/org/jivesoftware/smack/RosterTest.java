@@ -90,8 +90,8 @@ public class RosterTest extends SmackTestCase {
             // Wait until the server confirms the new entries
             long initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 2000 && (
-                    roster.getPresence(getBareJID(1)) == null ||
-                            roster.getPresence(getBareJID(2)) == null)) {
+                    !roster.getPresence(getBareJID(1)).isAvailable() ||
+                            !roster.getPresence(getBareJID(2)).isAvailable())) {
                 Thread.sleep(100);
             }
 
@@ -134,11 +134,12 @@ public class RosterTest extends SmackTestCase {
                 "The number of groups in connection 0 should be 0",
                 0,
                 roster.getGroupCount());
-
-            cleanUpRoster();
         }
         catch (Exception e) {
             fail(e.getMessage());
+        }
+        finally {
+            cleanUpRoster();
         }
     }
 
@@ -165,12 +166,13 @@ public class RosterTest extends SmackTestCase {
             // Wait up to 2 seconds to receive presences of the new roster contacts
             initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 5000 &&
-                    (roster.getPresence(getBareJID(1)) == null ||
-                    roster.getPresence(getBareJID(2)) == null)) {
+                    (!roster.getPresence(getBareJID(1)).isAvailable() ||
+                    !roster.getPresence(getBareJID(2)).isAvailable()))
+            {
                 Thread.sleep(100);
             }
-            assertNotNull("Presence not received", roster.getPresence(getBareJID(1)));
-            assertNotNull("Presence not received", roster.getPresence(getBareJID(2)));
+            assertTrue("Presence not received", roster.getPresence(getBareJID(1)).isAvailable());
+            assertTrue("Presence not received", roster.getPresence(getBareJID(2)).isAvailable());
 
             for (RosterEntry entry : roster.getEntries()) {
                 roster.removeEntry(entry);
@@ -215,8 +217,8 @@ public class RosterTest extends SmackTestCase {
             // Wait up to 2 seconds to let the server process presence subscriptions
             long initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 2000 && (
-                    roster.getPresence(getBareJID(1)) == null ||
-                            roster.getPresence(getBareJID(2)) == null)) {
+                    !roster.getPresence(getBareJID(1)).isAvailable() ||
+                            !roster.getPresence(getBareJID(2)).isAvailable())) {
                 Thread.sleep(100);
             }
 
@@ -266,7 +268,8 @@ public class RosterTest extends SmackTestCase {
             // Wait up to 2 seconds to let the server process presence subscriptions
             long initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 2000 &&
-                    roster.getPresence(getBareJID(1)) == null) {
+                    !roster.getPresence(getBareJID(1)).isAvailable())
+            {
                 Thread.sleep(100);
             }
 
@@ -281,11 +284,12 @@ public class RosterTest extends SmackTestCase {
             for (RosterEntry entry : roster.getEntries()) {
                 assertEquals("gato11", entry.getName());
             }
-
-            cleanUpRoster();
         }
         catch (Exception e) {
             fail(e.getMessage());
+        }
+        finally {
+            cleanUpRoster();
         }
     }
 
@@ -308,7 +312,7 @@ public class RosterTest extends SmackTestCase {
             // Wait up to 5 seconds to receive presences of the new roster contacts
             long initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 5000 &&
-                    roster.getPresence(getBareJID(0)) == null) {
+                    !roster.getPresence(getBareJID(0)).isAvailable()) {
                 Thread.sleep(100);
             }
             //assertNotNull("Presence not received", roster.getPresence(getBareJID(0)));
@@ -329,14 +333,15 @@ public class RosterTest extends SmackTestCase {
             // Wait up to 5 seconds to receive presences of the new roster contacts
             initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 5000 &&
-                    roster.getPresence(getBareJID(1)) == null) {
+                    !roster.getPresence(getBareJID(1)).isAvailable()) {
                 Thread.sleep(100);
             }
-            assertNotNull("Presence not received", roster.getPresence(getBareJID(1)));
-
-            cleanUpRoster();
+            assertTrue("Presence not received", roster.getPresence(getBareJID(1)).isAvailable());
         } catch (Exception e) {
             fail(e.getMessage());
+        }
+        finally {
+            cleanUpRoster();
         }
     }
 
@@ -389,11 +394,12 @@ public class RosterTest extends SmackTestCase {
             // Close the new connection
             con2.disconnect();
             Thread.sleep(500);
-
-            cleanUpRoster();
         }
         catch (Exception e) {
             fail(e.getMessage());
+        }
+        finally {
+            cleanUpRoster();
         }
     }
 
@@ -413,8 +419,8 @@ public class RosterTest extends SmackTestCase {
             // Wait up to 2 seconds to let the server process presence subscriptions
             long initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 2000 && (
-                    roster.getPresence(getBareJID(1)) == null ||
-                            roster.getPresence(getBareJID(2)) == null)) {
+                    !roster.getPresence(getBareJID(1)).isAvailable() ||
+                            !roster.getPresence(getBareJID(2)).isAvailable())) {
                 Thread.sleep(100);
             }
 
@@ -457,11 +463,14 @@ public class RosterTest extends SmackTestCase {
                 2,
                 roster.getUnfiledEntryCount());*/
 
-            cleanUpRoster();
+
             Thread.sleep(200);
         }
         catch (Exception e) {
             fail(e.getMessage());
+        }
+        finally {
+            cleanUpRoster();    
         }
     }
 
@@ -476,69 +485,72 @@ public class RosterTest extends SmackTestCase {
      */
     public void testRosterPresences() throws Exception {
         Thread.sleep(200);
+        try {
+            Presence presence;
 
-        Presence presence;
+            // Create another connection for the same user of connection 1
+            XMPPConnection conn4 = new XMPPConnection(getServiceName());
+            conn4.connect();
+            conn4.login(getUsername(1), getUsername(1), "Home");
 
-        // Create another connection for the same user of connection 1
-        XMPPConnection conn4 = new XMPPConnection(getServiceName());
-        conn4.connect();
-        conn4.login(getUsername(1), getUsername(1), "Home");
+            // Add a new roster entry
+            Roster roster = getConnection(0).getRoster();
+            roster.createEntry(getBareJID(1), "gato11", null);
 
-        // Add a new roster entry
-        Roster roster = getConnection(0).getRoster();
-        roster.createEntry(getBareJID(1), "gato11", null);
+            // Wait up to 2 seconds
+            long initial = System.currentTimeMillis();
+            while (System.currentTimeMillis() - initial < 2000 &&
+                    (roster.getPresence(getBareJID(1)).getType() == Presence.Type.unavailable)) {
+                Thread.sleep(100);
+            }
 
-        // Wait up to 2 seconds
-        long initial = System.currentTimeMillis();
-        while (System.currentTimeMillis() - initial < 2000 &&
-                (roster.getPresence(getBareJID(1)).getType() == Presence.Type.unavailable)) {
-            Thread.sleep(100);
+            // Check that a presence is returned for a user
+            presence = roster.getPresence(getBareJID(1));
+            assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
+
+            // Check that the right presence is returned for a user+resource
+            presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
+            assertEquals("Returned the wrong Presence", "Home",
+                    StringUtils.parseResource(presence.getFrom()));
+
+            // Check that the right presence is returned for a user+resource
+            presence = roster.getPresenceResource(getFullJID(1));
+            assertTrue("Presence not found for user " + getFullJID(1), presence.isAvailable());
+            assertEquals("Returned the wrong Presence", "Smack",
+                    StringUtils.parseResource(presence.getFrom()));
+
+            // Check the returned presence for a non-existent user+resource
+            presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
+            assertFalse("Available presence was returned for a non-existing user", presence.isAvailable());
+            assertEquals("Returned Presence for a non-existing user has the incorrect type",
+                    Presence.Type.unavailable, presence.getType());
+
+            // Check that the returned presences are correct
+            Iterator presences = roster.getPresences(getBareJID(1));
+            int count = 0;
+            while (presences.hasNext()) {
+                count++;
+                presences.next();
+            }
+            assertEquals("Wrong number of returned presences", count, 2);
+
+            // Close the connection so one presence must go
+            conn4.disconnect();
+
+            // Check that the returned presences are correct
+            presences = roster.getPresences(getBareJID(1));
+            count = 0;
+            while (presences.hasNext()) {
+                count++;
+                presences.next();
+            }
+            assertEquals("Wrong number of returned presences", count, 1);
+
+            Thread.sleep(200);
         }
-
-        // Check that a presence is returned for a user
-        presence = roster.getPresence(getBareJID(1));
-        assertNotNull("Returned a null Presence for an existing user", presence);
-
-        // Check that the right presence is returned for a user+resource
-        presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
-        assertEquals("Returned the wrong Presence", "Home",
-                StringUtils.parseResource(presence.getFrom()));
-
-        // Check that the right presence is returned for a user+resource
-        presence = roster.getPresenceResource(getFullJID(1));
-        assertNotNull("Presence not found for user " + getFullJID(1), presence);
-        assertEquals("Returned the wrong Presence", "Smack",
-                StringUtils.parseResource(presence.getFrom()));
-
-        // Check the returned presence for a non-existent user+resource
-        presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
-        assertNotNull("No presence was returned for a non-existing user", presence);
-        assertEquals("Returned Presence for a non-existing user has the incorrect type",
-                Presence.Type.unavailable, presence.getType());
-
-        // Check that the returned presences are correct
-        Iterator presences = roster.getPresences(getBareJID(1));
-        int count = 0;
-        while (presences.hasNext()) {
-            count++;
-            presences.next();
+        finally {
+            cleanUpRoster();
         }
-        assertEquals("Wrong number of returned presences", count, 2);
-
-        // Close the connection so one presence must go
-        conn4.disconnect();
-
-        // Check that the returned presences are correct
-        presences = roster.getPresences(getBareJID(1));
-        count = 0;
-        while (presences.hasNext()) {
-            count++;
-            presences.next();
-        }
-        assertEquals("Wrong number of returned presences", count, 1);
-
-        Thread.sleep(200);
-        cleanUpRoster();
     }
 
     /**
@@ -559,18 +571,18 @@ public class RosterTest extends SmackTestCase {
         // Wait up to 2 seconds
         long initial = System.currentTimeMillis();
         while (System.currentTimeMillis() - initial < 2000 && (
-                roster.getPresence(getBareJID(0)) == null ||
-                        getConnection(1).getRoster().getPresence(getBareJID(0)) == null)) {
+                !roster.getPresence(getBareJID(0)).isAvailable() ||
+                        !getConnection(1).getRoster().getPresence(getBareJID(0)).isAvailable())) {
             Thread.sleep(100);
         }
 
         // Check that a presence is returned for the new contact
         Presence presence = roster.getPresence(getBareJID(0));
-        assertNotNull("Returned a null Presence for an existing user", presence);
+        assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
 
         // Check that a presence is returned for the new contact
         presence = getConnection(1).getRoster().getPresence(getBareJID(0));
-        assertNotNull("Returned a null Presence for an existing user", presence);
+        assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
 
         // Delete user from roster
         roster.removeEntry(roster.getEntry(getBareJID(0)));
@@ -586,13 +598,13 @@ public class RosterTest extends SmackTestCase {
 
         // Check that no presence is returned for the removed contact
         presence = roster.getPresence(getBareJID(0));
-        assertNotNull("No presence was returned for removed contact", presence);
+        assertFalse("Available presence was returned for removed contact", presence.isAvailable());
         assertEquals("Returned Presence for removed contact has incorrect type",
                 Presence.Type.unavailable, presence.getType());
 
         // Check that no presence is returned for the removed contact
         presence = getConnection(1).getRoster().getPresence(getBareJID(0));
-        assertNotNull("No presence was returned for removed contact", presence);
+        assertFalse("Available presence was returned for removed contact", presence.isAvailable());
         assertEquals("Returned Presence for removed contact has incorrect type",
                 Presence.Type.unavailable, presence.getType());
     }
@@ -629,9 +641,10 @@ public class RosterTest extends SmackTestCase {
     private void cleanUpRoster() {
         for (int i=0; i<getMaxConnections(); i++) {
             // Delete all the entries from the roster
-            for (RosterEntry entry : getConnection(i).getRoster().getEntries()) {
+            Roster roster = getConnection(i).getRoster();
+            for (RosterEntry entry : roster.getEntries()) {
                 try {
-                    getConnection(i).getRoster().removeEntry(entry);
+                    roster.removeEntry(entry);
                 }
                 catch (XMPPException e) {
                     e.printStackTrace();
@@ -705,24 +718,24 @@ public class RosterTest extends SmackTestCase {
         // Wait up to 2 seconds to let the server process presence subscriptions
         long initial = System.currentTimeMillis();
         while (System.currentTimeMillis() - initial < 2000 && (
-                roster.getPresence(getBareJID(1)) == null ||
-                        roster.getPresence(getBareJID(2)) == null)) {
+                !roster.getPresence(getBareJID(1)).isAvailable() ||
+                        !roster.getPresence(getBareJID(2)).isAvailable())) {
             Thread.sleep(100);
         }
 
         Thread.sleep(200);
 
-        // Brakes the connection
+        // Break the connection
         getConnection(0).packetReader.notifyConnectionError(new Exception("Simulated Error"));
 
         Presence presence = roster.getPresence(getBareJID(1));
-        assertNotNull("Unavailable presence not found for offline user", presence);
+        assertFalse("Unavailable presence not found for offline user", presence.isAvailable());
         assertEquals("Unavailable presence not found for offline user", Presence.Type.unavailable,
                 presence.getType());
         // Reconnection should occur in 10 seconds
         Thread.sleep(12200);
         presence = roster.getPresence(getBareJID(1));
-        assertNotNull("Presence not found for user", presence);
+        assertTrue("Presence not found for user", presence.isAvailable());
         assertEquals("Presence should be online after a connection reconnection",
                 Presence.Type.available, presence.getType());
     }
