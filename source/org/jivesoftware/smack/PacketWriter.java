@@ -187,9 +187,9 @@ class PacketWriter {
         // out a space character each time it runs to keep the TCP/IP connection open.
         int keepAliveInterval = SmackConfiguration.getKeepAliveInterval();
         if (keepAliveInterval > 0) {
-            KeepAliveTask target = new KeepAliveTask(keepAliveInterval);
-            keepAliveThread = new Thread(target);
-            target.setThread(keepAliveThread);
+            KeepAliveTask task = new KeepAliveTask(keepAliveInterval);
+            keepAliveThread = new Thread(task);
+            task.setThread(keepAliveThread);
             keepAliveThread.setDaemon(true);
             keepAliveThread.setName("Smack Keep Alive (" + connection.connectionCounterValue + ")");
             keepAliveThread.start();
