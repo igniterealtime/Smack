@@ -328,11 +328,11 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
      * @param sessionID The session id of the stream.
      * @param proxy     The server socket which will listen locally for remote
      *                  connections.
-     * @param digest
-     * @param query
-     * @return
-     * @throws XMPPException
-     * @throws IOException
+     * @param digest the digest of the userids and the session id
+     * @param query the query which the response is being awaited
+     * @return the selected host
+     * @throws XMPPException when the response from the peer is an error or doesn't occur
+     * @throws IOException when there is an error establishing the local socket
      */
     private SelectedHostInfo waitForUsedHostResponse(String sessionID,
             final ProxyProcess proxy, final String digest,
@@ -344,10 +344,10 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
                 .createPacketCollector(new PacketIDFilter(query.getPacketID()));
         connection.sendPacket(query);
 
-        Packet packet = collector.nextResult();
+        Packet packet = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         collector.cancel();
         Bytestream response;
-        if (packet instanceof Bytestream) {
+        if (packet != null && packet instanceof Bytestream) {
             response = (Bytestream) packet;
         }
         else {
