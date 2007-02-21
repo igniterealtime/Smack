@@ -354,24 +354,9 @@ class PacketWriter {
         private PacketListener packetListener;
         private PacketFilter packetFilter;
 
-        public ListenerWrapper(PacketListener packetListener,
-                               PacketFilter packetFilter)
-        {
+        public ListenerWrapper(PacketListener packetListener, PacketFilter packetFilter) {
             this.packetListener = packetListener;
             this.packetFilter = packetFilter;
-        }
-
-        public boolean equals(Object object) {
-            if (object == null) {
-                return false;
-            }
-            if (object instanceof ListenerWrapper) {
-                return ((ListenerWrapper)object).packetListener.equals(this.packetListener);
-            }
-            else if (object instanceof PacketListener) {
-                return object.equals(this.packetListener);
-            }
-            return false;
         }
 
         public void notifyListener(Packet packet) {

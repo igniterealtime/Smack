@@ -631,6 +631,11 @@ public class XMPPConnection {
      * @param unavailablePresence the presence packet to send during shutdown. 
      */
     public void disconnect(Presence unavailablePresence) {
+        // If not connected, ignore this request.
+        if (packetReader == null || packetWriter == null) {
+            return;
+        }
+
         shutdown(unavailablePresence);
 
         if (roster != null) {

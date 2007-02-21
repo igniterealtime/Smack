@@ -292,9 +292,6 @@ public class Roster {
         else if (response.getType() == IQ.Type.ERROR) {
             throw new XMPPException(response.getError());
         }
-        else {
-
-        }
     }
 
     /**
