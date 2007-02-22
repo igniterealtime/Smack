@@ -2,6 +2,9 @@ package org.jivesoftware.smackx.jingle.nat;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.net.InetAddress;
 
 import org.jivesoftware.smack.test.SmackTestCase;
 
@@ -52,6 +55,22 @@ public class TransportCandidateTest extends SmackTestCase {
 
         Collections.sort(candList);
         assertEquals(candList.get(candList.size() - 1), candH);
+    }
+
+    public void testEcho(){
+        TransportCandidate tc = new TransportCandidate("localhost",10222){
+            
+        };
+        try {
+            tc.addCandidateEcho();
+            assertTrue(tc.getCandidateEcho().test(InetAddress.getByName("localhost"),10020));
+        }
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     protected int getMaxConnections() {
