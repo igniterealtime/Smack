@@ -51,8 +51,8 @@ public class JingleMediaTest extends SmackTestCase {
             XMPPConnection x0 = getConnection(0);
             XMPPConnection x1 = getConnection(1);
 
-            ICETransportManager icetm0 = new ICETransportManager(x0, "stun.xten.net", 3478);
-            ICETransportManager icetm1 = new ICETransportManager(x1, "stun.xten.net", 3478);
+            ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
+            ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
 
             final JingleManager jm0 = new JingleManager(
                     x0, icetm0);

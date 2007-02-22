@@ -3,6 +3,7 @@ package org.jivesoftware.smackx.provider;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.nat.ICECandidate;
 import org.jivesoftware.smackx.packet.JingleTransport;
 import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
 import org.xmlpull.v1.XmlPullParser;
@@ -97,7 +98,7 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
          * @throws Exception
          */
         protected JingleTransportCandidate parseCandidate(XmlPullParser parser) throws Exception {
-            TransportCandidate.Ice mt = new TransportCandidate.Ice();
+            ICECandidate mt = new ICECandidate();
 
             String channel = parser.getAttributeValue("", "channel");
             String generation = parser.getAttributeValue("", "generation");

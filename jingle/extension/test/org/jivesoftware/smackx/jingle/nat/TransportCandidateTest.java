@@ -18,11 +18,11 @@ public class TransportCandidateTest extends SmackTestCase {
      * Test for equals()
      */
     public void testEqualsObject() {
-        TransportCandidate cand1 = new TransportCandidate.Ice("192.168.2.1", 1, 2,
+        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 1, 2,
                 "password", 3468, "username", 25, "");
-        TransportCandidate cand2 = new TransportCandidate.Ice("192.168.2.1", 1, 2,
+        TransportCandidate cand2 = new ICECandidate("192.168.2.1", 1, 2,
                 "password", 3468, "username", 25, "");
-        TransportCandidate cand3 = new TransportCandidate.Ice("192.168.2.1", 1, 2,
+        TransportCandidate cand3 = new ICECandidate("192.168.2.1", 1, 2,
                 "password", 3469, "username", 25, "");
 
         assertEquals(cand1, cand2);
@@ -35,15 +35,15 @@ public class TransportCandidateTest extends SmackTestCase {
     public void testCompareTo() {
         int highestPref = 100;
 
-        TransportCandidate cand1 = new TransportCandidate.Ice("192.168.2.1", 3, 2,
+        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
                 "password", 3468, "username", 1, "");
-        TransportCandidate cand2 = new TransportCandidate.Ice("192.168.5.1", 2, 10,
+        TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
                 "password", 3469, "username", 15, "");
-        TransportCandidate candH = new TransportCandidate.Ice("192.168.2.1", 1, 2,
+        TransportCandidate candH = new ICECandidate("192.168.2.1", 1, 2,
                 "password", 3468, "username", highestPref, "");
-        TransportCandidate cand3 = new TransportCandidate.Ice("192.168.2.10", 2, 10,
+        TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
                 "password", 3469, "username", 2, "");
-        TransportCandidate cand4 = new TransportCandidate.Ice("192.168.4.1", 3, 2,
+        TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
                 "password", 3468, "username", 78, "");
 
         ArrayList candList = new ArrayList();

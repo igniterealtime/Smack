@@ -2,6 +2,7 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.nat.ICECandidate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -303,8 +304,8 @@ public class JingleTransport implements PacketExtension {
             protected String getChildElements() {
                 StringBuilder buf = new StringBuilder();
 
-                if (transportCandidate != null) {// && transportCandidate instanceof TransportCandidate.Ice) {
-                    TransportCandidate.Ice tci = (TransportCandidate.Ice) transportCandidate;
+                if (transportCandidate != null) {// && transportCandidate instanceof ICECandidate) {
+                    ICECandidate tci = (ICECandidate) transportCandidate;
 
                     // We convert the transportElement candidate to XML here...
                     buf.append(" generation=\"").append(tci.getGeneration()).append("\"");

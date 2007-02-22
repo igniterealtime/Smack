@@ -817,13 +817,13 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          * @return the bestRemoteCandidate
          */
         public TransportCandidate getBestRemoteCandidate() {
-            TransportCandidate.Ice result = null;
+            ICECandidate result = null;
 
-            ArrayList<TransportCandidate.Ice> cands = getValidRemoteCandidatesList();
+            ArrayList<ICECandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 int highest = -1;
-                TransportCandidate.Ice chose = null;
-                for (TransportCandidate.Ice transportCandidate : cands) {
+                ICECandidate chose = null;
+                for (ICECandidate transportCandidate : cands) {
                     if (transportCandidate.getPreference() > highest) {
                         chose = transportCandidate;
                         highest = transportCandidate.getPreference();
@@ -839,7 +839,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          * Return true for ICE candidates.
          */
         public boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates) {
-            return tc instanceof TransportCandidate.Ice;
+            return tc instanceof ICECandidate;
         }
     }
 }
