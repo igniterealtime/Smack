@@ -254,6 +254,13 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             public void run() {
                 boolean isUsable = false;
 
+                // Media Proxy don´t have Echo features.
+                // If its a relayed candidate we assumpt that is Checked.
+                if (getType().equals("relay")) {
+                    triggerCandidateChecked(true);
+                    return;
+                }
+
                 for (TransportCandidate candidate : localCandidates) {
                     CandidateEcho echo = candidate.getCandidateEcho();
                     if (echo != null) {
