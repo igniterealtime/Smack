@@ -650,6 +650,8 @@ public abstract class TransportCandidate {
         byte password[] = null;
         List<DatagramListener> listeners = new ArrayList<DatagramListener>();
         boolean enabled = true;
+        boolean ended = false;
+        long tries = 10;
 
         public CandidateEcho(TransportCandidate candidate) throws UnknownHostException, SocketException {
             this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName("0.0.0.0"));
@@ -674,9 +676,21 @@ public abstract class TransportCandidate {
 
                     packet.setAddress(packet.getAddress());
                     packet.setPort(packet.getPort());
+
+                    long delay = 1000 / tries / 2;
+
+                    if (delay < 0) delay = 10;
                     if (!Arrays.equals(packet.getData(), password))
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 0; i < tries; i++) {
                             socket.send(packet);
+                            if (!enabled) break;
+                            try {
+                                Thread.sleep(delay);
+                            }
+                            catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
                 }
             }
             catch (UnknownHostException uhe) {
@@ -704,6 +718,8 @@ public abstract class TransportCandidate {
 
         public boolean test(final InetAddress address, final int port, int timeout) {
 
+            ended=false;
+
             final TestResults testResults = new TestResults();
 
             DatagramListener listener = new DatagramListener() {
@@ -711,10 +727,12 @@ public abstract class TransportCandidate {
                     if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
                         if (Arrays.equals(datagramPacket.getData(), password)) {
                             testResults.setResult(true);
+                            ended = true;
                             return true;
                         }
                     }
                     testResults.setResult(false);
+                    ended = true;
                     return false;
                 }
             };
@@ -726,18 +744,22 @@ public abstract class TransportCandidate {
             packet.setAddress(address);
             packet.setPort(port);
 
-            try {
-                for (int i = 0; i < 3; i++)
-                    socket.send(packet);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            long delay = timeout / tries;
+            if (delay < 0) delay = 10;
 
             try {
-                Thread.sleep(timeout);
+                for (int i = 0; i < tries; i++) {
+                    socket.send(packet);
+                    if (ended) break;
+                    try {
+                        Thread.sleep(delay);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            catch (InterruptedException e) {
+            catch (IOException e) {
                 e.printStackTrace();
             }
 
