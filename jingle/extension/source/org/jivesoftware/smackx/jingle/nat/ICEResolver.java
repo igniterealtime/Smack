@@ -80,6 +80,12 @@ public class ICEResolver extends TransportResolver {
                     TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), typeString);
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                     transportCandidate.setPort(getFreePort());
+                    try {
+                        transportCandidate.addCandidateEcho();
+                    }
+                    catch (SocketException e) {
+                        e.printStackTrace();
+                    }
                     this.addCandidate(transportCandidate);
 
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());

@@ -219,7 +219,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             }
 
         });
-        offeredCandidate.check();
+        offeredCandidate.check(resolver.getCandidatesList());
     }
 
     /**

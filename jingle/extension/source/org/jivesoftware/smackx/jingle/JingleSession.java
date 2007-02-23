@@ -299,6 +299,7 @@ public abstract class JingleSession extends JingleNegotiator {
 
     /**
      * Overides JingleNegiociator Method to add listener capabilities
+     *
      * @param newState new State
      */
     protected void setState(State newState) {
@@ -880,7 +881,7 @@ public abstract class JingleSession extends JingleNegotiator {
     protected void removePacketListener() {
         if (packetListener != null) {
             getConnection().removePacketListener(packetListener);
-            
+
             System.out.println("REMOVE PACKET LISTENER");
         }
     }
@@ -1063,6 +1064,10 @@ public abstract class JingleSession extends JingleNegotiator {
         if (jingleMediaManager != null) {
             jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc);
             if (jingleMediaSession != null) {
+
+                rc.removeCandidateEcho();
+                lc.removeCandidateEcho();
+
                 jingleMediaSession.startTrasmit();
                 jingleMediaSession.startReceive();
             }

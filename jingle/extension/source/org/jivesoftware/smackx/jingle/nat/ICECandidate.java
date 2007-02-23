@@ -51,6 +51,10 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+
 /**
  * ICE Transport candidate.
  * <p/>
@@ -233,6 +237,60 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Check if a transport candidate is usable. The transport resolver should
+     * check if the transport candidate the other endpoint has provided is
+     * usable.
+     * <p/>
+     * ICE Candidate can check connectivity using UDP echo Test.
+     */
+    public void check(final List<TransportCandidate> localCandidates) {
+        //TODO candidate is being checked trigger
+        //candidatesChecking.add(cand);
+
+        Thread checkThread = new Thread(new Runnable() {
+            public void run() {
+                boolean isUsable = false;
+
+                for (TransportCandidate candidate : localCandidates) {
+                    CandidateEcho echo = candidate.getCandidateEcho();
+                    if (echo != null) {
+                        try {
+                            InetAddress address = InetAddress.getByName(getIp());
+                            if (echo.test(address, getPort())) isUsable = true;
+                            if (isUsable) break;
+                        }
+                        catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                if (isUsable) {
+                    System.out.println("Checked using UDP Echo:" + getLocalIp());
+                    triggerCandidateChecked(isUsable);
+                    return;
+                }
+
+                InetAddress candAddress;
+                try {
+                    candAddress = InetAddress.getByName(getIp());
+                    isUsable = candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
+                }
+                catch (Exception e) {
+                    isUsable = false;
+                }
+                triggerCandidateChecked(isUsable);
+
+                //TODO candidate is being checked trigger
+                //candidatesChecking.remove(cand);
+            }
+        }, "Transport candidate check");
+
+        checkThread.setName("Transport candidate test");
+        checkThread.start();
     }
 
     /*

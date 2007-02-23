@@ -104,7 +104,8 @@ public abstract class TransportCandidate {
     }
 
     public void removeCandidateEcho() {
-        candidateEcho.cancel();
+        if (candidateEcho != null)
+            candidateEcho.cancel();
         candidateEcho = null;
         echoThread = null;
     }
@@ -370,7 +371,7 @@ public abstract class TransportCandidate {
      * <p/>
      * Subclasses should provide better methods if they can...
      */
-    public void check() {
+    public void check(final List<TransportCandidate> localCandidates) {
         //TODO candidate is being checked trigger
         //candidatesChecking.add(cand);
 
@@ -402,7 +403,7 @@ public abstract class TransportCandidate {
      *
      * @param result The result.
      */
-    private void triggerCandidateChecked(boolean result) {
+    void triggerCandidateChecked(boolean result) {
 
         for (TransportResolverListener.Checker trl : getListenersList()) {
             trl.candidateChecked(this, result);
@@ -461,7 +462,7 @@ public abstract class TransportCandidate {
             super(ip, port, generation);
         }
     }
-   
+
     /**
      * Type-safe enum for the transportElement protocol
      */

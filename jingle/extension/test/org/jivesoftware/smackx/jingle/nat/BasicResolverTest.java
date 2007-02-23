@@ -2,6 +2,8 @@ package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.test.SmackTestCase;
 
+import java.util.ArrayList;
+
 public class BasicResolverTest extends SmackTestCase {
 
 	private int counter;
@@ -54,7 +56,7 @@ public class BasicResolverTest extends SmackTestCase {
             }
         });
 		
-		tc.check();
+		tc.check(new ArrayList<TransportCandidate>());
 		
 		try {
 			Thread.sleep(TransportResolver.CHECK_TIMEOUT);
@@ -83,7 +85,7 @@ public class BasicResolverTest extends SmackTestCase {
             }
         });
 		
-		tc.check();
+		tc.check(new ArrayList<TransportCandidate>());
 		
 		try {
 			Thread.sleep(TransportResolver.CHECK_TIMEOUT);
