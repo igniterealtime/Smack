@@ -136,7 +136,6 @@ public abstract class TransportResolver {
     public void clear() throws XMPPException {
         cancel();
         candidates.clear();
-        //resolve();
     }
 
     /**

@@ -79,13 +79,14 @@ public class ICEResolver extends TransportResolver {
     public synchronized void resolve() throws XMPPException {
         this.setResolveInit();
 
-        this.cancel();
         for (TransportCandidate candidate : this.getCandidatesList()) {
             if (candidate instanceof ICECandidate) {
                 ICECandidate iceCandidate = (ICECandidate) candidate;
                 iceCandidate.removeCandidateEcho();
             }
         }
+
+        this.clear();
 
         for (Candidate candidate : iceNegociator.getSortedCandidates())
             try {
