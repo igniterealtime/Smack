@@ -36,11 +36,15 @@ import java.net.ServerSocket;
  * But you could also use in any VOIP application.
  * For better NAT Traversal support this implementation don´t support only receive or only transmit.
  * To receive you MUST transmit. So the only implemented and functionally methods are startTransmit() and stopTransmit()
+ *
+ * @author Thiago Camargo
+ *
  */
 public class AudioMediaSession extends JingleMediaSession {
 
     private AudioFormat format;
     private AudioChannel audioChannel;
+    private String locator = "javasound://";
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
@@ -50,8 +54,23 @@ public class AudioMediaSession extends JingleMediaSession {
      * @param local       The local information. The candidate that will receive the jmf
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
-                             final TransportCandidate local) {
+            final TransportCandidate local) {
+        this(payloadType, remote, local, "javasound://");
+    }
+
+    /**
+     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
+     *
+     * @param payloadType Payload of the jmf
+     * @param remote      The remote information. The candidate that the jmf will be sent to.
+     * @param local       The local information. The candidate that will receive the jmf
+     */
+    public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
+            final TransportCandidate local, String locator) {
         super(payloadType, remote, local);
+        if (locator != null && !locator.equals(""))
+            this.locator = locator;
+        initialize();
     }
 
     /**
@@ -72,14 +91,15 @@ public class AudioMediaSession extends JingleMediaSession {
 
             System.out.println(this.getLocal().getConnection() + " " + ip + ": " + localPort + "->" + remotePort);
 
-        } else {
+        }
+        else {
             ip = this.getRemote().getIp();
             localIp = this.getLocal().getLocalIp();
             localPort = this.getLocal().getPort();
             remotePort = this.getRemote().getPort();
         }
 
-        audioChannel = new AudioChannel(new MediaLocator("dsound://"), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()));
+        audioChannel = new AudioChannel(new MediaLocator(locator), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()));
     }
 
     /**

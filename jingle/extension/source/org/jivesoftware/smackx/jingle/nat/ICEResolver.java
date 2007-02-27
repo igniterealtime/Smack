@@ -45,6 +45,7 @@ public class ICEResolver extends TransportResolver {
     long sid;
     String server = "stun.xten.net";
     int port = 3478;
+    ICENegociator iceNegociator = null;
 
     public ICEResolver(XMPPConnection connection, String server, int port) {
         super();
@@ -58,85 +59,11 @@ public class ICEResolver extends TransportResolver {
         if (!isResolving() && !isResolved()) {
             System.out.println("Initialized");
 
-            ICENegociator cc = new ICENegociator((short) 1, server, port);
+            iceNegociator = new ICENegociator((short) 1, server, port);
             // gather candidates
-            cc.gatherCandidateAddresses();
+            iceNegociator.gatherCandidateAddresses();
             // priorize candidates
-            cc.prioritizeCandidates();
-
-            for (Candidate candidate : cc.getSortedCandidates())
-                try {
-                    Candidate.CandidateType type = candidate.getCandidateType();
-                    String typeString = "local";
-                    if (type.equals(Candidate.CandidateType.ServerReflexive))
-                        typeString = "srflx";
-                    else if (type.equals(Candidate.CandidateType.PeerReflexive))
-                        typeString = "prflx";
-                    else if (type.equals(Candidate.CandidateType.Relayed))
-                        typeString = "relay";
-                    else
-                        typeString = "host";
-
-                    TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), typeString);
-                    transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
-                    transportCandidate.setPort(getFreePort());
-                    try {
-                        transportCandidate.addCandidateEcho();
-                    }
-                    catch (SocketException e) {
-                        e.printStackTrace();
-                    }
-                    this.addCandidate(transportCandidate);
-
-                    System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
-
-                }
-                catch (UtilityException e) {
-                    e.printStackTrace();
-                }
-                catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-
-            if (RTPBridge.serviceAvailable(connection)) {
-                try {
-                    String localIp = cc.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
-
-                    sid = Math.abs(random.nextLong());
-
-                    RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
-
-                    TransportCandidate localCandidate = new ICECandidate(
-                            rtpBridge.getIp(), 1, cc.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortA(), "1", 0, "relay");
-                    localCandidate.setLocalIp(localIp);
-
-                    TransportCandidate remoteCandidate = new ICECandidate(
-                            rtpBridge.getIp(), 1, cc.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortB(), "1", 0, "relay");
-                    remoteCandidate.setLocalIp(localIp);
-
-                    localCandidate.setSymmetric(remoteCandidate);
-                    remoteCandidate.setSymmetric(localCandidate);
-
-                    localCandidate.setPassword(rtpBridge.getPass());
-                    remoteCandidate.setPassword(rtpBridge.getPass());
-
-                    localCandidate.setSessionId(rtpBridge.getSid());
-                    remoteCandidate.setSessionId(rtpBridge.getSid());
-
-                    localCandidate.setConnection(this.connection);
-                    remoteCandidate.setConnection(this.connection);
-
-                    addCandidate(localCandidate);
-
-                }
-                catch (UtilityException e) {
-                    e.printStackTrace();
-                }
-                catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-
-            }
+            iceNegociator.prioritizeCandidates();
 
         }
         this.setInitialized();
@@ -151,7 +78,89 @@ public class ICEResolver extends TransportResolver {
      */
     public synchronized void resolve() throws XMPPException {
         this.setResolveInit();
-        System.out.println("Resolve");
+
+        this.cancel();
+        for (TransportCandidate candidate : this.getCandidatesList()) {
+            if (candidate instanceof ICECandidate) {
+                ICECandidate iceCandidate = (ICECandidate) candidate;
+                iceCandidate.removeCandidateEcho();
+            }
+        }
+
+        for (Candidate candidate : iceNegociator.getSortedCandidates())
+            try {
+                Candidate.CandidateType type = candidate.getCandidateType();
+                String typeString = "local";
+                if (type.equals(Candidate.CandidateType.ServerReflexive))
+                    typeString = "srflx";
+                else if (type.equals(Candidate.CandidateType.PeerReflexive))
+                    typeString = "prflx";
+                else if (type.equals(Candidate.CandidateType.Relayed))
+                    typeString = "relay";
+                else
+                    typeString = "host";
+
+                TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), typeString);
+                transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
+                transportCandidate.setPort(getFreePort());
+                try {
+                    transportCandidate.addCandidateEcho();
+                }
+                catch (SocketException e) {
+                    e.printStackTrace();
+                }
+                this.addCandidate(transportCandidate);
+
+                System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
+
+            }
+            catch (UtilityException e) {
+                e.printStackTrace();
+            }
+            catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+
+        if (RTPBridge.serviceAvailable(connection)) {
+            try {
+                String localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
+
+                sid = Math.abs(random.nextLong());
+
+                RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
+
+                TransportCandidate localCandidate = new ICECandidate(
+                        rtpBridge.getIp(), 1, iceNegociator.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortA(), "1", 0, "relay");
+                localCandidate.setLocalIp(localIp);
+
+                TransportCandidate remoteCandidate = new ICECandidate(
+                        rtpBridge.getIp(), 1, iceNegociator.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortB(), "1", 0, "relay");
+                remoteCandidate.setLocalIp(localIp);
+
+                localCandidate.setSymmetric(remoteCandidate);
+                remoteCandidate.setSymmetric(localCandidate);
+
+                localCandidate.setPassword(rtpBridge.getPass());
+                remoteCandidate.setPassword(rtpBridge.getPass());
+
+                localCandidate.setSessionId(rtpBridge.getSid());
+                remoteCandidate.setSessionId(rtpBridge.getSid());
+
+                localCandidate.setConnection(this.connection);
+                remoteCandidate.setConnection(this.connection);
+
+                addCandidate(localCandidate);
+
+            }
+            catch (UtilityException e) {
+                e.printStackTrace();
+            }
+            catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+
+        }
+
         this.setResolveEnd();
     }
 

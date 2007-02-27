@@ -1,14 +1,3 @@
-package org.jivesoftware.jingleaudio.jspeex;
-
-import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
-import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.jingleaudio.JMFInit;
-
-import java.io.File;
-import java.io.IOException;
-
 /**
  * $RCSfile$
  * $Revision: $
@@ -27,6 +16,24 @@ import java.io.IOException;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+package org.jivesoftware.jingleaudio.jspeex;
+
+import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
+import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
+import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.jingleaudio.JMFInit;
+
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * Implements a jingleMediaManager using JMF based API and JSpeex.
+ * It supports Speex codec.
+ * <i>This API only currently works on windows.</i>
+ *
+ * @author Thiago Camargo
  */
 public class SpeexMediaManager extends JingleMediaManager {
 

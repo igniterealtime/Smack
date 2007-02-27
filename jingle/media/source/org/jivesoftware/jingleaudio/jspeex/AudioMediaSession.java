@@ -1,3 +1,23 @@
+/**
+ * $RCSfile$
+ * $Revision: $
+ * $Date: 25/12/2006
+ * <p/>
+ * Copyright 2003-2006 Jive Software.
+ * <p/>
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jivesoftware.jingleaudio.jspeex;
 
 import mil.jfcom.cie.media.session.MediaSession;
@@ -19,23 +39,14 @@ import java.net.ServerSocket;
 import java.security.GeneralSecurityException;
 
 /**
- * $RCSfile$
- * $Revision: $
- * $Date: 25/12/2006
+ * This Class implements a complete JingleMediaSession.
+ * It sould be used to transmit and receive audio captured from the Mic.
+ * This Class should be automaticly controlled by JingleSession.
+ * But you could also use in any VOIP application.
+ * For better NAT Traversal support this implementation don´t support only receive or only transmit.
+ * To receive you MUST transmit. So the only implemented and functionally methods are startTransmit() and stopTransmit()
  *
- * Copyright 2003-2006 Jive Software.
- *
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author Thiago Camargo
  */
 
 public class AudioMediaSession extends JingleMediaSession implements MediaSessionListener {
@@ -77,8 +88,9 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * @param local       The local information. The candidate that will receive the jmf
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
-                             final TransportCandidate local) {
+            final TransportCandidate local) {
         super(payloadType, remote, local);
+        initialize();
     }
 
     /**
@@ -99,7 +111,8 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 
             System.out.println(this.getLocal().getConnection() + " " + ip + ": " + localPort + "->" + remotePort);
 
-        } else {
+        }
+        else {
             ip = this.getRemote().getIp();
             localIp = this.getLocal().getLocalIp();
             localPort = this.getLocal().getPort();
@@ -108,13 +121,17 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 
         try {
             mediaSession = createSession(localIp, localPort, ip, remotePort, this, 2, false, true);
-        } catch (NoProcessorException e) {
+        }
+        catch (NoProcessorException e) {
             e.printStackTrace();
-        } catch (UnsupportedFormatException e) {
+        }
+        catch (UnsupportedFormatException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
-        } catch (GeneralSecurityException e) {
+        }
+        catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
     }
@@ -126,7 +143,8 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
         try {
             System.out.println("start");
             mediaSession.start(true);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -1,4 +1,4 @@
-package org.jivesoftware.jingleaudio.jmf; /**
+/**
  * $RCSfile$
  * $Revision: $
  * $Date: 08/11/2006
@@ -18,6 +18,8 @@ package org.jivesoftware.jingleaudio.jmf; /**
  * limitations under the License.
  */
 
+package org.jivesoftware.jingleaudio.jmf;
+
 import javax.media.*;
 import javax.media.protocol.DataSource;
 import javax.media.rtp.*;
@@ -25,6 +27,8 @@ import javax.media.rtp.event.*;
 
 /**
  * This class implements receive methods and listeners to be used in AudioChannel
+ *
+ * @author Thiago Camargo 
  */
 public class AudioReceiver implements ReceiveStreamListener, SessionListener,
         ControllerListener {

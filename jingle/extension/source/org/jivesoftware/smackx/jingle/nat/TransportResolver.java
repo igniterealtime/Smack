@@ -72,6 +72,7 @@ import java.util.List;
 public abstract class TransportResolver {
 
     public enum Type {
+
         rawupd, ice
     }
 
@@ -91,7 +92,7 @@ public abstract class TransportResolver {
     public static final int CHECK_TIMEOUT = 2000;
 
     // Listeners for events
-    private final ArrayList listeners = new ArrayList();
+    private final ArrayList<TransportResolverListener> listeners = new ArrayList<TransportResolverListener>();
 
     // TRue if the resolver is working
     private boolean resolving;
@@ -105,10 +106,7 @@ public abstract class TransportResolver {
     // We store a list of candidates internally, just in case there are several
     // possibilities. When the user asks for a transport, we return the best
     // one.
-    protected final List candidates = new ArrayList();
-
-    // Remote candidates that are being checked
-    private final static ArrayList candidatesChecking = new ArrayList();
+    protected final List<TransportCandidate> candidates = new ArrayList<TransportCandidate>();
 
     /**
      * Default constructor.
@@ -355,7 +353,7 @@ public abstract class TransportResolver {
      *
      * @return the list of transport candidates
      */
-    public List getCandidatesList() {
+    public List<TransportCandidate> getCandidatesList() {
         ArrayList result = null;
 
         synchronized (candidates) {

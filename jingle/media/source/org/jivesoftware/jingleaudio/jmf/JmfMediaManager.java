@@ -32,7 +32,9 @@ import java.io.IOException;
 /**
  * Implements a jingleMediaManager using JMF based API.
  * It supports GSM and G723 codecs.
- * <i>This API only currently works on windows.</i>
+ * <i>This API only currently works on windows and Mac.</i>
+ *
+ * @author Thiago Camargo
  */
 public class JmfMediaManager extends JingleMediaManager {
 

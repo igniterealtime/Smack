@@ -51,6 +51,8 @@ import java.util.List;
  * portB ---> portA
  * <p/>
  * <i>Transmit and Receive are interdependents. To receive you MUST trasmit. </i>
+ *
+ * @author Thiago Camargo
  */
 public class AudioChannel {
 

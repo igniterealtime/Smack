@@ -54,7 +54,6 @@ public abstract class JingleMediaSession {
         this.local = local;
         this.remote = remote;
         this.payloadType = payloadType;
-        initialize();
     }
 
     /**

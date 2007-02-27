@@ -24,7 +24,9 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import javax.media.format.AudioFormat;
 
 /**
- * Audio Format Ttils.
+ * Audio Format Utils.
+ *
+ * @author Thiago Camargo
  */
 public class AudioFormatUtils {
 
