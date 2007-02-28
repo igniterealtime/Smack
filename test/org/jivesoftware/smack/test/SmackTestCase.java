@@ -52,6 +52,7 @@ public abstract class SmackTestCase extends TestCase {
     private String host = "localhost";
     private String serviceName = "localhost";
     private int port = 5222;
+    private String usernamnePrefix = "user";
 
     private String chatDomain = "chat";
     private String mucDomain = "conference";
@@ -134,7 +135,7 @@ public abstract class SmackTestCase extends TestCase {
         if (index > getMaxConnections()) {
             throw new IllegalArgumentException("Index out of bounds");
         }
-        return "user" + index;
+        return usernamnePrefix + index;
     }
 
     /**
@@ -214,7 +215,7 @@ public abstract class SmackTestCase extends TestCase {
             for (int i = 0; i < getMaxConnections(); i++) {
                 // Create the test account
                 try {
-                    getConnection(i).getAccountManager().createAccount("user" + i, "user" + i);
+                    getConnection(i).getAccountManager().createAccount(usernamnePrefix + i, usernamnePrefix + i);
                 } catch (XMPPException e) {
                     // Do nothing if the accout already exists
                     if (e.getXMPPError() == null || e.getXMPPError().getCode() != 409) {
@@ -222,7 +223,7 @@ public abstract class SmackTestCase extends TestCase {
                     }
                 }
                 // Login with the new test account
-                getConnection(i).login("user" + i, "user" + i, "Smack", sendInitialPresence());
+                getConnection(i).login(usernamnePrefix + i, usernamnePrefix + i, "Smack", sendInitialPresence());
             }
             // Let the server process the available presences
             Thread.sleep(150);
@@ -330,6 +331,9 @@ public abstract class SmackTestCase extends TestCase {
                     }
                     else if (parser.getName().equals("muc")) {
                         mucDomain = parser.nextText();
+                    }
+                    else if (parser.getName().equals("username")) {
+                        usernamnePrefix = parser.nextText();
                     }
                 }
                 eventType = parser.next();

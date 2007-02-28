@@ -6,6 +6,9 @@
     <host>localhost</host>
     <port>5222</port>
 
+    <!-- Username prefix to use for creating accounts. Same value will be used for passwords. -->
+    <username>user</username>
+
     <!-- Chat and MUC domain names to use -->
     <chat>chat</chat>
     <muc>conference</muc>
