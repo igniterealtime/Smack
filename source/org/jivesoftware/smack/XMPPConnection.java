@@ -668,7 +668,8 @@ public class XMPPConnection {
 
     /**
      * Registers a packet listener with this connection. A packet filter determines
-     * which packets will be delivered to the listener.
+     * which packets will be delivered to the listener. If the same packet listener
+     * is added again with a different filter, only the new filter will be used.
      *
      * @param packetListener the packet listener to notify of new packets.
      * @param packetFilter the packet filter to use.
