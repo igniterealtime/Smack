@@ -98,8 +98,8 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      * @param type       type as defined in ICE-12
      */
     public ICECandidate(String ip, int generation, int network,
-            String password, int port, String username,
-            int preference, String type) {
+                        String password, int port, String username,
+                        int preference, String type) {
         super(ip, port, generation);
 
         proto = Protocol.UDP;
@@ -266,7 +266,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                     if (echo != null) {
                         try {
                             InetAddress address = InetAddress.getByName(getIp());
-                            if (echo.test(address, getPort())) isUsable = true;
+                            if (echo.test(address, getPort(),2000)) isUsable = true;
                             if (isUsable) break;
                         }
                         catch (UnknownHostException e) {
@@ -321,16 +321,14 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             if (other.getChannel() != null) {
                 return false;
             }
-        }
-        else if (!getChannel().equals(other.getChannel())) {
+        } else if (!getChannel().equals(other.getChannel())) {
             return false;
         }
         if (getId() == null) {
             if (other.getId() != null) {
                 return false;
             }
-        }
-        else if (!getId().equals(other.getId())) {
+        } else if (!getId().equals(other.getId())) {
             return false;
         }
         if (getNetwork() != other.getNetwork()) {
@@ -340,8 +338,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             if (other.getPassword() != null) {
                 return false;
             }
-        }
-        else if (!getPassword().equals(other.password)) {
+        } else if (!getPassword().equals(other.password)) {
             return false;
         }
         if (getPreference() != other.getPreference()) {
@@ -351,16 +348,14 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             if (other.getProto() != null) {
                 return false;
             }
-        }
-        else if (!getProto().equals(other.getProto())) {
+        } else if (!getProto().equals(other.getProto())) {
             return false;
         }
         if (getUsername() == null) {
             if (other.getUsername() != null) {
                 return false;
             }
-        }
-        else if (!getUsername().equals(other.getUsername())) {
+        } else if (!getUsername().equals(other.getUsername())) {
             return false;
         }
         return true;
@@ -369,11 +364,9 @@ public class ICECandidate extends TransportCandidate implements Comparable {
     public boolean isNull() {
         if (super.isNull()) {
             return true;
-        }
-        else if (getProto().isNull()) {
+        } else if (getProto().isNull()) {
             return true;
-        }
-        else if (getChannel().isNull()) {
+        } else if (getChannel().isNull()) {
             return true;
         }
         return false;
@@ -392,8 +385,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             ICECandidate tc = (ICECandidate) arg;
             if (getPreference() < tc.getPreference()) {
                 return -1;
-            }
-            else if (getPreference() > tc.getPreference()) {
+            } else if (getPreference() > tc.getPreference()) {
                 return 1;
             }
         }

@@ -124,18 +124,29 @@ public class ICEResolver extends TransportResolver {
 
         if (RTPBridge.serviceAvailable(connection)) {
             try {
-                String localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
+
+                String localIp;
+                int network;
+
+                if (iceNegociator.getPublicCandidate() != null) {
+                    localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
+                    network = iceNegociator.getPublicCandidate().getNetwork();
+                }
+                else {
+                    localIp = iceNegociator.getSortedCandidates().get(0).getAddress().getInetAddress().getHostAddress();
+                    network = iceNegociator.getSortedCandidates().get(0).getNetwork();
+                }
 
                 sid = Math.abs(random.nextLong());
 
                 RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
 
                 TransportCandidate localCandidate = new ICECandidate(
-                        rtpBridge.getIp(), 1, iceNegociator.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortA(), "1", 0, "relay");
+                        rtpBridge.getIp(), 1, network, "1", rtpBridge.getPortA(), "1", 0, "relay");
                 localCandidate.setLocalIp(localIp);
 
                 TransportCandidate remoteCandidate = new ICECandidate(
-                        rtpBridge.getIp(), 1, iceNegociator.getPublicCandidate().getNetwork(), "1", rtpBridge.getPortB(), "1", 0, "relay");
+                        rtpBridge.getIp(), 1, network, "1", rtpBridge.getPortB(), "1", 0, "relay");
                 remoteCandidate.setLocalIp(localIp);
 
                 localCandidate.setSymmetric(remoteCandidate);

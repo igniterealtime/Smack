@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
  */
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
 
-    ICEResolver iceResolver = null;
+    ICEResolver iceResolver = null;                         
 
     public ICETransportManager(XMPPConnection xmppConnection, String server, int port) {
         iceResolver = new ICEResolver(xmppConnection, server, port);
