@@ -1,13 +1,13 @@
 <html>
 <head>
 	<title>Smack: Getting Started - Jive Software</title>
-	<link rel="stylesheet" type="text/css" href="style.css" /
+	<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 
 <body>
 
 <div class="header">
-Getting Started With Smack
+Smack: Getting Started
 </div>
 
 <div class="nav">
@@ -20,11 +20,24 @@ important classes and concepts.
 </p>
 
 <p class="subheader">
-Requirements
+JAR Files and Requirements
 </p>
 
-The only requirement for Smack is JDK 1.5 or later. An XML parser is embedded in the
-smack.jar file and no other third party  libraries are required.<p>
+Smack is meant to be easily embedded into any existing JDK 1.5 or later Java application.
+It has no external dependencies (except for the Jingle voice chat functionality) and is optimized
+to be as small as possible. The library ships as several JAR files to provide more flexibility
+over which features applications require:
+
+<ul>
+    <li><tt>smack.jar</tt> -- provides core XMPP functionality and is the only <b>required</b>
+    library. All XMPP features that are part of the XMPP RFCs are included.</li>
+    <li><tt>smackx.jar</tt> -- support for many of the the extensions (XEPs) defined
+    by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc.
+    The extensions are documented in the <a href="extensions/index.html">extensions manual</a>.</li>
+    <li><tt>smackx-debug.jar</tt> -- an enhanced GUI debugger for protocol traffic. It will
+    automatically be used when found in the classpath and when <a href="debugging.html">debugging</a>
+    is enabled.</li>
+</ul>
 
 
 <p class="subheader">
@@ -48,7 +61,8 @@ conn2.connect();
 
 <p>Note that maximum security will be used when connecting to the server by default (and when possible),
     including use of TLS encryption. The ConnectionConfiguration class provides advanced control
-    over the connection created, such as the ability to disable or require encryption.</p>
+    over the connection created, such as the ability to disable or require encryption. See
+    <a href="connections.html">Connection Management</a> for full details.</p>
 
 <p>Once you've created a connection, you should login using a username and password
 with the <tt>XMPPConnection.login(String username, String password)</tt> method.

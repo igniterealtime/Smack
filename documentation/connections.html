@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>Smack: Connection Management - Jive Software</title>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+
+<body>
+
+<div class="header">
+    Smack: Connection Management
+</div>
+
+<div class="nav">
+    &laquo; <a href="index.html">Table of Contents</a>
+</div>
+
+<p class="subheader">
+    Creating a Connection
+</p>
+
+<p>
+    The <tt>org.jivesoftware.smack.XMPPConnection</tt> class manages your connection to an XMPP
+    server. Two constructors are available. The first, <tt>XMPPConnection(String)</tt> takes
+    the server name you'd like to connect to as an argument. All default connection settings will
+    be used:
+    <ul>
+        <li>A DNS SRV lookup will be performed to find the exact address and port (typically 5222)
+        that the server resides at.</li>
+        <li>The maximum security possible will be negotiated with the server, including TLS encryption,
+            but the connection will fall back to lower security settings if necessary.
+        </li>
+        <li>The XMPP resource name "Smack" will be used for the connection.</li>
+    </ul>
+
+    Alternatively, you can use the <tt>XMPPServer(ConnectionConfiguration)</tt> constructor to
+    specify advanced connection settings. Some of these settings include:
+
+    <ul>
+        <li>Manually specify the server address and port of the server rather than using a DNS SRV
+        lookup.</li>
+        <li>Enable connection compression.</li>
+        <li>Customize security settings, such as flagging the connection to require TLS encryption
+        in order to connect.</li>
+        <li>Specify a custom connection resource name such as "Work" or "Home". Every connection
+        by a user to a server must have a unique resource name. For the user "jsmith@example.com", the
+        full address with resource might be "jsmith@example.com/Smack". With unique resource names, a user
+        can be logged into the server from multiple locations at once, or using multiple devices. The
+        presence priority value used with each resource will determine which particular connection
+        receives messages to the bare address ("jsmith@example.com" in our example).</li>
+    </ul>
+
+</p>
+
+<p class="subheader">
+    Connect and Disconnect
+</p>
+
+
+
+
+
+    <br clear="all"/><br><br>
+
+<div class="footer">
+    Copyright &copy; Jive Software 2002-2007
+</div>
+
+</body>
+</html>
