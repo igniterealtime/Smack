@@ -170,7 +170,8 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     public void stopTrasmit() {
-        mediaSession.close();
+        if (mediaSession != null)
+            mediaSession.close();
     }
 
     /**
@@ -181,15 +182,12 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     }
 
     public void newStreamIdentified(StreamPlayer streamPlayer) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void senderReportReceived(SenderReport report) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void streamClosed(StreamPlayer stream, boolean timeout) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**

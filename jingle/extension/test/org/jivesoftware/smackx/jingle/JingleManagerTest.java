@@ -74,6 +74,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test the Jingle extension using the high level API
@@ -706,33 +707,7 @@ public class JingleManagerTest extends SmackTestCase {
 //            JingleManager jm1 = new JingleSessionManager(
 //                    x1, new ICEResolver());
 
-            JingleMediaManager jingleMediaManager = new JingleMediaManager() {
-                // Media Session Implementation
-                public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
-                    return new JingleMediaSession(payloadType, remote, local) {
-
-                        public void initialize() {
-                        }
-
-                        public void startTrasmit() {
-                        }
-
-                        public void startReceive() {
-                        }
-
-                        public void setTrasmit(boolean active) {
-                        }
-
-                        public void stopTrasmit() {
-                        }
-
-                        public void stopReceive() {
-                        }
-                    };
-                }
-            };
-
-            jingleMediaManager.addPayloadType(new PayloadType.Audio(3, "GSM", 1, 16000));
+            JingleMediaManager jingleMediaManager = new JmfMediaManager();
 
             jm0.setMediaManager(jingleMediaManager);
             jm1.setMediaManager(jingleMediaManager);
@@ -746,32 +721,27 @@ public class JingleManagerTest extends SmackTestCase {
                         session.addListener(new JingleSessionListener() {
 
                             public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
-                                //To change body of implemented methods use File | Settings | File Templates.
                                 incCounter();
                                 System.out.println("Establish In");
                             }
 
                             public void sessionDeclined(String reason, JingleSession jingleSession) {
-                                //To change body of implemented methods use File | Settings | File Templates.
                             }
 
                             public void sessionRedirected(String redirection, JingleSession jingleSession) {
-                                //To change body of implemented methods use File | Settings | File Templates.
                             }
 
                             public void sessionClosed(String reason, JingleSession jingleSession) {
-                                //To change body of implemented methods use File | Settings | File Templates.
                             }
 
                             public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
-                                //To change body of implemented methods use File | Settings | File Templates.
                             }
                         });
 
                         session.start();
                     }
                     catch (XMPPException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        e.printStackTrace();
                     }
 
                 }
@@ -874,9 +844,17 @@ public class JingleManagerTest extends SmackTestCase {
                         }
                     };
                 }
-            };
 
-            jingleMediaManager.addPayloadType(new PayloadType.Audio(3, "GSM", 1, 16000));
+                public List<PayloadType> getPayloads() {
+                    return new ArrayList();
+                }
+
+                public PayloadType getPreferredPayloadType() {
+                    return null;
+                }
+
+
+            };
 
             jm0.setMediaManager(jingleMediaManager);
             jm1.setMediaManager(jingleMediaManager);
@@ -891,7 +869,7 @@ public class JingleManagerTest extends SmackTestCase {
                         session.start(request);
                     }
                     catch (XMPPException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        e.printStackTrace();
                     }
 
                 }

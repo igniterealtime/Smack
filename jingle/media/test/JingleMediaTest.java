@@ -2,6 +2,7 @@ import junit.framework.TestCase;
 import org.jivesoftware.jingleaudio.jmf.AudioChannel;
 import org.jivesoftware.jingleaudio.jmf.JmfMediaManager;
 import org.jivesoftware.jingleaudio.jspeex.SpeexMediaManager;
+import org.jivesoftware.jingleaudio.multi.MultiMediaManager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -63,6 +64,65 @@ public class JingleMediaTest extends SmackTestCase {
             jm1.addCreationListener(icetm1);
 
             JingleMediaManager jingleMediaManager0 = new JmfMediaManager();
+            JingleMediaManager jingleMediaManager1 = new JmfMediaManager();
+
+            jm0.setMediaManager(jingleMediaManager0);
+            jm1.setMediaManager(jingleMediaManager1);
+
+            jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
+                public void sessionRequested(final JingleSessionRequest request) {
+
+                    try {
+                        IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
+                        session.start(request);
+                    }
+                    catch (XMPPException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+
+            js0.start();
+
+            Thread.sleep(60000);
+            js0.terminate();
+
+            Thread.sleep(6000);
+
+            x0.disconnect();
+            x1.disconnect();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void testCompleteMulti() {
+
+        try {
+
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
+
+            ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
+            ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
+
+            final JingleManager jm0 = new JingleManager(
+                    x0, icetm0);
+            final JingleManager jm1 = new JingleManager(
+                    x1, icetm1);
+
+            jm0.addCreationListener(icetm0);
+            jm1.addCreationListener(icetm1);
+
+            MultiMediaManager jingleMediaManager0 = new MultiMediaManager();
+            jingleMediaManager0.addMediaManager(new SpeexMediaManager());
+            jingleMediaManager0.addMediaManager(new JmfMediaManager());
             JingleMediaManager jingleMediaManager1 = new JmfMediaManager();
 
             jm0.setMediaManager(jingleMediaManager0);
@@ -224,7 +284,7 @@ public class JingleMediaTest extends SmackTestCase {
             Thread.sleep(250000);
         }
         catch (InterruptedException e) {
-            e.printStackTrace();  
+            e.printStackTrace();
         }
     }
 
@@ -276,7 +336,7 @@ public class JingleMediaTest extends SmackTestCase {
 
             Thread.sleep(3000);
 
-            js0 =  jm0.createOutgoingJingleSession(x1.getUser());
+            js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
             js0.start();
 

@@ -38,7 +38,6 @@ import java.net.ServerSocket;
  * To receive you MUST transmit. So the only implemented and functionally methods are startTransmit() and stopTransmit()
  *
  * @author Thiago Camargo
- *
  */
 public class AudioMediaSession extends JingleMediaSession {
 
@@ -130,7 +129,8 @@ public class AudioMediaSession extends JingleMediaSession {
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     public void stopTrasmit() {
-        audioChannel.stop();
+        if (audioChannel != null)
+            audioChannel.stop();
     }
 
     /**

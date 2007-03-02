@@ -36,42 +36,17 @@ import java.util.List;
  */
 public abstract class JingleMediaManager {
     
-    private List<PayloadType> payloads = new ArrayList<PayloadType>();
-
     /**
      * Return all supported Payloads for this Manager
      *
      * @return The Payload List
      */
-    public List<PayloadType> getPayloads() {
-        return payloads;
-    }
-
-    /**
-     * Adds a supported Payload type to Manager
-     *
-     * @param payloadType
-     */
-    public void addPayloadType(PayloadType payloadType) {
-        payloads.add(payloadType);
-    }
-
-    /**
-     * Removes a supported Payload type from Manager
-     *
-     * @param payloadType
-     */
-    public void removePayloadType(PayloadType payloadType) {
-        payloads.remove(payloadType);
-    }
+    public abstract List<PayloadType> getPayloads();
 
     /**
      * Get the preferred Payload Type
      */
-    public PayloadType getPreferredPayloadType() {
-        //TODO a better way to choose the preferred Payload
-        return payloads.size() > 0 ? payloads.get(0) : null;
-    }
+    public abstract PayloadType getPreferredPayloadType();
 
     /**
      * Create a Media Session Implementation
