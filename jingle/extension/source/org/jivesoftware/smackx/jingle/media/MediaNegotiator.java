@@ -41,7 +41,6 @@ import java.util.List;
  * This class is responsible for managing the descriptor negotiation process,
  * handling all the xmpp packets interchange and the stage control.
  *
- * @author Alvaro Saurin
  * @author Thiago Camargo
  */
 public class MediaNegotiator extends JingleNegotiator {

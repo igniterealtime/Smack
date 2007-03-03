@@ -21,6 +21,7 @@ package org.jivesoftware.smackx.jingle.listeners;
 
 /**
  * Interface for listening to jmf info events.
+ * @author Thiago Camargo
  */
 public interface JingleMediaInfoListener extends JingleListener {
     /**

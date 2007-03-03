@@ -26,6 +26,7 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 /**
  * Interface for listening for session events.
+ * @author Thiago Camargo
  */
 public interface JingleSessionListener extends JingleListener {
     /**

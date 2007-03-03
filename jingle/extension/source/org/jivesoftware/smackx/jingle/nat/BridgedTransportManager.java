@@ -1,12 +1,3 @@
-package org.jivesoftware.smackx.jingle.nat;
-
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
-import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
-
 /**
  * $RCSfile$
  * $Revision: $
@@ -26,6 +17,14 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smackx.jingle.nat;
+
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
+import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
+import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
  * A Jingle Transport Manager implementation to be used for NAT Networks.

@@ -25,7 +25,9 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
@@ -40,6 +42,8 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.Jingle;
+import org.jivesoftware.smackx.packet.JingleError;
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -267,8 +271,7 @@ public class JingleManager implements JingleSessionListener {
                 JingleSession aux = null;
                 for (JingleSession jingleSession : jingleSessions) {
                     if (jingleSession.getInitiator().equals(xmppAddress) ||
-                            jingleSession.getResponder().equals(xmppAddress))
-                    {
+                            jingleSession.getResponder().equals(xmppAddress)) {
                         aux = jingleSession;
                     }
                 }
@@ -673,7 +676,7 @@ public class JingleManager implements JingleSessionListener {
         if (jingleMediaManager != null)
             return createIncomingJingleSession(request, jingleMediaManager.getPayloads());
 
-        return createIncomingJingleSession(request,null);
+        return createIncomingJingleSession(request, null);
     }
 
     /**

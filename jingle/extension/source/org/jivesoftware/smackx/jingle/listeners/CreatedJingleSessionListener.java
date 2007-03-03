@@ -1,7 +1,3 @@
-package org.jivesoftware.smackx.jingle.listeners;
-
-import org.jivesoftware.smackx.jingle.JingleSession;
-
 /**
  * $RCSfile$
  * $Revision: $
@@ -22,8 +18,14 @@ import org.jivesoftware.smackx.jingle.JingleSession;
  * limitations under the License.
  */
 
+package org.jivesoftware.smackx.jingle.listeners;
+
+import org.jivesoftware.smackx.jingle.JingleSession;
+
 /**
  * Inteface used to dispatch a event when a Jingle session is created.
+ * 
+ * @author Thiago Camargo
  */
 public interface CreatedJingleSessionListener {
 

@@ -78,6 +78,7 @@ import java.util.List;
  * JingleManager class, that will create the appropiate instance...
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Thiago Camargo
  */
 public class OutgoingJingleSession extends JingleSession {
 

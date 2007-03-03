@@ -32,7 +32,7 @@ package org.jivesoftware.smackx.jingle.listeners;
  * <i>sessionRequested()</i> of the listener will be executed, and the listener
  * will be able to <i>accept()</i> or <i>decline()</i> the invitation.
  * 
- * @author Alvaro Saurin
+  * @author Thiago Camargo
  */
 public interface JingleListener {
 

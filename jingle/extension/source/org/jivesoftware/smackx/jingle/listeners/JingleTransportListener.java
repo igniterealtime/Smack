@@ -24,6 +24,8 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 /**
  * Interface for listening to transport events.
+ * 
+ * @author Thiago Camargo
  */
 public interface JingleTransportListener extends JingleListener {
 

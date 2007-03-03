@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Test the STUN IP resolver.
  *
- * @author alvaro
+ * @author Thiago Camargo
  */
 public class STUNResolverTest extends SmackTestCase {
 

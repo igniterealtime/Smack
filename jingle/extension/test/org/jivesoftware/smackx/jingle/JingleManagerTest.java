@@ -81,6 +81,7 @@ import java.util.List;
  * </p>
  *
  * @author Alvaro Saurin
+ * @author Thiago Camargo
  */
 public class JingleManagerTest extends SmackTestCase {
 

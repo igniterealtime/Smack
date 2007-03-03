@@ -1,7 +1,3 @@
-package org.jivesoftware.smackx.jingle.nat;
-
-import org.jivesoftware.smack.XMPPException;
-
 /**
  * $RCSfile$
  * $Revision: $
@@ -21,6 +17,9 @@ import org.jivesoftware.smack.XMPPException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smackx.jingle.nat;
+
+import org.jivesoftware.smack.XMPPException;
 
 /**
  * A Jingle Transport Manager implementation to be used on NAT networks with  STUN Service NOT Blocked.

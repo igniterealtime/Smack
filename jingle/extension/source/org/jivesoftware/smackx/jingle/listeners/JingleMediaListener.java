@@ -24,6 +24,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
  * Interface for listening to jmf events.
+ * @author Thiago Camargo
  */
 public interface JingleMediaListener extends JingleListener {
     /**

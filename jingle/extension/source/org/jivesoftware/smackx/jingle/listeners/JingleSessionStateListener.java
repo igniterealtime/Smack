@@ -24,6 +24,8 @@ import org.jivesoftware.smackx.jingle.JingleNegotiator;
 
 /**
  * Used to Listen for Jingle Session State Changes
+ * 
+ * @author Thiago Camargo
  */
 public interface JingleSessionStateListener {
 

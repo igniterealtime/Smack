@@ -501,7 +501,6 @@ public abstract class JingleSession extends JingleNegotiator {
 
                 // Notify the session end and close everything...
                 triggerSessionClosedOnError(e);
-                close();
             }
         }
 
@@ -558,6 +557,7 @@ public abstract class JingleSession extends JingleNegotiator {
             perror.addExtension(error);
 
             getConnection().sendPacket(perror);
+            System.err.println(error.toXML());
         }
         return perror;
     }
@@ -1022,6 +1022,7 @@ public abstract class JingleSession extends JingleNegotiator {
                 sli.sessionClosed(reason, this);
             }
         }
+        close();
         if (jingleMediaSession != null) {
             jingleMediaSession.stopTrasmit();
             jingleMediaSession.stopReceive();
@@ -1041,6 +1042,7 @@ public abstract class JingleSession extends JingleNegotiator {
                 sli.sessionClosedOnError(exc, this);
             }
         }
+        close();
         if (jingleMediaSession != null) {
             jingleMediaSession.stopTrasmit();
             jingleMediaSession.stopReceive();
@@ -1125,7 +1127,6 @@ public abstract class JingleSession extends JingleNegotiator {
         jout.setType(IQ.Type.SET);
         sendFormattedJingle(jout);
         triggerSessionClosed("Closed Locally");
-        close();
     }
 
     /**
