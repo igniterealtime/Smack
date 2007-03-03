@@ -360,7 +360,7 @@ public abstract class JingleNegotiator {
         }
 
         public Jingle eventTerminate(Jingle jin) throws XMPPException {
-            if (neg != null) {
+            if (neg != null && !neg.invalidState()) {
                 neg.close();
             }
             return null;

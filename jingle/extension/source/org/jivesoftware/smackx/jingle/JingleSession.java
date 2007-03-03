@@ -547,7 +547,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * @param iq    The Jingle packet we are responing to
      * @param error the IQ packet we want to complete and send
      */
-    protected IQ sendFormattedError(IQ iq, JingleError error) {
+    public IQ sendFormattedError(IQ iq, JingleError error) {
         IQ perror = null;
         if (error != null) {
             perror = createIQ(getSid(), iq.getFrom(), iq.getTo(), IQ.Type.ERROR);
@@ -1121,6 +1121,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * @throws XMPPException
      */
     public void terminate() throws XMPPException {
+        if (isClosed()) return;
         System.out.println("State: " + this.getState());
         Jingle result = null;
         Jingle jout = new Jingle(Jingle.Action.SESSIONTERMINATE);
@@ -1133,6 +1134,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * Terminate negotiations.
      */
     public void close() {
+        if (isClosed()) return;
         destroyMediaNeg();
         destroyTransportNeg();
         removePacketListener();

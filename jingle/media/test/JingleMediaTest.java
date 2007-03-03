@@ -129,10 +129,10 @@ public class JingleMediaTest extends SmackTestCase {
                     x1, new BasicTransportManager());
 
             MultiMediaManager jingleMediaManager0 = new MultiMediaManager();
-//            jingleMediaManager0.addMediaManager(new SpeexMediaManager());
+            jingleMediaManager0.addMediaManager(new SpeexMediaManager());
             jingleMediaManager0.addMediaManager(new JmfMediaManager());
             MultiMediaManager jingleMediaManager1 = new MultiMediaManager();
-//            jingleMediaManager1.addMediaManager(new JmfMediaManager());
+            jingleMediaManager1.addMediaManager(new JmfMediaManager());
             jingleMediaManager1.addMediaManager(new SpeexMediaManager());
 
             jm0.setMediaManager(jingleMediaManager0);

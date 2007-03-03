@@ -277,29 +277,43 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 public void run() {
 
                     // Sleep for some time, waiting for the candidates checks
-                    try {
-                        Thread.sleep(CANDIDATES_ACCEPT_PERIOD
-                                + TransportResolver.CHECK_TIMEOUT);
+
+                    int totalTime= (CANDIDATES_ACCEPT_PERIOD + (TransportResolver.CHECK_TIMEOUT * (resolver.getCandidatesList().size()+1)));
+                    int tries = (int)Math.ceil(totalTime/1000);
+
+                    for (int i = 0; i < tries; i++) {
+                        try {
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Once we are in pending state, look for any valid remote
+                        // candidate, and send an "accept" if we have one...
+                        TransportCandidate bestRemote = getBestRemoteCandidate();
+                        State state = getState();
+
+                        if (bestRemote != null && (state == pending || state == active)) {
+                            // Accepting the remote candidate
+                            Jingle jout = new Jingle(Jingle.Action.TRANSPORTACCEPT);
+                            jout.addTransport(getJingleTransport(bestRemote));
+
+                            // Send the packet
+                            js.sendFormattedJingle(jin, jout);
+
+                            if (isEstablished()) {
+                                setState(active);
+                                break;
+                            }
+                        }
                     }
-                    catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Once we are in pending state, look for any valid remote
-                    // candidate, and send an "accept" if we have one...
-                    TransportCandidate bestRemote = getBestRemoteCandidate();
-                    State state = getState();
-
-                    if (bestRemote != null && (state == pending || state == active)) {
-                        // Accepting the remote candidate
-                        Jingle jout = new Jingle(Jingle.Action.TRANSPORTACCEPT);
-                        jout.addTransport(getJingleTransport(bestRemote));
-
-                        // Send the packet
-                        js.sendFormattedJingle(jin, jout);
-
-                        if (isEstablished()) {
-                            setState(active);
+                    if (getState() == null || !getState().equals(active)) {
+                        try {
+                            session.terminate();
+                        }
+                        catch (XMPPException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
