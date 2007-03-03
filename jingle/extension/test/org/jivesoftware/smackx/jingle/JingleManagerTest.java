@@ -849,7 +849,7 @@ public class JingleManagerTest extends SmackTestCase {
                     return new ArrayList();
                 }
 
-                public PayloadType getPreferredPayloadType() {
+                public PayloadType.Audio getPreferredAudioPayloadType() {
                     return null;
                 }
 

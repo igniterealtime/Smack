@@ -15,6 +15,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.nat.BridgedTransportManager;
 import org.jivesoftware.smackx.jingle.nat.ICETransportManager;
 import org.jivesoftware.smackx.jingle.nat.STUNTransportManager;
+import org.jivesoftware.smackx.jingle.nat.BasicTransportManager;
 
 import javax.media.MediaLocator;
 import javax.media.format.AudioFormat;
@@ -109,6 +110,7 @@ public class JingleMediaTest extends SmackTestCase {
             XMPPConnection x0 = getConnection(0);
             XMPPConnection x1 = getConnection(1);
 
+/*
             ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
             ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
 
@@ -119,11 +121,20 @@ public class JingleMediaTest extends SmackTestCase {
 
             jm0.addCreationListener(icetm0);
             jm1.addCreationListener(icetm1);
+*/
+
+            final JingleManager jm0 = new JingleManager(
+                    x0, new BasicTransportManager());
+            final JingleManager jm1 = new JingleManager(
+                    x1, new BasicTransportManager());
 
             MultiMediaManager jingleMediaManager0 = new MultiMediaManager();
             jingleMediaManager0.addMediaManager(new SpeexMediaManager());
             jingleMediaManager0.addMediaManager(new JmfMediaManager());
-            JingleMediaManager jingleMediaManager1 = new JmfMediaManager();
+            jingleMediaManager0.addMediaManager(new JmfMediaManager());
+            MultiMediaManager jingleMediaManager1 = new MultiMediaManager();
+            jingleMediaManager1.addMediaManager(new JmfMediaManager());
+            jingleMediaManager1.addMediaManager(new SpeexMediaManager());
 
             jm0.setMediaManager(jingleMediaManager0);
             jm1.setMediaManager(jingleMediaManager1);

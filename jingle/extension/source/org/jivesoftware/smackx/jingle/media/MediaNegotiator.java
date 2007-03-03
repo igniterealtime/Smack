@@ -1,3 +1,22 @@
+/**
+ * $RCSfile$
+ * $Revision: 7329 $
+ * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ *
+ * Copyright 2003-2005 Jive Software.
+ *
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jivesoftware.smackx.jingle.media;
 
 import org.jivesoftware.smack.XMPPException;
@@ -17,12 +36,13 @@ import java.util.List;
 
 /**
  * Manager for jmf descriptor negotiation.
- *
- *
+ * <p/>
+ * <p/>
  * This class is responsible for managing the descriptor negotiation process,
  * handling all the xmpp packets interchange and the stage control.
- * 
+ *
  * @author Alvaro Saurin
+ * @author Thiago Camargo
  */
 public class MediaNegotiator extends JingleNegotiator {
 
@@ -90,31 +110,37 @@ public class MediaNegotiator extends JingleNegotiator {
                 // With a null packet, we are just inviting the other end...
                 setState(inviting);
                 jout = getState().eventInvite();
-            } else {
+            }
+            else {
                 if (iq instanceof Jingle) {
                     // If there is no specific jmf action associated, then we
                     // are being invited to a new session...
                     setState(accepting);
                     jout = getState().eventInitiate((Jingle) iq);
-                } else {
+                }
+                else {
                     throw new IllegalStateException(
                             "Invitation IQ received is not a Jingle packet in Media negotiator.");
                 }
             }
-        } else {
+        }
+        else {
             if (iq == null) {
                 return null;
-            } else {
+            }
+            else {
                 if (iq.getType().equals(IQ.Type.ERROR)) {
                     // Process errors
                     getState().eventError(iq);
-                } else if (iq.getType().equals(IQ.Type.RESULT)) {
+                }
+                else if (iq.getType().equals(IQ.Type.RESULT)) {
                     // Process ACKs
                     if (isExpectedId(iq.getPacketID())) {
                         jout = getState().eventAck(iq);
                         removeExpectedId(iq.getPacketID());
                     }
-                } else if (iq instanceof Jingle) {
+                }
+                else if (iq instanceof Jingle) {
                     // Get the action from the Jingle packet
                     Jingle jin = (Jingle) iq;
                     Jingle.Action action = jin.getAction();
@@ -122,11 +148,14 @@ public class MediaNegotiator extends JingleNegotiator {
                     if (action != null) {
                         if (action.equals(Jingle.Action.CONTENTACCEPT)) {
                             jout = getState().eventAccept(jin);
-                        } else if (action.equals(Jingle.Action.CONTENTDECLINE)) {
+                        }
+                        else if (action.equals(Jingle.Action.CONTENTDECLINE)) {
                             jout = getState().eventDecline(jin);
-                        } else if (action.equals(Jingle.Action.DESCRIPTIONINFO)) {
+                        }
+                        else if (action.equals(Jingle.Action.DESCRIPTIONINFO)) {
                             jout = getState().eventInfo(jin);
-                        } else if (action.equals(Jingle.Action.CONTENTMODIFY)) {
+                        }
+                        else if (action.equals(Jingle.Action.CONTENTMODIFY)) {
                             jout = getState().eventModify(jin);
                         }
                         // Any unknown action will be ignored: it is not a msg
@@ -139,7 +168,8 @@ public class MediaNegotiator extends JingleNegotiator {
         // Save the Id for any ACK
         if (id != null) {
             addExpectedId(id);
-        } else {
+        }
+        else {
             if (jout != null) {
                 addExpectedId(jout.getPacketID());
             }
@@ -169,8 +199,8 @@ public class MediaNegotiator extends JingleNegotiator {
     // Payload types
 
     private PayloadType.Audio calculateBestCommonAudioPt(List remoteAudioPts) {
-        final ArrayList commonAudioPtsHere = new ArrayList();
-        final ArrayList commonAudioPtsThere = new ArrayList();
+        final ArrayList<PayloadType> commonAudioPtsHere = new ArrayList<PayloadType>();
+        final ArrayList<PayloadType> commonAudioPtsThere = new ArrayList<PayloadType>();
         PayloadType.Audio result = null;
 
         if (!remoteAudioPts.isEmpty()) {
@@ -181,26 +211,28 @@ public class MediaNegotiator extends JingleNegotiator {
             commonAudioPtsThere.retainAll(localAudioPts);
 
             if (!commonAudioPtsHere.isEmpty() && !commonAudioPtsThere.isEmpty()) {
-                PayloadType.Audio bestPtHere = (PayloadType.Audio) commonAudioPtsHere
-                        .get(0);
-                PayloadType.Audio bestPtThere = (PayloadType.Audio) commonAudioPtsThere
-                        .get(0);
 
-                // If both match, use it
-                if (bestPtHere.equals(bestPtThere)) {
-                    result = bestPtHere;
-                } else {
-                    // Otherwise, use the one of the initiator...
-                    // FIXME: this is an invented behavior!!!
-                    String initiator = session.getInitiator();
-                    String me = session.getConnection().getUser();
+                PayloadType.Audio bestPtHere = null;
+          
 
-                    if (initiator.equals(me)) {
-                        result = bestPtHere;
-                    } else {
-                        result = bestPtThere;
+                if (bestPtHere == null)
+                    for (PayloadType payloadType : commonAudioPtsHere)
+                        if (payloadType instanceof PayloadType.Audio) {
+                            bestPtHere = (PayloadType.Audio) payloadType;
+                            break;
+                        }
+
+                PayloadType.Audio bestPtThere = null;
+                for (PayloadType payloadType : commonAudioPtsThere)
+                    if (payloadType instanceof PayloadType.Audio) {
+                        bestPtThere = (PayloadType.Audio) payloadType;
+                        break;
                     }
-                }
+
+                if (session.getInitiator().equals(session.getConnection().getUser()))
+                    result = bestPtHere;
+                else
+                    result = bestPtThere;
             }
         }
 
@@ -332,6 +364,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * First stage when we send a session request.
      */
     public class Inviting extends JingleNegotiator.State {
+
         public Inviting(MediaNegotiator neg) {
             super(neg);
         }
@@ -391,7 +424,8 @@ public class MediaNegotiator extends JingleNegotiator {
                 // and send an accept if we havee an agreement...
                 if (bestCommonAudioPt != null) {
                     response = createAcceptMessage();
-                } else {
+                }
+                else {
                     throw new JingleException(JingleError.NO_COMMON_PAYLOAD);
                 }
 
@@ -407,6 +441,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * accepts or not...
      */
     public class Pending extends JingleNegotiator.State {
+
         public Pending(MediaNegotiator neg) {
             super(neg);
         }
@@ -441,7 +476,8 @@ public class MediaNegotiator extends JingleNegotiator {
                     if (oldBestCommonAudioPt == null || ptChange) {
                         response = createAcceptMessage();
                     }
-                } else {
+                }
+                else {
                     throw new JingleException(JingleError.NO_COMMON_PAYLOAD);
                 }
             }
@@ -481,7 +517,8 @@ public class MediaNegotiator extends JingleNegotiator {
                         }
                     }
 
-                } else if (offeredPayloads.size() > 1) {
+                }
+                else if (offeredPayloads.size() > 1) {
                     throw new JingleException(JingleError.MALFORMED_STANZA);
                 }
             }

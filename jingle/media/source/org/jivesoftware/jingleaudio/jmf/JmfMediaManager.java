@@ -78,15 +78,7 @@ public class JmfMediaManager extends JingleMediaManager {
     public List<PayloadType> getPayloads() {
         return payloads;
     }
-
-    /**
-     * Get the preferred Payload Type
-     */
-    public PayloadType getPreferredPayloadType() {
-        //TODO a better way to choose the preferred Payload
-        return payloads.size() > 0 ? payloads.get(0) : null;
-    }
-
+  
     /**
      * Runs JMFInit the first time the application is started so that capture
      * devices are properly detected and initialized by JMF.

@@ -44,11 +44,6 @@ public abstract class JingleMediaManager {
     public abstract List<PayloadType> getPayloads();
 
     /**
-     * Get the preferred Payload Type
-     */
-    public abstract PayloadType getPreferredPayloadType();
-
-    /**
      * Create a Media Session Implementation
      *
      * @param payloadType
