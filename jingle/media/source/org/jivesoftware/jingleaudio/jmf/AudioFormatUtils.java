@@ -40,6 +40,8 @@ public class AudioFormatUtils {
     public static AudioFormat getAudioFormat(PayloadType payloadtype) {
 
         switch (payloadtype.getId()) {
+            case 0:
+                return new AudioFormat(AudioFormat.ULAW_RTP);
             case 3:
                 return new AudioFormat(AudioFormat.GSM_RTP);
             case 4:

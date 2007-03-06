@@ -138,7 +138,8 @@ public class PayloadType {
     public boolean isNull() {
         if (getId() == INVALID_PT) {
             return true;
-        } else if (getName() == null) {
+        }
+        else if (getName() == null) {
             return true;
         }
         return false;
@@ -187,7 +188,8 @@ public class PayloadType {
                 if (other.getName() != null) {
                     return false;
                 }
-            } else if (!getName().equals(other.getName())) {
+            }
+            else if (!getName().equals(other.getName())) {
                 return false;
             }
         }
@@ -199,6 +201,7 @@ public class PayloadType {
      * Audio payload type.
      */
     public static class Audio extends PayloadType {
+
         private int clockRate;
 
         /**
@@ -211,6 +214,18 @@ public class PayloadType {
          */
         public Audio(int id, String name, int channels, int rate) {
             super(id, name, channels);
+            clockRate = rate;
+        }
+
+        /**
+         * Constructor with all the attributes of an Audio payload type
+         *
+         * @param id       The identifier
+         * @param name     The name assigned to this payload type
+         * @param rate     The clock rate
+         */
+        public Audio(int id, String name, int rate) {
+            super(id, name);
             clockRate = rate;
         }
 

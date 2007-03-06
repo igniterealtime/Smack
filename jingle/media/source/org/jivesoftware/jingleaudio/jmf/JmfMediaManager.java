@@ -67,6 +67,7 @@ public class JmfMediaManager extends JingleMediaManager {
     private void setupPayloads() {
         payloads.add(new PayloadType.Audio(3, "gsm"));
         payloads.add(new PayloadType.Audio(4, "g723"));
+        payloads.add(new PayloadType.Audio(0, "PCMU", 16000));
     }
 
     /**
@@ -77,7 +78,7 @@ public class JmfMediaManager extends JingleMediaManager {
     public List<PayloadType> getPayloads() {
         return payloads;
     }
-  
+
     /**
      * Runs JMFInit the first time the application is started so that capture
      * devices are properly detected and initialized by JMF.

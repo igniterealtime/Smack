@@ -110,7 +110,7 @@ public class JingleMediaTest extends SmackTestCase {
             XMPPConnection x0 = getConnection(0);
             XMPPConnection x1 = getConnection(1);
 
-/*
+
             ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
             ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
 
@@ -121,13 +121,13 @@ public class JingleMediaTest extends SmackTestCase {
 
             jm0.addCreationListener(icetm0);
             jm1.addCreationListener(icetm1);
-*/
+/*
 
             final JingleManager jm0 = new JingleManager(
                     x0, new BasicTransportManager());
             final JingleManager jm1 = new JingleManager(
                     x1, new BasicTransportManager());
-
+  */
             MultiMediaManager jingleMediaManager0 = new MultiMediaManager();
             jingleMediaManager0.addMediaManager(new SpeexMediaManager());
             jingleMediaManager0.addMediaManager(new JmfMediaManager());
