@@ -47,7 +47,6 @@ public class JmfMediaManager extends JingleMediaManager {
      */
     public JmfMediaManager() {
         setupPayloads();
-        setupJMF();
     }
 
     /**
