@@ -14,7 +14,6 @@ package org.jivesoftware.smackx.workgroup.user;
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.WorkgroupInvitation;
 import org.jivesoftware.smackx.workgroup.WorkgroupInvitationListener;
-import org.jivesoftware.smackx.workgroup.ext.email.EmailIQ;
 import org.jivesoftware.smackx.workgroup.ext.forms.WorkgroupForm;
 import org.jivesoftware.smackx.workgroup.packet.DepartQueuePacket;
 import org.jivesoftware.smackx.workgroup.packet.QueueUpdate;
@@ -702,78 +701,6 @@ public class Workgroup {
         catch (XMPPException e) {
             return false;
         }
-    }
-
-    /**
-     * Send an email from the workgroup.
-     *
-     * @param to         the to address of the the user to send to.
-     * @param from       who the email is from.
-     * @param subject    the subject of the email.
-     * @param message    the body of the email.
-     * @param sendAsHTML true if the message should be sent as html, otherwise specify false for plain text.
-     * @return true if the email was sent successfully, otherwise false.
-     * @throws XMPPException if an error occurs while sending the email.
-     */
-    public boolean sendMail(String to, String from, String subject, String message, boolean sendAsHTML) throws XMPPException {
-        EmailIQ request = new EmailIQ();
-        request.setToAddress(to);
-        request.setFromAddress(from);
-        request.setSubject(subject);
-        request.setMessage(message);
-        request.setHtml(sendAsHTML);
-
-        request.setType(IQ.Type.SET);
-        request.setTo(workgroupJID);
-
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        Packet response = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
-        return true;
-    }
-
-    /**
-     * Send an email from the workgroup.
-     *
-     * @param to        the to address of the the user to send to.
-     * @param sessionID the sessionID of the chat.
-     * @return true if the email was sent successfully, otherwise false.
-     * @throws XMPPException if an error occurs while sending the email.
-     */
-    public boolean sendTranscript(String to, String sessionID) throws XMPPException {
-        EmailIQ request = new EmailIQ();
-        request.setToAddress(to);
-        request.setSessionID(sessionID);
-
-        request.setType(IQ.Type.SET);
-        request.setTo(workgroupJID);
-
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        Packet response = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
-        return true;
     }
 
     /**
