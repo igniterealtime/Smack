@@ -72,11 +72,12 @@
         XMPPConnection.DEBUG_ENABLED = "Yes".equals(debug);
         try {
             if ("No".equals(ssl)) {
-                conn = new XMPPConnection(host, Integer.parseInt(port));
+                conn = new XMPPConnection(host);
             }
             else {
-                conn = new SSLXMPPConnection(host, Integer.parseInt(port));
+                conn = new XMPPConnection(host);
             }
+            conn.connect();
             // Add listener for messages (offline messages will be listen here)
             
             // Set the roster subscription mode to use 
@@ -126,8 +127,9 @@
                   Information</b> </td>
               </tr>
               <tr> 
-                <td> <table width=100% border=0>
-                    <form action="login.jsp" method="post">
+                <td><form action="login.jsp" method="post">
+                 <table width=100% border=0>
+                    
                       <tr> 
                         <td class=text id=black height=16>Host:</td>
                         <td><input type="text" name="host" size="30" maxlength="50" value="<%= (host!=null)?host:"" %>"></td>
@@ -177,8 +179,8 @@
                       <tr align="center"> 
                         <td colspan="2"> <input type="submit" value="Login"> </td>
                       </tr>
-                    </form>
-                  </table></td>
+                    
+                  </table></form></td>
               </tr>
             </table></td>
           <td width="20%">&nbsp;</td>
