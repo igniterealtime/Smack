@@ -39,7 +39,7 @@ import java.util.TimeZone;
  * // Request the time from a remote user.
  * Time timeRequest = new Time();
  * timeRequest.setType(IQ.Type.GET);
- * timeRequest.setTo(someUser@example.com);
+ * timeRequest.setTo(someUser@example.com/resource);
  *
  * // Create a packet collector to listen for a response.
  * PacketCollector collector = con.createPacketCollector(
@@ -55,7 +55,7 @@ import java.util.TimeZone;
  * }</pre><p>
  *
  * Warning: this is an non-standard protocol documented by
- * <a href="http://www.jabber.org/jeps/jep-0090.html">JEP-90</a>. Because this is a
+ * <a href="http://www.xmpp.org/extensions/xep-0090.html">XEP-0090</a>. Because this is a
  * non-standard protocol, it is subject to change.
  *
  * @author Matt Tucker
@@ -73,7 +73,7 @@ public class Time extends IQ {
      * Creates a new Time instance with empty values for all fields.
      */
     public Time() {
-        this(Calendar.getInstance());
+        
     }
 
     /**
