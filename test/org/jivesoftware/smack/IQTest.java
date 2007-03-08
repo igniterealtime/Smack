@@ -26,6 +26,7 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smackx.packet.Version;
 
 /**
  * Ensure that the server is handling IQ packets correctly.
@@ -70,6 +71,32 @@ public class IQTest extends SmackTestCase {
         else {
             assertEquals("Server answered an incorrect error code", 503, result.getError().getCode());
         }
+    }
+
+    /**
+     * Check that sending an IQ to a full JID that is offline returns an IQ ERROR instead
+     * of being route to some other resource of the same user. 
+     */
+    public void testFullJIDToOfflineUser() {
+        // Request the version from the server.
+        Version versionRequest = new Version();
+        versionRequest.setType(IQ.Type.GET);
+        versionRequest.setFrom(getFullJID(0));
+        versionRequest.setTo(getBareJID(0) + "/Something");
+
+        // Create a packet collector to listen for a response.
+        PacketCollector collector = getConnection(0).createPacketCollector(
+                       new PacketIDFilter(versionRequest.getPacketID()));
+
+        getConnection(0).sendPacket(versionRequest);
+
+        // Wait up to 5 seconds for a result.
+        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Stop queuing results
+        collector.cancel();
+        assertNotNull("No response from server", result);
+        assertEquals("The server didn't reply with an error packet", IQ.Type.ERROR, result.getType());
+        assertEquals("Server answered an incorrect error code", 503, result.getError().getCode());
     }
 
     protected int getMaxConnections() {
