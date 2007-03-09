@@ -267,21 +267,23 @@ public class JingleManager implements JingleSessionListener {
             }
 
             public void presenceChanged(Presence presence) {
-                String xmppAddress = presence.getFrom();
-                JingleSession aux = null;
-                for (JingleSession jingleSession : jingleSessions) {
-                    if (jingleSession.getInitiator().equals(xmppAddress) ||
-                            jingleSession.getResponder().equals(xmppAddress)) {
-                        aux = jingleSession;
+                if (!presence.isAvailable()) {
+                    String xmppAddress = presence.getFrom();
+                    JingleSession aux = null;
+                    for (JingleSession jingleSession : jingleSessions) {
+                        if (jingleSession.getInitiator().equals(xmppAddress) ||
+                                jingleSession.getResponder().equals(xmppAddress)) {
+                            aux = jingleSession;
+                        }
                     }
+                    if (aux != null)
+                        try {
+                            aux.terminate();
+                        }
+                        catch (XMPPException e) {
+                            e.printStackTrace();
+                        }
                 }
-                if (aux != null)
-                    try {
-                        aux.terminate();
-                    }
-                    catch (XMPPException e) {
-                        e.printStackTrace();
-                    }
             }
         });
 
