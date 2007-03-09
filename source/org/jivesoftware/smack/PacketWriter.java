@@ -25,10 +25,10 @@ import org.jivesoftware.smack.packet.Packet;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Queue;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
@@ -43,7 +43,7 @@ class PacketWriter {
     private Thread keepAliveThread;
     private Writer writer;
     private XMPPConnection connection;
-    private final Queue<Packet> queue;
+    private final BlockingQueue<Packet> queue;
     private boolean done;
     
     private final Map<PacketListener, ListenerWrapper> listeners =
@@ -69,7 +69,7 @@ class PacketWriter {
      * @param connection the connection.
      */
     protected PacketWriter(XMPPConnection connection) {
-        this.queue = new ConcurrentLinkedQueue<Packet>();
+        this.queue = new ArrayBlockingQueue<Packet>(500, true);
         this.connection = connection;
         init();
     }
@@ -102,7 +102,13 @@ class PacketWriter {
             // may modify the content of the packet.
             processInterceptors(packet);
 
-            queue.add(packet);
+            try {
+                queue.put(packet);
+            }
+            catch (InterruptedException ie) {
+                ie.printStackTrace();
+                return;
+            }
             synchronized (queue) {
                 queue.notifyAll();
             }
