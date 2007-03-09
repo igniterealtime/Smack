@@ -28,7 +28,7 @@
     <property name="version.major" value="3" />
     <property name="version.minor" value="0" />
     <property name="version.revision" value="0" />
-    <property name="version.extra" value="beta2" /> 
+    <property name="version.extra" value="beta3" /> 
 
     <if>
         <equals arg1="${version.extra}" arg2=""/>
@@ -208,21 +208,21 @@
                 <attribute name="Class-Path" value="smack.jar" />
             </manifest>
         </jar>
-		<jar destfile="${jar.dest.dir}/jingleExtension.jar"
+		<jar destfile="${jar.dest.dir}/smackx-jingle.jar"
             basedir="${compile.dir}/jingle/extension"
             includes="org/jivesoftware/smackx/**/*.class"
         >
             <manifest>
                 <attribute name="Class-Path" value="smack.jar, smackx.jar" />
             </manifest>
-            <zipfileset src="${jingle.extension.merge.lib.dir}/jstun-0.6.1.jar"/>
+            <zipfileset src="${jingle.extension.merge.lib.dir}/jstun.jar"/>
         </jar>
-		<jar destfile="${jar.dest.dir}/jingleMedia.jar"
+		<jar destfile="${jar.dest.dir}/smackx-jingleMedia.jar"
             basedir="${compile.dir}/jingle/media"
             includes="org/jivesoftware/**/*.class"
         >
             <manifest>
-                <attribute name="Class-Path" value="smack.jar,smackx.jar,jingleExtension.jar" />
+                <attribute name="Class-Path" value="smack.jar,smackx.jar,smackx-jingle.jar" />
             </manifest>
         </jar>
         <delete file="${compile.dir}/META-INF/smack-config.xml" />
@@ -381,8 +381,8 @@
         <delete file="${basedir}/smackx.jar" />
         <delete file="${basedir}/smackx-debug.jar" />
         <delete file="${basedir}/smack-test.jar" />
-		<delete file="${basedir}/jingleExtension.jar" />
-		<delete file="${basedir}/jingleMedia.jar" />
+		<delete file="${basedir}/smackx-jingle.jar" />
+		<delete file="${basedir}/smackx-jingleMedia.jar" />
         <delete dir="${basedir}/target" />
     </target>
 
