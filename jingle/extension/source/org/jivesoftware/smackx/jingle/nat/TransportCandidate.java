@@ -760,7 +760,7 @@ public abstract class TransportCandidate {
                 }
             }
             catch (IOException e) {
-                e.printStackTrace();
+                // Do Nothing
             }
 
             this.removeListener(listener);
@@ -778,7 +778,7 @@ public abstract class TransportCandidate {
 
         public class TestResults {
 
-            private boolean result;
+            private boolean result=false;
 
             public boolean isReachable() {
                 return result;

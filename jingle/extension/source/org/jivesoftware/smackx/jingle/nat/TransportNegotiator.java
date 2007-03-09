@@ -278,8 +278,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
                     // Sleep for some time, waiting for the candidates checks
 
-                    int totalTime= (CANDIDATES_ACCEPT_PERIOD + (TransportResolver.CHECK_TIMEOUT * (resolver.getCandidatesList().size()+1)));
-                    int tries = (int)Math.ceil(totalTime/1000);
+                    int totalTime = (CANDIDATES_ACCEPT_PERIOD + (TransportResolver.CHECK_TIMEOUT * (resolver.getCandidatesList().size() + 1)));
+                    int tries = (int) Math.ceil(totalTime / 1000);
 
                     for (int i = 0; i < tries; i++) {
                         try {
@@ -747,6 +747,11 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          */
         public void eventEnter() {
             System.out.println("Transport stabilished");
+
+            for (TransportCandidate transportCandidate : offeredCandidates)
+                if (transportCandidate.getCandidateEcho() != null)
+                    transportCandidate.removeCandidateEcho();
+
             triggerTransportEstablished(getAcceptedLocalCandidate(),
                     getBestRemoteCandidate());
             super.eventEnter();
