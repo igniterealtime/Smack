@@ -145,6 +145,9 @@ public class ChatManager {
      * @return the created chat.
      */
     public Chat createChat(String userJID, String thread, MessageListener listener) {
+        if(thread == null) {
+            thread = nextID();
+        }
         Chat chat = threadChats.get(thread);
         if(chat != null) {
             throw new IllegalArgumentException("ThreadID is already used");
@@ -168,6 +171,9 @@ public class ChatManager {
 
     private Chat createChat(Message message) {
         String threadID = message.getThread();
+        if(threadID == null) {
+            threadID = nextID();
+        }
         String userJID = message.getFrom();
 
         return createChat(userJID, threadID, false);
