@@ -285,7 +285,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../../jingle/extension/build/projects/JingleExtension.iml" filepath="$PROJECT_DIR$/../../jingle/extension/build/projects/JingleExtension.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../jingle/media/build/projects/JingleMedia.iml" filepath="$PROJECT_DIR$/../../jingle/media/build/projects/JingleMedia.iml" />
       <module fileurl="file://$PROJECT_DIR$/Smack.iml" filepath="$PROJECT_DIR$/Smack.iml" />
     </modules>
   </component>

@@ -53,14 +53,12 @@
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
 			<fileset dir="${jar.dest.dir}" includes="jingleExtension.jar" />
-			<fileset dir="${jar.dest.dir}" includes="jingleMedia.jar" />
         </copy>
         <copy todir="${release-dev.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
 			<fileset dir="${jar.dest.dir}" includes="jingleExtension.jar" />
-			<fileset dir="${jar.dest.dir}" includes="jingleMedia.jar" />			
         </copy>
         <!-- Copy build dir -->
         <copy todir="${release-dev.dir}/build">
@@ -75,16 +73,6 @@
         </copy>
 		<copy todir="${release-dev.dir}/jingle/extension/build">
             <fileset dir="${basedir}/jingle/extension/build">
-                <include name="ant*" />
-                <include name="junit.jar" />
-                <include name="build.xml" />
-                <include name="README.html" />
-                <include name="lib/*.jar" />
-                <include name="merge/*.jar" />
-            </fileset>
-        </copy>
-		<copy todir="${release-dev.dir}/jingle/media/build">
-            <fileset dir="${basedir}/jingle/media/build">
                 <include name="ant*" />
                 <include name="junit.jar" />
                 <include name="build.xml" />
@@ -116,10 +104,6 @@
 		    <fileset dir="${basedir}/jingle/extension/source" includes="**/*.java" />
             <fileset dir="${basedir}/jingle/extension/source" includes="**/*.html" />			
         </copy>
-		<copy todir="${release-dev.dir}/jingle/media/source">
-            <fileset dir="${basedir}/jingle/media/source" includes="**/*.java" />
-            <fileset dir="${basedir}/jingle/media/source" includes="**/*.html" />						
-		</copy>
         <copy todir="${release-dev.dir}/test">
             <fileset dir="${basedir}/test" includes="**/*.java" />
         </copy>
