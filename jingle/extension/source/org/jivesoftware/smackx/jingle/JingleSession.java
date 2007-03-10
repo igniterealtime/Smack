@@ -1122,6 +1122,7 @@ public abstract class JingleSession extends JingleNegotiator {
      */
     public void terminate() throws XMPPException {
         if (isClosed()) return;
+        //remo
         System.out.println("State: " + this.getState());
         Jingle result = null;
         Jingle jout = new Jingle(Jingle.Action.SESSIONTERMINATE);
@@ -1138,7 +1139,7 @@ public abstract class JingleSession extends JingleNegotiator {
         destroyMediaNeg();
         destroyTransportNeg();
         removePacketListener();
-        System.out.println("Negociation Closed: " + getConnection().getUser());
+        System.out.println("Negotiation Closed: " + getConnection().getUser() + " " + sid);
         closed = true;
         super.close();
     }

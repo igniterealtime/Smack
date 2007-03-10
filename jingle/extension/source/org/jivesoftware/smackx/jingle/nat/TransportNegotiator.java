@@ -231,7 +231,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             public void candidateChecked(TransportCandidate cand,
                     final boolean validCandidate) {
                 if (validCandidate) {
-                    addValidRemoteCandidate(offeredCandidate);
+                    if (!(getState() instanceof Active))
+                        addValidRemoteCandidate(offeredCandidate);
                 }
             }
 

@@ -671,14 +671,10 @@ public class JingleManagerTest extends SmackTestCase {
             catch (Exception e) {
                 e.printStackTrace();
             }
-            finally {
-            }
 
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
         }
 
     }
@@ -690,104 +686,105 @@ public class JingleManagerTest extends SmackTestCase {
 
         resetCounter();
 
-        try {
+        XMPPConnection.DEBUG_ENABLED = true;
 
-            XMPPConnection.DEBUG_ENABLED = true;
+        XMPPConnection x0 = getConnection(0);
+        XMPPConnection x1 = getConnection(1);
 
-            XMPPConnection x0 = getConnection(0);
-            XMPPConnection x1 = getConnection(1);
+        final JingleManager jm0 = new JingleManager(
+                x0, new FixedResolver("127.0.0.1", 20080));
 
-            final JingleManager jm0 = new JingleManager(
-                    x0, new STUNResolver() {
-            });
-            final JingleManager jm1 = new JingleManager(
-                    x1, new FixedResolver("127.0.0.1", 20040));
+        final JingleManager jm1 = new JingleManager(
+                x1, new FixedResolver("127.0.0.1", 20040));
 
 //            JingleManager jm0 = new JingleSessionManager(
 //                    x0, new ICEResolver());
 //            JingleManager jm1 = new JingleSessionManager(
 //                    x1, new ICEResolver());
 
-            JingleMediaManager jingleMediaManager = new JmfMediaManager();
+        JingleMediaManager jingleMediaManager = new JmfMediaManager();
 
-            jm0.setMediaManager(jingleMediaManager);
-            jm1.setMediaManager(jingleMediaManager);
+        jm0.setMediaManager(jingleMediaManager);
+        jm1.setMediaManager(jingleMediaManager);
 
-            jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
-                public void sessionRequested(final JingleSessionRequest request) {
+        jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
+            public void sessionRequested(final JingleSessionRequest request) {
 
-                    try {
+                try {
 
-                        IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
-                        session.addListener(new JingleSessionListener() {
+                    IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
+                    session.addListener(new JingleSessionListener() {
 
-                            public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
-                                incCounter();
-                                System.out.println("Establish In");
-                            }
+                        public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                            incCounter();
+                            System.out.println("Establish In");
+                        }
 
-                            public void sessionDeclined(String reason, JingleSession jingleSession) {
-                            }
+                        public void sessionDeclined(String reason, JingleSession jingleSession) {
+                        }
 
-                            public void sessionRedirected(String redirection, JingleSession jingleSession) {
-                            }
+                        public void sessionRedirected(String redirection, JingleSession jingleSession) {
+                        }
 
-                            public void sessionClosed(String reason, JingleSession jingleSession) {
-                            }
+                        public void sessionClosed(String reason, JingleSession jingleSession) {
+                            //  incCounter();
+                        }
 
-                            public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
-                            }
-                        });
+                        public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
+                            //  incCounter();
+                        }
+                    });
 
-                        session.start();
+                    session.start();
+                }
+                catch (XMPPException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        for (int i = 0; i < 3; i++)
+            try {
+
+                OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+
+                js0.addListener(new JingleSessionListener() {
+
+                    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                        incCounter();
+                        System.out.println("Establish Out");
                     }
-                    catch (XMPPException e) {
-                        e.printStackTrace();
+
+                    public void sessionDeclined(String reason, JingleSession jingleSession) {
                     }
 
-                }
-            });
+                    public void sessionRedirected(String redirection, JingleSession jingleSession) {
+                    }
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+                    public void sessionClosed(String reason, JingleSession jingleSession) {
+                        // incCounter();
+                    }
 
-            js0.addListener(new JingleSessionListener() {
+                    public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
+                        //  incCounter();
+                    }
+                });
 
-                public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                    incCounter();
-                    System.out.println("Establish Out");
-                }
+                js0.start();
 
-                public void sessionDeclined(String reason, JingleSession jingleSession) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
+                Thread.sleep(8000);
+                js0.terminate();
 
-                public void sessionRedirected(String redirection, JingleSession jingleSession) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
+                Thread.sleep(3000);
 
-                public void sessionClosed(String reason, JingleSession jingleSession) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
-            });
-
-            js0.start();
-
-            Thread.sleep(12000);
-            js0.terminate();
-
-            assertTrue(valCounter() == 2);
-            //Thread.sleep(15000);
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        System.out.println(valCounter());
+        assertTrue(valCounter() == 6);
     }
 
     /**
