@@ -496,7 +496,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
         jingleSession.close();
-        System.err.println("Declined");
+        System.err.println("Declined:"+reason);
     }
 
     public void sessionRedirected(String redirection, JingleSession jingleSession) {

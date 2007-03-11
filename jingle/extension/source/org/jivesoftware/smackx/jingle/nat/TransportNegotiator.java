@@ -52,7 +52,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     // The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
-    public final static int CANDIDATES_ACCEPT_PERIOD = 3000;
+    public final static int CANDIDATES_ACCEPT_PERIOD = 4000;
 
     // The session this nenotiator belongs to
     private final JingleSession session;
@@ -68,6 +68,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     // Valid remote candidates
     private final List<TransportCandidate> validRemoteCandidates = new ArrayList<TransportCandidate>();
+
+    // Accepted Remote Candidates
+    private final List<TransportCandidate> acceptedRemoteCandidates = new ArrayList<TransportCandidate>();
 
     // The best local candidate we have offered (and accepted by the other part)
     private TransportCandidate acceptedLocalCandidate;
@@ -164,10 +167,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     public void close() {
         super.close();
-
-        for (TransportCandidate candidate : offeredCandidates)
-            if (candidate.getCandidateEcho() != null)
-                candidate.removeCandidateEcho();
 
     }
 
@@ -283,10 +282,10 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
                     // Sleep for some time, waiting for the candidates checks
 
-                    int totalTime = (CANDIDATES_ACCEPT_PERIOD + (TransportResolver.CHECK_TIMEOUT * (resolver.getCandidatesList().size() + 1)));
+                    int totalTime = (CANDIDATES_ACCEPT_PERIOD + TransportResolver.CHECK_TIMEOUT);
                     int tries = (int) Math.ceil(totalTime / 1000);
 
-                    for (int i = 0; i < tries; i++) {
+                    for (int i = 0; i < tries - 2; i++) {
                         try {
                             Thread.sleep(1000);
                         }
@@ -301,18 +300,64 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
                         if (bestRemote != null && (state == pending || state == active)) {
                             // Accepting the remote candidate
-                            Jingle jout = new Jingle(Jingle.Action.TRANSPORTACCEPT);
-                            jout.addTransport(getJingleTransport(bestRemote));
+                            if (!acceptedRemoteCandidates.contains(bestRemote)) {
+                                Jingle jout = new Jingle(Jingle.Action.TRANSPORTACCEPT);
+                                jout.addTransport(getJingleTransport(bestRemote));
 
-                            // Send the packet
-                            js.sendFormattedJingle(jin, jout);
-
+                                // Send the packet
+                                js.sendFormattedJingle(jin, jout);
+                                acceptedRemoteCandidates.add(bestRemote);
+                            }
                             if (isEstablished()) {
                                 setState(active);
                                 break;
                             }
                         }
                     }
+
+                    // Once we are in pending state, look for any valid remote
+                    // candidate, and send an "accept" if we have one...
+                    TransportCandidate bestRemote = getBestRemoteCandidate();
+
+                    if (bestRemote == null) {
+                        for (TransportCandidate candidate : remoteCandidates) {
+                            if (candidate instanceof ICECandidate) {
+                                ICECandidate iceCandidate = (ICECandidate) candidate;
+                                if (iceCandidate.getType().equals("relay")) {
+                                    //TODO Check if the relay is reacheable
+                                    addValidRemoteCandidate(iceCandidate);
+                                }
+                            }
+                        }
+
+                    }
+
+                    for (int i = 0; i < 2; i++) {
+                        try {
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        bestRemote = getBestRemoteCandidate();
+                        State state = getState();
+                        if (bestRemote != null && (state == pending || state == active)) {
+                            if (!acceptedRemoteCandidates.contains(bestRemote)) {
+                                Jingle jout = new Jingle(Jingle.Action.TRANSPORTACCEPT);
+                                jout.addTransport(getJingleTransport(bestRemote));
+
+                                // Send the packet
+                                js.sendFormattedJingle(jin, jout);
+                                acceptedRemoteCandidates.add(bestRemote);
+                            }
+                            if (isEstablished()) {
+                                setState(active);
+                                break;
+                            }
+                        }
+                    }
+
                     if (getState() == null || !getState().equals(active)) {
                         try {
                             session.terminate();
@@ -698,9 +743,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 setAcceptedLocalCandidate(cand);
 
                 if (isEstablished()) {
-
                     System.out.println("SET ACTIVE");
-
                     setState(active);
                 }
             }

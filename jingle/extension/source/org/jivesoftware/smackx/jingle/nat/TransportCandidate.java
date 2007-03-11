@@ -649,12 +649,13 @@ public abstract class TransportCandidate {
         DatagramSocket socket = null;
         byte password[] = null;
         List<DatagramListener> listeners = new ArrayList<DatagramListener>();
+        List<ResultListener> resultListeners = new ArrayList<ResultListener>();
         boolean enabled = true;
         boolean ended = false;
         long tries = 10;
 
         public CandidateEcho(TransportCandidate candidate) throws UnknownHostException, SocketException {
-            this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName("0.0.0.0"));
+            this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName(candidate.getLocalIp()));
             Random r = new Random();
             password = longToByteArray((Math.abs(r.nextLong())));
         }
@@ -712,27 +713,30 @@ public abstract class TransportCandidate {
             socket.close();
         }
 
+        private void fireTestResult(TestResult testResult) {
+            for (ResultListener resultListener : resultListeners)
+                resultListener.testFinished(testResult);
+        }
+
         public boolean test(final InetAddress address, final int port) {
             return test(address, port, 2000);
         }
 
         public boolean test(final InetAddress address, final int port, int timeout) {
 
-            ended=false;
+            ended = false;
 
-            final TestResults testResults = new TestResults();
+            final TestResult testResult = new TestResult();
 
             DatagramListener listener = new DatagramListener() {
                 public boolean datagramReceived(DatagramPacket datagramPacket) {
                     if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
                         if (Arrays.equals(datagramPacket.getData(), password)) {
-                            testResults.setResult(true);
+                            testResult.setResult(true);
                             ended = true;
                             return true;
                         }
                     }
-                    testResults.setResult(false);
-                    ended = true;
                     return false;
                 }
             };
@@ -765,7 +769,59 @@ public abstract class TransportCandidate {
 
             this.removeListener(listener);
 
-            return testResults.isReachable();
+            return testResult.isReachable();
+        }
+
+        public void testASync(final InetAddress address, final int port) {
+
+            Thread thread = new Thread(new Runnable() {
+
+                public void run() {
+
+                    DatagramListener listener = new DatagramListener() {
+                        public boolean datagramReceived(DatagramPacket datagramPacket) {
+                            if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
+                                if (Arrays.equals(datagramPacket.getData(), password)) {
+                                    TestResult testResult = new TestResult();
+                                    testResult.setResult(true);
+                                    fireTestResult(testResult);
+                                    ended = true;
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    };
+
+                    addListener(listener);
+
+                    DatagramPacket packet = new DatagramPacket(password, password.length);
+
+                    packet.setAddress(address);
+                    packet.setPort(port);
+
+                    long delay = 200;
+
+                    try {
+                        for (int i = 0; i < tries; i++) {
+                            socket.send(packet);
+                            if (ended) break;
+                            try {
+                                Thread.sleep(delay);
+                            }
+                            catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    catch (IOException e) {
+                        // Do Nothing
+                    }
+
+                    removeListener(listener);
+                }
+            });
+            thread.start();
         }
 
         public void addListener(DatagramListener listener) {
@@ -776,17 +832,12 @@ public abstract class TransportCandidate {
             listeners.remove(listener);
         }
 
-        public class TestResults {
+        public void addResultListener(ResultListener resultListener) {
+            resultListeners.add(resultListener);
+        }
 
-            private boolean result=false;
-
-            public boolean isReachable() {
-                return result;
-            }
-
-            public void setResult(boolean result) {
-                this.result = result;
-            }
+        public void removeResultListener(ResultListener resultListener) {
+            resultListeners.remove(resultListener);
         }
 
     }

@@ -98,8 +98,8 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      * @param type       type as defined in ICE-12
      */
     public ICECandidate(String ip, int generation, int network,
-                        String password, int port, String username,
-                        int preference, String type) {
+            String password, int port, String username,
+            int preference, String type) {
         super(ip, port, generation);
 
         proto = Protocol.UDP;
@@ -252,50 +252,61 @@ public class ICECandidate extends TransportCandidate implements Comparable {
 
         Thread checkThread = new Thread(new Runnable() {
             public void run() {
-                boolean isUsable = false;
+
+                final TestResult result = new TestResult();
 
                 // Media Proxy don´t have Echo features.
-                // If its a relayed candidate we assumpt that is Checked.
+                // If its a relayed candidate we assumpt that is NOT Valid while other candidates still being checked.
+                // The negotiator MUST add then in the correct situations
                 if (getType().equals("relay")) {
-                    try {
-                        Thread.sleep(TransportNegotiator.CANDIDATES_ACCEPT_PERIOD*2);
-                    }
-                    catch (InterruptedException e) {
-                        // Do Nothing
-                    }
-                    triggerCandidateChecked(true);
+                    triggerCandidateChecked(false);
                     return;
                 }
+
+                ResultListener resultListener = new ResultListener() {
+                    public void testFinished(TestResult testResult) {
+                        if (testResult.isReachable()) {
+                            result.setResult(true);
+                        }
+                    }
+                };
 
                 for (TransportCandidate candidate : localCandidates) {
                     CandidateEcho echo = candidate.getCandidateEcho();
                     if (echo != null) {
-                        try {
-                            InetAddress address = InetAddress.getByName(getIp());
-                            if (echo.test(address, getPort(),2000)) isUsable = true;
-                            if (isUsable) break;
-                        }
-                        catch (UnknownHostException e) {
-                            e.printStackTrace();
+                        if (candidate instanceof ICECandidate) {
+                            ICECandidate iceCandidate = (ICECandidate) candidate;
+                            if (!iceCandidate.getType().equals("relay")) {
+                                try {
+                                    echo.addResultListener(resultListener);
+                                    InetAddress address = InetAddress.getByName(getIp());
+                                    echo.testASync(address, getPort());
+                                }
+                                catch (UnknownHostException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
                 }
 
-                if (isUsable) {
-                    System.out.println("Checked using UDP Echo:" + getLocalIp());
-                    triggerCandidateChecked(isUsable);
-                    return;
+                for (int i = 0; i < 10 && !result.isReachable(); i++)
+                    try {
+                        System.err.println(i);
+                        Thread.sleep(300);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                for (TransportCandidate candidate : localCandidates) {
+                    CandidateEcho echo = candidate.getCandidateEcho();
+                    if (echo != null) {
+                        echo.removeResultListener(resultListener);
+                    }
                 }
 
-                InetAddress candAddress;
-                try {
-                    candAddress = InetAddress.getByName(getIp());
-                    isUsable = candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
-                }
-                catch (Exception e) {
-                    isUsable = false;
-                }
-                triggerCandidateChecked(isUsable);
+                triggerCandidateChecked(result.isReachable());
 
                 //TODO candidate is being checked trigger
                 //candidatesChecking.remove(cand);
@@ -327,14 +338,16 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             if (other.getChannel() != null) {
                 return false;
             }
-        } else if (!getChannel().equals(other.getChannel())) {
+        }
+        else if (!getChannel().equals(other.getChannel())) {
             return false;
         }
         if (getId() == null) {
             if (other.getId() != null) {
                 return false;
             }
-        } else if (!getId().equals(other.getId())) {
+        }
+        else if (!getId().equals(other.getId())) {
             return false;
         }
         if (getNetwork() != other.getNetwork()) {
@@ -344,7 +357,8 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             if (other.getPassword() != null) {
                 return false;
             }
-        } else if (!getPassword().equals(other.password)) {
+        }
+        else if (!getPassword().equals(other.password)) {
             return false;
         }
         if (getPreference() != other.getPreference()) {
@@ -354,14 +368,16 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             if (other.getProto() != null) {
                 return false;
             }
-        } else if (!getProto().equals(other.getProto())) {
+        }
+        else if (!getProto().equals(other.getProto())) {
             return false;
         }
         if (getUsername() == null) {
             if (other.getUsername() != null) {
                 return false;
             }
-        } else if (!getUsername().equals(other.getUsername())) {
+        }
+        else if (!getUsername().equals(other.getUsername())) {
             return false;
         }
         return true;
@@ -370,9 +386,11 @@ public class ICECandidate extends TransportCandidate implements Comparable {
     public boolean isNull() {
         if (super.isNull()) {
             return true;
-        } else if (getProto().isNull()) {
+        }
+        else if (getProto().isNull()) {
             return true;
-        } else if (getChannel().isNull()) {
+        }
+        else if (getChannel().isNull()) {
             return true;
         }
         return false;
@@ -391,7 +409,8 @@ public class ICECandidate extends TransportCandidate implements Comparable {
             ICECandidate tc = (ICECandidate) arg;
             if (getPreference() < tc.getPreference()) {
                 return -1;
-            } else if (getPreference() > tc.getPreference()) {
+            }
+            else if (getPreference() > tc.getPreference()) {
                 return 1;
             }
         }
