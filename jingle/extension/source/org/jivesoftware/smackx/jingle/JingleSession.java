@@ -1072,6 +1072,10 @@ public abstract class JingleSession extends JingleNegotiator {
 
                 jingleMediaSession.startTrasmit();
                 jingleMediaSession.startReceive();
+
+                for (TransportCandidate candidate : this.getTransportNeg().getOfferedCandidates())
+                    candidate.removeCandidateEcho();
+
             }
         }
 

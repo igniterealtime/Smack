@@ -668,7 +668,7 @@ public abstract class TransportCandidate {
 
                     socket.receive(packet);
 
-                    System.out.println("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
+                    //System.out.println("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
                     for (DatagramListener listener : listeners) {
                         listener.datagramReceived(packet);

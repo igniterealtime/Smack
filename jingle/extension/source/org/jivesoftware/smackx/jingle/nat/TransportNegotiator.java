@@ -52,7 +52,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     // The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
-    private final static int CANDIDATES_ACCEPT_PERIOD = 3000;
+    public final static int CANDIDATES_ACCEPT_PERIOD = 3000;
 
     // The session this nenotiator belongs to
     private final JingleSession session;
@@ -169,6 +169,10 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             if (candidate.getCandidateEcho() != null)
                 candidate.removeCandidateEcho();
 
+    }
+
+    public List<TransportCandidate> getOfferedCandidates() {
+        return offeredCandidates;
     }
 
     /**
@@ -559,7 +563,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             JingleListener li = (JingleListener) listener;
             if (li instanceof JingleTransportListener) {
                 JingleTransportListener mli = (JingleTransportListener) li;
-                System.out.println("triggerTransportEstablished " + local.getLocalIp());
+                System.out.println("triggerTransportEstablished " + local.getLocalIp() + ":" + local.getPort() + "|" + remote.getIp() + ":" + remote.getPort());
                 mli.transportEstablished(local, remote);
             }
         }
@@ -748,11 +752,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          */
         public void eventEnter() {
             System.out.println("Transport stabilished");
-
-            for (TransportCandidate transportCandidate : offeredCandidates)
-                if (transportCandidate.getCandidateEcho() != null)
-                    transportCandidate.removeCandidateEcho();
-
             triggerTransportEstablished(getAcceptedLocalCandidate(),
                     getBestRemoteCandidate());
             super.eventEnter();
@@ -807,6 +806,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             // Hopefully, we only have one validRemoteCandidate
             ArrayList cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
+                System.out.println("RAW CAND");
                 return (TransportCandidate) cands.get(0);
             }
             else {
@@ -871,6 +871,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 }
                 result = chose;
             }
+
+            if (result != null && result.getType().equals("relay"))
+                System.out.println("Relay Type");
 
             return result;
         }

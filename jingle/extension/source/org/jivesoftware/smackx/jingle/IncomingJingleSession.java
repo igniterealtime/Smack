@@ -310,6 +310,7 @@ public class IncomingJingleSession extends JingleSession {
                         .getBestCommonAudioPt();
                 TransportCandidate bestRemoteCandidate = getTransportNeg()
                         .getBestRemoteCandidate();
+
                 TransportCandidate acceptedLocalCandidate = getTransportNeg()
                         .getAcceptedLocalCandidate();
 

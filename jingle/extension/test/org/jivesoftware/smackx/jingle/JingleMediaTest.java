@@ -96,7 +96,7 @@ public class JingleMediaTest extends SmackTestCase {
 
             js0.start();
 
-            Thread.sleep(10000);
+            Thread.sleep(50000);
             js0.terminate();
 
             jm1.removeJingleSessionRequestListener(jingleSessionRequestListener);
