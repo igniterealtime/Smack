@@ -53,6 +53,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -89,7 +90,7 @@ public abstract class TransportResolver {
     public Type type = Type.rawupd;
 
     // the time, in milliseconds, before a check aborts
-    public static final int CHECK_TIMEOUT = 5000;
+    public static final int CHECK_TIMEOUT = 3000;
 
     // Listeners for events
     private final ArrayList<TransportResolverListener> listeners = new ArrayList<TransportResolverListener>();
@@ -126,7 +127,7 @@ public abstract class TransportResolver {
     /**
      * Start a the resolution.
      */
-    public abstract void resolve() throws XMPPException;
+    public abstract void resolve(JingleSession session) throws XMPPException;
 
     /**
      * Clear the list of candidates and start a new resolution process.

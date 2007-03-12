@@ -62,7 +62,7 @@ public class TransportCandidateTest extends SmackTestCase {
             
         };
         try {
-            tc.addCandidateEcho();
+            tc.addCandidateEcho(null);
             assertTrue(tc.getCandidateEcho().test(InetAddress.getByName("localhost"),10020));
         }
         catch (SocketException e) {

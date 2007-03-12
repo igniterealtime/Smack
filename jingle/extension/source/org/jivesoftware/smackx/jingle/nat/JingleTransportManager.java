@@ -20,6 +20,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 /**
  * Transport manager for Jingle.
@@ -53,8 +54,8 @@ public abstract class JingleTransportManager {
      *
      * @return
      */
-    public TransportResolver getResolver() throws XMPPException {
-        TransportResolver resolver = createResolver();
+    public TransportResolver getResolver(JingleSession session) throws XMPPException {
+        TransportResolver resolver = createResolver(session);
         if (resolver == null) {
             resolver = new BasicResolver();
         }
@@ -68,6 +69,6 @@ public abstract class JingleTransportManager {
      *
      * @return
      */
-    protected abstract TransportResolver createResolver();
+    protected abstract TransportResolver createResolver(JingleSession session);
 
 }

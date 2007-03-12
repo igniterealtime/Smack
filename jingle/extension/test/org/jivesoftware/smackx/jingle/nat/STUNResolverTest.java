@@ -205,10 +205,9 @@ public class STUNResolverTest extends SmackTestCase {
         });
 
         try {
-            stunResolver.initialize();
+            stunResolver.initializeAndWait();
             Thread.sleep(55000);
             assertTrue(valCounter() > 0);
-            stunResolver.resolve();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -257,8 +256,8 @@ public class STUNResolverTest extends SmackTestCase {
             };
 
             // Explicit resolution
-            tr1.resolve();
-            tr2.resolve();
+            tr1.resolve(null);
+            tr2.resolve(null);
 
             final JingleManager man0 = new JingleManager(getConnection(0), tr1);
             final JingleManager man1 = new JingleManager(getConnection(1), tr2);
@@ -356,8 +355,8 @@ public class STUNResolverTest extends SmackTestCase {
         TransportCandidate.Fixed c2 = new TransportCandidate.Fixed("localhost", 22444);
 
         try {
-            c1.addCandidateEcho();
-            c2.addCandidateEcho();
+            c1.addCandidateEcho(null);
+            c2.addCandidateEcho(null);
 
             try {
                 Thread.sleep(100);

@@ -63,6 +63,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportNegotiator;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.packet.JingleContentDescription;
 import org.jivesoftware.smackx.packet.JingleContentDescription.JinglePayloadType;
@@ -93,13 +94,13 @@ public class OutgoingJingleSession extends JingleSession {
     /**
      * Constructor for a Jingle outgoing session.
      *
-     * @param conn         the XMPP connection
-     * @param responder    the other endpoint
-     * @param payloadTypes A list of payload types, in order of preference.
-     * @param resolver     The transport resolver.
+     * @param conn             the XMPP connection
+     * @param responder        the other endpoint
+     * @param payloadTypes     A list of payload types, in order of preference.
+     * @param transportManager The transport manager.
      */
     protected OutgoingJingleSession(XMPPConnection conn, String responder,
-            List payloadTypes, TransportResolver resolver) {
+            List payloadTypes, JingleTransportManager transportManager) {
 
         super(conn, conn.getUser(), responder);
 
@@ -109,6 +110,14 @@ public class OutgoingJingleSession extends JingleSession {
         inviting = new Inviting(this);
         pending = new Pending(this);
         active = new Active(this);
+
+        TransportResolver resolver = null;
+        try {
+            resolver = transportManager.getResolver(this);
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+        }
 
         // Create description and transport negotiatiors...
         setMediaNeg(new MediaNegotiator(this, payloadTypes));
@@ -126,12 +135,12 @@ public class OutgoingJingleSession extends JingleSession {
      * @param conn               the XMPP connection
      * @param responder          the other endpoint
      * @param payloadTypes       A list of payload types, in order of preference.
-     * @param resolver           The transport resolver.
+     * @param transportManager   The transport manager.
      * @param jingleMediaManager The Media Manager for this Session
      */
     protected OutgoingJingleSession(XMPPConnection conn, String responder,
-            List payloadTypes, TransportResolver resolver, JingleMediaManager jingleMediaManager) {
-        this(conn, responder, payloadTypes, resolver);
+            List payloadTypes, JingleTransportManager transportManager, JingleMediaManager jingleMediaManager) {
+        this(conn, responder, payloadTypes, transportManager);
         this.jingleMediaManager = jingleMediaManager;
     }
 

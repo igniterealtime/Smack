@@ -53,6 +53,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.io.IOException;
 import java.net.*;
@@ -60,6 +61,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 
 /**
  * Transport candidate.
@@ -97,8 +100,8 @@ public abstract class TransportCandidate {
     // Listeners for events
     private final List<TransportResolverListener.Checker> listeners = new ArrayList();
 
-    public void addCandidateEcho() throws SocketException, UnknownHostException {
-        candidateEcho = new CandidateEcho(this);
+    public void addCandidateEcho(JingleSession session) throws SocketException, UnknownHostException {
+        candidateEcho = new CandidateEcho(this, session);
         echoThread = new Thread(candidateEcho);
         echoThread.start();
     }
@@ -647,17 +650,52 @@ public abstract class TransportCandidate {
     public class CandidateEcho implements Runnable {
 
         DatagramSocket socket = null;
-        byte password[] = null;
+        String localUser = null;
+        String remoteUser = null;
+        String id = null;
+        byte send[] = null;
+        byte receive[] = null;
+        DatagramPacket sendPacket = null;
         List<DatagramListener> listeners = new ArrayList<DatagramListener>();
         List<ResultListener> resultListeners = new ArrayList<ResultListener>();
         boolean enabled = true;
         boolean ended = false;
         long tries = 10;
 
-        public CandidateEcho(TransportCandidate candidate) throws UnknownHostException, SocketException {
+        public CandidateEcho(TransportCandidate candidate, JingleSession session) throws UnknownHostException, SocketException {
             this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName(candidate.getLocalIp()));
-            Random r = new Random();
-            password = longToByteArray((Math.abs(r.nextLong())));
+            this.localUser = session.getInitiator();
+            this.remoteUser = session.getResponder();
+            this.id = session.getSid();
+
+            int keySplitIndex = ((int) Math.ceil(((float) id.length()) / 2));
+
+
+            int size = 4 + localUser.length() * 2 + (id.length() - keySplitIndex) * 2;
+            ByteBuffer bufLocal = ByteBuffer.allocate(size);
+            // Create a character ByteBuffer Wrap
+            CharBuffer cbufLocal = bufLocal.asCharBuffer();
+            cbufLocal.append(id.substring(0, keySplitIndex));
+            cbufLocal.append(';');
+            cbufLocal.append(localUser);
+
+            size = 4 + remoteUser.length() * 2 + keySplitIndex * 2;
+            ByteBuffer bufRemote = ByteBuffer.allocate(size);
+            // Create a character ByteBuffer Wrap
+            CharBuffer cbufRemote = bufRemote.asCharBuffer();
+            cbufRemote.append(id.substring(keySplitIndex));
+            cbufRemote.append(';');
+            cbufRemote.append(remoteUser);
+
+            if (session.getConnection().getUser().equals(session.getInitiator())) {
+                this.send = bufLocal.array();
+                this.receive = bufRemote.array();
+            }
+            else {
+                this.receive = bufLocal.array();
+                this.send = bufRemote.array();
+            }
+
         }
 
         public void run() {
@@ -665,7 +703,7 @@ public abstract class TransportCandidate {
                 System.out.println("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
                 while (true) {
 
-                    DatagramPacket packet = new DatagramPacket(new byte[8], 8);
+                    DatagramPacket packet = new DatagramPacket(new byte[this.receive.length], this.receive.length);
 
                     socket.receive(packet);
 
@@ -681,8 +719,10 @@ public abstract class TransportCandidate {
                     long delay = 1000 / tries / 2;
 
                     if (delay < 0) delay = 10;
-                    if (!Arrays.equals(packet.getData(), password))
+                    if (Arrays.equals(packet.getData(), receive))
                         for (int i = 0; i < tries; i++) {
+                            packet.setData(send);
+                            packet.setLength(send.length);
                             socket.send(packet);
                             if (!enabled) break;
                             try {
@@ -731,7 +771,7 @@ public abstract class TransportCandidate {
             DatagramListener listener = new DatagramListener() {
                 public boolean datagramReceived(DatagramPacket datagramPacket) {
                     if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
-                        if (Arrays.equals(datagramPacket.getData(), password)) {
+                        if (Arrays.equals(datagramPacket.getData(), receive)) {
                             testResult.setResult(true);
                             ended = true;
                             return true;
@@ -743,7 +783,7 @@ public abstract class TransportCandidate {
 
             this.addListener(listener);
 
-            DatagramPacket packet = new DatagramPacket(password, password.length);
+            DatagramPacket packet = new DatagramPacket(send, send.length);
 
             packet.setAddress(address);
             packet.setPort(port);
@@ -781,7 +821,7 @@ public abstract class TransportCandidate {
                     DatagramListener listener = new DatagramListener() {
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
                             if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
-                                if (Arrays.equals(datagramPacket.getData(), password)) {
+                                if (Arrays.equals(datagramPacket.getData(), receive)) {
                                     TestResult testResult = new TestResult();
                                     testResult.setResult(true);
                                     fireTestResult(testResult);
@@ -795,7 +835,7 @@ public abstract class TransportCandidate {
 
                     addListener(listener);
 
-                    DatagramPacket packet = new DatagramPacket(password, password.length);
+                    DatagramPacket packet = new DatagramPacket(send, send.length);
 
                     packet.setAddress(address);
                     packet.setPort(port);
@@ -840,15 +880,6 @@ public abstract class TransportCandidate {
             resultListeners.remove(resultListener);
         }
 
-    }
-
-    public static byte[] longToByteArray(long valor) {
-        byte[] result = new byte[8];
-        for (int i = 0; i < result.length; i++) {
-            result[7 - i] = (byte) (valor & 0xFF);
-            valor = valor >> 8;
-        }
-        return result;
     }
 
 }

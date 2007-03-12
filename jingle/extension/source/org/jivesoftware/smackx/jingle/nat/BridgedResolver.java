@@ -21,6 +21,7 @@ package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.Random;
 
@@ -54,7 +55,7 @@ public class BridgedResolver extends TransportResolver{
      * <p/>
      * The BridgedResolver takes the IP addresse and ports of a jmf proxy service.
      */
-    public synchronized void resolve() throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException {
 
         setResolveInit();
 
@@ -67,7 +68,6 @@ public class BridgedResolver extends TransportResolver{
         BasicResolver basicResolver = new BasicResolver();
 
         basicResolver.initializeAndWait();
-        basicResolver.resolve();
 
         TransportCandidate localCandidate = new TransportCandidate.Fixed(
                 rtpBridge.getIp(), rtpBridge.getPortA());

@@ -2,6 +2,7 @@ package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.jingle.nat.BasicResolver;
+import org.jivesoftware.smackx.jingle.nat.BasicTransportManager;
 
 public class JingleSessionTest extends SmackTestCase {
 
@@ -10,9 +11,9 @@ public class JingleSessionTest extends SmackTestCase {
     }
 
     public void testEqualsObject() {
-        JingleSession js1 = new OutgoingJingleSession(getConnection(0), "res1", null, new BasicResolver());
-        JingleSession js2 = new OutgoingJingleSession(getConnection(1), "res1", null, new BasicResolver());
-        JingleSession js3 = new OutgoingJingleSession(getConnection(2), "res2", null, new BasicResolver());
+        JingleSession js1 = new OutgoingJingleSession(getConnection(0), "res1", null, new BasicTransportManager());
+        JingleSession js2 = new OutgoingJingleSession(getConnection(1), "res1", null, new BasicTransportManager());
+        JingleSession js3 = new OutgoingJingleSession(getConnection(2), "res2", null, new BasicTransportManager());
 
         System.out.println(js1.getSid());
         System.out.println(js2.getSid());
@@ -34,8 +35,8 @@ public class JingleSessionTest extends SmackTestCase {
         String ini2 = "initiator2";
         String sid2 = "sid2";
 
-        JingleSession js1 = new OutgoingJingleSession(getConnection(0), sid1, null, new BasicResolver());
-        JingleSession js2 = new OutgoingJingleSession(getConnection(1), sid2, null, new BasicResolver());
+        JingleSession js1 = new OutgoingJingleSession(getConnection(0), sid1, null, new BasicTransportManager());
+        JingleSession js2 = new OutgoingJingleSession(getConnection(1), sid2, null, new BasicTransportManager());
 
         // For a packet, we should be able to get a session that handles that...
         assertNotNull(JingleSession.getInstanceFor(getConnection(0)));

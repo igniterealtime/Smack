@@ -1,5 +1,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
+
 /**
  * $RCSfile$
  * $Revision: $
@@ -26,7 +28,7 @@ package org.jivesoftware.smackx.jingle.nat;
  */
 public class BasicTransportManager extends JingleTransportManager{
 
-    protected TransportResolver createResolver() {
+    protected TransportResolver createResolver(JingleSession session) {
         return new BasicResolver();
     }
 }

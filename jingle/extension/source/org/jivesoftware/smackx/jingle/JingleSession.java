@@ -239,7 +239,7 @@ public abstract class JingleSession extends JingleNegotiator {
     /**
      * Generate a unique session ID.
      */
-    protected String generateSessionId() {
+    protected static String generateSessionId() {
         return String.valueOf(Math.abs(randomGenerator.nextLong()));
     }
 

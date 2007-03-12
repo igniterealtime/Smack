@@ -64,6 +64,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportNegotiator;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.packet.JingleContentDescription;
 import org.jivesoftware.smackx.packet.JingleContentDescription.JinglePayloadType;
@@ -96,20 +97,30 @@ public class IncomingJingleSession extends JingleSession {
     /**
      * Constructor for a Jingle incoming session
      *
-     * @param conn      the XMPP connection
-     * @param responder the responder
-     * @param resolver  The transport resolver
+     * @param conn             the XMPP connection
+     * @param responder        the responder
+     * @param transportManager The transport manager
      */
     protected IncomingJingleSession(XMPPConnection conn, String responder,
-            List payloadTypes, TransportResolver resolver) {
+            List payloadTypes, JingleTransportManager transportManager, String sid) {
 
         super(conn, responder, conn.getUser());
+
+        setSid(sid);
 
         // Create the states...
 
         accepting = new Accepting(this);
         pending = new Pending(this);
         active = new Active(this);
+
+        TransportResolver resolver = null;
+        try {
+            resolver = transportManager.getResolver(this);
+        }
+        catch (XMPPException e) {
+            e.printStackTrace();
+        }
 
         setMediaNeg(new MediaNegotiator(this, payloadTypes));
         if (resolver.getType().equals(TransportResolver.Type.rawupd)) {
@@ -126,12 +137,12 @@ public class IncomingJingleSession extends JingleSession {
      *
      * @param conn               the XMPP connection
      * @param responder          the responder
-     * @param resolver           The transport resolver
+     * @param transportManager   The transport manager
      * @param jingleMediaManager The Media Manager for this Session
      */
     protected IncomingJingleSession(XMPPConnection conn, String responder,
-            List payloadTypes, TransportResolver resolver, JingleMediaManager jingleMediaManager) {
-        this(conn, responder, payloadTypes, resolver);
+            List payloadTypes, JingleTransportManager transportManager, JingleMediaManager jingleMediaManager, String sid) {
+        this(conn, responder, payloadTypes, transportManager, sid);
         this.jingleMediaManager = jingleMediaManager;
     }
 

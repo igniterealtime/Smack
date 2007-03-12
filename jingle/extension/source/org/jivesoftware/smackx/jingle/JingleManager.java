@@ -307,7 +307,7 @@ public class JingleManager implements JingleSessionListener {
      */
     public JingleManager(XMPPConnection connection) {
         this(connection, new JingleTransportManager() {
-            protected TransportResolver createResolver() {
+            protected TransportResolver createResolver(JingleSession session) {
                 return new BasicResolver();
             }
         });
@@ -321,7 +321,7 @@ public class JingleManager implements JingleSessionListener {
      */
     public JingleManager(XMPPConnection connection, final TransportResolver resolver) {
         this(connection, new JingleTransportManager() {
-            protected TransportResolver createResolver() {
+            protected TransportResolver createResolver(JingleSession session) {
                 return resolver;
             }
         });
@@ -496,7 +496,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
         jingleSession.close();
-        System.err.println("Declined:"+reason);
+        System.err.println("Declined:" + reason);
     }
 
     public void sessionRedirected(String redirection, JingleSession jingleSession) {
@@ -609,12 +609,10 @@ public class JingleManager implements JingleSessionListener {
 
         OutgoingJingleSession session;
 
-        TransportResolver resolver = jingleTransportManager.getResolver();
-
         if (jingleMediaManager != null)
-            session = new OutgoingJingleSession(connection, responder, payloadTypes, resolver, jingleMediaManager);
+            session = new OutgoingJingleSession(connection, responder, payloadTypes, jingleTransportManager, jingleMediaManager);
         else
-            session = new OutgoingJingleSession(connection, responder, payloadTypes, jingleTransportManager.getResolver());
+            session = new OutgoingJingleSession(connection, responder, payloadTypes, jingleTransportManager);
 
         triggerSessionCreated(session);
 
@@ -649,14 +647,12 @@ public class JingleManager implements JingleSessionListener {
 
         IncomingJingleSession session;
 
-        TransportResolver resolver = jingleTransportManager.getResolver();
-
         if (jingleMediaManager != null)
             session = new IncomingJingleSession(connection, request
-                    .getFrom(), payloadTypes, resolver, jingleMediaManager);
+                    .getFrom(), payloadTypes, jingleTransportManager, jingleMediaManager, request.getSessionID());
         else
             session = new IncomingJingleSession(connection, request
-                    .getFrom(), payloadTypes, resolver);
+                    .getFrom(), payloadTypes, jingleTransportManager, request.getSessionID());
 
         triggerSessionCreated(session);
 

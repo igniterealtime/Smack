@@ -25,6 +25,7 @@ import de.javawi.jstun.test.demo.ice.ICENegociator;
 import de.javawi.jstun.util.UtilityException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.net.UnknownHostException;
 import java.net.SocketException;
@@ -76,7 +77,7 @@ public class ICEResolver extends TransportResolver {
     /**
      * Resolve the IP and obtain a valid transport method.
      */
-    public synchronized void resolve() throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException {
         this.setResolveInit();
 
         for (TransportCandidate candidate : this.getCandidatesList()) {
@@ -105,7 +106,7 @@ public class ICEResolver extends TransportResolver {
                 transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                 transportCandidate.setPort(getFreePort());
                 try {
-                    transportCandidate.addCandidateEcho();
+                    transportCandidate.addCandidateEcho(session);
                 }
                 catch (SocketException e) {
                     e.printStackTrace();

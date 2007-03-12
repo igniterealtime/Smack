@@ -36,7 +36,7 @@ public class TransportResolverTest extends SmackTestCase {
 		assertFalse(tr.isResolved());
 		
 		try {
-			tr.resolve();
+			tr.resolve(null);
 		} catch (XMPPException e) {
 			e.printStackTrace();
 			fail("Error resolving");

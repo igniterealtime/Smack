@@ -23,6 +23,7 @@ import de.javawi.jstun.test.BindingLifetimeTest;
 import de.javawi.jstun.test.DiscoveryInfo;
 import de.javawi.jstun.test.DiscoveryTest;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -271,7 +272,7 @@ public class STUNResolver extends TransportResolver {
     /**
      * Resolve the IP and obtain a valid transport method.
      */
-    public synchronized void resolve() throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException {
 
         setResolveInit();
 

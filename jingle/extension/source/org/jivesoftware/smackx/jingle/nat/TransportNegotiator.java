@@ -507,7 +507,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (!(resolver.isResolving() || resolver.isResolved())) {
             // Resolve our IP and port
             System.out.println("RESOLVER CALLED");
-            resolver.resolve();
+            resolver.resolve(session);
         }
     }
 

@@ -40,9 +40,9 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
         }
     }
 
-    protected TransportResolver createResolver() {
+    protected TransportResolver createResolver(JingleSession session) {
         try {
-            iceResolver.resolve();
+            iceResolver.resolve(session);
         }
         catch (XMPPException e) {
             e.printStackTrace();

@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -47,7 +48,7 @@ public class BasicResolver extends TransportResolver {
      * The BasicResolver takes the IP addresses of the interfaces and uses the
      * first non-loopback, non-linklocal and non-sitelocal address.
      */
-    public synchronized void resolve() throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException {
 
         setResolveInit();
 

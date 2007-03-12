@@ -20,6 +20,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 /**
  * The FixedResolver is a resolver where
@@ -53,7 +54,7 @@ public class FixedResolver extends TransportResolver {
     /**
      * Resolve the IP address.
      */
-    public synchronized void resolve() throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException {
         if (!isResolving()) {
             setResolveInit();
 
