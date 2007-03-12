@@ -705,7 +705,7 @@ public abstract class TransportCandidate {
 
                     //System.out.println("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
-                    boolean reply = false;
+                    boolean accept = false;
 
                     ByteBuffer buf = ByteBuffer.wrap(packet.getData());
                     byte[] content = new byte[packet.getLength()];
@@ -714,8 +714,8 @@ public abstract class TransportCandidate {
                     packet.setData(content);
 
                     for (DatagramListener listener : listeners) {
-                        reply = listener.datagramReceived(packet);
-                        if (reply) break;
+                        accept = listener.datagramReceived(packet);
+                        if (accept) break;
                     }
 
                     long delay = 200 / tries / 2;
@@ -728,7 +728,7 @@ public abstract class TransportCandidate {
                     String ip = address[0];
                     String port = address[1];
 
-                    if (pass.equals(candidate.getPassword())) {
+                    if (pass.equals(candidate.getPassword()) && !accept) {
 
                         byte[] cont = null;
                         try {

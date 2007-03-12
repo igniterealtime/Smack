@@ -269,6 +269,13 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                     public void testFinished(TestResult testResult, TransportCandidate candidate) {
                         if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
+                            System.out.println("RESULT>>>OK:" + candidate.getIp() + ":" + candidate.getPort());
+                            for (TransportCandidate c : localCandidates) {
+                                CandidateEcho echo = candidate.getCandidateEcho();
+                                if (echo != null) {
+                                    echo.removeResultListener(this);
+                                }
+                            }
                         }
                     }
                 };
@@ -300,13 +307,6 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                     catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-                for (TransportCandidate candidate : localCandidates) {
-                    CandidateEcho echo = candidate.getCandidateEcho();
-                    if (echo != null) {
-                        echo.removeResultListener(resultListener);
-                    }
-                }
 
                 triggerCandidateChecked(result.isReachable());
 
