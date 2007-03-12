@@ -57,22 +57,6 @@ public class TransportCandidateTest extends SmackTestCase {
         assertEquals(candList.get(candList.size() - 1), candH);
     }
 
-    public void testEcho(){
-        TransportCandidate tc = new TransportCandidate("localhost",10222){
-            
-        };
-        try {
-            tc.addCandidateEcho(null);
-            assertTrue(tc.getCandidateEcho().test(InetAddress.getByName("localhost"),10020));
-        }
-        catch (SocketException e) {
-            e.printStackTrace();
-        }
-        catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-    }
-
     protected int getMaxConnections() {
         return 0;
     }

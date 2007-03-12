@@ -56,6 +56,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -660,41 +661,36 @@ public abstract class TransportCandidate {
         List<ResultListener> resultListeners = new ArrayList<ResultListener>();
         boolean enabled = true;
         boolean ended = false;
-        long tries = 10;
+        long tries = 2;
+        TransportCandidate candidate = null;
 
         public CandidateEcho(TransportCandidate candidate, JingleSession session) throws UnknownHostException, SocketException {
             this.socket = new DatagramSocket(candidate.getPort(), InetAddress.getByName(candidate.getLocalIp()));
             this.localUser = session.getInitiator();
             this.remoteUser = session.getResponder();
             this.id = session.getSid();
+            this.candidate = candidate;
 
             int keySplitIndex = ((int) Math.ceil(((float) id.length()) / 2));
 
+            String local = id.substring(0, keySplitIndex) + ";" + localUser;
+            String remote = id.substring(keySplitIndex) + ";" + remoteUser;
 
-            int size = 4 + localUser.length() * 2 + (id.length() - keySplitIndex) * 2;
-            ByteBuffer bufLocal = ByteBuffer.allocate(size);
-            // Create a character ByteBuffer Wrap
-            CharBuffer cbufLocal = bufLocal.asCharBuffer();
-            cbufLocal.append(id.substring(0, keySplitIndex));
-            cbufLocal.append(';');
-            cbufLocal.append(localUser);
+            try {
+                if (session.getConnection().getUser().equals(session.getInitiator())) {
 
-            size = 4 + remoteUser.length() * 2 + keySplitIndex * 2;
-            ByteBuffer bufRemote = ByteBuffer.allocate(size);
-            // Create a character ByteBuffer Wrap
-            CharBuffer cbufRemote = bufRemote.asCharBuffer();
-            cbufRemote.append(id.substring(keySplitIndex));
-            cbufRemote.append(';');
-            cbufRemote.append(remoteUser);
-
-            if (session.getConnection().getUser().equals(session.getInitiator())) {
-                this.send = bufLocal.array();
-                this.receive = bufRemote.array();
+                    this.send = local.getBytes("UTF-8");
+                    this.receive = remote.getBytes("UTF-8");
+                }
+                else {
+                    this.receive = local.getBytes("UTF-8");
+                    this.send = remote.getBytes("UTF-8");
+                }
             }
-            else {
-                this.receive = bufLocal.array();
-                this.send = bufRemote.array();
+            catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
+
 
         }
 
@@ -703,26 +699,51 @@ public abstract class TransportCandidate {
                 System.out.println("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
                 while (true) {
 
-                    DatagramPacket packet = new DatagramPacket(new byte[this.receive.length], this.receive.length);
+                    DatagramPacket packet = new DatagramPacket(new byte[150], 150);
 
                     socket.receive(packet);
 
                     //System.out.println("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
+                    boolean reply = false;
+
+                    ByteBuffer buf = ByteBuffer.wrap(packet.getData());
+                    byte[] content = new byte[packet.getLength()];
+                    buf = buf.get(content, 0, packet.getLength());
+
+                    packet.setData(content);
+
                     for (DatagramListener listener : listeners) {
-                        listener.datagramReceived(packet);
+                        reply = listener.datagramReceived(packet);
+                        if (reply) break;
                     }
 
-                    packet.setAddress(packet.getAddress());
-                    packet.setPort(packet.getPort());
-
-                    long delay = 1000 / tries / 2;
+                    long delay = 200 / tries / 2;
 
                     if (delay < 0) delay = 10;
-                    if (Arrays.equals(packet.getData(), receive))
+
+                    String str[] = new String(packet.getData(), "UTF-8").split(";");
+                    String pass = str[0];
+                    String address[] = str[1].split(":");
+                    String ip = address[0];
+                    String port = address[1];
+
+                    if (pass.equals(candidate.getPassword())) {
+
+                        byte[] cont = null;
+                        try {
+                            cont = (password + ";" + candidate.getIp() + ":" + candidate.getPort()).getBytes("UTF-8");
+                        }
+                        catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                        packet.setData(cont);
+                        packet.setLength(cont.length);
+                        packet.setAddress(InetAddress.getByName(ip));
+                        packet.setPort(Integer.parseInt(port));
+
                         for (int i = 0; i < tries; i++) {
-                            packet.setData(send);
-                            packet.setLength(send.length);
                             socket.send(packet);
                             if (!enabled) break;
                             try {
@@ -732,6 +753,7 @@ public abstract class TransportCandidate {
                                 e.printStackTrace();
                             }
                         }
+                    }
                 }
             }
             catch (UnknownHostException uhe) {
@@ -753,66 +775,12 @@ public abstract class TransportCandidate {
             socket.close();
         }
 
-        private void fireTestResult(TestResult testResult) {
+        private void fireTestResult(TestResult testResult, TransportCandidate candidate) {
             for (ResultListener resultListener : resultListeners)
-                resultListener.testFinished(testResult);
+                resultListener.testFinished(testResult, candidate);
         }
 
-        public boolean test(final InetAddress address, final int port) {
-            return test(address, port, 2000);
-        }
-
-        public boolean test(final InetAddress address, final int port, int timeout) {
-
-            ended = false;
-
-            final TestResult testResult = new TestResult();
-
-            DatagramListener listener = new DatagramListener() {
-                public boolean datagramReceived(DatagramPacket datagramPacket) {
-                    if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
-                        if (Arrays.equals(datagramPacket.getData(), receive)) {
-                            testResult.setResult(true);
-                            ended = true;
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            };
-
-            this.addListener(listener);
-
-            DatagramPacket packet = new DatagramPacket(send, send.length);
-
-            packet.setAddress(address);
-            packet.setPort(port);
-
-            long delay = timeout / tries;
-            if (delay < 0) delay = 10;
-
-            try {
-                for (int i = 0; i < tries; i++) {
-                    socket.send(packet);
-                    if (ended) break;
-                    try {
-                        Thread.sleep(delay);
-                    }
-                    catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            catch (IOException e) {
-                // Do Nothing
-            }
-
-            this.removeListener(listener);
-
-            return testResult.isReachable();
-        }
-
-        public void testASync(final InetAddress address, final int port) {
+        public void testASync(final TransportCandidate candidate, final String password) {
 
             Thread thread = new Thread(new Runnable() {
 
@@ -820,25 +788,52 @@ public abstract class TransportCandidate {
 
                     DatagramListener listener = new DatagramListener() {
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
-                            if (datagramPacket.getAddress().equals(address) && datagramPacket.getPort() == port) {
-                                if (Arrays.equals(datagramPacket.getData(), receive)) {
+
+                            try {
+                                String str[] = new String(datagramPacket.getData(), "UTF-8").split(";");
+                                String pass = str[0];
+                                String addr[] = str[1].split(":");
+                                String ip = addr[0];
+                                String pt = addr[1];
+
+                                if (pass.equals(password) && candidate.getIp().indexOf(ip) != -1 && candidate.getPort() == Integer.parseInt(pt)) {
+                                    System.out.println("Result OK:" + candidate.getIp() + ":" + candidate.getPort());
                                     TestResult testResult = new TestResult();
                                     testResult.setResult(true);
-                                    fireTestResult(testResult);
                                     ended = true;
+                                    fireTestResult(testResult, candidate);
                                     return true;
                                 }
+
                             }
+                            catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+
+                            System.out.println("Result Wrong Data:" + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
                             return false;
                         }
                     };
 
                     addListener(listener);
 
-                    DatagramPacket packet = new DatagramPacket(send, send.length);
+                    byte[] content = null;
+                    try {
+                        content = new String(password + ";" + getIp() + ":" + getPort()).getBytes("UTF-8");
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
 
-                    packet.setAddress(address);
-                    packet.setPort(port);
+                    DatagramPacket packet = new DatagramPacket(content, content.length);
+
+                    try {
+                        packet.setAddress(InetAddress.getByName(candidate.getIp()));
+                    }
+                    catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                    packet.setPort(candidate.getPort());
 
                     long delay = 200;
 
@@ -856,6 +851,13 @@ public abstract class TransportCandidate {
                     }
                     catch (IOException e) {
                         // Do Nothing
+                    }
+
+                    try {
+                        Thread.sleep(2000);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
                     removeListener(listener);

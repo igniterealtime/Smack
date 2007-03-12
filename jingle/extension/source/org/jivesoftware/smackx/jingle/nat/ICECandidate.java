@@ -250,6 +250,8 @@ public class ICECandidate extends TransportCandidate implements Comparable {
         //TODO candidate is being checked trigger
         //candidatesChecking.add(cand);
 
+        final ICECandidate checkingCandidate = this;
+
         Thread checkThread = new Thread(new Runnable() {
             public void run() {
 
@@ -264,8 +266,8 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                 }
 
                 ResultListener resultListener = new ResultListener() {
-                    public void testFinished(TestResult testResult) {
-                        if (testResult.isReachable()) {
+                    public void testFinished(TestResult testResult, TransportCandidate candidate) {
+                        if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
                         }
                     }
@@ -276,11 +278,11 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                     if (echo != null) {
                         if (candidate instanceof ICECandidate) {
                             ICECandidate iceCandidate = (ICECandidate) candidate;
-                            if (!iceCandidate.getType().equals("relay")) {
+                            if (iceCandidate.getType().equals(getType())) {
                                 try {
                                     echo.addResultListener(resultListener);
                                     InetAddress address = InetAddress.getByName(getIp());
-                                    echo.testASync(address, getPort());
+                                    echo.testASync(checkingCandidate, getPassword());
                                 }
                                 catch (UnknownHostException e) {
                                     e.printStackTrace();
@@ -416,5 +418,6 @@ public class ICECandidate extends TransportCandidate implements Comparable {
         }
         return 0;
     }
+
 }
 

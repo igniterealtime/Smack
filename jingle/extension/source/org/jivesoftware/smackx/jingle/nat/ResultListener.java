@@ -27,6 +27,6 @@ package org.jivesoftware.smackx.jingle.nat;
  */
 public interface ResultListener {
 
-    public void testFinished(TestResult result);
+    public void testFinished(TestResult result, TransportCandidate candidate);
 
 }

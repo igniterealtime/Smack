@@ -285,7 +285,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                     int totalTime = (CANDIDATES_ACCEPT_PERIOD + TransportResolver.CHECK_TIMEOUT);
                     int tries = (int) Math.ceil(totalTime / 1000);
 
-                    for (int i = 0; i < tries - 2; i++) {
+                    for (int i = 0; i < tries - 1; i++) {
                         try {
                             Thread.sleep(1000);
                         }

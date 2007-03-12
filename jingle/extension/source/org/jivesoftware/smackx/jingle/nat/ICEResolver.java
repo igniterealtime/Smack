@@ -102,7 +102,7 @@ public class ICEResolver extends TransportResolver {
                 else
                     typeString = "host";
 
-                TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), typeString);
+                TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), typeString);
                 transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                 transportCandidate.setPort(getFreePort());
                 try {
@@ -143,11 +143,11 @@ public class ICEResolver extends TransportResolver {
                 RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
 
                 TransportCandidate localCandidate = new ICECandidate(
-                        rtpBridge.getIp(), 1, network, "1", rtpBridge.getPortA(), "1", 0, "relay");
+                        rtpBridge.getIp(), 1, network, String.valueOf(Math.abs(random.nextLong())), rtpBridge.getPortA(), "1", 0, "relay");
                 localCandidate.setLocalIp(localIp);
 
                 TransportCandidate remoteCandidate = new ICECandidate(
-                        rtpBridge.getIp(), 1, network, "1", rtpBridge.getPortB(), "1", 0, "relay");
+                        rtpBridge.getIp(), 1, network, String.valueOf(Math.abs(random.nextLong())), rtpBridge.getPortB(), "1", 0, "relay");
                 remoteCandidate.setLocalIp(localIp);
 
                 localCandidate.setSymmetric(remoteCandidate);
