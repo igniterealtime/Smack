@@ -353,6 +353,11 @@ public abstract class TransportCandidate {
         else if (!getIp().equals(other.getIp())) {
             return false;
         }
+
+        if (getPort() != other.getPort()) {
+            return false;
+        }
+
         if (getName() == null) {
             if (other.getName() != null) {
                 return false;

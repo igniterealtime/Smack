@@ -270,12 +270,6 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                         if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
                             System.out.println("RESULT>>>OK:" + candidate.getIp() + ":" + candidate.getPort());
-                            for (TransportCandidate c : localCandidates) {
-                                CandidateEcho echo = candidate.getCandidateEcho();
-                                if (echo != null) {
-                                    echo.removeResultListener(this);
-                                }
-                            }
                         }
                     }
                 };
@@ -307,6 +301,13 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                     catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+                for (TransportCandidate candidate : localCandidates) {
+                    CandidateEcho echo = candidate.getCandidateEcho();
+                    if (echo != null) {
+                        echo.removeResultListener(resultListener);
+                    }
+                }
 
                 triggerCandidateChecked(result.isReachable());
 
@@ -382,6 +383,29 @@ public class ICECandidate extends TransportCandidate implements Comparable {
         else if (!getUsername().equals(other.getUsername())) {
             return false;
         }
+
+        if (getIp() == null) {
+            if (other.getIp() != null) {
+                return false;
+            }
+        }
+        else if (!getIp().equals(other.getIp())) {
+            return false;
+        }
+
+        if (getPort() != other.getPort()) {
+            return false;
+        }
+
+        if (getType() == null) {
+            if (other.getType() != null) {
+                return false;
+            }
+        }
+        else if (!getType().equals(other.getType())) {
+            return false;
+        }
+
         return true;
     }
 

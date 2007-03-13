@@ -147,7 +147,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             throws XMPPException {
         for (int i = 0; i < resolver.getCandidateCount(); i++) {
             //TODO FIX The EQUAL Sentence
-            if (resolver.getCandidate(i).getIp().equals(bestLocalCandidate.getIp())) {
+            if (resolver.getCandidate(i).getIp().equals(bestLocalCandidate.getIp())
+                    && resolver.getCandidate(i).getPort() == bestLocalCandidate.getPort()) {
                 acceptedLocalCandidate = resolver.getCandidate(i);
                 return;
             }
@@ -384,7 +385,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         // Add the candidate to the list
         if (remoteCandidate != null) {
             synchronized (validRemoteCandidates) {
-                System.out.println("ADDED Valid Cand: " + remoteCandidate.getIp());
+                System.out.println("ADDED Valid Cand: " + remoteCandidate.getIp() + ":" + remoteCandidate.getPort());
                 validRemoteCandidates.add(remoteCandidate);
             }
         }
