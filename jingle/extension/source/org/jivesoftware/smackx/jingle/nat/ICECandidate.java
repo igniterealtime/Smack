@@ -302,7 +302,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                 for (int i = 0; i < 10 && !result.isReachable(); i++)
                     try {
                         System.err.println(i);
-                        Thread.sleep(300);
+                        Thread.sleep(400);
                     }
                     catch (InterruptedException e) {
                         e.printStackTrace();

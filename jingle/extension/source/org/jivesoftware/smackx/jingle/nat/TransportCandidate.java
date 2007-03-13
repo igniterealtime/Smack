@@ -661,7 +661,8 @@ public abstract class TransportCandidate {
         List<ResultListener> resultListeners = new ArrayList<ResultListener>();
         boolean enabled = true;
         boolean ended = false;
-        long tries = 2;
+        long replyTries = 2;
+        long tries = 10;
         TransportCandidate candidate = null;
 
         public CandidateEcho(TransportCandidate candidate, JingleSession session) throws UnknownHostException, SocketException {
@@ -718,9 +719,7 @@ public abstract class TransportCandidate {
                         if (accept) break;
                     }
 
-                    long delay = 200 / tries / 2;
-
-                    if (delay < 0) delay = 10;
+                    long delay = 100 / replyTries;
 
                     String str[] = new String(packet.getData(), "UTF-8").split(";");
                     String pass = str[0];
@@ -743,7 +742,7 @@ public abstract class TransportCandidate {
                         packet.setAddress(InetAddress.getByName(ip));
                         packet.setPort(Integer.parseInt(port));
 
-                        for (int i = 0; i < tries; i++) {
+                        for (int i = 0; i < replyTries; i++) {
                             socket.send(packet);
                             if (!enabled) break;
                             try {
