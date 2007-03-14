@@ -52,13 +52,15 @@
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
-			<fileset dir="${jar.dest.dir}" includes="jingleExtension.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-jingleMedia.jar" />
         </copy>
         <copy todir="${release-dev.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
-			<fileset dir="${jar.dest.dir}" includes="jingleExtension.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-jingleMedia.jar" />
         </copy>
         <!-- Copy build dir -->
         <copy todir="${release-dev.dir}/build">
