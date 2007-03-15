@@ -94,6 +94,12 @@ public class AudioChannel {
         this.localPort = localPort;
         this.portBase = remotePort;
         this.format = format;
+
+        // Create a processor for the specified jmf locator
+        String result = createProcessor();
+        if (result != null) {
+            started = false;
+        }
     }
 
     /**
@@ -107,13 +113,6 @@ public class AudioChannel {
         if (started) return null;
         started = true;
         String result;
-
-        // Create a processor for the specified jmf locator
-        result = createProcessor();
-        if (result != null) {
-            started = false;
-            return result;
-        }
 
         // Create an RTP session to transmit the output of the
         // processor to the specified IP address and port no.
