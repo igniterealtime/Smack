@@ -33,6 +33,10 @@ import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.Iterator;
+import java.util.Enumeration;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.InetAddress;
 
 /**
  * RTPBridge IQ Packet used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
@@ -58,7 +62,8 @@ public class RTPBridge extends IQ {
     private BridgeAction bridgeAction = BridgeAction.create;
 
     private enum BridgeAction {
-        create, change
+
+        create, change, publicip
     }
 
     /**
@@ -87,6 +92,15 @@ public class RTPBridge extends IQ {
      */
     public RTPBridge(String sid) {
         this.sid = sid;
+    }
+
+    /**
+     * Creates a RTPBridge Instance with defined Session ID
+     *
+     * @param action
+     */
+    public RTPBridge(BridgeAction action) {
+        this.bridgeAction = action;
     }
 
     /**
@@ -288,8 +302,10 @@ public class RTPBridge extends IQ {
 
         if (bridgeAction.equals(BridgeAction.create))
             str.append("<candidate/>");
-        else
+        else if (bridgeAction.equals(BridgeAction.change))
             str.append("<relay ").append(getAttributes()).append(" />");
+        else
+            str.append("<publicip ").append(getAttributes()).append(" />");
 
         str.append("</" + ELEMENT_NAME + ">");
         return str.toString();
@@ -346,8 +362,16 @@ public class RTPBridge extends IQ {
                                 iq.setPortB(Integer.parseInt(parser.getAttributeValue(i)));
                         }
                     }
-
-                } else if (eventType == XmlPullParser.END_TAG) {
+                    else if (elementName.equals("publicip")) {
+                        //String p = parser.getAttributeName(0);
+                        int x = parser.getAttributeCount();
+                        for (int i = 0; i < parser.getAttributeCount(); i++) {
+                            if (parser.getAttributeName(i).equals("ip"))
+                                iq.setIp(parser.getAttributeValue(i));
+                        }
+                    }
+                }
+                else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals(RTPBridge.ELEMENT_NAME)) {
                         done = true;
                     }
@@ -457,6 +481,61 @@ public class RTPBridge extends IQ {
         collector.cancel();
 
         return response;
+    }
+
+    /**
+     * Get Public Address from the Server.
+     *
+     * @param xmppConnection
+     * @return public IP String or null if not found
+     */
+    public static String getPublicIP(XMPPConnection xmppConnection) {
+
+        if (!xmppConnection.isConnected()) {
+            return null;
+        }
+
+        RTPBridge rtpPacket = new RTPBridge(RTPBridge.BridgeAction.publicip);
+        rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getServiceName());
+        rtpPacket.setType(Type.SET);
+
+        // System.out.println("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
+
+        PacketCollector collector = xmppConnection
+                .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
+
+        xmppConnection.sendPacket(rtpPacket);
+
+        RTPBridge response = (RTPBridge) collector
+                .nextResult(SmackConfiguration.getPacketReplyTimeout());
+
+        // Cancel the collector.
+        collector.cancel();
+
+        if (response.getIp() == null || response.getIp().equals("")) return null;
+
+        Enumeration ifaces = null;
+        try {
+            ifaces = NetworkInterface.getNetworkInterfaces();
+        }
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
+        while (ifaces!=null&&ifaces.hasMoreElements()) {
+
+            NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+            Enumeration iaddresses = iface.getInetAddresses();
+
+            while (iaddresses.hasMoreElements()) {
+                InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                if (!iaddress.isLoopbackAddress())
+                    if (iaddress.getHostAddress().indexOf(response.getIp()) >= 0)
+                        return null;
+
+            }
+        }
+
+        return response.getIp();
     }
 
 }
