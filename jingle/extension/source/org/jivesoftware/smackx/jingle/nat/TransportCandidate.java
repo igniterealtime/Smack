@@ -772,6 +772,10 @@ public abstract class TransportCandidate {
                 if (enabled) {
                 }
             }
+            catch (Exception e) {
+                if (enabled) {
+                }
+            }
         }
 
         public void cancel() {
