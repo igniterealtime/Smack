@@ -34,6 +34,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -530,6 +531,19 @@ public class XMPPConnection {
      */
     public boolean isSecureConnection() {
         return isUsingTLS();
+    }
+
+    /**
+     * Returns the local network address of the socket used to connect to the server, or
+     * <tt>null</tt> if not currently connected to the server.
+     *
+     * @return the local address for the socket used to connect to the server.
+     */
+    public InetAddress getLocalNetworkAddress() {
+        if (socket == null || !socket.isConnected()) {
+            return null;
+        }
+        return socket.getLocalAddress();
     }
 
     /**
