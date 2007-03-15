@@ -12,6 +12,9 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class BridgedResolverTest extends SmackTestCase {
 
     private int counter;
@@ -63,6 +66,46 @@ public class BridgedResolverTest extends SmackTestCase {
         }
 
         assertTrue(valCounter() == 3);
+    }
+
+    public void testGetPublicIp() {
+
+        resetCounter();
+
+        String publicIp = RTPBridge.getPublicIP(getConnection(0));
+
+        System.out.println(publicIp + " local:" + getConnection(0).getLocalNetworkAddress().getHostAddress());
+
+        if (publicIp != null) {
+            incCounter();
+        }
+
+        try {
+            InetAddress localaddr = InetAddress.getLocalHost();
+            System.out.println("main Local IP Address : " + localaddr.getHostAddress());
+            System.out.println("main Local hostname   : " + localaddr.getHostName());
+
+            InetAddress[] localaddrs = InetAddress.getAllByName("localhost");
+            for (int i = 0; i < localaddrs.length; i++) {
+                if (!localaddrs[i].equals(localaddr)) {
+                    System.out.println("alt  Local IP Address : " + localaddrs[i].getHostAddress());
+                    System.out.println("alt  Local hostname   : " + localaddrs[i].getHostName());
+                    System.out.println();
+                }
+            }
+        }
+        catch (UnknownHostException e) {
+            System.err.println("Can't detect localhost : " + e);
+        }
+
+        try {
+            Thread.sleep(1000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(valCounter() == 1);
     }
 
     protected int getMaxConnections() {
