@@ -23,19 +23,21 @@ package org.jivesoftware.smackx.jingle.nat;
 import de.javawi.jstun.test.demo.ice.Candidate;
 import de.javawi.jstun.test.demo.ice.ICENegociator;
 import de.javawi.jstun.util.UtilityException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
-import java.net.UnknownHostException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.List;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Random;
 
 /**
  * ICE Resolver for Jingle transport method that results in sending data between two entities using the Interactive Connectivity Establishment (ICE) methodology. (XEP-0176)
  * The goal of this resolver is to make possible to establish and manage out-of-band connections between two XMPP entities, even if they are behind Network Address Translators (NATs) or firewalls.
- * To use this resolver you must have a STUN Server and be in a non STUN blocked network.
+ * To use this resolver you must have a STUN Server and be in a non STUN blocked network. Or use a XMPP server with public IP detection Service.
  *
  * @author Thiago Camargo
  */
@@ -123,6 +125,8 @@ public class ICEResolver extends TransportResolver {
                 e.printStackTrace();
             }
 
+        // Get a Relay Candidate from XMPP Server
+
         if (RTPBridge.serviceAvailable(connection)) {
             try {
 
@@ -134,8 +138,8 @@ public class ICEResolver extends TransportResolver {
                     network = iceNegociator.getPublicCandidate().getNetwork();
                 }
                 else {
-                    localIp = iceNegociator.getSortedCandidates().get(0).getAddress().getInetAddress().getHostAddress();
-                    network = iceNegociator.getSortedCandidates().get(0).getNetwork();
+                    localIp = InetAddress.getLocalHost().getHostAddress();
+                    network = 0;
                 }
 
                 sid = Math.abs(random.nextLong());
@@ -174,6 +178,62 @@ public class ICEResolver extends TransportResolver {
 
         }
 
+        // Get Public Candidate From XMPP Server
+
+        if (iceNegociator.getPublicCandidate() == null) {
+
+            String publicIp = RTPBridge.getPublicIP(connection);
+
+            if (publicIp != null && !publicIp.equals("")) {
+
+                Enumeration ifaces = null;
+
+                try {
+                    ifaces = NetworkInterface.getNetworkInterfaces();
+                }
+                catch (SocketException e) {
+                    e.printStackTrace();
+                }
+
+                // If detect this address in local machine, don't use it.
+
+                boolean found = false;
+
+                while (ifaces.hasMoreElements() && !false) {
+
+                    NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+                    Enumeration iaddresses = iface.getInetAddresses();
+
+                    while (iaddresses.hasMoreElements()) {
+                        InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                        if (iaddress.getHostAddress().indexOf(publicIp) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found) {
+                    try {
+                        TransportCandidate publicCandidate = new ICECandidate(
+                                publicIp, 1, 0, String.valueOf(Math.abs(random.nextLong())), getFreePort(), "1", 0, "srflx");
+                        publicCandidate.setLocalIp(InetAddress.getLocalHost().getHostAddress());
+
+                        try {
+                            publicCandidate.addCandidateEcho(session);
+                        }
+                        catch (SocketException e) {
+                            e.printStackTrace();
+                        }
+
+                        addCandidate(publicCandidate);
+                    }
+                    catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
         this.setResolveEnd();
     }
 
