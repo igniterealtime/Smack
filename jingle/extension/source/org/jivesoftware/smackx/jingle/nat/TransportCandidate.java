@@ -259,14 +259,11 @@ public abstract class TransportCandidate {
     public boolean isNull() {
         if (ip == null) {
             return true;
-        }
-        else if (ip.length() == 0) {
+        } else if (ip.length() == 0) {
             return true;
-        }
-        else if (port < 0) {
+        } else if (port < 0) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -349,8 +346,7 @@ public abstract class TransportCandidate {
             if (other.getIp() != null) {
                 return false;
             }
-        }
-        else if (!getIp().equals(other.getIp())) {
+        } else if (!getIp().equals(other.getIp())) {
             return false;
         }
 
@@ -362,8 +358,7 @@ public abstract class TransportCandidate {
             if (other.getName() != null) {
                 return false;
             }
-        }
-        else if (!getName().equals(other.getName())) {
+        } else if (!getName().equals(other.getName())) {
             return false;
         }
         if (getPort() != other.getPort()) {
@@ -507,20 +502,15 @@ public abstract class TransportCandidate {
             value = value.toLowerCase();
             if (value.equals("udp")) {
                 return UDP;
-            }
-            else if (value.equals("tcp")) {
+            } else if (value.equals("tcp")) {
                 return TCP;
-            }
-            else if (value.equals("tcp-act")) {
+            } else if (value.equals("tcp-act")) {
                 return TCPACT;
-            }
-            else if (value.equals("tcp-pass")) {
+            } else if (value.equals("tcp-pass")) {
                 return TCPPASS;
-            }
-            else if (value.equals("ssltcp")) {
+            } else if (value.equals("ssltcp")) {
                 return SSLTCP;
-            }
-            else {
+            } else {
                 return UDP;
             }
         }
@@ -545,8 +535,7 @@ public abstract class TransportCandidate {
                 if (other.value != null) {
                     return false;
                 }
-            }
-            else if (!value.equals(other.value)) {
+            } else if (!value.equals(other.value)) {
                 return false;
             }
             return true;
@@ -560,11 +549,9 @@ public abstract class TransportCandidate {
         public boolean isNull() {
             if (value == null) {
                 return true;
-            }
-            else if (value.length() == 0) {
+            } else if (value.length() == 0) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -599,11 +586,9 @@ public abstract class TransportCandidate {
             value = value.toLowerCase();
             if (value.equals("myrtpvoice")) {
                 return MYRTPVOICE;
-            }
-            else if (value.equals("tcp")) {
+            } else if (value.equals("tcp")) {
                 return MYRTCPVOICE;
-            }
-            else {
+            } else {
                 return MYRTPVOICE;
             }
         }
@@ -628,8 +613,7 @@ public abstract class TransportCandidate {
                 if (other.value != null) {
                     return false;
                 }
-            }
-            else if (!value.equals(other.value)) {
+            } else if (!value.equals(other.value)) {
                 return false;
             }
             return true;
@@ -643,11 +627,9 @@ public abstract class TransportCandidate {
         public boolean isNull() {
             if (value == null) {
                 return true;
-            }
-            else if (value.length() == 0) {
+            } else if (value.length() == 0) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -687,8 +669,7 @@ public abstract class TransportCandidate {
 
                     this.send = local.getBytes("UTF-8");
                     this.receive = remote.getBytes("UTF-8");
-                }
-                else {
+                } else {
                     this.receive = local.getBytes("UTF-8");
                     this.send = remote.getBytes("UTF-8");
                 }
@@ -798,6 +779,7 @@ public abstract class TransportCandidate {
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
 
                             try {
+                                System.out.println("Content Received: " + new String(datagramPacket.getData(), "UTF-8"));
                                 String str[] = new String(datagramPacket.getData(), "UTF-8").split(";");
                                 String pass = str[0];
                                 String addr[] = str[1].split(":");

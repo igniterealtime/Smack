@@ -38,6 +38,8 @@ public class MultiMediaManager extends JingleMediaManager {
 
     private List<JingleMediaManager> managers = new ArrayList<JingleMediaManager>();
 
+    private PayloadType preferredPayloadType = null;
+
     public MultiMediaManager() {
     }
 
@@ -56,9 +58,10 @@ public class MultiMediaManager extends JingleMediaManager {
      */
     public List<PayloadType> getPayloads() {
         List<PayloadType> list = new ArrayList<PayloadType>();
+        if (preferredPayloadType != null) list.add(preferredPayloadType);
         for (JingleMediaManager manager : managers) {
             for (PayloadType payloadType : manager.getPayloads()) {
-                if (!list.contains(payloadType))
+                if (!list.contains(payloadType) && !payloadType.equals(preferredPayloadType))
                     list.add(payloadType);
             }
         }
@@ -69,8 +72,8 @@ public class MultiMediaManager extends JingleMediaManager {
      * Returns a new JingleMediaSession
      *
      * @param payloadType payloadType
-     * @param remote remote Candidate
-     * @param local local Candidate
+     * @param remote      remote Candidate
+     * @param local       local Candidate
      * @return JingleMediaSession JingleMediaSession
      */
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
@@ -81,4 +84,14 @@ public class MultiMediaManager extends JingleMediaManager {
         }
         return null;
     }
+
+    public PayloadType getPreferredPayloadType() {
+        if (preferredPayloadType != null) return preferredPayloadType;
+        return super.getPreferredPayloadType();
+    }
+
+    public void setPreferredPayloadType(PayloadType preferredPayloadType) {
+        this.preferredPayloadType = preferredPayloadType;
+    }
+
 }

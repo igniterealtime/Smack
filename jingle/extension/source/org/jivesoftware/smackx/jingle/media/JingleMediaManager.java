@@ -27,21 +27,30 @@ import java.util.List;
 
 /**
  * This class provides necessary Jingle Session jmf methods and behavior.
- *
+ * <p/>
  * The goal of this class is to provide a flexible way to make JingleManager control jmf streaming APIs without implement them.
  * For instance you can implement a file transfer using java sockets or a VOIP Media Manager using JMF.
- * You can implement many JingleMediaManager according to you necessity. 
+ * You can implement many JingleMediaManager according to you necessity.
  *
  * @author Thiago Camargo
  */
 public abstract class JingleMediaManager {
-    
+
     /**
      * Return all supported Payloads for this Manager
      *
      * @return The Payload List
      */
     public abstract List<PayloadType> getPayloads();
+
+    /**
+     * Returns the Preferred PayloadType of the Media Manager
+     *
+     * @return The PayloadType
+     */
+    public PayloadType getPreferredPayloadType() {
+        return getPayloads().size() > 0 ? getPayloads().get(0) : null;
+    }
 
     /**
      * Create a Media Session Implementation

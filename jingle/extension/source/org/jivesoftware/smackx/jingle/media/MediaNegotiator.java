@@ -211,27 +211,34 @@ public class MediaNegotiator extends JingleNegotiator {
 
             if (!commonAudioPtsHere.isEmpty() && !commonAudioPtsThere.isEmpty()) {
 
-                PayloadType.Audio bestPtHere = null;
-          
+                if (session.getInitiator().equals(session.getConnection().getUser())) {
+                    PayloadType.Audio bestPtHere = null;
 
-                if (bestPtHere == null)
-                    for (PayloadType payloadType : commonAudioPtsHere)
+                    PayloadType payload = this.session.getMediaManager().getPreferredPayloadType();
+
+                    if (payload != null && payload instanceof PayloadType.Audio)
+                        if (commonAudioPtsHere.contains(payload))
+                            bestPtHere = (PayloadType.Audio) payload;
+
+                    if (bestPtHere == null)
+                        for (PayloadType payloadType : commonAudioPtsHere)
+                            if (payloadType instanceof PayloadType.Audio) {
+                                bestPtHere = (PayloadType.Audio) payloadType;
+                                break;
+                            }
+
+                    result = bestPtHere;
+                }
+                else {
+                    PayloadType.Audio bestPtThere = null;
+                    for (PayloadType payloadType : commonAudioPtsThere)
                         if (payloadType instanceof PayloadType.Audio) {
-                            bestPtHere = (PayloadType.Audio) payloadType;
+                            bestPtThere = (PayloadType.Audio) payloadType;
                             break;
                         }
 
-                PayloadType.Audio bestPtThere = null;
-                for (PayloadType payloadType : commonAudioPtsThere)
-                    if (payloadType instanceof PayloadType.Audio) {
-                        bestPtThere = (PayloadType.Audio) payloadType;
-                        break;
-                    }
-
-                if (session.getInitiator().equals(session.getConnection().getUser()))
-                    result = bestPtHere;
-                else
                     result = bestPtThere;
+                }
             }
         }
 

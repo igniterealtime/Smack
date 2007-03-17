@@ -56,57 +56,57 @@ public class JingleMediaTest extends SmackTestCase {
         XMPPConnection x0 = getConnection(0);
         XMPPConnection x1 = getConnection(1);
 
-        for(int i=0;i<3;i++)
-        try {
+        for (int i = 0; i < 3; i++)
+            try {
 
-            ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
-            ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
+                ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
+                ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
 
-            final JingleManager jm0 = new JingleManager(
-                    x0, icetm0);
-            final JingleManager jm1 = new JingleManager(
-                    x1, icetm1);
+                final JingleManager jm0 = new JingleManager(
+                        x0, icetm0);
+                final JingleManager jm1 = new JingleManager(
+                        x1, icetm1);
 
-            jm0.addCreationListener(icetm0);
-            jm1.addCreationListener(icetm1);
+                jm0.addCreationListener(icetm0);
+                jm1.addCreationListener(icetm1);
 
-            JingleMediaManager jingleMediaManager0 = new JmfMediaManager();
-            JingleMediaManager jingleMediaManager1 = new JmfMediaManager();
+                JingleMediaManager jingleMediaManager0 = new JmfMediaManager();
+                JingleMediaManager jingleMediaManager1 = new JmfMediaManager();
 
-            jm0.setMediaManager(jingleMediaManager0);
-            jm1.setMediaManager(jingleMediaManager1);
+                jm0.setMediaManager(jingleMediaManager0);
+                jm1.setMediaManager(jingleMediaManager1);
 
-            JingleSessionRequestListener jingleSessionRequestListener = new JingleSessionRequestListener() {
-                public void sessionRequested(final JingleSessionRequest request) {
+                JingleSessionRequestListener jingleSessionRequestListener = new JingleSessionRequestListener() {
+                    public void sessionRequested(final JingleSessionRequest request) {
 
-                    try {
-                        IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
-                        session.start(request);
+                        try {
+                            IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
+                            session.start(request);
+                        }
+                        catch (XMPPException e) {
+                            e.printStackTrace();
+                        }
+
                     }
-                    catch (XMPPException e) {
-                        e.printStackTrace();
-                    }
+                };
 
-                }
-            };
+                jm1.addJingleSessionRequestListener(jingleSessionRequestListener);
 
-            jm1.addJingleSessionRequestListener(jingleSessionRequestListener);
+                OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+                js0.start();
 
-            js0.start();
+                Thread.sleep(50000);
+                js0.terminate();
 
-            Thread.sleep(50000);
-            js0.terminate();
+                jm1.removeJingleSessionRequestListener(jingleSessionRequestListener);
 
-            jm1.removeJingleSessionRequestListener(jingleSessionRequestListener);
+                Thread.sleep(6000);
 
-            Thread.sleep(6000);
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
 
     }
 
@@ -128,19 +128,21 @@ public class JingleMediaTest extends SmackTestCase {
 
             jm0.addCreationListener(icetm0);
             jm1.addCreationListener(icetm1);
-/*
 
-            final JingleManager jm0 = new JingleManager(
-                    x0, new BasicTransportManager());
-            final JingleManager jm1 = new JingleManager(
-                    x1, new BasicTransportManager());
-  */
+/*
+          final JingleManager jm0 = new JingleManager(
+                  x0, new BasicTransportManager());
+          final JingleManager jm1 = new JingleManager(
+                  x1, new BasicTransportManager());
+*/
+
             MultiMediaManager jingleMediaManager0 = new MultiMediaManager();
-            jingleMediaManager0.addMediaManager(new SpeexMediaManager());
             jingleMediaManager0.addMediaManager(new JmfMediaManager());
+            jingleMediaManager0.addMediaManager(new SpeexMediaManager());
             MultiMediaManager jingleMediaManager1 = new MultiMediaManager();
             jingleMediaManager1.addMediaManager(new JmfMediaManager());
             jingleMediaManager1.addMediaManager(new SpeexMediaManager());
+            jingleMediaManager1.setPreferredPayloadType(jingleMediaManager1.getPayloads().get(2));
 
             jm0.setMediaManager(jingleMediaManager0);
             jm1.setMediaManager(jingleMediaManager1);
