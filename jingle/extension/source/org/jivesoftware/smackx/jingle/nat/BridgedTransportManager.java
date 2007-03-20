@@ -42,7 +42,11 @@ public class BridgedTransportManager extends JingleTransportManager implements J
         this.xmppConnection = xmppConnection;
     }
 
-    // Return the correspondent resolver
+    /**
+     * Return the correspondent resolver
+     * @param session correspondent Jingle Session
+     * @return resolver
+     */
     protected TransportResolver createResolver(JingleSession session) {
         BridgedResolver bridgedResolver = new BridgedResolver(this.xmppConnection);
         return bridgedResolver;

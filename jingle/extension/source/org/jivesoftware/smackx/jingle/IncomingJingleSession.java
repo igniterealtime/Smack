@@ -97,16 +97,17 @@ public class IncomingJingleSession extends JingleSession {
     /**
      * Constructor for a Jingle incoming session
      *
-     * @param conn             the XMPP connection
-     * @param responder        the responder
-     * @param transportManager The transport manager
+     * @param conn                        the XMPP connection
+     * @param responder                   the responder
+     * @param transportManager            The transport manager
+     * @param initialJingleSessionRequest the initial Jingle Session Request
      */
     protected IncomingJingleSession(XMPPConnection conn, String responder,
-            List payloadTypes, JingleTransportManager transportManager, String sid) {
+            List payloadTypes, JingleTransportManager transportManager, JingleSessionRequest initialJingleSessionRequest) throws XMPPException {
 
         super(conn, responder, conn.getUser());
 
-        setSid(sid);
+        setSid(initialJingleSessionRequest.getSessionID());
 
         // Create the states...
 
@@ -130,19 +131,38 @@ public class IncomingJingleSession extends JingleSession {
             setTransportNeg(new TransportNegotiator.Ice(this, resolver));
         }
 
+        // Establish the default state
+        setState(accepting);
+
+        updatePacketListener();
+
+        Jingle packet = initialJingleSessionRequest.getJingle();
+        if (packet != null) {
+
+            // Initialize the session information
+            setSid(packet.getSid());
+
+            respond(packet);
+        }
+        else {
+            throw new XMPPException(
+                    "Session request with null Jingle packet.");
+        }
+
     }
 
     /**
      * Constructor for a Jingle Incoming session with a defined Media Manager
      *
-     * @param conn               the XMPP connection
-     * @param responder          the responder
-     * @param transportManager   The transport manager
-     * @param jingleMediaManager The Media Manager for this Session
+     * @param conn                        the XMPP connection
+     * @param responder                   the responder
+     * @param transportManager            The transport manager
+     * @param jingleMediaManager          The Media Manager for this Session
+     * @param initialJingleSessionRequest the initial Jingle Session Request
      */
     protected IncomingJingleSession(XMPPConnection conn, String responder,
-            List payloadTypes, JingleTransportManager transportManager, JingleMediaManager jingleMediaManager, String sid) {
-        this(conn, responder, payloadTypes, transportManager, sid);
+            List payloadTypes, JingleTransportManager transportManager, JingleMediaManager jingleMediaManager, JingleSessionRequest initialJingleSessionRequest) throws XMPPException {
+        this(conn, responder, payloadTypes, transportManager, initialJingleSessionRequest);
         this.jingleMediaManager = jingleMediaManager;
     }
 
@@ -153,27 +173,6 @@ public class IncomingJingleSession extends JingleSession {
      * @throws XMPPException
      */
     public void start(JingleSessionRequest initialJingleSessionRequest) throws XMPPException {
-        if (invalidState()) {
-            Jingle packet = initialJingleSessionRequest.getJingle();
-            if (packet != null) {
-
-                // Initialize the session information
-                setSid(packet.getSid());
-
-                // Establish the default state
-                setState(accepting);
-
-                updatePacketListener();
-                respond(packet);
-            }
-            else {
-                throw new IllegalStateException(
-                        "Session request with null Jingle packet.");
-            }
-        }
-        else {
-            throw new IllegalStateException("Starting session without null state.");
-        }
     }
 
     /**
@@ -182,7 +181,15 @@ public class IncomingJingleSession extends JingleSession {
      * @throws XMPPException
      */
     public void start() throws XMPPException {
-        start(this.getInitialSessionRequest());
+
+    }
+
+    /**
+     * Force a call acceptance. Used to accept a hooked call.
+     * @deprecated Avoid to use this method. Not compliance.
+     */
+    public void accept(){
+       setState(active);
     }
 
     /**

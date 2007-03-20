@@ -512,6 +512,8 @@ public class RTPBridge extends IQ {
         // Cancel the collector.
         collector.cancel();
 
+        if(response == null) return null;
+
         if (response.getIp() == null || response.getIp().equals("")) return null;
 
         Enumeration ifaces = null;

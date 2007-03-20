@@ -21,6 +21,8 @@ package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
 import javax.media.*;
 import javax.media.control.TrackControl;
+import javax.media.control.PacketSizeControl;
+import javax.media.control.BufferControl;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
@@ -57,7 +59,7 @@ public class AudioChannel {
 
     private MediaLocator locator;
     private String localIpAddress;
-    private String ipAddress;
+    private String remoteIpAddress;
     private int localPort;
     private int portBase;
     private Format format;
@@ -76,30 +78,25 @@ public class AudioChannel {
      *
      * @param locator        media locator
      * @param localIpAddress local IP address
-     * @param ipAddress      remote IP address
+     * @param remoteIpAddress      remote IP address
      * @param localPort      local port number
      * @param remotePort     remote port number
      * @param format         audio format
      */
     public AudioChannel(MediaLocator locator,
             String localIpAddress,
-            String ipAddress,
+            String remoteIpAddress,
             int localPort,
             int remotePort,
             Format format) {
 
         this.locator = locator;
         this.localIpAddress = localIpAddress;
-        this.ipAddress = ipAddress;
+        this.remoteIpAddress = remoteIpAddress;
         this.localPort = localPort;
         this.portBase = remotePort;
         this.format = format;
 
-        // Create a processor for the specified jmf locator
-        String result = createProcessor();
-        if (result != null) {
-            started = false;
-        }
     }
 
     /**
@@ -111,8 +108,14 @@ public class AudioChannel {
      */
     public synchronized String start() {
         if (started) return null;
+
+        // Create a processor for the specified jmf locator
+        String result = createProcessor();
+        if (result != null) {
+            started = false;
+        }
+
         started = true;
-        String result;
 
         // Create an RTP session to transmit the output of the
         // processor to the specified IP address and port no.
@@ -121,7 +124,6 @@ public class AudioChannel {
             processor.close();
             processor = null;
             started = false;
-            return result;
         }
 
         // Start the transmission
@@ -226,6 +228,39 @@ public class AudioChannel {
                         tracks[i].setFormat(chosen);
                         System.err.println("Track " + i + " is set to transmit as:");
                         System.err.println("  " + chosen);
+
+                        if (tracks[i].getFormat() instanceof AudioFormat) {
+                            int packetRate = 20;
+                            PacketSizeControl pktCtrl = (PacketSizeControl) processor.getControl(PacketSizeControl.class.getName());
+                            if (pktCtrl != null) {
+                                try {
+                                    pktCtrl.setPacketSize(getPacketSize(tracks[i].getFormat(), packetRate));
+                                }
+                                catch (IllegalArgumentException e) {
+                                    pktCtrl.setPacketSize(80);
+                                    // Do nothing
+                                }
+                            }
+
+                            if (tracks[i].getFormat().getEncoding().equals(AudioFormat.ULAW_RTP)) {
+                                Codec codec[] = new Codec[3];
+
+                                codec[0] = new com.ibm.media.codec.audio.rc.RCModule();
+                                codec[1] = new com.ibm.media.codec.audio.ulaw.JavaEncoder();
+                                codec[2] = new com.sun.media.codec.audio.ulaw.Packetizer();
+                                ((com.sun.media.codec.audio.ulaw.Packetizer) codec
+                                        [2]).setPacketSize(160);
+
+                                try {
+                                    tracks[i].setCodecChain(codec);
+                                }
+                                catch (UnsupportedPlugInException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+
                         atLeastOneTrack = true;
                     }
                     else
@@ -249,6 +284,28 @@ public class AudioChannel {
         return null;
     }
 
+    /**
+     * Get the best packet size for a given codec and a codec rate
+     *
+     * @param codecFormat
+     * @param milliseconds
+     * @return
+     * @throws IllegalArgumentException
+     */
+    private int getPacketSize(Format codecFormat, int milliseconds) throws IllegalArgumentException {
+        String encoding = codecFormat.getEncoding();
+        if (encoding.equalsIgnoreCase(AudioFormat.GSM) ||
+                encoding.equalsIgnoreCase(AudioFormat.GSM_RTP)) {
+            return milliseconds * 4; // 1 byte per millisec
+        }
+        else if (encoding.equalsIgnoreCase(AudioFormat.ULAW) ||
+                encoding.equalsIgnoreCase(AudioFormat.ULAW_RTP)) {
+            return milliseconds * 8;
+        }
+        else {
+            throw new IllegalArgumentException("Unknown codec type");
+        }
+    }
 
     /**
      * Use the RTPManager API to create sessions for each jmf
@@ -274,7 +331,7 @@ public class AudioChannel {
                 rtpMgrs[i] = RTPManager.newInstance();
 
                 port = portBase + 2 * i;
-                ipAddr = InetAddress.getByName(ipAddress);
+                ipAddr = InetAddress.getByName(remoteIpAddress);
 
                 localAddr = new SessionAddress(InetAddress.getByName(this.localIpAddress),
                         localPort);
@@ -284,11 +341,17 @@ public class AudioChannel {
                 rtpMgrs[i].addReceiveStreamListener(audioReceiver);
                 rtpMgrs[i].addSessionListener(audioReceiver);
 
+                BufferControl bc = (BufferControl) rtpMgrs[i].getControl("javax.media.control.BufferControl");
+                if (bc != null) {
+                    int bl = 160;
+                    bc.setBufferLength(bl);
+                }
+
                 rtpMgrs[i].initialize(localAddr);
 
                 rtpMgrs[i].addTarget(destAddr);
 
-                System.err.println("Created RTP session at " + localPort + " to: " + ipAddress + " " + port);
+                System.err.println("Created RTP session at " + localPort + " to: " + remoteIpAddress + " " + port);
 
                 sendStream = rtpMgrs[i].createSendStream(dataOutput, i);
 

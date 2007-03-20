@@ -649,10 +649,10 @@ public class JingleManager implements JingleSessionListener {
 
         if (jingleMediaManager != null)
             session = new IncomingJingleSession(connection, request
-                    .getFrom(), payloadTypes, jingleTransportManager, jingleMediaManager, request.getSessionID());
+                    .getFrom(), payloadTypes, jingleTransportManager, jingleMediaManager, request);
         else
             session = new IncomingJingleSession(connection, request
-                    .getFrom(), payloadTypes, jingleTransportManager, request.getSessionID());
+                    .getFrom(), payloadTypes, jingleTransportManager, request);
 
         triggerSessionCreated(session);
 

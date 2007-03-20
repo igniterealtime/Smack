@@ -41,7 +41,7 @@ import java.net.ServerSocket;
 public class AudioMediaSession extends JingleMediaSession {
 
     private AudioChannel audioChannel;
-    private String locator = "javasound://";
+    private String locator = "dsound://";
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
@@ -52,7 +52,7 @@ public class AudioMediaSession extends JingleMediaSession {
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local) {
-        this(payloadType, remote, local, "javasound://");
+        this(payloadType, remote, local, "dsound://");
     }
 
     /**

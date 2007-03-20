@@ -124,7 +124,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * @param jingleMediaManager the jingleMediaManager
      */
     protected JingleSession(XMPPConnection conn, String initiator, String responder,
-                            String sessionid, JingleMediaManager jingleMediaManager) {
+            String sessionid, JingleMediaManager jingleMediaManager) {
         super(conn);
 
         this.mediaNeg = null;
@@ -389,21 +389,25 @@ public abstract class JingleSession extends JingleNegotiator {
         if (invalidState()) {
             throw new IllegalStateException(
                     "Illegal state in dispatch packet in Session manager.");
-        } else {
+        }
+        else {
             if (iq == null) {
                 // If there is no input packet, then we must be inviting...
                 jout = getState().eventInvite();
-            } else {
+            }
+            else {
                 if (iq.getType().equals(IQ.Type.ERROR)) {
                     // Process errors
                     getState().eventError(iq);
-                } else if (iq.getType().equals(IQ.Type.RESULT)) {
+                }
+                else if (iq.getType().equals(IQ.Type.RESULT)) {
                     // Process ACKs
                     if (isExpectedId(iq.getPacketID())) {
                         jout = getState().eventAck(iq);
                         removeExpectedId(iq.getPacketID());
                     }
-                } else if (iq instanceof Jingle) {
+                }
+                else if (iq instanceof Jingle) {
                     // It is not an error: it is a Jingle packet...
                     Jingle jin = (Jingle) iq;
                     Jingle.Action action = jin.getAction();
@@ -411,17 +415,22 @@ public abstract class JingleSession extends JingleNegotiator {
                     if (action != null) {
                         if (action.equals(Jingle.Action.SESSIONACCEPT)) {
                             jout = getState().eventAccept(jin);
-                        } else if (action.equals(Jingle.Action.SESSIONINFO)) {
+                        }
+                        else if (action.equals(Jingle.Action.SESSIONINFO)) {
                             jout = getState().eventInfo(jin);
-                        } else if (action.equals(Jingle.Action.SESSIONINITIATE)) {
+                        }
+                        else if (action.equals(Jingle.Action.SESSIONINITIATE)) {
                             if (getState() != null)
                                 jout = getState().eventInitiate(jin);
-                        } else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
+                        }
+                        else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
                             jout = getState().eventRedirect(jin);
-                        } else if (action.equals(Jingle.Action.SESSIONTERMINATE)) {
+                        }
+                        else if (action.equals(Jingle.Action.SESSIONTERMINATE)) {
                             jout = getState().eventTerminate(jin);
                         }
-                    } else {
+                    }
+                    else {
                         jout = errorMalformedStanza(iq);
                     }
                 }
@@ -506,7 +515,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * @return the new Jingle packet
      */
     private Jingle sendJingleParts(IQ iq, Jingle jSes, Jingle jDesc,
-                                   Jingle jTrans) {
+            Jingle jTrans) {
         Jingle response = null;
 
         if (jSes != null) {
@@ -514,7 +523,8 @@ public abstract class JingleSession extends JingleNegotiator {
             jSes.addTransports(jTrans.getTransportsList());
 
             response = sendFormattedJingle(iq, jSes);
-        } else {
+        }
+        else {
             // If we don't have a valid session message, then we must send
             // separated messages for transport and jmf...
             if (jDesc != null) {
@@ -580,7 +590,8 @@ public abstract class JingleSession extends JingleNegotiator {
             if (jout.getTo() == null) {
                 if (iq != null) {
                     jout.setTo(iq.getFrom());
-                } else {
+                }
+                else {
                     jout.setTo(other);
                 }
             }
@@ -588,7 +599,8 @@ public abstract class JingleSession extends JingleNegotiator {
             if (jout.getFrom() == null) {
                 if (iq != null) {
                     jout.setFrom(iq.getTo());
-                } else {
+                }
+                else {
                     jout.setFrom(me);
                 }
             }
@@ -681,7 +693,8 @@ public abstract class JingleSession extends JingleNegotiator {
             if (jda.size() > 1) {
                 throw new XMPPException(
                         "Unsupported feature: the number of accepted content descriptions is greater than 1.");
-            } else if (jda.size() == 1) {
+            }
+            else if (jda.size() == 1) {
                 JingleContentDescription jd = (JingleContentDescription) jda.get(0);
                 if (jd.getJinglePayloadTypesCount() > 1) {
                     throw new XMPPException(
@@ -713,13 +726,15 @@ public abstract class JingleSession extends JingleNegotiator {
             if (jta.size() > 1) {
                 throw new XMPPException(
                         "Unsupported feature: the number of accepted transports is greater than 1.");
-            } else if (jta.size() == 1) {
+            }
+            else if (jta.size() == 1) {
                 org.jivesoftware.smackx.packet.JingleTransport jt = (org.jivesoftware.smackx.packet.JingleTransport) jta.get(0);
 
                 if (jt.getCandidatesCount() > 1) {
                     throw new XMPPException(
                             "Unsupported feature: the number of accepted transport candidates is greater than 1.");
-                } else if (jt.getCandidatesCount() == 1) {
+                }
+                else if (jt.getCandidatesCount() == 1) {
                     JingleTransportCandidate jtc = (JingleTransportCandidate) jt
                             .getCandidatesList().get(0);
                     acceptedLocalCandidate = jtc.getMediaTransport();
@@ -761,7 +776,8 @@ public abstract class JingleSession extends JingleNegotiator {
             if (other.initiator != null) {
                 return false;
             }
-        } else if (!initiator.equals(other.initiator)) {
+        }
+        else if (!initiator.equals(other.initiator)) {
             //Todo check behavior
             //    return false;
         }
@@ -770,7 +786,8 @@ public abstract class JingleSession extends JingleNegotiator {
             if (other.responder != null) {
                 return false;
             }
-        } else if (!responder.equals(other.responder)) {
+        }
+        else if (!responder.equals(other.responder)) {
             return false;
         }
 
@@ -778,7 +795,8 @@ public abstract class JingleSession extends JingleNegotiator {
             if (other.sid != null) {
                 return false;
             }
-        } else if (!sid.equals(other.sid)) {
+        }
+        else if (!sid.equals(other.sid)) {
             return false;
         }
 
@@ -922,12 +940,14 @@ public abstract class JingleSession extends JingleNegotiator {
                             System.out.println("Ignored Jingle(INI): " + iq.toXML());
                             return false;
                         }
-                    } else {
+                    }
+                    else {
                         // We accept some non-Jingle IQ packets: ERRORs and ACKs
                         if (iq.getType().equals(IQ.Type.SET)) {
                             System.out.println("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
-                        } else if (iq.getType().equals(IQ.Type.GET)) {
+                        }
+                        else if (iq.getType().equals(IQ.Type.GET)) {
                             System.out.println("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
                         }
@@ -1038,7 +1058,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * Trigger a session established event.
      */
     protected void triggerSessionEstablished(PayloadType pt,
-                                             TransportCandidate rc, TransportCandidate lc) {
+            TransportCandidate rc, TransportCandidate lc) {
         ArrayList listeners = getListenersList();
         Iterator iter = listeners.iterator();
         while (iter.hasNext()) {
@@ -1049,11 +1069,11 @@ public abstract class JingleSession extends JingleNegotiator {
             }
         }
         if (jingleMediaManager != null) {
+            rc.removeCandidateEcho();
+            lc.removeCandidateEcho();
+
             jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc);
             if (jingleMediaSession != null) {
-
-                rc.removeCandidateEcho();
-                lc.removeCandidateEcho();
 
                 jingleMediaSession.startTrasmit();
                 jingleMediaSession.startReceive();
@@ -1113,9 +1133,7 @@ public abstract class JingleSession extends JingleNegotiator {
      */
     public void terminate() throws XMPPException {
         if (isClosed()) return;
-        //remo
         System.out.println("State: " + this.getState());
-        Jingle result = null;
         Jingle jout = new Jingle(Jingle.Action.SESSIONTERMINATE);
         jout.setType(IQ.Type.SET);
         sendFormattedJingle(jout);
@@ -1151,7 +1169,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * @return The created IQ packet.
      */
     public static IQ createIQ(String ID, String to, String from,
-                              IQ.Type type) {
+            IQ.Type type) {
         IQ iqPacket = new IQ() {
             public String getChildElementXML() {
                 return null;
@@ -1177,7 +1195,7 @@ public abstract class JingleSession extends JingleNegotiator {
      * @return The created IQ packet.
      */
     public static IQ createError(String ID, String to, String from,
-                                 int errCode, String errStr) {
+            int errCode, String errStr) {
 
         IQ iqError = createIQ(ID, to, from, IQ.Type.ERROR);
         XMPPError error = new XMPPError(new XMPPError.Condition(errStr));

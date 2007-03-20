@@ -21,15 +21,13 @@
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smackx.jingle.IncomingJingleSession;
-import org.jivesoftware.smackx.jingle.JingleManager;
-import org.jivesoftware.smackx.jingle.JingleSessionRequest;
-import org.jivesoftware.smackx.jingle.OutgoingJingleSession;
+import org.jivesoftware.smackx.jingle.*;
 import org.jivesoftware.smackx.jingle.mediaimpl.jmf.JmfMediaManager;
 import org.jivesoftware.smackx.jingle.mediaimpl.jmf.AudioChannel;
 import org.jivesoftware.smackx.jingle.mediaimpl.jspeex.SpeexMediaManager;
 import org.jivesoftware.smackx.jingle.mediaimpl.multi.MultiMediaManager;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
+import org.jivesoftware.smackx.jingle.listeners.JingleSessionStateListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.nat.BridgedTransportManager;
 import org.jivesoftware.smackx.jingle.nat.ICETransportManager;
@@ -56,7 +54,7 @@ public class JingleMediaTest extends SmackTestCase {
         XMPPConnection x0 = getConnection(0);
         XMPPConnection x1 = getConnection(1);
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
             try {
 
                 ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
@@ -78,10 +76,22 @@ public class JingleMediaTest extends SmackTestCase {
 
                 JingleSessionRequestListener jingleSessionRequestListener = new JingleSessionRequestListener() {
                     public void sessionRequested(final JingleSessionRequest request) {
-
                         try {
                             IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
                             session.start(request);
+
+                            session.addStateListener(new JingleSessionStateListener() {
+                                public void beforeChange(JingleNegotiator.State old, JingleNegotiator.State newOne) throws JingleNegotiator.JingleException {
+                                    if (newOne instanceof IncomingJingleSession.Active) {
+                                            throw new JingleNegotiator.JingleException();
+                                    }
+                                }
+
+                                public void afterChanged(JingleNegotiator.State old, JingleNegotiator.State newOne) {
+
+                                }
+                            });
+
                         }
                         catch (XMPPException e) {
                             e.printStackTrace();
@@ -96,12 +106,19 @@ public class JingleMediaTest extends SmackTestCase {
 
                 js0.start();
 
-                Thread.sleep(50000);
+                Thread.sleep(20000);
+
+                IncomingJingleSession incomingJingleSession = (IncomingJingleSession) jm1.getSession(js0.getConnection().getUser());
+                incomingJingleSession.removeAllStateListeners();
+                incomingJingleSession.accept();
+
+                Thread.sleep(15000);
+
                 js0.terminate();
 
                 jm1.removeJingleSessionRequestListener(jingleSessionRequestListener);
 
-                Thread.sleep(6000);
+                Thread.sleep(60000);
 
             }
             catch (Exception e) {
@@ -139,6 +156,7 @@ public class JingleMediaTest extends SmackTestCase {
             MultiMediaManager jingleMediaManager0 = new MultiMediaManager();
             jingleMediaManager0.addMediaManager(new JmfMediaManager());
             jingleMediaManager0.addMediaManager(new SpeexMediaManager());
+            jingleMediaManager0.setPreferredPayloadType(jingleMediaManager0.getPayloads().get(1));
             MultiMediaManager jingleMediaManager1 = new MultiMediaManager();
             jingleMediaManager1.addMediaManager(new JmfMediaManager());
             jingleMediaManager1.addMediaManager(new SpeexMediaManager());

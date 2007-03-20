@@ -176,64 +176,65 @@ public class ICEResolver extends TransportResolver {
                 e.printStackTrace();
             }
 
-        }
+            // Get Public Candidate From XMPP Server
 
-        // Get Public Candidate From XMPP Server
+            if (iceNegociator.getPublicCandidate() == null) {
 
-        if (iceNegociator.getPublicCandidate() == null) {
+                String publicIp = RTPBridge.getPublicIP(connection);
 
-            String publicIp = RTPBridge.getPublicIP(connection);
+                if (publicIp != null && !publicIp.equals("")) {
 
-            if (publicIp != null && !publicIp.equals("")) {
+                    Enumeration ifaces = null;
 
-                Enumeration ifaces = null;
+                    try {
+                        ifaces = NetworkInterface.getNetworkInterfaces();
+                    }
+                    catch (SocketException e) {
+                        e.printStackTrace();
+                    }
 
-                try {
-                    ifaces = NetworkInterface.getNetworkInterfaces();
-                }
-                catch (SocketException e) {
-                    e.printStackTrace();
-                }
+                    // If detect this address in local machine, don't use it.
 
-                // If detect this address in local machine, don't use it.
+                    boolean found = false;
 
-                boolean found = false;
+                    while (ifaces.hasMoreElements() && !false) {
 
-                while (ifaces.hasMoreElements() && !false) {
+                        NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+                        Enumeration iaddresses = iface.getInetAddresses();
 
-                    NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-                    Enumeration iaddresses = iface.getInetAddresses();
-
-                    while (iaddresses.hasMoreElements()) {
-                        InetAddress iaddress = (InetAddress) iaddresses.nextElement();
-                        if (iaddress.getHostAddress().indexOf(publicIp) > -1) {
-                            found = true;
-                            break;
+                        while (iaddresses.hasMoreElements()) {
+                            InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                            if (iaddress.getHostAddress().indexOf(publicIp) > -1) {
+                                found = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (!found) {
-                    try {
-                        TransportCandidate publicCandidate = new ICECandidate(
-                                publicIp, 1, 0, String.valueOf(Math.abs(random.nextLong())), getFreePort(), "1", 0, "srflx");
-                        publicCandidate.setLocalIp(InetAddress.getLocalHost().getHostAddress());
-
+                    if (!found) {
                         try {
-                            publicCandidate.addCandidateEcho(session);
+                            TransportCandidate publicCandidate = new ICECandidate(
+                                    publicIp, 1, 0, String.valueOf(Math.abs(random.nextLong())), getFreePort(), "1", 0, "srflx");
+                            publicCandidate.setLocalIp(InetAddress.getLocalHost().getHostAddress());
+
+                            try {
+                                publicCandidate.addCandidateEcho(session);
+                            }
+                            catch (SocketException e) {
+                                e.printStackTrace();
+                            }
+
+                            addCandidate(publicCandidate);
                         }
-                        catch (SocketException e) {
+                        catch (UnknownHostException e) {
                             e.printStackTrace();
                         }
-
-                        addCandidate(publicCandidate);
-                    }
-                    catch (UnknownHostException e) {
-                        e.printStackTrace();
                     }
                 }
             }
+
         }
+
         this.setResolveEnd();
     }
 
