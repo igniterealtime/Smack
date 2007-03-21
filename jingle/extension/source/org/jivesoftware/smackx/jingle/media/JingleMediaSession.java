@@ -23,11 +23,11 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 /**
  * Public Abstract Class provides a clear interface between Media Session and Jingle API.
- *
+ * <p/>
  * When a Jingle Session is fully stablished, we will have a Payload Type and two transport candidates defined for it.
  * Smack Jingle API don´t implement Media Transmit and Receive methods.
  * But provides an interface to let the user implements it using another API. For instance: JMF.
- *
+ * <p/>
  * <i>The Class that implements this one, must have the support to transmit and receive the jmf.</i>
  * <i>This interface let the user choose his own jmf API.</i>
  *
@@ -41,19 +41,23 @@ public abstract class JingleMediaSession {
     private TransportCandidate local;
     // Remote Transport details
     private TransportCandidate remote;
+    // Media Locator
+    private String mediaLocator;
 
     /**
      * Creates a new JingleMediaSession Instance to handle Media methods.
      *
-     * @param payloadType Payload Type of the transmittion
-     * @param remote      Remote accepted Transport Candidate
-     * @param local       Local accepted Transport Candidate
+     * @param payloadType  Payload Type of the transmittion
+     * @param remote       Remote accepted Transport Candidate
+     * @param local        Local accepted Transport Candidate
+     * @param mediaLocator Media Locator of the capture device
      */
     public JingleMediaSession(PayloadType payloadType, TransportCandidate remote,
-                              TransportCandidate local) {
+            TransportCandidate local, String mediaLocator) {
         this.local = local;
         this.remote = remote;
         this.payloadType = payloadType;
+        this.mediaLocator = mediaLocator;
     }
 
     /**
@@ -84,6 +88,24 @@ public abstract class JingleMediaSession {
     }
 
     /**
+     * Return the media locator or null if not defined
+     *
+     * @return media locator
+     */
+    public String getMediaLocator() {
+        return mediaLocator;
+    }
+
+    /**
+     * Set the media locator
+     *
+     * @param mediaLocator media locator or null to use default
+     */
+    public void setMediaLocator(String mediaLocator) {
+        this.mediaLocator = mediaLocator;
+    }
+
+    /**
      * Initialize the RTP Channel preparing to transmit and receive.
      */
     public abstract void initialize();
@@ -101,6 +123,7 @@ public abstract class JingleMediaSession {
     /**
      * Set transmit activity. If the active is true, the instance should trasmit.
      * If it is set to false, the instance should pause transmit.
+     *
      * @param active
      */
     public abstract void setTrasmit(boolean active);

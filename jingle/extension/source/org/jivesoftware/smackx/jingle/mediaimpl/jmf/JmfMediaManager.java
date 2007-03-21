@@ -41,6 +41,7 @@ import java.util.ArrayList;
 public class JmfMediaManager extends JingleMediaManager {
 
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
+    private String mediaLocator = null;
 
     /**
      * Creates a Media Manager instance
@@ -50,15 +51,25 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
+     * Creates a Media Manager instance
+     *
+     * @param mediaLocator Media Locator
+     */
+    public JmfMediaManager(String mediaLocator) {
+        this.mediaLocator = mediaLocator;
+        setupPayloads();
+    }
+
+    /**
      * Returns a new jingleMediaSession
      *
      * @param payloadType payloadType
-     * @param remote remote Candidate
-     * @param local local Candidate
-     * @return JingleMediaSession 
+     * @param remote      remote Candidate
+     * @param local       local Candidate
+     * @return JingleMediaSession
      */
     public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
-        return new AudioMediaSession(payloadType, remote, local);
+        return new AudioMediaSession(payloadType, remote, local,mediaLocator);
     }
 
     /**
@@ -77,6 +88,24 @@ public class JmfMediaManager extends JingleMediaManager {
      */
     public List<PayloadType> getPayloads() {
         return payloads;
+    }
+
+    /**
+     * Return the media locator or null if not defined
+     *
+     * @return media locator
+     */
+    public String getMediaLocator() {
+        return mediaLocator;
+    }
+
+    /**
+     * Set the media locator
+     *
+     * @param mediaLocator media locator or null to use default
+     */
+    public void setMediaLocator(String mediaLocator) {
+        this.mediaLocator = mediaLocator;
     }
 
     /**

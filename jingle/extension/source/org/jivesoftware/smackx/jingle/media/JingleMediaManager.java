@@ -61,4 +61,5 @@ public abstract class JingleMediaManager {
      * @return
      */
     public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local);
-}
+
+  }

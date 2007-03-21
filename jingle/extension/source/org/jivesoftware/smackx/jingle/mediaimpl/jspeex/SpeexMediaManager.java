@@ -46,8 +46,16 @@ public class SpeexMediaManager extends JingleMediaManager {
         setupJMF();
     }
 
+    /**
+     * Returns a new jingleMediaSession
+     *
+     * @param payloadType payloadType
+     * @param remote      remote Candidate
+     * @param local       local Candidate
+     * @return JingleMediaSession
+     */
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
-        return new AudioMediaSession(payloadType, remote, local);
+        return new AudioMediaSession(payloadType, remote, local, null);
     }
 
     /**
@@ -65,7 +73,7 @@ public class SpeexMediaManager extends JingleMediaManager {
     public List<PayloadType> getPayloads() {
         return payloads;
     }
-   
+
     /**
      * Runs JMFInit the first time the application is started so that capture
      * devices are properly detected and initialized by JMF.

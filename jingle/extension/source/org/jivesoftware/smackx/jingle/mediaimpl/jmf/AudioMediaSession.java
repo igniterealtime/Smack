@@ -41,19 +41,6 @@ import java.net.ServerSocket;
 public class AudioMediaSession extends JingleMediaSession {
 
     private AudioChannel audioChannel;
-    private String locator = "dsound://";
-
-    /**
-     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
-     *
-     * @param payloadType Payload of the jmf
-     * @param remote      The remote information. The candidate that the jmf will be sent to.
-     * @param local       The local information. The candidate that will receive the jmf
-     */
-    public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local) {
-        this(payloadType, remote, local, "dsound://");
-    }
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
@@ -65,9 +52,7 @@ public class AudioMediaSession extends JingleMediaSession {
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, String locator) {
-        super(payloadType, remote, local);
-        if (locator != null && !locator.equals(""))
-            this.locator = locator;
+        super(payloadType, remote, local, locator==null?"dsound://":locator);
         initialize();
     }
 
@@ -97,7 +82,7 @@ public class AudioMediaSession extends JingleMediaSession {
             remotePort = this.getRemote().getPort();
         }
 
-        audioChannel = new AudioChannel(new MediaLocator(locator), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()));
+        audioChannel = new AudioChannel(new MediaLocator(this.getMediaLocator()), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()));
     }
 
     /**

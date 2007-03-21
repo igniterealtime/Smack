@@ -93,15 +93,16 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 
 
     /**
-     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
+     * Creates a org.jivesoftware.jingleaudio.jspeex.AudioMediaSession with defined payload type, remote and local candidates
      *
      * @param payloadType Payload of the jmf
-     * @param remote      The remote information. The candidate that the jmf will be sent to.
-     * @param local       The local information. The candidate that will receive the jmf
+     * @param remote      the remote information. The candidate that the jmf will be sent to.
+     * @param local       the local information. The candidate that will receive the jmf
+     * @param locator     media locator
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local) {
-        super(payloadType, remote, local);
+            final TransportCandidate local, String locator) {
+        super(payloadType, remote, local, locator==null?"dsound://":locator);
         initialize();
     }
 
