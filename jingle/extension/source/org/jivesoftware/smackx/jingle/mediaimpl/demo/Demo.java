@@ -1,3 +1,22 @@
+/**
+ * $RCSfile$
+ * $Revision: $
+ * $Date: 28/12/2006
+ * <p/>
+ * Copyright 2003-2006 Jive Software.
+ * <p/>
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
 import org.jivesoftware.smack.XMPPConnection;
@@ -7,32 +26,14 @@ import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleSessionRequest;
 import org.jivesoftware.smackx.jingle.OutgoingJingleSession;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
-import org.jivesoftware.smackx.jingle.nat.BridgedTransportManager;
-import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
-import org.jivesoftware.smackx.jingle.nat.RTPBridge;
-import org.jivesoftware.smackx.jingle.nat.STUNTransportManager;
+import org.jivesoftware.smackx.jingle.nat.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * $RCSfile$
- * $Revision: $
- * $Date: 28/12/2006
- *
- * Copyright 2003-2006 Jive Software.
- *
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Jingle Demo Application. It register in a XMPP Server and let users place calls using a full JID and auto-receive calls.
+ * Parameters: Server User Pass.
  */
 public class Demo extends JFrame {
 
@@ -60,21 +61,16 @@ public class Demo extends JFrame {
             xmppConnection.connect();
             xmppConnection.login(user, pass);
             initialize();
-        } catch (XMPPException e) {
+        }
+        catch (XMPPException e) {
             e.printStackTrace();
         }
     }
 
     public void initialize() {
-        if (RTPBridge.serviceAvailable(xmppConnection))
-            transportManager = new BridgedTransportManager(xmppConnection);
-        else
-            transportManager = new STUNTransportManager();
-
-        jm = new JingleManager(xmppConnection, transportManager, new JmfMediaManager());
-
-        if (transportManager instanceof BridgedTransportManager)
-            jm.addCreationListener((BridgedTransportManager) transportManager);
+        ICETransportManager icetm0 = new ICETransportManager(xmppConnection, "jivesoftware.com", 3478);
+        jm = new JingleManager(xmppConnection, icetm0, new JmfMediaManager());
+        jm.addCreationListener(icetm0);
 
         jm.addJingleSessionRequestListener(new JingleSessionRequestListener() {
             public void sessionRequested(JingleSessionRequest request) {
@@ -109,7 +105,9 @@ public class Demo extends JFrame {
                 if (outgoing != null) return;
                 try {
                     outgoing = jm.createOutgoingJingleSession(jid.getText());
-                } catch (XMPPException e1) {
+                    outgoing.start();
+                }
+                catch (XMPPException e1) {
                     e1.printStackTrace();
                 }
             }
@@ -120,17 +118,21 @@ public class Demo extends JFrame {
                 if (outgoing != null)
                     try {
                         outgoing.terminate();
-                    } catch (XMPPException e1) {
+                    }
+                    catch (XMPPException e1) {
                         e1.printStackTrace();
-                    } finally {
+                    }
+                    finally {
                         outgoing = null;
                     }
                 if (incoming != null)
                     try {
                         incoming.terminate();
-                    } catch (XMPPException e1) {
+                    }
+                    catch (XMPPException e1) {
                         e1.printStackTrace();
-                    } finally {
+                    }
+                    finally {
                         incoming = null;
                     }
             }
