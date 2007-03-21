@@ -281,22 +281,28 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             process = null;
         }
 
-        String localIP;
+        Socket conn;
         try {
-            localIP = discoverLocalIP();
+            String localIP;
+            try {
+                localIP = discoverLocalIP();
+            }
+            catch (UnknownHostException e1) {
+                localIP = null;
+            }
+
+            Bytestream query = createByteStreamInit(initiator, target, sessionID,
+                    localIP, (process != null ? process.getPort() : 0));
+
+            // if the local host is one of the options we need to wait for the
+            // remote connection.
+            conn = waitForUsedHostResponse(sessionID, process, createDigest(
+                    sessionID, initiator, target), query).establishedSocket;
         }
-        catch (UnknownHostException e1) {
-            localIP = null;
+        finally {
+            cleanupListeningSocket();
         }
 
-        Bytestream query = createByteStreamInit(initiator, target, sessionID,
-                localIP, (process != null ? process.getPort() : 0));
-
-        // if the local host is one of the options we need to wait for the
-        // remote connection.
-        Socket conn = waitForUsedHostResponse(sessionID, process, createDigest(
-                sessionID, initiator, target), query).establishedSocket;
-        cleanupListeningSocket();
         return conn;
     }
 
