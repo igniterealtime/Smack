@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.filetransfer;
 import org.jivesoftware.smack.XMPPException;
 
 import java.io.*;
+import java.util.concurrent.*;
 
 /**
  * An incoming file transfer is created when the
@@ -94,7 +95,7 @@ public class IncomingFileTransfer extends FileTransfer {
      * </UL>
      *
      * @param file The location to save the file.
-     * @throws XMPPException when the file transfer fails
+     * @throws XMPPException            when the file transfer fails
      * @throws IllegalArgumentException This exception is thrown when the the provided file is
      *                                  either null, or cannot be written to.
      */
@@ -151,13 +152,13 @@ public class IncomingFileTransfer extends FileTransfer {
                     try {
                         inputStream.close();
                     }
-                    catch(Throwable io) {
+                    catch (Throwable io) {
                         /* Ignore */
                     }
                 }
                 if (outputStream != null) {
                     try {
-                    outputStream.close();
+                        outputStream.close();
                     }
                     catch (Throwable io) {
                         /* Ignore */
@@ -175,11 +176,34 @@ public class IncomingFileTransfer extends FileTransfer {
 
     private InputStream negotiateStream() throws XMPPException {
         setStatus(Status.negotiating_transfer);
-        StreamNegotiator streamNegotiator = negotiator
+        final StreamNegotiator streamNegotiator = negotiator
                 .selectStreamNegotiator(recieveRequest);
         setStatus(Status.negotiating_stream);
-        InputStream inputStream = streamNegotiator
-                .createIncomingStream(recieveRequest.getStreamInitiation());
+        FutureTask<InputStream> streamNegotiatorTask = new FutureTask<InputStream>(
+                new Callable<InputStream>() {
+
+                    public InputStream call() throws Exception {
+                        return streamNegotiator
+                                .createIncomingStream(recieveRequest.getStreamInitiation());
+                    }
+                });
+        streamNegotiatorTask.run();
+        InputStream inputStream;
+        try {
+            inputStream = streamNegotiatorTask.get(15, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e) {
+            throw new XMPPException("Interruption while executing", e);
+        }
+        catch (ExecutionException e) {
+            throw new XMPPException("Error in execution", e);
+        }
+        catch (TimeoutException e) {
+            throw new XMPPException("Request timed out", e);
+        }
+        finally {
+            streamNegotiatorTask.cancel(true);
+        }
         setStatus(Status.negotiated);
         return inputStream;
     }

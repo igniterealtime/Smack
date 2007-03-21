@@ -33,21 +33,10 @@ public class BytestreamsProvider implements IQProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jivesoftware.smack.provider.IQProvider#parseIQ(org.xmlpull.v1.XmlPullParser)
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jivesoftware.smack.provider.IQProvider#parseIQ(org.xmlpull.v1.XmlPullParser)
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.jivesoftware.smack.provider.IQProvider#parseIQ(org.xmlpull.v1.XmlPullParser)
 	 */
 	public IQ parseIQ(XmlPullParser parser) throws Exception {
-		// StringBuilder buf = new StringBuilder();
 		boolean done = false;
 
 		Bytestream toReturn = new Bytestream();
@@ -95,8 +84,7 @@ public class BytestreamsProvider implements IQProvider {
 			}
 		}
 
-		toReturn.setMode((mode == "udp" ? Bytestream.Mode.UDP
-				: Bytestream.Mode.TCP));
+		toReturn.setMode((Bytestream.Mode.fromName(mode)));
 		toReturn.setSessionID(id);
 		return toReturn;
 	}

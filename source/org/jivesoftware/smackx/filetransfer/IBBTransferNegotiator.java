@@ -19,10 +19,7 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
@@ -115,12 +112,12 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         PacketCollector collector = connection
                 .createPacketCollector(new PacketIDFilter(openIQ.getPacketID()));
         connection.sendPacket(openIQ);
-
-        IQ openResponse = (IQ) collector.nextResult();
+        // We don't want to wait forever for the result
+        IQ openResponse = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         collector.cancel();
 
         if (openResponse == null) {
-            throw new XMPPException("No response from peer");
+            throw new XMPPException("No response from peer on IBB open");
         }
 
         IQ.Type type = openResponse.getType();
@@ -142,9 +139,6 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     }
 
     public void cleanup() {
-    }
-
-    public void cancel() {
     }
 
     private class IBBOutputStream extends OutputStream {
@@ -457,10 +451,8 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
             IBBExtensions.Data data = (IBBExtensions.Data) packet.
                     getExtension(IBBExtensions.Data.ELEMENT_NAME, IBBExtensions.NAMESPACE);
-            if (data == null) {
-                return false;
-            }
-            return data.getSessionID() != null && data.getSessionID().equalsIgnoreCase(sessionID);
+            return data != null && data.getSessionID() != null
+                    && data.getSessionID().equalsIgnoreCase(sessionID);
         }
     }
 

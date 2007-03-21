@@ -33,9 +33,9 @@ public class Bytestream extends IQ {
 
     private String sessionID;
 
-    private Mode mode = Mode.TCP;
+    private Mode mode = Mode.tcp;
 
-    private final List streamHosts = new ArrayList();
+    private final List<StreamHost> streamHosts = new ArrayList<StreamHost>();
 
     private StreamHostUsed usedHost;
 
@@ -63,7 +63,7 @@ public class Bytestream extends IQ {
      * Set the session ID related to the Byte Stream. The session ID is a unique
      * identifier used to differentiate between stream negotations.
      *
-     * @param sessionID
+     * @param sessionID the unique session ID that identifies the transfer.
      */
     public void setSessionID(final String sessionID) {
         this.sessionID = sessionID;
@@ -83,7 +83,7 @@ public class Bytestream extends IQ {
      * Set the transport mode. This should be put in the initiation of the
      * interaction.
      *
-     * @param mode
+     * @param mode the transport mode, either UDP or TCP
      * @see Mode
      */
     public void setMode(final Mode mode) {
@@ -145,7 +145,7 @@ public class Bytestream extends IQ {
      *
      * @return Returns the list of stream hosts contained in the packet.
      */
-    public Collection getStreamHosts() {
+    public Collection<StreamHost> getStreamHosts() {
         return Collections.unmodifiableCollection(streamHosts);
     }
 
@@ -158,9 +158,10 @@ public class Bytestream extends IQ {
      *         if there is none.
      */
     public StreamHost getStreamHost(final String JID) {
-        StreamHost host;
-        for (Iterator it = streamHosts.iterator(); it.hasNext();) {
-            host = (StreamHost) it.next();
+        if(JID == null) {
+            return null;
+        }
+        for (StreamHost host : streamHosts) {
             if (host.getJID().equals(JID)) {
                 return host;
             }
@@ -233,8 +234,9 @@ public class Bytestream extends IQ {
                 buf.append(" mode = \"").append(getMode()).append("\"");
             buf.append(">");
             if (getToActivate() == null) {
-                for (Iterator it = getStreamHosts().iterator(); it.hasNext();)
-                    buf.append(((StreamHost) it.next()).toXML());
+                for (StreamHost streamHost : getStreamHosts()) {
+                    buf.append(streamHost.toXML());
+                }
             }
             else {
                 buf.append(getToActivate().toXML());
@@ -246,8 +248,8 @@ public class Bytestream extends IQ {
                 buf.append(getUsedHost().toXML());
             // A result from the server can also contain stream hosts
             else if (countStreamHosts() > 0) {
-                for (Iterator it = getStreamHosts().iterator(); it.hasNext();) {
-                    buf.append(((StreamHost) it.next()).toXML());
+                for (StreamHost host : streamHosts) {
+                    buf.append(host.toXML());
                 }
             }
         }
@@ -456,32 +458,28 @@ public class Bytestream extends IQ {
      *
      * @author Alexander Wenckus
      */
-    public static class Mode {
+    public enum Mode {
 
         /**
          * A TCP based stream.
          */
-        public static Mode TCP = new Mode("tcp");
+        tcp,
 
         /**
          * A UDP based stream.
          */
-        public static Mode UDP = new Mode("udp");
+        udp;
 
-        private final String modeString;
+        public static Mode fromName(String name) {
+            Mode mode;
+            try {
+                mode = Mode.valueOf(name);
+            }
+            catch(Exception ex) {
+                mode = tcp;
+            }
 
-        private Mode(final String mode) {
-            this.modeString = mode;
-        }
-
-        public String toString() {
-            return modeString;
-        }
-
-        public boolean equals(final Object obj) {
-            if (!(obj instanceof Mode))
-                return false;
-            return modeString.equals(((Mode) obj).modeString);
+            return mode;
         }
     }
 }

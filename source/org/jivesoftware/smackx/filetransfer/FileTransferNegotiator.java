@@ -74,6 +74,11 @@ public class FileTransferNegotiator {
 
     private static final Random randomGenerator = new Random();
 
+    /**
+     * A static variable to use only offer IBB for file transfer. It is generally recommend to only
+     * set this variable to true for testing purposes as IBB is the backup file transfer method
+     * and shouldn't be used as the only transfer method in production systems.
+     */
     public static boolean IBB_ONLY = false;
 
     /**
@@ -178,7 +183,7 @@ public class FileTransferNegotiator {
 
     private final XMPPConnection connection;
 
-    private final StreamNegotiator byteStreamTransferManager;
+    private final Socks5TransferNegotiatorManager byteStreamTransferManager;
 
     private final StreamNegotiator inbandTransferManager;
 
@@ -186,7 +191,7 @@ public class FileTransferNegotiator {
         configureConnection(connection);
 
         this.connection = connection;
-        byteStreamTransferManager = new Socks5TransferNegotiator(connection);
+        byteStreamTransferManager = new Socks5TransferNegotiatorManager(connection);
         inbandTransferManager = new IBBTransferNegotiator(connection);
     }
 
@@ -298,10 +303,12 @@ public class FileTransferNegotiator {
         }
 
         if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
-            return new FaultTolerantNegotiator(connection, byteStreamTransferManager, inbandTransferManager);
+            return new FaultTolerantNegotiator(connection,
+                    byteStreamTransferManager.createNegotiator(),
+                    inbandTransferManager);
         }
         else if (isByteStream) {
-            return byteStreamTransferManager;
+            return byteStreamTransferManager.createNegotiator();
         }
         else {
             return inbandTransferManager;
@@ -430,10 +437,11 @@ public class FileTransferNegotiator {
         }
 
         if (isByteStream && isIBB) {
-            return new FaultTolerantNegotiator(connection, byteStreamTransferManager, inbandTransferManager);
+            return new FaultTolerantNegotiator(connection,
+                    byteStreamTransferManager.createNegotiator(), inbandTransferManager);
         }
         else if (isByteStream) {
-            return byteStreamTransferManager;
+            return byteStreamTransferManager.createNegotiator();
         }
         else {
             return inbandTransferManager;

@@ -30,10 +30,15 @@ import org.jivesoftware.smackx.packet.StreamInitiation;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.*;
+import java.util.List;
+import java.util.ArrayList;
+
 
 /**
- * The fault tolerant negotiator takes two stream negotiators, the primary and the secondary negotiator.
- * If the primary negotiator fails during the stream negotiaton process, the second negotiator is used.
+ * The fault tolerant negotiator takes two stream negotiators, the primary and the secondary
+ * negotiator. If the primary negotiator fails during the stream negotiaton process, the second
+ * negotiator is used.
  */
 public class FaultTolerantNegotiator extends StreamNegotiator {
 
@@ -43,7 +48,8 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     private PacketFilter primaryFilter;
     private PacketFilter secondaryFilter;
 
-    public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary, StreamNegotiator secondary) {
+    public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary,
+            StreamNegotiator secondary) {
         this.primaryNegotiator = primary;
         this.secondaryNegotiator = secondary;
         this.connection = connection;
@@ -58,40 +64,69 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     }
 
     InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException {
-        throw new UnsupportedOperationException("Negotiation only handled by create incoming stream method.");
+        throw new UnsupportedOperationException("Negotiation only handled by create incoming " +
+                "stream method.");
     }
 
-    final Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws XMPPException {
-        throw new UnsupportedOperationException("Initiation handled by createIncomingStream method");
+    final Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) {
+        throw new UnsupportedOperationException("Initiation handled by createIncomingStream " +
+                "method");
     }
 
     public InputStream createIncomingStream(StreamInitiation initiation) throws XMPPException {
-        PacketFilter filter = getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID());
-        PacketCollector collector = connection.createPacketCollector(filter);
+        PacketCollector collector = connection.createPacketCollector(
+                getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()));
 
-        StreamInitiation response = super.createInitiationAccept(initiation, getNamespaces());
-        connection.sendPacket(response);
+        connection.sendPacket(super.createInitiationAccept(initiation, getNamespaces()));
 
-        InputStream stream;
+        CompletionService<InputStream> service
+                = new ExecutorCompletionService<InputStream>(Executors.newFixedThreadPool(2));
+        List<Future<InputStream>> futures = new ArrayList<Future<InputStream>>();
+        InputStream stream = null;
+        XMPPException exception = null;
         try {
-            Packet streamInitiation = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-            if (streamInitiation == null) {
-                throw new XMPPException("No response from remote client");
+            futures.add(service.submit(new NegotiatorService(collector)));
+            futures.add(service.submit(new NegotiatorService(collector)));
+
+            int i = 0;
+            while (stream == null && i < futures.size()) {
+                Future<InputStream> future;
+                try {
+                    i++;
+                    future = service.poll(10, TimeUnit.SECONDS);
+                }
+                catch (InterruptedException e) {
+                    continue;
+                }
+
+                if (future == null) {
+                    continue;
+                }
+
+                try {
+                    stream = future.get();
+                }
+                catch (InterruptedException e) {
+                    /* Do Nothing */
+                }
+                catch (ExecutionException e) {
+                    exception = new XMPPException(e.getCause());
+                }
             }
-            StreamNegotiator negotiator = determineNegotiator(streamInitiation);
-            stream = negotiator.negotiateIncomingStream(streamInitiation);
         }
-        catch (XMPPException ex) {
-            ex.printStackTrace();
-            Packet streamInitiation = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-            collector.cancel();
-            if (streamInitiation == null) {
-                throw new XMPPException("No response from remote client");
+        finally {
+            for (Future<InputStream> future : futures) {
+                future.cancel(true);
             }
-            StreamNegotiator negotiator = determineNegotiator(streamInitiation);
-            stream = negotiator.negotiateIncomingStream(streamInitiation);
-        } finally {
             collector.cancel();
+        }
+        if (stream == null) {
+            if (exception != null) {
+                throw exception;
+            }
+            else {
+                throw new XMPPException("File transfer negotiation failed.");
+            }
         }
 
         return stream;
@@ -101,7 +136,8 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return primaryFilter.accept(streamInitiation) ? primaryNegotiator : secondaryNegotiator;
     }
 
-    public OutputStream createOutgoingStream(String streamID, String initiator, String target) throws XMPPException {
+    public OutputStream createOutgoingStream(String streamID, String initiator, String target)
+            throws XMPPException {
         OutputStream stream;
         try {
             stream = primaryNegotiator.createOutgoingStream(streamID, initiator, target);
@@ -114,10 +150,10 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     }
 
     public String[] getNamespaces() {
-        String [] primary = primaryNegotiator.getNamespaces();
-        String [] secondary = secondaryNegotiator.getNamespaces();
+        String[] primary = primaryNegotiator.getNamespaces();
+        String[] secondary = secondaryNegotiator.getNamespaces();
 
-        String [] namespaces = new String[primary.length + secondary.length];
+        String[] namespaces = new String[primary.length + secondary.length];
         System.arraycopy(primary, 0, namespaces, 0, primary.length);
         System.arraycopy(secondary, 0, namespaces, primary.length, secondary.length);
 
@@ -127,4 +163,22 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     public void cleanup() {
     }
 
+    private class NegotiatorService implements Callable<InputStream> {
+
+        private PacketCollector collector;
+
+        NegotiatorService(PacketCollector collector) {
+            this.collector = collector;
+        }
+
+        public InputStream call() throws Exception {
+            Packet streamInitiation = collector.nextResult(
+                    SmackConfiguration.getPacketReplyTimeout() * 2);
+            if (streamInitiation == null) {
+                throw new XMPPException("No response from remote client");
+            }
+            StreamNegotiator negotiator = determineNegotiator(streamInitiation);
+            return negotiator.negotiateIncomingStream(streamInitiation);
+        }
+    }
 }

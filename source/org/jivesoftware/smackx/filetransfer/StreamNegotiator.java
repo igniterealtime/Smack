@@ -54,7 +54,8 @@ public abstract class StreamNegotiator {
      * @return The response to be forwarded to the initator.
      */
     public StreamInitiation createInitiationAccept(
-            StreamInitiation streamInitiationOffer, String [] namespaces) {
+            StreamInitiation streamInitiationOffer, String[] namespaces)
+    {
         StreamInitiation response = new StreamInitiation();
         response.setTo(streamInitiationOffer.getFrom());
         response.setFrom(streamInitiationOffer.getTo());
@@ -64,8 +65,8 @@ public abstract class StreamNegotiator {
         DataForm form = new DataForm(Form.TYPE_SUBMIT);
         FormField field = new FormField(
                 FileTransferNegotiator.STREAM_DATA_FIELD_NAME);
-        for (int i = 0; i < namespaces.length; i++) {
-            field.addValue(namespaces[i]);
+        for (String namespace : namespaces) {
+            field.addValue(namespace);
         }
         form.addField(field);
 
@@ -159,6 +160,5 @@ public abstract class StreamNegotiator {
      * Cleanup any and all resources associated with this negotiator.
      */
     public abstract void cleanup();
-
 
 }
