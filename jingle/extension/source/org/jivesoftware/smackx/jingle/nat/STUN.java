@@ -33,6 +33,8 @@ import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * STUN IQ Packet used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
@@ -45,8 +47,7 @@ import java.util.Iterator;
  */
 public class STUN extends IQ {
 
-    private int port = -1;
-    private String host;
+    private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
 
     /**
      * Element name of the packet extension.
@@ -74,39 +75,12 @@ public class STUN extends IQ {
     }
 
     /**
-     * Get the Host Address
+     * Get a list of STUN Servers recommended by the Server
      *
      * @return
      */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * Set the Host Address
-     *
-     * @param host
-     */
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    /**
-     * Get STUN port
-     *
-     * @return
-     */
-    public int getPort() {
-        return port;
-    }
-
-    /**
-     * Set STUN port
-     *
-     * @param port
-     */
-    public void setPort(int port) {
-        this.port = port;
+    public List<StunServerAddress> getServers() {
+        return servers;
     }
 
     /**
@@ -153,14 +127,19 @@ public class STUN extends IQ {
 
                 if (eventType == XmlPullParser.START_TAG) {
                     if (elementName.equals("server")) {
+                        String host = null;
+                        String port = null;
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
                             if (parser.getAttributeName(i).equals("host"))
-                                iq.setHost(parser.getAttributeValue(i));
+                                host = parser.getAttributeValue(i);
                             else if (parser.getAttributeName(i).equals("udp"))
-                                iq.setPort(Integer.parseInt(parser.getAttributeValue(i)));
+                                port = parser.getAttributeValue(i);
                         }
+                        if (host != null && port != null)
+                            iq.servers.add(new StunServerAddress(host, port));
                     }
-                } else if (eventType == XmlPullParser.END_TAG) {
+                }
+                else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals(ELEMENT_NAME)) {
                         done = true;
                     }
@@ -238,5 +217,37 @@ public class STUN extends IQ {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * Provides easy abstract to store STUN Server Addresses and Ports
+     */
+    public static class StunServerAddress {
+
+        private String server;
+        private String port;
+
+        public StunServerAddress(String server, String port) {
+            this.server = server;
+            this.port = port;
+        }
+
+        /**
+         * Get the Host Address
+         *
+         * @return
+         */
+        public String getServer() {
+            return server;
+        }
+
+        /**
+         * Get the Server Port
+         *
+         * @return
+         */
+        public String getPort() {
+            return port;
+        }
     }
 }
