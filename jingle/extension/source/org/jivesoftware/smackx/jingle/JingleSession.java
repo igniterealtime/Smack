@@ -201,6 +201,14 @@ public abstract class JingleSession extends JingleNegotiator {
     }
 
     /**
+     * Get the JingleMediaSession of this Jingle Session
+     * @return the JingleMediaSession
+     */
+    public JingleMediaSession getJingleMediaSession() {
+        return jingleMediaSession;
+    }
+
+    /**
      * Get the session responder
      *
      * @return the responder
