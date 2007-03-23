@@ -35,6 +35,10 @@ import org.xmlpull.v1.XmlPullParser;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.InetAddress;
 
 /**
  * STUN IQ Packet used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
@@ -48,6 +52,8 @@ import java.util.ArrayList;
 public class STUN extends IQ {
 
     private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
+
+    private String publicIp = null;
 
     /**
      * Element name of the packet extension.
@@ -81,6 +87,24 @@ public class STUN extends IQ {
      */
     public List<StunServerAddress> getServers() {
         return servers;
+    }
+
+    /**
+     * Get Public Ip returned from the XMPP server
+     *
+     * @return
+     */
+    public String getPublicIp() {
+        return publicIp;
+    }
+
+    /**
+     * Set Public Ip returned from the XMPP server
+     *
+     * @param publicIp
+     */
+    private void setPublicIp(String publicIp) {
+        this.publicIp = publicIp;
     }
 
     /**
@@ -137,6 +161,15 @@ public class STUN extends IQ {
                         }
                         if (host != null && port != null)
                             iq.servers.add(new StunServerAddress(host, port));
+                    }
+                    else if (elementName.equals("publicip")) {
+                        String host = null;
+                        for (int i = 0; i < parser.getAttributeCount(); i++) {
+                            if (parser.getAttributeName(i).equals("ip"))
+                                host = parser.getAttributeValue(i);
+                        }
+                        if (host != null && !host.equals(""))
+                            iq.setPublicIp(host);
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {

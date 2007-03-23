@@ -171,7 +171,9 @@ public class STUNResolverTest extends SmackTestCase {
         STUN stun = STUN.getSTUNServer(getConnection(0));
         for (STUN.StunServerAddress stunServerAddress : stun.getServers())
             System.out.println(stunServerAddress.getServer() + ":" + stunServerAddress.getPort());
-        
+
+        System.out.println(stun.getPublicIp());
+
     }
 
     /**
