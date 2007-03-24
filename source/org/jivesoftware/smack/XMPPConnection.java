@@ -533,19 +533,6 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns the local network address of the socket used to connect to the server, or
-     * <tt>null</tt> if not currently connected to the server.
-     *
-     * @return the local address for the socket used to connect to the server.
-     */
-    public InetAddress getLocalNetworkAddress() {
-        if (socket == null || !socket.isConnected()) {
-            return null;
-        }
-        return socket.getLocalAddress();
-    }
-
-    /**
      * Returns true if currently authenticated by successfully calling the login method.
      *
      * @return true if authenticated.
