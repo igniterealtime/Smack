@@ -74,7 +74,7 @@ public class BridgedResolverTest extends SmackTestCase {
 
         String publicIp = RTPBridge.getPublicIP(getConnection(0));
 
-        System.out.println(publicIp + " local:" + getConnection(0).getLocalNetworkAddress().getHostAddress());
+        System.out.println(publicIp);
 
         if (publicIp != null) {
             incCounter();
