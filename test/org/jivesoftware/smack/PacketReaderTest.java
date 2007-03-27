@@ -98,7 +98,7 @@ public class PacketReaderTest extends SmackTestCase {
             val = counter;
         }
         return val;
-    }   
+    }
 
     /**
      * Verify that when Smack receives a "not implemented IQ" answers with an IQ packet
@@ -134,28 +134,28 @@ public class PacketReaderTest extends SmackTestCase {
      */
     public void testRemoveListener() {
 
-            PacketListener listener = new PacketListener() {
-                public void processPacket(Packet packet) {
-                    // Do nothing
-                }
-            };
-            // Keep number of current listeners
-            int listenersSize = getConnection(0).packetReader.listeners.size();
-            // Add a new listener
-            getConnection(0).addPacketListener(listener, new MockPacketFilter(true));
-            // Check that the listener was added
-            assertEquals("Listener was not added", listenersSize + 1,
-                    getConnection(0).packetReader.listeners.size());
+        PacketListener listener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                // Do nothing
+            }
+        };
+        // Keep number of current listeners
+        int listenersSize = getConnection(0).packetReader.listeners.size();
+        // Add a new listener
+        getConnection(0).addPacketListener(listener, new MockPacketFilter(true));
+        // Check that the listener was added
+        assertEquals("Listener was not added", listenersSize + 1,
+                getConnection(0).packetReader.listeners.size());
 
-            Message msg = new Message(getConnection(0).getUser(), Message.Type.normal);
+        Message msg = new Message(getConnection(0).getUser(), Message.Type.normal);
 
-            getConnection(1).sendPacket(msg);
+        getConnection(1).sendPacket(msg);
 
-            // Remove the listener
-            getConnection(0).removePacketListener(listener);
-            // Check that the number of listeners is correct (i.e. the listener was removed)
-            assertEquals("Listener was not removed", listenersSize,
-                    getConnection(0).packetReader.listeners.size());
+        // Remove the listener
+        getConnection(0).removePacketListener(listener);
+        // Check that the number of listeners is correct (i.e. the listener was removed)
+        assertEquals("Listener was not removed", listenersSize,
+                getConnection(0).packetReader.listeners.size());
     }
 
     /**
@@ -200,67 +200,91 @@ public class PacketReaderTest extends SmackTestCase {
     }
 
     /**
-      * Tests that PacketReader adds new listeners and also removes them correctly.
-      */
-     public void testFiltersRemotion() {
+     * Tests that PacketReader adds new listeners and also removes them correctly.
+     */
+    public void testFiltersRemotion() {
 
-         resetCounter();
+        resetCounter();
 
-         int repeat=10;
+        int repeat = 10;
 
-         for (int j = 0; j < repeat; j++) {
+        for (int j = 0; j < repeat; j++) {
 
-             PacketListener listener = new PacketListener() {
-                 public void processPacket(Packet packet) {
-                     System.out.println("Packet Captured");
-                     incCounter();
-                 }              
-             };
-             PacketFilter pf = new PacketFilter() {
-                 public boolean accept(Packet packet) {
-                     System.out.println("Packet Filtered");
-                     incCounter();
-                     return true;
-                 }
-             };
+            PacketListener listener0 = new PacketListener() {
+                public void processPacket(Packet packet) {
+                    System.out.println("Packet Captured");
+                    incCounter();
+                }
+            };
+            PacketFilter pf0 = new PacketFilter() {
+                public boolean accept(Packet packet) {
+                    System.out.println("Packet Filtered");
+                    incCounter();
+                    return true;
+                }
+            };
 
-             getConnection(0).addPacketListener(listener,pf);
-             // Check that the listener was added
+            PacketListener listener1 = new PacketListener() {
+                public void processPacket(Packet packet) {
+                    System.out.println("Packet Captured");
+                    incCounter();
+                }
+            };
+            PacketFilter pf1 = new PacketFilter() {
+                public boolean accept(Packet packet) {
+                    System.out.println("Packet Filtered");
+                    incCounter();
+                    return true;
+                }
+            };
 
-             Message msg = new Message(getConnection(0).getUser(), Message.Type.normal);
+            getConnection(0).addPacketListener(listener0, pf0);
+            getConnection(1).addPacketListener(listener1, pf1);
 
-             getConnection(1).sendPacket(msg);
+            // Check that the listener was added
 
-             try {
-                 Thread.sleep(100);
-             }
-             catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
+            Message msg0 = new Message(getConnection(0).getUser(), Message.Type.normal);
+            Message msg1 = new Message(getConnection(1).getUser(), Message.Type.normal);
 
-             // Remove the listener
-             getConnection(0).removePacketListener(listener);
 
-             try {
-                 Thread.sleep(200);
-             }
-             catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
+            for (int i = 0; i < 5; i++) {
+                getConnection(1).sendPacket(msg0);
+                getConnection(0).sendPacket(msg1);
+            }
 
-             for (int i = 0; i < 10; i++)
-                 getConnection(1).sendPacket(msg);
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-             try {
-                 Thread.sleep(100);
-             }
-             catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
-         }
-         System.out.println(valCounter());
-         assertEquals(valCounter(),repeat*2);
-     }
+            // Remove the listener
+            getConnection(0).removePacketListener(listener0);
+            getConnection(1).removePacketListener(listener1);
+
+            try {
+                Thread.sleep(300);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0; i < 10; i++) {
+                getConnection(0).sendPacket(msg1);
+                getConnection(1).sendPacket(msg0);
+            }
+
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(valCounter());
+        assertEquals(valCounter(), repeat * 2 * 10);
+    }
 
     protected int getMaxConnections() {
         return 2;

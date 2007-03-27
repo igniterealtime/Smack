@@ -202,6 +202,7 @@ public abstract class JingleSession extends JingleNegotiator {
 
     /**
      * Get the JingleMediaSession of this Jingle Session
+     *
      * @return the JingleMediaSession
      */
     public JingleMediaSession getJingleMediaSession() {
@@ -428,8 +429,7 @@ public abstract class JingleSession extends JingleNegotiator {
                             jout = getState().eventInfo(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONINITIATE)) {
-                            if (getState() != null)
-                                jout = getState().eventInitiate(jin);
+                            jout = getState().eventInitiate(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
                             jout = getState().eventRedirect(jin);
@@ -493,7 +493,8 @@ public abstract class JingleSession extends JingleNegotiator {
                 }
 
                 // Acknowledge the IQ reception
-                sendAck(iq);
+                if (!(getState() instanceof IncomingJingleSession.Accepting))
+                    sendAck(iq);
 
                 // ... and send all these parts in a Jingle response.
                 response = sendJingleParts(iq, (Jingle) sessionResponse,
@@ -502,6 +503,7 @@ public abstract class JingleSession extends JingleNegotiator {
             }
             catch (JingleException e) {
                 // Send an error message, if present
+                System.out.println("E:" + iq);
                 JingleError error = e.getError();
                 if (error != null) {
                     sendFormattedError(iq, error);
@@ -510,6 +512,9 @@ public abstract class JingleSession extends JingleNegotiator {
                 // Notify the session end and close everything...
                 triggerSessionClosedOnError(e);
             }
+        }
+        else {
+            System.out.println("K:" + iq);
         }
 
         return response;

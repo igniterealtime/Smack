@@ -136,18 +136,6 @@ public class IncomingJingleSession extends JingleSession {
 
         updatePacketListener();
 
-        Jingle packet = initialJingleSessionRequest.getJingle();
-        if (packet != null) {
-
-            // Initialize the session information
-            setSid(packet.getSid());
-
-            respond(packet);
-        }
-        else {
-            throw new XMPPException(
-                    "Session request with null Jingle packet.");
-        }
 
     }
 
@@ -173,6 +161,20 @@ public class IncomingJingleSession extends JingleSession {
      * @throws XMPPException
      */
     public void start(JingleSessionRequest initialJingleSessionRequest) throws XMPPException {
+        Jingle packet = initialJingleSessionRequest.getJingle();
+        if (packet != null) {
+
+            // Initialize the session information
+            setSid(packet.getSid());
+
+            sendAck(packet);
+        }
+        else {
+            throw new XMPPException(
+                    "Session request with null Jingle packet.");
+        }
+        // Set the new session state
+        setState(pending);
     }
 
     /**
@@ -181,15 +183,16 @@ public class IncomingJingleSession extends JingleSession {
      * @throws XMPPException
      */
     public void start() throws XMPPException {
-
+        start(this.getInitialSessionRequest());
     }
 
     /**
      * Force a call acceptance. Used to accept a hooked call.
+     *
      * @deprecated Avoid to use this method. Not compliance.
      */
-    public void accept(){
-       setState(active);
+    public void accept() {
+        setState(active);
     }
 
     /**
@@ -230,8 +233,6 @@ public class IncomingJingleSession extends JingleSession {
          * @throws XMPPException
          */
         public Jingle eventInitiate(Jingle inJingle) throws XMPPException {
-            // Set the new session state
-            setState(pending);
             return super.eventInitiate(inJingle);
         }
 

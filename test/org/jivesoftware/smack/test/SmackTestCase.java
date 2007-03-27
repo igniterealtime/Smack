@@ -65,6 +65,7 @@ public abstract class SmackTestCase extends TestCase {
      */
     public SmackTestCase(String arg0) {
         super(arg0);
+        XMPPConnection.DEBUG_ENABLED=true;
     }
 
     /**

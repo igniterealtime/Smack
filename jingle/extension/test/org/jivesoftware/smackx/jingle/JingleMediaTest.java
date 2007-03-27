@@ -83,7 +83,7 @@ public class JingleMediaTest extends SmackTestCase {
                             session.addStateListener(new JingleSessionStateListener() {
                                 public void beforeChange(JingleNegotiator.State old, JingleNegotiator.State newOne) throws JingleNegotiator.JingleException {
                                     if (newOne instanceof IncomingJingleSession.Active) {
-                                            throw new JingleNegotiator.JingleException();
+                                        throw new JingleNegotiator.JingleException();
                                     }
                                 }
 
@@ -134,7 +134,6 @@ public class JingleMediaTest extends SmackTestCase {
             XMPPConnection x0 = getConnection(0);
             XMPPConnection x1 = getConnection(1);
 
-
             ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
             ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
 
@@ -170,7 +169,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                     try {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
-                        session.start(request);
+                        //session.start(request);
                     }
                     catch (XMPPException e) {
                         e.printStackTrace();
@@ -179,17 +178,31 @@ public class JingleMediaTest extends SmackTestCase {
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+           for (int i = 0; i < 10; i++) {
 
-            js0.start();
+                OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
-            Thread.sleep(60000);
-            js0.terminate();
+                js0.addStateListener(new JingleSessionStateListener() {
 
-            Thread.sleep(6000);
+                    public void beforeChange(JingleNegotiator.State old, JingleNegotiator.State newOne) throws JingleNegotiator.JingleException {
+                    }
 
-            x0.disconnect();
-            x1.disconnect();
+                    public void afterChanged(JingleNegotiator.State old, JingleNegotiator.State newOne) {
+                        if (newOne != null) {
+                            System.out.println(newOne.getClass().getCanonicalName());
+                            assertFalse(newOne instanceof OutgoingJingleSession.Active);
+                        }
+                    }
+                });
+
+                js0.start();
+
+                Thread.sleep(5000);
+                js0.terminate();
+
+                Thread.sleep(1500);
+
+            }
 
         }
         catch (Exception e) {

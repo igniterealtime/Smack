@@ -244,6 +244,8 @@ public class STUN extends IQ {
                             return true;
                 }
 
+                System.out.println(item.getName()+"-"+info.getType());
+
             }
         }
         catch (XMPPException e) {
