@@ -124,18 +124,12 @@ public class IncomingJingleSession extends JingleSession {
         }
 
         setMediaNeg(new MediaNegotiator(this, payloadTypes));
-
         if (resolver.getType().equals(TransportResolver.Type.rawupd)) {
             setTransportNeg(new TransportNegotiator.RawUdp(this, resolver));
         }
         if (resolver.getType().equals(TransportResolver.Type.ice)) {
             setTransportNeg(new TransportNegotiator.Ice(this, resolver));
         }
-
-        updatePacketListener();
-
-        // Establish the default state
-        setState(accepting);
 
     }
 
@@ -161,20 +155,24 @@ public class IncomingJingleSession extends JingleSession {
      * @throws XMPPException
      */
     public void start(JingleSessionRequest initialJingleSessionRequest) throws XMPPException {
+        // Establish the default state
+        setState(accepting);
+
+        updatePacketListener();
+
         Jingle packet = initialJingleSessionRequest.getJingle();
         if (packet != null) {
 
             // Initialize the session information
             setSid(packet.getSid());
 
-            sendAck(packet);
+            respond(packet);
         }
         else {
             throw new XMPPException(
                     "Session request with null Jingle packet.");
         }
-        // Set the new session state
-        setState(pending);
+
     }
 
     /**
@@ -183,18 +181,9 @@ public class IncomingJingleSession extends JingleSession {
      * @throws XMPPException
      */
     public void start() throws XMPPException {
-        start(this.getInitialSessionRequest());
+        start(getInitialSessionRequest());
     }
-
-    /**
-     * Force a call acceptance. Used to accept a hooked call.
-     *
-     * @deprecated Avoid to use this method. Not compliance.
-     */
-    public void accept() {
-        setState(active);
-    }
-
+   
     /**
      * Get the initial Jingle packet request
      *
@@ -233,6 +222,8 @@ public class IncomingJingleSession extends JingleSession {
          * @throws XMPPException
          */
         public Jingle eventInitiate(Jingle inJingle) throws XMPPException {
+            // Set the new session state
+            setState(pending);
             return super.eventInitiate(inJingle);
         }
 

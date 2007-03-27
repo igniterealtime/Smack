@@ -110,7 +110,6 @@ public class JingleMediaTest extends SmackTestCase {
 
                 IncomingJingleSession incomingJingleSession = (IncomingJingleSession) jm1.getSession(js0.getConnection().getUser());
                 incomingJingleSession.removeAllStateListeners();
-                incomingJingleSession.accept();
 
                 Thread.sleep(15000);
 
