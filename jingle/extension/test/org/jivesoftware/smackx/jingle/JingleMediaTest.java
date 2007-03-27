@@ -161,15 +161,21 @@ public class JingleMediaTest extends SmackTestCase {
             jingleMediaManager1.addMediaManager(new SpeexMediaManager());
             jingleMediaManager1.setPreferredPayloadType(jingleMediaManager1.getPayloads().get(2));
 
-            jm0.setMediaManager(jingleMediaManager0);
-            jm1.setMediaManager(jingleMediaManager1);
+            jm0.setMediaManager(new JmfMediaManager());
+            jm1.setMediaManager(new JmfMediaManager());
 
             jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 public void sessionRequested(final JingleSessionRequest request) {
 
                     try {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
-                        //session.start(request);
+                        try {
+                            Thread.sleep(30000);
+                        }
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        session.start(request);
                     }
                     catch (XMPPException e) {
                         e.printStackTrace();
@@ -178,7 +184,7 @@ public class JingleMediaTest extends SmackTestCase {
                 }
             });
 
-           for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++) {
 
                 OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
@@ -189,15 +195,15 @@ public class JingleMediaTest extends SmackTestCase {
 
                     public void afterChanged(JingleNegotiator.State old, JingleNegotiator.State newOne) {
                         if (newOne != null) {
-                            System.out.println(newOne.getClass().getCanonicalName());
-                            assertFalse(newOne instanceof OutgoingJingleSession.Active);
+                            if ((newOne instanceof OutgoingJingleSession.Active))
+                                System.err.println("|||"+newOne.getClass().getCanonicalName()+"|||");
                         }
                     }
                 });
 
                 js0.start();
 
-                Thread.sleep(5000);
+                Thread.sleep(45000);
                 js0.terminate();
 
                 Thread.sleep(1500);

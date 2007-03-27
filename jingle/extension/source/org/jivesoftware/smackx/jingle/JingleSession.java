@@ -429,7 +429,14 @@ public abstract class JingleSession extends JingleNegotiator {
                             jout = getState().eventInfo(jin);
                         }
                         else if (action.equals(Jingle.Action.SESSIONINITIATE)) {
+
+                            if (!(getState() instanceof IncomingJingleSession.Accepting)) {
                             jout = getState().eventInitiate(jin);
+                            }else{
+                                jout =null;
+                                throw new JingleException("Discard");
+                            }
+
                         }
                         else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
                             jout = getState().eventRedirect(jin);
@@ -477,6 +484,7 @@ public abstract class JingleSession extends JingleNegotiator {
 
             // Send the packet to the right event handler for the session...
             try {
+
                 sessionResponse = dispatchIncomingPacket(iq, null);
                 if (sessionResponse != null) {
                     responseId = sessionResponse.getPacketID();
@@ -493,17 +501,14 @@ public abstract class JingleSession extends JingleNegotiator {
                 }
 
                 // Acknowledge the IQ reception
-                if (!(getState() instanceof IncomingJingleSession.Accepting))
-                    sendAck(iq);
+                sendAck(iq);
 
                 // ... and send all these parts in a Jingle response.
                 response = sendJingleParts(iq, (Jingle) sessionResponse,
                         (Jingle) descriptionResponse, (Jingle) transportResponse);
-
             }
             catch (JingleException e) {
                 // Send an error message, if present
-                System.out.println("E:" + iq);
                 JingleError error = e.getError();
                 if (error != null) {
                     sendFormattedError(iq, error);
@@ -512,9 +517,6 @@ public abstract class JingleSession extends JingleNegotiator {
                 // Notify the session end and close everything...
                 triggerSessionClosedOnError(e);
             }
-        }
-        else {
-            System.out.println("K:" + iq);
         }
 
         return response;

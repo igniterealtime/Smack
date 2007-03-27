@@ -124,6 +124,7 @@ public class IncomingJingleSession extends JingleSession {
         }
 
         setMediaNeg(new MediaNegotiator(this, payloadTypes));
+
         if (resolver.getType().equals(TransportResolver.Type.rawupd)) {
             setTransportNeg(new TransportNegotiator.RawUdp(this, resolver));
         }
@@ -131,11 +132,10 @@ public class IncomingJingleSession extends JingleSession {
             setTransportNeg(new TransportNegotiator.Ice(this, resolver));
         }
 
-        // Establish the default state
-        setState(accepting);
-
         updatePacketListener();
 
+        // Establish the default state
+        setState(accepting);
 
     }
 

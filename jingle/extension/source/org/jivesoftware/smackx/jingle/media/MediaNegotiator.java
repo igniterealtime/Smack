@@ -40,6 +40,7 @@ import java.util.List;
  * <p/>
  * This class is responsible for managing the descriptor negotiation process,
  * handling all the xmpp packets interchange and the stage control.
+ * handling all the xmpp packets interchange and the stage control.
  *
  * @author Thiago Camargo
  */
@@ -462,7 +463,7 @@ public class MediaNegotiator extends JingleNegotiator {
          */
         public Jingle eventInfo(Jingle jin) throws JingleException {
             PayloadType.Audio oldBestCommonAudioPt = bestCommonAudioPt;
-            List offeredPayloads = new ArrayList();
+            List offeredPayloads;
             Jingle response = null;
             boolean ptChange = false;
 
@@ -558,10 +559,11 @@ public class MediaNegotiator extends JingleNegotiator {
          * @see org.jivesoftware.smackx.jingle.JingleNegotiator.State#eventAck(org.jivesoftware.smack.packet.IQ)
          */
         public Jingle eventAck(IQ iq) {
+
             if (isEstablished()) {
                 setState(active);
+                return null;
             }
-
             return null;
         }
     }
@@ -582,6 +584,7 @@ public class MediaNegotiator extends JingleNegotiator {
          */
         public void eventEnter() {
             triggerMediaEstablished(getBestCommonAudioPt());
+            System.err.println("BS:"+getBestCommonAudioPt().getName());
             super.eventEnter();
         }
 
