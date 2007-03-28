@@ -430,13 +430,9 @@ public abstract class JingleSession extends JingleNegotiator {
                         }
                         else if (action.equals(Jingle.Action.SESSIONINITIATE)) {
 
-                            if (!(getState() instanceof IncomingJingleSession.Accepting)) {
-                            jout = getState().eventInitiate(jin);
-                            }else{
-                                jout =null;
-                                throw new JingleException("Discard");
-                            }
 
+                            jout = getState().eventInitiate(jin);
+                        
                         }
                         else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
                             jout = getState().eventRedirect(jin);
