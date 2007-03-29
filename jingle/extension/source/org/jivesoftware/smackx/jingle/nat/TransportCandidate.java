@@ -386,7 +386,7 @@ public abstract class TransportCandidate {
                 InetAddress candAddress;
                 try {
                     candAddress = InetAddress.getByName(getIp());
-                    isUsable = candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
+                    isUsable = true;//candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
                 }
                 catch (Exception e) {
                     isUsable = false;

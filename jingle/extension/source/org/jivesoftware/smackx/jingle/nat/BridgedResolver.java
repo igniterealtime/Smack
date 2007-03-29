@@ -24,6 +24,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.Random;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Bridged Resolver use a RTPBridge Service to add a relayed candidate.
@@ -65,17 +67,22 @@ public class BridgedResolver extends TransportResolver{
 
         RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
 
-        BasicResolver basicResolver = new BasicResolver();
 
-        basicResolver.initializeAndWait();
+        String localIp="127.0.0.1";
+        try {
+            localIp = InetAddress.getLocalHost().getHostAddress();
+        }
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
         TransportCandidate localCandidate = new TransportCandidate.Fixed(
                 rtpBridge.getIp(), rtpBridge.getPortA());
-        localCandidate.setLocalIp(basicResolver.getCandidate(0).getLocalIp());
+        localCandidate.setLocalIp(localIp);
 
         TransportCandidate remoteCandidate = new TransportCandidate.Fixed(
                 rtpBridge.getIp(), rtpBridge.getPortB());
-        remoteCandidate.setLocalIp(basicResolver.getCandidate(0).getLocalIp());
+        remoteCandidate.setLocalIp(localIp);
 
         localCandidate.setSymmetric(remoteCandidate);
         remoteCandidate.setSymmetric(localCandidate);
