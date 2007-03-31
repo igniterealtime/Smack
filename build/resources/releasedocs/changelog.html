@@ -160,7 +160,7 @@ hr {
 	<div id="pageBody">
 
 
-<h2>3.0.0 Beta 3 -- <span style="font-weight: normal;">March 13, 2007</span></h2>
+<h2>3.0.0 -- <span style="font-weight: normal;">March 31, 2007</span></h2>
 
 <h3>Important Changes</h3>
 <ul>
@@ -168,101 +168,81 @@ hr {
     <li>Several API changes are not backwards compatible. In particular, connection handling has
         been significantly updated, the GroupChat class has been dropped in favor of the standardized
         MultiUserChat, and the Chat class has an updated API.</li>
-    <li>Some additional API changes may be made through the beta period.</li>
 </ul>
 
 <h3>New Features</h3>
 <ul>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-185'>SMACK-185</a>] - Added the workgroup API to Smack.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-206'>SMACK-206</a>] - Added the option to specify the username to use for the automated test cases.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-208'>SMACK-208</a>] - Added a max queue size for outgoing packets to prevent memory issues during extreme load.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-209'>SMACK-209</a>] - Initial Jingle support implemented.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-74'>SMACK-74</a>] - Added support for unavailable presences with status text. <b>(4 votes)</b></li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-191'>SMACK-191</a>] - RosterListener API improvements.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-194'>SMACK-194</a>] - Roster.getPresence(String) now considers mode after priority to determine the presence value to return.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-195'>SMACK-195</a>] - Added the ability to disconnect with a custom presence value (for offline status).</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-200'>SMACK-200</a>] - Added convenience methods to Presence class.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-31'>SMACK-31</a>] - Added support for privacy lists. <b>(4 votes)</b></li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-94'>SMACK-94</a>] - Added support for last activity of online users. <b>(1 vote)</b></li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-121'>SMACK-121</a>] - Added support for stream errors.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-136'>SMACK-136</a>] - Added support for XEP-0048: bookmark storage.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-144'>SMACK-144</a>] - Added bookmark manager for central bookmark management.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-150'>SMACK-150</a>] - Added support for handling node features in disco.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-167'>SMACK-167</a>] - Added support for XEP-0106: JID Escaping</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-171'>SMACK-171</a>] - The presence of available contacts is now changed to offline when the connection is closed.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-172'>SMACK-172</a>] - Added support for re-connection when the connection is abruptly closed.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-182'>SMACK-182</a>] - ProviderManager is now pluggable (for Eclipse ECF).</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-185'>SMACK-185</a>] - Added the workgroup API to Smack.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-206'>SMACK-206</a>] - Added the option to specify the username to use for the automated test cases.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-208'>SMACK-208</a>] - Added a max queue size for outgoing packets to prevent memory issues during extreme load.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-209'>SMACK-209</a>] - Initial Jingle support implemented.</li>
 </ul>
 
 <h3>Bug Fixes</h3>
 <ul>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-203'>SMACK-203</a>] - NULL thread IDs would cause an error inside of the Chat Manager.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-205'>SMACK-205</a>] - Fixed PacketReader concurrency problems.</li>
-</ul>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-6'>SMACK-6</a>] - Don't force use of collectors in Chat class.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-10'>SMACK-10</a>] - Flush pending packets before closing the connection. <b>(4 votes)</b></li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-51'>SMACK-51</a>] - Use unique Thread names among connections.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-54'>SMACK-54</a>] - Add #equals and #hashCode to Occupant.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-86'>SMACK-86</a>] - Made presence checks case in-sensitive.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-93'>SMACK-93</a>] - XHTML provider wasn't handling some tags correctly.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-138'>SMACK-138</a>] - Added caching to file transfer negotiation operations.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-143'>SMACK-143</a>] - Updated XMPPError to be compliant with RFC3920.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-145'>SMACK-145</a>] - XHTML parsing could fail in some cases.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-146'>SMACK-146</a>] - DNS lookups were failing with some DNS servers.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-147'>SMACK-147</a>] - Removed invisibility presence mode.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-148'>SMACK-148</a>] - Socks 5 listening thread was not cleaning up correctly. <b>(2 votes)</b></li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-149'>SMACK-149</a>] - Fixed possible memory leaking in PacketReader.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-151'>SMACK-151</a>] - Now use getBytes("UTF-8") instead of getBytes().</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-152'>SMACK-152</a>] - The FN field is duplicated when loading vCards from the server.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-153'>SMACK-153</a>] - Optimized performance by replacing StringBuffer with StringBuilder.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-154'>SMACK-154</a>] - Fixed roster test cases that were sometimes failing.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-155'>SMACK-155</a>] - Optimized MUC performance by reducing number of packet collectors and listeners.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-158'>SMACK-158</a>] - FileTransfer isDone() method was returning true even when the transfer was refused.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-159'>SMACK-159</a>] - Filenames were not escaped for file transfers.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-160'>SMACK-160</a>] - Now use stream:feature to discover registration support.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-161'>SMACK-161</a>] - Improved connection speed.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-162'>SMACK-162</a>] - Fixed NPE in SmackConfiguration.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-163'>SMACK-163</a>] - Fixed NPE in RoomInfo when subject was null.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-164'>SMACK-164</a>] - Contact name was not being escaped.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-165'>SMACK-165</a>] - Listeners were not being removed from PacketReader.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-166'>SMACK-166</a>] - Packet reader thread was freezing when parsing an error text with no description.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-168'>SMACK-168</a>] - Fixed possible delay in PacketReader when negotiating TLS.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-173'>SMACK-173</a>] - Renamed ConnectionEstablishedListener to ConnectionCreationListener.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-176'>SMACK-176</a>] - Fixed incorrect property initialization.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-177'>SMACK-177</a>] - Removed synchronization from Roster.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-178'>SMACK-178</a>] - Added NodeInformation#getNodeIdentities() to return identities of hosted nodes</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-181'>SMACK-181</a>] - Improved parsing of certificates to get signed domains.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-183'>SMACK-183</a>] - Documentation fixes.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-184'>SMACK-184</a>] - Simplified XMPPConnection constructors.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-203'>SMACK-203</a>] - NULL thread IDs would cause an error inside of the Chat Manager.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-205'>SMACK-205</a>] - Fixed PacketReader concurrency problems.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-188'>SMACK-188</a>] - Resources are now closed after reading the keystore.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-189'>SMACK-189</a>] - The listener was remaining blocked forever in some cases.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-190'>SMACK-190</a>] - Exceptions while notifying packet reader listeners was stopping the notification thread.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-192'>SMACK-192</a>] - Roster.getPresence(String) now forces use of the bare JID.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-193'>SMACK-193</a>] - New presence packets now default to a null presence mode.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-196'>SMACK-196</a>] - Now set closed to true at the start of the connection shutdown method and not the end.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-197'>SMACK-197</a>] - The source build was failing.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-198'>SMACK-198</a>] - File transfer streams were not being closed properly in some cases.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-199'>SMACK-199</a>] - MultiUserChat invitation listeners are no longer removed on disconnects.</li>
+    <li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-201'>SMACK-201</a>] - Roster no longer exposes that it implements ConnectionListener.</li>
 
-<h2>3.0.0 Beta 2 -- <span style="font-weight: normal;">February 19, 2007</span></h2>
-
-<h3>New Features</h3>
-<ul>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-74'>SMACK-74</a>] - Added support for unavailable presences with status text. <b>(4 votes)</b></li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-191'>SMACK-191</a>] - RosterListener API improvements.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-194'>SMACK-194</a>] - Roster.getPresence(String) now considers mode after priority to determine the presence value to return.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-195'>SMACK-195</a>] - Added the ability to disconnect with a custom presence value (for offline status).</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-200'>SMACK-200</a>] - Added convenience methods to Presence class.</li>
-</ul>
-
-<h3>Bug Fixes</h3>
-<ul>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-188'>SMACK-188</a>] - Resources are now closed after reading the keystore.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-189'>SMACK-189</a>] - The listener was remaining blocked forever in some cases.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-190'>SMACK-190</a>] - Exceptions while notifying packet reader listeners was stopping the notification thread.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-192'>SMACK-192</a>] - Roster.getPresence(String) now forces use of the bare JID.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-193'>SMACK-193</a>] - New presence packets now default to a null presence mode.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-196'>SMACK-196</a>] - Now set closed to true at the start of the connection shutdown method and not the end.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-197'>SMACK-197</a>] - The source build was failing.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-198'>SMACK-198</a>] - File transfer streams were not being closed properly in some cases.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-199'>SMACK-199</a>] - MultiUserChat invitation listeners are no longer removed on disconnects.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-201'>SMACK-201</a>] - Roster no longer exposes that it implements ConnectionListener.</li>
-</ul>
-
-<h2>3.0.0 Beta 1 -- <span style="font-weight: normal;">February 6, 2007</span></h2>
-
-<h3>New Features</h3>
-<ul>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-31'>SMACK-31</a>] - Added support for privacy lists. <b>(4 votes)</b></li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-94'>SMACK-94</a>] - Added support for last activity of online users. <b>(1 vote)</b></li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-121'>SMACK-121</a>] - Added support for stream errors.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-136'>SMACK-136</a>] - Added support for XEP-0048: bookmark storage.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-144'>SMACK-144</a>] - Added bookmark manager for central bookmark management.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-150'>SMACK-150</a>] - Added support for handling node features in disco.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-167'>SMACK-167</a>] - Added support for XEP-0106: JID Escaping</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-171'>SMACK-171</a>] - The presence of available contacts is now changed to offline when the connection is closed.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-172'>SMACK-172</a>] - Added support for re-connection when the connection is abruptly closed.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-182'>SMACK-182</a>] - ProviderManager is now pluggable (for Eclipse ECF).</li>
-</ul>
-
-<h3>Bug Fixes</h3>
-<ul>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-6'>SMACK-6</a>] - Don't force use of collectors in Chat class.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-10'>SMACK-10</a>] - Flush pending packets before closing the connection. <b>(4 votes)</b></li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-51'>SMACK-51</a>] - Use unique Thread names among connections.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-54'>SMACK-54</a>] - Add #equals and #hashCode to Occupant.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-86'>SMACK-86</a>] - Made presence checks case in-sensitive.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-93'>SMACK-93</a>] - XHTML provider wasn't handling some tags correctly.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-138'>SMACK-138</a>] - Added caching to file transfer negotiation operations.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-143'>SMACK-143</a>] - Updated XMPPError to be compliant with RFC3920.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-145'>SMACK-145</a>] - XHTML parsing could fail in some cases.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-146'>SMACK-146</a>] - DNS lookups were failing with some DNS servers.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-147'>SMACK-147</a>] - Removed invisibility presence mode.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-148'>SMACK-148</a>] - Socks 5 listening thread was not cleaning up correctly. <b>(2 votes)</b></li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-149'>SMACK-149</a>] - Fixed possible memory leaking in PacketReader.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-151'>SMACK-151</a>] - Now use getBytes("UTF-8") instead of getBytes().</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-152'>SMACK-152</a>] - The FN field is duplicated when loading vCards from the server.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-153'>SMACK-153</a>] - Optimized performance by replacing StringBuffer with StringBuilder.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-154'>SMACK-154</a>] - Fixed roster test cases that were sometimes failing.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-155'>SMACK-155</a>] - Optimized MUC performance by reducing number of packet collectors and listeners.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-158'>SMACK-158</a>] - FileTransfer isDone() method was returning true even when the transfer was refused.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-159'>SMACK-159</a>] - Filenames were not escaped for file transfers.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-160'>SMACK-160</a>] - Now use stream:feature to discover registration support.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-161'>SMACK-161</a>] - Improved connection speed.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-162'>SMACK-162</a>] - Fixed NPE in SmackConfiguration.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-163'>SMACK-163</a>] - Fixed NPE in RoomInfo when subject was null.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-164'>SMACK-164</a>] - Contact name was not being escaped.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-165'>SMACK-165</a>] - Listeners were not being removed from PacketReader.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-166'>SMACK-166</a>] - Packet reader thread was freezing when parsing an error text with no description.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-168'>SMACK-168</a>] - Fixed possible delay in PacketReader when negotiating TLS.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-173'>SMACK-173</a>] - Renamed ConnectionEstablishedListener to ConnectionCreationListener.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-176'>SMACK-176</a>] - Fixed incorrect property initialization.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-177'>SMACK-177</a>] - Removed synchronization from Roster.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-178'>SMACK-178</a>] - Added NodeInformation#getNodeIdentities() to return identities of hosted nodes</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-181'>SMACK-181</a>] - Improved parsing of certificates to get signed domains.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-183'>SMACK-183</a>] - Documentation fixes.</li>
-<li>[<a href='http://www.igniterealtime.org/issues/browse/SMACK-184'>SMACK-184</a>] - Simplified XMPPConnection constructors.</li>
 </ul>
 
 <h2>2.2.1 -- <span style="font-weight: normal;">June 12, 2006</span></h2>
