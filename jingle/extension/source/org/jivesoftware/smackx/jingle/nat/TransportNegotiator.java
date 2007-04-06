@@ -361,7 +361,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
                     if (getState() == null || !getState().equals(active)) {
                         try {
-                            session.terminate();
+                            session.terminate("Unable to negotiate session. This may be caused by firewall configuration problems.");
                         }
                         catch (XMPPException e) {
                             e.printStackTrace();

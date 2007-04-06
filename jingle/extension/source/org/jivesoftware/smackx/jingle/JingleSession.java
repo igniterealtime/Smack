@@ -1154,17 +1154,26 @@ public abstract class JingleSession extends JingleNegotiator implements MediaRec
     public abstract void start(JingleSessionRequest jin) throws XMPPException;
 
     /**
-     * Terminate the session.
+     * Terminates the session with default reason.
      *
      * @throws XMPPException
      */
     public void terminate() throws XMPPException {
+        terminate("Closed Locally");
+    }
+
+    /**
+     * Terminates the session with a custom reason.
+     *
+     * @throws XMPPException
+     */
+    public void terminate(String reason) throws XMPPException {
         if (isClosed()) return;
         System.out.println("State: " + this.getState());
         Jingle jout = new Jingle(Jingle.Action.SESSIONTERMINATE);
         jout.setType(IQ.Type.SET);
         sendFormattedJingle(jout);
-        triggerSessionClosed("Closed Locally");
+        triggerSessionClosed(reason);
     }
 
     /**
