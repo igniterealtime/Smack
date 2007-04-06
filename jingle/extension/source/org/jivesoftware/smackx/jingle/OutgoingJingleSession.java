@@ -461,4 +461,18 @@ public class OutgoingJingleSession extends JingleSession {
             super.eventError(iq);
         }
     }
+
+    public IQ sendFormattedError(JingleError error) {
+        IQ perror = null;
+        if (error != null) {
+            perror = createIQ(getSid(), getResponder(), getInitiator(), IQ.Type.ERROR);
+
+            // Fill in the fields with the info from the Jingle packet
+            perror.addExtension(error);
+
+            getConnection().sendPacket(perror);
+            System.err.println(perror.toXML());
+        }
+        return perror;
+    }
 }

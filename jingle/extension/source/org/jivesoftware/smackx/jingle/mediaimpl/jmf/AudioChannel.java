@@ -176,8 +176,13 @@ public class AudioChannel {
             ds = javax.media.Manager.createDataSource(locator);
         }
         catch (Exception e) {
-            e.printStackTrace();
-            return "Couldn't create DataSource";
+            // Try JavaSound Locator as a last resort
+            try {
+                ds = javax.media.Manager.createDataSource(new MediaLocator("javasound://"));
+            }
+            catch (Exception ee) {
+                return "Couldn't create DataSource";
+            }
         }
 
         // Try to create a processor to handle the input jmf locator
@@ -327,7 +332,7 @@ public class AudioChannel {
         SessionAddress localAddr, destAddr;
         InetAddress ipAddr;
         SendStream sendStream;
-        audioReceiver = new AudioReceiver(this,jingleMediaSession);
+        audioReceiver = new AudioReceiver(this, jingleMediaSession);
         int port;
 
         for (int i = 0; i < pbss.length; i++) {
@@ -475,8 +480,8 @@ public class AudioChannel {
         try {
             localhost = InetAddress.getLocalHost();
 
-            AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP),null);
-            AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP),null);
+            AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP), null);
+            AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP), null);
 
             audioChannel0.start();
             audioChannel1.start();
