@@ -156,6 +156,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
         try {
             System.out.println("start");
             mediaSession.start(true);
+            this.mediaReceived("");
         }
         catch (IOException e) {
             e.printStackTrace();
