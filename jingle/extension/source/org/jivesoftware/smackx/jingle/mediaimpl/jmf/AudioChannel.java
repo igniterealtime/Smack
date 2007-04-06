@@ -19,6 +19,8 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
+import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
+
 import javax.media.*;
 import javax.media.control.TrackControl;
 import javax.media.control.PacketSizeControl;
@@ -71,24 +73,26 @@ public class AudioChannel {
 
     private List<SendStream> sendStreams = new ArrayList<SendStream>();
 
+    private JingleMediaSession jingleMediaSession;
+
     private boolean started = false;
 
     /**
      * Creates an Audio Channel for a desired jmf locator. For instance: new MediaLocator("dsound://")
      *
-     * @param locator        media locator
-     * @param localIpAddress local IP address
-     * @param remoteIpAddress      remote IP address
-     * @param localPort      local port number
-     * @param remotePort     remote port number
-     * @param format         audio format
+     * @param locator         media locator
+     * @param localIpAddress  local IP address
+     * @param remoteIpAddress remote IP address
+     * @param localPort       local port number
+     * @param remotePort      remote port number
+     * @param format          audio format
      */
     public AudioChannel(MediaLocator locator,
             String localIpAddress,
             String remoteIpAddress,
             int localPort,
             int remotePort,
-            Format format) {
+            Format format, JingleMediaSession jingleMediaSession) {
 
         this.locator = locator;
         this.localIpAddress = localIpAddress;
@@ -96,7 +100,7 @@ public class AudioChannel {
         this.localPort = localPort;
         this.portBase = remotePort;
         this.format = format;
-
+        this.jingleMediaSession = jingleMediaSession;
     }
 
     /**
@@ -323,7 +327,7 @@ public class AudioChannel {
         SessionAddress localAddr, destAddr;
         InetAddress ipAddr;
         SendStream sendStream;
-        audioReceiver = new AudioReceiver(this);
+        audioReceiver = new AudioReceiver(this,jingleMediaSession);
         int port;
 
         for (int i = 0; i < pbss.length; i++) {
@@ -471,8 +475,8 @@ public class AudioChannel {
         try {
             localhost = InetAddress.getLocalHost();
 
-            AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP));
-            AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP));
+            AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP),null);
+            AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://8000"), localhost.getHostAddress(), localhost.getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP),null);
 
             audioChannel0.start();
             audioChannel1.start();

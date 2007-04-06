@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
  */
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
 
-    ICEResolver iceResolver = null;                         
+    ICEResolver iceResolver = null;
 
     public ICETransportManager(XMPPConnection xmppConnection, String server, int port) {
         iceResolver = new ICEResolver(xmppConnection, server, port);
@@ -53,7 +53,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
     // Implement a Session Listener to relay candidates after establishment
 
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
-          if (lc instanceof ICECandidate) {
+        if (lc instanceof ICECandidate) {
             if (((ICECandidate) lc).getType().equals("relay")) {
                 RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
             }
@@ -70,6 +70,10 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
     }
 
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
+    }
+
+    public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+        // Do Nothing
     }
 
     // Session Created

@@ -169,7 +169,7 @@ public class JingleMediaTest extends SmackTestCase {
                     try {
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
                         try {
-                            Thread.sleep(30000);
+                            Thread.sleep(12000);
                         }
                         catch (InterruptedException e) {
                             e.printStackTrace();
@@ -195,7 +195,7 @@ public class JingleMediaTest extends SmackTestCase {
                     public void afterChanged(JingleNegotiator.State old, JingleNegotiator.State newOne) {
                         if (newOne != null) {
                             if ((newOne instanceof OutgoingJingleSession.Active))
-                                System.err.println("|||"+newOne.getClass().getCanonicalName()+"|||");
+                                System.err.println("|||" + newOne.getClass().getCanonicalName() + "|||");
                         }
                     }
                 });
@@ -414,8 +414,8 @@ public class JingleMediaTest extends SmackTestCase {
     public void testAudioChannelOpenClose() {
         for (int i = 0; i < 5; i++) {
             try {
-                AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP));
-                AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP));
+                AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP),null);
+                AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP),null);
 
                 audioChannel0.start();
                 audioChannel1.start();
@@ -446,8 +446,8 @@ public class JingleMediaTest extends SmackTestCase {
     public void testAudioChannelStartStop() {
 
         try {
-            AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP));
-            AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP));
+            AudioChannel audioChannel0 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7002, 7020, new AudioFormat(AudioFormat.GSM_RTP),null);
+            AudioChannel audioChannel1 = new AudioChannel(new MediaLocator("javasound://"), InetAddress.getLocalHost().getHostAddress(), InetAddress.getLocalHost().getHostAddress(), 7020, 7002, new AudioFormat(AudioFormat.GSM_RTP),null);
 
             for (int i = 0; i < 5; i++) {
 

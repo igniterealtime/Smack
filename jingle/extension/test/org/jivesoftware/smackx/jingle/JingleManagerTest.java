@@ -375,6 +375,10 @@ public class JingleManagerTest extends SmackTestCase {
                                         + rc.getPort());
                             }
 
+                            public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                                // Do Nothing
+                            }
+
                             public void sessionRedirected(String redirection, JingleSession jingleSession) {
                             }
                         });
@@ -455,6 +459,10 @@ public class JingleManagerTest extends SmackTestCase {
                                         + rc.getPort());
                             }
 
+                            public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                                // Do Nothing
+                            }
+
                             public void sessionRedirected(String redirection, JingleSession jingleSession) {
                             }
                         });
@@ -495,6 +503,10 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {
+                }
+
+                public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                    // Do Nothing
                 }
             });
             session0.start(null);
@@ -568,6 +580,10 @@ public class JingleManagerTest extends SmackTestCase {
 
                 public void sessionEstablished(PayloadType pt,
                         TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                }
+
+                public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                    // Do Nothing
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {
@@ -730,6 +746,10 @@ public class JingleManagerTest extends SmackTestCase {
                             //  incCounter();
                         }
 
+                        public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                            // Do Nothing
+                        }
+
                         public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
                             //  incCounter();
                         }
@@ -764,6 +784,10 @@ public class JingleManagerTest extends SmackTestCase {
 
                     public void sessionClosed(String reason, JingleSession jingleSession) {
                         // incCounter();
+                    }
+
+                    public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                        // Do Nothing
                     }
 
                     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
@@ -955,6 +979,10 @@ public class JingleManagerTest extends SmackTestCase {
 
                 public void sessionEstablished(PayloadType pt,
                         TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                }
+
+                public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                    // Do Nothing
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {

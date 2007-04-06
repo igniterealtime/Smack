@@ -301,6 +301,10 @@ public class STUNResolverTest extends SmackTestCase {
 
                             public void sessionRedirected(String redirection, JingleSession jingleSession) {
                             }
+
+                            public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                                // Do Nothing
+                            }
                         });
                         session1.start(request);
                     }
@@ -334,6 +338,10 @@ public class STUNResolverTest extends SmackTestCase {
                             + lc.getPort());
                     System.out.println("+ Remote IP/port: " + rc.getIp() + ":"
                             + rc.getPort());
+                }
+
+                public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+                    // Do Nothing
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {

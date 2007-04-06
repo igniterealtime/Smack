@@ -44,6 +44,7 @@ public class BridgedTransportManager extends JingleTransportManager implements J
 
     /**
      * Return the correspondent resolver
+     *
      * @param session correspondent Jingle Session
      * @return resolver
      */
@@ -68,6 +69,10 @@ public class BridgedTransportManager extends JingleTransportManager implements J
     }
 
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
+    }
+
+    public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+        // Do Nothing
     }
 
     // Session Created

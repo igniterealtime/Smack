@@ -73,4 +73,13 @@ public interface JingleSessionListener extends JingleListener {
      * @param jingleSession session that called the method
      */
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession);
+
+    /**
+     * Notification that the Media has arrived for this session.
+     *
+     * @param jingleSession session that called the method
+     * @param participant description of the participant
+     */
+    public void sessionMediaReceived(JingleSession jingleSession, String participant);
+        
 }

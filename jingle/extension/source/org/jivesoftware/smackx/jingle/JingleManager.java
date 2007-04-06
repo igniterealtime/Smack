@@ -514,6 +514,10 @@ public class JingleManager implements JingleSessionListener {
         jingleSessions.remove(jingleSession);
     }
 
+    public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+        // Do Nothing
+    }
+
     /**
      * Register the listenerJingles, waiting for a Jingle packet that tries to
      * establish a new session.

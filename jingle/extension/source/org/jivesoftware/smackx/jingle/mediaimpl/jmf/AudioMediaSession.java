@@ -82,7 +82,7 @@ public class AudioMediaSession extends JingleMediaSession {
             remotePort = this.getRemote().getPort();
         }
 
-        audioChannel = new AudioChannel(new MediaLocator(this.getMediaLocator()), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()));
+        audioChannel = new AudioChannel(new MediaLocator(this.getMediaLocator()), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()),this);
     }
 
     /**
@@ -156,4 +156,5 @@ public class AudioMediaSession extends JingleMediaSession {
         }
         return freePort;
     }
+
 }

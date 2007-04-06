@@ -21,6 +21,9 @@ package org.jivesoftware.smackx.jingle.media;
 
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * Public Abstract Class provides a clear interface between Media Session and Jingle API.
  * <p/>
@@ -43,6 +46,8 @@ public abstract class JingleMediaSession {
     private TransportCandidate remote;
     // Media Locator
     private String mediaLocator;
+    // Media Received Listener
+    private List<MediaReceivedListener> mediaReceivedListeners = new ArrayList<MediaReceivedListener>();
 
     /**
      * Creates a new JingleMediaSession Instance to handle Media methods.
@@ -106,6 +111,31 @@ public abstract class JingleMediaSession {
     }
 
     /**
+     * Adds a Media Received Listener
+     *
+     * @param mediaReceivedListener
+     */
+    public void addMediaReceivedListener(MediaReceivedListener mediaReceivedListener) {
+        mediaReceivedListeners.add(mediaReceivedListener);
+    }
+
+    /**
+     * Removes a Media Received Listener
+     *
+     * @param mediaReceivedListener
+     */
+    public void removeMediaReceivedListener(MediaReceivedListener mediaReceivedListener) {
+        mediaReceivedListeners.remove(mediaReceivedListener);
+    }
+
+    /**
+     * Removes all Media Received Listeners
+     */
+    public void removeAllMediaReceivedListener() {
+        mediaReceivedListeners.clear();
+    }
+
+    /**
      * Initialize the RTP Channel preparing to transmit and receive.
      */
     public abstract void initialize();
@@ -137,5 +167,14 @@ public abstract class JingleMediaSession {
      * Stops a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate
      */
     public abstract void stopReceive();
+
+    /**
+     * Called when new Media is received.
+     */
+    public void mediaReceived(String participant) {
+        for (MediaReceivedListener mediaReceivedListener : mediaReceivedListeners) {
+            mediaReceivedListener.mediaReceived(participant);
+        }
+    }
 
 }

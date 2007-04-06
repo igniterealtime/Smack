@@ -83,7 +83,7 @@ import java.util.*;
  * @see IncomingJingleSession
  * @see OutgoingJingleSession
  */
-public abstract class JingleSession extends JingleNegotiator {
+public abstract class JingleSession extends JingleNegotiator implements MediaReceivedListener {
 
     // static
     private static final HashMap sessions = new HashMap();
@@ -432,7 +432,7 @@ public abstract class JingleSession extends JingleNegotiator {
 
 
                             jout = getState().eventInitiate(jin);
-                        
+
                         }
                         else if (action.equals(Jingle.Action.SESSIONREDIRECT)) {
                             jout = getState().eventRedirect(jin);
@@ -1084,6 +1084,7 @@ public abstract class JingleSession extends JingleNegotiator {
             lc.removeCandidateEcho();
 
             jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc);
+            jingleMediaSession.addMediaReceivedListener(this);
             if (jingleMediaSession != null) {
 
                 jingleMediaSession.startTrasmit();
@@ -1095,6 +1096,21 @@ public abstract class JingleSession extends JingleNegotiator {
             }
         }
 
+    }
+
+    /**
+     * Trigger a session closed event due to an error.
+     */
+    protected void triggerMediaReceived(String participant) {
+        ArrayList listeners = getListenersList();
+        Iterator iter = listeners.iterator();
+        while (iter.hasNext()) {
+            JingleListener li = (JingleListener) iter.next();
+            if (li instanceof JingleSessionListener) {
+                JingleSessionListener sli = (JingleSessionListener) li;
+                sli.sessionMediaReceived(this, participant);
+            }
+        }
     }
 
     /**
@@ -1215,5 +1231,12 @@ public abstract class JingleSession extends JingleNegotiator {
         System.out.println("Created Error Packet:" + iqError.toXML());
 
         return iqError;
+    }
+
+    /**
+     * Called when new Media is received.
+     */
+    public void mediaReceived(String participant) {
+        triggerMediaReceived(participant);
     }
 }
