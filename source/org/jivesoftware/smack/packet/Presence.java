@@ -60,7 +60,7 @@ public class Presence extends Packet {
 
     private Type type = Type.available;
     private String status = null;
-    private int priority = -1;
+    private int priority = Integer.MIN_VALUE;
     private Mode mode = null;
 
     /**
@@ -153,7 +153,7 @@ public class Presence extends Packet {
     }
 
     /**
-     * Returns the priority of the presence, or -1 if no priority has been set.
+     * Returns the priority of the presence, or Integer.MIN_VALUE if no priority has been set.
      *
      * @return the priority.
      */
@@ -215,7 +215,7 @@ public class Presence extends Packet {
         if (status != null) {
             buf.append("<status>").append(StringUtils.escapeForXML(status)).append("</status>");
         }
-        if (priority != -1) {
+        if (priority != Integer.MIN_VALUE) {
             buf.append("<priority>").append(priority).append("</priority>");
         }
         if (mode != null && mode != Mode.available) {
