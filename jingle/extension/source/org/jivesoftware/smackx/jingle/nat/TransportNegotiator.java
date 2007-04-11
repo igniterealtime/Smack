@@ -321,16 +321,51 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                     TransportCandidate bestRemote = getBestRemoteCandidate();
 
                     if (bestRemote == null) {
+                        boolean foundRemoteRelay = false;
                         for (TransportCandidate candidate : remoteCandidates) {
                             if (candidate instanceof ICECandidate) {
                                 ICECandidate iceCandidate = (ICECandidate) candidate;
                                 if (iceCandidate.getType().equals("relay")) {
                                     //TODO Check if the relay is reacheable
                                     addValidRemoteCandidate(iceCandidate);
+                                    foundRemoteRelay = true;
                                 }
                             }
                         }
 
+                        // If not found, check if we offered a relay. If yes, we should accept any remote candidate.
+                        // We should accept the Public One if we received it, otherwise, accepts any.
+                        if (!foundRemoteRelay) {
+                            boolean foundLocalRelay = false;
+                            for (TransportCandidate candidate : offeredCandidates) {
+                                if (candidate instanceof ICECandidate) {
+                                    ICECandidate iceCandidate = (ICECandidate) candidate;
+                                    if (iceCandidate.getType().equals("relay")) {
+                                        foundLocalRelay = true;
+                                    }
+                                }
+                            }
+                            if (foundLocalRelay) {
+                                boolean foundRemotePublic = false;
+                                for (TransportCandidate candidate : remoteCandidates) {
+                                    if (candidate instanceof ICECandidate) {
+                                        ICECandidate iceCandidate = (ICECandidate) candidate;
+                                        if (iceCandidate.getType().equals("srflx")) {
+                                            addValidRemoteCandidate(iceCandidate);
+                                            foundRemotePublic = true;
+                                        }
+                                    }
+                                }
+                                if (!foundRemotePublic) {
+                                    for (TransportCandidate candidate : remoteCandidates) {
+                                        if (candidate instanceof ICECandidate) {
+                                            ICECandidate iceCandidate = (ICECandidate) candidate;
+                                            addValidRemoteCandidate(iceCandidate);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     for (int i = 0; i < 6; i++) {

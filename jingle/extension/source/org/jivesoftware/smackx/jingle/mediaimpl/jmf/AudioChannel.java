@@ -367,7 +367,7 @@ public class AudioChannel {
                 catch (InvalidSessionAddressException e) {
                     // In case the local address is not allowed to read, we user another local address
                     SessionAddress sessAddr = new SessionAddress();
-                    localAddr = new SessionAddress(InetAddress.getByName(sessAddr.getDataHostAddress()),
+                    localAddr = new SessionAddress(sessAddr.getDataAddress(),
                             localPort);
                     rtpMgrs[i].initialize(localAddr);
                 }
