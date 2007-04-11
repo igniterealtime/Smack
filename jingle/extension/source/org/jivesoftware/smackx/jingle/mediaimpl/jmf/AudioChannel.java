@@ -33,11 +33,14 @@ import javax.media.protocol.PushBufferStream;
 import javax.media.rtp.RTPManager;
 import javax.media.rtp.SendStream;
 import javax.media.rtp.SessionAddress;
+import javax.media.rtp.InvalidSessionAddressException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.media.rtp.RTPSessionMgr;
 
 /**
  * An Easy to use Audio Channel implemented using JMF.
@@ -356,7 +359,18 @@ public class AudioChannel {
                     bc.setBufferLength(bl);
                 }
 
-                rtpMgrs[i].initialize(localAddr);
+                try {
+
+                    rtpMgrs[i].initialize(localAddr);
+
+                }
+                catch (InvalidSessionAddressException e) {
+                    // In case the local address is not allowed to read, we user another local address
+                    SessionAddress sessAddr = new SessionAddress();
+                    localAddr = new SessionAddress(InetAddress.getByName(sessAddr.getDataHostAddress()),
+                            localPort);
+                    rtpMgrs[i].initialize(localAddr);
+                }
 
                 rtpMgrs[i].addTarget(destAddr);
 
