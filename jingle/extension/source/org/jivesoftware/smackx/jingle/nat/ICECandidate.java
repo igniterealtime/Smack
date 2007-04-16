@@ -51,6 +51,8 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import de.javawi.jstun.test.demo.ice.Candidate;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -77,7 +79,11 @@ public class ICECandidate extends TransportCandidate implements Comparable {
 
     private int network;
 
-    private String type;
+    private Type type;
+
+    public enum Type {
+        relay, srflx, prflx, local, host
+    }
 
     public ICECandidate() {
         super();
@@ -99,7 +105,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      */
     public ICECandidate(String ip, int generation, int network,
             String password, int port, String username,
-            int preference, String type) {
+            int preference, Type type) {
         super(ip, port, generation);
 
         proto = Protocol.UDP;
@@ -226,7 +232,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      *
      * @return candidate Type
      */
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
@@ -235,7 +241,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      *
      * @param type candidate type.
      */
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

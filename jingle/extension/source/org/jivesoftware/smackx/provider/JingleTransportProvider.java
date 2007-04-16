@@ -191,7 +191,7 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             }
 
             if (type != null) {
-                mt.setType(type);
+                mt.setType(ICECandidate.Type.valueOf(type));
             }
 
             return new JingleTransport.Ice.Candidate(mt);

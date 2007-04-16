@@ -71,6 +71,13 @@ public class BridgedResolver extends TransportResolver{
         String localIp="127.0.0.1";
         try {
             localIp = InetAddress.getLocalHost().getHostAddress();
+
+             InetAddress    iaddress = InetAddress.getLocalHost();
+
+            System.out.println(iaddress.isLoopbackAddress());
+            System.out.println(iaddress.isLinkLocalAddress());
+            System.out.println(iaddress.isSiteLocalAddress());
+
         }
         catch (UnknownHostException e) {
             e.printStackTrace();

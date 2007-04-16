@@ -19,11 +19,11 @@ public class TransportCandidateTest extends SmackTestCase {
      */
     public void testEqualsObject() {
         TransportCandidate cand1 = new ICECandidate("192.168.2.1", 1, 2,
-                "password", 3468, "username", 25, "");
+                "password", 3468, "username", 25, ICECandidate.Type.prflx);
         TransportCandidate cand2 = new ICECandidate("192.168.2.1", 1, 2,
-                "password", 3468, "username", 25, "");
+                "password", 3468, "username", 25, ICECandidate.Type.prflx);
         TransportCandidate cand3 = new ICECandidate("192.168.2.1", 1, 2,
-                "password", 3469, "username", 25, "");
+                "password", 3469, "username", 25, ICECandidate.Type.prflx);
 
         assertEquals(cand1, cand2);
         assertFalse(cand1.equals(cand3));
@@ -36,15 +36,15 @@ public class TransportCandidateTest extends SmackTestCase {
         int highestPref = 100;
 
         TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
-                "password", 3468, "username", 1, "");
+                "password", 3468, "username", 1, ICECandidate.Type.prflx);
         TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
-                "password", 3469, "username", 15, "");
+                "password", 3469, "username", 15,ICECandidate.Type.prflx);
         TransportCandidate candH = new ICECandidate("192.168.2.1", 1, 2,
-                "password", 3468, "username", highestPref, "");
+                "password", 3468, "username", highestPref, ICECandidate.Type.prflx);
         TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
-                "password", 3469, "username", 2, "");
+                "password", 3469, "username", 2, ICECandidate.Type.prflx);
         TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
-                "password", 3468, "username", 78, "");
+                "password", 3468, "username", 78, ICECandidate.Type.prflx);
 
         ArrayList candList = new ArrayList();
         candList.add(cand1);

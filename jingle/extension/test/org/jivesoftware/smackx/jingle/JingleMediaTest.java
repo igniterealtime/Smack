@@ -32,6 +32,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.nat.BridgedTransportManager;
 import org.jivesoftware.smackx.jingle.nat.ICETransportManager;
 import org.jivesoftware.smackx.jingle.nat.STUNTransportManager;
+import org.jivesoftware.smackx.packet.JingleError;
 
 import javax.media.MediaLocator;
 import javax.media.format.AudioFormat;
@@ -316,7 +317,11 @@ public class JingleMediaTest extends SmackTestCase {
 
                         js0.start();
 
-                        Thread.sleep(55000);
+                        Thread.sleep(20000);
+
+                        js0.sendFormattedError(JingleError.UNSUPPORTED_TRANSPORTS);
+
+                        Thread.sleep(20000);
 
                         js0.terminate();
 
@@ -371,7 +376,7 @@ public class JingleMediaTest extends SmackTestCase {
                     try {
 
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
-
+                        
                         session.start(request);
                     }
                     catch (XMPPException e) {

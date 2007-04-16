@@ -61,15 +61,15 @@ public class STUNResolverTest extends SmackTestCase {
         int highestPref = 100;
 
         TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
-                "password", 3468, "username1", 1, "");
+                "password", 3468, "username1", 1, ICECandidate.Type.prflx);
         TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
-                "password", 3469, "username2", 15, "");
+                "password", 3469, "username2", 15, ICECandidate.Type.prflx);
         TransportCandidate candH = new ICECandidate("192.168.2.11", 1, 2,
-                "password", 3468, "usernameH", highestPref, "");
+                "password", 3468, "usernameH", highestPref, ICECandidate.Type.prflx);
         TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
-                "password", 3469, "username3", 2, "");
+                "password", 3469, "username3", 2, ICECandidate.Type.prflx);
         TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
-                "password", 3468, "username4", 78, "");
+                "password", 3468, "username4", 78, ICECandidate.Type.prflx);
 
         STUNResolver stunResolver = new STUNResolver() {
         };
@@ -91,15 +91,15 @@ public class STUNResolverTest extends SmackTestCase {
         int highestPref = 100;
 
         TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
-                "password", 3468, "username1", 1, "");
+                "password", 3468, "username1", 1, ICECandidate.Type.prflx);
         TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
-                "password", 3469, "username2", 15, "");
+                "password", 3469, "username2", 15, ICECandidate.Type.prflx);
         TransportCandidate candH = new ICECandidate("192.168.2.11", 1, 2,
-                "password", 3468, "usernameH", highestPref, "");
+                "password", 3468, "usernameH", highestPref, ICECandidate.Type.prflx);
         TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
-                "password", 3469, "username3", 2, "");
+                "password", 3469, "username3", 2, ICECandidate.Type.prflx);
         TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
-                "password", 3468, "username4", 78, "");
+                "password", 3468, "username4", 78, ICECandidate.Type.prflx);
 
         ICEResolver iceResolver = new ICEResolver(getConnection(0), "stun.xten.net", 3478) {
         };
@@ -132,7 +132,7 @@ public class STUNResolverTest extends SmackTestCase {
 
             for (Candidate candidate : cc.getSortedCandidates())
                 try {
-                    TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), "");
+                    TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), ICECandidate.Type.prflx);
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
                 }

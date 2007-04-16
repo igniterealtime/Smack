@@ -350,7 +350,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 for (TransportCandidate candidate : remoteCandidates) {
                                     if (candidate instanceof ICECandidate) {
                                         ICECandidate iceCandidate = (ICECandidate) candidate;
-                                        if (iceCandidate.getType().equals("srflx")) {
+                                        if (iceCandidate.getType().equals(ICECandidate.Type.srflx)) {
                                             addValidRemoteCandidate(iceCandidate);
                                             foundRemotePublic = true;
                                         }
