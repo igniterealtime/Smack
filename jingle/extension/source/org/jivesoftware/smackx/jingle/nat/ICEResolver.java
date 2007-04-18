@@ -138,7 +138,7 @@ public class ICEResolver extends TransportResolver {
                     network = iceNegociator.getPublicCandidate().getNetwork();
                 }
                 else {
-                    localIp = InetAddress.getLocalHost().getHostAddress();
+                    localIp = BridgedResolver.getLocalHost();
                     network = 0;
                 }
 

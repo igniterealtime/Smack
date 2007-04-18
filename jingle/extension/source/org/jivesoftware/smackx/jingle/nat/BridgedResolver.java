@@ -24,18 +24,18 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.Random;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.net.*;
 
 /**
  * Bridged Resolver use a RTPBridge Service to add a relayed candidate.
  * A very reliable solution for NAT Traversal.
- *
+ * <p/>
  * The resolver verify is the XMPP Server that the client is connected offer this service.
  * If the server supports, a candidate is requested from the service.
  * The resolver adds this candidate
  */
-public class BridgedResolver extends TransportResolver{
+public class BridgedResolver extends TransportResolver {
 
     XMPPConnection connection;
 
@@ -67,21 +67,7 @@ public class BridgedResolver extends TransportResolver{
 
         RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
 
-
-        String localIp="127.0.0.1";
-        try {
-            localIp = InetAddress.getLocalHost().getHostAddress();
-
-             InetAddress    iaddress = InetAddress.getLocalHost();
-
-            System.out.println(iaddress.isLoopbackAddress());
-            System.out.println(iaddress.isLinkLocalAddress());
-            System.out.println(iaddress.isSiteLocalAddress());
-
-        }
-        catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        String localIp = getLocalHost();
 
         TransportCandidate localCandidate = new TransportCandidate.Fixed(
                 rtpBridge.getIp(), rtpBridge.getPortA());
@@ -122,6 +108,40 @@ public class BridgedResolver extends TransportResolver{
 
     public void cancel() throws XMPPException {
         // Nothing to do here
+    }
+
+    public static String getLocalHost() {
+        Enumeration ifaces = null;
+
+        try {
+            ifaces = NetworkInterface.getNetworkInterfaces();
+        }
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        while (ifaces.hasMoreElements()) {
+
+            NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+            Enumeration iaddresses = iface.getInetAddresses();
+
+            while (iaddresses.hasMoreElements()) {
+                InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress() && !iaddress.isSiteLocalAddress() && !(iaddress instanceof Inet6Address)) {
+                    return iaddress.getHostAddress();
+                }
+            }
+        }
+
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "127.0.0.1";
+
     }
 
 }

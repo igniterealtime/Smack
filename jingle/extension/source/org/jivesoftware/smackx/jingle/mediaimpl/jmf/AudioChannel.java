@@ -122,8 +122,6 @@ public class AudioChannel {
             started = false;
         }
 
-        started = true;
-
         // Create an RTP session to transmit the output of the
         // processor to the specified IP address and port no.
         result = createTransmitter();
@@ -131,6 +129,9 @@ public class AudioChannel {
             processor.close();
             processor = null;
             started = false;
+        }
+        else {
+            started = true;
         }
 
         // Start the transmission
@@ -203,15 +204,17 @@ public class AudioChannel {
 
         // Wait for it to configure
         boolean result = waitForState(processor, Processor.Configured);
-        if (!result)
+        if (!result){
             return "Couldn't configure processor";
-
+        }
+        
         // Get the tracks from the processor
         TrackControl[] tracks = processor.getTrackControls();
 
         // Do we have atleast one track?
-        if (tracks == null || tracks.length < 1)
+        if (tracks == null || tracks.length < 1){
             return "Couldn't find tracks in processor";
+        }
 
         // Set the output content descriptor to RAW_RTP
         // This will limit the supported formats reported from
