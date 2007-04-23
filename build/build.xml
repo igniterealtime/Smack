@@ -27,8 +27,8 @@
     <!-- Smack Version -->
     <property name="version.major" value="3" />
     <property name="version.minor" value="0" />
-    <property name="version.revision" value="2" />
-    <property name="version.extra" value="beta1" /> 
+    <property name="version.revision" value="3" />
+    <property name="version.extra" value="alpha" /> 
 
     <if>
         <equals arg1="${version.extra}" arg2=""/>
