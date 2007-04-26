@@ -22,6 +22,8 @@ package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.StringUtils;
 
+import java.util.*;
+
 /**
  * Represents XMPP message packets. A message can be one of several types:
  *
@@ -50,8 +52,10 @@ public class Message extends Packet {
 
     private Type type = Type.normal;
     private String subject = null;
-    private String body = null;
     private String thread = null;
+    private String language;
+
+    private final Set<Body> bodies = new HashSet<Body>();
 
     /**
      * Creates a new, "normal" message.
@@ -65,9 +69,6 @@ public class Message extends Packet {
      * @param to the recipient of the message.
      */
     public Message(String to) {
-        if (to == null) {
-            throw new IllegalArgumentException("Parameter cannot be null");
-        }
         setTo(to);
     }
 
@@ -78,15 +79,13 @@ public class Message extends Packet {
      * @param type the message type.
      */
     public Message(String to, Type type) {
-        if (to == null || type == null) {
-            throw new IllegalArgumentException("Parameters cannot be null.");
-        }
         setTo(to);
         this.type = type;
     }
 
     /**
-     * Returns the type of the message.
+     * Returns the type of the message. If no type has been set this method will return {@link
+     * org.jivesoftware.smack.packet.Message.Type#normal}.
      *
      * @return the type of the message.
      */
@@ -98,6 +97,7 @@ public class Message extends Packet {
      * Sets the type of the message.
      *
      * @param type the type of the message.
+     * @throws IllegalArgumentException if null is passed in as the type
      */
     public void setType(Type type) {
         if (type == null) {
@@ -133,16 +133,115 @@ public class Message extends Packet {
      * @return the body of the message.
      */
     public String getBody() {
-        return body;
+        return getBody(null);
+    }
+
+    /**
+     * Returns the body corresponding to the language. If the language is null, the method result
+     * will be the same as {@link #getBody()}. Null will be returned if the language does not have
+     * a corresponding body.
+     *
+     * @param language the language of the body to return.
+     * @return the body related to the passed in language.
+     * @since 3.0.2
+     */
+    public String getBody(String language) {
+        language = parseXMLLang(language);
+        for (Body body : bodies) {
+            if ((body.langauge == null && language == null)
+                    || (body != null && body.langauge.equals(language))) {
+                return body.message;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a set of all bodies in this Message, including the default message body accessible
+     * from {@link #getBody()}.
+     *
+     * @return a collection of all bodies in this Message.
+     * @since 3.0.2
+     */
+    public Collection<Body> getBodies() {
+        return Collections.unmodifiableCollection(bodies);
     }
 
     /**
      * Sets the body of the message. The body is the main message contents.
-     * 
+     *
      * @param body the body of the message.
      */
     public void setBody(String body) {
-        this.body = body;
+        if (body == null) {
+            removeBody("");
+            return;
+        }
+        addBody(null, body);
+    }
+
+    /**
+     * Adds a body with a corresponding language.
+     *
+     * @param language the language of the body being added.
+     * @param body the body being added to the message.
+     * @return the new {@link org.jivesoftware.smack.packet.Message.Body}
+     * @throws NullPointerException if the body is null, a null pointer exception is thrown
+     * @since 3.0.2
+     */
+    public Body addBody(String language, String body) {
+        if (body == null) {
+            throw new NullPointerException("Body must be specified");
+        }
+        language = parseXMLLang(language);
+
+        Body messageBody = new Body(language, body);
+        bodies.add(messageBody);
+        return messageBody;
+    }
+
+    /**
+     * Removes the body with the given language from the message.
+     *
+     * @param language the language of the body which is to be removed
+     * @return true if a body was removed and false if it was not.
+     */
+    public boolean removeBody(String language) {
+        language = parseXMLLang(language);
+
+        for (Body body : bodies) {
+            if (language.equals(body.langauge)) {
+                return bodies.remove(body);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Removes the body from the message and returns true if the body was removed.
+     *
+     * @param body the body being removed from the message.
+     * @return true if the body was successfully removed and false if it was not.
+     * @since 3.0.2
+     */
+    public boolean removeBody(Body body) {
+        return bodies.remove(body);
+    }
+
+    /**
+     * Returns all the languages being used for the bodies, not including the default body.
+     *
+     * @return the languages being used for the bodies.
+     * @since 3.0.2
+     */
+    public Collection<String> getBodyLanguages() {
+        List<String> languages = new ArrayList<String>(bodies.size());
+        for (Body body : bodies) {
+            if (!parseXMLLang(body.langauge).equals(getDefaultLanguage())) {
+                languages.add(body.langauge);
+            }
+        }
+        return Collections.unmodifiableCollection(languages);
     }
 
     /**
@@ -165,9 +264,35 @@ public class Message extends Packet {
         this.thread = thread;
     }
 
+    /**
+     * Returns the xml:lang of this Message.
+     *
+     * @return the xml:lang of this Message.
+     * @since 3.0.2
+     */
+    private String getLanguage() {
+        return language;
+    }
+
+    /**
+     * Sets the xml:lang of this Message.
+     *
+     * @param language the xml:lang of this Message.
+     * @since 3.0.2
+     */
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<message");
+        if (getXmlns() != null) {
+            buf.append(" xmlns=\"").append(getXmlns()).append("\"");
+        }
+        if (language != null) {
+            buf.append(" xml:lang=\"").append(getLanguage()).append("\"");
+        }
         if (getPacketID() != null) {
             buf.append(" id=\"").append(getPacketID()).append("\"");
         }
@@ -184,8 +309,19 @@ public class Message extends Packet {
         if (subject != null) {
             buf.append("<subject>").append(StringUtils.escapeForXML(subject)).append("</subject>");
         }
-        if (body != null) {
-            buf.append("<body>").append(StringUtils.escapeForXML(body)).append("</body>");
+        // Add the body in the default language
+        if (getBody() != null) {
+            buf.append("<body>").append(StringUtils.escapeForXML(getBody())).append("</body>");
+        }
+        // Add the bodies in other languages
+        for (Body body : getBodies()) {
+            // Skip the default language
+            if (DEFAULT_LANGUAGE.equals(body.getLanguage()) || body.getLanguage() == null) {
+                continue;
+            }
+            buf.append("<body xml:lang=\"").append(body.getLanguage()).append("\">");
+            buf.append(StringUtils.escapeForXML(body.getMessage()));
+            buf.append("</body>");
         }
         if (thread != null) {
             buf.append("<thread>").append(thread).append("</thread>");
@@ -201,6 +337,102 @@ public class Message extends Packet {
         buf.append(getExtensionsXML());
         buf.append("</message>");
         return buf.toString();
+    }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        if(!super.equals(message)) { return false; }
+        if (bodies.size() != message.bodies.size() || !bodies.containsAll(message.bodies)) {
+            return false;
+        }
+        if (language != null ? !language.equals(message.language) : message.language != null) {
+            return false;
+        }
+        if (subject != null ? !subject.equals(message.subject) : message.subject != null) {
+            return false;
+        }
+        if (thread != null ? !thread.equals(message.thread) : message.thread != null) {
+            return false;
+        }
+        return type == message.type;
+
+    }
+
+    public int hashCode() {
+        int result;
+        result = (type != null ? type.hashCode() : 0);
+        result = 31 * result + (subject != null ? subject.hashCode() : 0);
+        result = 31 * result + (thread != null ? thread.hashCode() : 0);
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        result = 31 * result + bodies.hashCode();
+        return result;
+    }
+
+    /**
+     * Represents a message body, its language and the content of the message.
+     */
+    public static class Body {
+
+        private String message;
+        private String langauge;
+
+        private Body(String language, String message) {
+            if (message == null) {
+                throw new NullPointerException("Message cannot be null.");
+            }
+            this.langauge = language;
+            this.message = message;
+        }
+
+        /**
+         * Returns the language of this message body. If the language is null, then, no language
+         * was specified.
+         *
+         * @return the language of this message body.
+         */
+        public String getLanguage() {
+            if (DEFAULT_LANGUAGE.equals(langauge)) {
+                return null;
+            }
+            else {
+                return langauge;
+            }
+        }
+
+        /**
+         * Returns the message content.
+         *
+         * @return the content of the message.
+         */
+        public String getMessage() {
+            return message;
+        }
+
+
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) { return false; }
+
+            Body body = (Body) o;
+
+            if (langauge != null ? !langauge.equals(body.langauge) : body.langauge != null) {
+                return false;
+            }
+            return message.equals(body.message);
+
+        }
+
+        public int hashCode() {
+            int result;
+            result = message.hashCode();
+            result = 31 * result + (langauge != null ? langauge.hashCode() : 0);
+            return result;
+        }
     }
 
     /**

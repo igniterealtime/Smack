@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../source" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../test-unit" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -34,25 +35,27 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../junit.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="file://$MODULE_DIR$/../resources" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../build/xmlunit.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../xmlunit-1.1beta1/src/java" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../junit.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

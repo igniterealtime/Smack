@@ -42,6 +42,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class Packet {
 
+    protected static final String DEFAULT_LANGUAGE =
+            java.util.Locale.getDefault().getLanguage().toLowerCase();
+
+    private static String DEFAULT_XML_NS = null;
+
     /**
      * Constant used as packetID to indicate that a packet has no id. To indicate that a packet
      * has no id set this constant as the packet's id. When the packet is asked for its id the
@@ -60,14 +65,20 @@ public abstract class Packet {
      */
     private static long id = 0;
 
+    private String xmlns = DEFAULT_XML_NS;
+
     /**
      * Returns the next unique id. Each id made up of a short alphanumeric
      * prefix along with a unique numeric value.
      *
      * @return the next id.
      */
-    private static synchronized String nextID() {
+    public static synchronized String nextID() {
         return prefix + Long.toString(id++);
+    }
+
+    public static void setDefaultXmlns(String defaultXmlns) {
+        DEFAULT_XML_NS = defaultXmlns;
     }
 
     private String packetID = null;
@@ -76,7 +87,7 @@ public abstract class Packet {
     private final List<PacketExtension> packetExtensions
             = new CopyOnWriteArrayList<PacketExtension>();
 
-    private Map<String,Object> properties = null;
+    private final Map<String,Object> properties = null;
     private XMPPError error = null;
 
     /**
@@ -280,9 +291,6 @@ public abstract class Packet {
         if (!(value instanceof Serializable)) {
             throw new IllegalArgumentException("Value must be serialiazble");
         }
-        if (properties == null) {
-            properties = new HashMap<String, Object>();
-        }
         properties.put(name, value);
     }
 
@@ -402,5 +410,53 @@ public abstract class Packet {
             buf.append("</properties>");
         }
         return buf.toString();
+    }
+
+    public String getXmlns() {
+        return this.xmlns;
+    }
+
+    protected static String parseXMLLang(String language) {
+        if (language == null || "".equals(language)) {
+            language = DEFAULT_LANGUAGE;
+        }
+        return language;
+    }
+
+    protected static String getDefaultLanguage() {
+        return DEFAULT_LANGUAGE;
+    }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Packet packet = (Packet) o;
+
+        if (error != null ? !error.equals(packet.error) : packet.error != null) { return false; }
+        if (from != null ? !from.equals(packet.from) : packet.from != null) { return false; }
+        if (!packetExtensions.equals(packet.packetExtensions)) { return false; }
+        if (packetID != null ? !packetID.equals(packet.packetID) : packet.packetID != null) {
+            return false;
+        }
+        if (properties != null ? !properties.equals(packet.properties)
+                : packet.properties != null) {
+            return false;
+        }
+        if (to != null ? !to.equals(packet.to) : packet.to != null)  { return false; }
+        return !(xmlns != null ? !xmlns.equals(packet.xmlns) : packet.xmlns != null);
+    }
+
+    public int hashCode() {
+        int result;
+        result = (xmlns != null ? xmlns.hashCode() : 0);
+        result = 31 * result + (packetID != null ? packetID.hashCode() : 0);
+        result = 31 * result + (to != null ? to.hashCode() : 0);
+        result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + packetExtensions.hashCode();
+        result = 31 * result + properties.hashCode();
+        result = 31 * result + (error != null ? error.hashCode() : 0);
+        return result;
     }
 }

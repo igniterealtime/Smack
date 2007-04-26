@@ -62,6 +62,7 @@ public class Presence extends Packet {
     private String status = null;
     private int priority = Integer.MIN_VALUE;
     private Mode mode = null;
+    private String language;
 
     /**
      * Creates a new presence update. Status, priority, and mode are left un-set.
@@ -69,7 +70,7 @@ public class Presence extends Packet {
      * @param type the type.
      */
     public Presence(Type type) {
-        this.type = type;
+        setType(type);
     }
 
     /**
@@ -81,10 +82,10 @@ public class Presence extends Packet {
      * @param mode the mode type for this presence update.
      */
     public Presence(Type type, String status, int priority, Mode mode) {
-        this.type = type;
-        this.status = status;
-        this.priority = priority;
-        this.mode = mode;
+        setType(type);
+        setStatus(status);
+        setPriority(priority);
+        setMode(mode);
     }
 
     /**
@@ -128,6 +129,9 @@ public class Presence extends Packet {
      * @param type the type of the presence packet.
      */
     public void setType(Type type) {
+        if(type == null) {
+            throw new NullPointerException("Type cannot be null");
+        }
         this.type = type;
     }
 
@@ -196,9 +200,35 @@ public class Presence extends Packet {
         this.mode = mode;
     }
 
+    /**
+     * Returns the xml:lang of this Presence, or null if one has not been set.
+     *
+     * @return the xml:lang of this Presence, or null if one has not been set.
+     * @since 3.0.2
+     */
+    private String getLanguage() {
+        return language;
+    }
+
+    /**
+     * Sets the xml:lang of this Presence.
+     *
+     * @param language the xml:lang of this Presence.
+     * @since 3.0.2
+     */
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<presence");
+        if(getXmlns() != null) {
+            buf.append(" xmlns=\"").append(getXmlns()).append("\"");
+        }
+        if (language != null) {
+            buf.append(" xml:lang=\"").append(getLanguage()).append("\"");
+        }
         if (getPacketID() != null) {
             buf.append(" id=\"").append(getPacketID()).append("\"");
         }
@@ -241,8 +271,8 @@ public class Presence extends Packet {
         if (mode != null) {
             buf.append(": ").append(mode);
         }
-        if (status != null) {
-            buf.append(" (").append(status).append(")");
+        if (getStatus() != null) {
+            buf.append(" (").append(getStatus()).append(")");
         }
         return buf.toString();
     }

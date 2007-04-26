@@ -61,13 +61,17 @@ public class PacketParserUtils {
         message.setTo(parser.getAttributeValue("", "to"));
         message.setFrom(parser.getAttributeValue("", "from"));
         message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
+        String language = getLanguageAttribute(parser);
+        if (language != null && !"".equals(language.trim())) {
+        	message.setLanguage(language);
+        }
 
         // Parse sub-elements. We include extra logic to make sure the values
         // are only read once. This is because it's possible for the names to appear
         // in arbitrary sub-elements.
         boolean done = false;
         String subject = null;
-        String body = null;
+        String body;
         String thread = null;
         Map<String, Object> properties = null;
         while (!done) {
@@ -81,9 +85,9 @@ public class PacketParserUtils {
                     }
                 }
                 else if (elementName.equals("body")) {
-                    if (body == null) {
-                        body = parser.nextText();
-                    }
+                    String xmlLang = getLanguageAttribute(parser);
+                    body = parser.nextText();
+                    message.addBody(xmlLang, body);
                 }
                 else if (elementName.equals("thread")) {
                     if (thread == null) {
@@ -111,7 +115,6 @@ public class PacketParserUtils {
             }
         }
         message.setSubject(subject);
-        message.setBody(body);
         message.setThread(thread);
         // Set packet properties.
         if (properties != null) {
@@ -140,11 +143,16 @@ public class PacketParserUtils {
                 System.err.println("Found invalid presence type " + typeString);
             }
         }
-
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
         presence.setFrom(parser.getAttributeValue("", "from"));
         String id = parser.getAttributeValue("", "id");
+        presence.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
+
+        String language = getLanguageAttribute(parser);
+        if (language != null && !"".equals(language.trim())) {
+        	presence.setLanguage(language);
+        }
         presence.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
 
         // Parse sub-elements
@@ -401,6 +409,18 @@ public class PacketParserUtils {
             }
         }
         return extension;
+    }
+
+    private static String getLanguageAttribute(XmlPullParser parser) {
+    	for (int i = 0; i < parser.getAttributeCount(); i++) {
+            String attributeName = parser.getAttributeName(i);
+            if ( "xml:lang".equals(attributeName) ||
+                    ("lang".equals(attributeName) &&
+                            "xml".equals(parser.getAttributePrefix(i)))) {
+    			return parser.getAttributeValue(i);
+    		}
+    	}
+    	return null;
     }
 
     public static Object parseWithIntrospection(String elementName,

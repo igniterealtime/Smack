@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="JAVA_MODULE">
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../../classes" />
+    <exclude-output />
+    <output-test url="file://$MODULE_DIR$/../../classes" />
+    <content url="file://$MODULE_DIR$/../../test-unit">
+      <sourceFolder url="file://$MODULE_DIR$/../../test-unit" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module" module-name="Smack" exported="" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntryProperties />
+  </component>
+</module>
+
