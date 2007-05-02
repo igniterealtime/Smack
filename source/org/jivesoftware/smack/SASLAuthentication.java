@@ -27,6 +27,7 @@ import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.sasl.SASLAnonymous;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.SASLPlainMechanism;
+import org.jivesoftware.smack.sasl.SASLGSSAPIMechanism;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -79,7 +80,8 @@ public class SASLAuthentication implements UserAuthentication {
 
     static {
         // Register SASL mechanisms supported by Smack
-        registerSASLMechanism(0, "PLAIN", SASLPlainMechanism.class);
+        registerSASLMechanism(0, "GSSAPI", SASLGSSAPIMechanism.class);
+        registerSASLMechanism(1, "PLAIN", SASLPlainMechanism.class);
     }
 
     /**

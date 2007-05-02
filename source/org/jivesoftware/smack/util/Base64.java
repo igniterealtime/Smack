@@ -44,7 +44,7 @@ package org.jivesoftware.smack.util;
  * @author rob@iharder.net
  * @version 2.1
  */
-class Base64 {
+public class Base64 {
 
 	/* ******** P U B L I C F I E L D S ******** */
 
@@ -1441,4 +1441,5 @@ class Base64 {
 	} // end inner class OutputStream
 
 } // end class Base64
+
 
