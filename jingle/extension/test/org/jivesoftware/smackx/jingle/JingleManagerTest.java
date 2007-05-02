@@ -909,7 +909,8 @@ public class JingleManagerTest extends SmackTestCase {
             System.out.println(valCounter());
 
             assertTrue(valCounter() == 8);
-            //Thread.sleep(15000);
+            
+            Thread.sleep(15000);
 
         }
         catch (Exception e) {

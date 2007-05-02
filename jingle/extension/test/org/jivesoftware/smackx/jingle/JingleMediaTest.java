@@ -26,6 +26,7 @@ import org.jivesoftware.smackx.jingle.mediaimpl.jmf.JmfMediaManager;
 import org.jivesoftware.smackx.jingle.mediaimpl.jmf.AudioChannel;
 import org.jivesoftware.smackx.jingle.mediaimpl.jspeex.SpeexMediaManager;
 import org.jivesoftware.smackx.jingle.mediaimpl.multi.MultiMediaManager;
+import org.jivesoftware.smackx.jingle.mediaimpl.sshare.ScreenShareMediaManager;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionStateListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
@@ -233,6 +234,61 @@ public class JingleMediaTest extends SmackTestCase {
 
             JingleMediaManager jingleMediaManager0 = new SpeexMediaManager();
             JingleMediaManager jingleMediaManager1 = new SpeexMediaManager();
+
+            jm0.setMediaManager(jingleMediaManager0);
+            jm1.setMediaManager(jingleMediaManager1);
+
+            jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
+                public void sessionRequested(final JingleSessionRequest request) {
+
+                    try {
+
+                        IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
+
+                        session.start(request);
+                    }
+                    catch (XMPPException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+
+            js0.start();
+
+            Thread.sleep(150000);
+            js0.terminate();
+
+            Thread.sleep(6000);
+
+            x0.disconnect();
+            x1.disconnect();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+      public void testCompleteScreenShare() {
+
+        try {
+
+            //XMPPConnection.DEBUG_ENABLED = true;
+
+            XMPPConnection x0 = getConnection(0);
+            XMPPConnection x1 = getConnection(1);
+
+            final JingleManager jm0 = new JingleManager(
+                    x0, new ICETransportManager(x0,"stun.xten.net",3478));
+            final JingleManager jm1 = new JingleManager(
+                    x1, new ICETransportManager(x1,"stun.xten.net",3478));
+
+            JingleMediaManager jingleMediaManager0 = new ScreenShareMediaManager();
+            JingleMediaManager jingleMediaManager1 = new ScreenShareMediaManager();
 
             jm0.setMediaManager(jingleMediaManager0);
             jm1.setMediaManager(jingleMediaManager1);
