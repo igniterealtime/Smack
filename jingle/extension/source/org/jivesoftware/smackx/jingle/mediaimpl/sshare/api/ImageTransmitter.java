@@ -209,9 +209,9 @@ public class ImageTransmitter implements Runnable {
                 trace = (System.currentTimeMillis() - trace);
                 System.out.println("Loop Time:" + trace);
 
-                if (trace < 1000) {
+                if (trace < 500) {
                     try {
-                        Thread.sleep(1000 - trace);
+                        Thread.sleep(500 - trace);
                     }
                     catch (InterruptedException e) {
                         e.printStackTrace();
