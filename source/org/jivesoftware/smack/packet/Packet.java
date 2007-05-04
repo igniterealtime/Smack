@@ -87,7 +87,7 @@ public abstract class Packet {
     private final List<PacketExtension> packetExtensions
             = new CopyOnWriteArrayList<PacketExtension>();
 
-    private final Map<String,Object> properties = null;
+    private final Map<String,Object> properties = new HashMap<String, Object>();
     private XMPPError error = null;
 
     /**
