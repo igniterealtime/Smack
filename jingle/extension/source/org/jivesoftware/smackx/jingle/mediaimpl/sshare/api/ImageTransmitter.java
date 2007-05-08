@@ -100,28 +100,34 @@ public class ImageTransmitter implements Runnable {
 
                                     if (baos != null) {
 
-                                        Thread.sleep(1);
-
-                                        baos.write(i);
-                                        baos.write(j);
-
-                                        byte[] bytesOut = baos.toByteArray();
-
-                                        if (bytesOut.length > 1000)
-                                            System.err.println(bytesOut.length);
-
-                                        p.setData(bytesOut);
-                                        p.setAddress(remoteHost);
-                                        p.setPort(remotePort);
-
                                         try {
-                                            socket.send(p);
-                                        }
-                                        catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
 
-                                        tiles[i][j] = pixels;
+                                            Thread.sleep(1);
+
+                                            baos.write(i);
+                                            baos.write(j);
+
+                                            byte[] bytesOut = baos.toByteArray();
+
+                                            if (bytesOut.length > 1000)
+                                                System.err.println(bytesOut.length);
+
+                                            p.setData(bytesOut);
+                                            p.setAddress(remoteHost);
+                                            p.setPort(remotePort);
+
+                                            try {
+                                                socket.send(p);
+                                            }
+                                            catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            tiles[i][j] = pixels;
+
+                                        }
+                                        catch (Exception e) {
+                                        }
 
                                     }
 
@@ -156,6 +162,7 @@ public class ImageTransmitter implements Runnable {
 
     /**
      * Set Transmit Enabled/Disabled
+     *
      * @param transmit boolean Enabled/Disabled
      */
     public void setTransmit(boolean transmit) {
@@ -164,6 +171,7 @@ public class ImageTransmitter implements Runnable {
 
     /**
      * Get the encoder used to encode Images Tiles
+     *
      * @return encoder
      */
     public ImageEncoder getEncoder() {
@@ -172,6 +180,7 @@ public class ImageTransmitter implements Runnable {
 
     /**
      * Set the encoder used to encode Image Tiles
+     *
      * @param encoder encoder
      */
     public void setEncoder(ImageEncoder encoder) {
@@ -181,9 +190,9 @@ public class ImageTransmitter implements Runnable {
     /**
      * Stops Transmitter
      */
-    public void stop(){
-        this.transmit=false;
-        this.on=false;
+    public void stop() {
+        this.transmit = false;
+        this.on = false;
         socket.close();
     }
 }

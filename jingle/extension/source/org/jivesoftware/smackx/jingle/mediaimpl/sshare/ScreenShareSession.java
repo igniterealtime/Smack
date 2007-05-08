@@ -142,14 +142,18 @@ public class ScreenShareSession extends JingleMediaSession {
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     public void stopTrasmit() {
-
+        if(transmitter!=null){
+            transmitter.stop();
+        }
     }
 
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
     public void stopReceive() {
-        // Do nothing
+        if(receiver!=null){
+            receiver.stop();
+        }
     }
 
     /**
