@@ -26,6 +26,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageDecoder;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +73,9 @@ public class ScreenShareMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession JingleMediaSession
      */
-    public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
+    public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
         ScreenShareSession session = null;
-        session = new ScreenShareSession(payloadType, remote, local, "Screen");
+        session = new ScreenShareSession(payloadType, remote, local, "Screen", jingleSession);
         if (encoder != null) {
             session.setEncoder(encoder);
         }

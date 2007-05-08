@@ -1083,7 +1083,7 @@ public abstract class JingleSession extends JingleNegotiator implements MediaRec
             rc.removeCandidateEcho();
             lc.removeCandidateEcho();
 
-            jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc);
+            jingleMediaSession = jingleMediaManager.createMediaSession(pt, rc, lc, this);
             jingleMediaSession.addMediaReceivedListener(this);
             if (jingleMediaSession != null) {
 

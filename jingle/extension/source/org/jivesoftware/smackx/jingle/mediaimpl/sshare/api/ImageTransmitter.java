@@ -31,9 +31,8 @@ public class ImageTransmitter implements Runnable {
     private int tiles[][][];
     private int maxI;
     private int maxJ;
-    private boolean changed = false;
-    private final Object sync = new Object();
     private ImageEncoder encoder;
+    public final static int KEYFRAME = 10;
 
     public ImageTransmitter(DatagramSocket socket, InetAddress remoteHost, int remotePort, Rectangle area) {
 
@@ -66,92 +65,22 @@ public class ImageTransmitter implements Runnable {
         byte buf[] = new byte[1024];
         final DatagramPacket p = new DatagramPacket(buf, 1024);
 
-        /*
-        new Thread(
-                new Runnable() {
-                    public void run() {
-
-                        int w = (int) area.getWidth();
-                        int h = (int) area.getHeight();
-
-                        int tiles[][][] = new int[maxI][maxJ][tileWidth * tileWidth];
-
-                        while (on) {
-                            if (transmit) {
-
-                                boolean differ = false;
-
-                                BufferedImage capture = robot.createScreenCapture(area);
-
-                                //ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-                                //ColorConvertOp op = new ColorConvertOp(cs, null);
-                                //capture = op.filter(capture, null);
-
-                                QuantizeFilter filter = new QuantizeFilter();
-                                capture = filter.filter(capture, null);
-
-                                long trace = System.currentTimeMillis();
-
-                                for (int i = 0; i < maxI; i++) {
-                                    for (int j = 0; j < maxJ; j++) {
-
-                                        final BufferedImage bufferedImage = capture.getSubimage(i * tileWidth, j * tileWidth, tileWidth, tileWidth);
-
-                                        int pixels[] = new int[tileWidth * tileWidth];
-
-                                        PixelGrabber pg = new PixelGrabber(bufferedImage, 0, 0, tileWidth, tileWidth, pixels, 0, tileWidth);
-
-                                        try {
-                                            if (pg.grabPixels()) {
-                                                if (!differ) {
-                                                    if (!Arrays.equals(tiles[i][j], pixels)) {
-                                                        differ = true;
-                                                    }
-                                                }
-                                                tiles[i][j] = pixels;
-                                            }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                                if (differ) {
-                                    synchronized (sync) {
-                                        changed = true;
-                                    }
-                                }
-
-                                trace = (System.currentTimeMillis() - trace);
-                                System.err.println("Loop Time:" + trace);
-
-                                if (trace < 250) {
-                                    try {
-                                        Thread.sleep(250);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-        ).start();
-        */
+        int keyframe = 0;
 
         while (on) {
             if (transmit) {
 
                 BufferedImage capture = robot.createScreenCapture(area);
 
-                //ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-                //ColorConvertOp op = new ColorConvertOp(cs, null);
-                //capture = op.filter(capture, null);
-
                 QuantizeFilter filter = new QuantizeFilter();
                 capture = filter.filter(capture, null);
 
                 long trace = System.currentTimeMillis();
+
+                if (++keyframe > KEYFRAME) {
+                    keyframe = 0;
+                }
+                System.out.println("KEYFRAME:" + keyframe);
 
                 for (int i = 0; i < maxI; i++) {
                     for (int j = 0; j < maxJ; j++) {
@@ -165,7 +94,7 @@ public class ImageTransmitter implements Runnable {
                         try {
                             if (pg.grabPixels()) {
 
-                                if (!Arrays.equals(tiles[i][j], pixels)) {
+                                if (keyframe == KEYFRAME || !Arrays.equals(tiles[i][j], pixels)) {
 
                                     ByteArrayOutputStream baos = encoder.encode(bufferedImage);
 
@@ -178,7 +107,7 @@ public class ImageTransmitter implements Runnable {
 
                                         byte[] bytesOut = baos.toByteArray();
 
-                                        if (bytesOut.length > 400)
+                                        if (bytesOut.length > 1000)
                                             System.err.println(bytesOut.length);
 
                                         p.setData(bytesOut);
@@ -225,14 +154,26 @@ public class ImageTransmitter implements Runnable {
         start();
     }
 
+    /**
+     * Set Transmit Enabled/Disabled
+     * @param transmit boolean Enabled/Disabled
+     */
     public void setTransmit(boolean transmit) {
         this.transmit = transmit;
     }
 
+    /**
+     * Get the encoder used to encode Images Tiles
+     * @return encoder
+     */
     public ImageEncoder getEncoder() {
         return encoder;
     }
 
+    /**
+     * Set the encoder used to encode Image Tiles
+     * @param encoder encoder
+     */
     public void setEncoder(ImageEncoder encoder) {
         this.encoder = encoder;
     }

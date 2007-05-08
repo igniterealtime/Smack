@@ -835,8 +835,8 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleMediaManager jingleMediaManager = new JingleMediaManager() {
                 // Media Session Implementation
-                public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
-                    return new JingleMediaSession(payloadType, remote, local, null) {
+                public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
+                    return new JingleMediaSession(payloadType, remote, local, null,null) {
 
                         public void initialize() {
 

@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.jingle.media;
 
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,6 @@ public abstract class JingleMediaManager {
      * @param local
      * @return
      */
-    public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local);
+    public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, JingleSession jingleSession);
 
   }

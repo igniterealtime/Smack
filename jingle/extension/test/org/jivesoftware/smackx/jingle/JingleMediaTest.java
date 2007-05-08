@@ -1,3 +1,5 @@
+package org.jivesoftware.smackx.jingle;
+
 /**
  * $RCSfile$
  * $Revision: $
@@ -277,8 +279,6 @@ public class JingleMediaTest extends SmackTestCase {
 
         try {
 
-            //XMPPConnection.DEBUG_ENABLED = true;
-
             XMPPConnection x0 = getConnection(0);
             XMPPConnection x1 = getConnection(1);
 
@@ -297,7 +297,7 @@ public class JingleMediaTest extends SmackTestCase {
                 public void sessionRequested(final JingleSessionRequest request) {
 
                     try {
-
+                        
                         IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
 
                         session.start(request);

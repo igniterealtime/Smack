@@ -24,6 +24,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.mediaimpl.JMFInit;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +55,8 @@ public class SpeexMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession
      */
-    public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
-        return new AudioMediaSession(payloadType, remote, local, null);
+    public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
+        return new AudioMediaSession(payloadType, remote, local, null,null);
     }
 
     /**

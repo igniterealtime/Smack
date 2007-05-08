@@ -27,6 +27,7 @@ import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import javax.media.NoProcessorException;
 import javax.media.format.UnsupportedFormatException;
@@ -55,15 +56,15 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 
     /**
      * Create a Session using Speex Codec
-     * 
-     * @param localhost localHost
-     * @param localPort localPort
-     * @param remoteHost remoteHost
-     * @param remotePort remotePort
+     *
+     * @param localhost    localHost
+     * @param localPort    localPort
+     * @param remoteHost   remoteHost
+     * @param remotePort   remotePort
      * @param eventHandler eventHandler
-     * @param quality quality
-     * @param secure secure
-     * @param micOn micOn
+     * @param quality      quality
+     * @param secure       secure
+     * @param micOn        micOn
      * @return MediaSession
      * @throws NoProcessorException
      * @throws UnsupportedFormatException
@@ -101,8 +102,8 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * @param locator     media locator
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local, String locator) {
-        super(payloadType, remote, local, locator==null?"dsound://":locator);
+            final TransportCandidate local, String locator, JingleSession jingleSession) {
+        super(payloadType, remote, local, locator == null ? "dsound://" : locator, jingleSession);
         initialize();
     }
 

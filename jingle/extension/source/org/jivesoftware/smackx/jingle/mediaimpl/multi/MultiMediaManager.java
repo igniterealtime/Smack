@@ -24,6 +24,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.*;
 
@@ -76,10 +77,10 @@ public class MultiMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession JingleMediaSession
      */
-    public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local) {
+    public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
         for (JingleMediaManager manager : managers) {
             if (manager.getPayloads().contains(payloadType)) {
-                return manager.createMediaSession(payloadType, remote, local);
+                return manager.createMediaSession(payloadType, remote, local, jingleSession);
             }
         }
         return null;

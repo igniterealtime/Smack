@@ -26,6 +26,8 @@ import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageReceiver;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageTransmitter;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.IncomingJingleSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.net.DatagramSocket;
 
 /**
  * This Class implements a complete JingleMediaSession.
@@ -47,6 +50,8 @@ public class ScreenShareSession extends JingleMediaSession {
 
     private ImageTransmitter transmitter = null;
     private ImageReceiver receiver = null;
+    private int width = 600;
+    private int height = 600;
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
@@ -57,8 +62,8 @@ public class ScreenShareSession extends JingleMediaSession {
      * @param locator     media locator
      */
     public ScreenShareSession(final PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local, final String locator) {
-        super(payloadType, remote, local, "Screen");
+            final TransportCandidate local, final String locator, JingleSession jingleSession) {
+        super(payloadType, remote, local, "Screen", jingleSession);
         initialize();
     }
 
@@ -67,36 +72,39 @@ public class ScreenShareSession extends JingleMediaSession {
      */
     public void initialize() {
 
-        JFrame window = new JFrame();
-        JPanel jp = new JPanel();
-        window.add(jp);
+        if (this.getJingleSession() instanceof IncomingJingleSession) {
 
-        window.setLocation(0, 0);
-        window.setSize(400, 400);
+            JFrame window = new JFrame();
+            JPanel jp = new JPanel();
+            window.add(jp);
 
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            window.setLocation(0, 0);
+            window.setSize(600, 600);
 
-        try {
-            receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), 800, 600);
-            System.out.println("Receiving on:" + receiver.getLocalPort());
+            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            try {
+                receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), width, height);
+                System.out.println("Receiving on:" + receiver.getLocalPort());
+            }
+            catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+
+            jp.add(receiver);
+            receiver.setVisible(true);
+            window.setAlwaysOnTop(true);
+            window.setVisible(true);
         }
-        catch (UnknownHostException e) {
-            e.printStackTrace();
+        else {
+            try {
+                InetAddress remote = InetAddress.getByName(getRemote().getIp());
+                transmitter = new ImageTransmitter(new DatagramSocket(getLocal().getPort()), remote, getRemote().getPort(), new Rectangle(0, 0, width, height));
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        jp.add(receiver);
-        receiver.setVisible(true);
-        window.setAlwaysOnTop(true);
-        window.setVisible(true);
-
-        try {
-            InetAddress remote = InetAddress.getByName(getRemote().getIp());
-            transmitter = new ImageTransmitter(receiver.getDatagramSocket(), remote, getRemote().getPort(), new Rectangle(0, 0, 800, 600));
-        }
-        catch (Exception e) {
-
-        }
-
     }
 
     /**

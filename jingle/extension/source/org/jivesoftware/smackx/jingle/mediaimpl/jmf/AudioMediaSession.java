@@ -23,6 +23,7 @@ package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import javax.media.MediaLocator;
 import java.io.IOException;
@@ -51,8 +52,8 @@ public class AudioMediaSession extends JingleMediaSession {
      * @param locator     media locator
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local, String locator) {
-        super(payloadType, remote, local, locator==null?"dsound://":locator);
+            final TransportCandidate local, String locator, JingleSession jingleSession) {
+        super(payloadType, remote, local, locator==null?"dsound://":locator,jingleSession);
         initialize();
     }
 

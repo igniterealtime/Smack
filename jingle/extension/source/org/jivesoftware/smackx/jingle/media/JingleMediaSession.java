@@ -20,6 +20,7 @@
 package org.jivesoftware.smackx.jingle.media;
 
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public abstract class JingleMediaSession {
     private String mediaLocator;
     // Media Received Listener
     private List<MediaReceivedListener> mediaReceivedListeners = new ArrayList<MediaReceivedListener>();
+    // Jingle Session
+    private JingleSession jingleSession;
 
     /**
      * Creates a new JingleMediaSession Instance to handle Media methods.
@@ -58,11 +61,12 @@ public abstract class JingleMediaSession {
      * @param mediaLocator Media Locator of the capture device
      */
     public JingleMediaSession(PayloadType payloadType, TransportCandidate remote,
-            TransportCandidate local, String mediaLocator) {
+            TransportCandidate local, String mediaLocator, JingleSession jingleSession) {
         this.local = local;
         this.remote = remote;
         this.payloadType = payloadType;
         this.mediaLocator = mediaLocator;
+        this.jingleSession = jingleSession;
     }
 
     /**
@@ -177,4 +181,11 @@ public abstract class JingleMediaSession {
         }
     }
 
+    /**
+     * Gets associated JingleSession
+     * @return associated JingleSession
+     */
+    public JingleSession getJingleSession() {
+        return jingleSession;
+    }
 }
