@@ -31,6 +31,9 @@ import org.jivesoftware.smackx.jingle.IncomingJingleSession;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -81,7 +84,11 @@ public class ScreenShareSession extends JingleMediaSession {
             window.setLocation(0, 0);
             window.setSize(600, 600);
 
-            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            window.addWindowListener(new WindowAdapter(){
+                public void windowClosed(WindowEvent e) {
+                    receiver.stop();
+                }
+            });
 
             try {
                 receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), width, height);

@@ -177,4 +177,13 @@ public class ImageTransmitter implements Runnable {
     public void setEncoder(ImageEncoder encoder) {
         this.encoder = encoder;
     }
+
+    /**
+     * Stops Transmitter
+     */
+    public void stop(){
+        this.transmit=false;
+        this.on=false;
+        socket.close();
+    }
 }

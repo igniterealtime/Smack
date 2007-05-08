@@ -142,4 +142,9 @@ public class ImageReceiver extends Canvas {
     public void setDecoder(ImageDecoder decoder) {
         this.decoder = decoder;
     }
+
+    public void stop(){
+        this.on=false;
+        socket.close();
+    }
 }
