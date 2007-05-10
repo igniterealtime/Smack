@@ -1,27 +1,16 @@
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare.api;
 
-import com.sixlegs.png.PngImage;
-
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * Implements a default PNG Decoder
+ * Implements a default PNG decoder.
  */
-public class DefaultDecoder implements ImageDecoder{
+public class DefaultDecoder implements ImageDecoder {
 
-    PngImage decoder = new PngImage();
-
-    public BufferedImage decode(ByteArrayInputStream stream) {
-        BufferedImage image = null;
-        try {
-            image = decoder.read(stream,true);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            // Do nothing
-        }
-        return image;
+    public BufferedImage decode(ByteArrayInputStream stream) throws IOException {
+        return ImageIO.read(stream);
     }
 }

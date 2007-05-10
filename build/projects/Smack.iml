@@ -47,9 +47,7 @@
           <root url="jar://$MODULE_DIR$/../build/xmlunit.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../xmlunit-1.1beta1/src/java" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
