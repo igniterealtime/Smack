@@ -229,6 +229,8 @@ public class PresenceTest extends SmackTestCase {
     /**
      * User1 logs in, then sets offline presence information (presence with status text). User2
      * logs in and checks to see if offline presence is returned.
+     *
+     * @throws Exception if an exception occurs.
      */
     public void testOfflineStatusPresence() throws Exception {
         // Add a new roster entry for other user.
@@ -242,13 +244,19 @@ public class PresenceTest extends SmackTestCase {
             Thread.sleep(100);
         }
 
-        // Sign out of conn0.
-        getConnection(0).disconnect();
-
         // Sign out of conn1 with status
         Presence offlinePresence = new Presence(Presence.Type.unavailable);
         offlinePresence.setStatus("Offline test");
         getConnection(1).disconnect(offlinePresence);
+
+        // Wait 500 ms
+        Thread.sleep(500);
+        Presence presence = getConnection(0).getRoster().getPresence(getBareJID(1));
+        assertTrue("Offline presence status not received.",
+                "Offline test".equals(presence.getStatus()));
+
+        // Sign out of conn0.
+        getConnection(0).disconnect();
 
         // See if conneciton 0 can get offline status.
         XMPPConnection con0 = getConnection(0);
@@ -257,8 +265,8 @@ public class PresenceTest extends SmackTestCase {
 
         // Wait 500 ms
         Thread.sleep(500);
-        Presence presence = con0.getRoster().getPresence(getBareJID(1));
-        assertTrue("Offline presence status not received.",
+        presence = con0.getRoster().getPresence(getBareJID(1));
+        assertTrue("Offline presence status not received after logout.",
                 "Offline test".equals(presence.getStatus()));
     }
 

@@ -696,10 +696,9 @@ public class Roster {
                 // Otherwise, this is a normal offline presence.
                 else if (presenceMap.get(key) != null) {
                     Map<String, Presence> userPresences = presenceMap.get(key);
-                    userPresences.remove(StringUtils.parseResource(from));
-                    if (userPresences.isEmpty()) {
-                        presenceMap.remove(key);
-                    }
+                    // Store the offline presence, as it may include extra information
+                    // such as the user being on vacation.
+                    userPresences.put(StringUtils.parseResource(from), presence);
                 }
                 // If the user is in the roster, fire an event.
                 for (RosterEntry entry : entries) {
