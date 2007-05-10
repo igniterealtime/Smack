@@ -73,6 +73,7 @@ public abstract class SASLMechanism {
      * response to the server's challenge.
      *
      * @param challenge a base64 encoded string representing the challenge.
+     * @throws IOException if an exception sending the response occurs.
      */
     public void challengeReceived(String challenge) throws IOException {
         // Build the challenge response stanza encoding the response text

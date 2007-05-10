@@ -188,8 +188,10 @@ public class SASLAuthentication implements UserAuthentication {
                 Constructor constructor = selected
                         .getConstructor(new Class[]{SASLAuthentication.class});
                 currentMechanism = (SASLMechanism) constructor.newInstance(new Object[]{this});
-                // Trigger SASL authentication with the selected mechanism
-                currentMechanism.authenticate(username, connection.getServiceName(), password);
+                // Trigger SASL authentication with the selected mechanism. We use
+                // connection.getHost() since GSAPI requires the FQDN of the server, which
+                // may not match the XMPP domain.
+                currentMechanism.authenticate(username, connection.getHost(), password);
 
                 // Wait until SASL negotiation finishes
                 synchronized (this) {
