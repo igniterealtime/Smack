@@ -329,7 +329,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
                 .createPacketCollector(new PacketIDFilter(query.getPacketID()));
         connection.sendPacket(query);
 
-        Packet packet = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        Packet packet = collector.nextResult(10000);
         collector.cancel();
         Bytestream response;
         if (packet != null && packet instanceof Bytestream) {
