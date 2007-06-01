@@ -37,9 +37,10 @@ Every user in a roster is represented by a RosterEntry, which consists of:<ul>
 The following code snippet prints all entries in the roster:
 
 <pre>
-Roster roster = con.getRoster();
-<b>for</b> (Iterator i=roster.getEntries(); i.hasNext(); ) {
-    System.out.println(i.next());
+Roster roster = connection.getRoster();
+Collection&lt;RosterEntry&gt; entries = roster.getEntries();
+for (RosterEntry entry : entries) {
+    System.out.println(entry);
 }
 </pre>
 
@@ -77,19 +78,16 @@ similar code to update the roster UI with the changing information.
 <br clear="all">
 
 <pre>
-final Roster roster = con.getRoster();
+Roster roster = con.getRoster();
 roster.addRosterListener(new RosterListener() {
-    <b>public void</b> rosterModified() {
-        <font color="gray"><i>// Ignore event for this example.</i></font>
-    }
-
-    <b>public void</b> presenceChanged(String user) {
-        <font color="gray"><i>// If the presence is unavailable then "null" will be printed,
-        // which is fine for this example.</i></font>
-        System.out.println(<font color="green">"Presence changed: "</font> + roster.getPresence(user));
+    // Ignored events public void entriesAdded(Collection&lt;String&gt; addresses) {}
+    public void entriesDeleted(Collection&lt;String&gt; addresses) {}
+    public void entriesUpdated(Collection&lt;String&gt; addresses) {}
+    public void presenceChanged(Presence presence) {
+        System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
     }
 });
-</pre> 
+</pre>
 
 <p class="subheader">Adding Entries to the Roster</p>
 
@@ -108,17 +106,17 @@ in one of three ways: <ul>
     <li> Process presence subscription requests manually.
 </ul>
 
-The mode can be set using the <tt>Roster.setSubscriptionMode(int subscriptionMode)</tt>
+The mode can be set using the <tt>Roster.setSubscriptionMode(Roster.SubscriptionMode)</tt>
 method. Simple clients normally use one of the automated subscription modes, while
 full-featured clients should manually process subscription requests and let the
 end-user accept or reject each request. If using the manual mode, a PacketListener 
 should be registered that listens for Presence packets that have a type of 
-<tt>Presence.Type.SUBSCRIBE</tt>. 
+<tt>Presence.Type.subscribe</tt>. 
 
 <br clear="all" /><br><br>
 
 <div class="footer">
-Copyright &copy; Jive Software 2002-2004
+Copyright &copy; Jive Software 2002-2007
 </div>
 
 </body>

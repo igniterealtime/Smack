@@ -96,7 +96,7 @@ and "out fishing":<p>
 <div class="code">
 <pre>
 <font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
-Presence presence = new Presence(Presence.Type.UNAVAILABLE);
+Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus(<font color="green">"Gone fishing"</font>);
 <font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
 con.sendPacket(presence);
@@ -115,7 +115,7 @@ XMPPConnection instance.
 
 
 <p><div class="footer">
-Copyright &copy; Jive Software 2002-2005
+Copyright &copy; Jive Software 2002-2007
 </div>
 
 </body>

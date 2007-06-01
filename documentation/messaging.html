@@ -29,15 +29,21 @@ A chat creates a new thread of messages (using a thread ID) between two users. T
 following code snippet demonstrates how to create a new Chat with a user and then send
 them a text message:<p>
 
-<div class="code"><pre><font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font> 
-ChatManager chatmanager = connection.getChatManager();<br>Chat newChat = chatmanager.createChat(<font
+<div class="code"><pre><font color="gray"><i>// Assume we've created an XMPPConnection name "connection".</i></font>
+ChatManager chatmanager = connection.getChatManager();
+Chat newChat = chatmanager.createChat(<font
         color="green">"jsmith@jivesoftware.com"</font>, new MessageListener() {
-
     public void processMessage(Chat chat, Message message) {
-        System.out.println(<font color="green">"Received message: "</font> + message); 
-    } 
-}); <br>try {
-    chat.sendMessage(<font color="green">"Howdy!"</font>); <br>} catch (XMPPException e) {<br>    System.out.println(&quot;Error Delivering block&quot;);<br>}<br><br>
+        System.out.println(<font color="green">"Received message: "</font> + message);
+    }
+});
+
+try {
+    newChat.sendMessage(<font color="green">"Howdy!"</font>);
+}
+catch (XMPPException e) {
+    System.out.println(<font color="green">"Error Delivering block"</font>);
+}
 </pre>
 </div>
 <p>
@@ -51,7 +57,7 @@ ChatManager chatmanager = connection.getChatManager();<br>Chat newChat = chatman
 <p>
 
 <div class="code"><pre>
-Message newMessage = newChat.createMessage();
+Message newMessage = new Message();
 newMessage.setBody(<font color="green">"Howdy!"</font>);
 message.setProperty(<font color="green">"favoriteColor"</font>, <font color="green">"red"</font>);
 newChat.sendMessage(newMessage);
