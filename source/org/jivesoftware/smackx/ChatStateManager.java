@@ -44,10 +44,10 @@ import java.util.WeakHashMap;
  */
 public class ChatStateManager {
 
-    private static Map<XMPPConnection, ChatStateManager> managers =
+    private static final Map<XMPPConnection, ChatStateManager> managers =
             new WeakHashMap<XMPPConnection, ChatStateManager>();
 
-    private static PacketFilter filter = new NotFilter(
+    private static final PacketFilter filter = new NotFilter(
                 new PacketExtensionFilter("http://jabber.org/protocol/chatstates"));
 
     /**
@@ -58,7 +58,10 @@ public class ChatStateManager {
      * @return the ChatStateManager related the the connection.
      */
     public static ChatStateManager getInstance(final XMPPConnection connection) {
-        synchronized (connection) {
+        if(connection == null) {
+            return null;
+        }
+        synchronized (managers) {
             ChatStateManager manager = managers.get(connection);
             if (manager == null) {
                 manager = new ChatStateManager(connection);
@@ -70,17 +73,17 @@ public class ChatStateManager {
         }
     }
 
-    private XMPPConnection connection;
+    private final XMPPConnection connection;
 
-    private OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
+    private final OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
 
-    private IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
+    private final IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
 
     /**
      * Maps chat to last chat state.
      */
-    private Map<Chat, ChatState> chatStates = new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK,
-            ReferenceMap.HARD);
+    private final Map<Chat, ChatState> chatStates =
+            new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK, ReferenceMap.HARD);
 
     private ChatStateManager(XMPPConnection connection) {
         this.connection = connection;
@@ -97,7 +100,8 @@ public class ChatStateManager {
 
     /**
      * Sets the current state of the provided chat. This method will send an empty bodied Message
-     * packet with the state attached as a {@link org.jivesoftware.smack.packet.PacketExtension}.
+     * packet with the state attached as a {@link org.jivesoftware.smack.packet.PacketExtension}, if
+     * and only if the new chat state is different than the last state.
      *
      * @param newState the new state of the chat
      * @param chat the chat.
@@ -106,6 +110,9 @@ public class ChatStateManager {
      *          packet.
      */
     public void setCurrentState(ChatState newState, Chat chat) throws XMPPException {
+        if(chat == null || newState == null) {
+            throw new IllegalArgumentException("Arguments cannot be null.");
+        }
         if(!updateChatState(chat, newState)) {
             return;
         }
@@ -114,6 +121,21 @@ public class ChatStateManager {
         message.addExtension(extension);
 
         chat.sendMessage(message);
+    }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatStateManager that = (ChatStateManager) o;
+
+        return connection.equals(that.connection);
+
+    }
+
+    public int hashCode() {
+        return connection.hashCode();
     }
 
     private boolean updateChatState(Chat chat, ChatState newState) {
