@@ -144,8 +144,8 @@ public class ChatStateManager {
 
     private boolean updateChatState(Chat chat, ChatState newState) {
         ChatState lastChatState = chatStates.get(chat);
-        if (lastChatState == null || lastChatState != newState) {
-            chatStates.put(chat, lastChatState);
+        if (lastChatState != newState) {
+            chatStates.put(chat, newState);
             return true;
         }
         return false;
