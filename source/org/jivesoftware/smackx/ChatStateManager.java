@@ -38,6 +38,10 @@ import java.util.WeakHashMap;
  * packet extensions and the disco response neccesary for compliance with
  * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
+ * NOTE: {@link org.jivesoftware.smackx.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
+ * needs to be called in order for the listeners to be registered appropriately with the connection.
+ * If this does not occur you will not receive the update notifications.
+ *
  * @author Alexander Wenckus
  * @see org.jivesoftware.smackx.ChatState
  * @see org.jivesoftware.smackx.packet.ChatStateExtension
