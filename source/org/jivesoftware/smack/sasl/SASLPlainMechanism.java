@@ -43,7 +43,9 @@ public class SASLPlainMechanism extends SASLMechanism {
         // Build the text containing the "authorization identity" + NUL char +
         // "authentication identity" + NUL char + "clear-text password"
         StringBuilder text = new StringBuilder();
-        text.append(username).append("@").append(host);
+        // Commented out line below due to SMACK-224. This part of PLAIN auth seems to be
+        // optional, and just removing it should increase compatability.  
+//         text.append(username).append("@").append(host);
         text.append('\0');
         text.append(username);
         text.append('\0');
