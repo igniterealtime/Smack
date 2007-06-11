@@ -204,7 +204,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             count += len;
         }
 
-        private void flushBuffer() {
+        private synchronized void flushBuffer() {
             writeToXML(buffer, 0, count);
 
             count = 0;
@@ -234,6 +234,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         }
 
         public void close() throws IOException {
+            this.flush();
             connection.sendPacket(closePacket);
         }
 
