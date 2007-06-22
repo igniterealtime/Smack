@@ -59,6 +59,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
@@ -198,10 +199,9 @@ public class MultiUserChatTest extends SmackTestCase {
             // User1 checks the presence of user2 in the room
             Presence presence = muc.getOccupantPresence(room + "/testbot2");
             assertNotNull("Presence of user2 in room is missing", presence);
-            assertEquals(
+            assertTrue(
                 "Presence mode of user2 is wrong",
-                Presence.Mode.available,
-                presence.getMode());
+                presence.getMode() == null || presence.getMode() == Presence.Mode.available);
 
             // User2 changes his availability to AWAY
             muc2.changeAvailabilityStatus("Gone to have lunch", Presence.Mode.away);
@@ -255,10 +255,9 @@ public class MultiUserChatTest extends SmackTestCase {
             // User1 checks the presence of Anonymous user in the room
             Presence presence = muc.getOccupantPresence(room + "/testbot2");
             assertNotNull("Presence of user2 in room is missing", presence);
-            assertEquals(
+            assertTrue(
                 "Presence mode of user2 is wrong",
-                Presence.Mode.available,
-                presence.getMode());
+                presence.getMode() == null || presence.getMode() == Presence.Mode.available);
 
             // Anonymous user leaves the room
             muc2.leave();
@@ -1875,7 +1874,12 @@ public class MultiUserChatTest extends SmackTestCase {
 
             // User1 sends an empty room configuration form which indicates that we want
             // an instant room
-            muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+            Form form = new Form(Form.TYPE_SUBMIT);
+            FormField field = new FormField("muc#roomconfig_whois");
+            field.setType("list-single");
+            form.addField(field);
+            form.setAnswer("muc#roomconfig_whois", Arrays.asList("moderators"));
+            muc.sendConfigurationForm(form);
         }
         catch (Exception e) {
             e.printStackTrace();
