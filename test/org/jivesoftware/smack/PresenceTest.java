@@ -170,7 +170,9 @@ public class PresenceTest extends SmackTestCase {
      */
     public void testMultipleResources() throws Exception {
         // Create another connection for the same user of connection 1
-        XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        ConnectionConfiguration connectionConfiguration =
+                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+        XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(1), getUsername(1), "Home");
 
@@ -252,8 +254,7 @@ public class PresenceTest extends SmackTestCase {
         // Wait 500 ms
         Thread.sleep(500);
         Presence presence = getConnection(0).getRoster().getPresence(getBareJID(1));
-        assertTrue("Offline presence status not received.",
-                "Offline test".equals(presence.getStatus()));
+        assertEquals("Offline presence status not received.", "Offline test", presence.getStatus());
 
         // Sign out of conn0.
         getConnection(0).disconnect();

@@ -245,7 +245,9 @@ public class MultiUserChatTest extends SmackTestCase {
     public void testAnonymousParticipant() {
         try {
             // Anonymous user joins the new room
-            XMPPConnection anonConnection = new XMPPConnection(getServiceName());
+            ConnectionConfiguration connectionConfiguration =
+                    new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+            XMPPConnection anonConnection = new XMPPConnection(connectionConfiguration);
             anonConnection.connect();
             anonConnection.loginAnonymously();
             MultiUserChat muc2 = new MultiUserChat(anonConnection, room);
@@ -1753,18 +1755,21 @@ public class MultiUserChatTest extends SmackTestCase {
         }
     }
 
-    public void testManyResources() {
-        try {
-            // Create 20 more connections for user2
-            XMPPConnection[] conns = new XMPPConnection[20];
+    public void testManyResources() throws Exception {
+            // Create 5 more connections for user2
+            XMPPConnection[] conns = new XMPPConnection[5];
             for (int i = 0; i < conns.length; i++) {
-                conns[i] = new XMPPConnection(getServiceName());
+                ConnectionConfiguration connectionConfiguration =
+                        new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+                conns[i] = new XMPPConnection(connectionConfiguration);
                 conns[i].connect();
                 conns[i].login(getUsername(1), getUsername(1), "resource-" + i);
+                Thread.sleep(20);
             }
 
-            // Join the 20 connections to the same room
-            MultiUserChat[] mucs = new MultiUserChat[20];
+            // Join the 5 connections to the same room
+            MultiUserChat[] mucs = new MultiUserChat[5];
             for (int i = 0; i < mucs.length; i++) {
                 mucs[i] = new MultiUserChat(conns[i], room);
                 mucs[i].join("resource-" + i);
@@ -1780,16 +1785,15 @@ public class MultiUserChatTest extends SmackTestCase {
             Thread.sleep(200);
 
             // Each connection leaves the room and closes the connection
-            for (int i = 0; i < mucs.length; i++) {
-                mucs[i].leave();
-                conns[i].disconnect();
+            for (MultiUserChat muc1 : mucs) {
+                muc1.leave();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+            Thread.sleep(200);
 
+            for (int i = 0; i < mucs.length; i++) {
+                conns[i].disconnect();
+            }
     }
 
     /**

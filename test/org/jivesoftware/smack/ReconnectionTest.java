@@ -53,6 +53,9 @@ public class ReconnectionTest extends SmackTestCase {
 
         assertTrue("Failed to use compression", connection.isUsingCompression());
 
+        // Executes some server interaction testing the connection
+        executeSomeServerInteraction(connection);
+
         XMPPConnectionTestListener listener = new XMPPConnectionTestListener();
         connection.addConnectionListener(listener);
 

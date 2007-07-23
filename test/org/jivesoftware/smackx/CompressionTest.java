@@ -20,10 +20,11 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smackx.packet.Version;
 
 /**
  * Ensure that stream compression (JEP-138) is correctly supported by Smack.
@@ -54,6 +55,24 @@ public class CompressionTest extends SmackTestCase {
         connection.login("user0", "user0");
 
         assertTrue("Connection is not using stream compression", connection.isUsingCompression());
+
+        // Request the version of the server
+        Version version = new Version();
+        version.setType(IQ.Type.GET);
+        version.setTo(getServiceName());
+
+        // Create a packet collector to listen for a response.
+        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(version.getPacketID()));
+
+        connection.sendPacket(version);
+
+        // Wait up to 5 seconds for a result.
+        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        // Close the collector
+        collector.cancel();
+
+        assertNotNull("No reply was received from the server", result);
+        assertEquals("Incorrect IQ type from server", IQ.Type.RESULT, result.getType());
 
         // Close connection
         connection.disconnect();

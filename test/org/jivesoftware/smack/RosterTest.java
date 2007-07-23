@@ -148,58 +148,53 @@ public class RosterTest extends SmackTestCase {
      * 2. Iterate on all the entries and remove them from the roster
      * 3. Check that the number of entries and groups is zero
      */
-    public void testDeleteAllRosterEntries() {
-        try {
-            // Add a new roster entry
-            Roster roster = getConnection(0).getRoster();
-            roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
-            roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
+    public void testDeleteAllRosterEntries() throws Exception {
+        // Add a new roster entry
+        Roster roster = getConnection(0).getRoster();
+        roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
+        roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
 
-            // Wait up to 2 seconds to receive new roster contacts
-            long initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 2) {
-                Thread.sleep(100);
-            }
-
-            assertEquals("Wrong number of entries in connection 0", 2, roster.getEntryCount());
-
-            // Wait up to 2 seconds to receive presences of the new roster contacts
-            initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 5000 &&
-                    (!roster.getPresence(getBareJID(1)).isAvailable() ||
-                    !roster.getPresence(getBareJID(2)).isAvailable()))
-            {
-                Thread.sleep(100);
-            }
-            assertTrue("Presence not received", roster.getPresence(getBareJID(1)).isAvailable());
-            assertTrue("Presence not received", roster.getPresence(getBareJID(2)).isAvailable());
-
-            for (RosterEntry entry : roster.getEntries()) {
-                roster.removeEntry(entry);
-                Thread.sleep(250);
-            }
-
-            // Wait up to 2 seconds to receive roster removal notifications
-            initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 0) {
-                Thread.sleep(100);
-            }
-
-            assertEquals("Wrong number of entries in connection 0", 0, roster.getEntryCount());
-            assertEquals("Wrong number of groups in connection 0", 0, roster.getGroupCount());
-
-            assertEquals(
-                "Wrong number of entries in connection 1",
-                0,
-                getConnection(1).getRoster().getEntryCount());
-            assertEquals(
-                "Wrong number of groups in connection 1",
-                0,
-                getConnection(1).getRoster().getGroupCount());
+        // Wait up to 2 seconds to receive new roster contacts
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 2) {
+            Thread.sleep(100);
         }
-        catch (Exception e) {
-            fail(e.getMessage());
+
+        assertEquals("Wrong number of entries in connection 0", 2, roster.getEntryCount());
+
+        // Wait up to 2 seconds to receive presences of the new roster contacts
+        initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 5000 &&
+                (!roster.getPresence(getBareJID(1)).isAvailable() ||
+                !roster.getPresence(getBareJID(2)).isAvailable()))
+        {
+            Thread.sleep(100);
         }
+        assertTrue("Presence not received", roster.getPresence(getBareJID(1)).isAvailable());
+        assertTrue("Presence not received", roster.getPresence(getBareJID(2)).isAvailable());
+
+        for (RosterEntry entry : roster.getEntries()) {
+            roster.removeEntry(entry);
+            Thread.sleep(250);
+        }
+
+        // Wait up to 2 seconds to receive roster removal notifications
+        initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 0) {
+            Thread.sleep(100);
+        }
+
+        assertEquals("Wrong number of entries in connection 0", 0, roster.getEntryCount());
+        assertEquals("Wrong number of groups in connection 0", 0, roster.getGroupCount());
+
+        assertEquals(
+            "Wrong number of entries in connection 1",
+            0,
+            getConnection(1).getRoster().getEntryCount());
+        assertEquals(
+            "Wrong number of groups in connection 1",
+            0,
+            getConnection(1).getRoster().getGroupCount());
     }
 
     /**
@@ -489,7 +484,9 @@ public class RosterTest extends SmackTestCase {
             Presence presence;
 
             // Create another connection for the same user of connection 1
-            XMPPConnection conn4 = new XMPPConnection(getServiceName());
+            ConnectionConfiguration connectionConfiguration =
+                    new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+            XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
             conn4.connect();
             conn4.login(getUsername(1), getUsername(1), "Home");
 
@@ -560,7 +557,9 @@ public class RosterTest extends SmackTestCase {
      */
     public void testMultipleResources() throws Exception {
         // Create another connection for the same user of connection 1
-        XMPPConnection conn4 = new XMPPConnection(getServiceName());
+        ConnectionConfiguration connectionConfiguration =
+                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+        XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(1), getUsername(1), "Home");
 
@@ -623,7 +622,9 @@ public class RosterTest extends SmackTestCase {
         assertEquals("Created entry was never received", 1, roster.getEntryCount());
 
         // Create another connection for the same user of connection 0
-        XMPPConnection conn2 = new XMPPConnection(getServiceName());
+        ConnectionConfiguration connectionConfiguration =
+                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+        XMPPConnection conn2 = new XMPPConnection(connectionConfiguration);
         conn2.connect();
         conn2.login(getUsername(0), getUsername(0), "Home");
 
