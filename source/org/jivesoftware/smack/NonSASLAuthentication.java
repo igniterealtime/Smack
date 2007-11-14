@@ -24,6 +24,11 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Authentication;
 import org.jivesoftware.smack.packet.IQ;
 
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.Callback;
+import java.io.IOException;
+
 /**
  * Implementation of JEP-0078: Non-SASL Authentication. Follow the following
  * <a href=http://www.jabber.org/jeps/jep-0078.html>link</a> to obtain more
@@ -38,6 +43,17 @@ class NonSASLAuthentication implements UserAuthentication {
     public NonSASLAuthentication(XMPPConnection connection) {
         super();
         this.connection = connection;
+    }
+
+    public String authenticate(String username, String resource, CallbackHandler cbh) throws XMPPException {
+        //Use the callback handler to determine the password, and continue on.
+        PasswordCallback pcb = new PasswordCallback("Password: ",false);
+        try {
+            cbh.handle(new Callback[]{pcb});
+            return authenticate(username, String.valueOf(pcb.getPassword()),resource);
+        } catch (Exception e) {
+            throw new XMPPException("Unable to determine password.",e);
+        }   
     }
 
     public String authenticate(String username, String password, String resource) throws

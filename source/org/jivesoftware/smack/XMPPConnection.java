@@ -29,6 +29,9 @@ import org.jivesoftware.smack.util.StringUtils;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
+import java.security.KeyStore;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.KeyManager;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -39,6 +42,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -275,6 +279,8 @@ public class XMPPConnection {
      * (default timeout) elapses in each step of the authentication process without
      * a response from the server, or if an error occurs, a XMPPException will be thrown.
      *
+     * It is recommended to use the {@link #login(String, CallbackHandler)} instead.
+     *
      * @param username the username.
      * @param password the password.
      * @throws XMPPException if an error occurs.
@@ -288,6 +294,24 @@ public class XMPPConnection {
      * the server, then sets presence to available. If more than five seconds
      * (default timeout) elapses in each step of the authentication process without
      * a response from the server, or if an error occurs, a XMPPException will be thrown.
+     *
+     * It is recommended to use the {@link #login(String, CallbackHandler)} instead.
+     *
+     * @param username the username.
+     * @param cbh The CallbackHandler used to determine password, or other information.
+     * @throws XMPPException if an error occurs.
+     */
+    public void login(String username, CallbackHandler cbh) throws XMPPException {
+        login(username, "Smack", cbh);
+    }
+
+    /**
+     * Logs in to the server using the strongest authentication mode supported by
+     * the server, then sets presence to available. If more than five seconds
+     * (default timeout) elapses in each step of the authentication process without
+     * a response from the server, or if an error occurs, a XMPPException will be thrown.
+     *
+     * It is recommended to use the {@link #login(String, String, CallbackHandler)} instead.
      *
      * @param username the username.
      * @param password the password.
@@ -303,6 +327,24 @@ public class XMPPConnection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
+     * the server, then sets presence to available. If more than five seconds
+     * (default timeout) elapses in each step of the authentication process without
+     * a response from the server, or if an error occurs, a XMPPException will be thrown.
+     *
+     * @param username the username.
+     * @param cbh the password.
+     * @param resource the resource.
+     * @throws XMPPException         if an error occurs.
+     * @throws IllegalStateException if not connected to the server, or already logged in
+     *                               to the serrver.
+     */
+    public synchronized void login(String username, String resource, CallbackHandler cbh)
+            throws XMPPException {
+        login(username, resource, true, cbh);
+    }
+
+    /**
+     * Logs in to the server using the strongest authentication mode supported by
      * the server. If the server supports SASL authentication then the user will be
      * authenticated using SASL if not Non-SASL authentication will be tried. An available
      * presence may optionally be sent. If <tt>sendPresence</tt>
@@ -313,6 +355,8 @@ public class XMPPConnection {
      * Before logging in (i.e. authenticate) to the server the connection must be connected.
      * For compatibility and easiness of use the connection will automatically connect to the
      * server if not already connected.
+     *
+     * It is recommended to use the {@link #login(String, String, boolean, CallbackHandler)} instead.
      *
      * @param username     the username.
      * @param password     the password.
@@ -388,6 +432,100 @@ public class XMPPConnection {
         if (configuration.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
+    }
+    /**
+     * Logs in to the server using the strongest authentication mode supported by
+     * the server. If the server supports SASL authentication then the user will be
+     * authenticated using SASL if not Non-SASL authentication will be tried. An available
+     * presence may optionally be sent. If <tt>sendPresence</tt>
+     * is false, a presence packet must be sent manually later. If more than five seconds
+     * (default timeout) elapses in each step of the authentication process without a
+     * response from the server, or if an error occurs, a XMPPException will be thrown.<p>
+     * <p/>
+     * Before logging in (i.e. authenticate) to the server the connection must be connected.
+     * For compatibility and easiness of use the connection will automatically connect to the
+     * server if not already connected.
+     *
+     * This version requires the use of a CallbackHandler to obtain information, such as the 
+     * password or principal information
+     *
+     * @param username     the username.
+     * @param cbh          the callback handler.
+     * @param resource     the resource.
+     * @param sendPresence if <tt>true</tt> an available presence will be sent automatically
+     *                     after login is completed.
+     * @throws XMPPException         if an error occurs.
+     * @throws IllegalStateException if not connected to the server, or already logged in
+     *                               to the serrver.
+     */
+    public synchronized void login(String username, String resource,
+            boolean sendPresence, CallbackHandler cbh) throws XMPPException {
+
+
+            if (!isConnected()) {
+            throw new IllegalStateException("Not connected to server.");
+        }
+        if (authenticated) {
+            throw new IllegalStateException("Already logged in to server.");
+        }
+        // Do partial version of nameprep on the username.
+        username = username.toLowerCase().trim();
+
+        String response;
+        if (configuration.isSASLAuthenticationEnabled() &&
+                saslAuthentication.hasNonAnonymousAuthentication()) {
+            // Authenticate using SASL
+            response = saslAuthentication.authenticate(username, resource, cbh);
+        }
+        else {
+            throw new XMPPException("SASL authentication unavilable");
+        }
+
+        // Set the user.
+        if (response != null) {
+            this.user = response;
+            // Update the serviceName with the one returned by the server
+            this.serviceName = StringUtils.parseServer(response);
+        }
+        else {
+            this.user = username + "@" + this.serviceName;
+            if (resource != null) {
+                this.user += "/" + resource;
+            }
+        }
+
+        // If compression is enabled then request the server to use stream compression
+        if (configuration.isCompressionEnabled()) {
+            useCompression();
+        }
+
+        // Create the roster if it is not a reconnection.
+        if (this.roster == null) {
+            this.roster = new Roster(this);
+        }
+        roster.reload();
+
+        // Set presence to online.
+        if (sendPresence) {
+            packetWriter.sendPacket(new Presence(Presence.Type.available));
+        }
+
+        // Indicate that we're now authenticated.
+        authenticated = true;
+        anonymous = false;
+
+        //TODO: Handle this!
+        // Stores the autentication for future reconnection
+        //this.getConfiguration().setLoginInfo(username, password, resource, sendPresence);
+
+        // If debugging is enabled, change the the debug window title to include the
+        // name we are now logged-in as.
+        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
+        // will be null
+        if (configuration.isDebuggerEnabled() && debugger != null) {
+            debugger.userHasLogged(user);
+        }
+
     }
 
     /**
@@ -1111,8 +1249,21 @@ public class XMPPConnection {
      */
     void proceedTLSReceived() throws Exception {
         SSLContext context = SSLContext.getInstance("TLS");
+        KeyStore ks = KeyStore.getInstance(configuration.getKeystoreType());
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+        KeyManager[] kms = null;
+        try {
+            ks.load(new FileInputStream(configuration.getKeystorePath()), configuration.getKeystorePassword().toCharArray());
+            kmf.init(ks,configuration.getKeystorePassword().toCharArray());
+            kms = kmf.getKeyManagers();
+        } catch (FileNotFoundException fourohfour) {
+            kms = null;
+        } catch (NullPointerException npe) {
+            kms = null;
+        }
+
         // Verify certificate presented by the server
-        context.init(null, // KeyManager not required
+        context.init(kms,
                 new javax.net.ssl.TrustManager[]{new ServerTrustManager(serviceName, configuration)},
                 new java.security.SecureRandom());
         Socket plain = socket;
@@ -1125,7 +1276,15 @@ public class XMPPConnection {
         initReaderAndWriter();
         // Proceed to do the handshake
         ((SSLSocket) socket).startHandshake();
-
+        if (((SSLSocket) socket).getWantClientAuth()) {
+            System.err.println("Connection wants client auth");
+        }
+        else if (((SSLSocket) socket).getNeedClientAuth()) {
+            System.err.println("Connection needs client auth");
+        }
+        else {
+            System.err.println("Connection does not requrie client auth");
+        }
         // Set that TLS was successful
         usingTLS = true;
 

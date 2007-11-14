@@ -19,29 +19,26 @@
 
 package org.jivesoftware.smack.sasl;
 
-import javax.security.sasl.*;
-import java.util.*;
-import java.io.IOException;
-
 import org.jivesoftware.smack.SASLAuthentication;
-import org.jivesoftware.smack.util.Base64;
+import org.jivesoftware.smack.XMPPException;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+import javax.security.sasl.Sasl;
+import javax.security.sasl.SaslClient;
+import javax.security.auth.callback.CallbackHandler;
 
 /**
- * Implementation of the SASL GSSAPI mechanisn
- * 
+ * Implementation of the SASL GSSAPI mechanism
  *
  * @author Jay Kline
  */
 public class SASLGSSAPIMechanism extends SASLMechanism {
 
-    private static final String protocol = "xmpp";
-    private static final String[] mechanisms = {"GSSAPI"};    
-    private SaslClient sc;
-
     public SASLGSSAPIMechanism(SASLAuthentication saslAuthentication) {
         super(saslAuthentication);
-        
-        System.setProperty("java.security.krb5.debug","true");
+
         System.setProperty("javax.security.auth.useSubjectCredsOnly","false");
         System.setProperty("java.security.auth.login.config","gss.conf");
 
@@ -59,71 +56,35 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
      *
      * @param username the username of the user being authenticated.
      * @param host     the hostname where the user account resides.
-     * @param password the password of the user (ignored for GSSAPI)
+     * @param cbh      the CallbackHandler (not used with GSSAPI)
      * @throws IOException If a network error occures while authenticating.
      */
-    public void authenticate(String username, String host, String password) throws IOException {
-        // Build the authentication stanza encoding the authentication text
-        StringBuffer stanza = new StringBuffer();
+    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, XMPPException {
+        String[] mechanisms = { getName() };
         Map props = new HashMap();
-	
-        sc = Sasl.createSaslClient(mechanisms, username, protocol, host, props, null);
-
-	stanza.append("<auth mechanism=\"").append(getName());
-        stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
-        if(sc.hasInitialResponse()) {
-            byte[] response = sc.evaluateChallenge(new byte[0]);
-            String authenticationText = Base64.encodeBytes(response,Base64.DONT_BREAK_LINES);
-            if(authenticationText != null && !authenticationText.equals("")) {
-                stanza.append(authenticationText);
-            }
-        }
-        stanza.append("</auth>");
-
-        // Send the authentication to the server
-        getSASLAuthentication().send(stanza.toString());
-    }
-
-
-    protected String getAuthenticationText(String username, String host, String password) {
-        // Unused, see authenticate
-        return null;
+        props.put(Sasl.SERVER_AUTH,"TRUE");
+        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, cbh);
+        authenticate();
     }
 
     /**
-     * The server is challenging the SASL mechanism for the stanza he just sent. Send a
-     * response to the server's challenge. This overrieds from the abstract class because the
-     * tokens needed for GSSAPI are binary, and not safe to put in a string, thus 
-     * getChallengeResponse() cannot be used.
+     * Builds and sends the <tt>auth</tt> stanza to the server.
+     * This overrides from the abstract class because the initial token
+     * needed for GSSAPI is binary, and not safe to put in a string, thus
+     * getAuthenticationText() cannot be used.
      *
-     * @param challenge a base64 encoded string representing the challenge.
+     * @param username the username of the user being authenticated.
+     * @param host     the hostname where the user account resides.
+     * @param password the password of the user (ignored for GSSAPI)
+     * @throws IOException If a network error occures while authenticating.
      */
-    public void challengeReceived(String challenge) throws IOException {
-        // Build the challenge response stanza encoding the response text
-        StringBuffer stanza = new StringBuffer();
-
-        byte response[];
-        if(challenge != null) {
-            response = sc.evaluateChallenge(Base64.decode(challenge));
-        } else {
-            response = sc.evaluateChallenge(null);
-        }
-
-        String authenticationText = Base64.encodeBytes(response,Base64.DONT_BREAK_LINES);
-        if(authenticationText.equals("")) {
-            authenticationText = "=";
-        }
-
-        stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
-        stanza.append(authenticationText);
-        stanza.append("</response>");
-
-        // Send the authentication to the server
-        getSASLAuthentication().send(stanza.toString());
+    public void authenticate(String username, String host, String password) throws IOException, XMPPException {
+        String[] mechanisms = { getName() };
+        Map props = new HashMap();
+        props.put(Sasl.SERVER_AUTH,"TRUE");
+        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, this);
+        authenticate();
     }
 
-    protected String getChallengeResponse(byte[] bytes) {
-        // Unused, see challengeReceived
-        return null;
-    }
+
 }

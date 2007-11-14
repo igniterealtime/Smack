@@ -1,4 +1,8 @@
 /**
+ * $RCSfile$
+ * $Revision: $
+ * $Date: $
+ *
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +22,17 @@ package org.jivesoftware.smack.sasl;
 import org.jivesoftware.smack.SASLAuthentication;
 
 /**
- * Implementation of the SASL PLAIN mechanism
+ * Implementation of the SASL CRAM-MD5 mechanism
  *
  * @author Jay Kline
  */
-public class SASLPlainMechanism extends SASLMechanism {
+public class SASLCramMD5Mechanism extends SASLMechanism {
 
-    public SASLPlainMechanism(SASLAuthentication saslAuthentication) {
+    public SASLCramMD5Mechanism(SASLAuthentication saslAuthentication) {
         super(saslAuthentication);
     }
 
     protected String getName() {
-        return "PLAIN";
+        return "CRAM-MD5";
     }
 }

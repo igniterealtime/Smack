@@ -1,7 +1,7 @@
 /**
  * $RCSfile$
- * $Revision: $
- * $Date: $
+ * $Revision$
+ * $Date$
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -154,7 +154,7 @@ public class LoginTest extends SmackTestCase {
                     throw e;
                 }
             }
-            conn.login("user_1", "user_1", null);
+            conn.login("user_1", "user_1", (String) null);
             if (conn.getSASLAuthentication().isAuthenticated()) {
                 // Check that the server assigned a resource
                 assertNotNull("JID assigned by server is missing", conn.getUser());

@@ -3,7 +3,6 @@
  * $Revision: $
  * $Date: $
  *
- * Copyright 2003-2005 Jive Software.
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +21,13 @@ package org.jivesoftware.smack.sasl;
 
 import org.jivesoftware.smack.SASLAuthentication;
 
+import java.io.IOException;
+import javax.security.auth.callback.CallbackHandler;
+
 /**
- * Implementation of the SASL ANONYMOUS mechanisn as defined by the
- * <a href="http://www.ietf.org/internet-drafts/draft-ietf-sasl-anon-05.txt">IETF draft
- * document</a>.
+ * Implementation of the SASL ANONYMOUS mechanism
  *
- * @author Gaston Dombiak
+ * @author Jay Kline
  */
 public class SASLAnonymous extends SASLMechanism {
 
@@ -39,14 +39,34 @@ public class SASLAnonymous extends SASLMechanism {
         return "ANONYMOUS";
     }
 
-    protected String getAuthenticationText(String username, String host, String password) {
-        // Nothing to send in the <auth> body
-        return null;
+    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException {
+        authenticate();
     }
 
-    protected String getChallengeResponse(byte[] bytes) {
-        // Some servers may send a challenge to gather more information such as
-        // email address. Return any string value.
-        return "anything";
+    public void authenticate(String username, String host, String password) throws IOException {
+        authenticate();
     }
+
+    protected void authenticate() throws IOException {
+        StringBuffer stanza = new StringBuffer();
+        stanza.append("<auth mechanism=\"").append(getName());
+        stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+        stanza.append("</auth>");
+
+        // Send the authentication to the server
+        getSASLAuthentication().send(stanza.toString());
+    }
+
+    public void challengeReceived(String challenge) throws IOException {
+        // Build the challenge response stanza encoding the response text
+        StringBuffer stanza = new StringBuffer();
+        stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+        stanza.append("=");
+        stanza.append("</response>");
+
+        // Send the authentication to the server
+        getSASLAuthentication().send(stanza.toString());
+    }
+
+
 }

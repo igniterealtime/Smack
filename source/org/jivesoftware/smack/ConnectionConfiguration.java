@@ -44,6 +44,9 @@ public class ConnectionConfiguration implements Cloneable {
     private String truststorePath;
     private String truststoreType;
     private String truststorePassword;
+    private String keystorePath;
+    private String keystoreType;
+    private String keystorePassword;
     private boolean verifyChainEnabled = false;
     private boolean verifyRootCAEnabled = false;
     private boolean selfSignedCertificateEnabled = false;
@@ -128,6 +131,9 @@ public class ConnectionConfiguration implements Cloneable {
         truststoreType = "jks";
         // Set the default password of the cacert file that is "changeit"
         truststorePassword = "changeit";
+        keystorePath = System.getProperty("javax.net.ssl.keyStore");
+        keystoreType = "jks";
+        keystorePassword = "changeit";
     }
 
     /**
@@ -238,6 +244,66 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setTruststorePassword(String truststorePassword) {
         this.truststorePassword = truststorePassword;
+    }
+
+    /**
+     * Retuns the path to the keystore file. The key store file contains the 
+     * certificates that may be used to authenticate the client to the server,
+     * in the event the server requests or requires it.
+     *
+     * @return the path to the keystore file.
+     */
+    public String getKeystorePath() {
+        return keystorePath;
+    }
+
+    /**
+     * Sets the path to the keystore file. The key store file contains the 
+     * certificates that may be used to authenticate the client to the server,
+     * in the event the server requests or requires it.
+     *
+     * @param keystorePath the path to the keystore file.
+     */
+    public void setKeystorePath(String keystorePath) {
+        this.keystorePath = keystorePath;
+    }
+
+    /**
+     * Returns the keystore type, or <tt>null</tt> if it's not set.
+     *
+     * @return the keystore type.
+     */
+    public String getKeystoreType() {
+        return keystoreType;
+    }
+
+    /**
+     * Sets the keystore type.
+     *
+     * @param keystoreType the keystore type.
+     */
+    public void setKeystoreType(String keystoreType) {
+        this.keystoreType = keystoreType;
+    }
+
+    /**
+     * Returns the password to use to access the keystore file. It is assumed that all
+     * certificates share the same password in the keystore.
+     *
+     * @return the password to use to access the keystore file.
+     */
+    public String getKeystorePassword() {
+        return keystorePassword;
+    }
+
+    /**
+     * Sets the password to use to access the keystore file. It is assumed that all
+     * certificates share the same password in the trust store.
+     *
+     * @param keystorePassword the password to use to access the keystore file.
+     */
+    public void setKeystorePassword(String keystorePassword) {
+        this.keystorePassword = keystorePassword;
     }
 
     /**

@@ -26,6 +26,8 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Vector;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -50,6 +52,7 @@ public final class SmackConfiguration {
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
+    private static Vector<String> defaultMechs = new Vector<String>();
 
     private SmackConfiguration() {
     }
@@ -88,6 +91,9 @@ public final class SmackConfiguration {
                                 }
                                 else if (parser.getName().equals("keepAliveInterval")) {
                                     keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
+                                }
+                                else if (parser.getName().equals("mechName")) {
+                                    defaultMechs.add(parser.nextText());
                                 }
                             }
                             eventType = parser.next();
@@ -171,6 +177,61 @@ public final class SmackConfiguration {
      */
     public static void setKeepAliveInterval(int interval) {
         keepAliveInterval = interval;
+    }
+
+    /**
+     * Add a SASL mechanism to the list to be used.
+     *
+     * @param mech the SASL mechanism to be added
+     */
+    public static void addSaslMech(String mech) {
+        if(! defaultMechs.contains(mech) ) {
+            defaultMechs.add(mech);
+        }
+    }
+
+   /**
+     * Add a Collection of SASL mechanisms to the list to be used.
+     *
+     * @param mechs the Collection of SASL mechanisms to be added
+     */
+    public static void addSaslMechs(Collection<String> mechs) {
+        for(String mech : mechs) {
+            addSaslMech(mech);
+        }
+    }
+
+    /**
+     * Remove a SASL mechanism from the list to be used.
+     *
+     * @param mech the SASL mechanism to be removed
+     */
+    public static void removeSaslMech(String mech) {
+        if( defaultMechs.contains(mech) ) {
+            defaultMechs.remove(mech);
+        }
+    }
+
+   /**
+     * Remove a Collection of SASL mechanisms to the list to be used.
+     *
+     * @param mechs the Collection of SASL mechanisms to be removed
+     */
+    public static void removeSaslMechs(Collection<String> mechs) {
+        for(String mech : mechs) {
+            removeSaslMech(mech);
+        }
+    }
+
+    /**
+     * Returns the list of SASL mechanisms to be used. If a SASL mechanism is
+     * listed here it does not guarantee it will be used. The server may not
+     * support it, or it may not be implemented.
+     *
+     * @return the list of SASL mechanisms to be used.
+     */
+    public static List<String> getSaslMechs() {
+        return defaultMechs;
     }
 
     private static void parseClassToLoad(XmlPullParser parser) throws Exception {
