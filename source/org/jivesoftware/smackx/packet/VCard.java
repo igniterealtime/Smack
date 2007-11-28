@@ -356,6 +356,26 @@ public class VCard extends IQ {
     }
 
     /**
+     * Specify the bytes for the avatar to use as well as the mime type.
+     *
+     * @param bytes the bytes of the avatar.
+     * @param mimeType the mime type of the avatar.
+     */
+    public void setAvatar(byte[] bytes, String mimeType) {
+        if (bytes == null) {
+            // Remove avatar (if any) from mappings
+            otherUnescapableFields.remove("PHOTO");
+            return;
+        }
+
+        // Otherwise, add to mappings.
+        String encodedImage = StringUtils.encodeBase64(bytes);
+        avatar = encodedImage;
+
+        setField("PHOTO", "<TYPE>" + mimeType + "</TYPE><BINVAL>" + encodedImage + "</BINVAL>", true);
+    }
+
+    /**
      * Set the encoded avatar string. This is used by the provider.
      *
      * @param encodedAvatar the encoded avatar string.
