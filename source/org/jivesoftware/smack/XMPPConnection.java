@@ -1303,7 +1303,7 @@ public class XMPPConnection {
      */
     void proceedTLSReceived() throws Exception {
         SSLContext context = SSLContext.getInstance("TLS");
-        KeyStore ks;
+        KeyStore ks = null;
         KeyManager[] kms = null;
         PasswordCallback pcb = null;
 
@@ -1311,7 +1311,11 @@ public class XMPPConnection {
            ks = null;
         } else {
             System.out.println("Keystore type: "+configuration.getKeystoreType());
-            if(configuration.getKeystoreType().equals("PKCS11")) {
+            if(configuration.getKeystoreType().equals("NONE")) {
+                ks = null;
+                pcb = null;
+            }
+            else if(configuration.getKeystoreType().equals("PKCS11")) {
                 Provider p = new sun.security.pkcs11.SunPKCS11(configuration.getPKCSConfig());
                 Security.addProvider(p);
                 ks = KeyStore.getInstance("PKCS11",p);
@@ -1327,9 +1331,15 @@ public class XMPPConnection {
             }
             else {
                 ks = KeyStore.getInstance(configuration.getKeystoreType());
-                pcb = new PasswordCallback("Keystore Password: ",false);
-                callbackHandler.handle(new Callback[]{pcb});
-                ks.load(new FileInputStream(configuration.getKeystorePath()), pcb.getPassword());
+		try {
+                    ks.load(new FileInputStream(configuration.getKeystorePath()), pcb.getPassword());
+                    pcb = new PasswordCallback("Keystore Password: ",false);
+                    callbackHandler.handle(new Callback[]{pcb});
+		}
+		catch(Exception e) {
+		    ks = null;
+		    pcb = null;
+		}
             }
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             try {
