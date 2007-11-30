@@ -1305,11 +1305,11 @@ public class XMPPConnection {
         SSLContext context = SSLContext.getInstance("TLS");
         KeyStore ks;
         KeyManager[] kms = null;
+        PasswordCallback pcb = null;
 
         if(callbackHandler == null) {
            ks = null;
         } else {
-            PasswordCallback pcb;
             System.out.println("Keystore type: "+configuration.getKeystoreType());
             if(configuration.getKeystoreType().equals("PKCS11")) {
                 Provider p = new sun.security.pkcs11.SunPKCS11(configuration.getPKCSConfig());
@@ -1337,12 +1337,12 @@ public class XMPPConnection {
                     kmf.init(ks,null);
                 } else {
                     kmf.init(ks,pcb.getPassword());
+                    pcb.clearPassword();
                 }
                 kms = kmf.getKeyManagers();
             } catch (NullPointerException npe) {
                 kms = null;
             }
-            pcb.clearPassword();
         }
 
         // Verify certificate presented by the server
