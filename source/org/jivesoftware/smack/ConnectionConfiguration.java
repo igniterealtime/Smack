@@ -46,7 +46,7 @@ public class ConnectionConfiguration implements Cloneable {
     private String truststorePassword;
     private String keystorePath;
     private String keystoreType;
-    private String keystorePassword;
+    private String pkcsConfig;
     private boolean verifyChainEnabled = false;
     private boolean verifyRootCAEnabled = false;
     private boolean selfSignedCertificateEnabled = false;
@@ -133,7 +133,7 @@ public class ConnectionConfiguration implements Cloneable {
         truststorePassword = "changeit";
         keystorePath = System.getProperty("javax.net.ssl.keyStore");
         keystoreType = "jks";
-        keystorePassword = "changeit";
+        pkcsConfig = "pkcs11.config";
     }
 
     /**
@@ -286,24 +286,25 @@ public class ConnectionConfiguration implements Cloneable {
         this.keystoreType = keystoreType;
     }
 
+
     /**
-     * Returns the password to use to access the keystore file. It is assumed that all
-     * certificates share the same password in the keystore.
+     * Returns the PKCS11 configuration file location, needed when the
+     * Keystore type is PKCS11.
      *
-     * @return the password to use to access the keystore file.
+     * @return the path to the PKCS11 configuration file
      */
-    public String getKeystorePassword() {
-        return keystorePassword;
+    public String getPKCSConfig() {
+        return pkcsConfig;
     }
 
     /**
-     * Sets the password to use to access the keystore file. It is assumed that all
-     * certificates share the same password in the trust store.
+     * Sets the PKCS11 configuration file location, needed when the
+     * Keystore type is PKCS11
      *
-     * @param keystorePassword the password to use to access the keystore file.
+     * @param pkcsConfig the path to the PKCS11 configuration file
      */
-    public void setKeystorePassword(String keystorePassword) {
-        this.keystorePassword = keystorePassword;
+    public void setPKCSConfig(String pkcsConfig) {
+        this.pkcsConfig = pkcsConfig;
     }
 
     /**

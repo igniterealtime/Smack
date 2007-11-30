@@ -30,6 +30,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import java.security.KeyStore;
+import java.security.Provider;
+import java.security.Security;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.KeyManager;
 import java.io.*;
@@ -43,6 +45,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.PasswordCallback;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -100,6 +104,9 @@ public class XMPPConnection {
     // Counter to uniquely identify connections that are created. This is distinct from the
     // connection ID, which is a value sent by the server once a connection is made.
     private static AtomicInteger connectionCounter = new AtomicInteger(0);
+
+    // CallbackHandler to handle prompting for theh keystore password.
+    private CallbackHandler callbackHandler = null;
 
     static {
         // Use try block since we may not have permission to get a system
@@ -172,6 +179,7 @@ public class XMPPConnection {
     private ConnectionConfiguration configuration;
     private ChatManager chatManager;
 
+
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
      * performed to determine the IP address and port corresponding to the
@@ -185,7 +193,30 @@ public class XMPPConnection {
      * {@link #XMPPConnection(ConnectionConfiguration)} constructor.<p>
      * <p/>
      * Note that XMPPConnection constructors do not establish a connection to the server
-     * and you must call {@link #connect()}.
+     * and you must call {@link #connect()}.<p>
+     * <p/>
+     * The CallbackHandler will only be used if the connection requires the client provide
+     * an SSL certificate to the server. The CallbackHandler must handle the PasswordCallback
+     * to prompt for a password to unlock the keystore containing the SSL certificate.
+     *
+     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
+     * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
+     */
+    public XMPPConnection(String serviceName, CallbackHandler callbackHandler) {
+        // Create the configuration for this new connection
+        ConnectionConfiguration config = new ConnectionConfiguration(serviceName);
+        config.setCompressionEnabled(false);
+        config.setSASLAuthenticationEnabled(true);
+        config.setDebuggerEnabled(DEBUG_ENABLED);
+        this.configuration = config;
+        this.callbackHandler = callbackHandler;
+    }
+
+    /**
+     * Creates a new XMPP conection in the same way {@link #XMPPConnection(String,CallbackHandler)} does, but
+     * with no callback handler for password prompting of the keystore.  This will work
+     * in most cases, provided the client is not required to provide a certificate to 
+     * the server.
      *
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
      */
@@ -196,6 +227,21 @@ public class XMPPConnection {
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
         this.configuration = config;
+        this.callbackHandler = null;
+    }
+
+    /**
+     * Creates a new XMPP conection in the same way {@link #XMPPConnection(ConnectionConfiguration,CallbackHandler)} does, but
+     * with no callback handler for password prompting of the keystore.  This will work
+     * in most cases, provided the client is not required to provide a certificate to 
+     * the server.
+     *
+     *
+     * @param config the connection configuration.
+     */
+    public XMPPConnection(ConnectionConfiguration config) {
+        this.configuration = config;
+        this.callbackHandler = null;
     }
 
     /**
@@ -206,13 +252,21 @@ public class XMPPConnection {
      * {@link #XMPPConnection(String)} constructor is a better approach.<p>
      * <p/>
      * Note that XMPPConnection constructors do not establish a connection to the server
-     * and you must call {@link #connect()}.
+     * and you must call {@link #connect()}.<p>
+     * <p/>
+     *
+     * The CallbackHandler will only be used if the connection requires the client provide
+     * an SSL certificate to the server. The CallbackHandler must handle the PasswordCallback
+     * to prompt for a password to unlock the keystore containing the SSL certificate.
      *
      * @param config the connection configuration.
+     * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
      */
-    public XMPPConnection(ConnectionConfiguration config) {
+    public XMPPConnection(ConnectionConfiguration config, CallbackHandler callbackHandler) {
         this.configuration = config;
+        this.callbackHandler = callbackHandler;
     }
+
 
     /**
      * Returns the connection ID for this connection, which is the value set by the server
@@ -1249,17 +1303,46 @@ public class XMPPConnection {
      */
     void proceedTLSReceived() throws Exception {
         SSLContext context = SSLContext.getInstance("TLS");
-        KeyStore ks = KeyStore.getInstance(configuration.getKeystoreType());
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+        KeyStore ks;
         KeyManager[] kms = null;
-        try {
-            ks.load(new FileInputStream(configuration.getKeystorePath()), configuration.getKeystorePassword().toCharArray());
-            kmf.init(ks,configuration.getKeystorePassword().toCharArray());
-            kms = kmf.getKeyManagers();
-        } catch (FileNotFoundException fourohfour) {
-            kms = null;
-        } catch (NullPointerException npe) {
-            kms = null;
+
+        if(callbackHandler == null) {
+           ks = null;
+        } else {
+            PasswordCallback pcb;
+            System.out.println("Keystore type: "+configuration.getKeystoreType());
+            if(configuration.getKeystoreType().equals("PKCS11")) {
+                Provider p = new sun.security.pkcs11.SunPKCS11(configuration.getPKCSConfig());
+                Security.addProvider(p);
+                ks = KeyStore.getInstance("PKCS11",p);
+                pcb = new PasswordCallback("PKCS11 Password: ",false);
+                callbackHandler.handle(new Callback[]{pcb});
+                ks.load(null,pcb.getPassword());
+            }
+            else if(configuration.getKeystoreType().equals("Apple")) {
+                ks = KeyStore.getInstance("KeychainStore","Apple");
+                ks.load(null,null);
+                //pcb = new PasswordCallback("Apple Keychain",false);
+                //pcb.setPassword(null);
+            }
+            else {
+                ks = KeyStore.getInstance(configuration.getKeystoreType());
+                pcb = new PasswordCallback("Keystore Password: ",false);
+                callbackHandler.handle(new Callback[]{pcb});
+                ks.load(new FileInputStream(configuration.getKeystorePath()), pcb.getPassword());
+            }
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            try {
+                if(pcb == null) {
+                    kmf.init(ks,null);
+                } else {
+                    kmf.init(ks,pcb.getPassword());
+                }
+                kms = kmf.getKeyManagers();
+            } catch (NullPointerException npe) {
+                kms = null;
+            }
+            pcb.clearPassword();
         }
 
         // Verify certificate presented by the server
