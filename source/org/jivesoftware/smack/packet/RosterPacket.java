@@ -239,7 +239,7 @@ public class RosterPacket extends IQ {
             }
             value = value.toLowerCase();
             if ("unsubscribe".equals(value)) {
-                return SUBSCRIPTION_PENDING;
+                return UNSUBSCRIPTION_PENDING;
             }
             else if ("subscribe".equals(value)) {
                 return SUBSCRIPTION_PENDING;
