@@ -231,7 +231,7 @@ public class RosterPacket extends IQ {
         /**
          * Request to unsubscribe.
          */
-        public static final ItemStatus UNSUBCRIPTION_PENDING = new ItemStatus("unsubscribe");
+        public static final ItemStatus UNSUBSCRIPTION_PENDING = new ItemStatus("unsubscribe");
 
         public static ItemStatus fromString(String value) {
             if (value == null) {
