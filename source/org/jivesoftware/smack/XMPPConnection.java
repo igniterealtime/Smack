@@ -1310,7 +1310,7 @@ public class XMPPConnection {
         if(callbackHandler == null) {
            ks = null;
         } else {
-            System.out.println("Keystore type: "+configuration.getKeystoreType());
+            //System.out.println("Keystore type: "+configuration.getKeystoreType());
             if(configuration.getKeystoreType().equals("NONE")) {
                 ks = null;
                 pcb = null;
@@ -1369,15 +1369,15 @@ public class XMPPConnection {
         initReaderAndWriter();
         // Proceed to do the handshake
         ((SSLSocket) socket).startHandshake();
-        if (((SSLSocket) socket).getWantClientAuth()) {
-            System.err.println("Connection wants client auth");
-        }
-        else if (((SSLSocket) socket).getNeedClientAuth()) {
-            System.err.println("Connection needs client auth");
-        }
-        else {
-            System.err.println("Connection does not requrie client auth");
-        }
+        //if (((SSLSocket) socket).getWantClientAuth()) {
+        //    System.err.println("Connection wants client auth");
+        //}
+        //else if (((SSLSocket) socket).getNeedClientAuth()) {
+        //    System.err.println("Connection needs client auth");
+        //}
+        //else {
+        //    System.err.println("Connection does not require client auth");
+       // }
         // Set that TLS was successful
         usingTLS = true;
 
