@@ -2,9 +2,6 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.StreamError;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
  * the application explicitly closing it, the manager automatically tries to reconnect to
@@ -25,7 +22,7 @@ public class ReconnectionManager implements ConnectionListener {
     private int secondBetweenReconnection = 5 * 60; // 5 minutes
 
     // Holds the thread that produces a periodical reconnection.
-    private Thread reconnectionThread;
+    static private Thread reconnectionThread;
 
     // Holds the connection to the server
     private XMPPConnection connection;
@@ -82,6 +79,17 @@ public class ReconnectionManager implements ConnectionListener {
     protected void setSecondBetweenReconnection(
             int secondBetweenReconnection) {
         this.secondBetweenReconnection = secondBetweenReconnection;
+    }
+
+    /**
+     * Forces an immediate reconnection and attempts an immediate reconnection.
+     *
+     * Interrupts the existing reconnection thread so that it can try an immediate connection attempt.
+     */
+    static public void forceReconnection() {
+        if (reconnectionThread != null) {
+            reconnectionThread.interrupt();
+        }
     }
 
     /**
@@ -149,9 +157,12 @@ public class ReconnectionManager implements ConnectionListener {
                                         .notifyAttemptToReconnectIn(remainingSeconds);
                             }
                             catch (InterruptedException e1) {
-                                e1.printStackTrace();
+                                // We want to be able to legitimately interrupt this thread so we can
+                                // force a reconnection.
+                                remainingSeconds = 0;
+//                                e1.printStackTrace();
                                 // Notify the reconnection has failed
-                                ReconnectionManager.this.notifyReconnectionFailed(e1);
+//                                ReconnectionManager.this.notifyReconnectionFailed(e1);
                             }
                         }
                         // Waiting time have finished
@@ -182,7 +193,6 @@ public class ReconnectionManager implements ConnectionListener {
      * @param exception the exception that occured.
      */
     protected void notifyReconnectionFailed(Exception exception) {
-        List<ConnectionListener> listenersCopy;
         if (isReconnectionAllowed()) {
             for (ConnectionListener listener : connection.packetReader.connectionListeners) {
                 listener.reconnectionFailed(exception);
