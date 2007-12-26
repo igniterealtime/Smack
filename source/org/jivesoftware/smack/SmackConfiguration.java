@@ -48,7 +48,7 @@ import java.util.List;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "3.0.0";
+    private static final String SMACK_VERSION = "3.0.5";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
