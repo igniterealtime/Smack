@@ -57,7 +57,7 @@ public class Roster {
 
     private XMPPConnection connection;
     private final Map<String, RosterGroup> groups;
-    private final List<RosterEntry> entries;
+    private final Map<String,RosterEntry> entries;
     private final List<RosterEntry> unfiledEntries;
     private final List<RosterListener> rosterListeners;
     private Map<String, Map<String, Presence>> presenceMap;
@@ -101,7 +101,7 @@ public class Roster {
         this.connection = connection;
         groups = new ConcurrentHashMap<String, RosterGroup>();
         unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
-        entries = new CopyOnWriteArrayList<RosterEntry>();
+        entries = new ConcurrentHashMap<String,RosterEntry>();
         rosterListeners = new CopyOnWriteArrayList<RosterListener>();
         presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
@@ -271,7 +271,7 @@ public class Roster {
     public void removeEntry(RosterEntry entry) throws XMPPException {
         // Only remove the entry if it's in the entry list.
         // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
-        if (!entries.contains(entry)) {
+        if (!entries.containsKey(entry.getUser())) {
             return;
         }
         RosterPacket packet = new RosterPacket();
@@ -353,13 +353,7 @@ public class Roster {
         if (user == null) {
             return null;
         }
-        String userLowerCase = user.toLowerCase();
-        for (RosterEntry entry : entries) {
-            if (entry.getUser().equals(userLowerCase)) {
-                return entry;
-            }
-        }
-        return null;
+        return entries.get(user.toLowerCase());
     }
 
     /**
@@ -671,11 +665,9 @@ public class Roster {
                 // Add the new presence, using the resources as a key.
                 userPresences.put(StringUtils.parseResource(from), presence);
                 // If the user is in the roster, fire an event.
-                for (RosterEntry entry : entries) {
-                    if (entry.getUser().equals(key)) {
-                        fireRosterPresenceEvent(presence);
-                    }
-                }
+                RosterEntry entry = entries.get(key);
+                if (entry != null)
+                    fireRosterPresenceEvent(presence);
             }
             // If an "unavailable" packet.
             else if (presence.getType() == Presence.Type.unavailable) {
@@ -701,11 +693,9 @@ public class Roster {
                     userPresences.put(StringUtils.parseResource(from), presence);
                 }
                 // If the user is in the roster, fire an event.
-                for (RosterEntry entry : entries) {
-                    if (entry.getUser().equals(key)) {
-                        fireRosterPresenceEvent(presence);
-                    }
-                }
+                RosterEntry entry = entries.get(key);
+                if (entry != null)
+                    fireRosterPresenceEvent(presence);
             }
             else if (presence.getType() == Presence.Type.subscribe) {
                 if (subscriptionMode == SubscriptionMode.accept_all) {
@@ -756,8 +746,8 @@ public class Roster {
                 // If the packet is of the type REMOVE then remove the entry
                 if (RosterPacket.ItemType.remove.equals(item.getItemType())) {
                     // Remove the entry from the entry list.
-                    if (entries.contains(entry)) {
-                        entries.remove(entry);
+                    if (entries.containsKey(item.getUser())) {
+                        entries.remove(item.getUser());
                     }
                     // Remove the entry from the unfiled entry list.
                     if (unfiledEntries.contains(entry)) {
@@ -773,16 +763,15 @@ public class Roster {
                 }
                 else {
                     // Make sure the entry is in the entry list.
-                    if (!entries.contains(entry)) {
-                        entries.add(entry);
+                    if (!entries.containsKey(item.getUser())) {
+                        entries.put(item.getUser(), entry);
                         // Keep note that an entry has been added
                         addedEntries.add(item.getUser());
                     }
                     else {
                         // If the entry was in then list then update its state with the new values
-                        RosterEntry existingEntry = entries.get(entries.indexOf(entry));
-                        existingEntry
-                                .updateState(entry.getName(), entry.getType(), entry.getStatus());
+                        entries.put(item.getUser(), entry);
+                        
                         // Keep note that an entry has been updated
                         updatedEntries.add(item.getUser());
                     }
