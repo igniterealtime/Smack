@@ -1317,7 +1317,7 @@ public class XMPPConnection {
             else if(configuration.getKeystoreType().equals("PKCS11")) {
                 try {
                     Constructor c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
-                    String pkcs11Config = "name = SmartCard\nlibrary = "+configuration.getPKCSConfig();
+                    String pkcs11Config = "name = SmartCard\nlibrary = "+configuration.getPKCS11Library();
                     ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes());
                     Provider p = (Provider)c.newInstance(config);
                     Security.addProvider(p);

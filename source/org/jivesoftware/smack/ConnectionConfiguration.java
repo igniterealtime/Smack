@@ -46,7 +46,7 @@ public class ConnectionConfiguration implements Cloneable {
     private String truststorePassword;
     private String keystorePath;
     private String keystoreType;
-    private String pkcsConfig;
+    private String pkcs11Library;
     private boolean verifyChainEnabled = false;
     private boolean verifyRootCAEnabled = false;
     private boolean selfSignedCertificateEnabled = false;
@@ -133,7 +133,7 @@ public class ConnectionConfiguration implements Cloneable {
         truststorePassword = "changeit";
         keystorePath = System.getProperty("javax.net.ssl.keyStore");
         keystoreType = "jks";
-        pkcsConfig = "pkcs11.config";
+        pkcs11Library = "pkcs11.config";
     }
 
     /**
@@ -288,23 +288,23 @@ public class ConnectionConfiguration implements Cloneable {
 
 
     /**
-     * Returns the PKCS11 configuration file location, needed when the
+     * Returns the PKCS11 library file location, needed when the
      * Keystore type is PKCS11.
      *
-     * @return the path to the PKCS11 configuration file
+     * @return the path to the PKCS11 library file
      */
-    public String getPKCSConfig() {
-        return pkcsConfig;
+    public String getPKCS11Library() {
+        return pkcs11Library;
     }
 
     /**
-     * Sets the PKCS11 configuration file location, needed when the
+     * Sets the PKCS11 library file location, needed when the
      * Keystore type is PKCS11
      *
-     * @param pkcsConfig the path to the PKCS11 configuration file
+     * @param pkcs11Library the path to the PKCS11 library file
      */
-    public void setPKCSConfig(String pkcsConfig) {
-        this.pkcsConfig = pkcsConfig;
+    public void setPKCS11Library(String pkcs11Library) {
+        this.pkcs11Library = pkcs11Library;
     }
 
     /**
