@@ -37,7 +37,6 @@ import javax.net.ssl.KeyManager;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -1316,12 +1315,21 @@ public class XMPPConnection {
                 pcb = null;
             }
             else if(configuration.getKeystoreType().equals("PKCS11")) {
-                Provider p = new sun.security.pkcs11.SunPKCS11(configuration.getPKCSConfig());
-                Security.addProvider(p);
-                ks = KeyStore.getInstance("PKCS11",p);
-                pcb = new PasswordCallback("PKCS11 Password: ",false);
-                callbackHandler.handle(new Callback[]{pcb});
-                ks.load(null,pcb.getPassword());
+                try {
+                    Constructor c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(String.class);
+                    String pkcs11Config = "name = SmartCard\nlibrary = "+configuration.getPKCSConfig();
+                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes());
+                    Provider p = (Provider)c.newInstance(config);
+                    Security.addProvider(p);
+                    ks = KeyStore.getInstance("PKCS11",p);
+                    pcb = new PasswordCallback("PKCS11 Password: ",false);
+                    callbackHandler.handle(new Callback[]{pcb});
+                    ks.load(null,pcb.getPassword());
+                }
+                catch (Exception e) {
+                    ks = null;
+                    pcb = null;
+                }
             }
             else if(configuration.getKeystoreType().equals("Apple")) {
                 ks = KeyStore.getInstance("KeychainStore","Apple");
@@ -1331,15 +1339,15 @@ public class XMPPConnection {
             }
             else {
                 ks = KeyStore.getInstance(configuration.getKeystoreType());
-		try {
+                try {
                     ks.load(new FileInputStream(configuration.getKeystorePath()), pcb.getPassword());
                     pcb = new PasswordCallback("Keystore Password: ",false);
                     callbackHandler.handle(new Callback[]{pcb});
-		}
-		catch(Exception e) {
-		    ks = null;
-		    pcb = null;
-		}
+                }
+                catch(Exception e) {
+                    ks = null;
+                    pcb = null;
+                }
             }
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             try {
