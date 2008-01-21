@@ -33,6 +33,6 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
     }
 
     protected String getName() {
-        return "CRAM-MD5";
+        return "DIGEST-MD5";
     }
 }
