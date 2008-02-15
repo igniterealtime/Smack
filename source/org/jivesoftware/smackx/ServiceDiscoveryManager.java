@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
+import org.jivesoftware.smackx.packet.DataForm;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,6 +55,7 @@ public class ServiceDiscoveryManager {
 
     private XMPPConnection connection;
     private final List<String> features = new ArrayList<String>();
+    private DataForm extendedInfo = null;
     private Map<String, NodeInformationProvider> nodeInformationProviders =
             new ConcurrentHashMap<String, NodeInformationProvider>();
 
@@ -228,6 +230,9 @@ public class ServiceDiscoveryManager {
                             for (Iterator<String> it = getFeatures(); it.hasNext();) {
                                 response.addFeature(it.next());
                             }
+                            if (extendedInfo != null) {
+                                response.addExtension(extendedInfo);
+                            }
                         }
                     }
                     else {
@@ -366,6 +371,36 @@ public class ServiceDiscoveryManager {
         synchronized (features) {
             return features.contains(feature);
         }
+    }
+
+    /**
+     * Registers extended discovery information of this XMPP entity. When this
+     * client is queried for its information this data form will be returned as
+     * specified by XEP-0128.
+     * <p>
+     *
+     * Since no packet is actually sent to the server it is safe to perform this
+     * operation before logging to the server. In fact, you may want to
+     * configure the extended info before logging to the server so that the
+     * information is already available if it is required upon login.
+     *
+     * @param info
+     *            the data form that contains the extend service discovery
+     *            information.
+     */
+    public void setExtendedInfo(DataForm info) {
+      extendedInfo = info;
+    }
+
+    /**
+     * Removes the dataform containing extended service discovery information
+     * from the information returned by this XMPP entity.<p>
+     *
+     * Since no packet is actually sent to the server it is safe to perform this
+     * operation before logging to the server.
+     */
+    public void removeExtendedInfo() {
+       extendedInfo = null;
     }
 
     /**
