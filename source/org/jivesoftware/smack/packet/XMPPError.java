@@ -129,6 +129,7 @@ public class XMPPError {
      * @param type the error type.
      * @param condition the error condition.
      * @param message a message describing the error.
+     * @param extension list of packet extensions
      */
     public XMPPError(int code, Type type, String condition, String message,
             List<PacketExtension> extension) {
@@ -334,7 +335,7 @@ public class XMPPError {
         public static final Condition service_unavailable = new Condition("service-unavailable");
         public static final Condition subscription_required = new Condition("subscription-required");
         public static final Condition undefined_condition = new Condition("undefined-condition");
-        public static final Condition unexpected_condition = new Condition("unexpected-condition");
+        public static final Condition unexpected_request = new Condition("unexpected-request");
         public static final Condition request_timeout = new Condition("request-timeout");
 
         private String value;
@@ -410,8 +411,8 @@ public class XMPPError {
                     Condition.subscription_required, Type.AUTH, 407));
             instances.put(Condition.undefined_condition, new XMPPError.ErrorSpecification(
                     Condition.undefined_condition, Type.WAIT, 500));
-            instances.put(Condition.unexpected_condition, new XMPPError.ErrorSpecification(
-                    Condition.unexpected_condition, Type.WAIT, 400));
+            instances.put(Condition.unexpected_request, new XMPPError.ErrorSpecification(
+                    Condition.unexpected_request, Type.WAIT, 400));
             instances.put(Condition.request_timeout, new XMPPError.ErrorSpecification(
                     Condition.request_timeout, Type.CANCEL, 408));
 
