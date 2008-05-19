@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: JingleManager.java,v $
+ * $Revision: 1.4 $
+ * $Date: 2007/07/17 22:13:16 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -25,9 +25,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
@@ -36,14 +34,11 @@ import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.nat.BasicResolver;
-import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleError;
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smackx.provider.JingleProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -174,13 +169,13 @@ import java.util.List;
  *
  * @author Thiago Camargo
  * @author Alvaro Saurin
+ * @author Jeff Williams
  * @see JingleListener
  * @see TransportResolver
- * @see org.jivesoftware.smackx.jingle.nat.JingleTransportManager
- * @see OutgoingJingleSession
- * @see IncomingJingleSession
+ * @see JingleSession
+ * @see JingleSession
  * @see JingleMediaManager
- * @see org.jivesoftware.smackx.jingle.nat.BasicTransportManager , STUNTransportManager, BridgedTransportManager, TransportResolver, BridgedResolver, ICEResolver, STUNResolver and BasicResolver.
+ * @see BasicTransportManager , STUNTransportManager, BridgedTransportManager, TransportResolver, BridgedResolver, ICEResolver, STUNResolver and BasicResolver.
  */
 public class JingleManager implements JingleSessionListener {
 
@@ -197,40 +192,12 @@ public class JingleManager implements JingleSessionListener {
     // The XMPP connection
     private XMPPConnection connection;
 
-    // The Media Manager
-    private JingleMediaManager jingleMediaManager;
-
-    // The Jingle transport manager
-    private final JingleTransportManager jingleTransportManager;
+    // The Media Managers
+    private List<JingleMediaManager> jingleMediaManagers;
 
     static {
-
         ProviderManager providerManager = ProviderManager.getInstance();
-
-        providerManager.addIQProvider("jingle", "http://jabber.org/protocol/jingle",
-                new org.jivesoftware.smackx.provider.JingleProvider());
-
-        providerManager.addExtensionProvider("description", "http://jabber.org/protocol/jingle/description/audio",
-                new org.jivesoftware.smackx.provider.JingleContentDescriptionProvider.Audio());
-
-        providerManager.addExtensionProvider("description", "http://jabber.org/protocol/jingle/description/audio",
-                new org.jivesoftware.smackx.provider.JingleContentDescriptionProvider.Audio());
-
-        providerManager.addExtensionProvider("transport", "http://jabber.org/protocol/jingle/transport/ice",
-                new org.jivesoftware.smackx.provider.JingleTransportProvider.Ice());
-        providerManager.addExtensionProvider("transport", "http://jabber.org/protocol/jingle/transport/raw-udp",
-                new org.jivesoftware.smackx.provider.JingleTransportProvider.RawUdp());
-
-        providerManager.addExtensionProvider("busy", "http://jabber.org/protocol/jingle/info/audio",
-                new org.jivesoftware.smackx.provider.JingleContentInfoProvider.Audio.Busy());
-        providerManager.addExtensionProvider("hold", "http://jabber.org/protocol/jingle/info/audio",
-                new org.jivesoftware.smackx.provider.JingleContentInfoProvider.Audio.Hold());
-        providerManager.addExtensionProvider("mute", "http://jabber.org/protocol/jingle/info/audio",
-                new org.jivesoftware.smackx.provider.JingleContentInfoProvider.Audio.Mute());
-        providerManager.addExtensionProvider("queued", "http://jabber.org/protocol/jingle/info/audio",
-                new org.jivesoftware.smackx.provider.JingleContentInfoProvider.Audio.Queued());
-        providerManager.addExtensionProvider("ringing", "http://jabber.org/protocol/jingle/info/audio",
-                new org.jivesoftware.smackx.provider.JingleContentInfoProvider.Audio.Ringing());
+        providerManager.addIQProvider("jingle", "http://www.xmpp.org/extensions/xep-0166.html#ns", new JingleProvider());
 
         // Enable the Jingle support on every established connection
         // The ServiceDiscoveryManager class should have been already
@@ -247,13 +214,11 @@ public class JingleManager implements JingleSessionListener {
      * If a fully implemented JingleMediaSession is entered, JingleManager manage Jingle signalling and jmf
      *
      * @param connection             XMPP Connection to be used
-     * @param jingleTransportManager transport resolver to be used
      * @param jingleMediaManager     an implemeted JingleMediaManager to be used.
      */
-    public JingleManager(XMPPConnection connection, JingleTransportManager jingleTransportManager, JingleMediaManager jingleMediaManager) {
+    public JingleManager(XMPPConnection connection, List<JingleMediaManager> jingleMediaManagers) {
         this.connection = connection;
-        this.jingleTransportManager = jingleTransportManager;
-        this.jingleMediaManager = jingleMediaManager;
+        this.jingleMediaManagers = jingleMediaManagers;
 
         connection.getRoster().addRosterListener(new RosterListener() {
 
@@ -271,16 +236,14 @@ public class JingleManager implements JingleSessionListener {
                     String xmppAddress = presence.getFrom();
                     JingleSession aux = null;
                     for (JingleSession jingleSession : jingleSessions) {
-                        if (jingleSession.getInitiator().equals(xmppAddress) ||
-                                jingleSession.getResponder().equals(xmppAddress)) {
+                        if (jingleSession.getInitiator().equals(xmppAddress) || jingleSession.getResponder().equals(xmppAddress)) {
                             aux = jingleSession;
                         }
                     }
                     if (aux != null)
                         try {
                             aux.terminate();
-                        }
-                        catch (XMPPException e) {
+                        } catch (XMPPException e) {
                             e.printStackTrace();
                         }
                 }
@@ -290,43 +253,31 @@ public class JingleManager implements JingleSessionListener {
     }
 
     /**
-     * Default constructor with a defined XMPPConnection and a Transport Resolver
-     *
-     * @param connection             XMPP Connection to be used
-     * @param jingleTransportManager transport resolver to be used
-     */
-    public JingleManager(XMPPConnection connection, JingleTransportManager jingleTransportManager) {
-        this(connection, jingleTransportManager, null);
-    }
-
-    /**
-     * Default constructor with a defined XMPPConnection.
-     * A default JingleTransportmanager based on BasicResolver will be used in this JingleManager transport.
-     *
-     * @param connection XMPP Connection to be used
-     */
-    public JingleManager(XMPPConnection connection) {
-        this(connection, new JingleTransportManager() {
-            protected TransportResolver createResolver(JingleSession session) {
-                return new BasicResolver();
-            }
-        });
-    }
-
+    * Default constructor with a defined XMPPConnection.
+    * A default JingleTransportmanager based on BasicResolver will be used in this JingleManager transport.
+    *
+    * @param connection XMPP Connection to be used
+    */
+    //    public JingleManager(XMPPConnection connection) {
+    //        this(connection, new JingleTransportManager() {
+    //            protected TransportResolver createResolver(JingleSession session) {
+    //                return new BasicResolver();
+    //            }
+    //        });
+    //    }
     /**
      * Default constructor with a defined XMPPConnection and a defined Resolver.
      * A default JingleTransportmanager based on BasicResolver will be used in this JingleManager transport.
      *
      * @param connection XMPP Connection to be used
      */
-    public JingleManager(XMPPConnection connection, final TransportResolver resolver) {
-        this(connection, new JingleTransportManager() {
-            protected TransportResolver createResolver(JingleSession session) {
-                return resolver;
-            }
-        });
-    }
-
+    //   public JingleManager(XMPPConnection connection, final TransportResolver resolver) {
+    //        this(connection, new JingleTransportManager() {
+    //            protected TransportResolver createResolver(JingleSession session) {
+    //                return resolver;
+    //            }
+    //        });
+    //    }
     /**
      * Enables or disables the Jingle support on a given connection.
      * <p/>
@@ -339,19 +290,15 @@ public class JingleManager implements JingleSessionListener {
      *                   disabled
      * @param enabled    indicates if the service will be enabled or disabled
      */
-    public synchronized static void setServiceEnabled(XMPPConnection connection,
-            boolean enabled) {
+    public synchronized static void setServiceEnabled(XMPPConnection connection, boolean enabled) {
         if (isServiceEnabled(connection) == enabled) {
             return;
         }
 
         if (enabled) {
-            ServiceDiscoveryManager.getInstanceFor(connection).addFeature(
-                    Jingle.NAMESPACE);
-        }
-        else {
-            ServiceDiscoveryManager.getInstanceFor(connection).removeFeature(
-                    Jingle.NAMESPACE);
+            ServiceDiscoveryManager.getInstanceFor(connection).addFeature(Jingle.NAMESPACE);
+        } else {
+            ServiceDiscoveryManager.getInstanceFor(connection).removeFeature(Jingle.NAMESPACE);
         }
     }
 
@@ -363,8 +310,7 @@ public class JingleManager implements JingleSessionListener {
      *         given connection
      */
     public static boolean isServiceEnabled(XMPPConnection connection) {
-        return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(
-                Jingle.NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(Jingle.NAMESPACE);
     }
 
     /**
@@ -378,53 +324,41 @@ public class JingleManager implements JingleSessionListener {
      */
     public static boolean isServiceEnabled(XMPPConnection connection, String userID) {
         try {
-            DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection)
-                    .discoverInfo(userID);
+            DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(userID);
             return result.containsFeature(Jingle.NAMESPACE);
-        }
-        catch (XMPPException e) {
+        } catch (XMPPException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     /**
-     * Get the JingleTransportManager of this JingleManager
+     * Get the Media Managers of this Jingle Manager
      *
      * @return
      */
-    public JingleTransportManager getJingleTransportManager() {
-        return jingleTransportManager;
+    public List<JingleMediaManager> getMediaManagers() {
+        return jingleMediaManagers;
     }
 
     /**
-     * Get the Media Manager of this Jingle Manager
-     *
-     * @return
-     */
-    public JingleMediaManager getMediaManager() {
-        return jingleMediaManager;
-    }
-
-    /**
-     * Set the Media Manager of this Jingle Manager
+     * Set the Media Managers of this Jingle Manager
      *
      * @param jingleMediaManager JingleMediaManager to be used for open, close, start and stop jmf streamings
      */
-    public void setMediaManager(JingleMediaManager jingleMediaManager) {
-        this.jingleMediaManager = jingleMediaManager;
+    public void setMediaManagers(List<JingleMediaManager> jingleMediaManagers) {
+        this.jingleMediaManagers = jingleMediaManagers;
     }
 
     /**
-     * Add a Jingle session request listenerJingle to listen to incoming session
-     * requests.
-     *
-     * @param jingleSessionRequestListener an implemented JingleSessionRequestListener
-     * @see #removeJingleSessionRequestListener(JingleSessionRequestListener)
-     * @see JingleListener
-     */
-    public synchronized void addJingleSessionRequestListener(
-            final JingleSessionRequestListener jingleSessionRequestListener) {
+    * Add a Jingle session request listenerJingle to listen to incoming session
+    * requests.
+    *
+    * @param jingleSessionRequestListener an implemented JingleSessionRequestListener
+    * @see #removeJingleSessionRequestListener(JingleSessionRequestListener)
+    * @see JingleListener
+    */
+    public synchronized void addJingleSessionRequestListener(final JingleSessionRequestListener jingleSessionRequestListener) {
         if (jingleSessionRequestListener != null) {
             if (jingleSessionRequestListeners == null) {
                 initJingleSessionRequestListeners();
@@ -482,8 +416,7 @@ public class JingleManager implements JingleSessionListener {
         for (CreatedJingleSessionListener createdJingleSessionListener : creationListeners) {
             try {
                 createdJingleSessionListener.sessionCreated(jingleSession);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -531,7 +464,7 @@ public class JingleManager implements JingleSessionListener {
                     if (iq.getType().equals(IQ.Type.SET)) {
                         if (iq instanceof Jingle) {
                             Jingle jin = (Jingle) pin;
-                            if (jin.getAction().equals(Jingle.Action.SESSIONINITIATE)) {
+                            if (jin.getAction().equals(JingleActionEnum.SESSION_INITIATE)) {
                                 return true;
                             }
                         }
@@ -561,8 +494,7 @@ public class JingleManager implements JingleSessionListener {
         for (JingleSession jingleSession : sessions)
             try {
                 jingleSession.terminate();
-            }
-            catch (XMPPException e) {
+            } catch (XMPPException e) {
                 e.printStackTrace();
             }
 
@@ -601,22 +533,14 @@ public class JingleManager implements JingleSessionListener {
      * @param payloadTypes list of supported payload types
      * @return The session on which the negotiation can be run.
      */
-    public OutgoingJingleSession createOutgoingJingleSession(String responder,
-            List<PayloadType> payloadTypes) throws XMPPException {
+    public JingleSession createOutgoingJingleSession(String responder) throws XMPPException {
 
-        if (responder == null || StringUtils.parseName(responder).length() <= 0
-                || StringUtils.parseServer(responder).length() <= 0
+        if (responder == null || StringUtils.parseName(responder).length() <= 0 || StringUtils.parseServer(responder).length() <= 0
                 || StringUtils.parseResource(responder).length() <= 0) {
-            throw new IllegalArgumentException(
-                    "The provided user id was not fully qualified");
+            throw new IllegalArgumentException("The provided user id was not fully qualified");
         }
 
-        OutgoingJingleSession session;
-
-        if (jingleMediaManager != null)
-            session = new OutgoingJingleSession(connection, responder, payloadTypes, jingleTransportManager, jingleMediaManager);
-        else
-            session = new OutgoingJingleSession(connection, responder, payloadTypes, jingleTransportManager);
+        JingleSession session = new JingleSession(connection, (JingleSessionRequest) null, connection.getUser(), responder, jingleMediaManagers);
 
         triggerSessionCreated(session);
 
@@ -630,11 +554,10 @@ public class JingleManager implements JingleSessionListener {
      *                  user.
      * @return the session on which the negotiation can be run.
      */
-    public OutgoingJingleSession createOutgoingJingleSession(String responder) throws XMPPException {
-        if (this.getMediaManager() == null) return null;
-        return createOutgoingJingleSession(responder, this.getMediaManager().getPayloads());
-    }
-
+    //    public OutgoingJingleSession createOutgoingJingleSession(String responder) throws XMPPException {
+    //        if (this.getMediaManagers() == null) return null;
+    //        return createOutgoingJingleSession(responder, this.getMediaManagers());
+    //    }
     /**
      * When the session request is acceptable, this method should be invoked. It
      * will create an JingleSession which allows the negotiation to procede.
@@ -643,20 +566,12 @@ public class JingleManager implements JingleSessionListener {
      * @param payloadTypes the list of supported Payload types that can be accepted
      * @return the session which manages the rest of the negotiation.
      */
-    IncomingJingleSession createIncomingJingleSession(
-            JingleSessionRequest request, List<PayloadType> payloadTypes) throws XMPPException {
+    public JingleSession createIncomingJingleSession(JingleSessionRequest request) throws XMPPException {
         if (request == null) {
             throw new NullPointerException("Received request cannot be null");
         }
 
-        IncomingJingleSession session;
-
-        if (jingleMediaManager != null)
-            session = new IncomingJingleSession(connection, request
-                    .getFrom(), payloadTypes, jingleTransportManager, jingleMediaManager, request);
-        else
-            session = new IncomingJingleSession(connection, request
-                    .getFrom(), payloadTypes, jingleTransportManager, request);
+        JingleSession session = new JingleSession(connection, request, request.getFrom(), connection.getUser(), jingleMediaManagers);
 
         triggerSessionCreated(session);
 
@@ -671,16 +586,15 @@ public class JingleManager implements JingleSessionListener {
      * @param request the remote request that is being accepted.
      * @return the session which manages the rest of the negotiation.
      */
-    IncomingJingleSession createIncomingJingleSession(JingleSessionRequest request) throws XMPPException {
-        if (request == null) {
-            throw new NullPointerException("JingleMediaManager is not defined");
-        }
-        if (jingleMediaManager != null)
-            return createIncomingJingleSession(request, jingleMediaManager.getPayloads());
-
-        return createIncomingJingleSession(request, null);
-    }
-
+    //    IncomingJingleSession createIncomingJingleSession(JingleSessionRequest request) throws XMPPException {
+    //        if (request == null) {
+    //            throw new NullPointerException("JingleMediaManager is not defined");
+    //        }
+    //        if (jingleMediaManager != null)
+    //            return createIncomingJingleSession(request, jingleMediaManager.getPayloads());
+    //
+    //        return createIncomingJingleSession(request, null);
+    //    }
     /**
      * Get a session with the informed JID. If no session is found, return null.
      *
@@ -689,31 +603,35 @@ public class JingleManager implements JingleSessionListener {
      */
     public JingleSession getSession(String jid) {
         for (JingleSession jingleSession : jingleSessions) {
-            if (jingleSession instanceof OutgoingJingleSession) {
-                if (jingleSession.getResponder().equals(jid)) {
-                    return jingleSession;
-                }
-            }
-            else if (jingleSession instanceof IncomingJingleSession) {
-                if (jingleSession.getInitiator().equals(jid)) {
-                    return jingleSession;
-                }
+            if (jingleSession.getResponder().equals(jid)) {
+                return jingleSession;
             }
         }
         return null;
     }
 
     /**
-     * Reject the session. If we don't want to accept the new session, send an
-     * appropriate error packet.
+     * Reject the session. If we don't want to accept the new session then we have to 
+     * result/ack the session-initiate and send a session-terminate.
      *
      * @param request the request to be rejected.
      */
     protected void rejectIncomingJingleSession(JingleSessionRequest request) {
-        Jingle initiation = request.getJingle();
 
-        IQ rejection = JingleSession.createError(initiation.getPacketID(), initiation
-                .getFrom(), initiation.getTo(), 403, "Declined");
-        connection.sendPacket(rejection);
+        JingleSession session = getSession(request.getSessionID());
+        if (session != null) {
+            
+            // First send the result/Ack
+            IQ result = session.createAck(request.getJingle());
+            connection.sendPacket(result);
+            
+            // Now send the session-terminate.
+            try {
+                session.terminate("Declined");
+            } catch (XMPPException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 }

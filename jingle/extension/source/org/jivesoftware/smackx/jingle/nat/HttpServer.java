@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: HttpServer.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:07 $
  *
  * Copyright (C) 2002-2006 Jive Software. All rights reserved.
  * ====================================================================
@@ -52,10 +52,10 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
-import java.net.*;
 import java.io.*;
-import java.util.*;
-import java.lang.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * A very Simple HTTP Server

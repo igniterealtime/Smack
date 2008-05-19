@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: JingleContentInfoProvider.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:11 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -46,7 +46,7 @@ public class JingleContentInfoProvider implements PacketExtensionProvider {
     }
 
     /**
-     * JingleContentDescription.Audio info provider
+     * JingleDescription.Audio info provider
      */
     public static class Audio extends JingleContentInfoProvider {
 
@@ -70,7 +70,7 @@ public class JingleContentInfoProvider implements PacketExtensionProvider {
         }
 
         /**
-         * Parse a JingleContentDescription.Audio extension.
+         * Parse a JingleDescription.Audio extension.
          */
         public PacketExtension parseExtension(final XmlPullParser parser)
                 throws Exception {

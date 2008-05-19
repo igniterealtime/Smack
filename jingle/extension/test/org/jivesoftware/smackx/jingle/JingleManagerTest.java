@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: JingleManagerTest.java,v $
+ * $Revision: 1.3 $
+ * $Date: 2007/07/18 18:29:21 $
  *
  * Copyright (C) 2002-2006 Jive Software. All rights reserved.
  * ====================================================================
@@ -65,8 +65,12 @@ import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.nat.*;
 import org.jivesoftware.smackx.jingle.mediaimpl.jmf.JmfMediaManager;
+import org.jivesoftware.smackx.jingle.mediaimpl.test.TestMediaManager;
+import org.jivesoftware.smackx.jingle.nat.FixedResolver;
+import org.jivesoftware.smackx.jingle.nat.FixedTransportManager;
+import org.jivesoftware.smackx.jingle.nat.RTPBridge;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.provider.JingleProvider;
 
@@ -127,8 +131,8 @@ public class JingleManagerTest extends SmackTestCase {
      *
      * @return A testing list
      */
-    private ArrayList getTestPayloads1() {
-        ArrayList result = new ArrayList();
+    private List<PayloadType> getTestPayloads1() {
+        List<PayloadType> result = new ArrayList<PayloadType>();
 
         result.add(new PayloadType.Audio(34, "supercodec-1", 2, 14000));
         result.add(new PayloadType.Audio(56, "supercodec-2", 1, 44000));
@@ -138,8 +142,8 @@ public class JingleManagerTest extends SmackTestCase {
         return result;
     }
 
-    private ArrayList getTestPayloads2() {
-        ArrayList result = new ArrayList();
+    private List<PayloadType> getTestPayloads2() {
+        List<PayloadType> result = new ArrayList<PayloadType>();
 
         result.add(new PayloadType.Audio(27, "supercodec-3", 2, 28000));
         result.add(new PayloadType.Audio(56, "supercodec-2", 1, 44000));
@@ -149,8 +153,8 @@ public class JingleManagerTest extends SmackTestCase {
         return result;
     }
 
-    private ArrayList getTestPayloads3() {
-        ArrayList result = new ArrayList();
+    private List<PayloadType> getTestPayloads3() {
+        List<PayloadType> result = new ArrayList<PayloadType>();
 
         result.add(new PayloadType.Audio(91, "badcodec-1", 2, 28000));
         result.add(new PayloadType.Audio(92, "badcodec-2", 1, 44000));
@@ -168,9 +172,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         resetCounter();
 
-        ProviderManager.getInstance().addIQProvider("jingle",
-                "http://jabber.org/protocol/jingle",
-                new JingleProvider());
+        ProviderManager.getInstance().addIQProvider("jingle", "http://jabber.org/protocol/jingle", new JingleProvider());
 
         PacketFilter initRequestFilter = new PacketFilter() {
             // Return true if we accept this packet
@@ -182,9 +184,8 @@ public class JingleManagerTest extends SmackTestCase {
                         System.out.println("packet");
                         if (iq instanceof Jingle) {
                             Jingle jin = (Jingle) pin;
-                            if (jin.getAction().equals(Jingle.Action.SESSIONINITIATE)) {
-                                System.out
-                                        .println("Session initiation packet accepted... ");
+                            if (jin.getAction().equals(JingleActionEnum.SESSION_INITIATE)) {
+                                System.out.println("Session initiation packet accepted... ");
                                 return true;
                             }
                         }
@@ -203,12 +204,8 @@ public class JingleManagerTest extends SmackTestCase {
         }, initRequestFilter);
 
         // Create a dummy packet for testing...
-        IQfake iqSent = new IQfake(
-                " <jingle xmlns='http://jabber.org/protocol/jingle'"
-                        + " initiator=\"user1@thiago\""
-                        + " responder=\"user0@thiago\""
-                        + " action=\"session-initiate\" sid=\"08666555\">"
-                        + "</jingle>");
+        IQfake iqSent = new IQfake(" <jingle xmlns='http://jabber.org/protocol/jingle'" + " initiator=\"user1@thiago\""
+                + " responder=\"user0@thiago\"" + " action=\"session-initiate\" sid=\"08666555\">" + "</jingle>");
 
         iqSent.setTo(getFullJID(0));
         iqSent.setFrom(getFullJID(0));
@@ -218,8 +215,7 @@ public class JingleManagerTest extends SmackTestCase {
         getConnection(1).sendPacket(iqSent);
         try {
             Thread.sleep(10000);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
         }
 
         System.out.println("Awake... " + valCounter());
@@ -236,11 +232,22 @@ public class JingleManagerTest extends SmackTestCase {
         resetCounter();
 
         try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 54222);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 54567);
+            FixedResolver tr0 = new FixedResolver("127.0.0.1", 54222);
+            FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+            TestMediaManager tmm0 = new TestMediaManager(ftm0);
+            tmm0.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(tmm0);
 
-            JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            JingleManager man1 = new JingleManager(getConnection(1), tr2);
+            FixedResolver tr1 = new FixedResolver("127.0.0.1", 54567);
+            FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+            TestMediaManager tmm1 = new TestMediaManager(ftm1);
+            tmm1.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(tmm1);
+
+            JingleManager man0 = new JingleManager(getConnection(0), trl0);
+            JingleManager man1 = new JingleManager(getConnection(1), trl1);
 
             // Session 1 waits for connections
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
@@ -249,23 +256,20 @@ public class JingleManagerTest extends SmackTestCase {
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
                     incCounter();
-                    System.out.println("Session request detected, from "
-                            + request.getFrom());
+                    System.out.println("Session request detected, from " + request.getFrom());
                 }
             });
 
             // Session 0 starts a request
             System.out.println("Starting session request, to " + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
-            session0.start(null);
+            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
+            session0.startOutgoing();
 
             Thread.sleep(5000);
 
             assertTrue(valCounter() > 0);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
@@ -281,27 +285,36 @@ public class JingleManagerTest extends SmackTestCase {
         resetCounter();
 
         try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 54222);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 54567);
+            FixedResolver tr0 = new FixedResolver("127.0.0.1", 54222);
+            FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+            TestMediaManager tmm0 = new TestMediaManager(ftm0);
+            tmm0.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(tmm0);
 
-            final JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            final JingleManager man1 = new JingleManager(getConnection(1), tr2);
+            FixedResolver tr1 = new FixedResolver("127.0.0.1", 54567);
+            FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+            TestMediaManager tmm1 = new TestMediaManager(ftm1);
+            tmm1.setPayloads(getTestPayloads2());
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(tmm1);
 
+            JingleManager man0 = new JingleManager(getConnection(0), trl0);
+            JingleManager man1 = new JingleManager(getConnection(1), trl1);
+            
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
                     incCounter();
-                    System.out.println("Session request detected, from "
-                            + request.getFrom() + ": accepting.");
+                    System.out.println("Session request detected, from " + request.getFrom() + ": accepting.");
 
                     // We accept the request
                     try {
-                        IncomingJingleSession session1 = request.accept(getTestPayloads2());
-                        session1.start(request);
-                    }
-                    catch (Exception e) {
+                        JingleSession session1 = request.accept();
+                        session1.startIncoming();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -309,16 +322,14 @@ public class JingleManagerTest extends SmackTestCase {
 
             // Session 0 starts a request
             System.out.println("Starting session request, to " + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
-            session0.start(null);
+            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
+            session0.startOutgoing();
 
             Thread.sleep(20000);
 
             assertTrue(valCounter() > 0);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
@@ -333,22 +344,35 @@ public class JingleManagerTest extends SmackTestCase {
         resetCounter();
 
         try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 54213);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 54531);
+            FixedResolver tr0 = new FixedResolver("127.0.0.1", 54213);
+            FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+            TestMediaManager tmm0 = new TestMediaManager(ftm0);
+            tmm0.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(tmm0);
 
-            final JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            final JingleManager man1 = new JingleManager(getConnection(1), tr2);
+            FixedResolver tr1 = new FixedResolver("127.0.0.1", 54531);
+            FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+            TestMediaManager tmm1 = new TestMediaManager(ftm1);
+            tmm1.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(tmm1);
 
+            JingleManager man0 = new JingleManager(getConnection(0), trl0);
+            JingleManager man1 = new JingleManager(getConnection(1), trl1);
+            
+            man0.addCreationListener(ftm0);
+            man1.addCreationListener(ftm1);
+            
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
-                    System.out.println("Session request detected, from "
-                            + request.getFrom() + ": accepting.");
+                    System.out.println("Session request detected, from " + request.getFrom() + ": accepting.");
                     try {
                         // We accept the request
-                        IncomingJingleSession session1 = request.accept(getTestPayloads1());
+                        JingleSession session1 = request.accept();
 
                         session1.addListener(new JingleSessionListener() {
                             public void sessionClosed(String reason, JingleSession jingleSession) {
@@ -363,16 +387,13 @@ public class JingleManagerTest extends SmackTestCase {
                                 System.out.println("sessionDeclined().");
                             }
 
-                            public void sessionEstablished(PayloadType pt,
-                                    TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                            public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                                    JingleSession jingleSession) {
                                 incCounter();
-                                System.out
-                                        .println("Responder: the session is fully established.");
+                                System.out.println("Responder: the session is fully established.");
                                 System.out.println("+ Payload Type: " + pt.getId());
-                                System.out.println("+ Local IP/port: " + lc.getIp() + ":"
-                                        + lc.getPort());
-                                System.out.println("+ Remote IP/port: " + rc.getIp() + ":"
-                                        + rc.getPort());
+                                System.out.println("+ Local IP/port: " + lc.getIp() + ":" + lc.getPort());
+                                System.out.println("+ Remote IP/port: " + rc.getIp() + ":" + rc.getPort());
                             }
 
                             public void sessionMediaReceived(JingleSession jingleSession, String participant) {
@@ -383,27 +404,23 @@ public class JingleManagerTest extends SmackTestCase {
                             }
                         });
 
-                        session1.start(request);
-                    }
-                    catch (Exception e) {
+                        session1.startIncoming();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
 
             // Session 0 starts a request
-            System.out.println("Starting session request with equal payloads, to "
-                    + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
-            session0.start(null);
+            System.out.println("Starting session request with equal payloads, to " + getFullJID(1) + "...");
+            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
+            session0.startOutgoing();
 
             Thread.sleep(20000);
 
             assertTrue(valCounter() == 1);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
@@ -417,22 +434,32 @@ public class JingleManagerTest extends SmackTestCase {
         resetCounter();
 
         try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 54222);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 54567);
+            FixedResolver tr0 = new FixedResolver("127.0.0.1", 54222);
+            FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+            TestMediaManager tmm0 = new TestMediaManager(ftm0);
+            tmm0.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(tmm0);
 
-            final JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            final JingleManager man1 = new JingleManager(getConnection(1), tr2);
+            FixedResolver tr1 = new FixedResolver("127.0.0.1", 54567);
+            FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+            TestMediaManager tmm1 = new TestMediaManager(ftm1);
+            tmm1.setPayloads(getTestPayloads2());
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(tmm1);
+
+            JingleManager man0 = new JingleManager(getConnection(0), trl0);
+            JingleManager man1 = new JingleManager(getConnection(1), trl1);
 
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
-                    System.out.println("Session request detected, from "
-                            + request.getFrom() + ": accepting.");
+                    System.out.println("Session request detected, from " + request.getFrom() + ": accepting.");
                     try {
                         // We accept the request
-                        IncomingJingleSession session1 = request.accept(getTestPayloads2());
+                        JingleSession session1 = request.accept();
 
                         session1.addListener(new JingleSessionListener() {
                             public void sessionClosed(String reason, JingleSession jingleSession) {
@@ -447,16 +474,13 @@ public class JingleManagerTest extends SmackTestCase {
                                 System.out.println("sessionDeclined().");
                             }
 
-                            public void sessionEstablished(PayloadType pt,
-                                    TransportCandidate rc, final TransportCandidate lc, JingleSession jingleSession) {
+                            public void sessionEstablished(PayloadType pt, TransportCandidate rc, final TransportCandidate lc,
+                                    JingleSession jingleSession) {
                                 incCounter();
-                                System.out
-                                        .println("Responder: the session is fully established.");
+                                System.out.println("Responder: the session is fully established.");
                                 System.out.println("+ Payload Type: " + pt.getId());
-                                System.out.println("+ Local IP/port: " + lc.getIp() + ":"
-                                        + lc.getPort());
-                                System.out.println("+ Remote IP/port: " + rc.getIp() + ":"
-                                        + rc.getPort());
+                                System.out.println("+ Local IP/port: " + lc.getIp() + ":" + lc.getPort());
+                                System.out.println("+ Remote IP/port: " + rc.getIp() + ":" + rc.getPort());
                             }
 
                             public void sessionMediaReceived(JingleSession jingleSession, String participant) {
@@ -467,10 +491,8 @@ public class JingleManagerTest extends SmackTestCase {
                             }
                         });
 
-
-                        session1.start(request);
-                    }
-                    catch (Exception e) {
+                        session1.startIncoming();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -478,8 +500,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             // Session 0 starts a request
             System.out.println("Starting session request, to " + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
+            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
 
             session0.addListener(new JingleSessionListener() {
                 public void sessionClosed(String reason, JingleSession jingleSession) {
@@ -491,15 +512,13 @@ public class JingleManagerTest extends SmackTestCase {
                 public void sessionDeclined(String reason, JingleSession jingleSession) {
                 }
 
-                public void sessionEstablished(PayloadType pt,
-                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                        JingleSession jingleSession) {
                     incCounter();
                     System.out.println("Initiator: the session is fully established.");
                     System.out.println("+ Payload Type: " + pt.getId());
-                    System.out.println("+ Local IP/port: " + lc.getIp() + ":"
-                            + lc.getPort());
-                    System.out.println("+ Remote IP/port: " + rc.getIp() + ":"
-                            + rc.getPort());
+                    System.out.println("+ Local IP/port: " + lc.getIp() + ":" + lc.getPort());
+                    System.out.println("+ Remote IP/port: " + rc.getIp() + ":" + rc.getPort());
                 }
 
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {
@@ -509,14 +528,13 @@ public class JingleManagerTest extends SmackTestCase {
                     // Do Nothing
                 }
             });
-            session0.start(null);
+            session0.startOutgoing();
 
             Thread.sleep(20000);
 
             assertTrue(valCounter() == 2);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
@@ -530,28 +548,37 @@ public class JingleManagerTest extends SmackTestCase {
         resetCounter();
 
         try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 22222);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 22444);
+            FixedResolver tr0 = new FixedResolver("127.0.0.1", 22222);
+            FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+            TestMediaManager tmm0 = new TestMediaManager(ftm0);
+            tmm0.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(tmm0);
 
-            final JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            final JingleManager man1 = new JingleManager(getConnection(1), tr2);
+            FixedResolver tr1 = new FixedResolver("127.0.0.1", 22444);
+            FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+            TestMediaManager tmm1 = new TestMediaManager(ftm1);
+            tmm1.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(tmm1);
 
+            JingleManager man0 = new JingleManager(getConnection(0), trl0);
+            JingleManager man1 = new JingleManager(getConnection(1), trl1);
+            
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
-                    System.out.println("Session request detected, from "
-                            + request.getFrom());
+                    System.out.println("Session request detected, from " + request.getFrom());
 
                     // We reject the request
                     try {
-                        IncomingJingleSession session = request.accept(getTestPayloads1());
-                        session.setInitialSessionRequest(request);
-                        session.start();
+                        JingleSession session = request.accept();
+                        //session.setInitialSessionRequest(request);
+                        session.startIncoming();
                         session.terminate();
-                    }
-                    catch (XMPPException e) {
+                    } catch (XMPPException e) {
                         e.printStackTrace();
                     }
 
@@ -560,11 +587,11 @@ public class JingleManagerTest extends SmackTestCase {
 
             // Session 0 starts a request
             System.out.println("Starting session request, to " + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
+            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
 
             session0.addListener(new JingleSessionListener() {
                 public void sessionClosed(String reason, JingleSession jingleSession) {
+                    incCounter();
                     System.out.println("The session has been closed");
                 }
 
@@ -572,14 +599,11 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
                 public void sessionDeclined(String reason, JingleSession jingleSession) {
-                    incCounter();
-                    System.out
-                            .println("The session has been detected as rejected with reason: "
-                                    + reason);
+                    System.out.println("The session has been detected as rejected with reason: " + reason);
                 }
 
-                public void sessionEstablished(PayloadType pt,
-                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                        JingleSession jingleSession) {
                 }
 
                 public void sessionMediaReceived(JingleSession jingleSession, String participant) {
@@ -590,7 +614,7 @@ public class JingleManagerTest extends SmackTestCase {
                 }
             });
 
-            session0.start();
+            session0.startOutgoing();
 
             Thread.sleep(50000);
 
@@ -600,8 +624,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             assertTrue(valCounter() > 0);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
@@ -616,8 +639,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         try {
 
-            ProviderManager.getInstance().addIQProvider(RTPBridge.NAME,
-                    RTPBridge.NAMESPACE, new RTPBridge.Provider());
+            ProviderManager.getInstance().addIQProvider(RTPBridge.NAME, RTPBridge.NAMESPACE, new RTPBridge.Provider());
 
             RTPBridge response = RTPBridge.getRTPBridge(getConnection(0), "102");
 
@@ -639,21 +661,18 @@ public class JingleManagerTest extends SmackTestCase {
                             dataSocket.receive(packet);
                             incCounter();
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
 
             try {
-                byte packet[] = {0, 0, 1, 1, 1, 1, 1};
+                byte packet[] = { 0, 0, 1, 1, 1, 1, 1 };
                 DatagramSocket ds0 = new DatagramSocket(14004, InetAddress.getByName("0.0.0.0"));
                 DatagramSocket ds1 = new DatagramSocket(14050, InetAddress.getByName("0.0.0.0"));
-                DatagramPacket echo0 = new DatagramPacket(packet, packet.length,
-                        InetAddress.getLocalHost(), response.getPortA());
-                DatagramPacket echo1 = new DatagramPacket(packet, packet.length,
-                        InetAddress.getLocalHost(), response.getPortB());
+                DatagramPacket echo0 = new DatagramPacket(packet, packet.length, InetAddress.getLocalHost(), response.getPortA());
+                DatagramPacket echo1 = new DatagramPacket(packet, packet.length, InetAddress.getLocalHost(), response.getPortB());
 
                 ds1.send(echo1);
                 ds0.send(echo0);
@@ -683,13 +702,11 @@ public class JingleManagerTest extends SmackTestCase {
                 ds0.close();
                 ds1.close();
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -701,37 +718,37 @@ public class JingleManagerTest extends SmackTestCase {
     public void testFullTest() {
 
         resetCounter();
-
-        XMPPConnection.DEBUG_ENABLED = true;
-
+        
         XMPPConnection x0 = getConnection(0);
         XMPPConnection x1 = getConnection(1);
 
-        final JingleManager jm0 = new JingleManager(
-                x0, new FixedResolver("127.0.0.1", 20080));
+        XMPPConnection.DEBUG_ENABLED = true;
 
-        final JingleManager jm1 = new JingleManager(
-                x1, new FixedResolver("127.0.0.1", 20040));
+        FixedResolver tr0 = new FixedResolver("127.0.0.1", 20080);
+        FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+        JmfMediaManager jmf0 = new JmfMediaManager(ftm0);
+        List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+        trl0.add(jmf0);
 
-//            JingleManager jm0 = new JingleSessionManager(
-//                    x0, new ICEResolver());
-//            JingleManager jm1 = new JingleSessionManager(
-//                    x1, new ICEResolver());
+        FixedResolver tr1 = new FixedResolver("127.0.0.1", 20040);
+        FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+        JmfMediaManager jmf1 = new JmfMediaManager(ftm1);
+        List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+        trl1.add(jmf1);
 
-        JingleMediaManager jingleMediaManager = new JmfMediaManager();
-
-        jm0.setMediaManager(jingleMediaManager);
-        jm1.setMediaManager(jingleMediaManager);
-
-        jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
+        JingleManager man0 = new JingleManager(x0, trl0);
+        JingleManager man1 = new JingleManager(x1, trl1);
+        
+        man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
             public void sessionRequested(final JingleSessionRequest request) {
 
                 try {
 
-                    IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
+                    JingleSession session = request.accept();
                     session.addListener(new JingleSessionListener() {
 
-                        public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                        public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                                JingleSession jingleSession) {
                             incCounter();
                             System.out.println("Establish In");
                         }
@@ -755,9 +772,8 @@ public class JingleManagerTest extends SmackTestCase {
                         }
                     });
 
-                    session.start();
-                }
-                catch (XMPPException e) {
+                    session.startIncoming();
+                } catch (XMPPException e) {
                     e.printStackTrace();
                 }
 
@@ -767,11 +783,12 @@ public class JingleManagerTest extends SmackTestCase {
         for (int i = 0; i < 3; i++)
             try {
 
-                OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+                JingleSession js0 = man0.createOutgoingJingleSession(x1.getUser());
 
                 js0.addListener(new JingleSessionListener() {
 
-                    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                            JingleSession jingleSession) {
                         incCounter();
                         System.out.println("Establish Out");
                     }
@@ -795,15 +812,14 @@ public class JingleManagerTest extends SmackTestCase {
                     }
                 });
 
-                js0.start();
+                js0.startOutgoing();
 
                 Thread.sleep(8000);
                 js0.terminate();
 
                 Thread.sleep(3000);
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -817,26 +833,23 @@ public class JingleManagerTest extends SmackTestCase {
     public void testMediaManager() {
 
         resetCounter();
+        
+        XMPPConnection x0 = getConnection(0);
+        XMPPConnection x1 = getConnection(1);
+
+        FixedResolver tr0 = new FixedResolver("127.0.0.1", 20004);
+        FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+
+        FixedResolver tr1 = new FixedResolver("127.0.0.1", 20040);
+        FixedTransportManager ftm1 = new FixedTransportManager(tr1);
 
         try {
-
-            //XMPPConnection.DEBUG_ENABLED = true;
-
-            XMPPConnection x0 = getConnection(0);
-            XMPPConnection x1 = getConnection(1);
-
-            final JingleManager jm0 = new JingleManager(
-                    x0, new FixedResolver("127.0.0.1", 20004));
-            final JingleManager jm1 = new JingleManager(
-                    x1, new FixedResolver("127.0.0.1", 20040));
-
-            //JingleManager jm0 = new ICETransportManager(x0, "stun.xten.net", 3478);
-            //JingleManager jm1 = new ICETransportManager(x1, "stun.xten.net", 3478);
-
-            JingleMediaManager jingleMediaManager = new JingleMediaManager() {
+            
+            JingleMediaManager jingleMediaManager = new JingleMediaManager(ftm0) {
                 // Media Session Implementation
-                public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
-                    return new JingleMediaSession(payloadType, remote, local, null,null) {
+                public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote,
+                        final TransportCandidate local, final JingleSession jingleSession) {
+                    return new JingleMediaSession(payloadType, remote, local, null, null) {
 
                         public void initialize() {
 
@@ -868,38 +881,42 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
                 public List<PayloadType> getPayloads() {
-                    return new ArrayList();
+                    return getTestPayloads1();
                 }
 
                 public PayloadType.Audio getPreferredAudioPayloadType() {
-                    return null;
+                    return (PayloadType.Audio) getTestPayloads1().get(0);
                 }
 
-
             };
+            
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(jingleMediaManager);
 
-            jm0.setMediaManager(jingleMediaManager);
-            jm1.setMediaManager(jingleMediaManager);
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(jingleMediaManager);
+
+            JingleManager jm0 = new JingleManager(x0, trl0);
+            JingleManager jm1 = new JingleManager(x1, trl1);
 
             jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 public void sessionRequested(final JingleSessionRequest request) {
 
                     try {
 
-                        IncomingJingleSession session = request.accept(jm1.getMediaManager().getPayloads());
+                        JingleSession session = request.accept();
 
-                        session.start(request);
-                    }
-                    catch (XMPPException e) {
+                        session.startIncoming();
+                    } catch (XMPPException e) {
                         e.printStackTrace();
                     }
 
                 }
             });
 
-            OutgoingJingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
+            JingleSession js0 = jm0.createOutgoingJingleSession(x1.getUser());
 
-            js0.start();
+            js0.startOutgoing();
 
             Thread.sleep(10000);
             js0.terminate();
@@ -909,11 +926,10 @@ public class JingleManagerTest extends SmackTestCase {
             System.out.println(valCounter());
 
             assertTrue(valCounter() == 8);
-            
+
             Thread.sleep(15000);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -922,86 +938,93 @@ public class JingleManagerTest extends SmackTestCase {
     /**
      * This is a simple test where the user_2 rejects the Jingle session.
      */
-    public void testIncompatibleCodecs() {
-
-        resetCounter();
-
-        try {
-            TransportResolver tr1 = new FixedResolver("127.0.0.1", 54222);
-            TransportResolver tr2 = new FixedResolver("127.0.0.1", 54567);
-
-            final JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            final JingleManager man1 = new JingleManager(getConnection(1), tr2);
-
-            man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
-                /**
-                 * Called when a new session request is detected
-                 */
-                public void sessionRequested
-                        (
-                                final JingleSessionRequest request) {
-                    System.out.println("Session request detected, from "
-                            + request.getFrom() + ": accepting.");
-
-                    try {
-                        // We reject the request
-                        IncomingJingleSession ses = request.accept(getTestPayloads3());
-
-                        ses.start(request);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            // Session 0 starts a request
-            System.out.println("Starting session request, to " + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
-
-            session0.addListener(new JingleSessionListener() {
-                public void sessionClosed(String reason, JingleSession jingleSession) {
-                }
-
-                public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
-                    incCounter();
-                    System.out
-                            .println("The session has been close on error with reason: "
-                                    + e.getMessage());
-                }
-
-                public void sessionDeclined(String reason, JingleSession jingleSession) {
-                    incCounter();
-                    System.out
-                            .println("The session has been detected as rejected with reason: "
-                                    + reason);
-                }
-
-                public void sessionEstablished(PayloadType pt,
-                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
-                }
-
-                public void sessionMediaReceived(JingleSession jingleSession, String participant) {
-                    // Do Nothing
-                }
-
-                public void sessionRedirected(String redirection, JingleSession jingleSession) {
-                }
-            });
-
-            session0.start(null);
-
-            Thread.sleep(20000);
-
-            assertTrue(valCounter() > 0);
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            fail("An error occured with Jingle");
-        }
-    }
+    
+//      This test doesn't make sense in light of multiple <content> sections allowed in XEp-166.
+//      What we really need is a test for actions: content-add and content-remove.
+ 
+    
+//    public void testIncompatibleCodecs() {
+//
+//        resetCounter();
+//
+//        try {
+//            FixedResolver tr0 = new FixedResolver("127.0.0.1", 54222);
+//            FixedTransportManager ftm0 = new FixedTransportManager(tr0);
+//            TestMediaManager tmm0 = new TestMediaManager(ftm0);
+//            tmm0.setPayloads(getTestPayloads1());
+//            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+//            trl0.add(tmm0);
+//
+//            FixedResolver tr1 = new FixedResolver("127.0.0.1", 54567);
+//            FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+//            TestMediaManager tmm1 = new TestMediaManager(ftm1);
+//            tmm1.setPayloads(getTestPayloads3());
+//            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+//            trl1.add(tmm1);
+//
+//            JingleManager man0 = new JingleManager(getConnection(0), trl0);
+//            JingleManager man1 = new JingleManager(getConnection(1), trl1);
+//
+//            man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
+//                /**
+//                 * Called when a new session request is detected
+//                 */
+//                public void sessionRequested(final JingleSessionRequest request) {
+//                    System.out.println("Session request detected, from " + request.getFrom() + ": accepting.");
+//
+//                    try {
+//                        // We reject the request
+//                        JingleSession ses = request.accept();
+//
+//                        ses.startIncoming();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//            // Session 0 starts a request
+//            System.out.println("Starting session request, to " + getFullJID(1) + "...");
+//            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
+//
+//            session0.addListener(new JingleSessionListener() {
+//                public void sessionClosed(String reason, JingleSession jingleSession) {
+//                    incCounter();
+//                }
+//
+//                public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
+//                    incCounter();
+//                    System.out.println("The session has been close on error with reason: " + e.getMessage());
+//                }
+//
+//                public void sessionDeclined(String reason, JingleSession jingleSession) {
+//                    incCounter();
+//                    System.out.println("The session has been detected as rejected with reason: " + reason);
+//                }
+//
+//                public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+//                        JingleSession jingleSession) {
+//                }
+//
+//                public void sessionMediaReceived(JingleSession jingleSession, String participant) {
+//                    // Do Nothing
+//                }
+//
+//                public void sessionRedirected(String redirection, JingleSession jingleSession) {
+//                }
+//            });
+//
+//            session0.startOutgoing();
+//
+//            Thread.sleep(20000);
+//
+//            assertTrue(valCounter() > 0);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            fail("An error occured with Jingle");
+//        }
+//    }
 
     protected int getMaxConnections() {
         return 2;

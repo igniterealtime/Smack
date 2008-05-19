@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: AudioReceiver.java,v $
+ * $Revision: 1.1 $
  * $Date: 08/11/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.

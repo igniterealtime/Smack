@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: JingleProvider.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:11 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -23,15 +23,13 @@ package org.jivesoftware.smackx.provider;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleContentDescription;
-import org.jivesoftware.smackx.packet.JingleContentInfo;
-import org.jivesoftware.smackx.packet.JingleTransport;
+import org.jivesoftware.smackx.jingle.JingleActionEnum;
+import org.jivesoftware.smackx.packet.*;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The JingleProvider parses Jingle packets.
- *
+ * 
  * @author Alvaro Saurin
  */
 public class JingleProvider implements IQProvider {
@@ -51,13 +49,15 @@ public class JingleProvider implements IQProvider {
 
         Jingle jingle = new Jingle();
         String sid = "";
-        Jingle.Action action;
+        JingleActionEnum action;
         String initiator = "";
         String responder = "";
         boolean done = false;
+        JingleContent currentContent = null;
 
         // Sub-elements providers
-        JingleContentDescriptionProvider jdpAudio = new JingleContentDescriptionProvider.Audio();
+        JingleContentProvider jcp = new JingleContentProvider();
+        JingleDescriptionProvider jdpAudio = new JingleDescriptionProvider.Audio();
         JingleTransportProvider jtpRawUdp = new JingleTransportProvider.RawUdp();
         JingleTransportProvider jtpIce = new JingleTransportProvider.Ice();
         JingleContentInfoProvider jmipAudio = new JingleContentInfoProvider.Audio();
@@ -68,7 +68,7 @@ public class JingleProvider implements IQProvider {
 
         // Get some attributes for the <jingle> element
         sid = parser.getAttributeValue("", "sid");
-        action = Jingle.Action.getAction(parser.getAttributeValue("", "action"));
+        action = JingleActionEnum.getAction(parser.getAttributeValue("", "action"));
         initiator = parser.getAttributeValue("", "initiator");
         responder = parser.getAttributeValue("", "responder");
 
@@ -88,32 +88,29 @@ public class JingleProvider implements IQProvider {
                 // Parse some well know subelements, depending on the namespaces
                 // and element names...
 
-                if (elementName.equals(JingleContentDescription.NODENAME)
-                        && namespace.equals(JingleContentDescription.Audio.NAMESPACE)) {
-                    jingle.addDescription((JingleContentDescription) jdpAudio
-                            .parseExtension(parser));
+                if (elementName.equals(JingleContent.NODENAME)) {
+                    // Add a new <content> element to the jingle
+                    currentContent = (JingleContent) jcp.parseExtension(parser);
+                    jingle.addContent(currentContent);
+                } else if (elementName.equals(JingleDescription.NODENAME) && namespace.equals(JingleDescription.Audio.NAMESPACE)) {
+                    // Set the <description> element of the <content>
+                    currentContent.setDescription((JingleDescription) jdpAudio.parseExtension(parser));
                 } else if (elementName.equals(JingleTransport.NODENAME)) {
+                    // Add all of the <transport> elements to the <content> of the jingle
 
                     // Parse the possible transport namespaces
                     if (namespace.equals(JingleTransport.RawUdp.NAMESPACE)) {
-                        jingle.addTransport((JingleTransport) jtpRawUdp
-                                .parseExtension(parser));
+                        currentContent.addJingleTransport((JingleTransport) jtpRawUdp.parseExtension(parser));
                     } else if (namespace.equals(JingleTransport.Ice.NAMESPACE)) {
-                        jingle.addTransport((JingleTransport) jtpIce
-                                .parseExtension(parser));
+                        currentContent.addJingleTransport((JingleTransport) jtpIce.parseExtension(parser));
                     } else {
-                        throw new XMPPException("Unknown transport namespace \""
-                                + namespace + "\" in Jingle packet.");
+                        throw new XMPPException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
                     }
                 } else if (namespace.equals(JingleContentInfo.Audio.NAMESPACE)) {
-                    jingle.setContentInfo((JingleContentInfo) jmipAudio
-                            .parseExtension(parser));
-                } else if (elementName.equals("content")) {
-                    //TODO Separate Contents (XEP-0166)
+                    jingle.setContentInfo((JingleContentInfo) jmipAudio.parseExtension(parser));
                 } else {
-                    throw new XMPPException("Unknown combination of namespace \""
-                            + namespace + "\" and element name \"" + elementName
-                            + "\" in Jingle packet.");
+                    throw new XMPPException("Unknown combination of namespace \"" + namespace + "\" and element name \""
+                            + elementName + "\" in Jingle packet.");
                 }
 
             } else if (eventType == XmlPullParser.END_TAG) {

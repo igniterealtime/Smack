@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: AudioMediaSession.java,v $
+ * $Revision: 1.1 $
  * $Date: 08/11/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -20,10 +20,10 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleSession;
 
 import javax.media.MediaLocator;
 import java.io.IOException;

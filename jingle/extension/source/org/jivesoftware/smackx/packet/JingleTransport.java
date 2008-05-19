@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: JingleTransport.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:08 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -20,8 +20,8 @@
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.ICECandidate;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +43,7 @@ public class JingleTransport implements PacketExtension {
 
     protected String namespace;
 
-    protected final List candidates = new ArrayList();
+    protected final List<JingleTransportCandidate> candidates = new ArrayList<JingleTransportCandidate>();
 
     /**
      * Default constructor.
@@ -104,10 +104,10 @@ public class JingleTransport implements PacketExtension {
      *
      * @return The candidates list.
      */
-    public ArrayList getCandidatesList() {
-        ArrayList res = null;
+    public List<JingleTransportCandidate> getCandidatesList() {
+        ArrayList<JingleTransportCandidate> res = null;
         synchronized (candidates) {
-            res = new ArrayList(candidates);
+            res = new ArrayList<JingleTransportCandidate>(candidates);
         }
         return res;
     }
@@ -270,7 +270,7 @@ public class JingleTransport implements PacketExtension {
      * RTP-ICE profile
      */
     public static class Ice extends JingleTransport {
-        public static final String NAMESPACE = "http://jabber.org/protocol/jingle/transport/ice";
+        public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0176.html#ns-udp";
 
         public Ice() {
             super();
@@ -292,9 +292,9 @@ public class JingleTransport implements PacketExtension {
          *
          * @see org.jivesoftware.smackx.packet.JingleTransport#getCandidates()
          */
-        public ArrayList getCandidatesList() {
-            ArrayList copy = new ArrayList();
-            ArrayList superCandidatesList = super.getCandidatesList();
+        public List<JingleTransportCandidate> getCandidatesList() {
+            List<JingleTransportCandidate> copy = new ArrayList<JingleTransportCandidate>();
+            List<JingleTransportCandidate> superCandidatesList = super.getCandidatesList();
             for (int i = 0; i < superCandidatesList.size(); i++) {
                 copy.add(superCandidatesList.get(i));
             }
@@ -352,7 +352,7 @@ public class JingleTransport implements PacketExtension {
      * Raw UDP profile.
      */
     public static class RawUdp extends JingleTransport {
-        public static final String NAMESPACE = "http://jabber.org/protocol/jingle/transport/raw-udp";
+        public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0177.html#ns";
 
         public RawUdp() {
             super();
@@ -375,9 +375,9 @@ public class JingleTransport implements PacketExtension {
          *
          * @see org.jivesoftware.smackx.packet.JingleTransport#getCandidates()
          */
-        public ArrayList getCandidatesList() {
-            ArrayList copy = new ArrayList();
-            ArrayList superCandidatesList = super.getCandidatesList();
+        public List<JingleTransportCandidate> getCandidatesList() {
+            List<JingleTransportCandidate> copy = new ArrayList<JingleTransportCandidate>();
+            List<JingleTransportCandidate> superCandidatesList = super.getCandidatesList();
             if (superCandidatesList.size() > 0) {
                 copy.add(superCandidatesList.get(0));
             }

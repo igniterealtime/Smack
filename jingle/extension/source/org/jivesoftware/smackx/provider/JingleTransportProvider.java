@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: JingleTransportProvider.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:11 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -21,8 +21,8 @@ package org.jivesoftware.smackx.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.ICECandidate;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.packet.JingleTransport;
 import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
 import org.xmlpull.v1.XmlPullParser;

@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: JingleContentInfo.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:08 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -96,7 +96,7 @@ public class JingleContentInfo implements PacketExtension {
      */
     public static class Audio extends JingleContentInfo {
 
-        public static final String NAMESPACE = "http://jabber.org/protocol/jingle/info/audio";
+        public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0167.html#ns-info";
 
         public Audio(final ContentInfo mi) {
             super(mi);

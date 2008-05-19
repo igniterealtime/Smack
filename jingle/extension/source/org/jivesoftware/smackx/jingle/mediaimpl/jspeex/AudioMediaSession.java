@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: AudioMediaSession.java,v $
+ * $Revision: 1.1 $
  * $Date: 25/12/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -24,10 +24,10 @@ import mil.jfcom.cie.media.session.MediaSession;
 import mil.jfcom.cie.media.session.MediaSessionListener;
 import mil.jfcom.cie.media.session.StreamPlayer;
 import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleSession;
 
 import javax.media.NoProcessorException;
 import javax.media.format.UnsupportedFormatException;

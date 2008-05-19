@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: JingleError.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:08 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class JingleError implements PacketExtension {
 
-    public static String NAMESPACE = "http://jabber.org/protocol/jingle#error";
+    public static String NAMESPACE = "http://www.xmpp.org/extensions/xep-0166.html#ns-errors";
 
     public static final JingleError OUT_OF_ORDER = new JingleError("out-of-order");
 
@@ -134,7 +134,7 @@ public class JingleError implements PacketExtension {
            }
 
            /**
-            * Parse a JingleContentDescription.Audio extension.
+            * Parse a JingleDescription.Audio extension.
             */
            public PacketExtension parseExtension(final XmlPullParser parser)
                    throws Exception {

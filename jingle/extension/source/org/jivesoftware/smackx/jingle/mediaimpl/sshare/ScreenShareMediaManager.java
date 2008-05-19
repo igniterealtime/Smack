@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: ScreenShareMediaManager.java,v $
+ * $Revision: 1.3 $
  * $Date: 25/12/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -20,13 +20,14 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageDecoder;
+import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +41,15 @@ import java.util.List;
 
 public class ScreenShareMediaManager extends JingleMediaManager {
 
+    public static final String MEDIA_NAME = "ScreenShare";
+
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
 
     private ImageDecoder decoder = null;
     private ImageEncoder encoder = null;
 
-    public ScreenShareMediaManager() {
+    public ScreenShareMediaManager(JingleTransportManager transportManager) {
+        super(transportManager);
         setupPayloads();
     }
 
@@ -103,5 +107,9 @@ public class ScreenShareMediaManager extends JingleMediaManager {
 
     public void setEncoder(ImageEncoder encoder) {
         this.encoder = encoder;
+    }
+    
+    public  String getName() {
+        return MEDIA_NAME;
     }
 }

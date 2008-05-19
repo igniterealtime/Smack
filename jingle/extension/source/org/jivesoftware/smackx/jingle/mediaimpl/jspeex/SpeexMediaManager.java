@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: SpeexMediaManager.java,v $
+ * $Revision: 1.3 $
  * $Date: 25/12/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -19,17 +19,18 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.jspeex;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.mediaimpl.JMFInit;
-import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implements a jingleMediaManager using JMF based API and JSpeex.
@@ -40,9 +41,12 @@ import java.util.ArrayList;
  */
 public class SpeexMediaManager extends JingleMediaManager {
 
+    public static final String MEDIA_NAME = "Speex";
+
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
 
-    public SpeexMediaManager() {
+    public SpeexMediaManager(JingleTransportManager transportManager) {
+        super(transportManager);
         setupPayloads();
         setupJMF();
     }
@@ -119,5 +123,9 @@ public class SpeexMediaManager extends JingleMediaManager {
 
     private static void runLinuxPreInstall() {
         // @TODO Implement Linux Pre-Install
+    }
+    
+    public String getName() {
+        return MEDIA_NAME;
     }
 }

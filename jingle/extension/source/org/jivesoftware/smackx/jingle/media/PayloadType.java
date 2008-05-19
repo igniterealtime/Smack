@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: PayloadType.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:14 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -26,6 +26,8 @@ package org.jivesoftware.smackx.jingle.media;
  */
 public class PayloadType {
 
+    public static final String NODENAME = "payload-type";
+    
     public static int MAX_FIXED_PT = 95;
 
     public static int INVALID_PT = 65535;
@@ -195,6 +197,49 @@ public class PayloadType {
         }
 
         return true;
+    }
+    
+    /**
+     * Returns the XML element name of the element.
+     *
+     * @return the XML element name of the element.
+     */
+    public static String getElementName() {
+        return NODENAME;
+    }
+    
+    public String toXML() {
+        StringBuilder buf = new StringBuilder();
+
+            buf.append("<").append(getElementName()).append(" ");
+
+            // We covert here the payload type to XML
+            if (this.getId() != PayloadType.INVALID_PT) {
+                buf.append(" id=\"").append(this.getId()).append("\"");
+            }
+            if (this.getName() != null) {
+                buf.append(" name=\"").append(this.getName()).append("\"");
+            }
+            if (this.getChannels() != 0) {
+                buf.append(" channels=\"").append(this.getChannels()).append("\"");
+            }
+            if (getChildAttributes() != null) {
+                buf.append(getChildAttributes());
+            }
+            buf.append("/>");
+        
+        return buf.toString();
+    }
+    
+    protected String getChildAttributes() {
+        StringBuilder buf = new StringBuilder();
+        if (this instanceof PayloadType.Audio) {
+            PayloadType.Audio pta = (PayloadType.Audio) this;
+
+            buf.append(" clockrate=\"").append(pta.getClockRate()).append("\" ");
+        }
+        
+        return buf.toString();
     }
 
     /**

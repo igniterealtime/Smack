@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 7329 $
- * $Date: 2007-02-28 20:59:28 -0300 (qua, 28 fev 2007) $
+ * $RCSfile: BridgedResolver.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:07 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -23,9 +23,12 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
-import java.util.Random;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Enumeration;
-import java.net.*;
+import java.util.Random;
 
 /**
  * Bridged Resolver use a RTPBridge Service to add a relayed candidate.

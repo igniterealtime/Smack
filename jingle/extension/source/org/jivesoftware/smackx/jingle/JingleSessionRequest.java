@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: JingleSessionRequest.java,v $
+ * $Revision: 1.2 $
  * $Date: 15/11/2006
  *
  * Copyright 2003-2006 Jive Software.
@@ -20,10 +20,7 @@
 package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.packet.Jingle;
-
-import java.util.List;
 
 /**
  * A Jingle session request.
@@ -75,7 +72,7 @@ public class JingleSessionRequest {
     }
 
     /**
-     * Returns the Jingle packet that was sent by the requestor which contains
+     * Returns the Jingle packet that was sent by the requester which contains
      * the parameters of the session.
      */
     public Jingle getJingle() {
@@ -89,19 +86,17 @@ public class JingleSessionRequest {
      * @return Returns the <b><i>IncomingJingleSession</b></i> on which the
      *         negotiation can be carried out.
      */
-    public synchronized IncomingJingleSession accept(List<PayloadType> pts) throws XMPPException {
-        IncomingJingleSession session = null;
-        synchronized (manager) {
-            session = manager.createIncomingJingleSession(this,
-                    pts);
-            session.setInitialSessionRequest(this);
-            // Acknowledge the IQ reception
-            session.setSid(this.getSessionID());
-            //session.sendAck(this.getJingle());
-            //session.respond(this.getJingle());
-        }
-        return session;
-    }
+//    public synchronized JingleSession accept(List<PayloadType> pts) throws XMPPException {
+//        JingleSession session = null;
+//        synchronized (manager) {
+//            session = manager.createIncomingJingleSession(this, pts);
+//            // Acknowledge the IQ reception
+//            session.setSid(this.getSessionID());
+//            //session.sendAck(this.getJingle());
+//            //session.respond(this.getJingle());
+//        }
+//        return session;
+//    }
 
     /**
      * Accepts this request and creates the incoming Jingle session.
@@ -109,16 +104,15 @@ public class JingleSessionRequest {
      * @return Returns the <b><i>IncomingJingleSession</b></i> on which the
      *         negotiation can be carried out.
      */
-    public synchronized IncomingJingleSession accept() throws XMPPException {
-        IncomingJingleSession session = null;
+    public synchronized JingleSession accept() throws XMPPException {
+        JingleSession session = null;
         synchronized (manager) {
             session = manager.createIncomingJingleSession(this);
-            session.setInitialSessionRequest(this);
             // Acknowledge the IQ reception
             session.setSid(this.getSessionID());
             //session.sendAck(this.getJingle());
-            //session.updatePacketListener();
-            //session.respond(this.getJingle());
+            session.updatePacketListener();
+            session.receivePacketAndRespond(this.getJingle());
         }
         return session;
     }

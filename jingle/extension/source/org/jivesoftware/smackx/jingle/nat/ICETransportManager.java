@@ -1,15 +1,15 @@
 package org.jivesoftware.smackx.jingle.nat;
 
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
+import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
+import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: ICETransportManager.java,v $
+ * $Revision: 1.1 $
  * $Date: 02/01/2007
  * <p/>
  * Copyright 2003-2006 Jive Software.

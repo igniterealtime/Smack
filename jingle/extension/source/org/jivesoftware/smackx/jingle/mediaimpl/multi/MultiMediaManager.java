@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: MultiMediaManager.java,v $
+ * $Revision: 1.3 $
  * $Date: 25/12/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -20,13 +20,15 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.multi;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleSession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implements a MultiMediaManager using other JingleMediaManager implementations.
@@ -37,11 +39,14 @@ import java.util.*;
 
 public class MultiMediaManager extends JingleMediaManager {
 
+    public static final String MEDIA_NAME = "Multi";
+
     private List<JingleMediaManager> managers = new ArrayList<JingleMediaManager>();
 
     private PayloadType preferredPayloadType = null;
 
-    public MultiMediaManager() {
+    public MultiMediaManager(JingleTransportManager transportManager) {
+        super(transportManager);
     }
 
     public void addMediaManager(JingleMediaManager manager) {
@@ -94,5 +99,8 @@ public class MultiMediaManager extends JingleMediaManager {
     public void setPreferredPayloadType(PayloadType preferredPayloadType) {
         this.preferredPayloadType = preferredPayloadType;
     }
-
+    
+    public  String getName() {
+        return MEDIA_NAME;
+    }
 }

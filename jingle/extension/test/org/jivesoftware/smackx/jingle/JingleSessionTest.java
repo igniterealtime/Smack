@@ -1,8 +1,13 @@
 package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smackx.jingle.nat.BasicResolver;
-import org.jivesoftware.smackx.jingle.nat.BasicTransportManager;
+import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
+import org.jivesoftware.smackx.jingle.mediaimpl.test.TestMediaManager;
+import org.jivesoftware.smackx.jingle.nat.FixedResolver;
+import org.jivesoftware.smackx.jingle.nat.FixedTransportManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JingleSessionTest extends SmackTestCase {
 
@@ -11,9 +16,16 @@ public class JingleSessionTest extends SmackTestCase {
     }
 
     public void testEqualsObject() {
-        JingleSession js1 = new OutgoingJingleSession(getConnection(0), "res1", null, new BasicTransportManager());
-        JingleSession js2 = new OutgoingJingleSession(getConnection(1), "res1", null, new BasicTransportManager());
-        JingleSession js3 = new OutgoingJingleSession(getConnection(2), "res2", null, new BasicTransportManager());
+        
+        FixedResolver tr1 = new FixedResolver("127.0.0.1", 54222);
+        FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+        TestMediaManager tmm1 = new TestMediaManager(ftm1);
+        List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+        trl1.add(tmm1);
+        
+        JingleSession js1 = new JingleSession(getConnection(0), "res1", null, "10", trl1);
+        JingleSession js2 = new JingleSession(getConnection(1), "res1", null, "10", trl1);
+        JingleSession js3 = new JingleSession(getConnection(2), "res2", null, "11", trl1);
 
         System.out.println(js1.getSid());
         System.out.println(js2.getSid());
@@ -35,8 +47,14 @@ public class JingleSessionTest extends SmackTestCase {
         String ini2 = "initiator2";
         String sid2 = "sid2";
 
-        JingleSession js1 = new OutgoingJingleSession(getConnection(0), sid1, null, new BasicTransportManager());
-        JingleSession js2 = new OutgoingJingleSession(getConnection(1), sid2, null, new BasicTransportManager());
+        FixedResolver tr1 = new FixedResolver("127.0.0.1", 54222);
+        FixedTransportManager ftm1 = new FixedTransportManager(tr1);
+        TestMediaManager tmm1 = new TestMediaManager(ftm1);
+        List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+        trl1.add(tmm1);
+        
+        JingleSession js1 = new JingleSession(getConnection(0), ini1, null, sid1, trl1);
+        JingleSession js2 = new JingleSession(getConnection(1), ini2, null, sid2, trl1);
 
         // For a packet, we should be able to get a session that handles that...
         assertNotNull(JingleSession.getInstanceFor(getConnection(0)));

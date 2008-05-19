@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: AudioChannel.java,v $
+ * $Revision: 1.1 $
  * $Date: 08/11/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -22,25 +22,23 @@ package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 
 import javax.media.*;
-import javax.media.control.TrackControl;
-import javax.media.control.PacketSizeControl;
 import javax.media.control.BufferControl;
+import javax.media.control.PacketSizeControl;
+import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
 import javax.media.protocol.PushBufferDataSource;
 import javax.media.protocol.PushBufferStream;
+import javax.media.rtp.InvalidSessionAddressException;
 import javax.media.rtp.RTPManager;
 import javax.media.rtp.SendStream;
 import javax.media.rtp.SessionAddress;
-import javax.media.rtp.InvalidSessionAddressException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sun.media.rtp.RTPSessionMgr;
 
 /**
  * An Easy to use Audio Channel implemented using JMF.

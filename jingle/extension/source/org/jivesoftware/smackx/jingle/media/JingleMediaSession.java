@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: $
- * $Date: $11-07-2006
+ * $RCSfile: JingleMediaSession.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:14 $11-07-2006
  *
  * Copyright 2003-2006 Jive Software.
  *
@@ -19,11 +19,11 @@
  */
 package org.jivesoftware.smackx.jingle.media;
 
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Public Abstract Class provides a clear interface between Media Session and Jingle API.

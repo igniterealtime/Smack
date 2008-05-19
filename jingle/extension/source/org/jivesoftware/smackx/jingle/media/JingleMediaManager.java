@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: $
- * $Date: $11-07-2006
+ * $RCSfile: JingleMediaManager.java,v $
+ * $Revision: 1.3 $
+ * $Date: 2007/07/18 19:48:23 $11-07-2006
  *
  * Copyright 2003-2006 Jive Software.
  *
@@ -20,10 +20,10 @@
 
 package org.jivesoftware.smackx.jingle.media;
 
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +36,22 @@ import java.util.List;
  * @author Thiago Camargo
  */
 public abstract class JingleMediaManager {
+    
+    public static final String MEDIA_NAME = "JingleMediaManager";
+
+    // Each media manager must keep track of the transport manager that it uses.
+    private JingleTransportManager transportManager;
+
+    public JingleMediaManager(JingleTransportManager transportManager) {
+        this.transportManager = transportManager;
+    }
+    
+    /**
+     * Return   The transport manager that goes with this media manager.
+     */
+    public JingleTransportManager getTransportManager() {
+        return transportManager;
+    }
 
     /**
      * Return all supported Payloads for this Manager
@@ -61,6 +77,12 @@ public abstract class JingleMediaManager {
      * @param local
      * @return
      */
-    public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, JingleSession jingleSession);
+    public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote,
+            final TransportCandidate local, JingleSession jingleSession);
+    
+    // This is to set the attributes of the <content> element of the Jingle packet.    
+    public String getName() {
+        return MEDIA_NAME;
+    }
 
-  }
+}

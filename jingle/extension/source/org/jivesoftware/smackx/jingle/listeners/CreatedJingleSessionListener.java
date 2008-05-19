@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: CreatedJingleSessionListener.java,v $
+ * $Revision: 1.1 $
  * $Date: 17/11/2006
  *
  * Copyright 2003-2006 Jive Software.

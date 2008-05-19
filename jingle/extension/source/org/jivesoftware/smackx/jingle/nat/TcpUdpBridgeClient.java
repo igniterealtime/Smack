@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: TcpUdpBridgeClient.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:07 $
  *
  * Copyright (C) 2002-2006 Jive Software. All rights reserved.
  * ====================================================================
@@ -51,13 +51,13 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
-import java.net.DatagramSocket;
-import java.net.Socket;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * A Simple and Experimental Bridge.

@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision: 2407 $
- * $Date: 2004-11-02 23:37:00 +0000 (Tue, 02 Nov 2004) $
+ * $RCSfile: Jingle.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:08 $
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.jingle.JingleActionEnum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,7 @@ public class Jingle extends IQ {
 
     // static
 
-    public static final String NAMESPACE = "http://jabber.org/protocol/jingle";
+    public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0166.html#ns";
 
     public static final String NODENAME = "jingle";
 
@@ -51,33 +52,27 @@ public class Jingle extends IQ {
 
     private String sid; // The session id
 
-    private Action action; // The action associated to the Jingle
+    private JingleActionEnum action; // The action associated to the Jingle
 
     private String initiator; // The initiator as a "user@host/resource"
 
     private String responder; // The responder
 
     // Sub-elements of a Jingle object.
-
-    private final List descriptions = new ArrayList();
-
-    private final List transports = new ArrayList();
+    
+    private final List<JingleContent> contents = new ArrayList<JingleContent>();
 
     private JingleContentInfo contentInfo;
 
     /**
      * A constructor where the main components can be initialized.
      */
-    public Jingle(final List descs, final List trans, final JingleContentInfo mi,
+    public Jingle(final List<JingleContent> contents, final JingleContentInfo mi,
                   final String sid) {
         super();
 
-        if (descs != null) {
-            descriptions.addAll(descs);
-        }
-
-        if (trans != null) {
-            transports.addAll(trans);
+        if (contents != null) {
+            contents.addAll(contents);
         }
 
         setContentInfo(mi);
@@ -90,44 +85,25 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Constructor with a description.
+     * Constructor with a contents.
      *
-     * @param descr a description
+     * @param content a content
      */
-    public Jingle(final JingleContentDescription descr) {
+    public Jingle(final JingleContent content) {
         super();
 
-        addDescription(descr);
+        addContent(content);
 
         // Set null all other fields in the packet
         initiator = null;
         responder = null;
 
         // Some default values for the most common situation...
-        action = Jingle.Action.DESCRIPTIONINFO;
+        action = JingleActionEnum.UNKNOWN;
         this.setType(IQ.Type.SET);
     }
 
-    /**
-     * Constructor with a transport.
-     *
-     * @param trans a transport
-     */
-    public Jingle(final JingleTransport trans) {
-        super();
-
-        addTransport(trans);
-
-        // Set null all other fields in the packet
-        initiator = null;
-        responder = null;
-
-        // Some default values for the most common situation...
-        action = Jingle.Action.TRANSPORTINFO;
-        this.setType(IQ.Type.SET);
-    }
-
-    /**
+     /**
      * Constructor with a content info.
      *
      * @param info The content info
@@ -142,7 +118,7 @@ public class Jingle extends IQ {
         responder = null;
 
         // Some default values for the most common situation...
-        action = Jingle.Action.DESCRIPTIONINFO;
+        action = JingleActionEnum.UNKNOWN;
         this.setType(IQ.Type.SET);
     }
 
@@ -151,8 +127,8 @@ public class Jingle extends IQ {
      *
      * @param action The action.
      */
-    public Jingle(final Jingle.Action action) {
-        this(null, null, null, null);
+    public Jingle(final JingleActionEnum action) {
+        this(null, null, null);
         this.action = action;
 
         // In general, a Jingle with an action is used in a SET packet...
@@ -166,7 +142,7 @@ public class Jingle extends IQ {
      * @see #setSid(String)
      */
     public Jingle(final String sid) {
-        this(null, null, null, sid);
+        this(null, null, sid);
     }
 
     /**
@@ -215,7 +191,7 @@ public class Jingle extends IQ {
     /**
      * Returns the XML namespace of the extension sub-packet root element.
      * According the specification the namespace is always
-     * "http://jabber.org/protocol/jingle"
+     * "http://www.xmpp.org/extensions/xep-0166.html#ns"
      *
      * @return the XML namespace of the packet extension.
      */
@@ -238,107 +214,59 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Get an iterator for the content descriptions
+     * Get an iterator for the contents
      *
-     * @return the descriptions
+     * @return the contents
      */
-    public Iterator getDescriptions() {
-        synchronized (descriptions) {
-            return Collections.unmodifiableList(new ArrayList(descriptions)).iterator();
+    public Iterator<JingleContent> getContents() {
+        synchronized (contents) {
+            return Collections.unmodifiableList(new ArrayList(contents)).iterator();
         }
     }
 
     /**
-     * Get an iterator for the content descriptions
+     * Get an iterator for the content
      *
-     * @return the descriptions
+     * @return the contents
      */
-    public ArrayList getDescriptionsList() {
-        synchronized (descriptions) {
-            return new ArrayList(descriptions);
+    public List<JingleContent> getContentsList() {
+        synchronized (contents) {
+            return new ArrayList<JingleContent>(contents);
         }
     }
 
     /**
-     * Add a new content description.
+     * Add a new content.
      *
-     * @param desc the descriptions to add
+     * @param content the content to add
      */
-    public void addDescription(final JingleContentDescription desc) {
-        if (desc != null) {
-            synchronized (descriptions) {
-                descriptions.add(desc);
+    public void addContent(final JingleContent content) {
+        if (content != null) {
+            synchronized (contents) {
+                contents.add(content);
             }
         }
     }
 
     /**
-     * Add a list of JingleContentDescription elements
+     * Add a list of JingleContent elements
      *
-     * @param descsList the list of transports to add
+     * @param contentList the list of contents to add
      */
-    public void addDescriptions(final List descsList) {
-        if (descsList != null) {
-            synchronized (descriptions) {
-                descriptions.addAll(descsList);
+    public void addContents(final List<JingleContent> contentList) {
+        if (contentList != null) {
+            synchronized (contents) {
+                contents.addAll(contentList);
             }
         }
     }
 
-    /**
-     * Get an iterator for the transport.
-     *
-     * @return the transports
-     */
-    public Iterator getTransports() {
-        synchronized (transports) {
-            return Collections.unmodifiableList(new ArrayList(transports)).iterator();
-        }
-    }
-
-    /**
-     * Get the list of transports.
-     *
-     * @return the transports list.
-     */
-    public ArrayList getTransportsList() {
-        synchronized (transports) {
-            return new ArrayList(transports);
-        }
-    }
-
-    /**
-     * Add a new TransportNegotiator element
-     *
-     * @param trans the transports to add
-     */
-    public void addTransport(final JingleTransport trans) {
-        if (trans != null) {
-            synchronized (transports) {
-                transports.add(trans);
-            }
-        }
-    }
-
-    /**
-     * Add a list of TransportNegotiator elements
-     *
-     * @param transList the list of transports to add
-     */
-    public void addTransports(final List transList) {
-        if (transList != null) {
-            synchronized (transports) {
-                transports.addAll(transList);
-            }
-        }
-    }
-
-    /**
+     /**
      * Get the action specified in the packet
      *
      * @return the action
      */
-    public Action getAction() {
+    public JingleActionEnum getAction() {
         return action;
     }
 
@@ -347,7 +275,7 @@ public class Jingle extends IQ {
      *
      * @param action the action to set
      */
-    public void setAction(final Action action) {
+    public void setAction(final JingleActionEnum action) {
         this.action = action;
     }
 
@@ -433,26 +361,12 @@ public class Jingle extends IQ {
             buf.append(" sid=\"").append(getSid()).append("\"");
         }
         buf.append(">");
-        //TODO Update to accept more than one content per session (XEP-0166)
-
-        buf.append("<content name='Audio-Content'>");
-        // Look for possible payload types, and dump them.
-        synchronized (descriptions) {
-            for (int i = 0; i < descriptions.size(); i++) {
-                JingleContentDescription desc = (JingleContentDescription) descriptions
-                        .get(i);
-                buf.append(desc.toXML());
+ 
+        synchronized (contents) {
+            for (JingleContent content : contents) {
+                buf.append(content.toXML());
             }
-        }
-
-        // If the packet has transports, dump them.
-        synchronized (transports) {
-            for (int i = 0; i < transports.size(); i++) {
-                JingleTransport trans = (JingleTransport) transports.get(i);
-                buf.append(trans.toXML());
-            }
-        }
-        buf.append("</content>");
+         }
 
         // and the same for audio jmf info
         if (contentInfo != null) {
@@ -462,43 +376,4 @@ public class Jingle extends IQ {
         buf.append("</").append(getElementName()).append(">");
         return buf.toString();
     }
-
-    /**
-     * The "action" in the jingle packet, as an enum.
-     */
-    public static enum Action {
-
-        CONTENTACCEPT, CONTENTADD, CONTENTDECLINE, CONTENTMODIFY,
-        CONTENTREMOVE, DESCRIPTIONADD, DESCRIPTIONDECLINE,
-        DESCRIPTIONINFO, DESCRIPTIONMODIFY, SESSIONACCEPT,
-        SESSIONINFO, SESSIONINITIATE, SESSIONREDIRECT,
-        SESSIONTERMINATE, TRANSPORTACCEPT, TRANSPORTDECLINE,
-        TRANSPORTINFO, TRANSPORTMODIFY;
-
-        private static String names[] = {"content-accept", "content-add", "content-decline", "content-modify",
-                "content-remove", "description-accept", "description-decline", "description-info",
-                "description-modify", "session-accept", "session-info", "session-initiate",
-                "session-redirect", "session-terminate", "transport-accept", "transport-decline",
-                "transport-info", "transport-modify"};
-
-        /**
-         * Returns the String value for an Action.
-         */
-
-        public String toString() {
-            return names[this.ordinal()];
-        }
-
-        /**
-         * Returns the Action for a String value.
-         */
-        public static Action getAction(String str) {
-            for (int i = 0; i < names.length; i++) {
-                if (names[i].equals(str)) return Action.values()[i];
-            }
-            return null;
-        }
-
-    }
-
 }

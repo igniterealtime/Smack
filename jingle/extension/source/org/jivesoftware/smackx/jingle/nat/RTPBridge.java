@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: RTPBridge.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:07 $
  *
  * Copyright 2003-2005 Jive Software.
  *
@@ -32,11 +32,11 @@ import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
 
-import java.util.Iterator;
-import java.util.Enumeration;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.InetAddress;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * RTPBridge IQ Packet used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.

@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: JmfMediaManager.java,v $
+ * $Revision: 1.3 $
  * $Date: 08/11/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -20,17 +20,18 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.mediaimpl.JMFInit;
-import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implements a jingleMediaManager using JMF based API.
@@ -41,13 +42,17 @@ import java.util.ArrayList;
  */
 public class JmfMediaManager extends JingleMediaManager {
 
+    public static final String MEDIA_NAME = "JMF";
+
+    
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
     private String mediaLocator = null;
 
     /**
      * Creates a Media Manager instance
      */
-    public JmfMediaManager() {
+    public JmfMediaManager(JingleTransportManager transportManager) {
+        super(transportManager);
         setupPayloads();
     }
 
@@ -56,7 +61,8 @@ public class JmfMediaManager extends JingleMediaManager {
      *
      * @param mediaLocator Media Locator
      */
-    public JmfMediaManager(String mediaLocator) {
+    public JmfMediaManager(String mediaLocator, JingleTransportManager transportManager) {
+        super(transportManager);
         this.mediaLocator = mediaLocator;
         setupPayloads();
     }
@@ -153,5 +159,9 @@ public class JmfMediaManager extends JingleMediaManager {
 
     private static void runLinuxPreInstall() {
         // @TODO Implement Linux Pre-Install
+    }
+    
+    public  String getName() {
+        return MEDIA_NAME;
     }
 }

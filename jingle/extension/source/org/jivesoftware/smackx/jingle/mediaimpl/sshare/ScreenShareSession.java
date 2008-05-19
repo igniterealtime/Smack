@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: ScreenShareSession.java,v $
+ * $Revision: 1.2 $
  * $Date: 08/11/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
@@ -19,6 +19,7 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageDecoder;
@@ -26,19 +27,16 @@ import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageReceiver;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageTransmitter;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.IncomingJingleSession;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
-import java.net.DatagramSocket;
 
 /**
  * This Class implements a complete JingleMediaSession.
@@ -64,19 +62,30 @@ public class ScreenShareSession extends JingleMediaSession {
      * @param local       the local information. The candidate that will receive the jmf
      * @param locator     media locator
      */
-    public ScreenShareSession(final PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local, final String locator, JingleSession jingleSession) {
+    public ScreenShareSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local,
+            final String locator, JingleSession jingleSession) {
         super(payloadType, remote, local, "Screen", jingleSession);
         initialize();
     }
 
     /**
-     * Initialize the Audio Channel to make it able to send and receive audio
+     * Initialize the screen share channels.
      */
     public void initialize() {
 
-        if (this.getJingleSession() instanceof IncomingJingleSession) {
+        JingleSession session = getJingleSession();
+        if ((session != null) && (session.getInitiator().equals(session.getConnection().getUser()))) {
+            // If the initiator of the jingle session is us then we transmit a screen share.
+            try {
+                InetAddress remote = InetAddress.getByName(getRemote().getIp());
+                transmitter = new ImageTransmitter(new DatagramSocket(getLocal().getPort()), remote, getRemote().getPort(),
+                        new Rectangle(0, 0, width, height));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+        } else {
+            // Otherwise we receive a screen share.
             JFrame window = new JFrame();
             JPanel jp = new JPanel();
             window.add(jp);
@@ -84,17 +93,17 @@ public class ScreenShareSession extends JingleMediaSession {
             window.setLocation(0, 0);
             window.setSize(600, 600);
 
-            window.addWindowListener(new WindowAdapter(){
+            window.addWindowListener(new WindowAdapter() {
                 public void windowClosed(WindowEvent e) {
                     receiver.stop();
                 }
             });
 
             try {
-                receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), width, height);
+                receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), width,
+                        height);
                 System.out.println("Receiving on:" + receiver.getLocalPort());
-            }
-            catch (UnknownHostException e) {
+            } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
 
@@ -102,15 +111,6 @@ public class ScreenShareSession extends JingleMediaSession {
             receiver.setVisible(true);
             window.setAlwaysOnTop(true);
             window.setVisible(true);
-        }
-        else {
-            try {
-                InetAddress remote = InetAddress.getByName(getRemote().getIp());
-                transmitter = new ImageTransmitter(new DatagramSocket(getLocal().getPort()), remote, getRemote().getPort(), new Rectangle(0, 0, width, height));
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -142,7 +142,7 @@ public class ScreenShareSession extends JingleMediaSession {
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     public void stopTrasmit() {
-        if(transmitter!=null){
+        if (transmitter != null) {
             transmitter.stop();
         }
     }
@@ -151,7 +151,7 @@ public class ScreenShareSession extends JingleMediaSession {
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
     public void stopReceive() {
-        if(receiver!=null){
+        if (receiver != null) {
             receiver.stop();
         }
     }
@@ -173,8 +173,7 @@ public class ScreenShareSession extends JingleMediaSession {
                 freePort = ss.getLocalPort();
                 ss.close();
                 return freePort;
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -182,8 +181,7 @@ public class ScreenShareSession extends JingleMediaSession {
             ss = new ServerSocket(0);
             freePort = ss.getLocalPort();
             ss.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return freePort;

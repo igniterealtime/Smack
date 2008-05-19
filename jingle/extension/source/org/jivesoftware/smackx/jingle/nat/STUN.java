@@ -1,6 +1,6 @@
 /**
- * $RCSfile$
- * $Revision: $
+ * $RCSfile: STUN.java,v $
+ * $Revision: 1.1 $
  * $Date: 15/11/2006
  *
  * Copyright 2003-2006 Jive Software.
@@ -32,13 +32,9 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.InetAddress;
 
 /**
  * STUN IQ Packet used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
@@ -58,7 +54,7 @@ public class STUN extends IQ {
     /**
      * Element name of the packet extension.
      */
-    public static final String NAME = "stun";
+    public static final String DOMAIN = "stun";
 
     /**
      * Element name of the packet extension.
@@ -71,7 +67,7 @@ public class STUN extends IQ {
     public static final String NAMESPACE = "google:jingleinfo";
 
     static {
-        ProviderManager.getInstance().addIQProvider(NAME, NAMESPACE, new STUN.Provider());
+        ProviderManager.getInstance().addIQProvider(ELEMENT_NAME, NAMESPACE, new STUN.Provider());
     }
 
     /**
@@ -196,7 +192,7 @@ public class STUN extends IQ {
         }
 
         STUN stunPacket = new STUN();
-        stunPacket.setTo(NAME + "." + xmppConnection.getServiceName());
+        stunPacket.setTo(DOMAIN + "." + xmppConnection.getServiceName());
 
         PacketCollector collector = xmppConnection
                 .createPacketCollector(new PacketIDFilter(stunPacket.getPacketID()));

@@ -1,7 +1,7 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
+ * $RCSfile: TransportResolver.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2007/07/02 17:41:07 $
  *
  * Copyright (C) 2002-2006 Jive Software. All rights reserved.
  * ====================================================================
@@ -354,10 +354,10 @@ public abstract class TransportResolver {
      * @return the list of transport candidates
      */
     public List<TransportCandidate> getCandidatesList() {
-        ArrayList result = null;
+        List<TransportCandidate> result = null;
 
         synchronized (candidates) {
-            result = new ArrayList(candidates);
+            result = new ArrayList<TransportCandidate>(candidates);
         }
 
         return result;

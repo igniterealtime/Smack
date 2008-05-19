@@ -5,15 +5,18 @@ import de.javawi.jstun.test.demo.ice.ICENegociator;
 import de.javawi.jstun.util.UtilityException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.JingleManager;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.JingleSessionRequest;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
+import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.mediaimpl.test.TestMediaManager;
 
 import java.net.UnknownHostException;
-import java.net.SocketException;
-import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test the STUN IP resolver.
@@ -60,16 +63,14 @@ public class STUNResolverTest extends SmackTestCase {
     public void testGetPreferredCandidate() throws Exception {
         int highestPref = 100;
 
-        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
-                "password", 3468, "username1", 1, ICECandidate.Type.prflx);
-        TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
-                "password", 3469, "username2", 15, ICECandidate.Type.prflx);
-        TransportCandidate candH = new ICECandidate("192.168.2.11", 1, 2,
-                "password", 3468, "usernameH", highestPref, ICECandidate.Type.prflx);
-        TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
-                "password", 3469, "username3", 2, ICECandidate.Type.prflx);
-        TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
-                "password", 3468, "username4", 78, ICECandidate.Type.prflx);
+        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2, "password", 3468, "username1", 1, ICECandidate.Type.prflx);
+        TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10, "password", 3469, "username2", 15,
+                ICECandidate.Type.prflx);
+        TransportCandidate candH = new ICECandidate("192.168.2.11", 1, 2, "password", 3468, "usernameH", highestPref,
+                ICECandidate.Type.prflx);
+        TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10, "password", 3469, "username3", 2,
+                ICECandidate.Type.prflx);
+        TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2, "password", 3468, "username4", 78, ICECandidate.Type.prflx);
 
         STUNResolver stunResolver = new STUNResolver() {
         };
@@ -90,16 +91,14 @@ public class STUNResolverTest extends SmackTestCase {
     public void testGetPreferredCandidateICE() throws Exception {
         int highestPref = 100;
 
-        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
-                "password", 3468, "username1", 1, ICECandidate.Type.prflx);
-        TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
-                "password", 3469, "username2", 15, ICECandidate.Type.prflx);
-        TransportCandidate candH = new ICECandidate("192.168.2.11", 1, 2,
-                "password", 3468, "usernameH", highestPref, ICECandidate.Type.prflx);
-        TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
-                "password", 3469, "username3", 2, ICECandidate.Type.prflx);
-        TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
-                "password", 3468, "username4", 78, ICECandidate.Type.prflx);
+        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2, "password", 3468, "username1", 1, ICECandidate.Type.prflx);
+        TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10, "password", 3469, "username2", 15,
+                ICECandidate.Type.prflx);
+        TransportCandidate candH = new ICECandidate("192.168.2.11", 1, 2, "password", 3468, "usernameH", highestPref,
+                ICECandidate.Type.prflx);
+        TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10, "password", 3469, "username3", 2,
+                ICECandidate.Type.prflx);
+        TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2, "password", 3468, "username4", 78, ICECandidate.Type.prflx);
 
         ICEResolver iceResolver = new ICEResolver(getConnection(0), "stun.xten.net", 3478) {
         };
@@ -132,18 +131,20 @@ public class STUNResolverTest extends SmackTestCase {
 
             for (Candidate candidate : cc.getSortedCandidates())
                 try {
-                    TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(), ICECandidate.Type.prflx);
+                    TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress()
+                            .getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(),
+                            ICECandidate.Type.prflx);
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
-                    System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
-                }
-                catch (UtilityException e) {
+                    System.out.println("C: " + candidate.getAddress().getInetAddress() + "|"
+                            + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
+                } catch (UtilityException e) {
                     e.printStackTrace();
-                }
-                catch (UnknownHostException e) {
+                } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
             Candidate candidate = cc.getSortedCandidates().get(0);
-            String temp = "C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority();
+            String temp = "C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress()
+                    + " p:" + candidate.getPriority();
             if (first.equals(""))
                 first = temp;
             assertEquals(first, temp);
@@ -211,12 +212,10 @@ public class STUNResolverTest extends SmackTestCase {
             stunResolver.initializeAndWait();
             Thread.sleep(55000);
             assertTrue(valCounter() > 0);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Generate a list of payload types
@@ -262,21 +261,32 @@ public class STUNResolverTest extends SmackTestCase {
             tr1.resolve(null);
             tr2.resolve(null);
 
-            final JingleManager man0 = new JingleManager(getConnection(0), tr1);
-            final JingleManager man1 = new JingleManager(getConnection(1), tr2);
+            STUNTransportManager stm0 = new STUNTransportManager();
+            TestMediaManager tmm0 = new TestMediaManager(stm0);
+            tmm0.setPayloads(getTestPayloads1());
+            List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
+            trl0.add(tmm0);
+
+            STUNTransportManager stm1 = new STUNTransportManager();
+            TestMediaManager tmm1 = new TestMediaManager(stm1);
+            tmm1.setPayloads(getTestPayloads2());
+            List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
+            trl1.add(tmm1);
+
+            final JingleManager man0 = new JingleManager(getConnection(0), trl0);
+            final JingleManager man1 = new JingleManager(getConnection(1), trl1);
 
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
                  */
                 public void sessionRequested(final JingleSessionRequest request) {
-                    System.out.println("Session request detected, from "
-                            + request.getFrom() + ": accepting.");
+                    System.out.println("Session request detected, from " + request.getFrom() + ": accepting.");
 
                     // We accept the request
-                    IncomingJingleSession session1;
+                    JingleSession session1;
                     try {
-                        session1 = request.accept(getTestPayloads2());
+                        session1 = request.accept();
                         session1.addListener(new JingleSessionListener() {
                             public void sessionClosed(String reason, JingleSession jingleSession) {
                             }
@@ -287,16 +297,13 @@ public class STUNResolverTest extends SmackTestCase {
                             public void sessionDeclined(String reason, JingleSession jingleSession) {
                             }
 
-                            public void sessionEstablished(PayloadType pt,
-                                    TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                            public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                                    JingleSession jingleSession) {
                                 incCounter();
-                                System.out
-                                        .println("Responder: the session is fully established.");
+                                System.out.println("Responder: the session is fully established.");
                                 System.out.println("+ Payload Type: " + pt.getId());
-                                System.out.println("+ Local IP/port: " + lc.getIp() + ":"
-                                        + lc.getPort());
-                                System.out.println("+ Remote IP/port: " + rc.getIp() + ":"
-                                        + rc.getPort());
+                                System.out.println("+ Local IP/port: " + lc.getIp() + ":" + lc.getPort());
+                                System.out.println("+ Remote IP/port: " + rc.getIp() + ":" + rc.getPort());
                             }
 
                             public void sessionRedirected(String redirection, JingleSession jingleSession) {
@@ -306,9 +313,8 @@ public class STUNResolverTest extends SmackTestCase {
                                 // Do Nothing
                             }
                         });
-                        session1.start(request);
-                    }
-                    catch (XMPPException e) {
+                        session1.startIncoming();
+                    } catch (XMPPException e) {
                         e.printStackTrace();
                     }
                 }
@@ -316,8 +322,7 @@ public class STUNResolverTest extends SmackTestCase {
 
             // Session 0 starts a request
             System.out.println("Starting session request, to " + getFullJID(1) + "...");
-            OutgoingJingleSession session0 = man0.createOutgoingJingleSession(
-                    getFullJID(1), getTestPayloads1());
+            JingleSession session0 = man0.createOutgoingJingleSession(getFullJID(1));
 
             session0.addListener(new JingleSessionListener() {
                 public void sessionClosed(String reason, JingleSession jingleSession) {
@@ -329,15 +334,13 @@ public class STUNResolverTest extends SmackTestCase {
                 public void sessionDeclined(String reason, JingleSession jingleSession) {
                 }
 
-                public void sessionEstablished(PayloadType pt,
-                        TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
+                public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc,
+                        JingleSession jingleSession) {
                     incCounter();
                     System.out.println("Initiator: the session is fully established.");
                     System.out.println("+ Payload Type: " + pt.getId());
-                    System.out.println("+ Local IP/port: " + lc.getIp() + ":"
-                            + lc.getPort());
-                    System.out.println("+ Remote IP/port: " + rc.getIp() + ":"
-                            + rc.getPort());
+                    System.out.println("+ Local IP/port: " + lc.getIp() + ":" + lc.getPort());
+                    System.out.println("+ Remote IP/port: " + rc.getIp() + ":" + rc.getPort());
                 }
 
                 public void sessionMediaReceived(JingleSession jingleSession, String participant) {
@@ -347,14 +350,13 @@ public class STUNResolverTest extends SmackTestCase {
                 public void sessionRedirected(String redirection, JingleSession jingleSession) {
                 }
             });
-            session0.start(null);
+            session0.startOutgoing();
 
             Thread.sleep(60000);
 
             assertTrue(valCounter() == 2);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail("An error occured with Jingle");
         }
