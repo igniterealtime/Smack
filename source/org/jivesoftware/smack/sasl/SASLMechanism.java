@@ -59,6 +59,7 @@ public abstract class SASLMechanism implements CallbackHandler {
     protected SaslClient sc;
     protected String authenticationId;
     protected String password;
+    protected String hostname;
 
 
     public SASLMechanism(SASLAuthentication saslAuthentication) {
@@ -83,6 +84,7 @@ public abstract class SASLMechanism implements CallbackHandler {
         //Set the authenticationID as the username, since they must be the same in this case.
         this.authenticationId = username;
         this.password = password;
+        this.hostname = host;
 
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
@@ -115,7 +117,7 @@ public abstract class SASLMechanism implements CallbackHandler {
             if(sc.hasInitialResponse()) {
                 byte[] response = sc.evaluateChallenge(new byte[0]);
                 String authenticationText = Base64.encodeBytes(response,Base64.DONT_BREAK_LINES);
-                if(authenticationText != null && !authenticationText.equals("")) {
+                if(authenticationText != null && !authenticationText.equals("")) {                 
                     stanza.append(authenticationText);
                 }
             }
@@ -184,8 +186,8 @@ public abstract class SASLMechanism implements CallbackHandler {
                 PasswordCallback pcb = (PasswordCallback)callbacks[i];
                 pcb.setPassword(password.toCharArray());
             } else if(callbacks[i] instanceof RealmCallback) {
-                //unused
-                //RealmCallback rcb = (RealmCallback)callbacks[i];
+                RealmCallback rcb = (RealmCallback)callbacks[i];
+                rcb.setText(hostname);
             } else if(callbacks[i] instanceof RealmChoiceCallback){
                 //unused
                 //RealmChoiceCallback rccb = (RealmChoiceCallback)callbacks[i];
