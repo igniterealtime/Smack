@@ -78,7 +78,7 @@ public class Form {
      * 
      * @param dataForm the data form used for gathering data. 
      */
-    private Form(DataForm dataForm) {
+    public Form(DataForm dataForm) {
         this.dataForm = dataForm;
     }
     

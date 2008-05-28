@@ -11,6 +11,7 @@
         <className>org.jivesoftware.smackx.filetransfer.FileTransferManager</className>
         <className>org.jivesoftware.smackx.LastActivityManager</className>
         <className>org.jivesoftware.smack.ReconnectionManager</className>    
+        <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>    
     </startupClasses>
 
     <!-- Paket reply timeout in milliseconds -->
