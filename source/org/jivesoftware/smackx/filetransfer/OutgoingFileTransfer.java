@@ -255,6 +255,65 @@ public class OutgoingFileTransfer extends FileTransfer {
 		transferThread.start();
 	}
 
+    /**
+	 * This method handles the stream negotiation process and transmits the file
+	 * to the remote user. It returns immediatly and the progress of the file
+	 * transfer can be monitored through several methods:
+	 *
+	 * <UL>
+	 * <LI>{@link FileTransfer#getStatus()}
+	 * <LI>{@link FileTransfer#getProgress()}
+	 * <LI>{@link FileTransfer#isDone()}
+	 * </UL>
+	 *
+     * @param in the stream to transfer to the remote entity.
+     * @param fileName the name of the file that is transferred
+     * @param fileSize the size of the file that is transferred
+     * @param description a description for the file to transfer.
+	 */
+	public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description){
+		checkTransferThread();
+
+		transferThread = new Thread(new Runnable() {
+			public void run() {
+                //Create packet filter
+                try {
+					outputStream = negotiateStream(fileName, fileSize, description);
+				} catch (XMPPException e) {
+					handleXMPPException(e);
+					return;
+				}
+				if (outputStream == null) {
+					return;
+				}
+
+                if (!updateStatus(Status.negotiated, Status.in_progress)) {
+					return;
+				}
+				try {
+					writeToStream(in, outputStream);
+				} catch (XMPPException e) {
+					setStatus(FileTransfer.Status.error);
+					setException(e);
+				} finally {
+					try {
+						if (in != null) {
+							in.close();
+						}
+
+						outputStream.flush();
+						outputStream.close();
+					} catch (IOException e) {
+                        /* Do Nothing */
+					}
+				}
+                updateStatus(Status.in_progress, FileTransfer.Status.complete);
+				}
+
+		}, "File Transfer " + streamID);
+		transferThread.start();
+	}
+
 	private void handleXMPPException(XMPPException e) {
 		XMPPError error = e.getXMPPError();
 		if (error != null) {

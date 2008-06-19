@@ -19,11 +19,11 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import org.jivesoftware.smack.XMPPException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.jivesoftware.smack.XMPPException;
 
 /**
  * Contains the generic file information and progress related to a particular
@@ -174,6 +174,10 @@ public abstract class FileTransfer {
 	public Exception getException() {
 		return exception;
 	}
+
+    public String getStreamID() {
+        return streamID;
+    }
 
 	/**
 	 * Cancels the file transfer.

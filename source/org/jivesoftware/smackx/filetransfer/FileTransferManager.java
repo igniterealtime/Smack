@@ -19,9 +19,6 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -30,8 +27,10 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.StreamInitiation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The file transfer manager class handles the sending and recieving of files.
@@ -131,12 +130,13 @@ public class FileTransferManager {
 	 * @return The send file object on which the negotiated transfer can be run.
 	 */
 	public OutgoingFileTransfer createOutgoingFileTransfer(String userID) {
-		if (userID == null || StringUtils.parseName(userID).length() <= 0
-				|| StringUtils.parseServer(userID).length() <= 0
-				|| StringUtils.parseResource(userID).length() <= 0) {
-			throw new IllegalArgumentException(
-					"The provided user id was not fully qualified");
-		}
+//        Why is this only accepting fully qualified JID?
+//        if (userID == null || StringUtils.parseName(userID).length() <= 0
+//				|| StringUtils.parseServer(userID).length() <= 0
+//				|| StringUtils.parseResource(userID).length() <= 0) {
+//			throw new IllegalArgumentException(
+//					"The provided user id was not fully qualified");
+//		}
 
 		return new OutgoingFileTransfer(connection.getUser(), userID,
 				fileTransferNegotiator.getNextStreamID(),
