@@ -21,6 +21,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.proxy.ProxyInfo;
 
 import javax.net.SocketFactory;
 import java.io.File;
@@ -71,6 +72,9 @@ public class ConnectionConfiguration implements Cloneable {
     private String resource;
     private boolean sendPresence;
     private SecurityMode securityMode = SecurityMode.enabled;
+	
+	// Holds the proxy information (such as proxyhost, proxyport, username, password etc)
+    private ProxyInfo proxy;
 
     /**
      * Creates a new ConnectionConfiguration for the specified service name.
@@ -82,7 +86,23 @@ public class ConnectionConfiguration implements Cloneable {
     public ConnectionConfiguration(String serviceName) {
         // Perform DNS lookup to get host and port to use
         DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
-        init(address.getHost(), address.getPort(), serviceName);
+        init(address.getHost(), address.getPort(), serviceName, 
+			ProxyInfo.forDefaultProxy());
+    }
+	
+	/**
+     * Creates a new ConnectionConfiguration for the specified service name 
+     * with specified proxy.
+     * A DNS SRV lookup will be performed to find out the actual host address
+     * and port to use for the connection.
+     *
+     * @param serviceName the name of the service provided by an XMPP server.
+     * @param proxy the proxy through which XMPP is to be connected
+     */
+    public ConnectionConfiguration(String serviceName,ProxyInfo proxy) {
+        // Perform DNS lookup to get host and port to use
+        DNSUtil.HostAddress address = DNSUtil.resolveXMPPDomain(serviceName);
+        init(address.getHost(), address.getPort(), serviceName, proxy);
     }
 
     /**
@@ -100,7 +120,26 @@ public class ConnectionConfiguration implements Cloneable {
      * @param serviceName the name of the service provided by an XMPP server.
      */
     public ConnectionConfiguration(String host, int port, String serviceName) {
-        init(host, port, serviceName);
+        init(host, port, serviceName, ProxyInfo.forDefaultProxy());
+    }
+	
+	/**
+     * Creates a new ConnectionConfiguration using the specified host, port and
+     * service name. This is useful for manually overriding the DNS SRV lookup
+     * process that's used with the {@link #ConnectionConfiguration(String)}
+     * constructor. For example, say that an XMPP server is running at localhost
+     * in an internal network on port 5222 but is configured to think that it's
+     * "example.com" for testing purposes. This constructor is necessary to connect
+     * to the server in that case since a DNS SRV lookup for example.com would not
+     * point to the local testing server.
+     *
+     * @param host the host where the XMPP server is running.
+     * @param port the port where the XMPP is listening.
+     * @param serviceName the name of the service provided by an XMPP server.
+     * @param proxy the proxy through which XMPP is to be connected
+     */
+    public ConnectionConfiguration(String host, int port, String serviceName, ProxyInfo proxy) {
+        init(host, port, serviceName, proxy);
     }
 
     /**
@@ -111,13 +150,26 @@ public class ConnectionConfiguration implements Cloneable {
      * @param port the port where the XMPP is listening.
      */
     public ConnectionConfiguration(String host, int port) {
-        init(host, port, host);
+        init(host, port, host, ProxyInfo.forDefaultProxy());
+    }
+	
+	/**
+     * Creates a new ConnectionConfiguration for a connection that will connect
+     * to the desired host and port with desired proxy.
+     *
+     * @param host the host where the XMPP server is running.
+     * @param port the port where the XMPP is listening.
+     * @param proxy the proxy through which XMPP is to be connected
+     */
+    public ConnectionConfiguration(String host, int port, ProxyInfo proxy) {
+        init(host, port, host, proxy);
     }
 
-    private void init(String host, int port, String serviceName) {
+    private void init(String host, int port, String serviceName, ProxyInfo proxy) {
         this.host = host;
         this.port = port;
         this.serviceName = serviceName;
+		this.proxy = proxy;
 
         // Build the default path to the cacert truststore file. By default we are
         // going to use the file located in $JREHOME/lib/security/cacerts.
@@ -134,6 +186,9 @@ public class ConnectionConfiguration implements Cloneable {
         keystorePath = System.getProperty("javax.net.ssl.keyStore");
         keystoreType = "jks";
         pkcs11Library = "pkcs11.config";
+		
+		//Setting the SocketFactory according to proxy supplied
+        socketFactory = proxy.getSocketFactory();
     }
 
     /**
