@@ -297,7 +297,7 @@ public class AgentSession {
      * <p/>
      * <li>Presence.Mode.AVAILABLE -- (Default) the agent is available for more chats
      * (equivalent to Presence.Mode.CHAT).
-     * <li>Presence.Mode.DO_NOT_DISTURB -– the agent is busy and should not be disturbed.
+     * <li>Presence.Mode.DO_NOT_DISTURB -- the agent is busy and should not be disturbed.
      * However, special case, or extreme urgency chats may still be offered to the agent.
      * <li>Presence.Mode.AWAY -- the agent is not available and should not
      * have a chat routed to them (equivalent to Presence.Mode.EXTENDED_AWAY).</ul>
@@ -323,7 +323,7 @@ public class AgentSession {
      * <p/>
      * <li>Presence.Mode.AVAILABLE -- (Default) the agent is available for more chats
      * (equivalent to Presence.Mode.CHAT).
-     * <li>Presence.Mode.DO_NOT_DISTURB -– the agent is busy and should not be disturbed.
+     * <li>Presence.Mode.DO_NOT_DISTURB -- the agent is busy and should not be disturbed.
      * However, special case, or extreme urgency chats may still be offered to the agent.
      * <li>Presence.Mode.AWAY -- the agent is not available and should not
      * have a chat routed to them (equivalent to Presence.Mode.EXTENDED_AWAY).</ul>
@@ -386,7 +386,7 @@ public class AgentSession {
      * <p/>
      * <li>Presence.Mode.AVAILABLE -- (Default) the agent is available for more chats
      * (equivalent to Presence.Mode.CHAT).
-     * <li>Presence.Mode.DO_NOT_DISTURB -– the agent is busy and should not be disturbed.
+     * <li>Presence.Mode.DO_NOT_DISTURB -- the agent is busy and should not be disturbed.
      * However, special case, or extreme urgency chats may still be offered to the agent.
      * <li>Presence.Mode.AWAY -- the agent is not available and should not
      * have a chat routed to them (equivalent to Presence.Mode.EXTENDED_AWAY).</ul>

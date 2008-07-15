@@ -26,7 +26,7 @@ import java.util.*;
  * and {@link org.jivesoftware.smack.provider.PrivacyProvider} to allow and block
  * communications from other users. It contains the appropriate structure to suit
  * user-defined privacy lists. Different configured Privacy packages are used in the
- * Server – Manager communication in order to:
+ * server & manager communication in order to:
  * <ul>
  * <li>Retrieving one's privacy lists. 
  * <li>Adding, removing, and editing one's privacy lists. 
