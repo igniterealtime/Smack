@@ -27,25 +27,25 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-import java.security.KeyStore;
-import java.security.Provider;
-import java.security.Security;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.KeyManager;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.Provider;
+import java.security.Security;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.PasswordCallback;
 
 /**
  * Creates a connection to a XMPP server. A simple use of this API might
@@ -714,8 +714,8 @@ public class XMPPConnection {
     }
 
     /**
-     * Returns true if the connection is a secured one, such as an SSL connection or
-     * if TLS was negotiated successfully.
+     * Returns true if the connection to the server has successfully negotiated TLS. Once TLS
+     * has been negotiatied the connection has been secured. @see #isUsingTLS. 
      *
      * @return true if a secure connection to the server.
      */
@@ -882,7 +882,9 @@ public class XMPPConnection {
      * @param packetListener the packet listener to remove.
      */
     public void removePacketListener(PacketListener packetListener) {
-        packetReader.removePacketListener(packetListener);
+    	if (packetReader != null) {
+    		packetReader.removePacketListener(packetListener);
+    	}
     }
 
     /**
@@ -909,7 +911,9 @@ public class XMPPConnection {
      * @param packetListener the packet listener to remove.
      */
     public void removePacketWriterListener(PacketListener packetListener) {
-        packetWriter.removePacketListener(packetListener);
+    	if (packetWriter != null) {
+    		packetWriter.removePacketListener(packetListener);
+    	}
     }
 
     /**
@@ -974,7 +978,9 @@ public class XMPPConnection {
      * @param connectionListener a connection listener.
      */
     public void removeConnectionListener(ConnectionListener connectionListener) {
-        packetReader.connectionListeners.remove(connectionListener);
+    	if (packetReader != null) {
+    		packetReader.connectionListeners.remove(connectionListener);
+    	}
     }
 
     /**
