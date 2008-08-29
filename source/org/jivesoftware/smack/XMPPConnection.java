@@ -20,6 +20,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -163,6 +164,11 @@ public class XMPPConnection {
 
     Writer writer;
     Reader reader;
+
+    /**
+     * Flag that indicates if the roster has been preloaded during login
+     */
+    boolean preloadRoster = true;
 
     /**
      * Collection of available stream compression methods offered by the server.
@@ -375,7 +381,7 @@ public class XMPPConnection {
      */
     public synchronized void login(String username, String password, String resource)
             throws XMPPException {
-        login(username, password, resource, true);
+        login(username, password, resource, true, true);
     }
 
     /**
@@ -422,6 +428,44 @@ public class XMPPConnection {
      */
     public synchronized void login(String username, String password, String resource,
             boolean sendPresence) throws XMPPException {
+    	login(username, password, resource, sendPresence, true);
+    }
+
+    /**
+     * Logs in to the server using the strongest authentication mode supported by
+     * the server. If the server supports SASL authentication then the user will be
+     * authenticated using SASL if not Non-SASL authentication will be tried. An available
+     * presence may optionally be sent. 
+     * 
+     * If <tt>sendPresence</tt>
+     * is false, a presence packet must be sent manually later. If more than five seconds
+     * (default timeout) elapses in each step of the authentication process without a
+     * response from the server, or if an error occurs, a XMPPException will be thrown.<p>
+     * <p/>
+     * 
+     * If <tt>preloadRoster</tt>
+     * is false, a roster request packet must be sent manually later.<p>
+     * <p/>
+     * 
+     * Before logging in (i.e. authenticate) to the server the connection must be connected.
+     * For compatibility and easiness of use the connection will automatically connect to the
+     * server if not already connected.
+     *
+     * It is recommended to use the {@link #login(String, String, boolean, CallbackHandler)} instead.
+     *
+     * @param username      the username.
+     * @param password      the password.
+     * @param resource      the resource.
+     * @param sendPresence  if <tt>true</tt> an available presence will be sent automatically
+     *                      after login is completed.
+     * @param preloadRoster if <tt>true</tt> roster request will be sent to the server, 
+     *                      otherwise roster will be gotten on demand.
+     * @throws XMPPException         if an error occurs.
+     * @throws IllegalStateException if not connected to the server, or already logged in
+     *                               to the serrver.
+     */
+    public synchronized void login(String username, String password, String resource,
+            boolean sendPresence, boolean preloadRoster) throws XMPPException {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
@@ -460,11 +504,14 @@ public class XMPPConnection {
             useCompression();
         }
 
-        // Create the roster if it is not a reconnection.
-        if (this.roster == null) {
-            this.roster = new Roster(this);
+        this.preloadRoster = preloadRoster;
+        if (preloadRoster) {
+        	// Create the roster if it is not a reconnection.
+        	if (this.roster == null) {
+        		this.roster = new Roster(this);
+        	}
+        	roster.reload();
         }
-        roster.reload();
 
         // Set presence to online.
         if (sendPresence) {
@@ -646,6 +693,13 @@ public class XMPPConnection {
      * @return the user's roster, or <tt>null</tt> if the user has not logged in yet.
      */
     public Roster getRoster() {
+    	if (!preloadRoster) {
+    		preloadRoster = true;
+            if (this.roster == null) {
+                this.roster = new Roster(this);
+            }
+            roster.reload();
+    	}
         if (roster == null) {
             return null;
         }
@@ -1551,7 +1605,7 @@ public class XMPPConnection {
                 }
                 else {
                     login(getConfiguration().getUsername(), getConfiguration().getPassword(),
-                            getConfiguration().getResource(), getConfiguration().isSendPresence());
+                            getConfiguration().getResource(), getConfiguration().isSendPresence(), true);
                 }
             }
             catch (XMPPException e) {
