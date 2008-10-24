@@ -4,25 +4,19 @@ import org.jivesoftware.smack.packet.StreamError;
 
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
- * the application explicitly closing it, the manager automatically tries to reconnect to
+ * the application explictly closing it, the manager automatically tries to reconnect to
  * the server.<p>
- * <p/>
+ *
  * The reconnection mechanism will try to reconnect periodically:
  * <ol>
- * <li>First it will try 6 times every 10 seconds.
- * <li>Then it will try 10 times every 1 minute.
- * <li>Finally it will try indefinitely every 5 minutes.
+ *  <li>For the first minute it will attempt to connect once every ten seconds.
+ *  <li>For the next five minutes it will attempt to connect once a minute.
+ *  <li>If that fails it will indefinitely try to connect once every five minutes.
  * </ol>
  *
  * @author Francisco Vives
  */
 public class ReconnectionManager implements ConnectionListener {
-
-    // Holds the time elapsed between each reconnection attempt
-    private int secondBetweenReconnection = 5 * 60; // 5 minutes
-
-    // Holds the thread that produces a periodical reconnection.
-    private Thread reconnectionThread;
 
     // Holds the connection to the server
     private XMPPConnection connection;
@@ -58,30 +52,6 @@ public class ReconnectionManager implements ConnectionListener {
     }
 
     /**
-     * Returns the time elapsed between each reconnection attempt.
-     * By default it will try to reconnect every 5 minutes.
-     * It is used when the client has lost the server connection and the XMPPConnection
-     * automatically tries to reconnect.
-     *
-     * @return Returns the number of seconds between reconnection.
-     */
-    private int getSecondBetweenReconnection() {
-        return secondBetweenReconnection;
-    }
-
-    /**
-     * Sets the time elapsed between each reconnection attempt.
-     * It is used when the client has lost the server connection and the XMPPConnection
-     * automatically tries to reconnect.
-     *
-     * @param secondBetweenReconnection The number of seconds between reconnection.
-     */
-    protected void setSecondBetweenReconnection(
-            int secondBetweenReconnection) {
-        this.secondBetweenReconnection = secondBetweenReconnection;
-    }
-
-    /**
      * Starts a reconnection mechanism if it was configured to do that.
      * The algorithm is been executed when the first connection error is detected.
      * <p/>
@@ -96,33 +66,26 @@ public class ReconnectionManager implements ConnectionListener {
         if (this.isReconnectionAllowed()) {
             // Since there is no thread running, creates a new one to attempt
             // the reconnection.
-            reconnectionThread = new Thread() {
-                /**
-                 * Holds the number of reconnection attempts
-                 */
-                private int attempts = 0;
-                private int firstReconnectionPeriod = 7; // 6 attempts
-                private int secondReconnectionPeriod = 10 + firstReconnectionPeriod; // 16 attempts
-                private int firstReconnectionTime = 10; // 10 seconds
-                private int secondReconnectionTime = 60; // 1 minute
-                private int lastReconnectionTime =
-                        getSecondBetweenReconnection(); // user defined in seconds
-                private int remainingSeconds = 0; // The seconds remaining to a reconnection
-                private int notificationPeriod = 1000; // 1 second
+            Thread reconnectionThread = new Thread() {
 
                 /**
-                 * Returns the amount of time until the next reconnection attempt.
+                 * Holds the current number of reconnection attempts
+                 */
+                private int attempts = 0;
+
+                /**
+                 * Returns the number of seconds until the next reconnection attempt.
                  *
-                 * @return the amount of time until the next reconnection attempt.
+                 * @return the number of seconds until the next reconnection attempt.
                  */
                 private int timeDelay() {
-                    if (attempts > secondReconnectionPeriod) {
-                        return lastReconnectionTime; // 5 minutes
+                    if (attempts > 13) {
+                        return 60 * 5;      // 5 minutes
                     }
-                    if (attempts > firstReconnectionPeriod) {
-                        return secondReconnectionTime; // 1 minute
+                    if (attempts > 7) {
+                        return 60;          // 1 minute
                     }
-                    return firstReconnectionTime; // 10 seconds
+                    return 10;              // 10 seconds
                 }
 
                 /**
@@ -133,15 +96,17 @@ public class ReconnectionManager implements ConnectionListener {
                     // The process will try to reconnect until the connection is established or
                     // the user cancel the reconnection process {@link XMPPConnection#disconnect()}
                     while (ReconnectionManager.this.isReconnectionAllowed()) {
-                        // Indicate how much time will wait until next reconnection
-                        remainingSeconds = timeDelay();
-                        // Notifies the remaining time until the next reconnection attempt
-                        // every 1 second.
+                        // Find how much time we should wait until the next reconnection
+                        int remainingSeconds = timeDelay();
+                        // Sleep until we're ready for the next reconnection attempt. Notify
+                        // listeners once per second about how much time remains before the next
+                        // reconnection attempt.
                         while (ReconnectionManager.this.isReconnectionAllowed() &&
-                                remainingSeconds > 0) {
+                                remainingSeconds > 0)
+                        {
                             try {
-                                Thread.sleep(notificationPeriod);
-                                remainingSeconds = remainingSeconds - 1;
+                                Thread.sleep(1000);
+                                remainingSeconds--;
                                 ReconnectionManager.this
                                         .notifyAttemptToReconnectIn(remainingSeconds);
                             }
@@ -151,12 +116,10 @@ public class ReconnectionManager implements ConnectionListener {
                                 ReconnectionManager.this.notifyReconnectionFailed(e1);
                             }
                         }
-                        // Waiting time have finished
 
-                        // Makes the reconnection attempt
+                        // Makes a reconnection attempt
                         try {
                             if (ReconnectionManager.this.isReconnectionAllowed()) {
-                                // Attempts to reconnect.
                                 connection.connect();
                             }
                         }
