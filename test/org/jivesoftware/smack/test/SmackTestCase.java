@@ -118,6 +118,7 @@ public abstract class SmackTestCase extends TestCase {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port);
         config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
+        config.setSendPresence(sendInitialPresence());
         if (getSocketFactory() == null) {
             config.setSocketFactory(getSocketFactory());
         }
@@ -223,7 +224,7 @@ public abstract class SmackTestCase extends TestCase {
                     }
                 }
                 // Login with the new test account
-                getConnection(i).login(usernamnePrefix + i, usernamnePrefix + i, "Smack", sendInitialPresence());
+                getConnection(i).login(usernamnePrefix + i, usernamnePrefix + i, "Smack");
             }
             // Let the server process the available presences
             Thread.sleep(150);
