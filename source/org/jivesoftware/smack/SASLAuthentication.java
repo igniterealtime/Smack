@@ -35,8 +35,6 @@ import org.jivesoftware.smack.sasl.SASLGSSAPIMechanism;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.UnsupportedCallbackException;
 import java.util.*;
 
 /**
@@ -129,27 +127,27 @@ public class SASLAuthentication implements UserAuthentication {
     }
 
 
-    /** Registers a new SASL mechanism in the specified preference position. The client will try
+    /**
+     * Registers a new SASL mechanism in the specified preference position. The client will try
      * to authenticate using the most prefered SASL mechanism that is also supported by the server.
-     * The SASL mechanism must be registered via {@link #registerSASLMechanism(String, Class)
+     * The SASL mechanism must be registered via {@link #registerSASLMechanism(String, Class)}
      *
-     * @param name   common name of the SASL mechanism. E.g.: PLAIN, DIGEST-MD5 or KERBEROS_V4.
+     * @param name common name of the SASL mechanism. E.g.: PLAIN, DIGEST-MD5 or KERBEROS_V4.
      */
-
     public static void supportSASLMechanism(String name) {
         mechanismsPreferences.add(0, name);
     }
 
-    /** Registers a new SASL mechanism in the specified preference position. The client will try
+    /**
+     * Registers a new SASL mechanism in the specified preference position. The client will try
      * to authenticate using the most prefered SASL mechanism that is also supported by the server.
      * Use the <tt>index</tt> parameter to set the level of preference of the new SASL mechanism.
      * A value of 0 means that the mechanism is the most prefered one. The SASL mechanism must be
-     * registered via {@link #registerSASLMechanism(String, Class)
+     * registered via {@link #registerSASLMechanism(String, Class)}
      *
-     * @param index  preference position amongst all the implemented SASL mechanism. Starts with 0.
-     * @param name   common name of the SASL mechanism. E.g.: PLAIN, DIGEST-MD5 or KERBEROS_V4.
+     * @param name common name of the SASL mechanism. E.g.: PLAIN, DIGEST-MD5 or KERBEROS_V4.
+     * @param index preference position amongst all the implemented SASL mechanism. Starts with 0.
      */
-
     public static void supportSASLMechanism(String name, int index) {
         mechanismsPreferences.add(index, name);
     }
@@ -219,20 +217,20 @@ public class SASLAuthentication implements UserAuthentication {
     public String authenticate(String username, String resource, CallbackHandler cbh) 
             throws XMPPException {
         // Locate the SASLMechanism to use
-        Class selected = null;
+        String selectedMechanism = null;
         for (String mechanism : mechanismsPreferences) {
             if (implementedMechanisms.containsKey(mechanism) &&
                     serverMechanisms.contains(mechanism)) {
-                selected = implementedMechanisms.get(mechanism);
+                selectedMechanism = mechanism;
                 break;
             }
         }
-        if (selected != null) {
+        if (selectedMechanism != null) {
             // A SASL mechanism was found. Authenticate using the selected mechanism and then
             // proceed to bind a resource
             try {
-                Constructor constructor = selected
-                        .getConstructor(new Class[]{SASLAuthentication.class});
+                Class mechanismClass = implementedMechanisms.get(selectedMechanism);
+                Constructor constructor = mechanismClass.getConstructor(SASLAuthentication.class);
                 currentMechanism = (SASLMechanism) constructor.newInstance(this);
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
@@ -244,7 +242,9 @@ public class SASLAuthentication implements UserAuthentication {
                     if (!saslNegotiated && !saslFailed) {
                         try {
                             wait(30000);
-                        } catch (InterruptedException e) {
+                        }
+                        catch (InterruptedException e) {
+                            // Ignore
                         }
                     }
                 }
@@ -252,7 +252,8 @@ public class SASLAuthentication implements UserAuthentication {
                 if (saslFailed) {
                     // SASL authentication failed and the server may have closed the connection
                     // so throw an exception
-                    throw new XMPPException("SASL authentication failed");
+                    throw new XMPPException("SASL authentication failed using mechanism " +
+                            selectedMechanism);
                 }
 
                 if (saslNegotiated) {
@@ -268,7 +269,8 @@ public class SASLAuthentication implements UserAuthentication {
             catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
+        }
+        else {
             throw new XMPPException("SASL Authentication failed. No known authentication mechanisims.");
         }
         throw new XMPPException("SASL authentication failed");
@@ -291,20 +293,20 @@ public class SASLAuthentication implements UserAuthentication {
     public String authenticate(String username, String password, String resource)
             throws XMPPException {
         // Locate the SASLMechanism to use
-        Class selected = null;
+        String selectedMechanism = null;
         for (String mechanism : mechanismsPreferences) {
             if (implementedMechanisms.containsKey(mechanism) &&
                     serverMechanisms.contains(mechanism)) {
-                selected = implementedMechanisms.get(mechanism);
+                selectedMechanism = mechanism;
                 break;
             }
         }
-        if (selected != null) {
+        if (selectedMechanism != null) {
             // A SASL mechanism was found. Authenticate using the selected mechanism and then
             // proceed to bind a resource
             try {
-                Constructor constructor = selected
-                        .getConstructor(new Class[]{SASLAuthentication.class});
+                Class mechanismClass = implementedMechanisms.get(selectedMechanism);
+                Constructor constructor = mechanismClass.getConstructor(SASLAuthentication.class);
                 currentMechanism = (SASLMechanism) constructor.newInstance(this);
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
@@ -316,7 +318,9 @@ public class SASLAuthentication implements UserAuthentication {
                     if (!saslNegotiated && !saslFailed) {
                         try {
                             wait(30000);
-                        } catch (InterruptedException e) {
+                        }
+                        catch (InterruptedException e) {
+                            // Ignore
                         }
                     }
                 }
@@ -324,13 +328,15 @@ public class SASLAuthentication implements UserAuthentication {
                 if (saslFailed) {
                     // SASL authentication failed and the server may have closed the connection
                     // so throw an exception
-                    throw new XMPPException("SASL authentication failed");
+                    throw new XMPPException("SASL authentication failed using mechanism " +
+                            selectedMechanism);
                 }
 
                 if (saslNegotiated) {
                     // Bind a resource for this connection and
                     return bindResourceAndEstablishSession(resource);
-                } else {
+                }
+                else {
                     // SASL authentication failed so try a Non-SASL authentication
                     return new NonSASLAuthentication(connection)
                             .authenticate(username, password, resource);
@@ -345,7 +351,8 @@ public class SASLAuthentication implements UserAuthentication {
                 return new NonSASLAuthentication(connection)
                         .authenticate(username, password, resource);
             }
-        } else {
+        }
+        else {
             // No SASL method was found so try a Non-SASL authentication
             return new NonSASLAuthentication(connection).authenticate(username, password, resource);
         }
@@ -372,7 +379,9 @@ public class SASLAuthentication implements UserAuthentication {
                 if (!saslNegotiated && !saslFailed) {
                     try {
                         wait(5000);
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e) {
+                        // Ignore
                     }
                 }
             }
@@ -401,7 +410,9 @@ public class SASLAuthentication implements UserAuthentication {
             if (!resourceBinded) {
                 try {
                     wait(30000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
+                    // Ignore
                 }
             }
         }
