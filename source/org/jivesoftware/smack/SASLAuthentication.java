@@ -24,17 +24,11 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Session;
-import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.sasl.SASLAnonymous;
-import org.jivesoftware.smack.sasl.SASLPlainMechanism;
-import org.jivesoftware.smack.sasl.SASLCramMD5Mechanism;
-import org.jivesoftware.smack.sasl.SASLDigestMD5Mechanism;
-import org.jivesoftware.smack.sasl.SASLExternalMechanism;
-import org.jivesoftware.smack.sasl.SASLGSSAPIMechanism;
+import org.jivesoftware.smack.sasl.*;
 
+import javax.security.auth.callback.CallbackHandler;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import javax.security.auth.callback.CallbackHandler;
 import java.util.*;
 
 /**
@@ -311,7 +305,7 @@ public class SASLAuthentication implements UserAuthentication {
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
                 // may not match the XMPP domain.
-                currentMechanism.authenticate(username, connection.getHost(), password);
+                currentMechanism.authenticate(username, connection.getServiceName(), password);
 
                 // Wait until SASL negotiation finishes
                 synchronized (this) {
