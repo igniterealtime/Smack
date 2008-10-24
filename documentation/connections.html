@@ -55,14 +55,39 @@
     Connect and Disconnect
 </p>
 
+<div class="code">
+<pre>
+<font color="gray"><i>// Create the configuration for this new connection</i></font>
+ConnectionConfiguration config = new ConnectionConfiguration(<font color="green">"jabber.org"</font>, 5222);
+config.setCompressionEnabled(true);
+config.setSASLAuthenticationEnabled(true);
 
+XMPPConnection connection = new XMPPConnection(config);
+<font color="gray"><i>// Connect to the server</i></font>
+connection.connect();
+<font color="gray"><i>// Log into the server</i></font>
+connection.login(<font color="green">"username"</font>, <font color="green">"password"</font>, <font color="green">"SomeResource"</font>);
+....
+<font color="gray"><i>// Disconnect from the server</i></font>
+connection.disconnect();
+</pre></div>
 
-
+<p>
+By default Smack will try to reconnect the connection in case it was abruptly disconnected. Use
+<i>ConnectionConfiguration#setReconnectionAllowed(boolean) to turn on/off this feature. The reconnection
+manager will try to immediately reconnect to the server and increase the delay between attempts as
+successive reconnections keep failing.</i>
+<br>
+In case you want to force a reconnection while the reconnetion manager is waiting for the next
+reconnection, you can just use <i>XMPPConnection#connect()</i> and a new attempt will be made.
+If the manual attempt also failed then the reconnection manager will still continue the
+reconnection job.
+</p>
 
     <br clear="all"/><br><br>
 
 <div class="footer">
-    Copyright &copy; Jive Software 2002-2007
+    Copyright &copy; Jive Software 2002-2008
 </div>
 
 </body>
