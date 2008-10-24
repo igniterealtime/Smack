@@ -132,6 +132,7 @@ public class AdHocCommandManager {
      * command for the connection related to this command manager. The
      * <code>name</name> is the human readable name of the command.
      * The <code>class</code> is the class of the command
+     *
      * @param node the unique identifier of the command.
      * @param name the human readable name of the command.
      * @param clazz the class of the command.
@@ -223,12 +224,13 @@ public class AdHocCommandManager {
     }
 
     /**
+     * <ul>
      * <li>Adds listeners to the connection</li>
      * <li>Registers the ad-hoc command feature to the ServiceDiscoveryManager</li>
      * <li>Registers the items of the feature</li>
      * <li>Adds packet listeners to handle execution requests</li>
      * <li>Creates and start the session sweeper</li>
-     * 
+     * </ul>
      */
     private void init() {
         // Register the new instance and associate it with the connection
@@ -358,19 +360,23 @@ public class AdHocCommandManager {
      * Process the AdHoc-Command packet that request the execution of some
      * action of a command. If this is the first request, this method checks,
      * before executing the command, if:
-     * <li>The requested command exists</li>
-     * <li>The requester has permissions to execute it</li>
-     * <li>The command has more than one stage, if so, it saves the command and
-     * session ID for further use</li>
+     * <ul>
+     *  <li>The requested command exists</li>
+     *  <li>The requester has permissions to execute it</li>
+     *  <li>The command has more than one stage, if so, it saves the command and
+     *      session ID for further use</li>
+     * </ul>
      * 
      * <br>
      * <br>
      * If this is not the first request, this method checks, before executing
      * the command, if:
-     * <li>The session ID of the request was stored</li>
-     * <li>The session life do not exceed the time out</li>
-     * <li>The action to execute is one of the available actions</li>
-     * 
+     * <ul>
+     *  <li>The session ID of the request was stored</li>
+     *  <li>The session life do not exceed the time out</li>
+     *  <li>The action to execute is one of the available actions</li>
+     * </ul>
+     *
      * @param requestData
      *            the packet to process.
      */
@@ -459,7 +465,8 @@ public class AdHocCommandManager {
                 // Sends the response packet
                 connection.sendPacket(response);
 
-            } catch (XMPPException e) {
+            }
+            catch (XMPPException e) {
                 // If there is an exception caused by the next, complete,
                 // prev or cancel method, then that error is returned to the
                 // requester.
@@ -548,20 +555,24 @@ public class AdHocCommandManager {
                             // If it is the last stage then the command is
                             // completed
                             response.setStatus(Status.completed);
-                        } else {
+                        }
+                        else {
                             // Otherwise it is still executing
                             response.setStatus(Status.executing);
                         }
-                    } else if (Action.complete.equals(action)) {
+                    }
+                    else if (Action.complete.equals(action)) {
                         command.increaseStage();
                         command.complete(new Form(requestData.getForm()));
                         response.setStatus(Status.completed);
                         // Remove the completed session
                         executingCommands.remove(sessionId);
-                    } else if (Action.prev.equals(action)) {
+                    }
+                    else if (Action.prev.equals(action)) {
                         command.decreaseStage();
                         command.prev();
-                    } else if (Action.cancel.equals(action)) {
+                    }
+                    else if (Action.cancel.equals(action)) {
                         command.cancel();
                         response.setStatus(Status.canceled);
                         // Remove the canceled session
@@ -632,20 +643,17 @@ public class AdHocCommandManager {
     /**
      * Creates a new instance of a command to be used by a new execution request
      * 
-     * @param commandNode
-     *            the command node that identifies it.
-     * @param sessionID
-     *            the session id of this execution.
+     * @param commandNode the command node that identifies it.
+     * @param sessionID the session id of this execution.
      * @return the command instance to execute.
-     * @throws XMPPException
-     *             if there is problem creating the new instance
+     * @throws XMPPException if there is problem creating the new instance.
      */
     private LocalCommand newInstanceOfCmd(String commandNode, String sessionID)
-            throws XMPPException {
-        // TODO Evaluate the possibility of using a factory for creating the new
-        // instances.
+            throws XMPPException
+    {
+        // TODO Evaluate the possibility of using a factory for creating the new instances.
         AdHocCommandInfo commandInfo = commands.get(commandNode);
-        LocalCommand command = null;
+        LocalCommand command;
         try {
             command = (LocalCommand) commandInfo.getCmdClass().newInstance();
             command.setSessionID(sessionID);
@@ -684,15 +692,13 @@ public class AdHocCommandManager {
     private static class AdHocCommandInfo {
 
         private String node;
-
         private String name;
-
         private String ownerJID;
-
         private Class cmdClass;
 
         public AdHocCommandInfo(String node, String name, String ownerJID,
-                Class cmdClass) {
+                Class cmdClass)
+        {
             this.node = node;
             this.name = name;
             this.ownerJID = ownerJID;
