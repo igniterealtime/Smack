@@ -20,10 +20,11 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jivesoftware.smack.util.DNSUtil;
 
 import javax.net.SocketFactory;
+import javax.security.auth.callback.CallbackHandler;
 import java.io.File;
 
 /**
@@ -57,6 +58,10 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean compressionEnabled = false;
 
     private boolean saslAuthenticationEnabled = true;
+    /**
+     * Used to get information from the user
+     */
+    private CallbackHandler callbackHandler;
 
     private boolean debuggerEnabled = XMPPConnection.DEBUG_ENABLED;
 
@@ -70,7 +75,8 @@ public class ConnectionConfiguration implements Cloneable {
     private String username;
     private String password;
     private String resource;
-    private boolean sendPresence;
+    private boolean sendPresence = true;
+    private boolean rosterLoadedAtLogin = true;
     private SecurityMode securityMode = SecurityMode.enabled;
 	
 	// Holds the proxy information (such as proxyhost, proxyport, username, password etc)
@@ -564,6 +570,66 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
+     * Sets if an initial available presence will be sent to the server. By default
+     * an available presence will be sent to the server indicating that this presence
+     * is not online and available to receive messages. If you want to log in without
+     * being 'noticed' then pass a <tt>false</tt> value.
+     *
+     * @param sendPresence true if an initial available presence will be sent while logging in.
+     */
+    public void setSendPresence(boolean sendPresence) {
+        this.sendPresence = sendPresence;
+    }
+
+    /**
+     * Returns true if the roster will be loaded from the server when logging in. This
+     * is the common behaviour for clients but sometimes clients may want to differ this
+     * or just never do it if not interested in rosters.
+     *
+     * @return true if the roster will be loaded from the server when logging in.
+     */
+    public boolean isRosterLoadedAtLogin() {
+        return rosterLoadedAtLogin;
+    }
+
+    /**
+     * Sets if the roster will be loaded from the server when logging in. This
+     * is the common behaviour for clients but sometimes clients may want to differ this
+     * or just never do it if not interested in rosters.
+     *
+     * @param rosterLoadedAtLogin if the roster will be loaded from the server when logging in.
+     */
+    public void setRosterLoadedAtLogin(boolean rosterLoadedAtLogin) {
+        this.rosterLoadedAtLogin = rosterLoadedAtLogin;
+    }
+
+    /**
+     * Returns a CallbackHandler to obtain information, such as the password or
+     * principal information during the SASL authentication. A CallbackHandler
+     * will be used <b>ONLY</b> if no password was specified during the login while
+     * using SASL authentication.
+     *
+     * @return a CallbackHandler to obtain information, such as the password or
+     * principal information during the SASL authentication.
+     */
+    public CallbackHandler getCallbackHandler() {
+        return callbackHandler;
+    }
+
+    /**
+     * Sets a CallbackHandler to obtain information, such as the password or
+     * principal information during the SASL authentication. A CallbackHandler
+     * will be used <b>ONLY</b> if no password was specified during the login while
+     * using SASL authentication.
+     *
+     * @param callbackHandler to obtain information, such as the password or
+     * principal information during the SASL authentication.
+     */
+    public void setCallbackHandler(CallbackHandler callbackHandler) {
+        this.callbackHandler = callbackHandler;
+    }
+
+    /**
      * Returns the socket factory used to create new xmppConnection sockets.
      * This is useful when connecting through SOCKS5 proxies.
      * 
@@ -636,10 +702,9 @@ public class ConnectionConfiguration implements Cloneable {
         return sendPresence;
     }
 
-    void setLoginInfo(String username, String password, String resource, boolean sendPresence) {
+    void setLoginInfo(String username, String password, String resource) {
         this.username = username;
         this.password = password;
         this.resource = resource;
-        this.sendPresence = sendPresence;
     }
 }

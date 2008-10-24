@@ -25,11 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Vector;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -48,7 +44,7 @@ import java.util.List;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "3.0.5";
+    private static final String SMACK_VERSION = "3.1.0";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;

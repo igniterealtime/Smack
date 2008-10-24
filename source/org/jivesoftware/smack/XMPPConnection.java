@@ -20,7 +20,6 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -164,11 +163,6 @@ public class XMPPConnection {
 
     Writer writer;
     Reader reader;
-
-    /**
-     * Flag that indicates if the roster has been preloaded during login
-     */
-    boolean preloadRoster = true;
 
     /**
      * Collection of available stream compression methods offered by the server.
@@ -336,12 +330,19 @@ public class XMPPConnection {
      * Logs in to the server using the strongest authentication mode supported by
      * the server, then sets presence to available. If more than five seconds
      * (default timeout) elapses in each step of the authentication process without
-     * a response from the server, or if an error occurs, a XMPPException will be thrown.
+     * a response from the server, or if an error occurs, a XMPPException will be thrown.<p>
      *
-     * It is recommended to use the {@link #login(String, CallbackHandler)} instead.
+     * It is possible to log in without sending an initial available presence by using
+     * {@link ConnectionConfiguration#setSendPresence(boolean)}. If this connection is
+     * not interested in loading its roster upon login then use
+     * {@link ConnectionConfiguration#setRosterLoadedAtLogin(boolean)}.
+     * Finally, if you want to not pass a password and instead use a more advanced mechanism
+     * while using SASL then you may be interested in using
+     * {@link ConnectionConfiguration#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
+     * For more advanced login settings see {@link ConnectionConfiguration}.
      *
      * @param username the username.
-     * @param password the password.
+     * @param password     the password or <tt>null</tt> if using a CallbackHandler.
      * @throws XMPPException if an error occurs.
      */
     public void login(String username, String password) throws XMPPException {
@@ -350,122 +351,33 @@ public class XMPPConnection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server, then sets presence to available. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without
-     * a response from the server, or if an error occurs, a XMPPException will be thrown.
-     *
-     * It is recommended to use the {@link #login(String, CallbackHandler)} instead.
-     *
-     * @param username the username.
-     * @param cbh The CallbackHandler used to determine password, or other information.
-     * @throws XMPPException if an error occurs.
-     */
-    public void login(String username, CallbackHandler cbh) throws XMPPException {
-        login(username, "Smack", cbh);
-    }
-
-    /**
-     * Logs in to the server using the strongest authentication mode supported by
-     * the server, then sets presence to available. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without
-     * a response from the server, or if an error occurs, a XMPPException will be thrown.
-     *
-     * It is recommended to use the {@link #login(String, String, CallbackHandler)} instead.
-     *
-     * @param username the username.
-     * @param password the password.
-     * @param resource the resource.
-     * @throws XMPPException         if an error occurs.
-     * @throws IllegalStateException if not connected to the server, or already logged in
-     *                               to the serrver.
-     */
-    public synchronized void login(String username, String password, String resource)
-            throws XMPPException {
-        login(username, password, resource, true, true);
-    }
-
-    /**
-     * Logs in to the server using the strongest authentication mode supported by
-     * the server, then sets presence to available. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without
-     * a response from the server, or if an error occurs, a XMPPException will be thrown.
-     *
-     * @param username the username.
-     * @param cbh the password.
-     * @param resource the resource.
-     * @throws XMPPException         if an error occurs.
-     * @throws IllegalStateException if not connected to the server, or already logged in
-     *                               to the serrver.
-     */
-    public synchronized void login(String username, String resource, CallbackHandler cbh)
-            throws XMPPException {
-        login(username, resource, true, cbh);
-    }
-
-    /**
-     * Logs in to the server using the strongest authentication mode supported by
      * the server. If the server supports SASL authentication then the user will be
-     * authenticated using SASL if not Non-SASL authentication will be tried. An available
-     * presence may optionally be sent. If <tt>sendPresence</tt>
-     * is false, a presence packet must be sent manually later. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without a
-     * response from the server, or if an error occurs, a XMPPException will be thrown.<p>
-     * <p/>
+     * authenticated using SASL if not Non-SASL authentication will be tried. If more than
+     * five seconds (default timeout) elapses in each step of the authentication process
+     * without a response from the server, or if an error occurs, a XMPPException will be
+     * thrown.<p>
+     * 
      * Before logging in (i.e. authenticate) to the server the connection must be connected.
      * For compatibility and easiness of use the connection will automatically connect to the
-     * server if not already connected.
+     * server if not already connected.<p>
      *
-     * It is recommended to use the {@link #login(String, String, boolean, CallbackHandler)} instead.
+     * It is possible to log in without sending an initial available presence by using
+     * {@link ConnectionConfiguration#setSendPresence(boolean)}. If this connection is
+     * not interested in loading its roster upon login then use
+     * {@link ConnectionConfiguration#setRosterLoadedAtLogin(boolean)}.
+     * Finally, if you want to not pass a password and instead use a more advanced mechanism
+     * while using SASL then you may be interested in using
+     * {@link ConnectionConfiguration#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
+     * For more advanced login settings see {@link ConnectionConfiguration}.
      *
      * @param username     the username.
-     * @param password     the password.
+     * @param password     the password or <tt>null</tt> if using a CallbackHandler.
      * @param resource     the resource.
-     * @param sendPresence if <tt>true</tt> an available presence will be sent automatically
-     *                     after login is completed.
      * @throws XMPPException         if an error occurs.
      * @throws IllegalStateException if not connected to the server, or already logged in
      *                               to the serrver.
      */
-    public synchronized void login(String username, String password, String resource,
-            boolean sendPresence) throws XMPPException {
-    	login(username, password, resource, sendPresence, true);
-    }
-
-    /**
-     * Logs in to the server using the strongest authentication mode supported by
-     * the server. If the server supports SASL authentication then the user will be
-     * authenticated using SASL if not Non-SASL authentication will be tried. An available
-     * presence may optionally be sent. 
-     * 
-     * If <tt>sendPresence</tt>
-     * is false, a presence packet must be sent manually later. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without a
-     * response from the server, or if an error occurs, a XMPPException will be thrown.<p>
-     * <p/>
-     * 
-     * If <tt>preloadRoster</tt>
-     * is false, a roster request packet must be sent manually later.<p>
-     * <p/>
-     * 
-     * Before logging in (i.e. authenticate) to the server the connection must be connected.
-     * For compatibility and easiness of use the connection will automatically connect to the
-     * server if not already connected.
-     *
-     * It is recommended to use the {@link #login(String, String, boolean, CallbackHandler)} instead.
-     *
-     * @param username      the username.
-     * @param password      the password.
-     * @param resource      the resource.
-     * @param sendPresence  if <tt>true</tt> an available presence will be sent automatically
-     *                      after login is completed.
-     * @param preloadRoster if <tt>true</tt> roster request will be sent to the server, 
-     *                      otherwise roster will be gotten on demand.
-     * @throws XMPPException         if an error occurs.
-     * @throws IllegalStateException if not connected to the server, or already logged in
-     *                               to the serrver.
-     */
-    public synchronized void login(String username, String password, String resource,
-            boolean sendPresence, boolean preloadRoster) throws XMPPException {
+    public synchronized void login(String username, String password, String resource) throws XMPPException {
         if (!isConnected()) {
             throw new IllegalStateException("Not connected to server.");
         }
@@ -479,7 +391,13 @@ public class XMPPConnection {
         if (configuration.isSASLAuthenticationEnabled() &&
                 saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
-            response = saslAuthentication.authenticate(username, password, resource);
+            if (password != null) {
+                response = saslAuthentication.authenticate(username, password, resource);
+            }
+            else {
+                response = saslAuthentication
+                        .authenticate(username, resource, configuration.getCallbackHandler());
+            }
         }
         else {
             // Authenticate using Non-SASL
@@ -504,109 +422,16 @@ public class XMPPConnection {
             useCompression();
         }
 
-        this.preloadRoster = preloadRoster;
-        if (preloadRoster) {
-        	// Create the roster if it is not a reconnection.
-        	if (this.roster == null) {
-        		this.roster = new Roster(this);
-        	}
-        	roster.reload();
-        }
-
-        // Set presence to online.
-        if (sendPresence) {
-            packetWriter.sendPacket(new Presence(Presence.Type.available));
-        }
-
-        // Indicate that we're now authenticated.
-        authenticated = true;
-        anonymous = false;
-
-        // Stores the autentication for future reconnection
-        this.getConfiguration().setLoginInfo(username, password, resource, sendPresence);
-
-        // If debugging is enabled, change the the debug window title to include the
-        // name we are now logged-in as.
-        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
-        // will be null
-        if (configuration.isDebuggerEnabled() && debugger != null) {
-            debugger.userHasLogged(user);
-        }
-    }
-    /**
-     * Logs in to the server using the strongest authentication mode supported by
-     * the server. If the server supports SASL authentication then the user will be
-     * authenticated using SASL if not Non-SASL authentication will be tried. An available
-     * presence may optionally be sent. If <tt>sendPresence</tt>
-     * is false, a presence packet must be sent manually later. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without a
-     * response from the server, or if an error occurs, a XMPPException will be thrown.<p>
-     * <p/>
-     * Before logging in (i.e. authenticate) to the server the connection must be connected.
-     * For compatibility and easiness of use the connection will automatically connect to the
-     * server if not already connected.
-     *
-     * This version requires the use of a CallbackHandler to obtain information, such as the 
-     * password or principal information
-     *
-     * @param username     the username.
-     * @param cbh          the callback handler.
-     * @param resource     the resource.
-     * @param sendPresence if <tt>true</tt> an available presence will be sent automatically
-     *                     after login is completed.
-     * @throws XMPPException         if an error occurs.
-     * @throws IllegalStateException if not connected to the server, or already logged in
-     *                               to the serrver.
-     */
-    public synchronized void login(String username, String resource,
-            boolean sendPresence, CallbackHandler cbh) throws XMPPException {
-
-
-            if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (authenticated) {
-            throw new IllegalStateException("Already logged in to server.");
-        }
-        // Do partial version of nameprep on the username.
-        username = username.toLowerCase().trim();
-
-        String response;
-        if (configuration.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasNonAnonymousAuthentication()) {
-            // Authenticate using SASL
-            response = saslAuthentication.authenticate(username, resource, cbh);
-        }
-        else {
-            throw new XMPPException("SASL authentication unavilable");
-        }
-
-        // Set the user.
-        if (response != null) {
-            this.user = response;
-            // Update the serviceName with the one returned by the server
-            this.serviceName = StringUtils.parseServer(response);
-        }
-        else {
-            this.user = username + "@" + this.serviceName;
-            if (resource != null) {
-                this.user += "/" + resource;
-            }
-        }
-
-        // If compression is enabled then request the server to use stream compression
-        if (configuration.isCompressionEnabled()) {
-            useCompression();
-        }
-
         // Create the roster if it is not a reconnection.
         if (this.roster == null) {
             this.roster = new Roster(this);
         }
-        roster.reload();
+        if (configuration.isRosterLoadedAtLogin()) {
+        	roster.reload();
+        }
 
         // Set presence to online.
-        if (sendPresence) {
+        if (configuration.isSendPresence()) {
             packetWriter.sendPacket(new Presence(Presence.Type.available));
         }
 
@@ -614,9 +439,8 @@ public class XMPPConnection {
         authenticated = true;
         anonymous = false;
 
-        //TODO: Handle this!
         // Stores the autentication for future reconnection
-        //this.getConfiguration().setLoginInfo(username, password, resource, sendPresence);
+        this.getConfiguration().setLoginInfo(username, password, resource);
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
@@ -625,7 +449,6 @@ public class XMPPConnection {
         if (configuration.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
-
     }
 
     /**
@@ -693,11 +516,7 @@ public class XMPPConnection {
      * @return the user's roster, or <tt>null</tt> if the user has not logged in yet.
      */
     public Roster getRoster() {
-    	if (!preloadRoster) {
-    		preloadRoster = true;
-            if (this.roster == null) {
-                this.roster = new Roster(this);
-            }
+    	if (!configuration.isRosterLoadedAtLogin()) {
             roster.reload();
     	}
         if (roster == null) {
@@ -1605,7 +1424,7 @@ public class XMPPConnection {
                 }
                 else {
                     login(getConfiguration().getUsername(), getConfiguration().getPassword(),
-                            getConfiguration().getResource(), getConfiguration().isSendPresence(), true);
+                            getConfiguration().getResource());
                 }
             }
             catch (XMPPException e) {
