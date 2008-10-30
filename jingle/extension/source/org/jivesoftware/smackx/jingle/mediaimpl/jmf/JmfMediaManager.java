@@ -20,18 +20,19 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.JMFInit;
 import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implements a jingleMediaManager using JMF based API.
@@ -42,7 +43,9 @@ import java.util.List;
  */
 public class JmfMediaManager extends JingleMediaManager {
 
-    public static final String MEDIA_NAME = "JMF";
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JmfMediaManager.class);
+
+	public static final String MEDIA_NAME = "JMF";
 
     
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
@@ -142,7 +145,7 @@ public class JmfMediaManager extends JingleMediaManager {
                 jmfProperties.createNewFile();
             }
             catch (IOException ex) {
-                System.out.println("Failed to create jmf.properties");
+                LOGGER.debug("Failed to create jmf.properties");
                 ex.printStackTrace();
             }
         }

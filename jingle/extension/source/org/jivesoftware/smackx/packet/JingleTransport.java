@@ -270,7 +270,7 @@ public class JingleTransport implements PacketExtension {
      * RTP-ICE profile
      */
     public static class Ice extends JingleTransport {
-        public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0176.html#ns-udp";
+        public static final String NAMESPACE = "urn:xmpp:tmp:jingle:transports:ice-udp";
 
         public Ice() {
             super();

@@ -20,20 +20,26 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.ContentNegotiator;
+import org.jivesoftware.smackx.jingle.JingleActionEnum;
+import org.jivesoftware.smackx.jingle.JingleException;
+import org.jivesoftware.smackx.jingle.JingleNegotiator;
+import org.jivesoftware.smackx.jingle.JingleNegotiatorState;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleTransportListener;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.packet.JingleContent;
 import org.jivesoftware.smackx.packet.JingleTransport;
 import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Transport negotiator.
@@ -46,7 +52,9 @@ import java.util.List;
  */
 public abstract class TransportNegotiator extends JingleNegotiator {
 
-    // The time we give to the candidates check before we accept or decline the
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(TransportNegotiator.class);
+
+	// The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
     public final static int CANDIDATES_ACCEPT_PERIOD = 4000;
 
@@ -134,7 +142,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 return;
             }
         }
-        //System.out.println("BEST: " + bestLocalCandidate.getIp());
+        //LOGGER.debug("BEST: " + bestLocalCandidate.getIp());
         throw new XMPPException("Local transport candidate has not be offered.");
     }
 
@@ -434,7 +442,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         // Add the candidate to the list
         if (remoteCandidate != null) {
             synchronized (validRemoteCandidates) {
-                System.out.println("ADDED Valid Cand: " + remoteCandidate.getIp() + ":" + remoteCandidate.getPort());
+                LOGGER.debug("Added valid candidate: " + remoteCandidate.getIp() + ":" + remoteCandidate.getPort());
                 validRemoteCandidates.add(remoteCandidate);
             }
         }
@@ -562,7 +570,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
         if (!(resolver.isResolving() || resolver.isResolved())) {
             // Resolve our IP and port
-            System.out.println("RESOLVER CALLED");
+            LOGGER.debug("RESOLVER CALLED");
             resolver.resolve(session);
         }
     }
@@ -727,14 +735,14 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (!accepted.isEmpty()) {
 
             for (TransportCandidate cand : accepted) {
-                System.out.println("Cand: " + cand.getIp());
+                LOGGER.debug("Remote acccepted candidate addr: " + cand.getIp());
             }
 
             TransportCandidate cand = (TransportCandidate) accepted.get(0);
             setAcceptedLocalCandidate(cand);
 
             if (isEstablished()) {
-                System.out.println("SET ACTIVE");
+                LOGGER.debug(cand.getIp() + " is set active");
                 //setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
             }
         }
@@ -748,7 +756,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     private IQ receiveSessionAcceptAction(Jingle jingle) {
         IQ response = null;
 
-        System.out.println("Transport stabilished");
+        LOGGER.debug("Transport stabilished");
         //triggerTransportEstablished(getAcceptedLocalCandidate(), getBestRemoteCandidate());
 
         //setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
@@ -767,7 +775,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         for (JingleListener li : listeners) {
             if (li instanceof JingleTransportListener) {
                 JingleTransportListener mli = (JingleTransportListener) li;
-                System.out.println("triggerTransportEstablished " + local.getLocalIp() + ":" + local.getPort() + "|"
+                LOGGER.debug("triggerTransportEstablished " + local.getLocalIp() + ":" + local.getPort() + " <-> "
                         + remote.getIp() + ":" + remote.getPort());
                 mli.transportEstablished(local, remote);
             }
@@ -827,10 +835,10 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             // Hopefully, we only have one validRemoteCandidate
             ArrayList cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
-                System.out.println("RAW CAND");
+                LOGGER.debug("RAW CAND");
                 return (TransportCandidate) cands.get(0);
             } else {
-                System.out.println("No Remote Candidate");
+                LOGGER.debug("No Remote Candidate");
                 return null;
             }
         }
@@ -893,7 +901,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             }
 
             if (result != null && result.getType().equals("relay"))
-                System.out.println("Relay Type");
+                LOGGER.debug("Relay Type");
 
             return result;
         }

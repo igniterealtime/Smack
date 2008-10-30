@@ -44,7 +44,7 @@ public class Jingle extends IQ {
 
     // static
 
-    public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0166.html#ns";
+    public static final String NAMESPACE = "urn:xmpp:tmp:jingle";
 
     public static final String NODENAME = "jingle";
 
@@ -190,8 +190,6 @@ public class Jingle extends IQ {
 
     /**
      * Returns the XML namespace of the extension sub-packet root element.
-     * According the specification the namespace is always
-     * "http://www.xmpp.org/extensions/xep-0166.html#ns"
      *
      * @return the XML namespace of the packet extension.
      */

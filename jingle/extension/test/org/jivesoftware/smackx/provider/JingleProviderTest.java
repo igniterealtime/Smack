@@ -36,11 +36,11 @@ public class JingleProviderTest extends SmackTestCase {
 
 		// Create a dummy packet for testing...
 		IQfake iqSent = new IQfake (
-				" <jingle xmlns='http://jabber.org/protocol/jingle'" +
+				" <jingle xmlns='urn:xmpp:tmp:jingle'" +
 				" initiator=\"gorrino@viejo.com\"" +
 				" responder=\"colico@hepatico.com\"" +
 				" action=\"transport-info\" sid=\"\">" +
-				" <transport xmlns='http://jabber.org/protocol/jingle/transport/ice'>" +
+				" <transport xmlns='urn:xmpp:tmp:jingle:transports:ice-udp'>" +
 				" <candidate generation=\"1\"" +
 				" ip=\"192.168.1.1\"" +
 				" password=\"secret\"" +

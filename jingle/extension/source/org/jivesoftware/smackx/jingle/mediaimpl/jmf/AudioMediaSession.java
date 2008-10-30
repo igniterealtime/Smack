@@ -20,14 +20,16 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import javax.media.MediaLocator;
+
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-
-import javax.media.MediaLocator;
-import java.io.IOException;
-import java.net.ServerSocket;
 
 /**
  * This Class implements a complete JingleMediaSession.
@@ -41,7 +43,9 @@ import java.net.ServerSocket;
  */
 public class AudioMediaSession extends JingleMediaSession {
 
-    private AudioChannel audioChannel;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(AudioMediaSession.class);
+
+	private AudioChannel audioChannel;
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
@@ -73,7 +77,7 @@ public class AudioMediaSession extends JingleMediaSession {
             localPort = getFreePort();
             remotePort = this.getLocal().getSymmetric().getPort();
 
-            System.out.println(this.getLocal().getConnection() + " " + ip + ": " + localPort + "->" + remotePort);
+            LOGGER.debug(this.getLocal().getConnection() + " " + ip + ": " + localPort + "->" + remotePort);
 
         }
         else {

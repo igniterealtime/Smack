@@ -20,6 +20,12 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.Iterator;
+
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
@@ -29,14 +35,9 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.packet.DiscoverItems;
+import org.jivesoftware.smackx.jingle.SmackLogger;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.xmlpull.v1.XmlPullParser;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.Iterator;
 
 /**
  * RTPBridge IQ Packet used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
@@ -51,7 +52,9 @@ import java.util.Iterator;
  */
 public class RTPBridge extends IQ {
 
-    private String sid;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(RTPBridge.class);
+
+	private String sid;
     private String pass;
     private String ip;
     private String name;
@@ -424,20 +427,29 @@ public class RTPBridge extends IQ {
             return false;
         }
 
-        System.out.println("Service listing");
+        LOGGER.debug("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(xmppConnection);
         try {
-            DiscoverItems items = disco.discoverItems(xmppConnection.getServiceName());
-            Iterator iter = items.getItems();
+//            DiscoverItems items = disco.discoverItems(xmppConnection.getServiceName());
+//            Iterator iter = items.getItems();
+//            while (iter.hasNext()) {
+//                DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
+//                if (item.getEntityID().startsWith("rtpbridge.")) {
+//                    return true;
+//                }
+//            }
+            
+            DiscoverInfo discoInfo = disco.discoverInfo(xmppConnection.getServiceName());
+            Iterator iter = discoInfo.getIdentities();
             while (iter.hasNext()) {
-                DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
-                if (item.getEntityID().startsWith("rtpbridge.")) {
-                    return true;
-                }
+                DiscoverInfo.Identity identity = (DiscoverInfo.Identity) iter.next();
+                if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
+					return true;
+				}
             }
-        }
+       }
         catch (XMPPException e) {
             e.printStackTrace();
         }
@@ -467,7 +479,7 @@ public class RTPBridge extends IQ {
         rtpPacket.setHostA(localCandidate.getIp());
         rtpPacket.setHostB(proxyCandidate.getIp());
 
-        // System.out.println("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
+        // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
         PacketCollector collector = xmppConnection
                 .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
@@ -499,7 +511,7 @@ public class RTPBridge extends IQ {
         rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getServiceName());
         rtpPacket.setType(Type.SET);
 
-        // System.out.println("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
+        // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
         PacketCollector collector = xmppConnection
                 .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));

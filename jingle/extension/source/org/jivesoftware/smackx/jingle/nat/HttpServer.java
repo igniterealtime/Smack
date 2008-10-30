@@ -52,28 +52,36 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
+
+import org.jivesoftware.smackx.jingle.SmackLogger;
 
 /**
  * A very Simple HTTP Server
  */
 public class HttpServer {
 
-    public HttpServer(int port) {
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(HttpServer.class);
+
+	public HttpServer(int port) {
         ServerSocket server_socket;
 
         try {
 
             server_socket = new ServerSocket(port);
-            System.out.println("httpServer running on port " +
+            LOGGER.debug("httpServer running on port " +
                     server_socket.getLocalPort());
 
             while (true) {
                 Socket socket = server_socket.accept();
-                System.out.println("New connection accepted " +
+                LOGGER.debug("New connection accepted " +
                         socket.getInetAddress() +
                         ":" + socket.getPort());
 
@@ -86,13 +94,13 @@ public class HttpServer {
                     thread.start();
                 }
                 catch (Exception e) {
-                    System.out.println(e);
+                    LOGGER.debug("", e);
                 }
             }
         }
 
         catch (IOException e) {
-            System.out.println(e);
+            LOGGER.debug("", e);
         }
 
     }
@@ -129,7 +137,7 @@ public class HttpServer {
             while (true) {
 
                 String headerLine = br.readLine();
-                System.out.println(headerLine);
+                LOGGER.debug(headerLine);
                 if (headerLine.equals(CRLF) || headerLine.equals("")) break;
 
                 StringTokenizer s = new StringTokenizer(headerLine);

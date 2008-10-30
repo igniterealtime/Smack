@@ -52,15 +52,16 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.jingle.JingleSession;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 
 /**
  * A TransportResolver is used for obtaining a list of valid transport
@@ -72,7 +73,9 @@ import java.util.List;
  */
 public abstract class TransportResolver {
 
-    public enum Type {
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(TransportResolver.class);
+	
+	public enum Type {
 
         rawupd, ice
     }
@@ -247,7 +250,7 @@ public abstract class TransportResolver {
             TransportResolverListener trl = (TransportResolverListener) iter.next();
             if (trl instanceof TransportResolverListener.Resolver) {
                 TransportResolverListener.Resolver li = (TransportResolverListener.Resolver) trl;
-                System.out.println("triggerCandidateAdded : " + cand.getLocalIp());
+                LOGGER.debug("triggerCandidateAdded : " + cand.getLocalIp());
                 li.candidateAdded(cand);
             }
         }
@@ -331,7 +334,7 @@ public abstract class TransportResolver {
             Collections.sort(cands);
             // Return the last candidate
             result = (TransportCandidate) cands.get(cands.size() - 1);
-            System.out.println("Result: " + result.getIp());
+            LOGGER.debug("Result: " + result.getIp());
         }
 
         return result;
@@ -383,12 +386,12 @@ public abstract class TransportResolver {
     public void initializeAndWait() throws XMPPException {
         this.initialize();
         try {
-            System.out.print("Initializing...");
+            LOGGER.debug("Initializing transport resolver...");
             while (!this.isInitialized()) {
-                System.out.print(".");
+                LOGGER.debug("Resolver init still pending");
                 Thread.sleep(1000);
             }
-            System.out.print("Resolved\n");
+            LOGGER.debug("Transport resolved\n");
         }
         catch (Exception e) {
             e.printStackTrace();

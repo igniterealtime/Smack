@@ -96,7 +96,7 @@ public class JingleContentInfo implements PacketExtension {
      */
     public static class Audio extends JingleContentInfo {
 
-        public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0167.html#ns-info";
+        public static final String NAMESPACE = "urn:xmpp:tmp:jingle:apps:rtp";
 
         public Audio(final ContentInfo mi) {
             super(mi);

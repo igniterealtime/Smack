@@ -234,7 +234,7 @@ public abstract class JingleTransportProvider implements PacketExtensionProvider
             String name = parser.getAttributeValue("", "name");
             String port = parser.getAttributeValue("", "port");
 
-            //System.out.println();
+            //LOGGER.debug();
 
             if (generation != null) {
                 try {

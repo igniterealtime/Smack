@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class JingleError implements PacketExtension {
 
-    public static String NAMESPACE = "http://www.xmpp.org/extensions/xep-0166.html#ns-errors";
+    public static String NAMESPACE = "urn:xmpp:tmp:jingle:errors";
 
     public static final JingleError OUT_OF_ORDER = new JingleError("out-of-order");
 

@@ -1,6 +1,8 @@
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare.api;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.io.ByteArrayOutputStream;
@@ -10,6 +12,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
 
+import org.jivesoftware.smackx.jingle.SmackLogger;
+
 /**
  * UDP Image Receiver.
  * It uses PNG Tiles into UDP packets.
@@ -18,7 +22,9 @@ import java.util.Arrays;
  */
 public class ImageTransmitter implements Runnable {
 
-    private Robot robot;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(ImageTransmitter.class);
+
+	private Robot robot;
     private InetAddress localHost;
     private InetAddress remoteHost;
     private int localPort;
@@ -80,7 +86,7 @@ public class ImageTransmitter implements Runnable {
                 if (++keyframe > KEYFRAME) {
                     keyframe = 0;
                 }
-                System.out.println("KEYFRAME:" + keyframe);
+                LOGGER.debug("KEYFRAME:" + keyframe);
 
                 for (int i = 0; i < maxI; i++) {
                     for (int j = 0; j < maxJ; j++) {
@@ -110,7 +116,7 @@ public class ImageTransmitter implements Runnable {
                                             byte[] bytesOut = baos.toByteArray();
 
                                             if (bytesOut.length > 1000)
-                                                System.err.println(bytesOut.length);
+                                                LOGGER.error("Bytes out > 1000. Equals " + bytesOut.length);
 
                                             p.setData(bytesOut);
                                             p.setAddress(remoteHost);
@@ -142,7 +148,7 @@ public class ImageTransmitter implements Runnable {
                 }
 
                 trace = (System.currentTimeMillis() - trace);
-                System.out.println("Loop Time:" + trace);
+                LOGGER.debug("Loop Time:" + trace);
 
                 if (trace < 500) {
                     try {

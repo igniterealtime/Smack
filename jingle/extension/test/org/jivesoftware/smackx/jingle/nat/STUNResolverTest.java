@@ -14,8 +14,11 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.test.TestMediaManager;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -129,10 +132,28 @@ public class STUNResolverTest extends SmackTestCase {
             cc.prioritizeCandidates();
             // get SortedCandidates
 
-            for (Candidate candidate : cc.getSortedCandidates())
+            for (Candidate candidate : cc.getSortedCandidates()) {
+                short nicNum = 0;
+				try {
+					Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
+					short tempNic = 0;
+					NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
+					while(nics.hasMoreElements()) {
+						NetworkInterface checkNIC = nics.nextElement();
+						if (checkNIC.equals(nic)) {
+							nicNum = tempNic;
+							break;
+						}
+						i++;
+					}
+				} catch (SocketException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+ 
                 try {
                     TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress()
-                            .getHostAddress(), 1, candidate.getNetwork(), "1", candidate.getPort(), "1", candidate.getPriority(),
+                            .getHostAddress(), 1, nicNum, "1", candidate.getPort(), "1", candidate.getPriority(),
                             ICECandidate.Type.prflx);
                     transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|"
@@ -142,6 +163,7 @@ public class STUNResolverTest extends SmackTestCase {
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
+            }
             Candidate candidate = cc.getSortedCandidates().get(0);
             String temp = "C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress()
                     + " p:" + candidate.getPriority();

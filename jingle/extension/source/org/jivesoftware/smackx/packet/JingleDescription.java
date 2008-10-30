@@ -19,13 +19,14 @@
  */
 package org.jivesoftware.smackx.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.jingle.SmackLogger;
+import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
  * Jingle content description.
@@ -34,7 +35,9 @@ import java.util.List;
  */
 public abstract class JingleDescription implements PacketExtension {
 
-    // static
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleDescription.class);
+
+	// static
 
     public static final String NODENAME = "description";
 
@@ -73,7 +76,7 @@ public abstract class JingleDescription implements PacketExtension {
     public void addPayloadType(final PayloadType pt) {
         synchronized (payloads) {
             if (pt == null) {
-                System.err.println("Null payload type");
+                LOGGER.error("Null payload type");
             } else {
                 payloads.add(pt);
             }
@@ -176,7 +179,7 @@ public abstract class JingleDescription implements PacketExtension {
      */
     public static class Audio extends JingleDescription {
 
-        public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0167.html#ns";
+        public static final String NAMESPACE = "urn:xmpp:tmp:jingle:apps:rtp";
 
         public Audio() {
             super();

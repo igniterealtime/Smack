@@ -55,6 +55,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import org.jivesoftware.smackx.jingle.SmackLogger;
+
 /**
  * ICE Transport candidate.
  * <p/>
@@ -65,7 +67,9 @@ import java.util.List;
  */
 public class ICECandidate extends TransportCandidate implements Comparable {
 
-    private String id; // An identification
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(ICECandidate.class);
+
+	private String id; // An identification
 
     private String username;
 
@@ -273,7 +277,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
                     public void testFinished(TestResult testResult, TransportCandidate candidate) {
                         if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
-                            System.out.println("RESULT>>>OK:" + candidate.getIp() + ":" + candidate.getPort());
+                            LOGGER.debug("Candidate reachable: " + candidate.getIp() + ":" + candidate.getPort() + " from " + getIp() +":" + getPort());
                         }
                     }
                 };
@@ -299,7 +303,7 @@ public class ICECandidate extends TransportCandidate implements Comparable {
 
                 for (int i = 0; i < 10 && !result.isReachable(); i++)
                     try {
-                        System.err.println("ICE Candidate retry #" + i);
+                        LOGGER.error("ICE Candidate retry #" + i);
                         Thread.sleep(400);
                     }
                     catch (InterruptedException e) {

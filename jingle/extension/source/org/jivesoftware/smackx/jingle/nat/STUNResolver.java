@@ -19,15 +19,6 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
-import de.javawi.jstun.test.BindingLifetimeTest;
-import de.javawi.jstun.test.DiscoveryInfo;
-import de.javawi.jstun.test.DiscoveryTest;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.jingle.JingleSession;
-import org.xmlpull.mxp1.MXParser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -35,6 +26,17 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import de.javawi.jstun.test.BindingLifetimeTest;
+import de.javawi.jstun.test.DiscoveryInfo;
+import de.javawi.jstun.test.DiscoveryTest;
 
 /**
  * Transport resolver using the JSTUN library, to discover public IP and use it as a candidate.
@@ -45,7 +47,9 @@ import java.util.Enumeration;
  */
 public class STUNResolver extends TransportResolver {
 
-    // The filename where the STUN servers are stored.
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(STUNResolver.class);
+
+	// The filename where the STUN servers are stored.
     public final static String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
 
     // Fallback values when we don't have any STUN server to use...
@@ -282,7 +286,7 @@ public class STUNResolver extends TransportResolver {
                 resolvedPublicIP, getFreePort());
         candidate.setLocalIp(resolvedLocalIP);
 
-        System.out.println("RESOLVING : " + resolvedPublicIP + ":" + candidate.getPort());
+        LOGGER.debug("RESOLVING : " + resolvedPublicIP + ":" + candidate.getPort());
 
         addCandidate(candidate);
 
@@ -296,7 +300,7 @@ public class STUNResolver extends TransportResolver {
      * @throws XMPPException
      */
     public void initialize() throws XMPPException {
-        System.out.println("Initialized");
+        LOGGER.debug("Initialized");
         if (!isResolving()&&!isResolved()) {
             // Get the best STUN server available
             if (currentServer.isNull()) {

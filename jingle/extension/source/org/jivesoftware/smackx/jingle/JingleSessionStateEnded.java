@@ -9,7 +9,10 @@ import org.jivesoftware.smackx.packet.JingleError;
  *  @see JingleSessionState
  */
 public class JingleSessionStateEnded extends JingleSessionState {
-    private static JingleSessionStateEnded INSTANCE = null;
+	
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleSessionStateEnded.class);
+
+	private static JingleSessionStateEnded INSTANCE = null;
 
     protected JingleSessionStateEnded() {
         // Prevent instantiation of the class.
@@ -28,8 +31,8 @@ public class JingleSessionStateEnded extends JingleSessionState {
     }
 
     public void enter() {
-        System.out.println("Session Ended");
-        System.out.println("-------------------------------------------------------------------");
+        LOGGER.debug("Session Ended");
+        LOGGER.debug("-------------------------------------------------------------------");
 
     }
 

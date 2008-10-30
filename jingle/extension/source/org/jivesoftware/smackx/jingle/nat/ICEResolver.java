@@ -20,19 +20,23 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
-import de.javawi.jstun.test.demo.ice.Candidate;
-import de.javawi.jstun.test.demo.ice.ICENegociator;
-import de.javawi.jstun.util.UtilityException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.jingle.JingleSession;
-
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
+
+import de.javawi.jstun.test.demo.ice.Candidate;
+import de.javawi.jstun.test.demo.ice.ICENegociator;
+import de.javawi.jstun.util.UtilityException;
 
 /**
  * ICE Resolver for Jingle transport method that results in sending data between two entities using the Interactive Connectivity Establishment (ICE) methodology. (XEP-0176)
@@ -43,12 +47,15 @@ import java.util.Random;
  */
 public class ICEResolver extends TransportResolver {
 
-    XMPPConnection connection;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(ICEResolver.class);
+
+	XMPPConnection connection;
     Random random = new Random();
     long sid;
-    String server = "stun.xten.net";
-    int port = 3478;
-    ICENegociator iceNegociator = null;
+    String server;
+    int port;
+    static Map<String, ICENegociator> negociatorsMap = new HashMap<String, ICENegociator>();
+    //ICENegociator iceNegociator = null;
 
     public ICEResolver(XMPPConnection connection, String server, int port) {
         super();
@@ -60,13 +67,21 @@ public class ICEResolver extends TransportResolver {
 
     public void initialize() throws XMPPException {
         if (!isResolving() && !isResolved()) {
-            System.out.println("Initialized");
+            LOGGER.debug("Initialized");
 
-            iceNegociator = new ICENegociator((short) 1, server, port);
-            // gather candidates
-            iceNegociator.gatherCandidateAddresses();
-            // priorize candidates
-            iceNegociator.prioritizeCandidates();
+            // Negotiation with a STUN server for a set of interfaces is quite slow, but the results
+            // never change over then instance of a JVM.  To increase connection performance considerably
+            // we now cache established/initialized negotiators for each STUN server, so that subsequent uses
+            // of the STUN server are much, much faster.
+            if (negociatorsMap.get(server) == null) {
+            	ICENegociator iceNegociator = new ICENegociator(server, port, (short) 1);
+            	negociatorsMap.put(server, iceNegociator);
+            	
+            	// gather candidates
+            	iceNegociator.gatherCandidateAddresses();
+            	// priorize candidates
+            	iceNegociator.prioritizeCandidates();
+            }
 
         }
         this.setInitialized();
@@ -91,6 +106,8 @@ public class ICEResolver extends TransportResolver {
 
         this.clear();
 
+        // Create a transport candidate for each ICE negotiator candidate we have.
+        ICENegociator iceNegociator = negociatorsMap.get(server);
         for (Candidate candidate : iceNegociator.getSortedCandidates())
             try {
                 Candidate.CandidateType type = candidate.getCandidateType();
@@ -104,7 +121,26 @@ public class ICEResolver extends TransportResolver {
                 else
                     iceType = ICECandidate.Type.host;
 
-                TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, candidate.getNetwork(), String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), iceType);
+               // JBW/GW - 17JUL08: Figure out the zero-based NIC number for this candidate.
+                short nicNum = 0;
+				try {
+					Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
+					short i = 0;
+					NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
+					while(nics.hasMoreElements()) {
+						NetworkInterface checkNIC = nics.nextElement();
+						if (checkNIC.equals(nic)) {
+							nicNum = i;
+							break;
+						}
+						i++;
+					}
+				} catch (SocketException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                
+                TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, nicNum, String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), iceType);
                 transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                 transportCandidate.setPort(getFreePort());
                 try {
@@ -115,7 +151,7 @@ public class ICEResolver extends TransportResolver {
                 }
                 this.addCandidate(transportCandidate);
 
-                System.out.println("C: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
+                LOGGER.debug("Candidate addr: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " Priority:" + candidate.getPriority());
 
             }
             catch (UtilityException e) {
@@ -128,16 +164,19 @@ public class ICEResolver extends TransportResolver {
         // Get a Relay Candidate from XMPP Server
 
         if (RTPBridge.serviceAvailable(connection)) {
-            try {
+//            try {
 
                 String localIp;
                 int network;
-
-                if (iceNegociator.getPublicCandidate() != null) {
-                    localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
-                    network = iceNegociator.getPublicCandidate().getNetwork();
-                }
-                else {
+                
+                
+                // JBW/GW - 17JUL08: ICENegotiator.getPublicCandidate() always returned null in JSTUN 1.7.0, and now the API doesn't exist in JSTUN 1.7.1
+//                if (iceNegociator.getPublicCandidate() != null) {
+//                    localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
+//                    network = iceNegociator.getPublicCandidate().getNetwork();
+//                }
+//                else {
+                {
                     localIp = BridgedResolver.getLocalHost();
                     network = 0;
                 }
@@ -168,17 +207,19 @@ public class ICEResolver extends TransportResolver {
 
                 addCandidate(localCandidate);
 
-            }
-            catch (UtilityException e) {
-                e.printStackTrace();
-            }
-            catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
+//            }
+//            catch (UtilityException e) {
+//                e.printStackTrace();
+//            }
+//            catch (UnknownHostException e) {
+//                e.printStackTrace();
+//            }
 
             // Get Public Candidate From XMPP Server
 
-            if (iceNegociator.getPublicCandidate() == null) {
+ // JBW/GW - 17JUL08 - ICENegotiator.getPublicCandidate() always returned null in JSTUN 1.7.0, and now it doesn't exist in JSTUN 1.7.1
+ //          if (iceNegociator.getPublicCandidate() == null) {
+            if (true) {
 
                 String publicIp = RTPBridge.getPublicIP(connection);
 

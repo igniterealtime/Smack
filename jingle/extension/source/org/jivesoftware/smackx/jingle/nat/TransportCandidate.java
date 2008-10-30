@@ -52,15 +52,20 @@
 
 package org.jivesoftware.smackx.jingle.nat;
 
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.jingle.JingleSession;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 
 /**
  * Transport candidate.
@@ -73,7 +78,9 @@ import java.util.List;
  */
 public abstract class TransportCandidate {
 
-    private String name;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(TransportCandidate.class);
+
+	private String name;
 
     private String ip; // IP address
 
@@ -680,14 +687,14 @@ public abstract class TransportCandidate {
 
         public void run() {
             try {
-                System.out.println("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
+                LOGGER.debug("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
                 while (true) {
 
                     DatagramPacket packet = new DatagramPacket(new byte[150], 150);
 
                     socket.receive(packet);
 
-                    //System.out.println("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
+                    //LOGGER.debug("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
                     boolean accept = false;
 
@@ -766,7 +773,7 @@ public abstract class TransportCandidate {
                 resultListener.testFinished(testResult, candidate);
         }
 
-        public void testASync(final TransportCandidate candidate, final String password) {
+        public void testASync(final TransportCandidate transportCandidate, final String password) {
 
             Thread thread = new Thread(new Runnable() {
 
@@ -776,19 +783,21 @@ public abstract class TransportCandidate {
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
 
                             try {
-                                System.out.println("Content Received: " + new String(datagramPacket.getData(), "UTF-8"));
+                                LOGGER.debug("ECHO Received to: " + candidate.getIp() + ":" + candidate.getPort() + "  data: " + new String(datagramPacket.getData(), "UTF-8"));
                                 String str[] = new String(datagramPacket.getData(), "UTF-8").split(";");
                                 String pass = str[0];
                                 String addr[] = str[1].split(":");
                                 String ip = addr[0];
                                 String pt = addr[1];
 
-                                if (pass.equals(password) && candidate.getIp().indexOf(ip) != -1 && candidate.getPort() == Integer.parseInt(pt)) {
-                                    System.out.println("Result OK:" + candidate.getIp() + ":" + candidate.getPort());
+                                if (pass.equals(password) 
+                                		&& transportCandidate.getIp().indexOf(ip) != -1 
+                                		&& transportCandidate.getPort() == Integer.parseInt(pt)) {
+                                    LOGGER.debug("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
                                     TestResult testResult = new TestResult();
                                     testResult.setResult(true);
                                     ended = true;
-                                    fireTestResult(testResult, candidate);
+                                    fireTestResult(testResult, transportCandidate);
                                     return true;
                                 }
 
@@ -797,7 +806,7 @@ public abstract class TransportCandidate {
                                 e.printStackTrace();
                             }
 
-                            System.out.println("Result Wrong Data:" + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
+                            LOGGER.debug("ECHO Wrong Data: " + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
                             return false;
                         }
                     };
@@ -815,12 +824,12 @@ public abstract class TransportCandidate {
                     DatagramPacket packet = new DatagramPacket(content, content.length);
 
                     try {
-                        packet.setAddress(InetAddress.getByName(candidate.getIp()));
+                        packet.setAddress(InetAddress.getByName(transportCandidate.getIp()));
                     }
                     catch (UnknownHostException e) {
                         e.printStackTrace();
                     }
-                    packet.setPort(candidate.getPort());
+                    packet.setPort(transportCandidate.getPort());
 
                     long delay = 200;
 

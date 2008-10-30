@@ -20,7 +20,15 @@
 
 package org.jivesoftware.smackx.jingle;
 
-import org.jivesoftware.smack.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.RosterListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -34,15 +42,12 @@ import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.nat.BasicTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.provider.JingleProvider;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Jingle is a session establishment protocol defined in (XEP-0166).
@@ -179,7 +184,9 @@ import java.util.List;
  */
 public class JingleManager implements JingleSessionListener {
 
-    // non-static
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleManager.class);
+	
+	// non-static
 
     final List<JingleSession> jingleSessions = new ArrayList<JingleSession>();
 
@@ -195,21 +202,7 @@ public class JingleManager implements JingleSessionListener {
     // The Media Managers
     private List<JingleMediaManager> jingleMediaManagers;
 
-    static {
-        ProviderManager providerManager = ProviderManager.getInstance();
-        providerManager.addIQProvider("jingle", "http://www.xmpp.org/extensions/xep-0166.html#ns", new JingleProvider());
-
-        // Enable the Jingle support on every established connection
-        // The ServiceDiscoveryManager class should have been already
-        // initialized
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(XMPPConnection connection) {
-                JingleManager.setServiceEnabled(connection, true);
-            }
-        });
-    }
-
-    /**
+     /**
      * Default constructor with a defined XMPPConnection, Transport Resolver and a Media Manager
      * If a fully implemented JingleMediaSession is entered, JingleManager manage Jingle signalling and jmf
      *
@@ -252,32 +245,28 @@ public class JingleManager implements JingleSessionListener {
 
     }
 
+    
     /**
-    * Default constructor with a defined XMPPConnection.
-    * A default JingleTransportmanager based on BasicResolver will be used in this JingleManager transport.
-    *
-    * @param connection XMPP Connection to be used
-    */
-    //    public JingleManager(XMPPConnection connection) {
-    //        this(connection, new JingleTransportManager() {
-    //            protected TransportResolver createResolver(JingleSession session) {
-    //                return new BasicResolver();
-    //            }
-    //        });
-    //    }
-    /**
-     * Default constructor with a defined XMPPConnection and a defined Resolver.
-     * A default JingleTransportmanager based on BasicResolver will be used in this JingleManager transport.
-     *
-     * @param connection XMPP Connection to be used
+     * Setup the jingle system to let the remote clients know we support Jingle.
+     * (This used to be a static part of construction.  The problem is a remote client might
+     * attempt a Jingle connection to us after we've created an XMPPConnection, but before we've
+     * setup an instance of a JingleManager.  We will appear to not support Jingle.  With the new
+     * method you just call it once and all new connections will report Jingle support.)
      */
-    //   public JingleManager(XMPPConnection connection, final TransportResolver resolver) {
-    //        this(connection, new JingleTransportManager() {
-    //            protected TransportResolver createResolver(JingleSession session) {
-    //                return resolver;
-    //            }
-    //        });
-    //    }
+    public static void setJingleServiceEnabled() {
+        ProviderManager providerManager = ProviderManager.getInstance();
+        providerManager.addIQProvider("jingle", "urn:xmpp:tmp:jingle", new JingleProvider());
+
+        // Enable the Jingle support on every established connection
+        // The ServiceDiscoveryManager class should have been already
+        // initialized
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
+                JingleManager.setServiceEnabled(connection, true);
+            }
+        });
+    }
+
     /**
      * Enables or disables the Jingle support on a given connection.
      * <p/>
@@ -429,7 +418,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
         jingleSession.close();
-        System.err.println("Declined:" + reason);
+        LOGGER.error("Declined:" + reason);
     }
 
     public void sessionRedirected(String redirection, JingleSession jingleSession) {

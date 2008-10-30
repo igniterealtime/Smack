@@ -172,7 +172,7 @@ public abstract class JingleContentDescription implements PacketExtension {
      */
     public static class Audio extends JingleContentDescription {
 
-        public static final String NAMESPACE = "http://jabber.org/protocol/jingle/description/audio";
+        public static final String NAMESPACE = "urn:xmpp:tmp:jingle:apps:rtp";
 
         public Audio() {
             super();

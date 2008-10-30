@@ -1,18 +1,25 @@
 package org.jivesoftware.smackx.jingle.mediaimpl;
 
-import com.sun.media.util.Registry;
-import com.sun.media.ExclusiveUse;
-
-import javax.media.format.AudioFormat;
-import javax.media.Renderer;
-import javax.media.PlugInManager;
-import javax.media.Format;
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.TextArea;
+import java.awt.Toolkit;
 import java.util.Vector;
+
+import javax.media.Format;
+import javax.media.PlugInManager;
+import javax.media.Renderer;
+import javax.media.format.AudioFormat;
+
+import org.jivesoftware.smackx.jingle.SmackLogger;
+
+import com.sun.media.ExclusiveUse;
+import com.sun.media.util.Registry;
 
 public class JMFInit extends Frame implements Runnable {
 
-    private String tempDir = "/tmp";
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JMFInit.class);
+
+	private String tempDir = "/tmp";
 
     private boolean done = false;
 
@@ -248,7 +255,7 @@ public class JMFInit extends Frame implements Runnable {
     }
 
     private void message(String mesg) {
-        System.out.println(mesg);
+        LOGGER.debug(mesg);
     }
 
     private void createGUI() {

@@ -19,18 +19,24 @@
  */
 package org.jivesoftware.smackx.jingle.media;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.ContentNegotiator;
+import org.jivesoftware.smackx.jingle.JingleActionEnum;
+import org.jivesoftware.smackx.jingle.JingleException;
+import org.jivesoftware.smackx.jingle.JingleNegotiator;
+import org.jivesoftware.smackx.jingle.JingleNegotiatorState;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleMediaListener;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.packet.JingleContent;
 import org.jivesoftware.smackx.packet.JingleDescription;
 import org.jivesoftware.smackx.packet.JingleError;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Manager for jmf descriptor negotiation. <p/> <p/> This class is responsible
@@ -42,7 +48,9 @@ import java.util.List;
  */
 public class MediaNegotiator extends JingleNegotiator {
 
-    //private JingleSession session; // The session this negotiation
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(MediaNegotiator.class);
+
+	//private JingleSession session; // The session this negotiation
 
     private final JingleMediaManager mediaManager;
 
@@ -211,7 +219,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
             setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
             triggerMediaEstablished(getBestCommonAudioPt());
-            System.err.println("Media choice:" + getBestCommonAudioPt().getName());
+            LOGGER.error("Media choice:" + getBestCommonAudioPt().getName());
 
             response = session.createAck(jingle);
         }

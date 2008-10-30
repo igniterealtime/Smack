@@ -19,13 +19,13 @@
  */
 package org.jivesoftware.smackx.jingle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Basic Jingle negotiator.
@@ -43,7 +43,9 @@ import java.util.List;
  */
 public abstract class JingleNegotiator {
 
-    //private XMPPConnection connection; // The connection associated
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleNegotiator.class);
+
+	//private XMPPConnection connection; // The connection associated
 
     protected JingleSession session;
 
@@ -78,7 +80,7 @@ public abstract class JingleNegotiator {
         
         JingleNegotiatorState stateWas = state;
         
-        System.out.println("Negotiator state change: " + stateWas + "->" + stateIs  + "(" + this.getClass().getSimpleName() + ")");
+        LOGGER.debug("Negotiator state change: " + stateWas + "->" + stateIs  + "(" + this.getClass().getSimpleName() + ")");
 
         switch (stateIs) {
             case PENDING:

@@ -19,6 +19,10 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
@@ -28,13 +32,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * STUN IQ Packet used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
@@ -47,7 +48,9 @@ import java.util.List;
  */
 public class STUN extends IQ {
 
-    private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(STUN.class);
+
+	private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
 
     private String publicIp = null;
 
@@ -220,7 +223,7 @@ public class STUN extends IQ {
             return false;
         }
 
-        System.out.println("Service listing");
+        LOGGER.debug("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(xmppConnection);
@@ -240,7 +243,7 @@ public class STUN extends IQ {
                             return true;
                 }
 
-                System.out.println(item.getName()+"-"+info.getType());
+                LOGGER.debug(item.getName()+"-"+info.getType());
 
             }
         }

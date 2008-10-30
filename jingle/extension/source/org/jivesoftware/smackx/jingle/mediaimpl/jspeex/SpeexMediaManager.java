@@ -19,18 +19,19 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.jspeex;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.JMFInit;
 import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implements a jingleMediaManager using JMF based API and JSpeex.
@@ -41,7 +42,9 @@ import java.util.List;
  */
 public class SpeexMediaManager extends JingleMediaManager {
 
-    public static final String MEDIA_NAME = "Speex";
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(SpeexMediaManager.class);
+
+	public static final String MEDIA_NAME = "Speex";
 
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
 
@@ -106,7 +109,7 @@ public class SpeexMediaManager extends JingleMediaManager {
                 jmfProperties.createNewFile();
             }
             catch (IOException ex) {
-                System.out.println("Failed to create jmf.properties");
+                LOGGER.debug("Failed to create jmf.properties");
                 ex.printStackTrace();
             }
         }

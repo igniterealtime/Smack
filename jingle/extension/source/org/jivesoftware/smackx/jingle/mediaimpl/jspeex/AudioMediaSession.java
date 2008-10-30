@@ -20,24 +20,27 @@
 
 package org.jivesoftware.smackx.jingle.mediaimpl.jspeex;
 
-import mil.jfcom.cie.media.session.MediaSession;
-import mil.jfcom.cie.media.session.MediaSessionListener;
-import mil.jfcom.cie.media.session.StreamPlayer;
-import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
-import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-
-import javax.media.NoProcessorException;
-import javax.media.format.UnsupportedFormatException;
-import javax.media.rtp.rtcp.SenderReport;
-import javax.media.rtp.rtcp.SourceDescription;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.security.GeneralSecurityException;
+
+import javax.media.NoProcessorException;
+import javax.media.format.UnsupportedFormatException;
+import javax.media.rtp.rtcp.SenderReport;
+import javax.media.rtp.rtcp.SourceDescription;
+
+import mil.jfcom.cie.media.session.MediaSession;
+import mil.jfcom.cie.media.session.MediaSessionListener;
+import mil.jfcom.cie.media.session.StreamPlayer;
+import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
+
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
+import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
+import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 /**
  * This Class implements a complete JingleMediaSession.
@@ -52,7 +55,9 @@ import java.security.GeneralSecurityException;
 
 public class AudioMediaSession extends JingleMediaSession implements MediaSessionListener {
 
-    private MediaSession mediaSession;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(AudioMediaSession.class);
+
+	private MediaSession mediaSession;
 
     /**
      * Create a Session using Speex Codec
@@ -123,7 +128,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
             localPort = getFreePort();
             remotePort = this.getLocal().getSymmetric().getPort();
 
-            System.out.println(this.getLocal().getConnection() + " " + ip + ": " + localPort + "->" + remotePort);
+            LOGGER.debug(this.getLocal().getConnection() + " " + ip + ": " + localPort + "->" + remotePort);
 
         }
         else {
@@ -155,7 +160,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      */
     public void startTrasmit() {
         try {
-            System.out.println("start");
+            LOGGER.debug("start");
             mediaSession.start(true);
             this.mediaReceived("");
         }

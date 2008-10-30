@@ -19,17 +19,7 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare;
 
-import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
-import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageDecoder;
-import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
-import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageReceiver;
-import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageTransmitter;
-import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -37,6 +27,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.SmackLogger;
+import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
+import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageDecoder;
+import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageEncoder;
+import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageReceiver;
+import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageTransmitter;
+import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
 /**
  * This Class implements a complete JingleMediaSession.
@@ -49,7 +52,9 @@ import java.net.UnknownHostException;
  */
 public class ScreenShareSession extends JingleMediaSession {
 
-    private ImageTransmitter transmitter = null;
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(ScreenShareSession.class);
+
+	private ImageTransmitter transmitter = null;
     private ImageReceiver receiver = null;
     private int width = 600;
     private int height = 600;
@@ -102,7 +107,7 @@ public class ScreenShareSession extends JingleMediaSession {
             try {
                 receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), width,
                         height);
-                System.out.println("Receiving on:" + receiver.getLocalPort());
+                LOGGER.debug("Receiving on:" + receiver.getLocalPort());
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
