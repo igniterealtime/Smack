@@ -199,7 +199,7 @@
             <manifest>
                 <attribute name="Class-Path" value="smack.jar, smackx.jar" />
             </manifest>
-            <zipfileset src="${jingle.extension.merge.lib.dir}/jstun-0.7.2.jar"/>
+            <zipfileset src="${jingle.extension.merge.lib.dir}/jstun.jar"/>
         </jar>
         <delete file="${compile.dir}/META-INF/smack-config.xml" />
         <delete file="${compile.dir}/META-INF/smack.providers" />

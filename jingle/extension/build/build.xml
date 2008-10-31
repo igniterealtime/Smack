@@ -85,7 +85,7 @@
   
   <path id="jingleextension.module.classpath">
     <path refid="${module.jdk.classpath.jingleextension}"/>
-    <pathelement location="${module.jingleextension.basedir}/../merge/jstun-0.7.2.jar"/>
+    <pathelement location="${module.jingleextension.basedir}/../merge/jstun.jar"/>
     <pathelement location="${module.jingleextension.basedir}/../lib/smackx.jar"/>
     <pathelement location="${module.jingleextension.basedir}/../lib/smack.jar"/>
     <pathelement location="${module.jingleextension.basedir}/../lib/smackx-debug.jar"/>
