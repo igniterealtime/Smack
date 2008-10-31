@@ -98,8 +98,7 @@ public class RemoteCommand extends AdHocCommand {
      * in the Form. This form must be the anwser form of the previous stage. If
      * there is a problem executing the command it throws an XMPPException.
      * 
-     * @param response
-     *            the form anwser of the previous stage.
+     * @param form the form anwser of the previous stage.
      * @throws XMPPException
      */
     public void execute(Form form) throws XMPPException {

@@ -70,7 +70,7 @@ public class PEPManager {
     /**
      * Creates a new PEP exchange manager.
      *
-     * @param con an XMPPConnection.
+     * @param connection an XMPPConnection.
      */
     public PEPManager(XMPPConnection connection) {
         this.connection = connection;
@@ -94,7 +94,7 @@ public class PEPManager {
     /**
      * Removes a listener from PEP events.
      *
-     * @param pepListener a roster exchange listener..
+     * @param pepListener a roster exchange listener.
      */
     public void removePEPListener(PEPListener pepListener) {
         synchronized (pepListeners) {
@@ -105,8 +105,7 @@ public class PEPManager {
     /**
      * Publish an event.
      * 
-     * @param roster the roster to send
-     * @param targetUserID the user that will receive the roster entries
+     * @param item the item to publish.
      */
     public void publish(PEPItem item) {
         // Create a new message to publish the event.

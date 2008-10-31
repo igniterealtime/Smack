@@ -132,7 +132,8 @@ public class AdHocCommandData extends IQ {
 
     /**
      * Returns the JID of the command host.
-     * @return
+     *
+     * @return the JID of the command host.
      */
     public String getId() {
         return id;
@@ -144,7 +145,8 @@ public class AdHocCommandData extends IQ {
 
     /**
      * Returns the human name of the command
-     * @return
+     *
+     * @return the name of the command.
      */
     public String getName() {
         return name;
@@ -156,7 +158,8 @@ public class AdHocCommandData extends IQ {
 
     /**
      * Returns the identifier of the command
-     * @return
+     *
+     * @return the node.
      */
     public String getNode() {
         return node;
@@ -168,7 +171,8 @@ public class AdHocCommandData extends IQ {
 
     /**
      * Returns the list of notes that the command has.
-     * @return
+     *
+     * @return the notes.
      */
     public List<AdHocCommandNote> getNotes() {
         return notes;
@@ -184,7 +188,8 @@ public class AdHocCommandData extends IQ {
 
     /**
      * Returns the form of the command.
-     * @return
+     *
+     * @return the data form associated with the command.
      */
     public DataForm getForm() {
         return form;
@@ -196,7 +201,8 @@ public class AdHocCommandData extends IQ {
 
     /**
      * Returns the action to execute. The action is set only on a request.
-     * @return
+     *
+     * @return the action to execute.
      */
     public AdHocCommand.Action getAction() {
         return action;
@@ -207,8 +213,9 @@ public class AdHocCommandData extends IQ {
     }
 
     /**
-     * Returns the status of the execution. 
-     * @return
+     * Returns the status of the execution.
+     *
+     * @return the status.
      */
     public AdHocCommand.Status getStatus() {
         return status;

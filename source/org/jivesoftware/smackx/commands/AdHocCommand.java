@@ -108,7 +108,7 @@ public abstract class AdHocCommand {
      * Set the the human readable name of the command, usually used for
      * displaying in a UI.
      * 
-     * @param name
+     * @param name the name.
      */
     public void setName(String name) {
         data.setName(name);
@@ -148,7 +148,7 @@ public abstract class AdHocCommand {
      * Gets the full JID of the owner of this command. This JID is the "to" of a
      * execution request.
      * 
-     * @return
+     * @return the owner JID.
      */
     public abstract String getOwnerJID();
 
@@ -167,7 +167,7 @@ public abstract class AdHocCommand {
      * returned by the <code>getNotes</code> method during the current stage.
      * Once the stage changes all the notes are discarded.
      * 
-     * @param note
+     * @param note the note.
      */
     protected void addNote(AdHocCommandNote note) {
         data.addNote(note);
@@ -280,7 +280,7 @@ public abstract class AdHocCommand {
      * Add an action to the current stage available actions. This should be used
      * when creating a response.
      * 
-     * @param action
+     * @param action the action.
      */
     protected void addActionAvailable(Action action) {
         data.addAction(action);
@@ -307,7 +307,7 @@ public abstract class AdHocCommand {
      * in the command then the action will be assumed "execute" thus assuming
      * the action returned by this method.
      * 
-     * @param action
+     * @param action the action.
      */
     protected void setExecuteAction(Action action) {
         data.setExecuteAction(action);
@@ -316,7 +316,7 @@ public abstract class AdHocCommand {
     /**
      * Returns the status of the current stage.
      * 
-     * @return
+     * @return the current status.
      */
     public Status getStatus() {
         return data.getStatus();
@@ -325,7 +325,7 @@ public abstract class AdHocCommand {
     /**
      * Sets the data of the current stage. This should not used.
      * 
-     * @param data
+     * @param data the data.
      */
     void setData(AdHocCommandData data) {
         this.data = data;
@@ -333,8 +333,8 @@ public abstract class AdHocCommand {
 
     /**
      * Gets the data of the current stage. This should not used.
-     * 
-     * @param data
+     *
+     * @return the data.
      */
     AdHocCommandData getData() {
         return data;
@@ -403,7 +403,7 @@ public abstract class AdHocCommand {
          * The action is unknow. This is used when a recieved message has an
          * unknown action. It must not be used to send an execution request.
          */
-        unknown;
+        unknown
     }
 
     public enum SpecificErrorCondition {

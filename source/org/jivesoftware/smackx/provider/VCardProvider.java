@@ -86,7 +86,7 @@ public class VCardProvider implements IQProvider {
      *
      * @param xml the xml representing a users vCard.
      * @return the VCard.
-     * @throws
+     * @throws Exception if an exception occurs.
      */
     public static VCard createVCardFromXML(String xml) throws Exception {
         VCard vCard = new VCard();

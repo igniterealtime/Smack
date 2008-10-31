@@ -94,7 +94,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * Sets the JID of the command host. This is automatically handled and should
      * not be called.
      * 
-     * @param ownerJID
+     * @param ownerJID the JID of the owner.
      */
     public void setOwnerJID(String ownerJID) {
         this.ownerJID = ownerJID;
@@ -109,7 +109,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * Returns the time in milliseconds since this command was executed for
      * first time.
      * 
-     * @return
+     * @return the time in milliseconds since the command was executed for the first time.
      */
     public long getCreationStamp() {
         return creationStamp;
@@ -151,7 +151,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * Returns the currently executing stage number. The first stage number is
      * 0. So during the execution of the first action this method will answer 0.
      * 
-     * @return
+     * @return the current stage number.
      */
     public int getCurrentStage() {
         return currenStage;
@@ -164,7 +164,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * all the stages of the command. It is not checked again during the
      * execution.
      * 
-     * @param jid
+     * @param jid the JID to check permissions on.
      * @return true if the user has permission to execute this action
      */
     public abstract boolean hasPermission(String jid);

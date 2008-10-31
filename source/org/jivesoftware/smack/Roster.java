@@ -405,9 +405,11 @@ public class Roster {
      * If the user has several presences (one for each resource), then the presence with
      * highest priority will be returned. If multiple presences have the same priority,
      * the one with the "most available" presence mode will be returned. In order,
-     * that's {@link Presence.Mode#chat free to chat}, {@link Presence.Mode#available available},
-     * {@link Presence.Mode#away away}, {@link Presence.Mode#xa extended away}, and
-     * {@link Presence.Mode#dnd do not disturb}.<p>
+     * that's {@link org.jivesoftware.smack.packet.Presence.Mode#chat free to chat},
+     * {@link org.jivesoftware.smack.packet.Presence.Mode#available available},
+     * {@link org.jivesoftware.smack.packet.Presence.Mode#away away},
+     * {@link org.jivesoftware.smack.packet.Presence.Mode#xa extended away}, and
+     * {@link org.jivesoftware.smack.packet.Presence.Mode#dnd do not disturb}.<p>
      * <p/>
      * Note that presence information is received asynchronously. So, just after logging
      * in to the server, presence values for users in the roster may be unavailable
