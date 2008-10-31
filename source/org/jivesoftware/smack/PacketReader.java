@@ -338,17 +338,6 @@ class PacketReader {
                         connection.getSASLAuthentication().challengeReceived(parser.nextText());
                     }
                     else if (parser.getName().equals("success")) {
-                        // We now need to bind a resource for the connection
-                        // Open a new stream and wait for the response
-                        connection.packetWriter.openStream();
-
-                        // Reset the state of the parser since a new stream element is going
-                        // to be sent by the server
-                        resetParser();
-
-                        // The SASL authentication with the server was successful. The next step
-                        // will be to bind the resource
-                        connection.getSASLAuthentication().authenticated();
                     }
                     else if (parser.getName().equals("compressed")) {
                         // Server confirmed that it's possible to use stream compression. Start
@@ -363,6 +352,17 @@ class PacketReader {
                     if (parser.getName().equals("stream")) {
                         // Disconnect the connection
                         connection.disconnect();
+                    }
+                    else if (parser.getName().equals("success")) {
+                        // We now need to bind a resource for the connection
+                        // Open a new stream and wait for the response
+                        connection.packetWriter.openStream();
+                        // Reset the state of the parser since a new stream element is going
+                        // to be sent by the server
+                        resetParser();
+                        // The SASL authentication with the server was successful. The next step
+                        // will be to bind the resource
+                        connection.getSASLAuthentication().authenticated();
                     }
                 }
                 eventType = parser.next();
