@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>Smack: Packet Properties - Jive Software</title>
-	<link rel="stylesheet" type="text/css" href="style.css" /
+	<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 
 <body>
@@ -32,9 +32,9 @@ demonstrates how to set properties:
 
 <div class="code"><pre>
 Message message = chat.createMessage();
-<font color="gray"></i>// Add a Color object as a property.</i></font>
+<font color="gray"><i>// Add a Color object as a property.</i></font>
 message.setProperty(<font color="blue">"favoriteColor"</font>, new Color(0, 0, 255));
-<font color="gray"></i>// Add an int as a property.</i></font>
+<font color="gray"><i>// Add an int as a property.</i></font>
 message.setProperty(<font color="blue">"favoriteNumber"</font>, 4);
 chat.sendMessage(message);
 </pre></div>
@@ -45,9 +45,9 @@ Getting those same properties would use the following code:
 
 <div class="code"><pre>
 Message message = chat.nextMessage();
-<font color="gray"></i>// Get a Color object property.</i></font>
+<font color="gray"><i>// Get a Color object property.</i></font>
 Color favoriteColor = (Color)message.getProperty(<font color="blue">"favoriteColor"</font>);
-<font color="gray"></i>// Get an int property. Note that properties are always returned as
+<font color="gray"><i>// Get an int property. Note that properties are always returned as
 // Objects, so we must cast the value to an Integer, then convert
 // it to an int.</i></font>
 int favoriteNumber = ((Integer)message.getProperty(<font color="blue">"favoriteNumber"</font>)).intValue();
@@ -112,7 +112,7 @@ The currently supported types are: <tt>integer</tt>, <tt>long</tt>, <tt>float</t
 </p>
 
 <div class="footer">
-Copyright &copy; Jive Software 2002-2004
+Copyright &copy; Jive Software 2002-2008
 </div>
 
 </body>

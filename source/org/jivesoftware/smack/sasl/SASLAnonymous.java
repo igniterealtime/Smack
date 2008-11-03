@@ -48,7 +48,7 @@ public class SASLAnonymous extends SASLMechanism {
     }
 
     protected void authenticate() throws IOException {
-        StringBuffer stanza = new StringBuffer();
+        StringBuilder stanza = new StringBuilder();
         stanza.append("<auth mechanism=\"").append(getName());
         stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         stanza.append("</auth>");
@@ -59,7 +59,7 @@ public class SASLAnonymous extends SASLMechanism {
 
     public void challengeReceived(String challenge) throws IOException {
         // Build the challenge response stanza encoding the response text
-        StringBuffer stanza = new StringBuffer();
+        StringBuilder stanza = new StringBuilder();
         stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         stanza.append("=");
         stanza.append("</response>");

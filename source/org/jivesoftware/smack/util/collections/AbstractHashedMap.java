@@ -1071,7 +1071,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
         }
 
         public String toString() {
-            return new StringBuffer().append(getKey()).append('=').append(getValue()).toString();
+            return new StringBuilder().append(getKey()).append('=').append(getValue()).toString();
         }
     }
 
@@ -1316,7 +1316,7 @@ public class AbstractHashedMap <K,V> extends AbstractMap<K, V> implements Iterab
         if (size() == 0) {
             return "{}";
         }
-        StringBuffer buf = new StringBuffer(32 * size());
+        StringBuilder buf = new StringBuilder(32 * size());
         buf.append('{');
 
         MapIterator it = mapIterator();

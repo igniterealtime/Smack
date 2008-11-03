@@ -1045,7 +1045,7 @@ public class JingleManagerTest extends SmackTestCase {
         }
 
         public String getChildElementXML() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(s);
             return buf.toString();
         }

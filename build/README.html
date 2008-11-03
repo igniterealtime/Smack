@@ -14,53 +14,19 @@
         A:hover {
             text-decoration : none;
         }
-        .pageheader {
-            font-family : arial, helvetica, sans-serif;
-            font-size : 14pt;
-            font-weight: bold;
-        }
-        .header {
-            font-family : arial, helvetica, sans-serif;
-            font-size : 12pt;
-            font-weight: bold;
-        }
-        .subheader {
-            font-weight: bold;
-            color: #600;
-        }
-        .path {
-            color : #3333cc;
-        }
-        .question {
-            font-style : italic;
-        }
-        .answer {
-            padding-left : 15px;
-        }
-        .code {
-            font-family : courier new;
-            border : 1px #ccc solid;
-            padding : 6px;
-            margin : 5px 20px 5px 20px;
-        }
         TT {
-            font-family : courier new;
+            font-family : courier new, monospace;
             font-weight : bold;
             color : #060;
         }
         PRE, CODE {
-            font-family : courier new;
+            font-family : courier new, monospace;
             font-size : 100%;
-        }
-        .footer {
-            font-size : 0.8em;
-            color : #666;
-            text-align : center;
         }
     </style>
 </head>
 
-<body bgcolor="#ffffff">
+<body>
 
 <font size=4>
 Smack Source Distribution<br>
@@ -107,7 +73,7 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 					corresponding file for your shell).
 				<li>Set the JAVA_HOME environment variable by adding the
 					following line to the file:
-					<p></font><code>
+					<p><code>
 					export JAVA_HOME=/usr/local/jdk1.5
 					</code><font face="verdana, arial, helvetica" size=2>
 					<p>
@@ -119,9 +85,10 @@ possible, instructions are provided for both Unix/Linux and Windows users.
 					source .profile
 					</code><font face="verdana, arial, helvetica" size=2>
 					<p>
-					The JAVA_HOME variable should now be configured correctly.					 
+					The JAVA_HOME variable should now be configured correctly.</font>
 			</ol>
-	 	<p>
+         </li>
+         <p>
 		<li> Windows 
 			<ol>
 				<li>Navigate to your desktop and right click on "My Computer";
@@ -151,20 +118,20 @@ the setup instructions for your operating system.
 <ul>
 Navigate into the subdirectory of this distribution named "build" via the command-line.<p>
 
-<table boder=0 cellpadding=2 cellspacing=0><td bgcolor="#EEEEEE">
+<table border=0 cellpadding=2 cellspacing=0><td bgcolor="#EEEEEE">
 <font face="verdana, arial, helvetica" size=2> 
 <font color="red">Linux/Unix users only:</font>You must make the ant script
 executable. From the build directory, type:
 <p></font><code>
 chmod u+x ant
-</code><font face="verdana, arial, helvetica" size=2> 
+</code>
 </td></table>
 
 <p>
 Now, invoke the build tool to compile the Smack source code
 
 <p>
-Windows:</font><code> ant  <br>
+<font face="verdana, arial, helvetica" size=2> Windows:</font><code> ant  <br>
 </code><font face="verdana, arial, helvetica" size=2>
 Unix/Linux:</font><code> ./ant 
 </code><font face="verdana, arial, helvetica" size=2>
@@ -172,7 +139,7 @@ Unix/Linux:</font><code> ./ant
 
 If the build tool is invoked correctly and Smack compiles, you've correctly
 configured your copy of the Smack developer distribution.
-
+</font>
 </ul>
 
 <p><b>Finished!</b><p>
@@ -215,9 +182,9 @@ for each task are enclosed with braces.
 <ul>
 <i>Syntax:</i><p>
 
-</font><code>
+<code>
 ant<br>
-</code><font face="verdana, arial, helvetica" size=2>
+</code>
 
 <p><i>Description:</i></p>
 
@@ -231,9 +198,9 @@ Equivalent of calling "ant <a href="#jar">jar</a>".
 <ul>
 <i>Syntax:</i><p>
 
-</font><code>
+<code>
 ant compile <br>
-</code><font face="verdana, arial, helvetica" size=2>
+</code>
 
 <p><i>Description:</i></p>
 
@@ -249,9 +216,9 @@ The build directory is the "target/classes" directory under your Smack source di
 <ul>
 <i>Syntax:</i><p>
 
-</font><code>
+<code>
 ant jar <br>
-</code><font face="verdana, arial, helvetica" size=2>
+</code>
 
 <p><i>Description:</i></p>
 
@@ -267,9 +234,9 @@ into the classpath of an application server.
 <ul>
 <i>Syntax:</i><p>
 
-</font><code>
+<code>
 ant javadoc <br>
-</code><font face="verdana, arial, helvetica" size=2>
+</code>
 
 <p><i>Description:</i></p>
 
@@ -283,9 +250,9 @@ JavaDocs all Smack source code in the source directory.
 <ul>
 <i>Syntax:</i><p>
 
-</font><code>
+<code>
 ant clean<br>
-</code><font face="verdana, arial, helvetica" size=2>
+</code>
 
 <p><i>Description:</i></p>
 

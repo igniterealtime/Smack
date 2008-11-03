@@ -38,7 +38,6 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Gabriel Guardincerri
  */
-
 public class AdHocCommandDataProvider implements IQProvider {
 
     public IQ parseIQ(XmlPullParser parser) throws Exception {
@@ -56,9 +55,11 @@ public class AdHocCommandDataProvider implements IQProvider {
         String status = parser.getAttributeValue("", "status");
         if (AdHocCommand.Status.executing.toString().equalsIgnoreCase(status)) {
             adHocCommandData.setStatus(AdHocCommand.Status.executing);
-        } else if (AdHocCommand.Status.completed.toString().equalsIgnoreCase(status)) {
+        }
+        else if (AdHocCommand.Status.completed.toString().equalsIgnoreCase(status)) {
             adHocCommandData.setStatus(AdHocCommand.Status.completed);
-        } else if (AdHocCommand.Status.canceled.toString().equalsIgnoreCase(status)) {
+        }
+        else if (AdHocCommand.Status.canceled.toString().equalsIgnoreCase(status)) {
             adHocCommandData.setStatus(AdHocCommand.Status.canceled);
         }
 
@@ -68,7 +69,8 @@ public class AdHocCommandDataProvider implements IQProvider {
             Action realAction = AdHocCommand.Action.valueOf(action);
             if (realAction == null || realAction.equals(Action.unknown)) {
                 adHocCommandData.setAction(Action.unknown);
-            } else {
+            }
+            else {
                 adHocCommandData.setAction(realAction);
             }
         }
@@ -82,24 +84,31 @@ public class AdHocCommandDataProvider implements IQProvider {
                     if (execute != null) {
                         adHocCommandData.setExecuteAction(AdHocCommand.Action.valueOf(execute));
                     }
-                } else if (parser.getName().equals("next")) {
+                }
+                else if (parser.getName().equals("next")) {
                     adHocCommandData.addAction(AdHocCommand.Action.next);
-                } else if (parser.getName().equals("complete")) {
+                }
+                else if (parser.getName().equals("complete")) {
                     adHocCommandData.addAction(AdHocCommand.Action.complete);
-                } else if (parser.getName().equals("prev")) {
+                }
+                else if (parser.getName().equals("prev")) {
                     adHocCommandData.addAction(AdHocCommand.Action.prev);
-                } else if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
+                }
+                else if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
                     adHocCommandData.setForm((DataForm) dataFormProvider.parseExtension(parser));
-                } else if (parser.getName().equals("note")) {
-                    AdHocCommandNote.Type type = AdHocCommandNote.Type.valueOf(parser
-                            .getAttributeValue("", "type"));
+                }
+                else if (parser.getName().equals("note")) {
+                    AdHocCommandNote.Type type = AdHocCommandNote.Type.valueOf(
+                            parser.getAttributeValue("", "type"));
                     String value = parser.nextText();
                     adHocCommandData.addNote(new AdHocCommandNote(type, value));
-                } else if (parser.getName().equals("error")) {
+                }
+                else if (parser.getName().equals("error")) {
                     XMPPError error = PacketParserUtils.parseError(parser);
                     adHocCommandData.setError(error);
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("command")) {
                     done = true;
                 }

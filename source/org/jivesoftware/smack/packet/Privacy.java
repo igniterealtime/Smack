@@ -274,7 +274,7 @@ public class Privacy extends IQ {
 	}
 	
 	public String getChildElementXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<query xmlns=\"jabber:iq:privacy\">");
         
         // Add the active tag

@@ -21,18 +21,21 @@
 package org.jivesoftware.smackx.commands;
 
 /**
- * Notes can be added to a command execution response. A note has to attributes,
- * one is the value or message an the other is the type of the note.
+ * Notes can be added to a command execution response. A note has a type and value.
  * 
  * @author Gabriel Guardincerri
- * 
  */
 public class AdHocCommandNote {
 
     private Type type;
-
     private String value;
 
+    /**
+     * Creates a new adhoc command note with the specified type and value.
+     *
+     * @param type the type of the note.
+     * @param value the value of the note.
+     */
     public AdHocCommandNote(Type type, String value) {
         this.type = type;
         this.value = value;
@@ -57,10 +60,7 @@ public class AdHocCommandNote {
     }
 
     /**
-     * The types of the notes.
-     * 
-     * @author Gabriel Guardincerri
-     * 
+     * Represents a note type.
      */
     public enum Type {
 
@@ -74,7 +74,7 @@ public class AdHocCommandNote {
          * The note indicates a warning. Possibly due to illogical (yet valid)
          * data.
          */
-        warm,
+        warn,
 
         /**
          * The note indicates an error. The text should indicate the reason for

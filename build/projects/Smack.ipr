@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4" relativePaths="true">
+<project relativePaths="true" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
     <buildFile url="file://$PROJECT_DIR$/../build.xml">
@@ -30,6 +30,15 @@
         <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
         <option name="BLANK_LINES_AFTER_CLASS_HEADER" value="1" />
         <option name="RIGHT_MARGIN" value="100" />
+        <ADDITIONAL_INDENT_OPTIONS fileType="js">
+          <option name="INDENT_SIZE" value="4" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
@@ -53,11 +62,12 @@
       <entry name="?*.jpg" />
     </wildcardResourcePatterns>
   </component>
-  <component name="DataSourceManagerImpl" />
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
-  <component name="DependencyValidationManager" />
+  <component name="DependencyValidationManager">
+    <option name="SKIP_IMPORT_STATEMENTS" value="false" />
+  </component>
   <component name="EclipseCompilerSettings">
     <option name="DEBUGGING_INFO" value="true" />
     <option name="GENERATE_NO_WARNINGS" value="true" />
@@ -73,14 +83,13 @@
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="EntryPointsManager">
-    <entry_points />
+    <entry_points version="2.0" />
   </component>
   <component name="ExportToHTMLSettings">
     <option name="PRINT_LINE_NUMBERS" value="false" />
     <option name="OPEN_IN_BROWSER" value="false" />
     <option name="OUTPUT_DIRECTORY" />
   </component>
-  <component name="GUI Designer component loader factory" />
   <component name="IdProvider" IDEtalkID="A0560E1D64D0B56EB83CBCB1C84992E6" />
   <component name="InspectionProjectProfileManager">
     <option name="PROJECT_PROFILE" value="Project Default" />
@@ -90,38 +99,26 @@
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
         <option name="myLocal" value="false" />
-        <used_levels>
-          <error>
-            <option name="myName" value="ERROR" />
-            <option name="myVal" value="400" />
-          </error>
-          <warning>
-            <option name="myName" value="WARNING" />
-            <option name="myVal" value="300" />
-          </warning>
-          <information>
-            <option name="myName" value="INFO" />
-            <option name="myVal" value="200" />
-          </information>
-          <server>
-            <option name="myName" value="SERVER PROBLEM" />
-            <option name="myVal" value="100" />
-          </server>
-        </used_levels>
         <inspection_tool class="CloneCallsSuperClone" level="WARNING" enabled="false" />
-        <inspection_tool class="ForCanBeForeach" level="WARNING" enabled="false" />
+        <inspection_tool class="ForCanBeForeach" level="WARNING" enabled="false">
+          <option name="REPORT_INDEXED_LOOP" value="true" />
+        </inspection_tool>
         <inspection_tool class="UnnecessaryBoxing" level="WARNING" enabled="false" />
         <inspection_tool class="UnnecessaryUnboxing" level="WARNING" enabled="false" />
         <inspection_tool class="WhileCanBeForeach" level="WARNING" enabled="false" />
-        <inspection_tool class="SuspiciousMethodCalls" level="WARNING" enabled="false" />
+        <inspection_tool class="SuspiciousMethodCalls" level="WARNING" enabled="false">
+          <option name="REPORT_CONVERTIBLE_METHOD_CALLS" value="true" />
+        </inspection_tool>
         <inspection_tool class="ConstantConditions" level="WARNING" enabled="false">
           <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+          <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
         </inspection_tool>
         <inspection_tool class="PointlessBooleanExpression" level="WARNING" enabled="false">
           <option name="m_ignoreExpressionsContainingConstants" value="false" />
         </inspection_tool>
       </profile>
     </profiles>
+    <list size="0" />
   </component>
   <component name="JavacSettings">
     <option name="DEBUGGING_INFO" value="true" />
@@ -282,6 +279,7 @@
       </item>
     </group>
   </component>
+  <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../../jingle/extension/build/projects/JingleExtension.iml" filepath="$PROJECT_DIR$/../../jingle/extension/build/projects/JingleExtension.iml" />
@@ -303,10 +301,13 @@
       <option name="VM_PARAMETERS" value="" />
       <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
       <option name="ADDITIONAL_CLASS_PATH" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
       </option>
+      <envs />
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="4533" />
         <option name="TRANSPORT" value="0" />
@@ -317,7 +318,9 @@
         <option name="JVMPI" value="false" />
         <option name="INTERPRETED" value="false" />
       </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method>
         <option name="Make" value="true" />
       </method>
@@ -330,8 +333,14 @@
     <option name="GENERATE_IIOP_STUBS" value="false" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
-  <component name="StarteamVcsAdapter" />
-  <component name="VssVcs" />
+  <component name="SvnBranchConfigurationManager">
+    <option name="myVersion" value="123" />
+  </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="" />
+    <mapping directory="$PROJECT_DIR$/../.." vcs="svn" />
+  </component>
+  <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.intellij.jsf.UserDefinedFacesConfigs">
     <option name="USER_DEFINED_CONFIGS">
       <value>
@@ -353,6 +362,5 @@
     <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
     <option name="DEFAULT_LAYOUT_MANAGER" value="GridLayoutManager" />
   </component>
-  <UsedPathMacros />
 </project>
 

@@ -110,7 +110,7 @@ public abstract class SASLMechanism implements CallbackHandler {
     }
 
     protected void authenticate() throws IOException, XMPPException {
-        StringBuffer stanza = new StringBuffer();
+        StringBuilder stanza = new StringBuilder();
         stanza.append("<auth mechanism=\"").append(getName());
         stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
         try {
@@ -140,7 +140,7 @@ public abstract class SASLMechanism implements CallbackHandler {
      */
     public void challengeReceived(String challenge) throws IOException {
         // Build the challenge response stanza encoding the response text
-        StringBuffer stanza = new StringBuffer();
+        StringBuilder stanza = new StringBuilder();
 
         byte response[];
         if(challenge != null) {

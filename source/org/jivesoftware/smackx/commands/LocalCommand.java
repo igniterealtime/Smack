@@ -46,7 +46,7 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * The time stamp of first invokation of the command. Used to implement the session timeout.
      */
-    private long creationStamp;
+    private long creationDate;
 
     /**
      * The unique ID of the execution of the command.
@@ -65,7 +65,7 @@ public abstract class LocalCommand extends AdHocCommand {
 
     public LocalCommand() {
         super();
-        this.creationStamp = System.currentTimeMillis();
+        this.creationDate = System.currentTimeMillis();
         currenStage = -1;
     }
 
@@ -106,13 +106,12 @@ public abstract class LocalCommand extends AdHocCommand {
     }
 
     /**
-     * Returns the time in milliseconds since this command was executed for
-     * first time.
+     * Returns the date the command was created.
      * 
-     * @return the time in milliseconds since the command was executed for the first time.
+     * @return the date the command was created.
      */
-    public long getCreationStamp() {
-        return creationStamp;
+    public long getCreationDate() {
+        return creationDate;
     }
 
     @Override
@@ -122,7 +121,7 @@ public abstract class LocalCommand extends AdHocCommand {
     }
 
     /**
-     * Returns if the current stage is the last one. If it is, then the
+     * Returns true if the current stage is the last one. If it is then the
      * execution of some action will complete the execution of the command.
      * 
      * @return true if the command is in the last stage.
@@ -134,7 +133,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * not be called.
      * 
      */
-    void increaseStage() {
+    void incrementStage() {
         currenStage++;
     }
 
@@ -143,13 +142,13 @@ public abstract class LocalCommand extends AdHocCommand {
      * not be called.
      * 
      */
-    void decreaseStage() {
+    void decrementStage() {
         currenStage--;
     }
 
     /**
      * Returns the currently executing stage number. The first stage number is
-     * 0. So during the execution of the first action this method will answer 0.
+     * 0. During the execution of the first action this method will answer 0.
      * 
      * @return the current stage number.
      */
@@ -158,7 +157,7 @@ public abstract class LocalCommand extends AdHocCommand {
     }
 
     /**
-     * Returns if the specified requester has permission to execute all the
+     * Returns true if the specified requester has permission to execute all the
      * stages of this action. This is checked when the first request is received,
      * if the permission is grant then the requester will be able to execute
      * all the stages of the command. It is not checked again during the

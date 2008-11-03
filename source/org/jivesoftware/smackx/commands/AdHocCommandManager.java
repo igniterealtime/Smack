@@ -326,7 +326,7 @@ public class AdHocCommandManager {
                         // processed packet. We must check if it still in the
                         // map.
                         if (command != null) {
-                            long creationStamp = command.getCreationStamp();
+                            long creationStamp = command.getCreationDate();
                             // Check if the Session data has expired (default is
                             // 10 minutes)
                             // To remove it from the session list it waits for
@@ -443,7 +443,7 @@ public class AdHocCommandManager {
 
                 // Increase the state number, so the command knows in witch
                 // stage it is
-                command.increaseStage();
+                command.incrementStage();
                 // Executes the command
                 command.execute();
 
@@ -496,7 +496,7 @@ public class AdHocCommandManager {
             }
 
             // Check if the Session data has expired (default is 10 minutes)
-            long creationStamp = command.getCreationStamp();
+            long creationStamp = command.getCreationDate();
             if (System.currentTimeMillis() - creationStamp > SESSION_TIMEOUT * 1000) {
                 // Remove the expired session
                 executingCommands.remove(sessionId);
@@ -549,7 +549,7 @@ public class AdHocCommandManager {
                     command.setData(response);
 
                     if (Action.next.equals(action)) {
-                        command.increaseStage();
+                        command.incrementStage();
                         command.next(new Form(requestData.getForm()));
                         if (command.isLastStage()) {
                             // If it is the last stage then the command is
@@ -562,14 +562,14 @@ public class AdHocCommandManager {
                         }
                     }
                     else if (Action.complete.equals(action)) {
-                        command.increaseStage();
+                        command.incrementStage();
                         command.complete(new Form(requestData.getForm()));
                         response.setStatus(Status.completed);
                         // Remove the completed session
                         executingCommands.remove(sessionId);
                     }
                     else if (Action.prev.equals(action)) {
-                        command.decreaseStage();
+                        command.decrementStage();
                         command.prev();
                     }
                     else if (Action.cancel.equals(action)) {

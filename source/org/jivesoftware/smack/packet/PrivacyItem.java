@@ -251,7 +251,7 @@ public class PrivacyItem {
 	 * @return the text xml representation.
      */
     public String toXML() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("<item");
         if (this.isAllow()) {
         	buf.append(" action=\"allow\"");

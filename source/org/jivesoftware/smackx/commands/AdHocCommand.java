@@ -69,11 +69,11 @@ import java.util.List;
  * 
  */
 public abstract class AdHocCommand {
-    // TODO Analize the redesign of command by having an ExecutionResponse as a
-    // result to the execution of every action. That result should have all the
-    // information related to the execution, e.g. the form to fill. Maybe this
-    // design is more intuitive and simpler than the current one that has all in
-    // one class.
+    // TODO: Analize the redesign of command by having an ExecutionResponse as a
+    // TODO: result to the execution of every action. That result should have all the
+    // TODO: information related to the execution, e.g. the form to fill. Maybe this
+    // TODO: design is more intuitive and simpler than the current one that has all in
+    // TODO: one class.
 
     private AdHocCommandData data;
 
@@ -83,17 +83,15 @@ public abstract class AdHocCommand {
     }
 
     /**
-     * Returns the specific condition of the <code>error</code> or null if the
+     * Returns the specific condition of the <code>error</code> or <tt>null</tt> if the
      * error doesn't have any.
      * 
-     * @param error
-     *            the error the get the specific condition from
+     * @param error the error the get the specific condition from.
      * @return the specific condition of this error, or null if it doesn't have
      *         any.
      */
-    public static SpecificErrorCondition getSpecificErrorConditionFrom(
-            XMPPError error) {
-        // This method is implemented to provied an easy way of getting a packet
+    public static SpecificErrorCondition getSpecificErrorCondition(XMPPError error) {
+        // This method is implemented to provide an easy way of getting a packet
         // extension of the XMPPError.
         for (SpecificErrorCondition condition : SpecificErrorCondition.values()) {
             if (error.getExtension(condition.toString(),
@@ -127,8 +125,7 @@ public abstract class AdHocCommand {
      * Sets the unique identifier of the command. This value must be unique for
      * the <code>OwnerJID</code>.
      * 
-     * @param node
-     *            the unique identifier of the command
+     * @param node the unique identifier of the command.
      */
     public void setNode(String node) {
         data.setNode(node);
@@ -138,14 +135,14 @@ public abstract class AdHocCommand {
      * Returns the unique identifier of the command. It is unique for the
      * <code>OwnerJID</code>.
      * 
-     * @return the unique identifier of the command
+     * @return the unique identifier of the command.
      */
     public String getNode() {
         return data.getNode();
     }
 
     /**
-     * Gets the full JID of the owner of this command. This JID is the "to" of a
+     * Returns the full JID of the owner of this command. This JID is the "to" of a
      * execution request.
      * 
      * @return the owner JID.
@@ -164,7 +161,7 @@ public abstract class AdHocCommand {
     /**
      * Adds a note to the current stage. This should be used when setting a
      * response to the execution of an action. All the notes added here are
-     * returned by the <code>getNotes</code> method during the current stage.
+     * returned by the {@link #getNotes} method during the current stage.
      * Once the stage changes all the notes are discarded.
      * 
      * @param note the note.
@@ -186,7 +183,8 @@ public abstract class AdHocCommand {
     public Form getForm() {
         if (data.getForm() == null) {
             return null;
-        } else {
+        }
+        else {
             return new Form(data.getForm());
         }
     }
@@ -196,9 +194,8 @@ public abstract class AdHocCommand {
      * response. It could be a form to fill out the information needed to go to
      * the next stage or the result of an execution.
      * 
-     * @param form
-     *            the form of the current stage to fill out or the result of the
-     *            execution.
+     * @param form the form of the current stage to fill out or the result of the
+     *      execution.
      */
     protected void setForm(Form form) {
         data.setForm(form.getDataFormToSend());
@@ -209,22 +206,19 @@ public abstract class AdHocCommand {
      * command. It is invoked on every command. If there is a problem executing
      * the command it throws an XMPPException.
      * 
-     * @throws XMPPException
-     *             if there is a problem executing the command.
+     * @throws XMPPException if there is a problem executing the command.
      */
     public abstract void execute() throws XMPPException;
 
     /**
      * Executes the next action of the command with the information provided in
      * the <code>response</code>. This form must be the answer form of the
-     * previous stage. This method will be only invoked for commands that have 1
+     * previous stage. This method will be only invoked for commands that have one
      * or more stages. If there is a problem executing the command it throws an
      * XMPPException.
      * 
-     * @param response
-     *            the form answer of the previous stage.
-     * @throws XMPPException
-     *             if there is a problem executing the command.
+     * @param response the form answer of the previous stage.
+     * @throws XMPPException if there is a problem executing the command.
      */
     public abstract void next(Form response) throws XMPPException;
 
@@ -235,10 +229,8 @@ public abstract class AdHocCommand {
      * or more stages. If there is a problem executing the command it throws an
      * XMPPException.
      * 
-     * @param response
-     *            the form answer of the previous stage.
-     * @throws XMPPException
-     *             if there is a problem executing the command.
+     * @param response the form answer of the previous stage.
+     * @throws XMPPException if there is a problem executing the command.
      */
     public abstract void complete(Form response) throws XMPPException;
 
@@ -248,8 +240,7 @@ public abstract class AdHocCommand {
      * the previous one. If there is a problem executing the command it throws
      * an XMPPException.
      * 
-     * @throws XMPPException
-     *             if there is a problem executing the command.
+     * @throws XMPPException if there is a problem executing the command.
      */
     public abstract void prev() throws XMPPException;
 
@@ -258,19 +249,18 @@ public abstract class AdHocCommand {
      * the execution. If there is a problem executing the command it throws an
      * XMPPException.
      * 
-     * @throws XMPPException
-     *             if there is a problem executing the command.
+     * @throws XMPPException if there is a problem executing the command.
      */
     public abstract void cancel() throws XMPPException;
 
     /**
-     * Returns a collection with the allowed actions based on the current stage
-     * Possible actions are: <tt>prev</tt>, <tt>next</tt> and
-     * <tt>complete</tt>. This method will be only invoked for commands that
-     * have 1 or more stages.
+     * Returns a collection with the allowed actions based on the current stage.
+     * Possible actions are: {@link Action#prev prev}, {@link Action#next next} and
+     * {@link Action#complete complete}. This method will be only invoked for commands that
+     * have one or more stages.
      * 
      * @return a collection with the allowed actions based on the current stage
-     *         as defined in the SessionData.
+     *      as defined in the SessionData.
      */
     protected List<Action> getActions() {
         return data.getActions();
@@ -287,14 +277,14 @@ public abstract class AdHocCommand {
     }
 
     /**
-     * Returns which of the actions available for the current stage is
+     * Returns the action available for the current stage which is
      * considered the equivalent to "execute". When the requester sends his
      * reply, if no action was defined in the command then the action will be
      * assumed "execute" thus assuming the action returned by this method. This
      * method will never be invoked for commands that have no stages.
      * 
-     * @return which of the actions available for the current stage is
-     *         considered the equivalent to "execute".
+     * @return the action available for the current stage which is considered
+     *      the equivalent to "execute".
      */
     protected Action getExecuteAction() {
         return data.getExecuteAction();
@@ -341,8 +331,8 @@ public abstract class AdHocCommand {
     }
 
     /**
-     * Returns if the <code>action</code> is available in the current stage.
-     * The <code>Action.cancel</code> is always allowed. To define the
+     * Returns true if the <code>action</code> is available in the current stage.
+     * The {@link Action#cancel cancel} action is always allowed. To define the
      * available actions use the <code>addActionAvailable</code> method.
      * 
      * @param action
@@ -353,6 +343,9 @@ public abstract class AdHocCommand {
         return getActions().contains(action) || Action.cancel.equals(action);
     }
 
+    /**
+     * The status of the stage in the adhoc command.
+     */
     public enum Status {
 
         /**
@@ -411,58 +404,43 @@ public abstract class AdHocCommand {
         /**
          * The responding JID cannot accept the specified action.
          */
-        badAction,
+        badAction("bad-action"),
 
         /**
          * The responding JID does not understand the specified action.
          */
-        malformedAction,
+        malformedAction("malformed-action"),
 
         /**
          * The responding JID cannot accept the specified language/locale.
          */
-        badLocale,
+        badLocale("bad-locale"),
 
         /**
          * The responding JID cannot accept the specified payload (e.g. the data
          * form did not provide one or more required fields).
          */
-        badPayload,
+        badPayload("bad-payload"),
 
         /**
          * The responding JID cannot accept the specified sessionid.
          */
-        badSessionid,
+        badSessionid("bad-sessionid"),
 
         /**
          * The requesting JID specified a sessionid that is no longer active
          * (either because it was completed, canceled, or timed out).
          */
-        sessionExpired;
+        sessionExpired("session-expired");
+
+        private String value;
+
+        SpecificErrorCondition(String value) {
+            this.value = value;
+        }
 
         public String toString() {
-            String result = null;
-            switch (this) {
-            case badAction:
-                result = "bad-action";
-                break;
-            case malformedAction:
-                result = "malformed-action";
-                break;
-            case badLocale:
-                result = "bad-locale";
-                break;
-            case badPayload:
-                result = "bad-payload";
-                break;
-            case badSessionid:
-                result = "bad-sessionid";
-                break;
-            case sessionExpired:
-                result = "session-expired";
-                break;
-            }
-            return result;
+            return value;
         }
     }
 }

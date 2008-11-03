@@ -3,7 +3,7 @@
  * $Revision: $
  * $Date: $
  *
- * Copyright 2005-2007 Jive Software.
+ * Copyright 2005-2008 Jive Software.
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents the state and the request of the execution of a command.
+ * Represents the state and the request of the execution of an adhoc command.
  * 
  * @author Gabriel Guardincerri
- *
  */
 public class AdHocCommandData extends IQ {
 
@@ -121,7 +120,7 @@ public class AdHocCommandData extends IQ {
             buf.append("</note>");
         }
 
-        // TODO ERRORES
+        // TODO ERRORS
 //        if (getError() != null) {
 //            buf.append(getError().toXML());
 //        }
@@ -271,12 +270,10 @@ public class AdHocCommandData extends IQ {
         }
         
         public String toXML() {
-            StringBuffer sb = new StringBuffer();
-            sb.append("<").append(getElementName());
-            sb.append(" xmlns=\"").append(getNamespace()).append("\"/>");
-            return sb.toString();
+            StringBuilder buf = new StringBuilder();
+            buf.append("<").append(getElementName());
+            buf.append(" xmlns=\"").append(getNamespace()).append("\"/>");
+            return buf.toString();
         }
     }
- 
-
 }
