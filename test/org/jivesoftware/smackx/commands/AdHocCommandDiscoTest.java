@@ -52,11 +52,7 @@
 
 package org.jivesoftware.smackx.commands;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 
 /**
@@ -68,7 +64,7 @@ public class AdHocCommandDiscoTest extends SmackTestCase {
 
     /**
      * Constructor for test.
-     * @param arg0
+     * @param arg0 argument.
      */
     public AdHocCommandDiscoTest(String arg0) {
         super(arg0);

@@ -139,8 +139,7 @@ public class AdHocCommandManager {
      * @param clazz the class of the command, which must extend {@link LocalCommand}.
      */
     public void registerCommand(String node, final String name, Class clazz) {
-        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name,
-                connection.getUser(), clazz);
+        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection.getUser(), clazz);
 
         commands.put(node, commandInfo);
         // Set the NodeInformationProvider that will provide information about
@@ -153,7 +152,7 @@ public class AdHocCommandManager {
 
                     public List<String> getNodeFeatures() {
                         List<String> answer = new ArrayList<String>();
-                        answer.add("http://jabber.org/protocol/commands");
+                        answer.add(DISCO_NAMESPACE);
                         // TODO: check if this service is provided by the
                         // TODO: current connection.
                         answer.add("jabber:x:data");
