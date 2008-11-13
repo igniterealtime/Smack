@@ -58,6 +58,8 @@ public class Form {
      * extension that matches the elementName and namespace "x","jabber:x:data".  
      * 
      * @param packet the packet used for gathering data.
+     * @return the data form parsed from the packet or <tt>null</tt> if there was not
+     *      a form in the packet.
      */
     public static Form getFormFrom(Packet packet) {
         // Check if the packet includes the DataForm extension
@@ -120,8 +122,8 @@ public class Form {
      * @param variable the variable name that was completed.
      * @param value the String value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
-     * @throws IllegalArgumentException if the form does not include the specified variable.
-     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     * @throws IllegalArgumentException if the form does not include the specified variable or
+     *      if the answer type does not correspond with the field type..
      */
     public void setAnswer(String variable, String value) {
         FormField field = getField(variable);
@@ -146,8 +148,8 @@ public class Form {
      * @param variable the variable name that was completed.
      * @param value the int value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
-     * @throws IllegalArgumentException if the form does not include the specified variable.
-     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     * @throws IllegalArgumentException if the form does not include the specified variable or
+     *      if the answer type does not correspond with the field type.
      */
     public void setAnswer(String variable, int value) {
         FormField field = getField(variable);
@@ -159,7 +161,7 @@ public class Form {
             && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
             throw new IllegalArgumentException("This field is not of type int.");
         }
-        setAnswer(field, new Integer(value));
+        setAnswer(field, value);
     }
 
     /**
@@ -170,8 +172,8 @@ public class Form {
      * @param variable the variable name that was completed.
      * @param value the long value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
-     * @throws IllegalArgumentException if the form does not include the specified variable.
-     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     * @throws IllegalArgumentException if the form does not include the specified variable or
+     *      if the answer type does not correspond with the field type.
      */
     public void setAnswer(String variable, long value) {
         FormField field = getField(variable);
@@ -183,7 +185,7 @@ public class Form {
             && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
             throw new IllegalArgumentException("This field is not of type long.");
         }
-        setAnswer(field, new Long(value));
+        setAnswer(field, value);
     }
 
     /**
@@ -194,8 +196,8 @@ public class Form {
      * @param variable the variable name that was completed.
      * @param value the float value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
-     * @throws IllegalArgumentException if the form does not include the specified variable.
-     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     * @throws IllegalArgumentException if the form does not include the specified variable or
+     *      if the answer type does not correspond with the field type.
      */
     public void setAnswer(String variable, float value) {
         FormField field = getField(variable);
@@ -207,7 +209,7 @@ public class Form {
             && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
             throw new IllegalArgumentException("This field is not of type float.");
         }
-        setAnswer(field, new Float(value));
+        setAnswer(field, value);
     }
 
     /**
@@ -218,8 +220,8 @@ public class Form {
      * @param variable the variable name that was completed.
      * @param value the double value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
-     * @throws IllegalArgumentException if the form does not include the specified variable.
-     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     * @throws IllegalArgumentException if the form does not include the specified variable or
+     *      if the answer type does not correspond with the field type.
      */
     public void setAnswer(String variable, double value) {
         FormField field = getField(variable);
@@ -231,7 +233,7 @@ public class Form {
             && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
             throw new IllegalArgumentException("This field is not of type double.");
         }
-        setAnswer(field, new Double(value));
+        setAnswer(field, value);
     }
 
     /**
@@ -242,8 +244,8 @@ public class Form {
      * @param variable the variable name that was completed.
      * @param value the boolean value that was answered.
      * @throws IllegalStateException if the form is not of type "submit".
-     * @throws IllegalArgumentException if the form does not include the specified variable.
-     * @throws IllegalArgumentException if the answer type does not correspond with the field type.
+     * @throws IllegalArgumentException if the form does not include the specified variable or
+     *      if the answer type does not correspond with the field type.
      */
     public void setAnswer(String variable, boolean value) {
         FormField field = getField(variable);
@@ -295,7 +297,7 @@ public class Form {
      * @throws IllegalStateException if the form is not of type "submit".
      * @throws IllegalArgumentException if the form does not include the specified variable.
      */
-    public void setAnswer(String variable, List values) {
+    public void setAnswer(String variable, List<String> values) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot set an answer if the form is not of type " +
             "\"submit\"");
