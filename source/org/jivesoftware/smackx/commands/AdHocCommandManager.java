@@ -46,12 +46,13 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * An AdHocCommandManager is responsible for keeping the list of available
  * commands offered by a service and for processing commands requests.
- * Typically, instances of this class are private to the service offering ad-hoc
- * commands.
+ *
+ * Pass in an XMPPConnection isntance to
+ * {@link #getAddHocCommandsManager(org.jivesoftware.smack.XMPPConnection)} in order to
+ * get an instance of this class. 
  * 
  * @author Gabriel Guardincerri
  */
-
 public class AdHocCommandManager {
 
     private static final String DISCO_NAMESPACE = "http://jabber.org/protocol/commands";
@@ -76,12 +77,11 @@ public class AdHocCommandManager {
      * related to that connection.
      */
     static {
-        XMPPConnection
-                .addConnectionCreationListener(new ConnectionCreationListener() {
-                    public void connectionCreated(XMPPConnection connection) {
-                        new AdHocCommandManager(connection);
-                    }
-                });
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
+                new AdHocCommandManager(connection);
+            }
+        });
     }
 
     /**
@@ -131,11 +131,12 @@ public class AdHocCommandManager {
      * connection. The <code>node</code> is an unique identifier of that
      * command for the connection related to this command manager. The
      * <code>name</name> is the human readable name of the command.
-     * The <code>class</code> is the class of the command
+     * The <code>class</code> is the class of the command, which must extend
+     * {@link LocalCommand}.
      *
      * @param node the unique identifier of the command.
      * @param name the human readable name of the command.
-     * @param clazz the class of the command.
+     * @param clazz the class of the command, which must extend {@link LocalCommand}.
      */
     public void registerCommand(String node, final String name, Class clazz) {
         AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name,
@@ -173,7 +174,7 @@ public class AdHocCommandManager {
 
     /**
      * Discover the commands of an specific JID. The <code>jid</code> is a
-     * full JID
+     * full JID.
      *
      * @param jid the full JID to retrieve the commands for.
      * @return the discovered items.

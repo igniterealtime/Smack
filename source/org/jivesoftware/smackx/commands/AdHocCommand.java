@@ -30,8 +30,8 @@ import java.util.List;
  * An ad-hoc command is responsible for executing the provided service and
  * storing the result of the execution. Each new request will create a new
  * instance of the command, allowing information related to executions to be
- * stored in it. For example suppose that a command that retrieve the list of
- * users of a server is implemented. When the command is executed it gets that
+ * stored in it. For example suppose that a command that retrieves the list of
+ * users on a server is implemented. When the command is executed it gets that
  * list and the result is stored as a form in the command instance, i.e. the
  * <code>getForm</code> method retrieves a form with all the users.
  * <p>
@@ -69,7 +69,7 @@ import java.util.List;
  * 
  */
 public abstract class AdHocCommand {
-    // TODO: Analize the redesign of command by having an ExecutionResponse as a
+    // TODO: Analyze the redesign of command by having an ExecutionResponse as a
     // TODO: result to the execution of every action. That result should have all the
     // TODO: information related to the execution, e.g. the form to fill. Maybe this
     // TODO: design is more intuitive and simpler than the current one that has all in
@@ -225,7 +225,7 @@ public abstract class AdHocCommand {
     /**
      * Completes the command execution with the information provided in the
      * <code>response</code>. This form must be the answer form of the
-     * previous stage. This method will be only invoked for commands that have 1
+     * previous stage. This method will be only invoked for commands that have one
      * or more stages. If there is a problem executing the command it throws an
      * XMPPException.
      * 
@@ -291,7 +291,7 @@ public abstract class AdHocCommand {
     }
 
     /**
-     * Returns which of the actions available for the current stage is
+     * Sets which of the actions available for the current stage is
      * considered the equivalent to "execute". This should be used when setting
      * a response. When the requester sends his reply, if no action was defined
      * in the command then the action will be assumed "execute" thus assuming
