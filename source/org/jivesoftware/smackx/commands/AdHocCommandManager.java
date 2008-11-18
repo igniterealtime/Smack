@@ -62,11 +62,11 @@ public class AdHocCommandManager {
     /**
      * The session time out in seconds.
      */
-    public static int SESSION_TIMEOUT = 2 * 60;
+    private static final int SESSION_TIMEOUT = 2 * 60;
 
     /**
-     * Map a XMPPConnection with it AdHocCommandManager. This map have a pair
-     * key-value for every active connection.
+     * Map a XMPPConnection with it AdHocCommandManager. This map have a key-value
+     * pair for every active connection.
      */
     private static Map<XMPPConnection, AdHocCommandManager> instances =
             new ConcurrentHashMap<XMPPConnection, AdHocCommandManager>();
@@ -127,19 +127,38 @@ public class AdHocCommandManager {
     }
 
     /**
-     * Register a new command to this command manager, which is related to a
-     * connection. The <code>node</code> is an unique identifier of that
-     * command for the connection related to this command manager. The
-     * <code>name</name> is the human readable name of the command.
-     * The <code>class</code> is the class of the command, which must extend
-     * {@link LocalCommand}.
+     * Registers a new command with this command manager, which is related to a
+     * connection. The <tt>node</tt> is an unique identifier of that command for
+     * the connection related to this command manager. The <tt>name</tt> is the
+     * human readable name of the command. The <tt>class</tt> is the class of
+     * the command, which must extend {@link LocalCommand} and have a default
+     * constructor.
      *
      * @param node the unique identifier of the command.
      * @param name the human readable name of the command.
      * @param clazz the class of the command, which must extend {@link LocalCommand}.
      */
-    public void registerCommand(String node, final String name, Class clazz) {
-        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection.getUser(), clazz);
+    public void registerCommand(String node, String name, final Class clazz) {
+        registerCommand(node, name, new LocalCommandFactory() {
+            public LocalCommand getInstance() throws InstantiationException, IllegalAccessException  {
+                return (LocalCommand)clazz.newInstance();
+            }
+        });
+    }
+
+    /**
+     * Registers a new command with this command manager, which is related to a
+     * connection. The <tt>node</tt> is an unique identifier of that
+     * command for the connection related to this command manager. The <tt>name</tt>
+     * is the human readeale name of the command. The <tt>factory</tt> generates
+     * new instances of the command.
+     *
+     * @param node the unique identifier of the command.
+     * @param name the human readable name of the command.
+     * @param factory a factory to create new instances of the command.
+     */
+    public void registerCommand(String node, final String name, LocalCommandFactory factory) {
+        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection.getUser(), factory);
 
         commands.put(node, commandInfo);
         // Set the NodeInformationProvider that will provide information about
@@ -651,11 +670,10 @@ public class AdHocCommandManager {
     private LocalCommand newInstanceOfCmd(String commandNode, String sessionID)
             throws XMPPException
     {
-        // TODO Evaluate the possibility of using a factory for creating the new instances.
         AdHocCommandInfo commandInfo = commands.get(commandNode);
         LocalCommand command;
         try {
-            command = (LocalCommand) commandInfo.getCmdClass().newInstance();
+            command = (LocalCommand) commandInfo.getCommandInstance();
             command.setSessionID(sessionID);
             command.setName(commandInfo.getName());
             command.setNode(commandInfo.getNode());
@@ -684,29 +702,28 @@ public class AdHocCommandManager {
     }
 
     /**
-     * The ad-hoc command information.
-     * 
-     * @author Gabriel
-     * 
+     * Stores ad-hoc command information.
      */
     private static class AdHocCommandInfo {
 
         private String node;
         private String name;
         private String ownerJID;
-        private Class cmdClass;
+        private LocalCommandFactory factory;
 
         public AdHocCommandInfo(String node, String name, String ownerJID,
-                Class cmdClass)
+                LocalCommandFactory factory)
         {
             this.node = node;
             this.name = name;
             this.ownerJID = ownerJID;
-            this.cmdClass = cmdClass;
+            this.factory = factory;
         }
 
-        public Class getCmdClass() {
-            return cmdClass;
+        public LocalCommand getCommandInstance() throws InstantiationException,
+                IllegalAccessException
+        {
+            return factory.getInstance();
         }
 
         public String getName() {
