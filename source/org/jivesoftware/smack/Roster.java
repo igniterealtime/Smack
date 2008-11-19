@@ -668,8 +668,9 @@ public class Roster {
                 userPresences.put(StringUtils.parseResource(from), presence);
                 // If the user is in the roster, fire an event.
                 RosterEntry entry = entries.get(key);
-                if (entry != null)
+                if (entry != null) {
                     fireRosterPresenceEvent(presence);
+                }
             }
             // If an "unavailable" packet.
             else if (presence.getType() == Presence.Type.unavailable) {
@@ -696,8 +697,9 @@ public class Roster {
                 }
                 // If the user is in the roster, fire an event.
                 RosterEntry entry = entries.get(key);
-                if (entry != null)
+                if (entry != null) {
                     fireRosterPresenceEvent(presence);
+                }
             }
             else if (presence.getType() == Presence.Type.subscribe) {
                 if (subscriptionMode == SubscriptionMode.accept_all) {
@@ -724,6 +726,29 @@ public class Roster {
                     connection.sendPacket(response);
                 }
                 // Otherwise, in manual mode so ignore.
+            }
+            // Error presence packets from a bare JID mean we invalidate all existing
+            // presence info for the user.
+            else if (presence.getType() == Presence.Type.error &&
+                    "".equals(StringUtils.parseResource(from)))
+            {
+                Map<String, Presence> userPresences;
+                if (!presenceMap.containsKey(key)) {
+                    userPresences = new ConcurrentHashMap<String, Presence>();
+                    presenceMap.put(key, userPresences);
+                }
+                else {
+                    userPresences = presenceMap.get(key);
+                    // Any other presence data is invalidated by the error packet.
+                    userPresences.clear();
+                }
+                // Set the new presence using the empty resource as a key.
+                userPresences.put("", presence);
+                // If the user is in the roster, fire an event.
+                RosterEntry entry = entries.get(key);
+                if (entry != null) {
+                    fireRosterPresenceEvent(presence);
+                }
             }
         }
     }
