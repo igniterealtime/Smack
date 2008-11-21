@@ -523,7 +523,7 @@ public class RosterTest extends SmackTestCase {
                     Presence.Type.unavailable, presence.getType());
 
             // Check that the returned presences are correct
-            Iterator presences = roster.getPresences(getBareJID(1));
+            Iterator<Presence> presences = roster.getPresences(getBareJID(1));
             int count = 0;
             while (presences.hasNext()) {
                 count++;

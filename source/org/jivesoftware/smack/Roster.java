@@ -440,6 +440,9 @@ public class Roster {
 
             for (String resource : userPresences.keySet()) {
                 Presence p = userPresences.get(resource);
+                if (!p.isAvailable()) {
+                    continue;
+                }
                 // Chose presence with highest priority first.
                 if (presence == null || p.getPriority() > presence.getPriority()) {
                     presence = p;
@@ -523,7 +526,20 @@ public class Roster {
             return Arrays.asList(presence).iterator();
         }
         else {
-            return userPresences.values().iterator();
+            Collection<Presence> answer = new ArrayList<Presence>();
+            for (Presence presence : userPresences.values()) {
+                if (presence.isAvailable()) {
+                    answer.add(presence);
+                }
+            }
+            if (!answer.isEmpty()) {
+                return answer.iterator();
+            }
+            else {
+                Presence presence = new Presence(Presence.Type.unavailable);
+                presence.setFrom(user);
+                return Arrays.asList(presence).iterator();    
+            }
         }
     }
 
