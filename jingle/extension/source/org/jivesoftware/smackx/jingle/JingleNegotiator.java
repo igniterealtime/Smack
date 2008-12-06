@@ -54,7 +54,9 @@ public abstract class JingleNegotiator {
     private String expectedAckId;
 
     private JingleNegotiatorState state;
-
+    
+    private boolean isStarted;
+    
     /**
      * Default constructor.
      */
@@ -234,6 +236,21 @@ public abstract class JingleNegotiator {
      */
     public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException;
 
+    
+    public void start() {
+    	isStarted = true;
+    	doStart();
+    }
+    
+    public boolean isStarted() {
+    	return isStarted;
+    }
+    
+    /**
+     * Each of the negotiators has their individual behavior when they start.
+     */
+    protected abstract void doStart();
+    
     /**
      * Close the negotiation.
      */

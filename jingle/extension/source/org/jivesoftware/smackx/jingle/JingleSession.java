@@ -333,6 +333,13 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 // Each content negotiator may pass back a list of JingleContent for addition to the response packet.
 
                 for (ContentNegotiator contentNegotiator : contentNegotiators) {
+                	// If at this point the content negotiator isn't started, it's because we sent a session-init jingle
+                	// packet from startOutgoing() and we're waiting for the other side to let us know they're ready
+                	// to take jingle packets.  (This packet might be a session-terminate, but that will get handled
+                	// later.
+                	if (!contentNegotiator.isStarted()) {
+                		contentNegotiator.start();
+                	}
                     responses.addAll(contentNegotiator.dispatchIncomingPacket(iq, responseId));
                 }
 
@@ -400,7 +407,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
                 // Depending on the state we're in we'll get different processing actions.
                 // (See Design Patterns AKA GoF State behavioral pattern.)
-                getSessionState().processJingle(this, jin, action);
+                response = getSessionState().processJingle(this, jin, action);
             }
         }
 
@@ -429,30 +436,6 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public void sendPacket(IQ iq) {
 
         if (iq instanceof Jingle) {
-            //            Jingle jingle = (Jingle) iq;
-            //
-            //            JingleActionEnum action = jingle.getAction();
-            //
-            //            switch (getSessionState()) {
-            //                case UNKNOWN:
-            //                    sendUnknownStateAction(jingle, action);
-            //                    break;
-            //
-            //                case PENDING:
-            //                    sendPendingStateAction(jingle, action);
-            //                    break;
-            //
-            //                case ACTIVE:
-            //                    sendActiveStateAction(jingle, action);
-            //                    break;
-            //
-            //                case ENDED:
-            //                    sendEndedStateAction(jingle, action);
-            //                    break;
-            //
-            //                default:
-            //                    break;
-            //            }
 
             sendFormattedJingle((Jingle) iq);
 
@@ -1238,9 +1221,13 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         // Give each of the content negotiators a chance to start 
         // and return a portion of the structure to make the Jingle packet.
-        for (ContentNegotiator contentNegotiator : contentNegotiators) {
-            contentNegotiator.start();
-        }
+        
+// Don't do this anymore.  The problem is that the other side might not be ready.
+// Later when we receive our first jingle packet from the other side we'll fire-up the negotiators
+// before processing it.  (See receivePacketAndRespond() above.
+//        for (ContentNegotiator contentNegotiator : contentNegotiators) {
+//            contentNegotiator.start();
+//        }
     }
 
     /**
@@ -1249,6 +1236,10 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public void startIncoming() {
 
         //updatePacketListener();
+    }
+    
+    protected void doStart() {
+    	
     }
 
     /**

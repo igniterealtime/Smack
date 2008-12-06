@@ -142,8 +142,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 return;
             }
         }
-        //LOGGER.debug("BEST: " + bestLocalCandidate.getIp());
-        throw new XMPPException("Local transport candidate has not be offered.");
+        LOGGER.debug("BEST: ip=" + bestLocalCandidate.getIp() + " port=" + bestLocalCandidate.getPort() + " has not been offered.");
+        //throw new XMPPException("Local transport candidate has not be offered.");
     }
 
     /**
@@ -158,9 +158,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      *  Called from above to start the negotiator during a session-initiate.
      */
-    public void start() {
-
-        //JingleTransport result = new JingleTransport(getJingleTransport());
+    protected void doStart() {
 
         try {
             sendTransportCandidatesOffer();
@@ -169,8 +167,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        //return result;
 
     }
 

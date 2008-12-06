@@ -598,29 +598,4 @@ public class JingleManager implements JingleSessionListener {
         }
         return null;
     }
-
-    /**
-     * Reject the session. If we don't want to accept the new session then we have to 
-     * result/ack the session-initiate and send a session-terminate.
-     *
-     * @param request the request to be rejected.
-     */
-    protected void rejectIncomingJingleSession(JingleSessionRequest request) {
-
-        JingleSession session = getSession(request.getSessionID());
-        if (session != null) {
-            
-            // First send the result/Ack
-            IQ result = session.createAck(request.getJingle());
-            connection.sendPacket(result);
-            
-            // Now send the session-terminate.
-            try {
-                session.terminate("Declined");
-            } catch (XMPPException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
 }

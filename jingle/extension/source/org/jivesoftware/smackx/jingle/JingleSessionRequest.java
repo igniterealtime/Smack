@@ -33,7 +33,9 @@ import org.jivesoftware.smackx.packet.Jingle;
  */
 public class JingleSessionRequest {
 
-    private final Jingle jingle; // The Jingle packet
+	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleSessionRequest.class);
+
+	private final Jingle jingle; // The Jingle packet
 
     private final JingleManager manager; // The manager associated to this
 
@@ -121,8 +123,18 @@ public class JingleSessionRequest {
      * Rejects the session request.
      */
     public synchronized void reject() {
+        JingleSession session = null;
         synchronized (manager) {
-            manager.rejectIncomingJingleSession(this);
+            try {
+				session = manager.createIncomingJingleSession(this);
+				// Acknowledge the IQ reception
+				session.setSid(this.getSessionID());
+				//session.sendAck(this.getJingle());
+				session.updatePacketListener();
+				session.terminate("Declined");
+			} catch (XMPPException e) {
+				LOGGER.error("", e);
+			}
         }
-    }
+     }
 }

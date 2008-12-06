@@ -507,11 +507,8 @@ public class MediaNegotiator extends JingleNegotiator {
      *  Called from above when starting a new session.
      *  @return
      */
-    public void start() {
-        //JingleDescription result = new JingleDescription.Audio();
-       // result.addAudioPayloadTypes(localAudioPts);
+    protected void doStart() {
 
-       // return result;
     }
 
     /**
