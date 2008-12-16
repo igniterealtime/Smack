@@ -92,10 +92,19 @@ public class RemoteCommand extends AdHocCommand {
         executeAction(Action.execute, SmackConfiguration.getPacketReplyTimeout());
     }
 
-    @Override
+    /**
+     * Executes the command, waiting up to the <tt>timeout</tt> for a reply.
+     * This is invoked only on the first stage of the
+     * command. It is invoked on every command. If there is a problem executing
+     * the command it throws an XMPPException.
+     *
+     * @param timeout the length of time in ms to wait for a reply.
+     * @throws XMPPException if there is an error executing the command.
+     */
     public void execute(long timeout) throws XMPPException {
         executeAction(Action.execute, timeout);
     }
+
     /**
      * Executes the default action of the command with the information provided
      * in the Form. This form must be the anwser form of the previous stage. If

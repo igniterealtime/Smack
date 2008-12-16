@@ -215,17 +215,6 @@ public abstract class AdHocCommand {
     public abstract void execute() throws XMPPException;
 
     /**
-     * Executes the command, waiting up to the <tt>timeout</tt> for a reply.
-     * This is invoked only on the first stage of the
-     * command. It is invoked on every command. If there is a problem executing
-     * the command it throws an XMPPException.
-     *
-     * @param timeout the length of time in ms to wait for a reply.
-     * @throws XMPPException if there is an error executing the command.
-     */
-    public abstract void execute(long timeout) throws XMPPException;
-
-    /**
      * Executes the next action of the command with the information provided in
      * the <code>response</code>. This form must be the answer form of the
      * previous stage. This method will be only invoked for commands that have one
