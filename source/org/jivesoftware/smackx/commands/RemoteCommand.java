@@ -79,19 +79,23 @@ public class RemoteCommand extends AdHocCommand {
 
     @Override
     public void cancel() throws XMPPException {
-        executeAction(Action.cancel);
+        executeAction(Action.cancel, SmackConfiguration.getPacketReplyTimeout());
     }
 
     @Override
     public void complete(Form form) throws XMPPException {
-        executeAction(Action.complete, form);
+        executeAction(Action.complete, form, SmackConfiguration.getPacketReplyTimeout());
     }
 
     @Override
     public void execute() throws XMPPException {
-        executeAction(Action.execute);
+        executeAction(Action.execute, SmackConfiguration.getPacketReplyTimeout());
     }
 
+    @Override
+    public void execute(long timeout) throws XMPPException {
+        executeAction(Action.execute, timeout);
+    }
     /**
      * Executes the default action of the command with the information provided
      * in the Form. This form must be the anwser form of the previous stage. If
@@ -101,21 +105,21 @@ public class RemoteCommand extends AdHocCommand {
      * @throws XMPPException if an error occurs.
      */
     public void execute(Form form) throws XMPPException {
-        executeAction(Action.execute, form);
+        executeAction(Action.execute, form, SmackConfiguration.getPacketReplyTimeout());
     }
 
     @Override
     public void next(Form form) throws XMPPException {
-        executeAction(Action.next, form);
+        executeAction(Action.next, form, SmackConfiguration.getPacketReplyTimeout());
     }
 
     @Override
     public void prev() throws XMPPException {
-        executeAction(Action.prev);
+        executeAction(Action.prev, SmackConfiguration.getPacketReplyTimeout());
     }
 
-    private void executeAction(Action action) throws XMPPException {
-        executeAction(action, null);
+    private void executeAction(Action action, long timeout) throws XMPPException {
+        executeAction(action, null, timeout);
     }
 
     /**
@@ -123,11 +127,12 @@ public class RemoteCommand extends AdHocCommand {
      * The action could be any of the available actions. The form must
      * be the anwser of the previous stage. It can be <tt>null</tt> if it is the first stage.
      *
-     * @param action the action to execute
-     * @param form the form with the information
+     * @param action the action to execute.
+     * @param form the form with the information.
+     * @param timeout the amount of time to wait for a reply.
      * @throws XMPPException if there is a problem executing the command.
      */
-    private void executeAction(Action action, Form form) throws XMPPException {
+    private void executeAction(Action action, Form form, long timeout) throws XMPPException {
         // TODO: Check that all the required fields of the form were filled, if
         // TODO: not throw the corresponding exeption. This will make a faster response,
         // TODO: since the request is stoped before it's sent.
@@ -147,7 +152,7 @@ public class RemoteCommand extends AdHocCommand {
 
         connection.sendPacket(data);
 
-        Packet response = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        Packet response = collector.nextResult(timeout);
 
         // Cancel the collector.
         collector.cancel();
