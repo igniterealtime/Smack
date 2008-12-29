@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.packet.AdHocCommandData;
  * single stage command, then invoking the execute action will execute this
  * action in the remote location. After that the local instance will have a
  * state of "completed" and a form or notes that applies.
- * 
+ *
  * @author Gabriel Guardincerri
- * 
+ *
  */
 public class RemoteCommand extends AdHocCommand {
 
@@ -61,11 +61,18 @@ public class RemoteCommand extends AdHocCommand {
      */
     private String sessionID;
 
+
+    /**
+     * The number of milliseconds to wait for a response from the server
+     * The default value is the default packet reply timeout (5000 ms).
+     */
+    private long packetReplyTimeout;
+
     /**
      * Creates a new RemoteCommand that uses an specific connection to execute a
      * command identified by <code>node</code> in the host identified by
      * <code>jid</code>
-     * 
+     *
      * @param connection the connection to use for the execution.
      * @param node the identifier of the command.
      * @param jid the JID of the host.
@@ -75,60 +82,48 @@ public class RemoteCommand extends AdHocCommand {
         this.connection = connection;
         this.jid = jid;
         this.setNode(node);
+        this.packetReplyTimeout = SmackConfiguration.getPacketReplyTimeout();
     }
 
     @Override
     public void cancel() throws XMPPException {
-        executeAction(Action.cancel, SmackConfiguration.getPacketReplyTimeout());
+        executeAction(Action.cancel, packetReplyTimeout);
     }
 
     @Override
     public void complete(Form form) throws XMPPException {
-        executeAction(Action.complete, form, SmackConfiguration.getPacketReplyTimeout());
+        executeAction(Action.complete, form, packetReplyTimeout);
     }
 
     @Override
     public void execute() throws XMPPException {
-        executeAction(Action.execute, SmackConfiguration.getPacketReplyTimeout());
-    }
-
-    /**
-     * Executes the command, waiting up to the <tt>timeout</tt> for a reply.
-     * This is invoked only on the first stage of the
-     * command. It is invoked on every command. If there is a problem executing
-     * the command it throws an XMPPException.
-     *
-     * @param timeout the length of time in ms to wait for a reply.
-     * @throws XMPPException if there is an error executing the command.
-     */
-    public void execute(long timeout) throws XMPPException {
-        executeAction(Action.execute, timeout);
+        executeAction(Action.execute, packetReplyTimeout);
     }
 
     /**
      * Executes the default action of the command with the information provided
      * in the Form. This form must be the anwser form of the previous stage. If
      * there is a problem executing the command it throws an XMPPException.
-     * 
+     *
      * @param form the form anwser of the previous stage.
      * @throws XMPPException if an error occurs.
      */
     public void execute(Form form) throws XMPPException {
-        executeAction(Action.execute, form, SmackConfiguration.getPacketReplyTimeout());
+        executeAction(Action.execute, form, packetReplyTimeout);
     }
 
     @Override
     public void next(Form form) throws XMPPException {
-        executeAction(Action.next, form, SmackConfiguration.getPacketReplyTimeout());
+        executeAction(Action.next, form, packetReplyTimeout);
     }
 
     @Override
     public void prev() throws XMPPException {
-        executeAction(Action.prev, SmackConfiguration.getPacketReplyTimeout());
+        executeAction(Action.prev, packetReplyTimeout);
     }
 
-    private void executeAction(Action action, long timeout) throws XMPPException {
-        executeAction(action, null, timeout);
+    private void executeAction(Action action, long packetReplyTimeout) throws XMPPException {
+        executeAction(action, null, packetReplyTimeout);
     }
 
     /**
@@ -180,5 +175,27 @@ public class RemoteCommand extends AdHocCommand {
     @Override
     public String getOwnerJID() {
         return jid;
+    }
+
+    /**
+     * Returns the number of milliseconds to wait for a respone. The
+     * {@link SmackConfiguration#getPacketReplyTimeout default} value
+     * should be adjusted for commands that can take a long time to execute.
+     *
+     * @return the number of milliseconds to wait for responses.
+     */
+    public long getPacketReplyTimeout() {
+        return packetReplyTimeout;
+    }
+
+    /**
+     * Returns the number of milliseconds to wait for a respone. The
+     * {@link SmackConfiguration#getPacketReplyTimeout default} value
+     * should be adjusted for commands that can take a long time to execute.
+     *
+     * @param packetReplyTimeout the number of milliseconds to wait for responses.
+     */
+    public void setPacketReplyTimeout(long packetReplyTimeout) {
+        this.packetReplyTimeout = packetReplyTimeout;
     }
 }
