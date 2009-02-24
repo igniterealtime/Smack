@@ -19,11 +19,14 @@
 
 package org.jivesoftware.smack.util;
 
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * Utilty class to perform DNS lookups for XMPP services.
@@ -63,6 +66,13 @@ public class DNSUtil {
      * of 5222.<p>
      *
      * As an example, a lookup for "example.com" may return "im.example.com:5269".
+     * 
+     * Note on SRV record selection.
+     * We now check priority and weight, but we still don't do this correctly.
+     * The missing behavior is this: if we fail to reach a host based on its SRV
+     * record then we need to select another host from the other SRV records.
+     * In Smack 3.1.1 we're not going to be able to do the major system redesign to
+     * correct this.
      *
      * @param domain the domain.
      * @return a HostAddress, which encompasses the hostname and port that the XMPP
@@ -80,24 +90,50 @@ public class DNSUtil {
                 return address;
             }
         }
-        String host = domain;
-        int port = 5222;
+        String bestHost = domain;
+        int bestPort = 5222;
+        int bestPriority = 0;
+        int bestWeight = 0;
         try {
-            Attributes dnsLookup =
-                    context.getAttributes("_xmpp-client._tcp." + domain, new String[]{"SRV"});
-            String srvRecord = (String)dnsLookup.get("SRV").get();
-            String [] srvRecordEntries = srvRecord.split(" ");
-            port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
-            host = srvRecordEntries[srvRecordEntries.length-1];
+            Attributes dnsLookup = context.getAttributes("_xmpp-client._tcp." + domain, new String[]{"SRV"});
+            Attribute srvAttribute = dnsLookup.get("SRV");
+            NamingEnumeration srvRecords = srvAttribute.getAll();
+            while(srvRecords.hasMore()) {
+				String srvRecord = (String) srvRecords.next();
+	            String [] srvRecordEntries = srvRecord.split(" ");
+	            int priority = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 4]);
+	            int port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
+	            int weight = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 3]);
+	            String host = srvRecordEntries[srvRecordEntries.length-1];
+	            
+	            // Randomize the weight.
+	            weight *= Math.random() * weight;
+	            
+	            if ((bestPriority == 0) || (priority < bestPriority)) {
+	            	// Choose a server with the lowest priority.
+	            	bestPriority = priority;
+	            	bestWeight = weight;
+	            	bestHost = host;
+	            	bestPort = port;
+	            } else if (priority == bestPriority) {
+	            	// When we have like priorities then randomly choose a server based on its weight
+	            	// The weights were randomized above.
+	            	if (weight > bestWeight) {
+	            		bestWeight = weight;
+	            		bestHost = host;
+	            		bestPort = port;
+	            	}
+	            }
+			}
         }
         catch (Exception e) {
             // Ignore.
         }
         // Host entries in DNS should end with a ".".
-        if (host.endsWith(".")) {
-            host = host.substring(0, host.length()-1);
+        if (bestHost.endsWith(".")) {
+        	bestHost = bestHost.substring(0, bestHost.length()-1);
         }
-        HostAddress address = new HostAddress(host, port);
+        HostAddress address = new HostAddress(bestHost, bestPort);
         // Add item to cache.
         cache.put(key, address);
         return address;
