@@ -226,7 +226,7 @@ public class XMPPConnection {
         config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
         this.configuration = config;
-        this.callbackHandler = null;
+        this.callbackHandler = config.getCallbackHandler();
     }
 
     /**
@@ -240,7 +240,7 @@ public class XMPPConnection {
      */
     public XMPPConnection(ConnectionConfiguration config) {
         this.configuration = config;
-        this.callbackHandler = null;
+        this.callbackHandler = config.getCallbackHandler();
     }
 
     /**
@@ -1219,9 +1219,9 @@ public class XMPPConnection {
             else {
                 ks = KeyStore.getInstance(configuration.getKeystoreType());
                 try {
-                    ks.load(new FileInputStream(configuration.getKeystorePath()), pcb.getPassword());
                     pcb = new PasswordCallback("Keystore Password: ",false);
                     callbackHandler.handle(new Callback[]{pcb});
+                    ks.load(new FileInputStream(configuration.getKeystorePath()), pcb.getPassword());
                 }
                 catch(Exception e) {
                     ks = null;
