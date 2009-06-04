@@ -261,4 +261,212 @@
         <className>org.jivesoftware.smackx.provider.AdHocCommandDataProvider$SessionExpiredError</className>
     </extensionProvider>
 
+
+    <!-- Fastpath providers -->
+    <iqProvider>
+        <elementName>offer</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.OfferRequestProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>offer-revoke</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.OfferRevokeProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>agent-status-request</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>transcripts</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.TranscriptsProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>transcript</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.TranscriptProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>workgroups</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.AgentWorkgroups$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>agent-info</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.AgentInfo$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>transcript-search</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.TranscriptSearch$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>occupants-info</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.OccupantsInfo$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>chat-settings</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.settings.ChatSettings$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>chat-notes</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.ext.notes.ChatNotes$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>chat-sessions</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.ext.history.AgentChatHistory$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>offline-settings</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.settings.OfflineSettings$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>sound-settings</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.settings.SoundSettings$InternalProvider</className>
+    </iqProvider>
+
+     <iqProvider>
+        <elementName>workgroup-properties</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties$InternalProvider</className>
+    </iqProvider>
+
+
+    <iqProvider>
+        <elementName>search-settings</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.settings.SearchSettings$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>workgroup-form</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.ext.forms.WorkgroupForm$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>macros</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.ext.macros.Macros$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>chat-metadata</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.ext.history.ChatMetadata$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>site-user</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.site.SiteUser$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>site-invite</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.site.SiteInvitation$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>site-user-history</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.site.SiteUserHistory$Provider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>generic-metadata</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.settings.GenericSettings$InternalProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+        <elementName>monitor</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.MonitorPacket$InternalProvider</className>
+    </iqProvider>
+
+    <!-- Packet Extension Providers -->
+    <extensionProvider>
+        <elementName>queue-status</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.QueueUpdate$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>workgroup</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.WorkgroupInformation$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>metadata</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.MetaDataProvider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>session</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.SessionID$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>user</elementName>
+        <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.UserID$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>agent-status</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.AgentStatus$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>notify-queue-details</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.QueueDetails$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>notify-queue</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.QueueOverview$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>invite</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.RoomInvitation$Provider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+        <elementName>transfer</elementName>
+        <namespace>http://jabber.org/protocol/workgroup</namespace>
+        <className>org.jivesoftware.smackx.workgroup.packet.RoomTransfer$Provider</className>
+    </extensionProvider>
+    
 </smackProviders>
