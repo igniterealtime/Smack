@@ -36,7 +36,7 @@ import java.util.*;
  * @author Alexander Wenckus
  */
 public class BookmarkManager {
-    private static final Map bookmarkManagerMap = new HashMap();
+    private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new HashMap<XMPPConnection, BookmarkManager>();
     static {
         PrivateDataManager.addPrivateDataProvider("storage", "storage:bookmarks",
                 new Bookmarks.Provider());
@@ -87,7 +87,7 @@ public class BookmarkManager {
      * the server.
      * @see BookmarkedConference
      */
-    public Collection getBookmarkedConferences() throws XMPPException {
+    public Collection<BookmarkedConference> getBookmarkedConferences() throws XMPPException {
         retrieveBookmarks();
         return Collections.unmodifiableCollection(bookmarks.getBookmarkedConferences());
     }
@@ -109,10 +109,9 @@ public class BookmarkManager {
         retrieveBookmarks();
         BookmarkedConference bookmark
                 = new BookmarkedConference(name, jid, isAutoJoin, nickname, password);
-        List conferences = bookmarks.getBookmarkedConferences();
+        List<BookmarkedConference> conferences = bookmarks.getBookmarkedConferences();
         if(conferences.contains(bookmark)) {
-            BookmarkedConference oldConference = (BookmarkedConference)
-                    conferences.get(conferences.indexOf(bookmark));
+            BookmarkedConference oldConference = conferences.get(conferences.indexOf(bookmark));
             if(oldConference.isShared()) {
                 throw new IllegalArgumentException("Cannot modify shared bookmark");
             }
@@ -138,9 +137,9 @@ public class BookmarkManager {
      */
     public void removeBookmarkedConference(String jid) throws XMPPException {
         retrieveBookmarks();
-        Iterator it = bookmarks.getBookmarkedConferences().iterator();
+        Iterator<BookmarkedConference> it = bookmarks.getBookmarkedConferences().iterator();
         while(it.hasNext()) {
-            BookmarkedConference conference = (BookmarkedConference) it.next();
+            BookmarkedConference conference = it.next();
             if(conference.getJid().equalsIgnoreCase(jid)) {
                 if(conference.isShared()) {
                     throw new IllegalArgumentException("Conference is shared and can't be removed");
@@ -158,7 +157,7 @@ public class BookmarkManager {
      * @return returns an unmodifiable collection of all bookmarked urls.
      * @throws XMPPException thrown when there is a problem retriving bookmarks from the server.
      */
-    public Collection getBookmarkedURLs() throws XMPPException {
+    public Collection<BookmarkedURL> getBookmarkedURLs() throws XMPPException {
         retrieveBookmarks();
         return Collections.unmodifiableCollection(bookmarks.getBookmarkedURLS());
     }
@@ -175,9 +174,9 @@ public class BookmarkManager {
     public void addBookmarkedURL(String URL, String name, boolean isRSS) throws XMPPException {
         retrieveBookmarks();
         BookmarkedURL bookmark = new BookmarkedURL(URL, name, isRSS);
-        List urls = bookmarks.getBookmarkedURLS();
+        List<BookmarkedURL> urls = bookmarks.getBookmarkedURLS();
         if(urls.contains(bookmark)) {
-            BookmarkedURL oldURL = (BookmarkedURL) urls.get(urls.indexOf(bookmark));
+            BookmarkedURL oldURL = urls.get(urls.indexOf(bookmark));
             if(oldURL.isShared()) {
                 throw new IllegalArgumentException("Cannot modify shared bookmarks");
             }
@@ -199,9 +198,9 @@ public class BookmarkManager {
      */
     public void removeBookmarkedURL(String bookmarkURL) throws XMPPException {
         retrieveBookmarks();
-        Iterator it = bookmarks.getBookmarkedURLS().iterator();
+        Iterator<BookmarkedURL> it = bookmarks.getBookmarkedURLS().iterator();
         while(it.hasNext()) {
-            BookmarkedURL bookmark = (BookmarkedURL) it.next();
+            BookmarkedURL bookmark = it.next();
             if(bookmark.getURL().equalsIgnoreCase(bookmarkURL)) {
                 if(bookmark.isShared()) {
                     throw new IllegalArgumentException("Cannot delete a shared bookmark.");
