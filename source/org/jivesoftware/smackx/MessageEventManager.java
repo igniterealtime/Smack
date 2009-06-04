@@ -22,12 +22,17 @@ package org.jivesoftware.smackx;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.packet.*;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.packet.MessageEvent;
 
 /**
  * Manages message events requests and notifications. A MessageEventManager provides a high
@@ -38,8 +43,8 @@ import org.jivesoftware.smackx.packet.*;
  */
 public class MessageEventManager {
 
-    private List messageEventNotificationListeners = new ArrayList();
-    private List messageEventRequestListeners = new ArrayList();
+    private List<MessageEventNotificationListener> messageEventNotificationListeners = new ArrayList<MessageEventNotificationListener>();
+    private List<MessageEventRequestListener> messageEventRequestListeners = new ArrayList<MessageEventRequestListener>();
 
     private XMPPConnection con;
 
@@ -298,7 +303,8 @@ public class MessageEventManager {
         }
     }
 
-    public void finalize() {
+    protected void finalize() throws Throwable {
         destroy();
+        super.finalize();
     }
 }

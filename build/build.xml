@@ -351,6 +351,7 @@
 		</taskdef>
 		<pmd shortFilenames="true">
 			<ruleset>migrating</ruleset>
+			<ruleset>finalizers</ruleset>
 			<formatter type="html" toFile="target/pmd_report.html" toConsole="true" />
 			<fileset dir="source/">
 				<include name="**/*.java" />

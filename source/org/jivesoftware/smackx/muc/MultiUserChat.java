@@ -20,19 +20,49 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.NodeInformationProvider;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.packet.*;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.PacketInterceptor;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.NodeInformationProvider;
+import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.packet.DiscoverItems;
+import org.jivesoftware.smackx.packet.MUCAdmin;
+import org.jivesoftware.smackx.packet.MUCInitialPresence;
+import org.jivesoftware.smackx.packet.MUCOwner;
+import org.jivesoftware.smackx.packet.MUCUser;
 
 /**
  * A MultiUserChat is a conversation that takes place among many users in a virtual
@@ -2500,8 +2530,7 @@ public class MultiUserChat {
         }
     }
 
-    public void finalize() throws Throwable {
-        super.finalize();
+    protected void finalize() throws Throwable {
         try {
             if (connection != null) {
                 roomListenerMultiplexor.removeRoom(room);
@@ -2514,6 +2543,7 @@ public class MultiUserChat {
         catch (Exception e) {
             // Do nothing
         }
+        super.finalize();
     }
 
     /**

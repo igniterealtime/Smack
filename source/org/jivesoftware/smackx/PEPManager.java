@@ -151,7 +151,8 @@ public class PEPManager {
 
     }
 
-    public void finalize() {
+    protected void finalize() throws Throwable {
         destroy();
+        super.finalize();
     }
 }

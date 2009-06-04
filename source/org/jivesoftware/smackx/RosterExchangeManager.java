@@ -20,11 +20,19 @@
 
 package org.jivesoftware.smackx;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.RosterGroup;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.packet.RosterExchange;
 
 /**
@@ -38,7 +46,7 @@ import org.jivesoftware.smackx.packet.RosterExchange;
  */
 public class RosterExchangeManager {
 
-    private List rosterExchangeListeners = new ArrayList();
+    private List<RosterExchangeListener> rosterExchangeListeners = new ArrayList<RosterExchangeListener>();
 
     private XMPPConnection con;
 
@@ -172,7 +180,8 @@ public class RosterExchangeManager {
             con.removePacketListener(packetListener);
 
     }
-    public void finalize() {
+    protected void finalize() throws Throwable {
         destroy();
+        super.finalize();
     }
 }
