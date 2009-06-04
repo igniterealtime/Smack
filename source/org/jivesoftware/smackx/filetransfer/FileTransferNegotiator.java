@@ -175,7 +175,7 @@ public class FileTransferNegotiator {
      *
      * @return Returns a collection of the supported transfer protocols.
      */
-    public static Collection getSupportedProtocols() {
+    public static Collection<String> getSupportedProtocols() {
         return Collections.unmodifiableList(Arrays.asList(PROTOCOLS));
     }
 
@@ -271,8 +271,8 @@ public class FileTransferNegotiator {
 
     private FormField getStreamMethodField(DataForm form) {
         FormField field = null;
-        for (Iterator it = form.getFields(); it.hasNext();) {
-            field = (FormField) it.next();
+        for (Iterator<FormField> it = form.getFields(); it.hasNext();) {
+            field = it.next();
             if (field.getVariable().equals(STREAM_DATA_FIELD_NAME)) {
                 break;
             }
@@ -286,8 +286,8 @@ public class FileTransferNegotiator {
         String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
-        for (Iterator it = field.getOptions(); it.hasNext();) {
-            variable = ((FormField.Option) it.next()).getValue();
+        for (Iterator<FormField.Option> it = field.getOptions(); it.hasNext();) {
+            variable = it.next().getValue();
             if (variable.equals(BYTE_STREAM) && !IBB_ONLY) {
                 isByteStream = true;
             }

@@ -253,7 +253,8 @@ public class EnhancedDebugger implements SmackDebugger {
                 new DefaultTableModel(
                         new Object[]{"Hide", "Timestamp", "", "", "Message", "Id", "Type", "To", "From"},
                         0) {
-                    public boolean isCellEditable(int rowIndex, int mColIndex) {
+        			private static final long serialVersionUID = 8136121224474217264L;
+					public boolean isCellEditable(int rowIndex, int mColIndex) {
                         return false;
                     }
 
@@ -645,7 +646,8 @@ public class EnhancedDebugger implements SmackDebugger {
                 new DefaultTableModel(new Object[][]{{"IQ", 0, 0}, {"Message", 0, 0},
                         {"Presence", 0, 0}, {"Other", 0, 0}, {"Total", 0, 0}},
                         new Object[]{"Type", "Received", "Sent"}) {
-                    public boolean isCellEditable(int rowIndex, int mColIndex) {
+        			private static final long serialVersionUID = -6793886085109589269L;
+					public boolean isCellEditable(int rowIndex, int mColIndex) {
                         return false;
                     }
                 };
@@ -711,20 +713,20 @@ public class EnhancedDebugger implements SmackDebugger {
      * Updates the statistics table
      */
     private void updateStatistics() {
-        statisticsTable.setValueAt(new Integer(receivedIQPackets), 0, 1);
-        statisticsTable.setValueAt(new Integer(sentIQPackets), 0, 2);
+        statisticsTable.setValueAt(Integer.valueOf(receivedIQPackets), 0, 1);
+        statisticsTable.setValueAt(Integer.valueOf(sentIQPackets), 0, 2);
 
-        statisticsTable.setValueAt(new Integer(receivedMessagePackets), 1, 1);
-        statisticsTable.setValueAt(new Integer(sentMessagePackets), 1, 2);
+        statisticsTable.setValueAt(Integer.valueOf(receivedMessagePackets), 1, 1);
+        statisticsTable.setValueAt(Integer.valueOf(sentMessagePackets), 1, 2);
 
-        statisticsTable.setValueAt(new Integer(receivedPresencePackets), 2, 1);
-        statisticsTable.setValueAt(new Integer(sentPresencePackets), 2, 2);
+        statisticsTable.setValueAt(Integer.valueOf(receivedPresencePackets), 2, 1);
+        statisticsTable.setValueAt(Integer.valueOf(sentPresencePackets), 2, 2);
 
-        statisticsTable.setValueAt(new Integer(receivedOtherPackets), 3, 1);
-        statisticsTable.setValueAt(new Integer(sentOtherPackets), 3, 2);
+        statisticsTable.setValueAt(Integer.valueOf(receivedOtherPackets), 3, 1);
+        statisticsTable.setValueAt(Integer.valueOf(sentOtherPackets), 3, 2);
 
-        statisticsTable.setValueAt(new Integer(receivedPackets), 4, 1);
-        statisticsTable.setValueAt(new Integer(sentPackets), 4, 2);
+        statisticsTable.setValueAt(Integer.valueOf(receivedPackets), 4, 1);
+        statisticsTable.setValueAt(Integer.valueOf(sentPackets), 4, 2);
     }
 
     /**

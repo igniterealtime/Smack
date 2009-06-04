@@ -31,6 +31,7 @@ import java.util.Random;
 public class StringUtils {
 
     private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
+    private static final char[] APOS_ENCODE = "&apos;".toCharArray();
     private static final char[] AMP_ENCODE = "&amp;".toCharArray();
     private static final char[] LT_ENCODE = "&lt;".toCharArray();
     private static final char[] GT_ENCODE = "&gt;".toCharArray();
@@ -325,6 +326,13 @@ public class StringUtils {
                 }
                 last = i + 1;
                 out.append(QUOTE_ENCODE);
+            }
+            else if (ch == '\'') {
+                if (i > last) {
+                    out.append(input, last, i - last);
+                }
+                last = i + 1;
+                out.append(APOS_ENCODE);
             }
         }
         if (last == 0) {

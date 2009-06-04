@@ -179,7 +179,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
      */
     private SelectedHostInfo selectHost(Bytestream streamHostsInfo)
             throws XMPPException {
-        Iterator it = streamHostsInfo.getStreamHosts().iterator();
+        Iterator<StreamHost> it = streamHostsInfo.getStreamHosts().iterator();
         StreamHost selectedHost = null;
         Socket socket = null;
         while (it.hasNext()) {

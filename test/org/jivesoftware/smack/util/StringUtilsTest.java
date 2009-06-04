@@ -93,6 +93,9 @@ public class StringUtilsTest extends TestCase {
 
         input = "&";
         assertEquals("&amp;", StringUtils.escapeForXML(input));
+        
+        input = "It's a good day today";
+        assertEquals("It&apos;s a good day today", StringUtils.escapeForXML(input));
     }
 
     public void testHash() {

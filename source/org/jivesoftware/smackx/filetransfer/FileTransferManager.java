@@ -48,7 +48,7 @@ public class FileTransferManager {
 
 	private final FileTransferNegotiator fileTransferNegotiator;
 
-	private List listeners;
+	private List<FileTransferListener> listeners;
 
 	private XMPPConnection connection;
 
@@ -83,7 +83,7 @@ public class FileTransferManager {
 	}
 
 	private void initListeners() {
-		listeners = new ArrayList();
+		listeners = new ArrayList<FileTransferListener>();
 
 		connection.addPacketListener(new PacketListener() {
 			public void processPacket(Packet packet) {

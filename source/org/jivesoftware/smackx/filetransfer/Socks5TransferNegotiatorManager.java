@@ -127,9 +127,9 @@ public class Socks5TransferNegotiatorManager implements FileTransferNegotiatorMa
         catch (XMPPException e) {
             return null;
         }
-        Iterator itx = info.getIdentities();
+        Iterator<DiscoverInfo.Identity> itx = info.getIdentities();
         while (itx.hasNext()) {
-            DiscoverInfo.Identity identity = (DiscoverInfo.Identity) itx.next();
+            DiscoverInfo.Identity identity = itx.next();
             if ("proxy".equalsIgnoreCase(identity.getCategory())
                     && "bytestreams".equalsIgnoreCase(
                     identity.getType())) {
@@ -145,9 +145,9 @@ public class Socks5TransferNegotiatorManager implements FileTransferNegotiatorMa
                 .getInstanceFor(connection);
         try {
             DiscoverItems discoItems = manager.discoverItems(connection.getServiceName());
-            Iterator it = discoItems.getItems();
+            Iterator<DiscoverItems.Item> it = discoItems.getItems();
             while (it.hasNext()) {
-                DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+                DiscoverItems.Item item = it.next();
                 String proxy = checkIsProxy(manager, item);
                 if (proxy != null) {
                     proxies.add(proxy);
@@ -167,12 +167,12 @@ public class Socks5TransferNegotiatorManager implements FileTransferNegotiatorMa
      */
     private void initStreamHosts() {
         List<Bytestream.StreamHost> streamHosts = new ArrayList<Bytestream.StreamHost>();
-        Iterator it = proxies.iterator();
+        Iterator<String> it = proxies.iterator();
         IQ query;
         PacketCollector collector;
         Bytestream response;
         while (it.hasNext()) {
-            String jid = it.next().toString();
+            String jid = it.next();
             query = new IQ() {
                 public String getChildElementXML() {
                     return "<query xmlns=\"http://jabber.org/protocol/bytestreams\"/>";
