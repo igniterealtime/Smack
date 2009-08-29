@@ -557,7 +557,7 @@ public class XMPPConnection {
      *
      * @return an account manager for this connection.
      */
-    public synchronized AccountManager getAccountManager() {
+    public AccountManager getAccountManager() {
         if (accountManager == null) {
             accountManager = new AccountManager(this);
         }
