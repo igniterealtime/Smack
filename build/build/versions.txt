@@ -1,5 +1,5 @@
 jar		| version
 ----------------------------------------
-xmlunit		| 1.1beta1
+xmlunit		| 1.2
 jstun		| 0.7.2
-xpp         | 1.1.4c
+xpp		| 1.1.4c

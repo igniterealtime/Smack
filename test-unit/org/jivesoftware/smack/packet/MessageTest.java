@@ -8,13 +8,15 @@
 package org.jivesoftware.smack.packet;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
-import org.xml.sax.SAXException;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  *
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 public class MessageTest {
 
     @Test
-    public void setMessageTypeTest() throws IOException, SAXException {
+    public void setMessageTypeTest() throws IOException, SAXException, ParserConfigurationException {
         Message.Type type = Message.Type.chat;
         Message.Type type2 = Message.Type.headline;
 
@@ -66,7 +68,7 @@ public class MessageTest {
     }
 
     @Test
-    public void setMessageSubjectTest() throws IOException, SAXException {
+    public void setMessageSubjectTest() throws IOException, SAXException, ParserConfigurationException {
         final String messageSubject = "This is a test of the emergency broadcast system.";
 
         StringBuilder controlBuilder = new StringBuilder();
@@ -85,7 +87,7 @@ public class MessageTest {
     }
 
     @Test
-    public void oneMessageBodyTest() throws IOException, SAXException {
+    public void oneMessageBodyTest() throws IOException, SAXException, ParserConfigurationException {
         final String messageBody = "This is a test of the emergency broadcast system.";
 
         StringBuilder controlBuilder = new StringBuilder();
@@ -104,7 +106,7 @@ public class MessageTest {
     }
 
     @Test
-    public void multipleMessageBodiesTest() throws IOException, SAXException {
+    public void multipleMessageBodiesTest() throws IOException, SAXException, ParserConfigurationException {
         final String messageBody1 = "This is a test of the emergency broadcast system, 1.";
         final String lang2 = "ru";
         final String messageBody2 = "This is a test of the emergency broadcast system, 2.";
@@ -162,7 +164,7 @@ public class MessageTest {
     }
 
     @Test
-    public void setMessageThreadTest() throws IOException, SAXException {
+    public void setMessageThreadTest() throws IOException, SAXException, ParserConfigurationException {
         final String messageThread = "1234";
 
         StringBuilder controlBuilder = new StringBuilder();
@@ -181,7 +183,7 @@ public class MessageTest {
     }
 
     @Test
-    public void messageXmlLangTest() throws IOException, SAXException {
+    public void messageXmlLangTest() throws IOException, SAXException, ParserConfigurationException {
         final String lang = "sp";
 
         StringBuilder controlBuilder = new StringBuilder();
