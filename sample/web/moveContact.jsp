@@ -193,8 +193,8 @@
           <% 
                     RosterEntry entry = roster.getEntry(user);
                     RosterGroup group;
-                    for (Iterator it=entry.getGroups(); it.hasNext();) { 
-                        group = (RosterGroup) it.next();%>
+                    for (Iterator<RosterGroup> it=entry.getGroups().iterator(); it.hasNext();) { 
+                        group = it.next();%>
           <tr> 
             <td align="center" width="80%" class=text height=16><%=group.getName()%></td>
             <td valign="middle" align="center" width="20%"><a href="moveContact.jsp?action=delete&user=<%=user%>&fromGroup=<%=group.getName()%>"><img src="images/garbage.png" alt="Remove contact from the group" border="0"></a></td>

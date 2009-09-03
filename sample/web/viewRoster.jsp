@@ -85,7 +85,7 @@
 
     // Close the connection to the XMPP server
     if ("close".equals(action)) {
-        conn.close();
+        conn.disconnect();
         session.invalidate();
         response.sendRedirect("login.jsp");
         return;
@@ -118,8 +118,8 @@
               </tr>
               <tr> 
                 <td> <TABLE cellSpacing=0 borderColorDark=#E0E0E0 cellPadding=0 width=100% align=center borderColorLight=#000000 border=1>
-                    <% for (Iterator groups = roster.getGroups(); groups.hasNext();) {
-                    RosterGroup group = (RosterGroup)groups.next();%>
+                    <% for (Iterator<RosterGroup> groups = roster.getGroups().iterator(); groups.hasNext();) {
+                    RosterGroup group = groups.next();%>
                     <tr> 
                       <td bgcolor="#AAAAAA" colspan="6" class=text id=white height=16>Group: 
                         <%= group.getName()%></td>
@@ -130,8 +130,8 @@
                       <TD class=text id=white height=16>Subscription</TD>
                       <TD colspan="3" class=text id=white height=16><a href="addContact.jsp?group1=<%=group.getName()%>"><img src="images/businessman_add.png" alt="Add contact to group" border="0"></a></TD>
                     </TR>
-                    <% for (Iterator it = group.getEntries(); it.hasNext();) { 
-                        RosterEntry entry = (RosterEntry)it.next();%>
+                    <% for (Iterator<RosterEntry> it = group.getEntries().iterator(); it.hasNext();) { 
+                        RosterEntry entry = it.next();%>
                     <TR vAlign=center align=middle bgColor=#ffffff> 
                       <TD class=text height=16><%= entry.getUser()%></TD>
                       <TD class=text height=16><%= entry.getName()%></TD>
@@ -152,8 +152,8 @@
                       <TD class=text id=white height=16>Subscription</TD>
                       <TD colspan="3" class=text id=white height=16><a href="addContact.jsp"><img src="images/businessman_add.png" alt="Add contact" border="0"></a></TD>
                     </TR>
-                    <% for (Iterator it = roster.getUnfiledEntries(); it.hasNext();) { 
-                RosterEntry entry = (RosterEntry)it.next();%>
+                    <% for (Iterator<RosterEntry> it = roster.getUnfiledEntries().iterator(); it.hasNext();) { 
+                RosterEntry entry = it.next();%>
                     <tr vAlign=center align=middle bgColor=#ffffff> 
                       <td class=text height=16><%= entry.getUser()%></td>
                       <td class=text height=16><%= entry.getName()%></td>
@@ -183,8 +183,8 @@
                       <TD class=text id=white height=16>Type</TD>
                       <TD class=text id=white height=16>&nbsp;</TD>
                     </TR>
-                    <% for (Iterator entries = roster.getEntries(); entries.hasNext();) {
-                    RosterEntry entry = (RosterEntry)entries.next();
+                    <% for (Iterator<RosterEntry> entries = roster.getEntries().iterator(); entries.hasNext();) {
+                    RosterEntry entry = entries.next();
                     Iterator presences = roster.getPresences(entry.getUser());
                     if (presences != null) {
                         while (presences.hasNext()) {
