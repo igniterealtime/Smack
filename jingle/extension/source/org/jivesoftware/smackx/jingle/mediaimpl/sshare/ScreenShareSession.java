@@ -45,7 +45,7 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
  * This Class implements a complete JingleMediaSession.
  * It sould be used to transmit and receive captured images from the Display.
  * This Class should be automaticly controlled by JingleSession.
- * For better NAT Traversal support this implementation don´t support only receive or only transmit.
+ * For better NAT Traversal support this implementation don't support only receive or only transmit.
  * To receive you MUST transmit. So the only implemented and functionally methods are startTransmit() and stopTransmit()
  *
  * @author Thiago Camargo

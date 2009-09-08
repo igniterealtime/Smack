@@ -183,7 +183,7 @@ public class STUN extends IQ {
 
     /**
      * Get a new STUN Server Address and port from the server.
-     * If a error occurs or the server don´t support STUN Service, null is returned.
+     * If a error occurs or the server don't support STUN Service, null is returned.
      *
      * @param xmppConnection
      * @return

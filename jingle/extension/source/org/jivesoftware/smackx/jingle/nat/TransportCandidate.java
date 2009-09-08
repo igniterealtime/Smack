@@ -208,7 +208,7 @@ public abstract class TransportCandidate {
     }
 
     /**
-     * Get the jingle´s sessionId that is using this candidate
+     * Get the jingle's sessionId that is using this candidate
      *
      * @return
      */
@@ -217,7 +217,7 @@ public abstract class TransportCandidate {
     }
 
     /**
-     * Set the jingle´s sessionId that is using this candidate
+     * Set the jingle's sessionId that is using this candidate
      *
      * @param sessionId
      */

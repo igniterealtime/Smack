@@ -386,7 +386,7 @@ public class RTPBridge extends IQ {
 
     /**
      * Get a new RTPBridge Candidate from the server.
-     * If a error occurs or the server don´t support RTPBridge Service, null is returned.
+     * If a error occurs or the server don't support RTPBridge Service, null is returned.
      *
      * @param xmppConnection
      * @param sessionID
