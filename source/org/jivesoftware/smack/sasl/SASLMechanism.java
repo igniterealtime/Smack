@@ -238,7 +238,7 @@ public abstract class SASLMechanism implements CallbackHandler {
         public String toXML() {
             StringBuilder stanza = new StringBuilder();
             stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
-            if (authenticationText == null) {
+            if (authenticationText != null) {
                 stanza.append(authenticationText);
             }
             else {
