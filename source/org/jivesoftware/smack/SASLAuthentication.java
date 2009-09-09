@@ -23,6 +23,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.sasl.*;
 
@@ -528,9 +529,8 @@ public class SASLAuthentication implements UserAuthentication {
         }
     }
 
-    public void send(String stanza) throws IOException {
-        connection.writer.write(stanza);
-        connection.writer.flush();
+    public void send(Packet stanza) {
+        connection.sendPacket(stanza);
     }
 
     /**

@@ -22,6 +22,7 @@ package org.jivesoftware.smack.sasl;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.Base64;
 
 import java.io.IOException;
@@ -110,24 +111,18 @@ public abstract class SASLMechanism implements CallbackHandler {
     }
 
     protected void authenticate() throws IOException, XMPPException {
-        StringBuilder stanza = new StringBuilder();
-        stanza.append("<auth mechanism=\"").append(getName());
-        stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+        String authenticationText = null;
         try {
             if(sc.hasInitialResponse()) {
                 byte[] response = sc.evaluateChallenge(new byte[0]);
-                String authenticationText = Base64.encodeBytes(response,Base64.DONT_BREAK_LINES);
-                if(authenticationText != null && !authenticationText.equals("")) {                 
-                    stanza.append(authenticationText);
-                }
+                authenticationText = Base64.encodeBytes(response,Base64.DONT_BREAK_LINES);
             }
         } catch (SaslException e) {
             throw new XMPPException("SASL authentication failed", e);
         }
-        stanza.append("</auth>");
 
         // Send the authentication to the server
-        getSASLAuthentication().send(stanza.toString());
+        getSASLAuthentication().send(new AuthMechanism(getName(), authenticationText));
     }
 
 
@@ -139,27 +134,23 @@ public abstract class SASLMechanism implements CallbackHandler {
      * @throws IOException if an exception sending the response occurs.
      */
     public void challengeReceived(String challenge) throws IOException {
-        // Build the challenge response stanza encoding the response text
-        StringBuilder stanza = new StringBuilder();
-
         byte response[];
         if(challenge != null) {
             response = sc.evaluateChallenge(Base64.decode(challenge));
         } else {
-            response = sc.evaluateChallenge(null);
+            response = sc.evaluateChallenge(new byte[0]);
         }
 
-        String authenticationText = Base64.encodeBytes(response,Base64.DONT_BREAK_LINES);
-        if(authenticationText.equals("")) {
-            authenticationText = "=";
+        Packet responseStanza;
+        if (response == null) {
+            responseStanza = new Response();
         }
-
-        stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
-        stanza.append(authenticationText);
-        stanza.append("</response>");
+        else {
+            responseStanza = new Response(Base64.encodeBytes(response,Base64.DONT_BREAK_LINES));
+        }
 
         // Send the authentication to the server
-        getSASLAuthentication().send(stanza.toString());
+        getSASLAuthentication().send(responseStanza);
     }
 
     /**
@@ -195,5 +186,66 @@ public abstract class SASLMechanism implements CallbackHandler {
                throw new UnsupportedCallbackException(callbacks[i]);
             }
          }
+    }
+
+    /**
+     * Initiating SASL authentication by select a mechanism.
+     */
+    public class AuthMechanism extends Packet {
+        final private String name;
+        final private String authenticationText;
+
+        public AuthMechanism(String name, String authenticationText) {
+            if (name == null) {
+                throw new NullPointerException("SASL mechanism name shouldn't be null.");
+            }
+            this.name = name;
+            this.authenticationText = authenticationText;
+        }
+
+        public String toXML() {
+            StringBuilder stanza = new StringBuilder();
+            stanza.append("<auth mechanism=\"").append(name);
+            stanza.append("\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+            if (authenticationText != null &&
+                    authenticationText.trim().length() > 0) {
+                stanza.append(authenticationText);
+            }
+            stanza.append("</auth>");
+            return stanza.toString();
+        }
+    }
+
+    /**
+     * A SASL response stanza.
+     */
+    public class Response extends Packet {
+        final private String authenticationText;
+
+        public Response() {
+            authenticationText = null;
+        }
+
+        public Response(String authenticationText) {
+            if (authenticationText == null || authenticationText.trim().length() == 0) {
+                this.authenticationText = null;
+            }
+            else {
+                this.authenticationText = authenticationText;
+            }
+        }
+
+        public String toXML() {
+            StringBuilder stanza = new StringBuilder();
+            stanza.append("<response xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+            if (authenticationText == null) {
+                stanza.append(authenticationText);
+            }
+            else {
+                stanza.append("=");
+            }
+            stanza.append("</response>");
+            return stanza.toString();
+        }
     }
 }
