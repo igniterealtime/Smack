@@ -377,6 +377,9 @@
         <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
         <className>org.jivesoftware.smackx.workgroup.ext.history.ChatMetadata$Provider</className>
     </iqProvider>
+<!--
+	
+	org.jivesoftware.smackx.workgroup.site is missing ... 
 
     <iqProvider>
         <elementName>site-user</elementName>
@@ -395,7 +398,7 @@
         <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
         <className>org.jivesoftware.smackx.workgroup.site.SiteUserHistory$Provider</className>
     </iqProvider>
-
+-->
     <iqProvider>
         <elementName>generic-metadata</elementName>
         <namespace>http://jivesoftware.com/protocol/workgroup</namespace>
