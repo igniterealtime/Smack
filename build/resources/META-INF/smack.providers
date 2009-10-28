@@ -543,7 +543,7 @@
     <extensionProvider>
     	<elementName>options</elementName>
         <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.provider.FormNodeProvider</className>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
 	
 	<!-- XEP-0060 pubsub#owner -->
@@ -556,13 +556,13 @@
     <extensionProvider>
     	<elementName>configure</elementName>
         <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-        <className>org.jivesoftware.smackx.provider.FormNodeProvider</className>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
 
     <extensionProvider>
     	<elementName>default</elementName>
         <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-        <className>org.jivesoftware.smackx.provider.FormNodeProvider</className>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
 	
 	<!-- XEP-0060 pubsub#event -->
@@ -587,7 +587,7 @@
     <extensionProvider>
     	<elementName>options</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.provider.FormNodeProvider</className>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
     
     <extensionProvider>
