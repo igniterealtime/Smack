@@ -23,13 +23,17 @@ import junit.framework.TestCase;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.XMPPError.Type;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 
 import javax.net.SocketFactory;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Base class for all the test cases which provides a pre-configured execution context. This 
@@ -52,7 +56,10 @@ public abstract class SmackTestCase extends TestCase {
     private String host = "localhost";
     private String serviceName = "localhost";
     private int port = 5222;
-    private String usernamnePrefix = "user";
+    private String usernamePrefix = "user";
+    private String passwordPrefix;
+    private boolean samePassword;
+    private List<Integer> createdUserIdx = new ArrayList<Integer>();
 
     private String chatDomain = "chat";
     private String mucDomain = "conference";
@@ -136,7 +143,7 @@ public abstract class SmackTestCase extends TestCase {
         if (index > getMaxConnections()) {
             throw new IllegalArgumentException("Index out of bounds");
         }
-        return usernamnePrefix + index;
+        return usernamePrefix + (index + 1);
     }
 
     /**
@@ -209,22 +216,39 @@ public abstract class SmackTestCase extends TestCase {
             // that will not resolve as a network connection.
             host = connections[0].getHost();
             serviceName = connections[0].getServiceName();
-            // Create the test accounts
-            if (!getConnection(0).getAccountManager().supportsAccountCreation())
-                fail("Server does not support account creation");
-
+            
             for (int i = 0; i < getMaxConnections(); i++) {
-                // Create the test account
-                try {
-                    getConnection(i).getAccountManager().createAccount(usernamnePrefix + i, usernamnePrefix + i);
-                } catch (XMPPException e) {
-                    // Do nothing if the accout already exists
-                    if (e.getXMPPError() == null || e.getXMPPError().getCode() != 409) {
-                        throw e;
-                    }
-                }
-                // Login with the new test account
-                getConnection(i).login(usernamnePrefix + i, usernamnePrefix + i, "Smack");
+            	String password = usernamePrefix + (i+1);
+            	String currentUser = password; 
+            	
+            	if (passwordPrefix != null)
+            		password = (samePassword ? passwordPrefix : passwordPrefix + (i+1));
+
+            	try
+				{
+					getConnection(i).login(currentUser, password, "Smack");
+				}
+				catch (XMPPException e)
+				{
+					e.printStackTrace();
+					
+		            // Create the test accounts
+		            if (!getConnection(0).getAccountManager().supportsAccountCreation())
+		                fail("Server does not support account creation");
+
+		            // Create the account and try logging in again as the 
+		            // same user.
+					try
+					{
+						createAccount(i, currentUser, password);
+					}
+					catch (Exception e1)
+					{
+						e1.printStackTrace();
+						fail("Could not create user: " + currentUser);
+					}
+					i--;
+				}
             }
             // Let the server process the available presences
             Thread.sleep(150);
@@ -235,26 +259,61 @@ public abstract class SmackTestCase extends TestCase {
         }
     }
 
-    protected void tearDown() throws Exception {
+    protected void connectAndLogin(int connectionIndex) throws XMPPException
+    {
+    	String password = usernamePrefix + connectionIndex;
+    	
+    	if (passwordPrefix != null)
+    		password = (samePassword ? passwordPrefix : passwordPrefix + connectionIndex);
+
+    	XMPPConnection con = getConnection(connectionIndex);
+    	
+    	if (!con.isConnected())
+    		con.connect();
+    	con.login(usernamePrefix + connectionIndex, password, "Smack");
+    }
+
+    protected void disconnect(int connectionIndex) throws XMPPException
+    {
+    	getConnection(connectionIndex).disconnect();
+    }
+
+    private void createAccount(int connectionIdx, String username, String password)
+	{
+        // Create the test account
+        try {
+            getConnection(connectionIdx).getAccountManager().createAccount(username, password);
+            createdUserIdx.add(connectionIdx);
+        } catch (XMPPException e) {
+        	e.printStackTrace();
+        	fail(e.getMessage());
+        }
+	}
+
+	protected void tearDown() throws Exception {
         super.tearDown();
 
-        for (int i = 0; i < getMaxConnections(); i++) {
-            try {
-                // If not connected, connect so that we can delete the account.
-                if (!getConnection(i).isConnected()) {
-                    XMPPConnection con = getConnection(i);
-                    con.connect();
-                    con.login(getUsername(i), getUsername(i));
+        for (int i = 0; i < getMaxConnections(); i++)
+		{
+        	if (createdUserIdx.contains(i))
+        	{
+                try {
+                    // If not connected, connect so that we can delete the account.
+                    if (!getConnection(i).isConnected()) {
+                        XMPPConnection con = getConnection(i);
+                        con.connect();
+                        con.login(getUsername(i), getUsername(i));
+                    }
+                    else if (!getConnection(i).isAuthenticated()) {
+                        getConnection(i).login(getUsername(i), getUsername(i));     
+                    }
+                    // Delete the created account for the test
+                    getConnection(i).getAccountManager().deleteAccount();
                 }
-                else if (!getConnection(i).isAuthenticated()) {
-                    getConnection(i).login(getUsername(i), getUsername(i));     
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
-                // Delete the created account for the test
-                getConnection(i).getAccountManager().deleteAccount();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+        	}
             if (getConnection(i).isConnected()) {
                 // Close the connection
                 getConnection(i).disconnect();
@@ -334,7 +393,11 @@ public abstract class SmackTestCase extends TestCase {
                         mucDomain = parser.nextText();
                     }
                     else if (parser.getName().equals("username")) {
-                        usernamnePrefix = parser.nextText();
+                        usernamePrefix = parser.nextText();
+                    }
+                    else if (parser.getName().equals("password")) {
+                    	samePassword = "true".equals(parser.getAttributeValue(0));
+                        passwordPrefix = parser.nextText();
                     }
                 }
                 eventType = parser.next();
