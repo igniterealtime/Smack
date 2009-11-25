@@ -29,16 +29,16 @@ import java.util.List;
  * MacroGroup datamodel.
  */
 public class MacroGroup {
-    private List macros;
-    private List macroGroups;
+    private List<Macro> macros;
+    private List<MacroGroup> macroGroups;
 
 
     // Define MacroGroup
     private String title;
 
     public MacroGroup() {
-        macros = new ArrayList();
-        macroGroups = new ArrayList();
+        macros = new ArrayList<Macro>();
+        macroGroups = new ArrayList<MacroGroup>();
     }
 
     public void addMacro(Macro macro) {
@@ -50,8 +50,8 @@ public class MacroGroup {
     }
 
     public Macro getMacroByTitle(String title) {
-        Collection col = Collections.unmodifiableList(macros);
-        Iterator iter = col.iterator();
+        Collection<Macro> col = Collections.unmodifiableList(macros);
+        Iterator<Macro> iter = col.iterator();
         while (iter.hasNext()) {
             Macro macro = (Macro)iter.next();
             if (macro.getTitle().equalsIgnoreCase(title)) {
@@ -74,8 +74,8 @@ public class MacroGroup {
     }
 
     public MacroGroup getMacroGroupByTitle(String title) {
-        Collection col = Collections.unmodifiableList(macroGroups);
-        Iterator iter = col.iterator();
+        Collection<MacroGroup> col = Collections.unmodifiableList(macroGroups);
+        Iterator<MacroGroup> iter = col.iterator();
         while (iter.hasNext()) {
             MacroGroup group = (MacroGroup)iter.next();
             if (group.getTitle().equalsIgnoreCase(title)) {
@@ -90,19 +90,19 @@ public class MacroGroup {
     }
 
 
-    public List getMacros() {
+    public List<Macro>  getMacros() {
         return macros;
     }
 
-    public void setMacros(List macros) {
+    public void setMacros(List<Macro> macros) {
         this.macros = macros;
     }
 
-    public List getMacroGroups() {
+    public List<MacroGroup> getMacroGroups() {
         return macroGroups;
     }
 
-    public void setMacroGroups(List macroGroups) {
+    public void setMacroGroups(List<MacroGroup> macroGroups) {
         this.macroGroups = macroGroups;
     }
 
@@ -112,5 +112,32 @@ public class MacroGroup {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    
+    public String toXML() {
+    	StringBuilder buf = new StringBuilder();
+    	buf.append("<macrogroup>");
+    	buf.append("<title>" +  getTitle() + "</title>");
+    	buf.append("<macros>");
+    	for (Macro macro : getMacros())
+		{
+    		buf.append("<macro>");
+    		buf.append("<title>" + macro.getTitle() + "</title>");
+    		buf.append("<type>" + macro.getType() + "</type>");
+    		buf.append("<description>" + macro.getDescription() + "</description>");
+    		buf.append("<response>" + macro.getResponse() + "</response>");
+    		buf.append("</macro>");
+		}
+    	buf.append("</macros>");
+    	
+    	if (getMacroGroups().size() > 0) {
+    		buf.append("<macroGroups>");
+    		for (MacroGroup groups : getMacroGroups()) {
+    			buf.append(groups.toXML());
+    		}
+    		buf.append("</macroGroups>");
+    	}
+    	buf.append("</macrogroup>");
+    	return buf.toString(); 
     }
 }

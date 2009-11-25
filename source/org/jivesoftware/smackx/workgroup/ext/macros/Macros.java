@@ -19,9 +19,12 @@
 
 package org.jivesoftware.smackx.workgroup.ext.macros;
 
+import java.io.StringReader;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
+import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -33,13 +36,6 @@ public class Macros extends IQ {
     private MacroGroup rootGroup;
     private boolean personal;
     private MacroGroup personalMacroGroup;
-
-    private static ClassLoader cl;
-
-    public static void setClassLoader(ClassLoader cloader) {
-        cl = cloader;
-    }
-
 
     public MacroGroup getRootGroup() {
         return rootGroup;
@@ -83,18 +79,11 @@ public class Macros extends IQ {
         if (isPersonal()) {
             buf.append("<personal>true</personal>");
         }
-        // TODO: REMOVE XSTREAM
-//        if (getPersonalMacroGroup() != null) {
-//            final XStream xstream = new XStream();
-//            xstream.alias("macro", Macro.class);
-//            xstream.alias("macrogroup", MacroGroup.class);
-//
-//            if (cl != null) {
-//                xstream.setClassLoader(cl);
-//            }
-//            String persitedGroup = StringUtils.escapeForXML(xstream.toXML(getPersonalMacroGroup()));
-//            buf.append("<personalMacro>").append(persitedGroup).append("</personalMacro>");
-//        }
+        if (getPersonalMacroGroup() != null) {        	
+        	buf.append("<personalMacro>");
+        	buf.append(StringUtils.escapeForXML(getPersonalMacroGroup().toXML()));
+        	buf.append("</personalMacro>");
+        }
         buf.append("</").append(ELEMENT_NAME).append("> ");
 
         return buf.toString();
@@ -120,15 +109,8 @@ public class Macros extends IQ {
                 if (eventType == XmlPullParser.START_TAG) {
                     if (parser.getName().equals("model")) {
                         String macros = parser.nextText();
-                        // TODO: REMOVE XSTREAM
-//                        XStream xstream = new XStream();
-//                        if(cl != null){
-//                            xstream.setClassLoader(cl);
-//                        }
-//                        xstream.alias("macro", Macro.class);
-//                        xstream.alias("macrogroup", MacroGroup.class);
-//                        MacroGroup group = (MacroGroup)xstream.fromXML(macros);
-//                        macroGroup.setRootGroup(group);
+                        MacroGroup group = parseMacroGroups(macros);
+                        macroGroup.setRootGroup(group);
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
@@ -139,6 +121,78 @@ public class Macros extends IQ {
             }
 
             return macroGroup;
+        }
+        
+        public Macro parseMacro(XmlPullParser parser) throws Exception {
+        	Macro macro = new Macro();
+        	 boolean done = false;
+            while (!done) {
+	        	int eventType = parser.next();
+	        	if (eventType == XmlPullParser.START_TAG) {
+	        		if (parser.getName().equals("title")) {
+	        			parser.next();
+	        			macro.setTitle(parser.getText());
+	        		}
+	        		else if (parser.getName().equals("description")) {
+	        			macro.setDescription(parser.nextText());
+	        		}
+	        		else if (parser.getName().equals("response")) {
+	        			macro.setResponse(parser.nextText());
+	        		}
+	        		else if (parser.getName().equals("type")) {
+	        			macro.setType(Integer.valueOf(parser.nextText()).intValue());
+	        		}
+	        	}
+	            else if (eventType == XmlPullParser.END_TAG) {
+	                if (parser.getName().equals("macro")) {
+	                    done = true;
+	                }
+	            }
+            }
+        	return macro;
+        }
+        
+        public MacroGroup parseMacroGroup(XmlPullParser parser) throws Exception {
+        	MacroGroup group = new MacroGroup();
+        	
+            boolean done = false;
+            while (!done) {
+	        	int eventType = parser.next();
+	        	if (eventType == XmlPullParser.START_TAG) {
+	        		if (parser.getName().equals("macrogroup")) {
+	        			group.addMacroGroup(parseMacroGroup(parser));
+	        		}
+	        		if (parser.getName().equals("title")) {
+	        			group.setTitle(parser.nextText());
+	        		}
+	        		if (parser.getName().equals("macro")) {
+	        			group.addMacro(parseMacro(parser));
+	        		}
+	        	}
+	            else if (eventType == XmlPullParser.END_TAG) {
+	                if (parser.getName().equals("macrogroup")) {
+	                    done = true;
+	                }
+	            }
+            }
+        	return group; 
+        }
+        
+        public MacroGroup parseMacroGroups(String macros) throws Exception {
+
+        	MacroGroup group = null;
+        	XmlPullParser parser = new MXParser();
+        	parser.setInput(new StringReader(macros));
+			int eventType = parser.getEventType();
+			while (eventType != XmlPullParser.END_DOCUMENT) {		
+				eventType = parser.next();
+				 if (eventType == XmlPullParser.START_TAG) {
+	                    if (parser.getName().equals("macrogroup")) {
+	                    	group = parseMacroGroup(parser);
+	                    }
+				 }
+			}
+			return group;
         }
     }
 }
