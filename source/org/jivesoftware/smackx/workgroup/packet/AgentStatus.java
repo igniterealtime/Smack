@@ -50,7 +50,7 @@ public class AgentStatus implements PacketExtension {
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
     private String workgroupJID;
-    private List currentChats = new ArrayList();
+    private List<ChatInfo> currentChats = new ArrayList<ChatInfo>();
     private int maxChats = -1;
 
     AgentStatus() {
@@ -67,7 +67,7 @@ public class AgentStatus implements PacketExtension {
      * @return a collection of ChatInfo where each ChatInfo represents a Chat where this agent
      *         is participating.
      */
-    public List getCurrentChats() {
+    public List<ChatInfo> getCurrentChats() {
         return Collections.unmodifiableList(currentChats);
     }
 
@@ -96,7 +96,7 @@ public class AgentStatus implements PacketExtension {
         }
         if (!currentChats.isEmpty()) {
             buf.append("<current-chats xmlns= \"http://jivesoftware.com/protocol/workgroup\">");
-            for (Iterator it = currentChats.iterator(); it.hasNext();) {
+            for (Iterator<ChatInfo> it = currentChats.iterator(); it.hasNext();) {
                 buf.append(((ChatInfo)it.next()).toXML());
             }
             buf.append("</current-chats>");

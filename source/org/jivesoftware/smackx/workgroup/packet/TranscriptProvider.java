@@ -21,6 +21,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -40,7 +41,7 @@ public class TranscriptProvider implements IQProvider {
 
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         String sessionID = parser.getAttributeValue("", "sessionID");
-        List packets = new ArrayList();
+        List<Packet> packets = new ArrayList<Packet>();
 
         boolean done = false;
         while (!done) {

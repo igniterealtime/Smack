@@ -60,7 +60,7 @@ public class AgentSession {
     private boolean online = false;
     private Presence.Mode presenceMode;
     private int maxChats;
-    private final Map metaData;
+    private final Map<String, String> metaData;
 
     private Map<String, WorkgroupQueue> queues;
 
@@ -96,7 +96,7 @@ public class AgentSession {
 
         this.maxChats = -1;
 
-        this.metaData = new HashMap();
+        this.metaData = new HashMap<String, String>();
 
         this.queues = new HashMap<String, WorkgroupQueue>();
 

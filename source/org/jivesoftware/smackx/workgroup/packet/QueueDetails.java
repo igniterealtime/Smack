@@ -51,13 +51,13 @@ public class QueueDetails implements PacketExtension {
     /**
      * The list of users in the queue.
      */
-    private Set users;
+    private Set<QueueUser> users;
 
     /**
      * Creates a new QueueDetails packet
      */
     private QueueDetails() {
-        users = new HashSet();
+        users = new HashSet<QueueUser>();
     }
 
     /**
@@ -76,7 +76,7 @@ public class QueueDetails implements PacketExtension {
      *
      * @return a Set for the users waiting in a queue.
      */
-    public Set getUsers() {
+    public Set<QueueUser> getUsers() {
         synchronized (users) {
             return users;
         }
@@ -106,7 +106,7 @@ public class QueueDetails implements PacketExtension {
         buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
 
         synchronized (users) {
-            for (Iterator i=users.iterator(); i.hasNext(); ) {
+            for (Iterator<QueueUser> i=users.iterator(); i.hasNext(); ) {
                 QueueUser user = (QueueUser)i.next();
                 int position = user.getQueuePosition();
                 int timeRemaining = user.getEstimatedRemainingTime();

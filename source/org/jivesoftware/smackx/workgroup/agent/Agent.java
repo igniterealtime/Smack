@@ -39,7 +39,7 @@ public class Agent {
     private XMPPConnection connection;
     private String workgroupJID;
 
-    public static Collection getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws XMPPException {
+    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws XMPPException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
         request.setTo(serviceJID);
         PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));

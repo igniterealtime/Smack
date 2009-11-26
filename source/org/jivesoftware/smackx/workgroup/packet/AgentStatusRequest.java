@@ -47,17 +47,17 @@ public class AgentStatusRequest extends IQ {
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private Set agents;
+    private Set<Item> agents;
 
     public AgentStatusRequest() {
-        agents = new HashSet();
+        agents = new HashSet<Item>();
     }
 
     public int getAgentCount() {
         return agents.size();
     }
 
-    public Set getAgents() {
+    public Set<Item> getAgents() {
         return Collections.unmodifiableSet(agents);
     }
 
@@ -73,7 +73,7 @@ public class AgentStatusRequest extends IQ {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
         synchronized (agents) {
-            for (Iterator i=agents.iterator(); i.hasNext(); ) {
+            for (Iterator<Item> i=agents.iterator(); i.hasNext(); ) {
                 Item item = (Item) i.next();
                 buf.append("<agent jid=\"").append(item.getJID()).append("\">");
                 if (item.getName() != null) {

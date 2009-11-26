@@ -38,7 +38,7 @@ import java.util.List;
 public class AgentWorkgroups extends IQ {
 
     private String agentJID;
-    private List workgroups;
+    private List<String> workgroups;
 
     /**
      * Creates an AgentWorkgroups request for the given agent. This IQ will be sent and an answer
@@ -48,7 +48,7 @@ public class AgentWorkgroups extends IQ {
      */
     public AgentWorkgroups(String agentJID) {
         this.agentJID = agentJID;
-        this.workgroups = new ArrayList();
+        this.workgroups = new ArrayList<String>();
     }
 
     /**
@@ -58,7 +58,7 @@ public class AgentWorkgroups extends IQ {
      * @param agentJID the id of the agent that can work in the list of workgroups.
      * @param workgroups the list of workgroup JIDs where the agent can work.
      */
-    public AgentWorkgroups(String agentJID, List workgroups) {
+    public AgentWorkgroups(String agentJID, List<String> workgroups) {
         this.agentJID = agentJID;
         this.workgroups = workgroups;
     }
@@ -72,7 +72,7 @@ public class AgentWorkgroups extends IQ {
      *
      * @return a list of workgroup JIDs where the agent can work.
      */
-    public List getWorkgroups() {
+    public List<String> getWorkgroups() {
         return Collections.unmodifiableList(workgroups);
     }
 
@@ -83,8 +83,8 @@ public class AgentWorkgroups extends IQ {
                 .append(agentJID)
                 .append("\">");
 
-        for (Iterator it=workgroups.iterator(); it.hasNext();) {
-            String workgroupJID = (String) it.next();
+        for (Iterator<String> it=workgroups.iterator(); it.hasNext();) {
+            String workgroupJID = it.next();
             buf.append("<workgroup jid=\"" + workgroupJID + "\"/>");
         }
 
@@ -106,7 +106,7 @@ public class AgentWorkgroups extends IQ {
 
         public IQ parseIQ(XmlPullParser parser) throws Exception {
             String agentJID = parser.getAttributeValue("", "jid");
-            List workgroups = new ArrayList();
+            List<String> workgroups = new ArrayList<String>();
 
             boolean done = false;
             while (!done) {

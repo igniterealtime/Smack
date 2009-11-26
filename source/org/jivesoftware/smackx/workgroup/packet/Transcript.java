@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class Transcript extends IQ {
     private String sessionID;
-    private List packets;
+    private List<Packet> packets;
 
     /**
      * Creates a transcript request for the given sessionID.
@@ -45,7 +45,7 @@ public class Transcript extends IQ {
      */
     public Transcript(String sessionID) {
         this.sessionID = sessionID;
-        this.packets = new ArrayList();
+        this.packets = new ArrayList<Packet>();
     }
 
     /**
@@ -55,7 +55,7 @@ public class Transcript extends IQ {
      * @param sessionID the id of the session that generated this conversation transcript.
      * @param packets the list of messages and presences send to the room.
      */
-    public Transcript(String sessionID, List packets) {
+    public Transcript(String sessionID, List<Packet> packets) {
         this.sessionID = sessionID;
         this.packets = packets;
     }
@@ -75,7 +75,7 @@ public class Transcript extends IQ {
      *
      * @return the list of Messages and Presences that were sent to the room.
      */
-    public List getPackets() {
+    public List<Packet> getPackets() {
         return Collections.unmodifiableList(packets);
     }
 
@@ -86,8 +86,8 @@ public class Transcript extends IQ {
                 .append(sessionID)
                 .append("\">");
 
-        for (Iterator it=packets.iterator(); it.hasNext();) {
-            Packet packet = (Packet) it.next();
+        for (Iterator<Packet> it=packets.iterator(); it.hasNext();) {
+            Packet packet = it.next();
             buf.append(packet.toXML());
         }
 
