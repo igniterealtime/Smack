@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
  * A minimalistic implementation of a {@link PacketExtension} for nicknames.
  * 
  * @author Guus der Kinderen, guus.der.kinderen@gmail.com
- * 
+ * @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
  */
 public class Nick implements PacketExtension {
 
