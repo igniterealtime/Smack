@@ -48,7 +48,7 @@ public interface PacketExtension {
     public String getNamespace();
 
     /**
-     * Returns the XML reppresentation of the PacketExtension.
+     * Returns the XML representation of the PacketExtension.
      *
      * @return the packet extension as XML.
      */
