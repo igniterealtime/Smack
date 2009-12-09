@@ -613,5 +613,12 @@
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
     </extensionProvider>
+
+    <!-- Nick Exchange -->
+    <extensionProvider>
+        <elementName>nick</elementName>
+        <namespace>http://jabber.org/protocol/nick</namespace>
+        <className>org.jivesoftware.smackx.packet.Nick$Provider</className>
+    </extensionProvider>
 	
 </smackProviders>
