@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.packet.PEPPubSub;
  * 
  * Use example:
  * 
+ * <pre>
  *   PEPManager pepManager = new PEPManager(smackConnection);
  *   pepManager.addPEPListener(new PEPListener() {
  *       public void eventReceived(String inFrom, PEPEvent inEvent) {
@@ -55,7 +56,8 @@ import org.jivesoftware.smackx.packet.PEPPubSub;
  *   
  *   Tune tune = new Tune("jeff", "1", "CD", "My Title", "My Track");
  *   pepManager.publish(tune);
- *
+ * </pre>
+ * 
  * @author Jeff Williams
  */
 public class PEPManager {
