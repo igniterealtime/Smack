@@ -102,13 +102,13 @@ public class ChatManager {
                 Message message = (Message) packet;
                 Chat chat;
                 if (message.getThread() == null) {
-                    chat = getUserChat(StringUtils.parseBareAddress(message.getFrom()));
+                	chat = getUserChat(message.getFrom());
                 }
                 else {
                     chat = getThreadChat(message.getThread());
                     if (chat == null) {
                         // Try to locate the chat based on the sender of the message
-                        chat = getUserChat(StringUtils.parseBareAddress(message.getFrom()));
+                    	chat = getUserChat(message.getFrom());
                     }
                 }
 
