@@ -72,6 +72,10 @@ public interface RosterListener {
      * That will return the presence value for the user with the highest priority and
      * availability.
      *
+     * Note that this listener is triggered for presence (mode) changes only
+     * (e.g presence of types available and unavailable. Subscription-related
+     * presence packets will not cause this method to be called.
+     *
      * @param presence the presence that changed.
      * @see Roster#getPresence(String)
      */
