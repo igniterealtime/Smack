@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
@@ -130,10 +131,22 @@ public class SubscriberUseCases extends SingleUserTestCase
 //		assertEquals(true, sub.isConfigRequired());
 //	}
 //	
+
+	public void testGetItemsWithSingleSubscription() throws XMPPException
+	{
+		LeafNode node = getPubnode(true, false);
+		node.subscribe(getBareJID(0));
+		runNodeTests(node);
+	}
+
 	public void testGetItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
-		
+		runNodeTests(node);
+	}
+	
+	private void runNodeTests(LeafNode node) throws XMPPException
+	{
 		node.send((Item)null);
 		node.send((Item)null);
 		node.send((Item)null);
@@ -175,15 +188,15 @@ public class SubscriberUseCases extends SingleUserTestCase
 		assertTrue(payloadItems.size() == 4);
 	}
 
-	public void getSpecifiedItems() throws XMPPException
+	public void testGetSpecifiedItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, true);
 		
-		node.send(new PayloadItem<SimplePayload>("1", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='/1'/>")));
-		node.send(new PayloadItem<SimplePayload>("2", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='/2'/>")));
-		node.send(new PayloadItem<SimplePayload>("3", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='/3'/>")));
-		node.send(new PayloadItem<SimplePayload>("4", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='/4'/>")));
-		node.send(new PayloadItem<SimplePayload>("5", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='/5'/>")));
+		node.send(new PayloadItem<SimplePayload>("1", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='1'/>")));
+		node.send(new PayloadItem<SimplePayload>("2", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='2'/>")));
+		node.send(new PayloadItem<SimplePayload>("3", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='3'/>")));
+		node.send(new PayloadItem<SimplePayload>("4", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='4'/>")));
+		node.send(new PayloadItem<SimplePayload>("5", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='5'/>")));
 		
 		Collection<String> ids = new ArrayList<String>(3);
 		ids.add("1");
@@ -193,11 +206,11 @@ public class SubscriberUseCases extends SingleUserTestCase
 		List<PayloadItem<SimplePayload>> items = node.getItems(ids);
 		assertEquals(3, items.size());
 		assertEquals(items.get(0).getId(), "1");
-		assertEquals(items.get(0).getPayload().toXML(), "<a xmlns='pubsub:test' href='/1'/>");
+		assertEquals("<a xmlns='pubsub:test' href='1'/>", items.get(0).getPayload().toXML().replace('\"', '\''));
 		assertEquals(items.get(1).getId(), "3");
-		assertEquals(items.get(1).getPayload().toXML(), "<a xmlns='pubsub:test' href='/3'/>");
-		assertEquals(items.get(2).getId(), "5");
-		assertEquals(items.get(2).getPayload().toXML(), "<a xmlns='pubsub:test' href='/5'/>");
+		assertEquals("<a xmlns='pubsub:test' href='3'/>", items.get(1).getPayload().toXML().replace('\"', '\''));
+		assertEquals(items.get(2).getId(), "4");
+		assertEquals("<a xmlns='pubsub:test' href='4'/>", items.get(3).getPayload().toXML().replace('\"', '\''));
 	}
 
 	public void testGetLastNItems() throws XMPPException

@@ -6,6 +6,7 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -198,32 +199,31 @@ public class TestEvents extends SmackTestCase
 	 *      <className>org.jivesoftware.smackx.pubsub.CarExtensionProvider</className>
 	 *   </extensionProvider>
 	 */
-	/* 
 	public void testSendAndReceiveCarPayload() throws Exception
 	{
 		// Setup event source
 		String nodeId = "TestNode" + System.currentTimeMillis();
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		Node creatorNode = getPubnode(creatorMgr, nodeId, true, true);
+		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
 
-		BlockingQueue<ItemEventCoordinator> queue = new ArrayBlockingQueue<ItemEventCoordinator>(3);
+		BlockingQueue<ItemEventCoordinator<PayloadItem<CarExtension>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<CarExtension>>>(3);
 		
 		// Setup event receiver
 		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
 		Node subNode = subMgr.getNode(nodeId);
 
-		ItemEventCoordinator sub1Handler = new ItemEventCoordinator(queue, "sub1");
+		ItemEventCoordinator<PayloadItem<CarExtension>> sub1Handler = new ItemEventCoordinator<PayloadItem<CarExtension>>(queue, "sub1");
 		subNode.addItemEventListener(sub1Handler);
 		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 		
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         String payloadString = "<car xmlns='pubsub:test:vehicle'><paint color='green'/><tires num='4'/></car>";
-        creatorNode.send(new Item(itemId, new SimplePayload("car", "pubsub:test:vehicle", payloadString)));
+        creatorNode.send(new PayloadItem(itemId, new SimplePayload("car", "pubsub:test:vehicle", payloadString)));
         
-   		ItemEventCoordinator coord = queue.take();
+   		ItemEventCoordinator<PayloadItem<CarExtension>> coord = queue.take();
        	assertEquals(1, coord.events.getItems().size());
-       	Item item = coord.events.getItems().get(0);
+       	PayloadItem item = coord.events.getItems().get(0);
        	assertEquals(itemId, item.getId());
        	assertTrue(item.getPayload() instanceof CarExtension);
 
@@ -231,7 +231,6 @@ public class TestEvents extends SmackTestCase
        	assertEquals("green", car.getColor());
        	assertEquals(4, car.getNumTires());
 	}
-	*/
 
 	public void testSendAndReceiveMultipleSubs() throws Exception
 	{
@@ -279,10 +278,10 @@ public class TestEvents extends SmackTestCase
 		String nodeId = "TestNode" + System.currentTimeMillis();
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
 
-		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
-		ItemEventCoordinator<Item> creatorHandler = new ItemEventCoordinator<Item>(queue, "creator");
+		BlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>>(3);
+		ItemEventCoordinator<PayloadItem<SimplePayload>> creatorHandler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "creator");
 		creatorNode.addItemEventListener(creatorHandler);
 		creatorNode.subscribe(getConnection(0).getUser());
 		
@@ -290,11 +289,11 @@ public class TestEvents extends SmackTestCase
 		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
 		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
+		ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
 		subNode.addItemEventListener(sub1Handler);
 		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 		
-		ItemEventCoordinator<Item> sub2Handler = new ItemEventCoordinator<Item>(queue, "sub2");
+		ItemEventCoordinator<PayloadItem<SimplePayload>> sub2Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub2");
 		subNode.addItemEventListener(sub2Handler);
 		Subscription sub2 = subNode.subscribe(getConnection(1).getUser());
 		
@@ -304,20 +303,29 @@ public class TestEvents extends SmackTestCase
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         
-        Collection<Item> items = new ArrayList<Item>(3);
-        items.add(new Item("First-" + itemId));
-        items.add(new Item("Second-" + itemId));
-        items.add(new Item("Third-" + itemId));
+        Collection<PayloadItem<SimplePayload>> items = new ArrayList<PayloadItem<SimplePayload>>(3);
+        String ids[] = {"First-" + itemId, "Second-" + itemId, "Third-" + itemId};
+        items.add(new PayloadItem<SimplePayload>(ids[0], new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='1'/>")));
+        items.add(new PayloadItem<SimplePayload>(ids[1], new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='1'/>")));
+        items.add(new PayloadItem<SimplePayload>(ids[2], new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='1'/>")));
         creatorNode.send(items);
         
         for(int i=0; i<3; i++)
         {
-    		ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
+    		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
         	if (coord == creatorHandler)
         		assertEquals(1, coord.events.getSubscriptions().size());
         	else
         		assertEquals(2, coord.events.getSubscriptions().size());
-        	assertEquals(3, coord.events.getItems().size());
+        	List<PayloadItem<SimplePayload>> itemResults = coord.events.getItems();
+        	assertEquals(3, itemResults.size());
+
+//        	assertEquals(ids[0], itemResults.get(0).getId());
+//    		assertEquals("<a xmlns='pubsub:test' href='1'/>", itemResults.get(0).getPayload().toXML().replace('\"', '\''));
+//    		assertEquals(ids[1], itemResults.get(1).getId());
+//    		assertEquals("<a xmlns='pubsub:test' href='2'/>", itemResults.get(1).getPayload().toXML().replace('\"', '\''));
+//    		assertEquals(ids[21], itemResults.get(2).getId());
+//    		assertEquals("<a xmlns='pubsub:test' href='3'/>", itemResults.get(3).getPayload().toXML().replace('\"', '\''));
         }
 	}
 
@@ -476,7 +484,7 @@ public class TestEvents extends SmackTestCase
 		assertTrue(check1);
 		assertTrue(check2);
 	}
-	
+
 	class ItemEventCoordinator <T extends Item> implements ItemEventListener<T>
 	{
 		private BlockingQueue<ItemEventCoordinator<T>> theQueue;
