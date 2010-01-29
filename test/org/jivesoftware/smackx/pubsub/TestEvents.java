@@ -199,6 +199,7 @@ public class TestEvents extends SmackTestCase
 	 *      <className>org.jivesoftware.smackx.pubsub.CarExtensionProvider</className>
 	 *   </extensionProvider>
 	 */
+	/*
 	public void testSendAndReceiveCarPayload() throws Exception
 	{
 		// Setup event source
@@ -231,7 +232,8 @@ public class TestEvents extends SmackTestCase
        	assertEquals("green", car.getColor());
        	assertEquals(4, car.getNumTires());
 	}
-
+*/
+	
 	public void testSendAndReceiveMultipleSubs() throws Exception
 	{
 		// Setup event source

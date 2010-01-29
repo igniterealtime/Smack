@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
@@ -180,12 +178,20 @@ public class SubscriberUseCases extends SingleUserTestCase
 		}
 		
 		payloadNode.send(new PayloadItem<SimplePayload>("6-" + curTime, new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test'/>")));
-		payloadNode.send(new PayloadItem<SimplePayload>("7-" + curTime, new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href=\"/up/here\"/>")));
-		payloadNode.send(new PayloadItem<SimplePayload>("8-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'>text<inner></inner></entity>")));
-		payloadNode.send(new PayloadItem<SimplePayload>("9-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'><inner><text></text></inner></entity>")));
+		payloadNode.send(new PayloadItem<SimplePayload>("7-" + curTime, new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href=\'/up/here\'/>")));
+		payloadNode.send(new PayloadItem<SimplePayload>("8-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'>text<inner>a</inner></entity>")));
+		payloadNode.send(new PayloadItem<SimplePayload>("9-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>")));
 		
-		Collection<PayloadItem<SimplePayload>> payloadItems = payloadNode.getItems();
+		List<PayloadItem<SimplePayload>> payloadItems = payloadNode.getItems();
 		assertTrue(payloadItems.size() == 4);
+		assertEquals(payloadItems.get(0).getId(), "6-" + curTime);
+		assertEquals("<a xmlns='pubsub:test'/>", payloadItems.get(0).getPayload().toXML().replace('\"', '\''));
+		assertEquals(payloadItems.get(1).getId(), "7-" + curTime);
+		assertEquals("<a xmlns='pubsub:test' href=\'/up/here\'/>", payloadItems.get(1).getPayload().toXML().replace('\"', '\''));
+		assertEquals(payloadItems.get(2).getId(), "8-" + curTime);
+		assertEquals("<entity xmlns='pubsub:test'>text<inner>a</inner></entity>", payloadItems.get(2).getPayload().toXML().replace('\"', '\''));
+		assertEquals(payloadItems.get(3).getId(), "9-" + curTime);
+		assertEquals("<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>", payloadItems.get(3).getPayload().toXML().replace('\"', '\''));
 	}
 
 	public void testGetSpecifiedItems() throws XMPPException
@@ -210,7 +216,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 		assertEquals(items.get(1).getId(), "3");
 		assertEquals("<a xmlns='pubsub:test' href='3'/>", items.get(1).getPayload().toXML().replace('\"', '\''));
 		assertEquals(items.get(2).getId(), "4");
-		assertEquals("<a xmlns='pubsub:test' href='4'/>", items.get(3).getPayload().toXML().replace('\"', '\''));
+		assertEquals("<a xmlns='pubsub:test' href='4'/>", items.get(2).getPayload().toXML().replace('\"', '\''));
 	}
 
 	public void testGetLastNItems() throws XMPPException

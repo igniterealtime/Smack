@@ -51,24 +51,19 @@ public class ItemProvider implements PacketExtensionProvider
 	        if (ProviderManager.getInstance().getExtensionProvider(payloadElemName, payloadNS) == null)
 	        {
 	    		boolean done = false;
-	    		String payloadText = null;
+	    		StringBuilder payloadText = new StringBuilder();
 	    		
 	    		while (!done)
 	    		{
 	    			if (tag == XmlPullParser.END_TAG && parser.getName().equals(elem))
-	    			{
 	    				done = true;
-	    			}
 	    			else if (!((tag == XmlPullParser.START_TAG) && parser.isEmptyElementTag()))
-	    			{
-	    				if (payloadText == null)
-	    					payloadText = parser.getText();
-	    				else
-	    					payloadText += parser.getText();
-	    			}
-	    			tag = parser.next();
+    					payloadText.append(parser.getText());
+	    			
+	    			if (!done)
+	    				tag = parser.next();
 	    		}
-	    		return new PayloadItem<SimplePayload>(id, new SimplePayload(payloadElemName, payloadNS, payloadText));
+	    		return new PayloadItem<SimplePayload>(id, new SimplePayload(payloadElemName, payloadNS, payloadText.toString()));
 	        }
 	        else
 	        {
