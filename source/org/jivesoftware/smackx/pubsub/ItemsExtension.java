@@ -32,7 +32,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
 public class ItemsExtension extends NodeExtension implements EmbeddedPacketExtension
 {
 	protected ItemsElementType type;
-	protected String attValue;
+	protected Boolean notify;
 	protected List<? extends PacketExtension> items;
 
 	public enum ItemsElementType
@@ -81,24 +81,37 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * @param items The list of {@link Item} or {@link RetractItem}
 	 * @param attributeValue The value of the <b>max_items</b>  
 	 */
-	public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends PacketExtension> items, String attributeValue)
+	public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends PacketExtension> items)
 	{
 		super(itemsType.getNodeElement(), nodeId);
 		type = itemsType;
 		this.items = items;
-		attValue = attributeValue;
 	}
 	
 	/**
-	 * Constructs a request to get items from the node as defined in the first scenario
-	 * in {@link #ItemsExtension(ItemsElementType, String, List, String)}
+	 * Construct an instance with a list representing items that have been published or deleted.
 	 * 
-	 * @param nodeId The node the items will be requested from
-	 * @param maxItems The limit on the number of items to retrieve (null for all)
+	 * <p>Valid scenarios are:
+	 * <li>Request items from node - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and an
+	 * optional value for the <b>max_items</b> attribute.
+	 * <li>Request to delete items - itemsType = {@link ItemsElementType#retract}, items = list of {@link Item} containing
+	 * only id's and an optional value for the <b>notify</b> attribute.
+	 * <li>Items published event - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and 
+	 * attributeValue = <code>null</code>
+	 * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and 
+	 * attributeValue = <code>null</code> 
+	 * 
+	 * @param itemsType Type of representation
+	 * @param nodeId The node to which the items are being sent or deleted
+	 * @param items The list of {@link Item} or {@link RetractItem}
+	 * @param attributeValue The value of the <b>max_items</b>  
 	 */
-	public ItemsExtension(String nodeId, Integer maxItems)
+	public ItemsExtension(String nodeId, List<? extends PacketExtension> items, boolean notify)
 	{
-		this(ItemsElementType.items, nodeId, null, maxItems == null ? null : maxItems.toString());
+		super(ItemsElementType.retract.getNodeElement(), nodeId);
+		type = ItemsElementType.retract;
+		this.items = items; 
+		this.notify = notify;
 	}
 	
 	/**
@@ -131,15 +144,15 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * 
 	 * @return The attribute value
 	 */
-	public String getAttributeValue()
+	public boolean getNotify()
 	{
-		return attValue;
+		return notify;
 	}
 	
 	@Override
 	public String toXML()
 	{
-		if (((items == null) || (items.size() == 0)) && (attValue == null))
+		if ((items == null) || (items.size() == 0))
 		{
 			return super.toXML();
 		}
@@ -150,12 +163,12 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 			builder.append(" node='");
 			builder.append(getNode());
 			
-			if (attValue != null)
+			if (notify != null)
 			{
 				builder.append("' ");
 				builder.append(type.getElementAttribute());
 				builder.append("='");
-				builder.append(attValue);
+				builder.append(notify.equals(Boolean.TRUE) ? 1 : 0);
 				builder.append("'>");
 			}
 			else

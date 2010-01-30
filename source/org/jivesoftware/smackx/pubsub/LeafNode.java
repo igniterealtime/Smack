@@ -66,13 +66,34 @@ public class LeafNode extends Node
 	public <T extends Item> List<T> getItems()
 		throws XMPPException
 	{
-		PubSub request = createPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.ITEMS, getId()));
+		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId()));
 		
 		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
 	}
 	
+	/**
+	 * Get the current items stored in the node based
+	 * on the subscription associated with the provided 
+	 * subscription id.
+	 * 
+	 * @param subscriptionId -  The subscription id for the 
+	 * associated subscription.
+	 * @return List of {@link Item} in the node
+	 * 
+	 * @throws XMPPException
+	 */
+	public <T extends Item> List<T> getItems(String subscriptionId)
+		throws XMPPException
+	{
+		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId(), subscriptionId));
+		
+		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
+		return (List<T>)itemsElem.getItems();
+	}
+
 	/**
 	 * Get the items specified from the node.  This would typically be
 	 * used when the server does not return the payload due to size 
@@ -95,7 +116,7 @@ public class LeafNode extends Node
 		{
 			itemList.add(new Item(id));
 		}
-		PubSub request = createPubsubPacket(Type.GET, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList, null));
+		PubSub request = createPubsubPacket(Type.GET, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
 		
 		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
@@ -114,7 +135,29 @@ public class LeafNode extends Node
 	public <T extends Item> List<T> getItems(int maxItems)
 		throws XMPPException
 	{
-		PubSub request = createPubsubPacket(Type.GET, new ItemsExtension(getId(), Integer.valueOf(maxItems)));
+		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId(), maxItems));
+		
+		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
+		return (List<T>)itemsElem.getItems();
+	}
+	
+	/**
+	 * Get items persisted on the node, limited to the specified number
+	 * based on the subscription associated with the provided subscriptionId.
+	 * 
+	 * @param maxItems Maximum number of items to return
+	 * @param subscriptionId The subscription which the retrieval is based
+	 * on.
+	 * 
+	 * @return List of {@link Item}
+	 * 
+	 * @throws XMPPException
+	 */
+	public <T extends Item> List<T> getItems(int maxItems, String subscriptionId)
+		throws XMPPException
+	{
+		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId(), subscriptionId, maxItems));
 		
 		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
@@ -303,7 +346,7 @@ public class LeafNode extends Node
 		{
 			items.add(new Item(id));
 		}
-		PubSub request = createPubsubPacket(Type.SET, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items, null));
+		PubSub request = createPubsubPacket(Type.SET, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
 		SyncPacketSend.getReply(con, request);
 	}
 }

@@ -130,13 +130,6 @@ public class SubscriberUseCases extends SingleUserTestCase
 //	}
 //	
 
-	public void testGetItemsWithSingleSubscription() throws XMPPException
-	{
-		LeafNode node = getPubnode(true, false);
-		node.subscribe(getBareJID(0));
-		runNodeTests(node);
-	}
-
 	public void testGetItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
