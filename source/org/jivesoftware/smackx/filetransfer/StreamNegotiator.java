@@ -21,7 +21,7 @@ package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -81,7 +81,7 @@ public abstract class StreamNegotiator {
         return iq;
     }
 
-    Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws XMPPException {
+    Packet initiateIncomingStream(Connection connection, StreamInitiation initiation) throws XMPPException {
         StreamInitiation response = createInitiationAccept(initiation,
                 getNamespaces());
 

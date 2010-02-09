@@ -286,7 +286,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // User3 is listening to MUC invitations
             MultiUserChat.addInvitationListener(getConnection(2), new InvitationListener() {
                 public void invitationReceived(
-                    XMPPConnection conn,
+                    Connection conn,
                     String room,
                     String inviter,
                     String reason,
@@ -336,7 +336,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // User3 is listening to MUC invitations
             MultiUserChat.addInvitationListener(getConnection(2), new InvitationListener() {
                 public void invitationReceived(
-                    XMPPConnection conn,
+                    Connection conn,
                     String room,
                     String inviter,
                     String reason,

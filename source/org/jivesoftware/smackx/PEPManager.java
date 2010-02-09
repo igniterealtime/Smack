@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -64,7 +64,7 @@ public class PEPManager {
 
     private List<PEPListener> pepListeners = new ArrayList<PEPListener>();
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     private PacketFilter packetFilter = new PacketExtensionFilter("event", "http://jabber.org/protocol/pubsub#event");
     private PacketListener packetListener;
@@ -72,9 +72,9 @@ public class PEPManager {
     /**
      * Creates a new PEP exchange manager.
      *
-     * @param connection an XMPPConnection.
+     * @param connection a Connection which is used to send and receive messages.
      */
-    public PEPManager(XMPPConnection connection) {
+    public PEPManager(Connection connection) {
         this.connection = connection;
         init();
     }

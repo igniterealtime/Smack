@@ -50,10 +50,10 @@ public class ServiceDiscoveryManager {
     private static String identityName = "Smack";
     private static String identityType = "pc";
 
-    private static Map<XMPPConnection, ServiceDiscoveryManager> instances =
-            new ConcurrentHashMap<XMPPConnection, ServiceDiscoveryManager>();
+    private static Map<Connection, ServiceDiscoveryManager> instances =
+            new ConcurrentHashMap<Connection, ServiceDiscoveryManager>();
 
-    private XMPPConnection connection;
+    private Connection connection;
     private final List<String> features = new ArrayList<String>();
     private DataForm extendedInfo = null;
     private Map<String, NodeInformationProvider> nodeInformationProviders =
@@ -61,32 +61,32 @@ public class ServiceDiscoveryManager {
 
     // Create a new ServiceDiscoveryManager on every established connection
     static {
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(XMPPConnection connection) {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(Connection connection) {
                 new ServiceDiscoveryManager(connection);
             }
         });
     }
 
     /**
-     * Creates a new ServiceDiscoveryManager for a given XMPPConnection. This means that the 
+     * Creates a new ServiceDiscoveryManager for a given Connection. This means that the 
      * service manager will respond to any service discovery request that the connection may
      * receive. 
      * 
      * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
-    public ServiceDiscoveryManager(XMPPConnection connection) {
+    public ServiceDiscoveryManager(Connection connection) {
         this.connection = connection;
         init();
     }
 
     /**
-     * Returns the ServiceDiscoveryManager instance associated with a given XMPPConnection.
+     * Returns the ServiceDiscoveryManager instance associated with a given Connection.
      * 
      * @param connection the connection used to look for the proper ServiceDiscoveryManager.
-     * @return the ServiceDiscoveryManager associated with a given XMPPConnection.
+     * @return the ServiceDiscoveryManager associated with a given Connection.
      */
-    public static ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
+    public static ServiceDiscoveryManager getInstanceFor(Connection connection) {
         return instances.get(connection);
     }
 

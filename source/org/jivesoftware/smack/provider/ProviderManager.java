@@ -109,9 +109,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * It is possible to provide a custom provider manager instead of the default implementation
  * provided by Smack. If you want to provide your own provider manager then you need to do it
- * before creating any {@link org.jivesoftware.smack.XMPPConnection} by sending the static
+ * before creating any {@link org.jivesoftware.smack.Connection} by sending the static
  * {@link #setInstance(ProviderManager)} message. Trying to change the provider manager after
- * an XMPPConnection was created will result in an {@link IllegalStateException} error.
+ * an Connection was created will result in an {@link IllegalStateException} error.
  *
  * @author Matt Tucker
  */
@@ -137,9 +137,9 @@ public class ProviderManager {
     }
 
     /**
-     * Sets the only ProviderManager valid instance to be used by all XMPPConnections. If you
+     * Sets the only ProviderManager valid instance to be used by all Connections. If you
      * want to provide your own provider manager then you need to do it before creating
-     * any XMPPConnection. Otherwise an IllegalStateException will be thrown.
+     * any Connection. Otherwise an IllegalStateException will be thrown.
      *
      * @param providerManager the only ProviderManager valid instance to be used.
      * @throws IllegalStateException if a provider manager was already configued.

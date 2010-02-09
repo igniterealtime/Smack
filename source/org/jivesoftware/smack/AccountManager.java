@@ -36,12 +36,12 @@ import java.util.Map;
 /**
  * Allows creation and management of accounts on an XMPP server.
  *
- * @see XMPPConnection#getAccountManager()
+ * @see Connection#getAccountManager()
  * @author Matt Tucker
  */
 public class AccountManager {
 
-    private XMPPConnection connection;
+    private Connection connection;
     private Registration info = null;
 
     /**
@@ -57,7 +57,7 @@ public class AccountManager {
      *
      * @param connection a connection to a XMPP server.
      */
-    public AccountManager(XMPPConnection connection) {
+    public AccountManager(Connection connection) {
         this.connection = connection;
     }
 

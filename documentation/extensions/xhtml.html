@@ -97,7 +97,7 @@ the message as you do with any other message.</p>
 An XHTML message is like any regular message, therefore to send the message you can follow 
 the usual steps you do in order to send a message. For example, to send a message as part
 of a chat just use the message <b>#send(Message)</b> of <i><b>Chat</b></i> or you can use
-the message <b>#send(Packet)</b> of <i><b>XMPPConnection</b></i>.</p>
+the message <b>#send(Packet)</b> of <i><b>Connection</b></i>.</p>
 
 <b>Example</b><p>
 
@@ -170,7 +170,7 @@ section explains how to explicitly discover for XHTML support.</p>
 
 <b>Usage</b><p>
 
-In order to discover if a remote user supports XHTML messages send <b>#isServiceEnabled(XMPPConnection 
+In order to discover if a remote user supports XHTML messages send <b>#isServiceEnabled(Connection 
 connection, String userID)</b> to the class <i><b>XHTMLManager</b></i> where connection is the connection 
 to use to perform the service discovery and userID is the user to check (A fully qualified xmpp ID, 
 e.g. jdoe@example.com). This message will return true if the specified user handles XHTML messages.</p>

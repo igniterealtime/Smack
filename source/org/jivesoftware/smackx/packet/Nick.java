@@ -64,7 +64,6 @@ public class Nick implements PacketExtension {
 	 * 
 	 * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
 	 */
-	@Override
 	public String getElementName() {
 		return ELEMENT_NAME;
 	}
@@ -74,7 +73,6 @@ public class Nick implements PacketExtension {
 	 * 
 	 * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
 	 */
-	@Override
 	public String getNamespace() {
 		return NAMESPACE;
 	}
@@ -84,7 +82,6 @@ public class Nick implements PacketExtension {
 	 * 
 	 * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
 	 */
-	@Override
 	public String toXML() {
 		final StringBuilder buf = new StringBuilder();
 

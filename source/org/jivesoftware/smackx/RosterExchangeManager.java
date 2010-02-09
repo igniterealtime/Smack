@@ -28,7 +28,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -48,7 +48,7 @@ public class RosterExchangeManager {
 
     private List<RosterExchangeListener> rosterExchangeListeners = new ArrayList<RosterExchangeListener>();
 
-    private XMPPConnection con;
+    private Connection con;
 
     private PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:roster");
     private PacketListener packetListener;
@@ -56,9 +56,9 @@ public class RosterExchangeManager {
     /**
      * Creates a new roster exchange manager.
      *
-     * @param con an XMPPConnection.
+     * @param con a Connection which is used to send and receive messages.
      */
-    public RosterExchangeManager(XMPPConnection con) {
+    public RosterExchangeManager(Connection con) {
         this.con = con;
         init();
     }

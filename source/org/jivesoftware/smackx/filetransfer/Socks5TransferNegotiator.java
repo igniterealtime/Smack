@@ -21,7 +21,7 @@ package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -79,12 +79,12 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
     public static boolean isAllowLocalProxyHost = true;
 
-    private final XMPPConnection connection;
+    private final Connection connection;
 
     private Socks5TransferNegotiatorManager transferNegotiatorManager;
 
     public Socks5TransferNegotiator(Socks5TransferNegotiatorManager transferNegotiatorManager,
-            final XMPPConnection connection)
+            final Connection connection)
     {
         this.connection = connection;
         this.transferNegotiatorManager = transferNegotiatorManager;

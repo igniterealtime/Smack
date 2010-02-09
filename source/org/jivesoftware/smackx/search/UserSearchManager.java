@@ -16,7 +16,7 @@
 
 package org.jivesoftware.smackx.search;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.ReportedData;
@@ -35,7 +35,7 @@ import java.util.List;
  * searching (DataForms or No DataForms), but allows the user to simply use the DataForm model for both
  * types of support.
  * <pre>
- * XMPPConnection con = new XMPPConnection("jabber.org");
+ * Connection con = new XMPPConnection("jabber.org");
  * con.login("john", "doe");
  * UserSearchManager search = new UserSearchManager(con, "users.jabber.org");
  * Form searchForm = search.getSearchForm();
@@ -49,15 +49,15 @@ import java.util.List;
  */
 public class UserSearchManager {
 
-    private XMPPConnection con;
+    private Connection con;
     private UserSearch userSearch;
 
     /**
      * Creates a new UserSearchManager.
      *
-     * @param con the XMPPConnection to use.
+     * @param con the Connection to use.
      */
-    public UserSearchManager(XMPPConnection con) {
+    public UserSearchManager(Connection con) {
         this.con = con;
         userSearch = new UserSearch();
     }

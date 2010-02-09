@@ -19,7 +19,7 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
@@ -35,9 +35,9 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
  */
 public class BridgedTransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
 
-    XMPPConnection xmppConnection;
+    Connection xmppConnection;
 
-    public BridgedTransportManager(XMPPConnection xmppConnection) {
+    public BridgedTransportManager(Connection xmppConnection) {
         super();
         this.xmppConnection = xmppConnection;
     }

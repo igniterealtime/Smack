@@ -39,7 +39,7 @@ import java.util.List;
 public class RosterGroup {
 
     private String name;
-    private XMPPConnection connection;
+    private Connection connection;
     private final List<RosterEntry> entries;
 
     /**
@@ -48,7 +48,7 @@ public class RosterGroup {
      * @param name the name of the group.
      * @param connection the connection the group belongs to.
      */
-    RosterGroup(String name, XMPPConnection connection) {
+    RosterGroup(String name, Connection connection) {
         this.name = name;
         this.connection = connection;
         entries = new ArrayList<RosterEntry>();

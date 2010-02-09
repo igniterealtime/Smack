@@ -22,7 +22,7 @@ import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
@@ -54,13 +54,13 @@ public class Socks5TransferNegotiatorManager implements FileTransferNegotiatorMa
     private final Cache<String, Integer> addressBlacklist
             = new Cache<String, Integer>(100, BLACKLIST_LIFETIME);
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     private List<String> proxies;
 
     private List<Bytestream.StreamHost> streamHosts;
 
-    public Socks5TransferNegotiatorManager(XMPPConnection connection) {
+    public Socks5TransferNegotiatorManager(Connection connection) {
         this.connection = connection;
     }
 

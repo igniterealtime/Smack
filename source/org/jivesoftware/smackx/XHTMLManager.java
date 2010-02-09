@@ -21,7 +21,7 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
@@ -43,8 +43,8 @@ public class XHTMLManager {
     // Enable the XHTML support on every established connection
     // The ServiceDiscoveryManager class should have been already initialized
     static {
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(XMPPConnection connection) {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(Connection connection) {
                 XHTMLManager.setServiceEnabled(connection, true);
             }
         });
@@ -101,7 +101,7 @@ public class XHTMLManager {
      * @param connection the connection where the service will be enabled or disabled
      * @param enabled indicates if the service will be enabled or disabled 
      */
-    public synchronized static void setServiceEnabled(XMPPConnection connection, boolean enabled) {
+    public synchronized static void setServiceEnabled(Connection connection, boolean enabled) {
         if (isServiceEnabled(connection) == enabled)
             return;
 
@@ -119,7 +119,7 @@ public class XHTMLManager {
      * @param connection the connection to look for XHTML support
      * @return a boolean indicating if the XHTML support is enabled for the given connection
      */
-    public static boolean isServiceEnabled(XMPPConnection connection) {
+    public static boolean isServiceEnabled(Connection connection) {
         return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(namespace);
     }
 
@@ -130,7 +130,7 @@ public class XHTMLManager {
      * @param userID the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com
      * @return a boolean indicating whether the specified user handles XHTML messages
      */
-    public static boolean isServiceEnabled(XMPPConnection connection, String userID) {
+    public static boolean isServiceEnabled(Connection connection, String userID) {
         try {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(userID);

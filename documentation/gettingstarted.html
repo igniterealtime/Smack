@@ -50,12 +50,12 @@ XMPP server. Below are code examples for making a connection:<p>
 <div class="code">
 <pre>
 <font color="gray"><i>// Create a connection to the jabber.org server.</i></font>
-XMPPConnection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+Connection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
 conn1.connect();
 
 <font color="gray"><i>// Create a connection to the jabber.org server on a specific port.</i></font>
 ConnectionConfiguration config = new ConnectionConfiguration(<font color="green">"jabber.org"</font>, 5222);
-XMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(config);
+Connection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(config);
 conn2.connect();
 </pre></div>
 
@@ -65,7 +65,7 @@ conn2.connect();
     <a href="connections.html">Connection Management</a> for full details.</p>
 
 <p>Once you've created a connection, you should login using a username and password
-with the <tt>XMPPConnection.login(String username, String password)</tt> method.
+with the <tt>Connection.login(String username, String password)</tt> method.
 Once you've logged in, you can being chatting with other users by creating
 new <tt>Chat</tt> or <tt>GroupChat</tt> objects.
 
@@ -76,7 +76,7 @@ The roster lets you keep track of the availability (presence) of other users. Us
 can be organized into groups such as "Friends" and "Co-workers", and then you
 discover whether each user is online or offline.<p> 
 
-Retrieve the roster using the <tt>XMPPConnection.getRoster()</tt> method. The roster
+Retrieve the roster using the <tt>Connection.getRoster()</tt> method. The roster
 class allows you to find all the roster entries, the groups they belong to, and the
 current presence status of each entry.
 
@@ -98,7 +98,7 @@ and "out fishing":<p>
 <font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
 Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus(<font color="green">"Gone fishing"</font>);
-<font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
+<font color="gray"><i>// Send the packet (assume we have a Connection instance called "con").</i></font>
 con.sendPacket(presence);
 </pre></div>
 <p>
@@ -111,7 +111,7 @@ polling and blocking operations on. So, a packet listener is useful when
 you want to take some action whenever a packet happens to come in, while a
 packet collector is useful when you want to wait for a specific packet
 to arrive. Packet collectors and listeners can be created using an
-XMPPConnection instance.
+Connection instance.
 
 
 <p><div class="footer">

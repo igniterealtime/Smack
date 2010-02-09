@@ -66,7 +66,7 @@ public class SASLAuthentication implements UserAuthentication {
     private static Map<String, Class> implementedMechanisms = new HashMap<String, Class>();
     private static List<String> mechanismsPreferences = new ArrayList<String>();
 
-    private XMPPConnection connection;
+    private Connection connection;
     private Collection<String> serverMechanisms = new ArrayList<String>();
     private SASLMechanism currentMechanism = null;
     /**
@@ -171,7 +171,7 @@ public class SASLAuthentication implements UserAuthentication {
         return answer;
     }
 
-    SASLAuthentication(XMPPConnection connection) {
+    SASLAuthentication(Connection connection) {
         super();
         this.connection = connection;
         this.init();

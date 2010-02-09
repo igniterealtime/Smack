@@ -20,7 +20,7 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.Connection.ListenerWrapper;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -30,15 +30,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
- * The packet reader also manages all packet listeners and collectors.<p>
+ * The packet reader also invokes all packet listeners and collectors.<p>
  *
- * @see PacketCollector
- * @see PacketListener
+ * @see Connection#createPacketCollector
+ * @see Connection#addPacketListener
  * @author Matt Tucker
  */
 class PacketReader {
@@ -49,11 +53,6 @@ class PacketReader {
     private XMPPConnection connection;
     private XmlPullParser parser;
     private boolean done;
-    private Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
-    protected final Map<PacketListener, ListenerWrapper> listeners =
-            new ConcurrentHashMap<PacketListener, ListenerWrapper>();
-    protected final Collection<ConnectionListener> connectionListeners =
-            new CopyOnWriteArrayList<ConnectionListener>();
 
     private String connectionID = null;
     private Semaphore connectionSemaphore;
@@ -92,45 +91,6 @@ class PacketReader {
         });
 
         resetParser();
-    }
-
-    /**
-     * Creates a new packet collector for this reader. A packet filter determines
-     * which packets will be accumulated by the collector.
-     *
-     * @param packetFilter the packet filter to use.
-     * @return a new packet collector.
-     */
-    public PacketCollector createPacketCollector(PacketFilter packetFilter) {
-        PacketCollector collector = new PacketCollector(this, packetFilter);
-        collectors.add(collector);
-        // Add the collector to the list of active collector.
-        return collector;
-    }
-
-    protected void cancelPacketCollector(PacketCollector packetCollector) {
-        collectors.remove(packetCollector);
-    }
-
-    /**
-     * Registers a packet listener with this reader. A packet filter determines
-     * which packets will be delivered to the listener.
-     *
-     * @param packetListener the packet listener to notify of new packets.
-     * @param packetFilter the packet filter to use.
-     */
-    public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
-        ListenerWrapper wrapper = new ListenerWrapper(packetListener, packetFilter);
-        listeners.put(packetListener, wrapper);
-    }
-
-    /**
-     * Removes a packet listener.
-     *
-     * @param packetListener the packet listener to remove.
-     */
-    public void removePacketListener(PacketListener packetListener) {
-        listeners.remove(packetListener);
     }
 
     /**
@@ -174,7 +134,7 @@ class PacketReader {
     public void shutdown() {
         // Notify connection listeners of the connection closing if done hasn't already been set.
         if (!done) {
-            for (ConnectionListener listener : connectionListeners) {
+            for (ConnectionListener listener : connection.getConnectionListeners()) {
                 try {
                     listener.connectionClosed();
                 }
@@ -195,9 +155,8 @@ class PacketReader {
      * Cleans up all resources used by the packet reader.
      */
     void cleanup() {
-        connectionListeners.clear();
-        listeners.clear();
-        collectors.clear();
+        connection.recvListeners.clear();
+        connection.collectors.clear();
     }
 
     /**
@@ -213,12 +172,12 @@ class PacketReader {
         // Print the stack trace to help catch the problem
         e.printStackTrace();
         // Notify connection listeners of the error.
-        for (ConnectionListener listener : connectionListeners) {
+        for (ConnectionListener listener : connection.getConnectionListeners()) {
             try {
                 listener.connectionClosedOnError(e);
             }
             catch (Exception e2) {
-                // Cath and print any exception so we can recover
+                // Catch and print any exception so we can recover
                 // from a faulty listener
                 e2.printStackTrace();
             }
@@ -230,12 +189,12 @@ class PacketReader {
      */
     protected void notifyReconnection() {
         // Notify connection listeners of the reconnection.
-        for (ConnectionListener listener : connectionListeners) {
+        for (ConnectionListener listener : connection.getConnectionListeners()) {
             try {
                 listener.reconnectionSuccessful();
             }
             catch (Exception e) {
-                // Cath and print any exception so we can recover
+                // Catch and print any exception so we can recover
                 // from a faulty listener
                 e.printStackTrace();
             }
@@ -297,7 +256,7 @@ class PacketReader {
                                 }
                                 else if (parser.getAttributeName(i).equals("from")) {
                                     // Use the server name that the server says that it is.
-                                    connection.serviceName = parser.getAttributeValue(i);
+                                    connection.config.setServiceName(parser.getAttributeValue(i));
                                 }
                             }
                         }
@@ -403,13 +362,14 @@ class PacketReader {
         }
 
         // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector: collectors) {
+        for (PacketCollector collector: connection.getPacketCollectors()) {
             collector.processPacket(packet);
         }
 
         // Deliver the incoming packet to listeners.
         listenerExecutor.submit(new ListenerNotification(packet));
     }
+
 
     private StreamError parseStreamError(XmlPullParser parser) throws IOException,
             XmlPullParserException {
@@ -795,28 +755,8 @@ class PacketReader {
         }
 
         public void run() {
-            for (ListenerWrapper listenerWrapper : listeners.values()) {
+            for (ListenerWrapper listenerWrapper : connection.recvListeners.values()) {
                 listenerWrapper.notifyListener(packet);
-            }
-        }
-    }
-
-    /**
-     * A wrapper class to associate a packet filter with a listener.
-     */
-    private static class ListenerWrapper {
-
-        private PacketListener packetListener;
-        private PacketFilter packetFilter;
-
-        public ListenerWrapper(PacketListener packetListener, PacketFilter packetFilter) {
-            this.packetListener = packetListener;
-            this.packetFilter = packetFilter;
-        }
-       
-        public void notifyListener(Packet packet) {
-            if (packetFilter == null || packetFilter.accept(packet)) {
-                packetListener.processPacket(packet);
             }
         }
     }

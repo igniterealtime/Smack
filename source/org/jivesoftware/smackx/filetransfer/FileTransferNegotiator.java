@@ -21,7 +21,7 @@ package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -65,8 +65,8 @@ public class FileTransferNegotiator {
 
     private static final String[] PROTOCOLS = {BYTE_STREAM, INBAND_BYTE_STREAM};
 
-    private static final Map<XMPPConnection, FileTransferNegotiator> transferObject =
-            new ConcurrentHashMap<XMPPConnection, FileTransferNegotiator>();
+    private static final Map<Connection, FileTransferNegotiator> transferObject =
+            new ConcurrentHashMap<Connection, FileTransferNegotiator>();
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
@@ -90,7 +90,7 @@ public class FileTransferNegotiator {
      * @return The IMFileTransferManager
      */
     public static FileTransferNegotiator getInstanceFor(
-            final XMPPConnection connection) {
+            final Connection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -117,7 +117,7 @@ public class FileTransferNegotiator {
      * @param connection The connection on which to enable or disable the services.
      * @param isEnabled  True to enable, false to disable.
      */
-    public static void setServiceEnabled(final XMPPConnection connection,
+    public static void setServiceEnabled(final Connection connection,
             final boolean isEnabled) {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
@@ -138,7 +138,7 @@ public class FileTransferNegotiator {
      * @param connection The connection to check
      * @return True if all related services are enabled, false if they are not.
      */
-    public static boolean isServiceEnabled(final XMPPConnection connection) {
+    public static boolean isServiceEnabled(final Connection connection) {
         for (String ns : NAMESPACE) {
             if (!ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(ns))
                 return false;
@@ -181,13 +181,13 @@ public class FileTransferNegotiator {
 
     // non-static
 
-    private final XMPPConnection connection;
+    private final Connection connection;
 
     private final Socks5TransferNegotiatorManager byteStreamTransferManager;
 
     private final StreamNegotiator inbandTransferManager;
 
-    private FileTransferNegotiator(final XMPPConnection connection) {
+    private FileTransferNegotiator(final Connection connection) {
         configureConnection(connection);
 
         this.connection = connection;
@@ -195,7 +195,7 @@ public class FileTransferNegotiator {
         inbandTransferManager = new IBBTransferNegotiator(connection);
     }
 
-    private void configureConnection(final XMPPConnection connection) {
+    private void configureConnection(final Connection connection) {
         connection.addConnectionListener(new ConnectionListener() {
             public void connectionClosed() {
                 cleanup(connection);
@@ -219,7 +219,7 @@ public class FileTransferNegotiator {
         });
     }
 
-    private void cleanup(final XMPPConnection connection) {
+    private void cleanup(final Connection connection) {
         if (transferObject.remove(connection) != null) {
             byteStreamTransferManager.cleanup();
             inbandTransferManager.cleanup();

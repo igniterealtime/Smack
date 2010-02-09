@@ -19,6 +19,7 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.demo;
 
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleManager;
@@ -43,7 +44,7 @@ import java.util.List;
 public class Demo extends JFrame {
 
     private JingleTransportManager transportManager = null;
-    private XMPPConnection xmppConnection = null;
+    private Connection xmppConnection = null;
 
     private String server = null;
     private String user = null;

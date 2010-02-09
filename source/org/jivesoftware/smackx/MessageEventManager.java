@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -46,7 +46,7 @@ public class MessageEventManager {
     private List<MessageEventNotificationListener> messageEventNotificationListeners = new ArrayList<MessageEventNotificationListener>();
     private List<MessageEventRequestListener> messageEventRequestListeners = new ArrayList<MessageEventRequestListener>();
 
-    private XMPPConnection con;
+    private Connection con;
 
     private PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:event");
     private PacketListener packetListener;
@@ -54,9 +54,9 @@ public class MessageEventManager {
     /**
      * Creates a new message event manager.
      *
-     * @param con an XMPPConnection.
+     * @param con a Connection to a XMPP server.
      */
-    public MessageEventManager(XMPPConnection con) {
+    public MessageEventManager(Connection con) {
         this.con = con;
         init();
     }

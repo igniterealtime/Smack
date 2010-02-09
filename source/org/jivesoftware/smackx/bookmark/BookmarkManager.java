@@ -19,7 +19,7 @@
 
 package org.jivesoftware.smackx.bookmark;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.PrivateDataManager;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * @author Alexander Wenckus
  */
 public class BookmarkManager {
-    private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new HashMap<XMPPConnection, BookmarkManager>();
+    private static final Map<Connection, BookmarkManager> bookmarkManagerMap = new HashMap<Connection, BookmarkManager>();
     static {
         PrivateDataManager.addPrivateDataProvider("storage", "storage:bookmarks",
                 new Bookmarks.Provider());
@@ -50,7 +50,7 @@ public class BookmarkManager {
      * exist it is created.
      * @throws XMPPException Thrown if the connection is null or has not yet been authenticated.
      */
-    public synchronized static BookmarkManager getBookmarkManager(XMPPConnection connection)
+    public synchronized static BookmarkManager getBookmarkManager(Connection connection)
             throws XMPPException
     {
         BookmarkManager manager = (BookmarkManager) bookmarkManagerMap.get(connection);
@@ -72,7 +72,7 @@ public class BookmarkManager {
      * @param connection the connection for persisting and retrieving bookmarks.
      * @throws XMPPException thrown when the connection is null or has not been authenticated.
      */
-    private BookmarkManager(XMPPConnection connection) throws XMPPException {
+    private BookmarkManager(Connection connection) throws XMPPException {
         if(connection == null || !connection.isAuthenticated()) {
             throw new XMPPException("Invalid connection.");
         }

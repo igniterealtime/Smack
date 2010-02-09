@@ -32,7 +32,7 @@ import org.jivesoftware.smackx.packet.LastActivity;
 /**
  * A last activity manager for handling information about the last activity associated
  * with a Jabber ID. A manager handles incoming LastActivity requests of existing
- * XMPPConnections. It also allows to request last activity information of other users.<p>
+ * Connections. It also allows to request last activity information of other users.<p>
  *
  * LastActivity (JEP-012) based on the sending JID's type allows for retrieval of:
  * <ol>
@@ -46,7 +46,7 @@ import org.jivesoftware.smackx.packet.LastActivity;
  * LastActivity packet to them, as in the following code:<p>
  *
  * <pre>
- * XMPPConnection con = new XMPPConnection("jabber.org");
+ * Connection con = new XMPPConnection("jabber.org");
  * con.login("john", "doe");
  * LastActivity activity = LastActivity.getLastActivity(con, "xray@jabber.org/Smack");
  * </pre>
@@ -71,12 +71,12 @@ public class LastActivityManager {
 
     private long lastMessageSent;
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     // Enable the LastActivity support on every established connection
     static {
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(XMPPConnection connection) {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(Connection connection) {
                 new LastActivityManager(connection);
             }
         });
@@ -85,13 +85,13 @@ public class LastActivityManager {
     /**
      * Creates a last activity manager to response last activity requests.
      *
-     * @param connection The XMPPConnection that the last activity requests will use.
+     * @param connection The Connection that the last activity requests will use.
      */
-    private LastActivityManager(XMPPConnection connection) {
+    private LastActivityManager(Connection connection) {
         this.connection = connection;
 
         // Listen to all the sent messages to reset the idle time on each one
-        connection.addPacketWriterListener(new PacketListener() {
+        connection.addPacketSendingListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 resetIdleTime();
             }
@@ -141,12 +141,12 @@ public class LastActivityManager {
      * when the jid is a server or component (e.g., a JID of the form 'host') the
      * last activity is the uptime.
      *
-     * @param con the current XMPPConnection.
+     * @param con the current Connection.
      * @param jid the JID of the user.
      * @return the LastActivity packet of the jid.
      * @throws XMPPException thrown if a server error has occured.
      */
-    public static LastActivity getLastActivity(XMPPConnection con, String jid)
+    public static LastActivity getLastActivity(Connection con, String jid)
             throws XMPPException {
         LastActivity activity = new LastActivity();
         activity.setTo(jid);

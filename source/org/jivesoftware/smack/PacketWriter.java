@@ -20,13 +20,10 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -34,6 +31,9 @@ import java.util.concurrent.BlockingQueue;
  * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
  * interceptors can be registered to dynamically modify packets before they're actually
  * sent. Packet listeners can be registered to listen for all outgoing packets.
+ *
+ * @see Connection#addPacketInterceptor
+ * @see Connection#addPacketSendingListener
  *
  * @author Matt Tucker
  */
@@ -45,23 +45,12 @@ class PacketWriter {
     private XMPPConnection connection;
     private final BlockingQueue<Packet> queue;
     private boolean done;
-    
-    private final Map<PacketListener, ListenerWrapper> listeners =
-            new ConcurrentHashMap<PacketListener, ListenerWrapper>();
 
     /**
      * Timestamp when the last stanza was sent to the server. This information is used
      * by the keep alive process to only send heartbeats when the connection has been idle.
      */
     private long lastActive = System.currentTimeMillis();
-
-    /**
-     * List of PacketInterceptors that will be notified when a new packet is about to be
-     * sent to the server. These interceptors may modify the packet before it is being
-     * actually sent to the server.
-     */
-    private final Map<PacketInterceptor, InterceptorWrapper> interceptors =
-            new ConcurrentHashMap<PacketInterceptor, InterceptorWrapper>();
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -100,7 +89,7 @@ class PacketWriter {
         if (!done) {
             // Invoke interceptors for the new packet that is about to be sent. Interceptors
             // may modify the content of the packet.
-            processInterceptors(packet);
+            connection.firePacketInterceptors(packet);
 
             try {
                 queue.put(packet);
@@ -115,63 +104,8 @@ class PacketWriter {
 
             // Process packet writer listeners. Note that we're using the sending
             // thread so it's expected that listeners are fast.
-            processListeners(packet);
+            connection.firePacketSendingListeners(packet);
         }
-    }
-
-    /**
-     * Registers a packet listener with this writer. The listener will be
-     * notified immediately after every packet this writer sends. A packet filter
-     * determines which packets will be delivered to the listener. Note that the thread
-     * that writes packets will be used to invoke the listeners. Therefore, each
-     * packet listener should complete all operations quickly or use a different
-     * thread for processing.
-     *
-     * @param packetListener the packet listener to notify of sent packets.
-     * @param packetFilter the packet filter to use.
-     */
-    public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
-        listeners.put(packetListener, new ListenerWrapper(packetListener, packetFilter));
-    }
-
-    /**
-     * Removes a packet listener.
-     *
-     * @param packetListener the packet listener to remove.
-     */
-    public void removePacketListener(PacketListener packetListener) {
-        listeners.remove(packetListener);
-    }
-
-    /**
-     * Returns the number of registered packet listeners.
-     *
-     * @return the count of packet listeners.
-     */
-    public int getPacketListenerCount() {
-        return listeners.size();
-    }
-
-    /**
-     * Registers a packet interceptor with this writer. The interceptor will be
-     * notified of every packet that this writer is about to send. Interceptors
-     * may modify the packet to be sent. A packet filter determines which packets
-     * will be delivered to the interceptor.
-     *
-     * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
-     * @param packetFilter the packet filter to use.
-     */
-    public void addPacketInterceptor(PacketInterceptor packetInterceptor, PacketFilter packetFilter) {
-        interceptors.put(packetInterceptor, new InterceptorWrapper(packetInterceptor, packetFilter));
-    }
-
-    /**
-     * Removes a packet interceptor.
-     *
-     * @param packetInterceptor the packet interceptor to remove.
-     */
-    public void removePacketInterceptor(PacketInterceptor packetInterceptor) {
-        interceptors.remove(packetInterceptor);
     }
 
     /**
@@ -221,8 +155,8 @@ class PacketWriter {
      * Cleans up all resources used by the packet writer.
      */
     void cleanup() {
-        interceptors.clear();
-        listeners.clear();
+        connection.interceptors.clear();
+        connection.sendListeners.clear();
     }
 
     /**
@@ -307,34 +241,6 @@ class PacketWriter {
     }
 
     /**
-     * Process listeners.
-     *
-     * @param packet the packet to process.
-     */
-    private void processListeners(Packet packet) {
-        // Notify the listeners of the new sent packet
-        for (ListenerWrapper listenerWrapper : listeners.values()) {
-            listenerWrapper.notifyListener(packet);
-        }
-    }
-
-    /**
-     * Process interceptors. Interceptors may modify the packet that is about to be sent.
-     * Since the thread that requested to send the packet will invoke all interceptors, it
-     * is important that interceptors perform their work as soon as possible so that the
-     * thread does not remain blocked for a long period.
-     *
-     * @param packet the packet that is going to be sent to the server
-     */
-    private void processInterceptors(Packet packet) {
-        if (packet != null) {
-            for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
-                interceptorWrapper.notifyListener(packet);
-            }
-        }
-    }
-
-    /**
      * Sends to the server a new stream element. This operation may be requested several times
      * so we need to encapsulate the logic in one place. This message will be sent while doing
      * TLS, SASL and resource binding.
@@ -344,67 +250,12 @@ class PacketWriter {
     void openStream() throws IOException {
         StringBuilder stream = new StringBuilder();
         stream.append("<stream:stream");
-        stream.append(" to=\"").append(connection.serviceName).append("\"");
+        stream.append(" to=\"").append(connection.getServiceName()).append("\"");
         stream.append(" xmlns=\"jabber:client\"");
         stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\"");
         stream.append(" version=\"1.0\">");
         writer.write(stream.toString());
         writer.flush();
-    }
-
-    /**
-     * A wrapper class to associate a packet filter with a listener.
-     */
-    private static class ListenerWrapper {
-
-        private PacketListener packetListener;
-        private PacketFilter packetFilter;
-
-        public ListenerWrapper(PacketListener packetListener, PacketFilter packetFilter) {
-            this.packetListener = packetListener;
-            this.packetFilter = packetFilter;
-        }
-
-        public void notifyListener(Packet packet) {
-            if (packetFilter == null || packetFilter.accept(packet)) {
-                packetListener.processPacket(packet);
-            }
-        }
-    }
-
-    /**
-     * A wrapper class to associate a packet filter with an interceptor.
-     */
-    private static class InterceptorWrapper {
-
-        private PacketInterceptor packetInterceptor;
-        private PacketFilter packetFilter;
-
-        public InterceptorWrapper(PacketInterceptor packetInterceptor, PacketFilter packetFilter)
-        {
-            this.packetInterceptor = packetInterceptor;
-            this.packetFilter = packetFilter;
-        }
-
-        public boolean equals(Object object) {
-            if (object == null) {
-                return false;
-            }
-            if (object instanceof InterceptorWrapper) {
-                return ((InterceptorWrapper) object).packetInterceptor
-                        .equals(this.packetInterceptor);
-            }
-            else if (object instanceof PacketInterceptor) {
-                return object.equals(this.packetInterceptor);
-            }
-            return false;
-        }
-
-        public void notifyListener(Packet packet) {
-            if (packetFilter == null || packetFilter.accept(packet)) {
-                packetInterceptor.interceptPacket(packet);
-            }
-        }
     }
 
     /**

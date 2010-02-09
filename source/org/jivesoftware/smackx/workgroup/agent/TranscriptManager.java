@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.workgroup.packet.Transcript;
 import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 
@@ -35,9 +35,9 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
  * @author Gaston Dombiak
  */
 public class TranscriptManager {
-    private XMPPConnection connection;
+    private Connection connection;
 
-    public TranscriptManager(XMPPConnection connection) {
+    public TranscriptManager(Connection connection) {
         this.connection = connection;
     }
 

@@ -499,7 +499,6 @@ public class TestEvents extends SmackTestCase
 			this.id = id;
 		}
 
-		@Override
 		public void handlePublishedItems(ItemPublishEvent<T> items)
 		{
 			events = items;

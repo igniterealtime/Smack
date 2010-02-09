@@ -34,11 +34,11 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
+ * Handles chat state for all chats on a particular Connection. This class manages both the
  * packet extensions and the disco response neccesary for compliance with
  * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
- * NOTE: {@link org.jivesoftware.smackx.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
+ * NOTE: {@link org.jivesoftware.smackx.ChatStateManager#getInstance(org.jivesoftware.smack.Connection)}
  * needs to be called in order for the listeners to be registered appropriately with the connection.
  * If this does not occur you will not receive the update notifications.
  *
@@ -48,20 +48,20 @@ import java.util.WeakHashMap;
  */
 public class ChatStateManager {
 
-    private static final Map<XMPPConnection, ChatStateManager> managers =
-            new WeakHashMap<XMPPConnection, ChatStateManager>();
+    private static final Map<Connection, ChatStateManager> managers =
+            new WeakHashMap<Connection, ChatStateManager>();
 
     private static final PacketFilter filter = new NotFilter(
                 new PacketExtensionFilter("http://jabber.org/protocol/chatstates"));
 
     /**
-     * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
+     * Returns the ChatStateManager related to the Connection and it will create one if it does
      * not yet exist.
      *
      * @param connection the connection to return the ChatStateManager
      * @return the ChatStateManager related the the connection.
      */
-    public static ChatStateManager getInstance(final XMPPConnection connection) {
+    public static ChatStateManager getInstance(final Connection connection) {
         if(connection == null) {
             return null;
         }
@@ -77,7 +77,7 @@ public class ChatStateManager {
         }
     }
 
-    private final XMPPConnection connection;
+    private final Connection connection;
 
     private final OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
 
@@ -89,7 +89,7 @@ public class ChatStateManager {
     private final Map<Chat, ChatState> chatStates =
             new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK, ReferenceMap.HARD);
 
-    private ChatStateManager(XMPPConnection connection) {
+    private ChatStateManager(Connection connection) {
         this.connection = connection;
     }
 

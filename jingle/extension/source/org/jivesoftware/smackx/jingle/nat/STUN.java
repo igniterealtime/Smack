@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -42,7 +42,7 @@ import org.xmlpull.v1.XmlPullParser;
  * <p/>
  * High Level Usage Example:
  * <p/>
- * STUN stun = STUN.getSTUNServer(xmppConnection);
+ * STUN stun = STUN.getSTUNServer(connection);
  *
  * @author Thiago Camargo
  */
@@ -185,22 +185,22 @@ public class STUN extends IQ {
      * Get a new STUN Server Address and port from the server.
      * If a error occurs or the server don't support STUN Service, null is returned.
      *
-     * @param xmppConnection
+     * @param connection
      * @return
      */
-    public static STUN getSTUNServer(XMPPConnection xmppConnection) {
+    public static STUN getSTUNServer(Connection connection) {
 
-        if (!xmppConnection.isConnected()) {
+        if (!connection.isConnected()) {
             return null;
         }
 
         STUN stunPacket = new STUN();
-        stunPacket.setTo(DOMAIN + "." + xmppConnection.getServiceName());
+        stunPacket.setTo(DOMAIN + "." + connection.getServiceName());
 
-        PacketCollector collector = xmppConnection
+        PacketCollector collector = connection
                 .createPacketCollector(new PacketIDFilter(stunPacket.getPacketID()));
 
-        xmppConnection.sendPacket(stunPacket);
+        connection.sendPacket(stunPacket);
 
         STUN response = (STUN) collector
                 .nextResult(SmackConfiguration.getPacketReplyTimeout());
@@ -217,18 +217,18 @@ public class STUN extends IQ {
      * @param xmppConnection
      * @return
      */
-    public static boolean serviceAvailable(XMPPConnection xmppConnection) {
+    public static boolean serviceAvailable(Connection connection) {
 
-        if (!xmppConnection.isConnected()) {
+        if (!connection.isConnected()) {
             return false;
         }
 
         LOGGER.debug("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
-                .getInstanceFor(xmppConnection);
+                .getInstanceFor(connection);
         try {
-            DiscoverItems items = disco.discoverItems(xmppConnection.getServiceName());
+            DiscoverItems items = disco.discoverItems(connection.getServiceName());
 
             Iterator iter = items.getItems();
             while (iter.hasNext()) {

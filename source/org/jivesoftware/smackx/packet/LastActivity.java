@@ -22,7 +22,7 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -127,14 +127,14 @@ public class LastActivity extends IQ {
 
     /**
      * Retrieve the last activity of a particular jid.
-     * @param con the current XMPPConnection.
+     * @param con the current Connection.
      * @param jid the JID of the user.
      * @return the LastActivity packet of the jid.
      * @throws XMPPException thrown if a server error has occured.
      * @deprecated This method only retreives the lapsed time since the last logout of a particular jid. 
-     * Replaced by {@link  org.jivesoftware.smackx.LastActivityManager#getLastActivity(XMPPConnection, String)  getLastActivity}
+     * Replaced by {@link  org.jivesoftware.smackx.LastActivityManager#getLastActivity(Connection, String)  getLastActivity}
      */
-    public static LastActivity getLastActivity(XMPPConnection con, String jid) throws XMPPException {
+    public static LastActivity getLastActivity(Connection con, String jid) throws XMPPException {
         LastActivity activity = new LastActivity();
         jid = StringUtils.parseBareAddress(jid);
         activity.setTo(jid);

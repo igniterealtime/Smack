@@ -19,7 +19,7 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 
@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public class Offer {
 
-    private XMPPConnection connection;
+    private Connection connection;
     private AgentSession session;
 
     private String sessionID;
@@ -64,7 +64,7 @@ public class Offer {
      * @param content content of the offer. The content explains the reason for the offer
      *        (e.g. user request, transfer)
      */
-    Offer(XMPPConnection conn, AgentSession agentSession, String userID,
+    Offer(Connection conn, AgentSession agentSession, String userID,
             String userJID, String workgroupName, Date expiresDate,
             String sessionID, Map metaData, OfferContent content)
     {

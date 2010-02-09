@@ -22,7 +22,7 @@ package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -118,7 +118,7 @@ public class PrivateDataManager {
     }
 
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     /**
      * The user to get and set private data for. In most cases, this value should
@@ -135,7 +135,7 @@ public class PrivateDataManager {
      * @param connection an XMPP connection which must have already undergone a
      *      successful login.
      */
-    public PrivateDataManager(XMPPConnection connection) {
+    public PrivateDataManager(Connection connection) {
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must be logged in to XMPP server.");
         }
@@ -154,7 +154,7 @@ public class PrivateDataManager {
      *      successful login.
      * @param user the XMPP address of the user to get and set private data for.
      */
-    public PrivateDataManager(XMPPConnection connection, String user) {
+    public PrivateDataManager(Connection connection, String user) {
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must be logged in to XMPP server.");
         }

@@ -34,9 +34,9 @@ discovery request with the information that you previously configured.</p>
 <b>Usage</b><p>
 
 In order to configure the supported features by your client you should first obtain the 
-ServiceDiscoveryManager associated with your XMPPConnection. To get your ServiceDiscoveryManager
+ServiceDiscoveryManager associated with your Connection. To get your ServiceDiscoveryManager
 send <b>getInstanceFor(connection)</b> to the class <i><b>ServiceDiscoveryManager</b></i> where
-connection is your XMPPConnection.<br></p>
+connection is your Connection.<br></p>
 
 <p>Once you have your ServiceDiscoveryManager you will be able to manage the supported features. To
 register a new feature send <b>addFeature(feature)</b> to your <i><b>ServiceDiscoveryManager</b></i>
@@ -48,7 +48,7 @@ String that represents the feature to remove.</p>
 
 In this example we can see how to add and remove supported features: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my XMPPConnection</font>
+<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my Connection</font>
       ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
       
       <font color="#3f7f5f">// Register that a new feature is supported by this XMPP entity</font>
@@ -74,7 +74,7 @@ to configure the information providers associated to the items/nodes within the 
 In order to configure the associated nodes within the Smack client you will need to create a
 NodeInformationProvider and register it with the <i><b>ServiceDiscoveryManager</b></i>. To get 
 your ServiceDiscoveryManager send <b>getInstanceFor(connection)</b> to the class <i><b>ServiceDiscoveryManager</b></i> 
-where connection is your XMPPConnection.<br></p>
+where connection is your Connection.<br></p>
 
 <p>Once you have your ServiceDiscoveryManager you will be able to register information providers 
 for the XMPP entity's nodes. To register a new node information provider send <b>setNodeInformationProvider(String node, NodeInformationProvider listener)</b> 
@@ -126,7 +126,7 @@ the discovered items.</p>
 
 In this example we can see how to discover the items associated with an online catalog service: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my XMPPConnection</font>
+<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my Connection</font>
       ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
       
       <font color="#3f7f5f">// Get the items of a given XMPP entity</font>
@@ -171,7 +171,7 @@ the discovered information.</p>
 
 In this example we can see how to discover the information of a conference room: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my XMPPConnection</font>
+<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my Connection</font>
       ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
       
       <font color="#3f7f5f">// Get the information of a given XMPP entity</font>
@@ -216,7 +216,7 @@ to publish.</p>
 
 In this example we can see how to publish new items: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my XMPPConnection</font>
+<pre>      <font color="#3f7f5f">// Obtain the ServiceDiscoveryManager associated with my Connection</font>
       ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
       
       <font color="#3f7f5f">// Create a DiscoverItems with the items to publish</font>

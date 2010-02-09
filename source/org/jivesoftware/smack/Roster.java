@@ -45,7 +45,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * </ul>
  *
  * @author Matt Tucker
- * @see XMPPConnection#getRoster()
+ * @see Connection#getRoster()
  */
 public class Roster {
 
@@ -55,7 +55,7 @@ public class Roster {
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
-    private XMPPConnection connection;
+    private Connection connection;
     private final Map<String, RosterGroup> groups;
     private final Map<String,RosterEntry> entries;
     private final List<RosterEntry> unfiledEntries;
@@ -97,7 +97,7 @@ public class Roster {
      *
      * @param connection an XMPP connection.
      */
-    Roster(final XMPPConnection connection) {
+    Roster(final Connection connection) {
         this.connection = connection;
         groups = new ConcurrentHashMap<String, RosterGroup>();
         unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();

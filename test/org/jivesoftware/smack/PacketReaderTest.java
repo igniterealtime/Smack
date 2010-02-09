@@ -140,12 +140,12 @@ public class PacketReaderTest extends SmackTestCase {
             }
         };
         // Keep number of current listeners
-        int listenersSize = getConnection(0).packetReader.listeners.size();
+        int listenersSize = getConnection(0).getPacketListeners().size();
         // Add a new listener
         getConnection(0).addPacketListener(listener, new MockPacketFilter(true));
         // Check that the listener was added
         assertEquals("Listener was not added", listenersSize + 1,
-                getConnection(0).packetReader.listeners.size());
+                getConnection(0).getPacketListeners().size());
 
         Message msg = new Message(getConnection(0).getUser(), Message.Type.normal);
 
@@ -155,7 +155,7 @@ public class PacketReaderTest extends SmackTestCase {
         getConnection(0).removePacketListener(listener);
         // Check that the number of listeners is correct (i.e. the listener was removed)
         assertEquals("Listener was not removed", listenersSize,
-                getConnection(0).packetReader.listeners.size());
+                getConnection(0).getPacketListeners().size());
     }
 
     /**

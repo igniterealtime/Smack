@@ -154,7 +154,7 @@ public class Chat {
     /**
      * Delivers a message directly to this chat, which will add the message
      * to the collector and deliver it to all listeners registered with the
-     * Chat. This is used by the XMPPConnection class to deliver messages
+     * Chat. This is used by the Connection class to deliver messages
      * without a thread ID.
      *
      * @param message the message.

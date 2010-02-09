@@ -23,14 +23,14 @@ import org.jivesoftware.smack.packet.Packet;
 
 /**
  * Provides a mechanism to intercept and modify packets that are going to be
- * sent to the server. PacketInterceptors are added to the {@link XMPPConnection}
+ * sent to the server. PacketInterceptors are added to the {@link Connection}
  * together with a {@link org.jivesoftware.smack.filter.PacketFilter} so that only
  * certain packets are intercepted and processed by the interceptor.<p>
  *
  * This allows event-style programming -- every time a new packet is found,
  * the {@link #interceptPacket(Packet)} method will be called.
  *
- * @see XMPPConnection#addPacketWriterInterceptor(PacketInterceptor, org.jivesoftware.smack.filter.PacketFilter)
+ * @see Connection#addPacketInterceptor(PacketInterceptor, org.jivesoftware.smack.filter.PacketFilter)
  * @author Gaston Dombiak
  */
 public interface PacketInterceptor {

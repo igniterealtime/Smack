@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.packet.DiscoverItems;
@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.pubsub.packet.SyncPacketSend;
  */
 public class LeafNode extends Node
 {
-	LeafNode(XMPPConnection connection, String nodeName)
+	LeafNode(Connection connection, String nodeName)
 	{
 		super(connection, nodeName);
 	}

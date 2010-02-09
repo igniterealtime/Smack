@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.SmackLogger;
@@ -49,7 +49,7 @@ public class ICEResolver extends TransportResolver {
 
 	private static final SmackLogger LOGGER = SmackLogger.getLogger(ICEResolver.class);
 
-	XMPPConnection connection;
+    Connection connection;
     Random random = new Random();
     long sid;
     String server;
@@ -57,7 +57,7 @@ public class ICEResolver extends TransportResolver {
     static Map<String, ICENegociator> negociatorsMap = new HashMap<String, ICENegociator>();
     //ICENegociator iceNegociator = null;
 
-    public ICEResolver(XMPPConnection connection, String server, int port) {
+    public ICEResolver(Connection connection, String server, int port) {
         super();
         this.connection = connection;
         this.server = server;

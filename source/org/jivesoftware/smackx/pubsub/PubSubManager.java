@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -43,7 +43,7 @@ import org.jivesoftware.smackx.pubsub.util.NodeUtils;
  */
 final public class PubSubManager
 {
-	private XMPPConnection con;
+	private Connection con;
 	private String to;
 	private Map<String, Node> nodeMap = new ConcurrentHashMap<String, Node>();
 	
@@ -52,7 +52,7 @@ final public class PubSubManager
 	 * 
 	 * @param connection The XMPP connection
 	 */
-	public PubSubManager(XMPPConnection connection)
+	public PubSubManager(Connection connection)
 	{
 		con = connection;
 	}
@@ -64,7 +64,7 @@ final public class PubSubManager
 	 * @param connection The XMPP connection
 	 * @param toAddress The pubsub specific to address (required for some servers)
 	 */
-	public PubSubManager(XMPPConnection connection, String toAddress)
+	public PubSubManager(Connection connection, String toAddress)
 	{
 		con = connection;
 		to = toAddress;
@@ -300,25 +300,25 @@ final public class PubSubManager
 		return request;
 	}
 
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext)
+	static Packet sendPubsubPacket(Connection con, String to, Type type, PacketExtension ext)
 		throws XMPPException
 	{
 		return sendPubsubPacket(con, to, type, ext, null);
 	}
 	
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext, PubSubNamespace ns)
+	static Packet sendPubsubPacket(Connection con, String to, Type type, PacketExtension ext, PubSubNamespace ns)
 		throws XMPPException
 	{
 		return SyncPacketSend.getReply(con, createPubsubPacket(to, type, ext, ns));
 	}
 
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet)
+	static Packet sendPubsubPacket(Connection con, String to, Type type, PubSub packet)
 		throws XMPPException
 	{
 		return sendPubsubPacket(con, to, type, packet, null);
 	}
 
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet, PubSubNamespace ns)
+	static Packet sendPubsubPacket(Connection con, String to, Type type, PubSub packet, PubSubNamespace ns)
 		throws XMPPException
 	{
 		return SyncPacketSend.getReply(con, packet);

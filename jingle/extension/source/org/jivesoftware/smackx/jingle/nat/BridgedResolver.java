@@ -19,7 +19,7 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
@@ -40,7 +40,7 @@ import java.util.Random;
  */
 public class BridgedResolver extends TransportResolver {
 
-    XMPPConnection connection;
+    Connection connection;
 
     Random random = new Random();
 
@@ -48,9 +48,9 @@ public class BridgedResolver extends TransportResolver {
 
     /**
      * Constructor.
-     * A Bridged Resolver need a XMPPConnection to connect to a RTP Bridge.
+     * A Bridged Resolver need a Connection to connect to a RTP Bridge.
      */
-    public BridgedResolver(XMPPConnection connection) {
+    public BridgedResolver(Connection connection) {
         super();
         this.connection = connection;
     }

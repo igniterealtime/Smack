@@ -1,6 +1,6 @@
 package org.jivesoftware.smackx.jingle.nat;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
@@ -30,7 +30,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
 
     ICEResolver iceResolver = null;
 
-    public ICETransportManager(XMPPConnection xmppConnection, String server, int port) {
+    public ICETransportManager(Connection xmppConnection, String server, int port) {
         iceResolver = new ICEResolver(xmppConnection, server, port);
         try {
             iceResolver.initializeAndWait();

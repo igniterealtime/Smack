@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.workgroup.packet.AgentInfo;
 import org.jivesoftware.smackx.workgroup.packet.AgentWorkgroups;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -36,10 +36,10 @@ import java.util.Collection;
  * @author Derek DeMoro
  */
 public class Agent {
-    private XMPPConnection connection;
+    private Connection connection;
     private String workgroupJID;
 
-    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws XMPPException {
+    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, Connection connection) throws XMPPException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
         request.setTo(serviceJID);
         PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
@@ -62,7 +62,7 @@ public class Agent {
     /**
      * Constructs an Agent.
      */
-    Agent(XMPPConnection connection, String workgroupJID) {
+    Agent(Connection connection, String workgroupJID) {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
     }

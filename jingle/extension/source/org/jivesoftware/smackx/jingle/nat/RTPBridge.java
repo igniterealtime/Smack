@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -46,7 +46,7 @@ import org.xmlpull.v1.XmlPullParser;
  * <p/>
  * High Level Usage Example:
  * <p/>
- * RTPBridge rtpBridge = RTPBridge.getRTPBridge(xmppConnection, sessionID);
+ * RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, sessionID);
  *
  * @author Thiago Camargo
  */
@@ -388,23 +388,23 @@ public class RTPBridge extends IQ {
      * Get a new RTPBridge Candidate from the server.
      * If a error occurs or the server don't support RTPBridge Service, null is returned.
      *
-     * @param xmppConnection
+     * @param connection
      * @param sessionID
      * @return
      */
-    public static RTPBridge getRTPBridge(XMPPConnection xmppConnection, String sessionID) {
+    public static RTPBridge getRTPBridge(Connection connection, String sessionID) {
 
-        if (!xmppConnection.isConnected()) {
+        if (!connection.isConnected()) {
             return null;
         }
 
         RTPBridge rtpPacket = new RTPBridge(sessionID);
-        rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getServiceName());
+        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getServiceName());
 
-        PacketCollector collector = xmppConnection
+        PacketCollector collector = connection
                 .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
 
-        xmppConnection.sendPacket(rtpPacket);
+        connection.sendPacket(rtpPacket);
 
         RTPBridge response = (RTPBridge) collector
                 .nextResult(SmackConfiguration.getPacketReplyTimeout());
@@ -418,21 +418,21 @@ public class RTPBridge extends IQ {
     /**
      * Check if the server support RTPBridge Service.
      *
-     * @param xmppConnection
+     * @param connection
      * @return
      */
-    public static boolean serviceAvailable(XMPPConnection xmppConnection) {
+    public static boolean serviceAvailable(Connection connection) {
 
-        if (!xmppConnection.isConnected()) {
+        if (!connection.isConnected()) {
             return false;
         }
 
         LOGGER.debug("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
-                .getInstanceFor(xmppConnection);
+                .getInstanceFor(connection);
         try {
-//            DiscoverItems items = disco.discoverItems(xmppConnection.getServiceName());
+//            DiscoverItems items = disco.discoverItems(connection.getServiceName());
 //            Iterator iter = items.getItems();
 //            while (iter.hasNext()) {
 //                DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
@@ -441,7 +441,7 @@ public class RTPBridge extends IQ {
 //                }
 //            }
             
-            DiscoverInfo discoInfo = disco.discoverInfo(xmppConnection.getServiceName());
+            DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
             Iterator iter = discoInfo.getIdentities();
             while (iter.hasNext()) {
                 DiscoverInfo.Identity identity = (DiscoverInfo.Identity) iter.next();
@@ -460,17 +460,17 @@ public class RTPBridge extends IQ {
     /**
      * Check if the server support RTPBridge Service.
      *
-     * @param xmppConnection
+     * @param connection
      * @return
      */
-    public static RTPBridge relaySession(XMPPConnection xmppConnection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) {
+    public static RTPBridge relaySession(Connection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) {
 
-        if (!xmppConnection.isConnected()) {
+        if (!connection.isConnected()) {
             return null;
         }
 
         RTPBridge rtpPacket = new RTPBridge(sessionID, RTPBridge.BridgeAction.change);
-        rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getServiceName());
+        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getServiceName());
         rtpPacket.setType(Type.SET);
 
         rtpPacket.setPass(pass);
@@ -481,10 +481,10 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        PacketCollector collector = xmppConnection
+        PacketCollector collector = connection
                 .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
 
-        xmppConnection.sendPacket(rtpPacket);
+        connection.sendPacket(rtpPacket);
 
         RTPBridge response = (RTPBridge) collector
                 .nextResult(SmackConfiguration.getPacketReplyTimeout());
@@ -501,7 +501,7 @@ public class RTPBridge extends IQ {
      * @param xmppConnection
      * @return public IP String or null if not found
      */
-    public static String getPublicIP(XMPPConnection xmppConnection) {
+    public static String getPublicIP(Connection xmppConnection) {
 
         if (!xmppConnection.isConnected()) {
             return null;

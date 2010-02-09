@@ -19,8 +19,9 @@
 </p>
 
 <p>
-    The <tt>org.jivesoftware.smack.XMPPConnection</tt> class manages your connection to an XMPP
-    server. Two constructors are available. The first, <tt>XMPPConnection(String)</tt> takes
+    The <tt>org.jivesoftware.smack.Connection</tt> class manages your connection to an XMPP
+    server. The default implementation is the <tt>org.jivesoftware.smack.XMPPConnection</tt>
+    class.  Two constructors are mainly used. The first, <tt>XMPPConnection(String)</tt> takes
     the server name you'd like to connect to as an argument. All default connection settings will
     be used:
     <ul>
@@ -62,7 +63,7 @@ ConnectionConfiguration config = new ConnectionConfiguration(<font color="green"
 config.setCompressionEnabled(true);
 config.setSASLAuthenticationEnabled(true);
 
-XMPPConnection connection = new XMPPConnection(config);
+Connection connection = new XMPPConnection(config);
 <font color="gray"><i>// Connect to the server</i></font>
 connection.connect();
 <font color="gray"><i>// Log into the server</i></font>
@@ -79,7 +80,7 @@ manager will try to immediately reconnect to the server and increase the delay b
 successive reconnections keep failing.</i>
 <br>
 In case you want to force a reconnection while the reconnetion manager is waiting for the next
-reconnection, you can just use <i>XMPPConnection#connect()</i> and a new attempt will be made.
+reconnection, you can just use <i>Connection#connect()</i> and a new attempt will be made.
 If the manual attempt also failed then the reconnection manager will still continue the
 reconnection job.
 </p>

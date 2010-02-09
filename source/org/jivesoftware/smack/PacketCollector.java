@@ -35,7 +35,7 @@ import java.util.LinkedList;
  * Each packet collector will queue up to 2^16 packets for processing before
  * older packets are automatically dropped.
  *
- * @see XMPPConnection#createPacketCollector(PacketFilter)
+ * @see Connection#createPacketCollector(PacketFilter)
  * @author Matt Tucker
  */
 public class PacketCollector {
@@ -49,18 +49,18 @@ public class PacketCollector {
 
     private PacketFilter packetFilter;
     private LinkedList<Packet> resultQueue;
-    private PacketReader packetReader;
+    private Connection conection;
     private boolean cancelled = false;
 
     /**
      * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
      * all packets will match this collector.
      *
-     * @param packetReader the packetReader the collector is tied to.
+     * @param conection the connection the collector is tied to.
      * @param packetFilter determines which packets will be returned by this collector.
      */
-    protected PacketCollector(PacketReader packetReader, PacketFilter packetFilter) {
-        this.packetReader = packetReader;
+    protected PacketCollector(Connection conection, PacketFilter packetFilter) {
+        this.conection = conection;
         this.packetFilter = packetFilter;
         this.resultQueue = new LinkedList<Packet>();
     }
@@ -74,7 +74,7 @@ public class PacketCollector {
         // If the packet collector has already been cancelled, do nothing.
         if (!cancelled) {
             cancelled = true;
-            packetReader.cancelPacketCollector(this);
+            conection.removePacketCollector(this);
         }
     }
 

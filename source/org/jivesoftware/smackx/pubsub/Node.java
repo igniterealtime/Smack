@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 
 abstract public class Node
 {
-	protected XMPPConnection con;
+	protected Connection con;
 	protected String id;
 	protected String to;
 	
@@ -48,7 +48,7 @@ abstract public class Node
 	 * @param connection The connection the node is associated with
 	 * @param nodeName The node id
 	 */
-	Node(XMPPConnection connection, String nodeName)
+	Node(Connection connection, String nodeName)
 	{
 		con = connection;
 		id = nodeName;

@@ -49,14 +49,14 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
     public static final int DEFAULT_BLOCK_SIZE = 4096;
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     /**
      * The default constructor for the In-Band Bystream Negotiator.
      *
      * @param connection The connection which this negotiator works on.
      */
-    protected IBBTransferNegotiator(XMPPConnection connection) {
+    protected IBBTransferNegotiator(Connection connection) {
         this.connection = connection;
     }
 

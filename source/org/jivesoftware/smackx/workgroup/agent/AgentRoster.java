@@ -22,7 +22,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -50,7 +50,7 @@ public class AgentRoster {
     private static final int EVENT_AGENT_REMOVED = 1;
     private static final int EVENT_PRESENCE_CHANGED = 2;
 
-    private XMPPConnection connection;
+    private Connection connection;
     private String workgroupJID;
     private List<String> entries;
     private List<AgentRosterListener> listeners;
@@ -64,7 +64,7 @@ public class AgentRoster {
      *
      * @param connection an XMPP connection.
      */
-    AgentRoster(XMPPConnection connection, String workgroupJID) {
+    AgentRoster(Connection connection, String workgroupJID) {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
         entries = new ArrayList<String>();

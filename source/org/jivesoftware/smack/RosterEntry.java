@@ -37,7 +37,7 @@ public class RosterEntry {
     private String name;
     private RosterPacket.ItemType type;
     private RosterPacket.ItemStatus status;
-    private XMPPConnection connection;
+    private Connection connection;
 
     /**
      * Creates a new roster entry.
@@ -49,7 +49,7 @@ public class RosterEntry {
      * @param connection a connection to the XMPP server.
      */
     RosterEntry(String user, String name, RosterPacket.ItemType type,
-                RosterPacket.ItemStatus status, XMPPConnection connection) {
+                RosterPacket.ItemStatus status, Connection connection) {
         this.user = user;
         this.name = name;
         this.type = type;
@@ -114,7 +114,7 @@ public class RosterEntry {
         List<RosterGroup> results = new ArrayList<RosterGroup>();
         // Loop through all roster groups and find the ones that contain this
         // entry. This algorithm should be fine
-        for (RosterGroup group: connection.roster.getGroups()) {
+        for (RosterGroup group: connection.getRoster().getGroups()) {
             if (group.contains(this)) {
                 results.add(group);
             }

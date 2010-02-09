@@ -60,7 +60,7 @@ import java.util.Random;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -124,7 +124,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     private JingleSessionRequest sessionRequest;
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     private String sessionInitPacketID;
     
@@ -134,7 +134,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * Full featured JingleSession constructor
      * 
      * @param conn
-     *            XMPPConnection
+     *            the Connection which is used
      * @param initiator
      *            the initiator JID
      * @param responder
@@ -144,7 +144,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param jingleMediaManager
      *            the jingleMediaManager
      */
-    public JingleSession(XMPPConnection conn, String initiator, String responder, String sessionid,
+    public JingleSession(Connection conn, String initiator, String responder, String sessionid,
             List<JingleMediaManager> jingleMediaManagers) {
         super();
 
@@ -170,7 +170,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * JingleSession constructor (for an outgoing Jingle session)
      * 
      * @param conn
-     *            XMPPConnection
+     *            Connection
      * @param initiator
      *            the initiator JID
      * @param responder
@@ -178,7 +178,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param jingleMediaManager
      *            the jingleMediaManager
      */
-    public JingleSession(XMPPConnection conn, JingleSessionRequest request, String initiator, String responder,
+    public JingleSession(Connection conn, JingleSessionRequest request, String initiator, String responder,
             List<JingleMediaManager> jingleMediaManagers) {
         this(conn, initiator, responder, generateSessionId(), jingleMediaManagers);
         sessionRequest = request;
@@ -193,7 +193,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         return initiator;
     }
 
-    public XMPPConnection getConnection() {
+    public Connection getConnection() {
         return connection;
     }
 
@@ -640,7 +640,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param connection
      *            The connection to clean up
      */
-    private void unregisterInstanceFor(XMPPConnection connection) {
+    private void unregisterInstanceFor(Connection connection) {
         synchronized (sessions) {
             sessions.remove(connection);
         }
@@ -662,7 +662,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      *            A XMPP connection
      * @return a Jingle session
      */
-    public static JingleSession getInstanceFor(XMPPConnection con) {
+    public static JingleSession getInstanceFor(Connection con) {
         if (con == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -683,7 +683,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param connection
      *            The connection to set up
      */
-    private void installConnectionListeners(final XMPPConnection connection) {
+    private void installConnectionListeners(final Connection connection) {
         if (connection != null) {
             connectionListener = new ConnectionListener() {
                 public void connectionClosed() {

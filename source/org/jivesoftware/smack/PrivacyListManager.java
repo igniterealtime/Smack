@@ -43,9 +43,9 @@ import java.util.*;
 public class PrivacyListManager {
 
     // Keep the list of instances of this class.
-	private static Map<XMPPConnection, PrivacyListManager> instances = new Hashtable<XMPPConnection, PrivacyListManager>();
+	private static Map<Connection, PrivacyListManager> instances = new Hashtable<Connection, PrivacyListManager>();
 
-	private XMPPConnection connection;
+	private Connection connection;
 	private final List<PrivacyListListener> listeners = new ArrayList<PrivacyListListener>();
 	PacketFilter packetFilter = new AndFilter(new IQTypeFilter(IQ.Type.SET),
     		new PacketExtensionFilter("query", "jabber:iq:privacy"));
@@ -54,8 +54,8 @@ public class PrivacyListManager {
         // Create a new PrivacyListManager on every established connection. In the init()
         // method of PrivacyListManager, we'll add a listener that will delete the
         // instance when the connection is closed.
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(XMPPConnection connection) {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(Connection connection) {
                 new PrivacyListManager(connection);
             }
         });
@@ -67,7 +67,7 @@ public class PrivacyListManager {
      *
      * @param connection the XMPP connection.
      */
-	private PrivacyListManager(XMPPConnection connection) {
+	private PrivacyListManager(Connection connection) {
         this.connection = connection;
         this.init();
     }
@@ -155,12 +155,12 @@ public class PrivacyListManager {
     }
 
     /**
-     * Returns the PrivacyListManager instance associated with a given XMPPConnection.
+     * Returns the PrivacyListManager instance associated with a given Connection.
      * 
      * @param connection the connection used to look for the proper PrivacyListManager.
-     * @return the PrivacyListManager associated with a given XMPPConnection.
+     * @return the PrivacyListManager associated with a given Connection.
      */
-    public static PrivacyListManager getInstanceFor(XMPPConnection connection) {
+    public static PrivacyListManager getInstanceFor(Connection connection) {
         return instances.get(connection);
     }
     

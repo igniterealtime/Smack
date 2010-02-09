@@ -15,7 +15,7 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -32,7 +32,7 @@ final public class SyncPacketSend
 	private SyncPacketSend()
 	{	}
 	
-	static public Packet getReply(XMPPConnection connection, Packet packet, long timeout)
+	static public Packet getReply(Connection connection, Packet packet, long timeout)
 		throws XMPPException
 	{
         PacketFilter responseFilter = new PacketIDFilter(packet.getPacketID());
@@ -55,7 +55,7 @@ final public class SyncPacketSend
         return result;
 	}
 
-	static public Packet getReply(XMPPConnection connection, Packet packet)
+	static public Packet getReply(Connection connection, Packet packet)
 		throws XMPPException
 	{
 		return getReply(connection, packet, SmackConfiguration.getPacketReplyTimeout());

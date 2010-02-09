@@ -51,7 +51,7 @@ the form and finally send it back to the server.</p>
 
 In this example we can see how to create an instant room: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using a Connection for a room</font>
       MultiUserChat muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
 
       <font color="#3f7f5f">// Create the room</font>
@@ -65,7 +65,7 @@ In this example we can see how to create an instant room: <br>
 
 In this example we can see how to create a reserved room. The form is completed with default values: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using a Connection for a room</font>
       MultiUserChat muc = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
 
       <font color="#3f7f5f">// Create the room</font>
@@ -121,7 +121,7 @@ for a response from the server.</p>
 
 In this example we can see how to join a room with a given nickname: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using a Connection for a room</font>
       MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
 
       <font color="#3f7f5f">// User2 joins the new room</font>
@@ -132,7 +132,7 @@ In this example we can see how to join a room with a given nickname: <br>
 
 In this example we can see how to join a room with a given nickname and password: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using a Connection for a room</font>
       MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
 
       <font color="#3f7f5f">// User2 joins the new room using a password</font>
@@ -144,7 +144,7 @@ In this example we can see how to join a room with a given nickname and password
 In this example we can see how to join a room with a given nickname specifying the amount of history
 to receive: <br>
 <blockquote>
-<pre>      <font color="#3f7f5f">// Create a MultiUserChat using an XMPPConnection for a room</font>
+<pre>      <font color="#3f7f5f">// Create a MultiUserChat using a Connection for a room</font>
       MultiUserChat muc2 = new MultiUserChat(conn1, <font color="#0000FF">"myroom@conference.jabber.org"</font>);
 
       <font color="#3f7f5f">// User2 joins the new room using a password and specifying</font>
@@ -205,7 +205,7 @@ In this example we can see how to listen for room invitations and decline invita
 <blockquote>
 <pre>      <font color="#3f7f5f">// User3 listens for MUC invitations</font>
       MultiUserChat.addInvitationListener(conn3, new InvitationListener() {
-          public void invitationReceived(XMPPConnection conn, String room, String inviter, String reason, String password) {
+          public void invitationReceived(Connection conn, String room, String inviter, String reason, String password) {
               <font color="#3f7f5f">// Reject the invitation</font>
               MultiUserChat.decline(conn, room, inviter, <font color="#0000FF">"I'm busy right now"</font>);
           }
@@ -224,7 +224,7 @@ A user may want to discover if one of the user's contacts supports the Multi-Use
 <b>Usage</b><p>
 
 In order to discover if one of the user's contacts supports MUC just send 
-<b>isServiceEnabled(XMPPConnection connection, String user)</b> to the <i><b>MultiUserChat</b></i> 
+<b>isServiceEnabled(Connection connection, String user)</b> to the <i><b>MultiUserChat</b></i> 
 class where user is a fully qualified XMPP ID, e.g. jdoe@example.com. You will receive
 a boolean indicating whether the user supports MUC or not.</p>
 
@@ -248,7 +248,7 @@ A user may also want to query a contact regarding which rooms the contact is in.
 <b>Usage</b><p>
 
 In order to get the rooms where a user is in just send
-<b>getJoinedRooms(XMPPConnection connection, String user)</b> to the <i><b>MultiUserChat</b></i>
+<b>getJoinedRooms(Connection connection, String user)</b> to the <i><b>MultiUserChat</b></i>
 class where user is a fully qualified XMPP ID, e.g. jdoe@example.com. You will get an Iterator
 of Strings as an answer where each String represents a room name.</p>
 
@@ -272,7 +272,7 @@ will provide information only for public rooms.</p>
 
 <b>Usage</b><p>
 
-In order to discover information about a room just send <b>getRoomInfo(XMPPConnection connection, String room)</b>
+In order to discover information about a room just send <b>getRoomInfo(Connection connection, String room)</b>
 to the <i><b>MultiUserChat</b></i> class where room is the XMPP ID of the room, e.g.
 roomName@conference.myserver. You will get a RoomInfo object that contains the discovered room
 information.</p>

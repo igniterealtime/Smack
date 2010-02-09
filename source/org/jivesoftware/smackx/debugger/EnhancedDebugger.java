@@ -22,7 +22,7 @@ package org.jivesoftware.smackx.debugger;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -112,7 +112,7 @@ public class EnhancedDebugger implements SmackDebugger {
     private JFormattedTextField userField = null;
     private JFormattedTextField statusField = null;
 
-    private XMPPConnection connection = null;
+    private Connection connection = null;
 
     private PacketListener packetReaderListener = null;
     private PacketListener packetWriterListener = null;
@@ -140,7 +140,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
     JTabbedPane tabbedPane;
 
-    public EnhancedDebugger(XMPPConnection connection, Writer writer, Reader reader) {
+    public EnhancedDebugger(Connection connection, Writer writer, Reader reader) {
         this.connection = connection;
         this.writer = writer;
         this.reader = reader;
@@ -919,7 +919,7 @@ public class EnhancedDebugger implements SmackDebugger {
     void cancel() {
         connection.removeConnectionListener(connListener);
         connection.removePacketListener(packetReaderListener);
-        connection.removePacketWriterListener(packetWriterListener);
+        connection.removePacketSendingListener(packetWriterListener);
         ((ObservableReader) reader).removeReaderListener(readerListener);
         ((ObservableWriter) writer).removeWriterListener(writerListener);
         messagesTable = null;

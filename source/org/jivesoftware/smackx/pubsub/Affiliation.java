@@ -13,7 +13,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
  * 
  * Affiliations are retrieved from the {@link PubSubManager#getAffiliations()} method, which 
  * gets affiliations for the calling user, based on the identity that is associated with 
- * the {@link XMPPConnection}.
+ * the {@link Connection}.
  * 
  * @author Robin Collier
  */

@@ -22,7 +22,7 @@ package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -493,10 +493,10 @@ public class VCard extends IQ {
      * <p/>
      * NOTE: the method is asynchronous and does not wait for the returned value.
      *
-     * @param connection the XMPPConnection to use.
+     * @param connection the Connection to use.
      * @throws XMPPException thrown if there was an issue setting the VCard in the server.
      */
-    public void save(XMPPConnection connection) throws XMPPException {
+    public void save(Connection connection) throws XMPPException {
         checkAuthenticated(connection, true);
 
         setType(IQ.Type.SET);
@@ -520,7 +520,7 @@ public class VCard extends IQ {
      * Load VCard information for a connected user. Connection should be authenticated
      * and not anonymous.
      */
-    public void load(XMPPConnection connection) throws XMPPException {
+    public void load(Connection connection) throws XMPPException {
         checkAuthenticated(connection, true);
 
         setFrom(connection.getUser());
@@ -530,14 +530,14 @@ public class VCard extends IQ {
     /**
      * Load VCard information for a given user. Connection should be authenticated and not anonymous.
      */
-    public void load(XMPPConnection connection, String user) throws XMPPException {
+    public void load(Connection connection, String user) throws XMPPException {
         checkAuthenticated(connection, false);
 
         setTo(user);
         doLoad(connection, user);
     }
 
-    private void doLoad(XMPPConnection connection, String user) throws XMPPException {
+    private void doLoad(Connection connection, String user) throws XMPPException {
         setType(Type.GET);
         PacketCollector collector = connection.createPacketCollector(
                 new PacketIDFilter(getPacketID()));
@@ -587,7 +587,7 @@ public class VCard extends IQ {
         }
     }
 
-    private void checkAuthenticated(XMPPConnection connection, boolean checkForAnonymous) {
+    private void checkAuthenticated(Connection connection, boolean checkForAnonymous) {
         if (connection == null) {
             throw new IllegalArgumentException("No connection was provided");
         }

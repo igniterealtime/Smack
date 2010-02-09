@@ -63,7 +63,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.SmackLogger;
 
@@ -94,7 +94,7 @@ public abstract class TransportCandidate {
 
     private String sessionId;
 
-    private XMPPConnection connection;
+    private Connection connection;
 
     private TransportCandidate symmetric;
 
@@ -190,20 +190,20 @@ public abstract class TransportCandidate {
     }
 
     /**
-     * Get the XMPPConnection use to send or receive this candidate
+     * Get the Connection use to send or receive this candidate
      *
      * @return
      */
-    public XMPPConnection getConnection() {
+    public Connection getConnection() {
         return connection;
     }
 
     /**
-     * Set the XMPPConnection use to send or receive this candidate
+     * Set the Connection use to send or receive this candidate
      *
      * @param connection
      */
-    public void setConnection(XMPPConnection connection) {
+    public void setConnection(Connection connection) {
         this.connection = connection;
     }
 

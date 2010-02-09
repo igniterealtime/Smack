@@ -19,7 +19,7 @@ import org.jivesoftware.smack.packet.StreamError;
 public class ReconnectionManager implements ConnectionListener {
 
     // Holds the connection to the server
-    private XMPPConnection connection;
+    private Connection connection;
 
     // Holds the state of the reconnection
     boolean done = false;
@@ -28,14 +28,14 @@ public class ReconnectionManager implements ConnectionListener {
         // Create a new PrivacyListManager on every established connection. In the init()
         // method of PrivacyListManager, we'll add a listener that will delete the
         // instance when the connection is closed.
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(XMPPConnection connection) {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(Connection connection) {
                 connection.addConnectionListener(new ReconnectionManager(connection));
             }
         });
     }
 
-    private ReconnectionManager(XMPPConnection connection) {
+    private ReconnectionManager(Connection connection) {
         this.connection = connection;
     }
 
@@ -47,8 +47,7 @@ public class ReconnectionManager implements ConnectionListener {
      */
     private boolean isReconnectionAllowed() {
         return !done && !connection.isConnected()
-                && connection.getConfiguration().isReconnectionAllowed()
-                && connection.packetReader != null;
+                && connection.isReconnectionAllowed();
     }
 
     /**
@@ -94,7 +93,7 @@ public class ReconnectionManager implements ConnectionListener {
                  */
                 public void run() {
                     // The process will try to reconnect until the connection is established or
-                    // the user cancel the reconnection process {@link XMPPConnection#disconnect()}
+                    // the user cancel the reconnection process {@link Connection#disconnect()}
                     while (ReconnectionManager.this.isReconnectionAllowed()) {
                         // Find how much time we should wait until the next reconnection
                         int remainingSeconds = timeDelay();
@@ -143,20 +142,20 @@ public class ReconnectionManager implements ConnectionListener {
      */
     protected void notifyReconnectionFailed(Exception exception) {
         if (isReconnectionAllowed()) {
-            for (ConnectionListener listener : connection.packetReader.connectionListeners) {
+            for (ConnectionListener listener : connection.connectionListeners) {
                 listener.reconnectionFailed(exception);
             }
         }
     }
 
     /**
-     * Fires listeners when The XMPPConnection will retry a reconnection. Expressed in seconds.
+     * Fires listeners when The Connection will retry a reconnection. Expressed in seconds.
      *
      * @param seconds the number of seconds that a reconnection will be attempted in.
      */
     protected void notifyAttemptToReconnectIn(int seconds) {
         if (isReconnectionAllowed()) {
-            for (ConnectionListener listener : connection.packetReader.connectionListeners) {
+            for (ConnectionListener listener : connection.connectionListeners) {
                 listener.reconnectingIn(seconds);
             }
         }

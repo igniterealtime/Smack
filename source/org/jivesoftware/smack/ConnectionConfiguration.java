@@ -38,6 +38,11 @@ import java.io.File;
  */
 public class ConnectionConfiguration implements Cloneable {
 
+    /**
+     * Hostname of the XMPP server. Usually servers use the same service name as the name
+     * of the server. However, there are some servers like google where host would be
+     * talk.google.com and the serviceName would be gmail.com.
+     */
     private String serviceName;
 
     private String host;
@@ -63,7 +68,7 @@ public class ConnectionConfiguration implements Cloneable {
      */
     private CallbackHandler callbackHandler;
 
-    private boolean debuggerEnabled = XMPPConnection.DEBUG_ENABLED;
+    private boolean debuggerEnabled = Connection.DEBUG_ENABLED;
 
     // Flag that indicates if a reconnection should be attempted when abruptly disconnected
     private boolean reconnectionAllowed = true;
@@ -80,7 +85,7 @@ public class ConnectionConfiguration implements Cloneable {
     private SecurityMode securityMode = SecurityMode.enabled;
 	
 	// Holds the proxy information (such as proxyhost, proxyport, username, password etc)
-    private ProxyInfo proxy;
+    protected ProxyInfo proxy;
 
     /**
      * Creates a new ConnectionConfiguration for the specified service name.
@@ -175,7 +180,7 @@ public class ConnectionConfiguration implements Cloneable {
         this.host = host;
         this.port = port;
         this.serviceName = serviceName;
-		this.proxy = proxy;
+        this.proxy = proxy;
 
         // Build the default path to the cacert truststore file. By default we are
         // going to use the file located in $JREHOME/lib/security/cacerts.
@@ -195,6 +200,15 @@ public class ConnectionConfiguration implements Cloneable {
 		
 		//Setting the SocketFactory according to proxy supplied
         socketFactory = proxy.getSocketFactory();
+    }
+
+    /**
+     * Sets the server name, also known as XMPP domain of the target server.
+     *
+     * @param serviceName the XMPP domain of the target server.
+     */
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     /**
@@ -522,7 +536,7 @@ public class ConnectionConfiguration implements Cloneable {
 
     /**
      * Returns true if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link XMPPConnection#DEBUG_ENABLED} is used.
+     * default the value of {@link Connection#DEBUG_ENABLED} is used.
      *
      * @return true if the new connection about to be establish is going to be debugged.
      */
@@ -532,7 +546,7 @@ public class ConnectionConfiguration implements Cloneable {
 
     /**
      * Sets if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link XMPPConnection#DEBUG_ENABLED} is used.
+     * default the value of {@link Connection#DEBUG_ENABLED} is used.
      *
      * @param debuggerEnabled if the new connection about to be establish is going to be debugged.
      */
