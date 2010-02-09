@@ -80,6 +80,10 @@ public class SASLAuthentication implements UserAuthentication {
     private boolean saslFailed;
     private boolean resourceBinded;
     private boolean sessionSupported;
+    /**
+     * The SASL related error condition if there was one provided by the server.
+     */
+    private String errorCondition;
 
     static {
 
@@ -247,8 +251,14 @@ public class SASLAuthentication implements UserAuthentication {
                 if (saslFailed) {
                     // SASL authentication failed and the server may have closed the connection
                     // so throw an exception
-                    throw new XMPPException("SASL authentication failed using mechanism " +
-                            selectedMechanism);
+                    if (errorCondition != null) {
+                        throw new XMPPException("SASL authentication " +
+                                selectedMechanism + " failed: " + errorCondition);
+                    }
+                    else {
+                        throw new XMPPException("SASL authentication failed using mechanism " +
+                                selectedMechanism);
+                    }
                 }
 
                 if (saslNegotiated) {
@@ -323,8 +333,14 @@ public class SASLAuthentication implements UserAuthentication {
                 if (saslFailed) {
                     // SASL authentication failed and the server may have closed the connection
                     // so throw an exception
-                    throw new XMPPException("SASL authentication failed using mechanism " +
-                            selectedMechanism);
+                    if (errorCondition != null) {
+                        throw new XMPPException("SASL authentication " +
+                                selectedMechanism + " failed: " + errorCondition);
+                    }
+                    else {
+                        throw new XMPPException("SASL authentication failed using mechanism " +
+                                selectedMechanism);
+                    }
                 }
 
                 if (saslNegotiated) {
@@ -384,7 +400,12 @@ public class SASLAuthentication implements UserAuthentication {
             if (saslFailed) {
                 // SASL authentication failed and the server may have closed the connection
                 // so throw an exception
-                throw new XMPPException("SASL authentication failed");
+                if (errorCondition != null) {
+                    throw new XMPPException("SASL authentication failed: " + errorCondition);
+                }
+                else {
+                    throw new XMPPException("SASL authentication failed");
+                }
             }
 
             if (saslNegotiated) {
@@ -508,10 +529,23 @@ public class SASLAuthentication implements UserAuthentication {
     /**
      * Notification message saying that SASL authentication has failed. The server may have
      * closed the connection depending on the number of possible retries.
+     * 
+     * @deprecated replaced by {@see #authenticationFailed(String)}.
      */
     void authenticationFailed() {
+        authenticationFailed(null);
+    }
+
+    /**
+     * Notification message saying that SASL authentication has failed. The server may have
+     * closed the connection depending on the number of possible retries.
+     * 
+     * @param condition the error condition provided by the server.
+     */
+    void authenticationFailed(String condition) {
         synchronized (this) {
             saslFailed = true;
+            errorCondition = condition;
             // Wake up the thread that is waiting in the #authenticate method
             notify();
         }

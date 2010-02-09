@@ -286,7 +286,7 @@ class PacketReader {
                             // depending on the number of retries
                             final Failure failure = PacketParserUtils.parseSASLFailure(parser);
                             processPacket(failure);
-                            connection.getSASLAuthentication().authenticationFailed();
+                            connection.getSASLAuthentication().authenticationFailed(failure.getCondition());
                         }
                     }
                     else if (parser.getName().equals("challenge")) {
