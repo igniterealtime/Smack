@@ -22,6 +22,9 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.Connection.ListenerWrapper;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
+import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
+import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
@@ -281,14 +284,28 @@ class PacketReader {
                         else {
                             // SASL authentication has failed. The server may close the connection
                             // depending on the number of retries
+                            final Failure failure = PacketParserUtils.parseSASLFailure(parser);
+                            processPacket(failure);
                             connection.getSASLAuthentication().authenticationFailed();
                         }
                     }
                     else if (parser.getName().equals("challenge")) {
                         // The server is challenging the SASL authentication made by the client
-                        connection.getSASLAuthentication().challengeReceived(parser.nextText());
+                        String challengeData = parser.nextText();
+                        processPacket(new Challenge(challengeData));
+                        connection.getSASLAuthentication().challengeReceived(challengeData);
                     }
                     else if (parser.getName().equals("success")) {
+                        processPacket(new Success(parser.nextText()));
+                        // We now need to bind a resource for the connection
+                        // Open a new stream and wait for the response
+                        connection.packetWriter.openStream();
+                        // Reset the state of the parser since a new stream element is going
+                        // to be sent by the server
+                        resetParser();
+                        // The SASL authentication with the server was successful. The next step
+                        // will be to bind the resource
+                        connection.getSASLAuthentication().authenticated();
                     }
                     else if (parser.getName().equals("compressed")) {
                         // Server confirmed that it's possible to use stream compression. Start
@@ -303,17 +320,6 @@ class PacketReader {
                     if (parser.getName().equals("stream")) {
                         // Disconnect the connection
                         connection.disconnect();
-                    }
-                    else if (parser.getName().equals("success")) {
-                        // We now need to bind a resource for the connection
-                        // Open a new stream and wait for the response
-                        connection.packetWriter.openStream();
-                        // Reset the state of the parser since a new stream element is going
-                        // to be sent by the server
-                        resetParser();
-                        // The SASL authentication with the server was successful. The next step
-                        // will be to bind the resource
-                        connection.getSASLAuthentication().authenticated();
                     }
                 }
                 eventType = parser.next();

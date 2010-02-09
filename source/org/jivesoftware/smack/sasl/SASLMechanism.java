@@ -217,6 +217,28 @@ public abstract class SASLMechanism implements CallbackHandler {
     }
 
     /**
+     * A SASL challenge stanza.
+     */
+    public static class Challenge extends Packet {
+        final private String data;
+
+        public Challenge(String data) {
+            this.data = data;
+        }
+
+        public String toXML() {
+            StringBuilder stanza = new StringBuilder();
+            stanza.append("<challenge xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+            if (data != null &&
+                    data.trim().length() > 0) {
+                stanza.append(data);
+            }
+            stanza.append("</challenge>");
+            return stanza.toString();
+        }
+    }
+
+    /**
      * A SASL response stanza.
      */
     public class Response extends Packet {
@@ -245,6 +267,59 @@ public abstract class SASLMechanism implements CallbackHandler {
                 stanza.append("=");
             }
             stanza.append("</response>");
+            return stanza.toString();
+        }
+    }
+
+    /**
+     * A SASL success stanza.
+     */
+    public static class Success extends Packet {
+        final private String data;
+
+        public Success(String data) {
+            this.data = data;
+        }
+
+        public String toXML() {
+            StringBuilder stanza = new StringBuilder();
+            stanza.append("<success xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+            if (data != null &&
+                    data.trim().length() > 0) {
+                stanza.append(data);
+            }
+            stanza.append("</success>");
+            return stanza.toString();
+        }
+    }
+
+    /**
+     * A SASL failure stanza.
+     */
+    public static class Failure extends Packet {
+        final private String condition;
+
+        public Failure(String condition) {
+            this.condition = condition;
+        }
+
+        /**
+         * Get the SASL related error condition.
+         * 
+         * @return the SASL related error condition.
+         */
+        public String getCondition() {
+            return condition;
+        }
+
+        public String toXML() {
+            StringBuilder stanza = new StringBuilder();
+            stanza.append("<failure xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
+            if (condition != null &&
+                    condition.trim().length() > 0) {
+                stanza.append("<").append(condition).append("/>");
+            }
+            stanza.append("</failure>");
             return stanza.toString();
         }
     }
