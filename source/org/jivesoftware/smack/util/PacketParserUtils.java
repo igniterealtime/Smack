@@ -20,15 +20,20 @@
 
 package org.jivesoftware.smack.util;
 
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,6 +220,296 @@ public class PacketParserUtils {
     }
 
     /**
+     * Parses an IQ packet.
+     *
+     * @param parser the XML parser, positioned at the start of an IQ packet.
+     * @return an IQ object.
+     * @throws Exception if an exception occurs while parsing the packet.
+     */
+    public static IQ parseIQ(XmlPullParser parser, Connection connection) throws Exception {
+        IQ iqPacket = null;
+
+        String id = parser.getAttributeValue("", "id");
+        String to = parser.getAttributeValue("", "to");
+        String from = parser.getAttributeValue("", "from");
+        IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
+        XMPPError error = null;
+
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                String elementName = parser.getName();
+                String namespace = parser.getNamespace();
+                if (elementName.equals("error")) {
+                    error = PacketParserUtils.parseError(parser);
+                }
+                else if (elementName.equals("query") && namespace.equals("jabber:iq:auth")) {
+                    iqPacket = parseAuthentication(parser);
+                }
+                else if (elementName.equals("query") && namespace.equals("jabber:iq:roster")) {
+                    iqPacket = parseRoster(parser);
+                }
+                else if (elementName.equals("query") && namespace.equals("jabber:iq:register")) {
+                    iqPacket = parseRegistration(parser);
+                }
+                else if (elementName.equals("bind") &&
+                        namespace.equals("urn:ietf:params:xml:ns:xmpp-bind")) {
+                    iqPacket = parseResourceBinding(parser);
+                }
+                // Otherwise, see if there is a registered provider for
+                // this element name and namespace.
+                else {
+                    Object provider = ProviderManager.getInstance().getIQProvider(elementName, namespace);
+                    if (provider != null) {
+                        if (provider instanceof IQProvider) {
+                            iqPacket = ((IQProvider)provider).parseIQ(parser);
+                        }
+                        else if (provider instanceof Class) {
+                            iqPacket = (IQ)PacketParserUtils.parseWithIntrospection(elementName,
+                                    (Class)provider, parser);
+                        }
+                    }
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("iq")) {
+                    done = true;
+                }
+            }
+        }
+        // Decide what to do when an IQ packet was not understood
+        if (iqPacket == null) {
+            if (IQ.Type.GET == type || IQ.Type.SET == type ) {
+                // If the IQ stanza is of type "get" or "set" containing a child element
+                // qualified by a namespace it does not understand, then answer an IQ of
+                // type "error" with code 501 ("feature-not-implemented")
+                iqPacket = new IQ() {
+                    public String getChildElementXML() {
+                        return null;
+                    }
+                };
+                iqPacket.setPacketID(id);
+                iqPacket.setTo(from);
+                iqPacket.setFrom(to);
+                iqPacket.setType(IQ.Type.ERROR);
+                iqPacket.setError(new XMPPError(XMPPError.Condition.feature_not_implemented));
+                connection.sendPacket(iqPacket);
+                return null;
+            }
+            else {
+                // If an IQ packet wasn't created above, create an empty IQ packet.
+                iqPacket = new IQ() {
+                    public String getChildElementXML() {
+                        return null;
+                    }
+                };
+            }
+        }
+
+        // Set basic values on the iq packet.
+        iqPacket.setPacketID(id);
+        iqPacket.setTo(to);
+        iqPacket.setFrom(from);
+        iqPacket.setType(type);
+        iqPacket.setError(error);
+
+        return iqPacket;
+    }
+
+    private static Authentication parseAuthentication(XmlPullParser parser) throws Exception {
+        Authentication authentication = new Authentication();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("username")) {
+                    authentication.setUsername(parser.nextText());
+                }
+                else if (parser.getName().equals("password")) {
+                    authentication.setPassword(parser.nextText());
+                }
+                else if (parser.getName().equals("digest")) {
+                    authentication.setDigest(parser.nextText());
+                }
+                else if (parser.getName().equals("resource")) {
+                    authentication.setResource(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+        return authentication;
+    }
+
+    private static RosterPacket parseRoster(XmlPullParser parser) throws Exception {
+        RosterPacket roster = new RosterPacket();
+        boolean done = false;
+        RosterPacket.Item item = null;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("item")) {
+                    String jid = parser.getAttributeValue("", "jid");
+                    String name = parser.getAttributeValue("", "name");
+                    // Create packet.
+                    item = new RosterPacket.Item(jid, name);
+                    // Set status.
+                    String ask = parser.getAttributeValue("", "ask");
+                    RosterPacket.ItemStatus status = RosterPacket.ItemStatus.fromString(ask);
+                    item.setItemStatus(status);
+                    // Set type.
+                    String subscription = parser.getAttributeValue("", "subscription");
+                    RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription);
+                    item.setItemType(type);
+                }
+                if (parser.getName().equals("group") && item!= null) {
+                    item.addGroupName(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("item")) {
+                    roster.addRosterItem(item);
+                }
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+        return roster;
+    }
+
+     private static Registration parseRegistration(XmlPullParser parser) throws Exception {
+        Registration registration = new Registration();
+        Map<String, String> fields = null;
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                // Any element that's in the jabber:iq:register namespace,
+                // attempt to parse it if it's in the form <name>value</name>.
+                if (parser.getNamespace().equals("jabber:iq:register")) {
+                    String name = parser.getName();
+                    String value = "";
+                    if (fields == null) {
+                        fields = new HashMap<String, String>();
+                    }
+
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        value = parser.getText();
+                    }
+                    // Ignore instructions, but anything else should be added to the map.
+                    if (!name.equals("instructions")) {
+                        fields.put(name, value);
+                    }
+                    else {
+                        registration.setInstructions(value);
+                    }
+                }
+                // Otherwise, it must be a packet extension.
+                else {
+                    registration.addExtension(
+                        PacketParserUtils.parsePacketExtension(
+                            parser.getName(),
+                            parser.getNamespace(),
+                            parser));
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("query")) {
+                    done = true;
+                }
+            }
+        }
+        registration.setAttributes(fields);
+        return registration;
+    }
+
+    private static Bind parseResourceBinding(XmlPullParser parser) throws IOException,
+            XmlPullParserException {
+        Bind bind = new Bind();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("resource")) {
+                    bind.setResource(parser.nextText());
+                }
+                else if (parser.getName().equals("jid")) {
+                    bind.setJid(parser.nextText());
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("bind")) {
+                    done = true;
+                }
+            }
+        }
+
+        return bind;
+    }
+
+    /**
+     * Parse the available SASL mechanisms reported from the server.
+     *
+     * @param parser the XML parser, positioned at the start of the mechanisms stanza.
+     * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
+     * @throws Exception if an exception occurs while parsing the stanza.
+     */
+    public static Collection<String> parseMechanisms(XmlPullParser parser) throws Exception {
+        List<String> mechanisms = new ArrayList<String>();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                String elementName = parser.getName();
+                if (elementName.equals("mechanism")) {
+                    mechanisms.add(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("mechanisms")) {
+                    done = true;
+                }
+            }
+        }
+        return mechanisms;
+    }
+
+    /**
+     * Parse the available compression methods reported from the server.
+     *
+     * @param parser the XML parser, positioned at the start of the compression stanza.
+     * @return a collection of Stings with the methods included in the compression stanza.
+     * @throws Exception if an exception occurs while parsing the stanza.
+     */
+    public static Collection<String> parseCompressionMethods(XmlPullParser parser)
+            throws IOException, XmlPullParserException {
+        List<String> methods = new ArrayList<String>();
+        boolean done = false;
+        while (!done) {
+            int eventType = parser.next();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                String elementName = parser.getName();
+                if (elementName.equals("method")) {
+                    methods.add(parser.nextText());
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                if (parser.getName().equals("compression")) {
+                    done = true;
+                }
+            }
+        }
+        return methods;
+    }
+
+    /**
      * Parse a properties sub-packet. If any errors occur while de-serializing Java object
      * properties, an exception will be printed and not thrown since a thrown
      * exception will shut down the entire connection. ClassCastExceptions will occur
@@ -294,6 +589,32 @@ public class PacketParserUtils {
         }
         return properties;
     }
+
+    /**
+     * Parses stream error packets.
+     *
+     * @param parser the XML parser.
+     * @return an stream error packet.
+     * @throws Exception if an exception occurs while parsing the packet.
+     */
+    public static StreamError parseStreamError(XmlPullParser parser) throws IOException,
+            XmlPullParserException {
+    StreamError streamError = null;
+    boolean done = false;
+    while (!done) {
+        int eventType = parser.next();
+
+        if (eventType == XmlPullParser.START_TAG) {
+            streamError = new StreamError(parser.getName());
+        }
+        else if (eventType == XmlPullParser.END_TAG) {
+            if (parser.getName().equals("error")) {
+                done = true;
+            }
+        }
+    }
+    return streamError;
+}
 
     /**
      * Parses error sub-packets.
