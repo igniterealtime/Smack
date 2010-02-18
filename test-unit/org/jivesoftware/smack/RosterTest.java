@@ -22,6 +22,7 @@ package org.jivesoftware.smack;
 
 import static org.junit.Assert.*;
 
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -33,9 +34,12 @@ import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Tests that verifies the correct behavior of the {@see Roster} implementation.
@@ -302,6 +306,53 @@ public class RosterTest {
         assertSame("Wrong number of roster entries (" + roster.getEntries() + ").",
                 2,
                 roster.getEntries().size());
+    }
+
+    /**
+     * Test a simple roster push according to the example in
+     * <a href="http://xmpp.org/internet-drafts/draft-ietf-xmpp-3921bis-03.html#roster-syntax-actions-push"
+     *     >RFC3921bis-03: Roster Push</a>.
+     */
+    @Test(timeout=5000)
+    public void testSimpleRosterPush() throws Throwable {
+        final String contactJID = "nurse@example.com";
+        final Roster roster = connection.getRoster();
+        assertNotNull("Can't get the roster from the provided connection!", roster);
+        final MXParser parser = new MXParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<iq id=\"rostertest1\" type=\"set\" ")
+                .append("to=\"").append(connection.getUser()).append("\">")
+                .append("<query xmlns=\"jabber:iq:roster\">")
+                .append("<item jid=\"").append(contactJID).append("\"/>")
+                .append("</query>")
+                .append("</iq>");
+        parser.setInput(new StringReader(sb.toString()));
+        parser.next();
+        final IQ rosterPush = PacketParserUtils.parseIQ(parser, connection);
+        initRoster(connection, roster);
+        rosterListener.reset();
+
+        // Simulate receiving the roster push
+        connection.processPacket(rosterPush);
+
+        // Verify the roster entry of the new contact
+        final RosterEntry addedEntry = roster.getEntry(contactJID);
+        assertNotNull("The new contact wasn't added to the roster!", addedEntry);
+        assertTrue("The roster listener wasn't invoked for the new contact!",
+                rosterListener.getAddedAddresses().contains(contactJID));
+        assertSame("Setup wrong default subscription status!",
+                ItemType.none,
+                addedEntry.getType());
+        assertSame("The new contact shouldn't be member of any group!",
+                0,
+                addedEntry.getGroups().size());
+
+        // Verify the unchanged roster items
+        verifyRomeosEntry(roster.getEntry("romeo@example.net"));
+        verifyMercutiosEntry(roster.getEntry("mercutio@example.com"));
+        verifyBenvoliosEntry(roster.getEntry("benvolio@example.net"));
+        assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
     }
 
     /**
