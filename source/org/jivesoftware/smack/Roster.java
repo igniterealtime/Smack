@@ -233,7 +233,7 @@ public class Roster {
         RosterPacket.Item item = new RosterPacket.Item(user, name);
         if (groups != null) {
             for (String group : groups) {
-                if (group != null) {
+                if (group != null && group.trim().length() > 0) {
                     item.addGroupName(group);
                 }
             }

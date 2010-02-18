@@ -369,7 +369,10 @@ public class PacketParserUtils {
                     item.setItemType(type);
                 }
                 if (parser.getName().equals("group") && item!= null) {
-                    item.addGroupName(parser.nextText());
+                    final String groupName = parser.nextText();
+                    if (groupName != null && groupName.trim().length() > 0) {
+                        item.addGroupName(parser.nextText());
+                    }
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
