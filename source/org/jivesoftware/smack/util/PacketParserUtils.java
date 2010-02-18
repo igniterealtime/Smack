@@ -371,7 +371,7 @@ public class PacketParserUtils {
                 if (parser.getName().equals("group") && item!= null) {
                     final String groupName = parser.nextText();
                     if (groupName != null && groupName.trim().length() > 0) {
-                        item.addGroupName(parser.nextText());
+                        item.addGroupName(groupName);
                     }
                 }
             }
