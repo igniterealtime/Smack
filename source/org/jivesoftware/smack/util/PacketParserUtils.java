@@ -365,7 +365,7 @@ public class PacketParserUtils {
                     item.setItemStatus(status);
                     // Set type.
                     String subscription = parser.getAttributeValue("", "subscription");
-                    RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription);
+                    RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription != null ? subscription : "none");
                     item.setItemType(type);
                 }
                 if (parser.getName().equals("group") && item!= null) {
