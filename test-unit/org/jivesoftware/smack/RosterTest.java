@@ -356,6 +356,123 @@ public class RosterTest {
     }
 
     /**
+     * Test if adding an user with an empty group is equivalent with providing
+     * no group.
+     * 
+     * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
+     */
+    @Test(timeout=5000)
+    public void testAddEmptyGroupEntry() throws Throwable {
+        // Constants for the new contact
+        final String contactJID = "nurse@example.com";
+        final String contactName = "Nurse";
+        final String[] contactGroup = {""};
+
+        // Setup
+        final Roster roster = connection.getRoster();
+        assertNotNull("Can't get the roster from the provided connection!", roster);
+        initRoster(connection, roster);
+        rosterListener.reset();
+
+        // Adding the new roster item
+        final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
+            void verifyUpdateRequest(final RosterPacket updateRequest) {
+                final Item item = updateRequest.getRosterItems().iterator().next();
+                assertSame("The provided JID doesn't match the requested!",
+                        contactJID,
+                        item.getUser());
+                assertSame("The provided name doesn't match the requested!",
+                        contactName,
+                        item.getName());
+                assertSame("Shouldn't provide an empty group element!",
+                        0,
+                        item.getGroupNames().size());
+                
+            }
+        };
+        serverSimulator.start();
+        roster.createEntry(contactJID, contactName, contactGroup);
+        serverSimulator.join();
+
+        // Check if an error occurred within the simulator
+        final Throwable exception = serverSimulator.getException();
+        if (exception != null) {
+            throw exception;
+        }
+
+        // Verify the roster entry of the new contact
+        final RosterEntry addedEntry = roster.getEntry(contactJID);
+        assertNotNull("The new contact wasn't added to the roster!", addedEntry);
+        assertTrue("The roster listener wasn't invoked for the new contact!",
+                rosterListener.getAddedAddresses().contains(contactJID));
+        assertSame("Setup wrong name for the new contact!",
+                contactName,
+                addedEntry.getName());
+        assertSame("Setup wrong default subscription status!",
+                ItemType.none,
+                addedEntry.getType());
+        assertSame("The new contact shouldn't be member of any group!",
+                0,
+                addedEntry.getGroups().size());
+
+        // Verify the unchanged roster items
+        verifyRomeosEntry(roster.getEntry("romeo@example.net"));
+        verifyMercutiosEntry(roster.getEntry("mercutio@example.com"));
+        verifyBenvoliosEntry(roster.getEntry("benvolio@example.net"));
+        assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
+    }
+
+    /**
+     * Test processing a roster push with an empty group is equivalent with providing
+     * no group.
+     * 
+     * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
+     */
+    @Test(timeout=5000)
+    public void testEmptyGroupRosterPush() throws Throwable {
+        final String contactJID = "nurse@example.com";
+        final Roster roster = connection.getRoster();
+        assertNotNull("Can't get the roster from the provided connection!", roster);
+        final MXParser parser = new MXParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<iq id=\"rostertest2\" type=\"set\" ")
+                .append("to=\"").append(connection.getUser()).append("\">")
+                .append("<query xmlns=\"jabber:iq:roster\">")
+                .append("<item jid=\"").append(contactJID).append("\">")
+                .append("<group></group>")
+                .append("</item>")
+                .append("</query>")
+                .append("</iq>");
+        parser.setInput(new StringReader(sb.toString()));
+        parser.next();
+        final IQ rosterPush = PacketParserUtils.parseIQ(parser, connection);
+        initRoster(connection, roster);
+        rosterListener.reset();
+
+        // Simulate receiving the roster push
+        connection.processPacket(rosterPush);
+
+        // Verify the roster entry of the new contact
+        final RosterEntry addedEntry = roster.getEntry(contactJID);
+        assertNotNull("The new contact wasn't added to the roster!", addedEntry);
+        assertTrue("The roster listener wasn't invoked for the new contact!",
+                rosterListener.getAddedAddresses().contains(contactJID));
+        assertSame("Setup wrong default subscription status!",
+                ItemType.none,
+                addedEntry.getType());
+        assertSame("The new contact shouldn't be member of any group!",
+                0,
+                addedEntry.getGroups().size());
+
+        // Verify the unchanged roster items
+        verifyRomeosEntry(roster.getEntry("romeo@example.net"));
+        verifyMercutiosEntry(roster.getEntry("mercutio@example.com"));
+        verifyBenvoliosEntry(roster.getEntry("benvolio@example.net"));
+        assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
+    }
+
+    /**
      * Remove all roster entries by iterating trough {@see Roster#getEntries()}
      * and simulating receiving roster pushes from the server.
      * 

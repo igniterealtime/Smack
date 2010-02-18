@@ -290,13 +290,13 @@
             <sysproperty key="smack.debug" value="${test.smack.debug}" />
 
             <classpath>
-                <fileset dir="${basedir}/build">
+                <fileset dir="${basedir}/build/build">
                     <include name="xmlunit.jar"/>
                 </fileset>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
                 </fileset>
-                <fileset dir="${basedir}">
+                <fileset dir="${jar.dest.dir}">
                     <include name="smack-test.jar"/>
                 </fileset>
                 <pathelement location="${compile.dir}" />
