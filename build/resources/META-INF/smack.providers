@@ -621,4 +621,10 @@
         <className>org.jivesoftware.smackx.packet.Nick$Provider</className>
     </extensionProvider>
 	
+	 <!-- Attention -->
+    <extensionProvider>
+        <elementName>attention</elementName>
+        <namespace>urn:xmpp:attention:0</namespace>
+        <className>org.jivesoftware.smackx.packet.AttentionExtension$Provider</className>
+    </extensionProvider>
 </smackProviders>
