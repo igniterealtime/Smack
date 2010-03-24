@@ -784,7 +784,7 @@ public class Roster {
             RosterPacket rosterPacket = (RosterPacket) packet;
             for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        item.getItemType(), item.getItemStatus(), connection);
+                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
 
                 // If the packet is of the type REMOVE then remove the entry
                 if (RosterPacket.ItemType.remove.equals(item.getItemType())) {
