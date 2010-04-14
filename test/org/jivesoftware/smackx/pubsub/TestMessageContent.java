@@ -98,4 +98,19 @@ public class TestMessageContent extends TestCase
 		{
 		}
 	}
+	
+	public void testGetItemsRequest()
+	{
+		GetItemsRequest request = new GetItemsRequest("testId");
+		assertEquals("<items node='testId'/>", request.toXML());
+
+		request = new GetItemsRequest("testId", 5);
+		assertEquals("<items node='testId' max_items='5'/>", request.toXML());
+		
+		request = new GetItemsRequest("testId", "qwerty");
+		assertEquals("<items node='testId' subid='qwerty'/>", request.toXML());
+		
+		request = new GetItemsRequest("testId", "qwerty", 5);
+		assertEquals("<items node='testId' subid='qwerty' max_items='5'/>", request.toXML());
+	}
 }

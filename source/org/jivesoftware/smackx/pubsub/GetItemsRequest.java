@@ -40,9 +40,9 @@ public class GetItemsRequest extends NodeExtension
 		maxItems = maxItemsToReturn;
 	}
 
-	public GetItemsRequest(String nodeId, String subscriptionId, int maxItems)
+	public GetItemsRequest(String nodeId, String subscriptionId, int maxItemsToReturn)
 	{
-		super(PubSubElementType.ITEMS, nodeId);
+		this(nodeId, maxItemsToReturn);
 		subId = subscriptionId;
 	}
 
@@ -70,14 +70,14 @@ public class GetItemsRequest extends NodeExtension
 		{
 			builder.append(" subid='");
 			builder.append(getSubscriptionId());
-			builder.append("'/>");
+			builder.append("'");
 		}
 
 		if (getMaxItems() > 0)
 		{
 			builder.append(" max_items='");
 			builder.append(getMaxItems());
-			builder.append("'/>");
+			builder.append("'");
 		}
 		builder.append("/>");
 		return builder.toString();
