@@ -26,11 +26,11 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
+import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.packet.StreamInitiation;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamManager;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamRequest;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamSession;
-import org.jivesoftware.smackx.socks5bytestream.packet.Bytestream;
 
 /**
  * Negotiates a SOCKS5 Bytestream to be used for file transfers. The implementation is based on the

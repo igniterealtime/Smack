@@ -30,10 +30,10 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.ibb.InBandBytestreamManager;
-import org.jivesoftware.smackx.ibb.InBandBytestreamRequest;
-import org.jivesoftware.smackx.ibb.InBandBytestreamSession;
-import org.jivesoftware.smackx.ibb.packet.Open;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
+import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.smackx.packet.StreamInitiation;
 
 /**

@@ -41,10 +41,10 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.ibb.InBandBytestreamManager;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.packet.DataForm;
 import org.jivesoftware.smackx.packet.StreamInitiation;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamManager;
 
 /**
  * Manages the negotiation of file transfers according to JEP-0096. If a file is

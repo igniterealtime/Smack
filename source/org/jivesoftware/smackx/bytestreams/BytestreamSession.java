@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.jivesoftware.smackx.ibb.InBandBytestreamSession;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamSession;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
 
 /**
  * BytestreamSession provides an interface for established bytestream sessions.

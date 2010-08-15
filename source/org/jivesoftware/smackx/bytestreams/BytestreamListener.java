@@ -13,10 +13,10 @@
  */
 package org.jivesoftware.smackx.bytestreams;
 
-import org.jivesoftware.smackx.ibb.InBandBytestreamListener;
-import org.jivesoftware.smackx.ibb.InBandBytestreamManager;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamListener;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamManager;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamListener;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamListener;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 
 /**
  * BytestreamListener are notified if a remote user wants to initiate a bytestream. Implement this

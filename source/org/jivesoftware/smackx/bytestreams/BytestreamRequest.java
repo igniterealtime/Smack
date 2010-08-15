@@ -14,8 +14,8 @@
 package org.jivesoftware.smackx.bytestreams;
 
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.ibb.InBandBytestreamRequest;
-import org.jivesoftware.smackx.socks5bytestream.Socks5BytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 
 /**
  * BytestreamRequest provides an interface to handle incoming bytestream requests.
