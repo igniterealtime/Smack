@@ -68,8 +68,15 @@ public class PacketParserUtils {
         message.setFrom(parser.getAttributeValue("", "from"));
         message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
         String language = getLanguageAttribute(parser);
+        
+        // determine message's default language
+        String defaultLanguage = null;
         if (language != null && !"".equals(language.trim())) {
-        	message.setLanguage(language);
+            message.setLanguage(language);
+            defaultLanguage = language;
+        } 
+        else {
+            defaultLanguage = Packet.getDefaultLanguage();
         }
 
         // Parse sub-elements. We include extra logic to make sure the values
@@ -77,7 +84,6 @@ public class PacketParserUtils {
         // in arbitrary sub-elements.
         boolean done = false;
         String subject = null;
-        String body;
         String thread = null;
         Map<String, Object> properties = null;
         while (!done) {
@@ -92,8 +98,15 @@ public class PacketParserUtils {
                 }
                 else if (elementName.equals("body")) {
                     String xmlLang = getLanguageAttribute(parser);
-                    body = parser.nextText();
-                    message.addBody(xmlLang, body);
+                    if (xmlLang == null) {
+                        xmlLang = defaultLanguage;
+                    }
+
+                    String body = parseContent(parser);
+                    
+                    if (message.getBody(xmlLang) == null) {
+                        message.addBody(xmlLang, body);
+                    }
                 }
                 else if (elementName.equals("thread")) {
                     if (thread == null) {
@@ -129,6 +142,25 @@ public class PacketParserUtils {
             }
         }
         return message;
+    }
+
+    /**
+     * Returns the content of a tag as string regardless of any tags included.
+     * 
+     * @param parser the XML pull parser
+     * @return the content of a tag as string
+     * @throws XmlPullParserException if parser encounters invalid XML
+     * @throws IOException if an IO error occurs
+     */
+    private static String parseContent(XmlPullParser parser)
+                    throws XmlPullParserException, IOException {
+        String content = "";
+        int parserDepth = parser.getDepth();
+        while (!(parser.next() == XmlPullParser.END_TAG && parser
+                        .getDepth() == parserDepth)) {
+            content += parser.getText();
+        }
+        return content;
     }
 
     /**

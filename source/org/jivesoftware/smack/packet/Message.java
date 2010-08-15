@@ -127,8 +127,12 @@ public class Message extends Packet {
     }
 
     /**
-     * Returns the body of the message, or null if the body has not been set. The body
+     * Returns the default body of the message, or null if the body has not been set. The body
      * is the main message contents.
+     * <p>
+     * The default body of a message is the body that corresponds to the message's language.
+     * (see {@link #getLanguage()}) or if no language is set to the applications default
+     * language (see {@link Packet#getDefaultLanguage()}).
      *
      * @return the body of the message.
      */
@@ -146,11 +150,15 @@ public class Message extends Packet {
      * @since 3.0.2
      */
     public String getBody(String language) {
-        language = parseXMLLang(language);
+        Body body = getMessageBody(language);
+        return body == null ? null : body.message;
+    }
+    
+    private Body getMessageBody(String language) {
+        language = determineLanguage(language);
         for (Body body : bodies) {
-            if ((body.langauge == null && language == null)
-                    || (body != null && body.langauge.equals(language))) {
-                return body.message;
+            if (language.equals(body.language)) {
+                return body;
             }
         }
         return null;
@@ -174,7 +182,7 @@ public class Message extends Packet {
      */
     public void setBody(String body) {
         if (body == null) {
-            removeBody("");
+            removeBody(""); // use empty string because #removeBody(null) is ambiguous
             return;
         }
         addBody(null, body);
@@ -190,11 +198,7 @@ public class Message extends Packet {
      * @since 3.0.2
      */
     public Body addBody(String language, String body) {
-        if (body == null) {
-            throw new NullPointerException("Body must be specified");
-        }
-        language = parseXMLLang(language);
-
+        language = determineLanguage(language);
         Body messageBody = new Body(language, body);
         bodies.add(messageBody);
         return messageBody;
@@ -207,10 +211,9 @@ public class Message extends Packet {
      * @return true if a body was removed and false if it was not.
      */
     public boolean removeBody(String language) {
-        language = parseXMLLang(language);
-
+        language = determineLanguage(language);
         for (Body body : bodies) {
-            if (language.equals(body.langauge)) {
+            if (language.equals(body.language)) {
                 return bodies.remove(body);
             }
         }
@@ -235,10 +238,11 @@ public class Message extends Packet {
      * @since 3.0.2
      */
     public Collection<String> getBodyLanguages() {
-        List<String> languages = new ArrayList<String>(bodies.size());
+        Body defaultBody = getMessageBody(null);
+        List<String> languages = new ArrayList<String>();
         for (Body body : bodies) {
-            if (!parseXMLLang(body.langauge).equals(getDefaultLanguage())) {
-                languages.add(body.langauge);
+            if (!body.equals(defaultBody)) {
+                languages.add(body.language);
             }
         }
         return Collections.unmodifiableCollection(languages);
@@ -270,7 +274,7 @@ public class Message extends Packet {
      * @return the xml:lang of this Message.
      * @since 3.0.2
      */
-    private String getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
@@ -282,6 +286,24 @@ public class Message extends Packet {
      */
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    private String determineLanguage(String language) {
+        
+        // empty string is passed by #setSubject() and #setBody() and is the same as null
+        language = "".equals(language) ? null : language;
+
+        // if given language is null check if message language is set
+        if (language == null && this.language != null) {
+            return this.language;
+        }
+        else if (language == null) {
+            return getDefaultLanguage();
+        }
+        else {
+            return language;
+        }
+        
     }
 
     public String toXML() {
@@ -310,15 +332,15 @@ public class Message extends Packet {
             buf.append("<subject>").append(StringUtils.escapeForXML(subject)).append("</subject>");
         }
         // Add the body in the default language
-        if (getBody() != null) {
-            buf.append("<body>").append(StringUtils.escapeForXML(getBody())).append("</body>");
+        Body defaultBody = getMessageBody(null);
+        if (defaultBody != null) {
+            buf.append("<body>").append(StringUtils.escapeForXML(defaultBody.message)).append("</body>");
         }
         // Add the bodies in other languages
         for (Body body : getBodies()) {
             // Skip the default language
-            if (DEFAULT_LANGUAGE.equals(body.getLanguage()) || body.getLanguage() == null) {
+            if(body.equals(defaultBody))
                 continue;
-            }
             buf.append("<body xml:lang=\"").append(body.getLanguage()).append("\">");
             buf.append(StringUtils.escapeForXML(body.getMessage()));
             buf.append("</body>");
@@ -379,29 +401,26 @@ public class Message extends Packet {
     public static class Body {
 
         private String message;
-        private String langauge;
+        private String language;
 
         private Body(String language, String message) {
+            if (language == null) {
+                throw new NullPointerException("Language cannot be null.");
+            }
             if (message == null) {
                 throw new NullPointerException("Message cannot be null.");
             }
-            this.langauge = language;
+            this.language = language;
             this.message = message;
         }
 
         /**
-         * Returns the language of this message body. If the language is null, then, no language
-         * was specified.
+         * Returns the language of this message body.
          *
          * @return the language of this message body.
          */
         public String getLanguage() {
-            if (DEFAULT_LANGUAGE.equals(langauge)) {
-                return null;
-            }
-            else {
-                return langauge;
-            }
+            return language;
         }
 
         /**
@@ -413,26 +432,29 @@ public class Message extends Packet {
             return message;
         }
 
-
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) { return false; }
-
-            Body body = (Body) o;
-
-            if (langauge != null ? !langauge.equals(body.langauge) : body.langauge != null) {
-                return false;
-            }
-            return message.equals(body.message);
-
-        }
-
         public int hashCode() {
-            int result;
-            result = message.hashCode();
-            result = 31 * result + (langauge != null ? langauge.hashCode() : 0);
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + this.language.hashCode();
+            result = prime * result + this.message.hashCode();
             return result;
         }
+
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            Body other = (Body) obj;
+            // simplified comparison because language and message are always set
+            return this.language.equals(other.language) && this.message.equals(other.message);
+        }
+        
     }
 
     /**
