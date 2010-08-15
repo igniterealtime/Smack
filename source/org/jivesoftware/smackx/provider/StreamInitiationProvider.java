@@ -19,10 +19,13 @@
  */
 package org.jivesoftware.smackx.provider;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.DataForm;
-import org.jivesoftware.smackx.packet.DelayInformation;
 import org.jivesoftware.smackx.packet.StreamInitiation;
 import org.jivesoftware.smackx.packet.StreamInitiation.File;
 import org.xmlpull.v1.XmlPullParser;
@@ -90,10 +93,19 @@ public class StreamInitiationProvider implements IQProvider {
                             e.printStackTrace();
                         }
                     }
+                    
+                    Date fileDate = new Date();
+                    if (date != null) {
+                        try {
+                            fileDate = StringUtils.parseXEP0082Date(date);
+                        } catch (ParseException e) {
+                            // couldn't parse date, use current date-time
+                        }
+                    }
+                    
                     File file = new File(name, fileSize);
 					file.setHash(hash);
-					if (date != null)
-						file.setDate(DelayInformation.UTC_FORMAT.parse(date));
+					file.setDate(fileDate);
 					file.setDesc(desc);
 					file.setRanged(isRanged);
 					initiation.setFile(file);

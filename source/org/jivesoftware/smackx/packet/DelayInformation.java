@@ -20,36 +20,38 @@
 
 package org.jivesoftware.smackx.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
  * Represents timestamp information about data stored for later delivery. A DelayInformation will 
  * always includes the timestamp when the packet was originally sent and may include more 
  * information such as the JID of the entity that originally sent the packet as well as the reason
- * for the dealy.<p>
+ * for the delay.<p>
  * 
- * For more information see <a href="http://www.jabber.org/jeps/jep-0091.html">JEP-91</a>.
+ * For more information see <a href="http://xmpp.org/extensions/xep-0091.html">XEP-0091</a>
+ * and <a href="http://xmpp.org/extensions/xep-0203.html">XEP-0203</a>.
  * 
  * @author Gaston Dombiak
  */
 public class DelayInformation implements PacketExtension {
 
-    public static SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     /**
-     * New date format based on JEP-82 that some clients may use when sending delayed dates.
-     * JEP-91 is using a SHOULD other servers or clients may be using this format instead of the
-     * old UTC format.
+     * Date format according to the obsolete XEP-0091 specification.
+     * XEP-0091 recommends to use this old format for date-time instead of
+     * the one specified in XEP-0082.
+     * <p>
+     * Date formats are not synchronized. Since multiple threads access the format concurrently,
+     * it must be synchronized externally. 
      */
-    public static SimpleDateFormat NEW_UTC_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
+    public static final DateFormat XEP_0091_UTC_FORMAT = new SimpleDateFormat(
+            "yyyyMMdd'T'HH:mm:ss");
     static {
-        UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-        NEW_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+        XEP_0091_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     private Date stamp;
@@ -58,6 +60,7 @@ public class DelayInformation implements PacketExtension {
 
     /**
      * Creates a new instance with the specified timestamp. 
+     * @param stamp the timestamp
      */
     public DelayInformation(Date stamp) {
         super();
@@ -86,10 +89,10 @@ public class DelayInformation implements PacketExtension {
     }
 
     /**
-     * Returns the timstamp when the packet was originally sent. The returned Date is 
+     * Returns the timestamp when the packet was originally sent. The returned Date is 
      * be understood as UTC.
      * 
-     * @return the timstamp when the packet was originally sent.
+     * @return the timestamp when the packet was originally sent.
      */
     public Date getStamp() {
         return stamp;
@@ -128,8 +131,8 @@ public class DelayInformation implements PacketExtension {
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
                 "\"");
         buf.append(" stamp=\"");
-        synchronized (UTC_FORMAT) {
-            buf.append(UTC_FORMAT.format(stamp));
+        synchronized (XEP_0091_UTC_FORMAT) {
+            buf.append(XEP_0091_UTC_FORMAT.format(stamp));
         }
         buf.append("\"");
         if (from != null && from.length() > 0) {

@@ -23,12 +23,31 @@ package org.jivesoftware.smack.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 
 /**
  * A collection of utility methods for String objects.
  */
 public class StringUtils {
+
+    /**
+     * Date format as defined in XEP-0082 - XMPP Date and Time Profiles. The time zone is set to
+     * UTC.
+     * <p>
+     * Date formats are not synchronized. Since multiple threads access the format concurrently, it
+     * must be synchronized externally or you can use the convenience methods
+     * {@link #parseXEP0082Date(String)} and {@link #formatXEP0082Date(Date)}.
+     */
+    public static final DateFormat XEP_0082_UTC_FORMAT = new SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    static {
+        XEP_0082_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
     private static final char[] APOS_ENCODE = "&apos;".toCharArray();
@@ -36,6 +55,31 @@ public class StringUtils {
     private static final char[] LT_ENCODE = "&lt;".toCharArray();
     private static final char[] GT_ENCODE = "&gt;".toCharArray();
 
+    /**
+     * Parses the given date string in the XEP-0082 - XMPP Date and Time Profiles format.
+     * 
+     * @param dateString the date string to parse
+     * @return the parsed Date
+     * @throws ParseException if the specified string cannot be parsed
+     */
+    public static Date parseXEP0082Date(String dateString) throws ParseException {
+        synchronized (XEP_0082_UTC_FORMAT) {
+            return XEP_0082_UTC_FORMAT.parse(dateString);
+        }
+    }
+    
+    /**
+     * Formats a Date into a XEP-0082 - XMPP Date and Time Profiles string.
+     * 
+     * @param date the time value to be formatted into a time string
+     * @return the formatted time string in XEP-0082 format
+     */
+    public static String formatXEP0082Date(Date date) {
+        synchronized (XEP_0082_UTC_FORMAT) {
+            return XEP_0082_UTC_FORMAT.format(date);
+        }
+    }
+    
     /**
      * Returns the name portion of a XMPP address. For example, for the
      * address "matt@jivesoftware.com/Smack", "matt" would be returned. If no

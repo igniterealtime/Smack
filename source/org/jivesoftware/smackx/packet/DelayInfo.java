@@ -15,12 +15,12 @@ package org.jivesoftware.smackx.packet;
 
 import java.util.Date;
 
-import org.jivesoftware.smackx.packet.DelayInformation;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A decorator for the {@link DelayInformation} class to transparently support
  * both the new <b>Delay Delivery</b> specification <a href="http://xmpp.org/extensions/xep-0203.html">XEP-0203</a> and 
- * the old one <a href="http://xmpp.org/extensions/xep-0203.html">XEP-0091</a>.
+ * the old one <a href="http://xmpp.org/extensions/xep-0091.html">XEP-0091</a>.
  * 
  * Existing code can be backward compatible. 
  * 
@@ -28,8 +28,13 @@ import org.jivesoftware.smackx.packet.DelayInformation;
  */
 public class DelayInfo extends DelayInformation
 {
+    
 	DelayInformation wrappedInfo;
 
+        /**
+         * Creates a new instance with given delay information. 
+         * @param delay the delay information
+         */
 	public DelayInfo(DelayInformation delay)
 	{
 		super(delay.getStamp());
@@ -84,9 +89,7 @@ public class DelayInfo extends DelayInformation
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
                 "\"");
         buf.append(" stamp=\"");
-        synchronized (NEW_UTC_FORMAT) {
-            buf.append(NEW_UTC_FORMAT.format(getStamp()));
-        }
+        buf.append(StringUtils.formatXEP0082Date(getStamp()));
         buf.append("\"");
         if (getFrom() != null && getFrom().length() > 0) {
             buf.append(" from=\"").append(getFrom()).append("\"");

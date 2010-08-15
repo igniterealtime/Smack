@@ -19,11 +19,11 @@
  */
 package org.jivesoftware.smackx.packet;
 
+import java.util.Date;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.StringUtils;
-
-import java.util.Date;
 
 /**
  * The process by which two entities initiate a stream.
@@ -347,7 +347,7 @@ public class StreamInitiation extends IQ {
             }
 
             if (getDate() != null) {
-                buffer.append("date=\"").append(DelayInformation.UTC_FORMAT.format(date)).append("\" ");
+                buffer.append("date=\"").append(StringUtils.formatXEP0082Date(date)).append("\" ");
             }
 
             if (getHash() != null) {

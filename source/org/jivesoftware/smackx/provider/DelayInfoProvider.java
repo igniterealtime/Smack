@@ -21,8 +21,9 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * This provider simply creates a {@link DelayInfo} decorator for the {@link DelayInformation} that
- * is returned by the superclass.  This allows the new code using <a href="http://xmpp.org/extensions/xep-0203">Delay Information XEP-0203</a> to be backward compatible
- * with <a href="http://xmpp.org/extensions/xep-0091">XEP-0091</a>.  
+ * is returned by the superclass.  This allows the new code using
+ * <a href="http://xmpp.org/extensions/xep-0203.html">Delay Information XEP-0203</a> to be
+ * backward compatible with <a href="http://xmpp.org/extensions/xep-0091.html">XEP-0091</a>.  
  * 
  * <p>This provider must be registered in the <b>smack.properties</b> file for the element 
  * <b>delay</b> with namespace <b>urn:xmpp:delay</b></p>
