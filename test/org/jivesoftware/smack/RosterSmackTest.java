@@ -65,13 +65,13 @@ import java.util.List;
  *
  * @author Gaston Dombiak
  */
-public class RosterTest extends SmackTestCase {
+public class RosterSmackTest extends SmackTestCase {
 
     /**
-     * Constructor for RosterTest.
+     * Constructor for RosterSmackTest.
      * @param name
      */
-    public RosterTest(String name) {
+    public RosterSmackTest(String name) {
         super(name);
     }
 

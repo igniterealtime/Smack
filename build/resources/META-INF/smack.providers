@@ -158,7 +158,7 @@
         <className>org.jivesoftware.smackx.packet.OfflineMessageInfo$Provider</className>
     </extensionProvider>
 
-     <!-- Last Activity -->
+    <!-- Last Activity -->
     <iqProvider>
         <elementName>query</elementName>
         <namespace>jabber:iq:last</namespace>
@@ -186,7 +186,7 @@
         <className>org.jivesoftware.smackx.provider.MultipleAddressesProvider</className>
     </extensionProvider>
 
-        <!-- FileTransfer -->
+    <!-- FileTransfer -->
     <iqProvider>
     	<elementName>si</elementName>
     	<namespace>http://jabber.org/protocol/si</namespace>
@@ -196,25 +196,31 @@
     <iqProvider>
     	<elementName>query</elementName>
     	<namespace>http://jabber.org/protocol/bytestreams</namespace>
-    	<className>org.jivesoftware.smackx.provider.BytestreamsProvider</className>
+    	<className>org.jivesoftware.smackx.bytestreams.socks5.provider.BytestreamsProvider</className>
     </iqProvider>
 
     <iqProvider>
     	<elementName>open</elementName>
     	<namespace>http://jabber.org/protocol/ibb</namespace>
-    	<className>org.jivesoftware.smackx.provider.IBBProviders$Open</className>
+    	<className>org.jivesoftware.smackx.bytestreams.ibb.provider.OpenIQProvider</className>
+    </iqProvider>
+
+    <iqProvider>
+      <elementName>data</elementName>
+      <namespace>http://jabber.org/protocol/ibb</namespace>
+      <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider</className>
     </iqProvider>
 
     <iqProvider>
     	<elementName>close</elementName>
     	<namespace>http://jabber.org/protocol/ibb</namespace>
-    	<className>org.jivesoftware.smackx.provider.IBBProviders$Close</className>
+    	<className>org.jivesoftware.smackx.bytestreams.ibb.provider.CloseIQProvider</className>
     </iqProvider>
     
     <extensionProvider>
         <elementName>data</elementName>
         <namespace>http://jabber.org/protocol/ibb</namespace>
-        <className>org.jivesoftware.smackx.provider.IBBProviders$Data</className>
+        <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider</className>
     </extensionProvider>
 
     <!-- Privacy -->
@@ -491,7 +497,7 @@
         <className>org.jivesoftware.smackx.provider.HeaderProvider</className>
     </extensionProvider>
 
-	<!-- XEP-0060 pubsub -->
+    <!-- XEP-0060 pubsub -->
     <iqProvider>
         <elementName>pubsub</elementName>
         <namespace>http://jabber.org/protocol/pubsub</namespace>
@@ -546,7 +552,7 @@
         <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
 	
-	<!-- XEP-0060 pubsub#owner -->
+    <!-- XEP-0060 pubsub#owner -->
     <iqProvider>
         <elementName>pubsub</elementName>
         <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
@@ -565,7 +571,7 @@
         <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
 	
-	<!-- XEP-0060 pubsub#event -->
+    <!-- XEP-0060 pubsub#event -->
     <extensionProvider>
     	<elementName>event</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
@@ -621,7 +627,7 @@
         <className>org.jivesoftware.smackx.packet.Nick$Provider</className>
     </extensionProvider>
 	
-	 <!-- Attention -->
+    <!-- Attention -->
     <extensionProvider>
         <elementName>attention</elementName>
         <namespace>urn:xmpp:attention:0</namespace>
