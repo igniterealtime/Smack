@@ -37,7 +37,7 @@ import java.io.OutputStream;
 
 /**
  * After the file transfer negotiation process is completed according to
- * JEP-0096, the negotation process is passed off to a particular stream
+ * JEP-0096, the negotiation process is passed off to a particular stream
  * negotiator. The stream negotiator will then negotiate the chosen stream and
  * return the stream to transfer the file.
  *
@@ -49,9 +49,9 @@ public abstract class StreamNegotiator {
      * Creates the initiation acceptance packet to forward to the stream
      * initiator.
      *
-     * @param streamInitiationOffer The offer from the stream initatior to connect for a stream.
+     * @param streamInitiationOffer The offer from the stream initiator to connect for a stream.
      * @param namespaces            The namespace that relates to the accepted means of transfer.
-     * @return The response to be forwarded to the initator.
+     * @return The response to be forwarded to the initiator.
      */
     public StreamInitiation createInitiationAccept(
             StreamInitiation streamInitiationOffer, String[] namespaces)
@@ -104,7 +104,7 @@ public abstract class StreamNegotiator {
      * Returns the packet filter that will return the initiation packet for the appropriate stream
      * initiation.
      *
-     * @param from     The initiatior of the file transfer.
+     * @param from     The initiator of the file transfer.
      * @param streamID The stream ID related to the transfer.
      * @return The <b><i>PacketFilter</b></i> that will return the packet relatable to the stream
      *         initiation.
@@ -112,23 +112,26 @@ public abstract class StreamNegotiator {
     public abstract PacketFilter getInitiationPacketFilter(String from, String streamID);
 
 
-    abstract InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException;
+    abstract InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException,
+            InterruptedException;
 
     /**
      * This method handles the file stream download negotiation process. The
      * appropriate stream negotiator's initiate incoming stream is called after
      * an appropriate file transfer method is selected. The manager will respond
-     * to the initatior with the selected means of transfer, then it will handle
-     * any negotation specific to the particular transfer method. This method
+     * to the initiator with the selected means of transfer, then it will handle
+     * any negotiation specific to the particular transfer method. This method
      * returns the InputStream, ready to transfer the file.
      *
-     * @param initiation The initation that triggered this download.
-     * @return After the negotation process is complete, the InputStream to
+     * @param initiation The initiation that triggered this download.
+     * @return After the negotiation process is complete, the InputStream to
      *         write a file to is returned.
      * @throws XMPPException If an error occurs during this process an XMPPException is
      *                       thrown.
+     * @throws InterruptedException If thread is interrupted.
      */
-    public abstract InputStream createIncomingStream(StreamInitiation initiation) throws XMPPException;
+    public abstract InputStream createIncomingStream(StreamInitiation initiation)
+            throws XMPPException, InterruptedException;
 
     /**
      * This method handles the file upload stream negotiation process. The
@@ -138,7 +141,7 @@ public abstract class StreamNegotiator {
      *
      * @param streamID  The streamID that uniquely identifies the file transfer.
      * @param initiator The fully-qualified JID of the initiator of the file transfer.
-     * @param target    The fully-qualified JID of the target or reciever of the file
+     * @param target    The fully-qualified JID of the target or receiver of the file
      *                  transfer.
      * @return The negotiated stream ready for data.
      * @throws XMPPException If an error occurs during the negotiation process an
