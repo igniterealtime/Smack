@@ -852,10 +852,12 @@ public class Roster {
                     }
                     else {
                         // If the entry was in then list then update its state with the new values
-                        entries.put(item.getUser(), entry);
-                        
-                        // Keep note that an entry has been updated
-                        updatedEntries.add(item.getUser());
+                        RosterEntry oldEntry = entries.put(item.getUser(), entry);
+
+                        // Keep note that an entry has been updated but only if it's different
+                        if (oldEntry == null || !oldEntry.equalsDeep(entry)) {
+                            updatedEntries.add(item.getUser());
+                        }
                     }
                     // If the roster entry belongs to any groups, remove it from the
                     // list of unfiled entries.

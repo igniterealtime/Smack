@@ -181,6 +181,50 @@ public class RosterEntry {
         }
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this by comparing all members.
+     * <p>
+     * The {@link #equals(Object)} method returns <code>true</code> if the user JIDs are equal.
+     * 
+     * @param obj the reference object with which to compare.
+     * @return <code>true</code> if this object is the same as the obj argument; <code>false</code>
+     *         otherwise.
+     */
+    public boolean equalsDeep(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RosterEntry other = (RosterEntry) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        }
+        else if (!name.equals(other.name))
+            return false;
+        if (status == null) {
+            if (other.status != null)
+                return false;
+        }
+        else if (!status.equals(other.status))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        }
+        else if (!type.equals(other.type))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        }
+        else if (!user.equals(other.user))
+            return false;
+        return true;
+    }
+    
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
         item.setItemType(entry.getType());
@@ -191,4 +235,5 @@ public class RosterEntry {
         }
         return item;
     }
+
 }
