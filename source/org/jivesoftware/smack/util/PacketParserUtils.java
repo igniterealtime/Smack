@@ -83,7 +83,6 @@ public class PacketParserUtils {
         // are only read once. This is because it's possible for the names to appear
         // in arbitrary sub-elements.
         boolean done = false;
-        String subject = null;
         String thread = null;
         Map<String, Object> properties = null;
         while (!done) {
@@ -92,8 +91,15 @@ public class PacketParserUtils {
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
                 if (elementName.equals("subject")) {
-                    if (subject == null) {
-                        subject = parser.nextText();
+                    String xmlLang = getLanguageAttribute(parser);
+                    if (xmlLang == null) {
+                        xmlLang = defaultLanguage;
+                    }
+
+                    String subject = parseContent(parser);
+
+                    if (message.getSubject(xmlLang) == null) {
+                        message.addSubject(xmlLang, subject);
                     }
                 }
                 else if (elementName.equals("body")) {
@@ -133,7 +139,7 @@ public class PacketParserUtils {
                 }
             }
         }
-        message.setSubject(subject);
+
         message.setThread(thread);
         // Set packet properties.
         if (properties != null) {

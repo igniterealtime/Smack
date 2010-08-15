@@ -186,6 +186,155 @@ public class PacketParserUtilsTest {
     }
 
     @Test
+    public void singleMessageSubjectTest() throws Exception {
+        String defaultLanguage = Packet.getDefaultLanguage();
+        String otherLanguage = determineNonDefaultLanguage();
+
+        String control;
+        
+        // message has default language, subject has no language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", defaultLanguage)
+            .e("subject")
+                .t(defaultLanguage)
+            .asString(outputProperties);
+        
+        Message message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertTrue(message.getSubjectLanguages().isEmpty());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertNull(message.getSubject(otherLanguage));
+        assertXMLEqual(control, message.toXML());
+
+        // message has non-default language, subject has no language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", otherLanguage)
+            .e("subject")
+                .t(otherLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils.parseMessage(getParser(control));
+
+        assertEquals(otherLanguage, message.getSubject());
+        assertTrue(message.getSubjectLanguages().isEmpty());
+        assertEquals(otherLanguage, message.getSubject(otherLanguage));
+        assertNull(message.getSubject(defaultLanguage));
+        assertXMLEqual(control, message.toXML());
+        
+        // message has no language, subject has no language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .e("subject")
+                .t(defaultLanguage)
+            .asString(outputProperties);
+        
+        message = (Message) PacketParserUtils.parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertTrue(message.getSubjectLanguages().isEmpty());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertNull(message.getSubject(otherLanguage));
+        assertXMLEqual(control, message.toXML());
+
+        // message has no language, subject has default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .e("subject")
+                .a("xml:lang", defaultLanguage)
+                .t(defaultLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils.parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertTrue(message.getSubjectLanguages().isEmpty());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertNull(message.getSubject(otherLanguage));
+
+        // subject attribute xml:lang is unnecessary
+        assertXMLNotEqual(control, message.toXML());
+
+        // message has no language, subject has non-default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .e("subject")
+                .a("xml:lang", otherLanguage)
+                .t(otherLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils.parseMessage(getParser(control));
+
+        assertNull(message.getSubject());
+        assertFalse(message.getSubjectLanguages().isEmpty());
+        assertTrue(message.getSubjectLanguages().contains(otherLanguage));
+        assertEquals(otherLanguage, message.getSubject(otherLanguage));
+        assertNull(message.getSubject(defaultLanguage));
+        assertXMLEqual(control, message.toXML());
+
+        // message has default language, subject has non-default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", defaultLanguage)
+            .e("subject")
+                .a("xml:lang", otherLanguage)
+                .t(otherLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils.parseMessage(getParser(control));
+
+        assertNull(message.getSubject());
+        assertFalse(message.getSubjectLanguages().isEmpty());
+        assertTrue(message.getSubjectLanguages().contains(otherLanguage));
+        assertEquals(otherLanguage, message.getSubject(otherLanguage));
+        assertNull(message.getSubject(defaultLanguage));
+        assertXMLEqual(control, message.toXML());
+
+        // message has non-default language, subject has default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", otherLanguage)
+            .e("subject")
+                .a("xml:lang", defaultLanguage)
+                .t(defaultLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils.parseMessage(getParser(control));
+
+        assertNull(message.getSubject());
+        assertFalse(message.getSubjectLanguages().isEmpty());
+        assertTrue(message.getSubjectLanguages().contains(defaultLanguage));
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertNull(message.getSubject(otherLanguage));
+        assertXMLEqual(control, message.toXML());
+
+    }
+
+    @Test
     public void multipleMessageBodiesTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
@@ -334,6 +483,159 @@ public class PacketParserUtilsTest {
         assertEquals(defaultLanguage, message.getBody(defaultLanguage));
         assertEquals(1, message.getBodies().size());
         assertEquals(0, message.getBodyLanguages().size());
+        assertXMLNotEqual(control, message.toXML());
+
+    }
+
+    @Test
+    public void multipleMessageSubjectsTest() throws Exception {
+        String defaultLanguage = Packet.getDefaultLanguage();
+        String otherLanguage = determineNonDefaultLanguage();
+        
+        String control;
+        Message message;
+
+        // message has default language, first subject no language, second subject other language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", defaultLanguage)
+            .e("subject")
+                .t(defaultLanguage)
+            .up()
+            .e("subject")
+                .a("xml:lang", otherLanguage)
+                .t(otherLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertEquals(otherLanguage, message.getSubject(otherLanguage));
+        assertEquals(2, message.getSubjects().size());
+        assertEquals(1, message.getSubjectLanguages().size());
+        assertTrue(message.getSubjectLanguages().contains(otherLanguage));
+        assertXMLEqual(control, message.toXML());
+
+        // message has default language, first subject no language, second subject default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", defaultLanguage)
+            .e("subject")
+                .t(defaultLanguage)
+            .up()
+            .e("subject")
+                .a("xml:lang", defaultLanguage)
+                .t(defaultLanguage + "2")
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertEquals(1, message.getSubjects().size());
+        assertEquals(0, message.getSubjectLanguages().size());
+        assertXMLNotEqual(control, message.toXML());
+
+        // message has non-default language, first subject no language, second subject default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a("xml:lang", otherLanguage)
+            .e("subject")
+                .t(otherLanguage)
+            .up()
+            .e("subject")
+                .a("xml:lang", defaultLanguage)
+                .t(defaultLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(otherLanguage, message.getSubject());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertEquals(2, message.getSubjects().size());
+        assertEquals(1, message.getSubjectLanguages().size());
+        assertTrue(message.getSubjectLanguages().contains(defaultLanguage));
+        assertXMLEqual(control, message.toXML());
+
+        // message has no language, first subject no language, second subject default language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .e("subject")
+                .t(defaultLanguage)
+            .up()
+            .e("subject")
+                .a("xml:lang", defaultLanguage)
+                .t(defaultLanguage + "2")
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertEquals(1, message.getSubjects().size());
+        assertEquals(0, message.getSubjectLanguages().size());
+        assertXMLNotEqual(control, message.toXML());
+
+        // message has no language, first subject no language, second subject other language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .e("subject")
+                .t(defaultLanguage)
+            .up()
+            .e("subject")
+                .a("xml:lang", otherLanguage)
+                .t(otherLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertEquals(otherLanguage, message.getSubject(otherLanguage));
+        assertEquals(2, message.getSubjects().size());
+        assertEquals(1, message.getSubjectLanguages().size());
+        assertXMLEqual(control, message.toXML());
+
+        // message has no language, first subject no language, second subject no language
+        control = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .e("subject")
+                .t(defaultLanguage)
+            .up()
+            .e("subject")
+                .t(otherLanguage)
+            .asString(outputProperties);
+
+        message = (Message) PacketParserUtils
+                        .parseMessage(getParser(control));
+
+        assertEquals(defaultLanguage, message.getSubject());
+        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
+        assertEquals(1, message.getSubjects().size());
+        assertEquals(0, message.getSubjectLanguages().size());
         assertXMLNotEqual(control, message.toXML());
 
     }
