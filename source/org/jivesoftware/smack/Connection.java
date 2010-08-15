@@ -419,11 +419,15 @@ public abstract class Connection {
     }
 
     /**
-     * Returns the roster for the user logged into the server. If the user has not yet
-     * logged into the server (or if the user is logged in anonymously), this method will return
-     * <tt>null</tt>.
+     * Returns the roster for the user.
+     * <p>
+     * This method will never return <code>null</code>, instead if the user has not yet logged into
+     * the server or is logged in anonymously all modifying methods of the returned roster object
+     * like {@link Roster#createEntry(String, String, String[])},
+     * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
+     * {@link RosterListener}s will throw an IllegalStateException.
      * 
-     * @return the user's roster, or <tt>null</tt> if the user has not logged in yet.
+     * @return the user's roster.
      */
     public abstract Roster getRoster();
 

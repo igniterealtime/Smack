@@ -119,7 +119,7 @@ public class XMPPConnection extends Connection {
     }
 
     /**
-     * Creates a new XMPP conection in the same way {@link #XMPPConnection(String,CallbackHandler)} does, but
+     * Creates a new XMPP connection in the same way {@link #XMPPConnection(String,CallbackHandler)} does, but
      * with no callback handler for password prompting of the keystore.  This will work
      * in most cases, provided the client is not required to provide a certificate to 
      * the server.
@@ -135,7 +135,7 @@ public class XMPPConnection extends Connection {
     }
 
     /**
-     * Creates a new XMPP conection in the same way {@link #XMPPConnection(ConnectionConfiguration,CallbackHandler)} does, but
+     * Creates a new XMPP connection in the same way {@link #XMPPConnection(ConnectionConfiguration,CallbackHandler)} does, but
      * with no callback handler for password prompting of the keystore.  This will work
      * in most cases, provided the client is not required to provide a certificate to 
      * the server.
@@ -210,7 +210,7 @@ public class XMPPConnection extends Connection {
      * @param resource the resource.
      * @throws XMPPException if an error occurs.
      * @throws IllegalStateException if not connected to the server, or already logged in
-     *      to the serrver.
+     *      to the server.
      */
     public synchronized void login(String username, String password, String resource) throws XMPPException {
         if (!isConnected()) {
@@ -257,7 +257,11 @@ public class XMPPConnection extends Connection {
             useCompression();
         }
 
-        // Create the roster if it is not a reconnection.
+        // Indicate that we're now authenticated.
+        authenticated = true;
+        anonymous = false;
+
+        // Create the roster if it is not a reconnection or roster already created by getRoster()
         if (this.roster == null) {
             this.roster = new Roster(this);
         }
@@ -270,11 +274,7 @@ public class XMPPConnection extends Connection {
             packetWriter.sendPacket(new Presence(Presence.Type.available));
         }
 
-        // Indicate that we're now authenticated.
-        authenticated = true;
-        anonymous = false;
-
-        // Stores the autentication for future reconnection
+        // Stores the authentication for future reconnection
         config.setLoginInfo(username, password, resource);
 
         // If debugging is enabled, change the the debug window title to include the
@@ -294,7 +294,7 @@ public class XMPPConnection extends Connection {
      *
      * @throws XMPPException if an error occurs or anonymous logins are not supported by the server.
      * @throws IllegalStateException if not connected to the server, or already logged in
-     *      to the serrver.
+     *      to the server.
      */
     public synchronized void loginAnonymously() throws XMPPException {
         if (!isConnected()) {
@@ -324,9 +324,6 @@ public class XMPPConnection extends Connection {
             useCompression();
         }
 
-        // Anonymous users can't have a roster.
-        roster = null;
-
         // Set presence to online.
         packetWriter.sendPacket(new Presence(Presence.Type.available));
 
@@ -344,9 +341,18 @@ public class XMPPConnection extends Connection {
     }
 
     public Roster getRoster() {
-        if (roster == null) {
-            return null;
+        // synchronize against login()
+        synchronized(this) {
+            // if connection is authenticated the roster is already set by login() 
+            // or a previous call to getRoster()
+            if (!isAuthenticated() || isAnonymous()) {
+                if (roster == null) {
+                    roster = new Roster(this);
+                }
+                return roster;
+            }
         }
+
         if (!config.isRosterLoadedAtLogin()) {
             roster.reload();
         }

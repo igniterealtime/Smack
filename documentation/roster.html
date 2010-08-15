@@ -22,7 +22,7 @@ A roster also allows you to organize users into groups such as "Friends" and
 etc.<p>
 
 A <tt>Roster</tt> instance is obtained using the <tt>Connection.getRoster()</tt>
-method, but only after successfully logging into a server.
+method.
 
 <p class="subheader">Roster Entries</p>
 
@@ -70,7 +70,9 @@ a Roster in the Exodus XMPP client to the right.</p>
 
 <p>The presence information will likely 
 change often, and it's also possible for the roster entries to change or be deleted. 
-To listen for changing roster and presence data, a RosterListener should be used. 
+To listen for changing roster and presence data, a RosterListener should be used.
+To be informed about all changes to the roster the RosterListener should be registered
+before logging into the XMPP server. 
 The following code snippet registers a RosterListener with the Roster that prints
 any presence changes in the roster to standard out. A normal client would use
 similar code to update the roster UI with the changing information. 
