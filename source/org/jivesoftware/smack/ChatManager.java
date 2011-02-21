@@ -20,6 +20,13 @@
 
 package org.jivesoftware.smack;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromContainsFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -28,9 +35,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.collections.ReferenceMap;
-
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
@@ -65,14 +69,20 @@ public class ChatManager {
     /**
      * Maps thread ID to chat.
      */
-    private Map<String, Chat> threadChats = new ReferenceMap<String, Chat>(ReferenceMap.HARD,
-            ReferenceMap.WEAK);
+    private Map<String, Chat> threadChats = Collections.synchronizedMap(new ReferenceMap<String, Chat>(ReferenceMap.HARD,
+            ReferenceMap.WEAK));
 
     /**
      * Maps jids to chats
      */
-    private Map<String, Chat> jidChats = new ReferenceMap<String, Chat>(ReferenceMap.HARD,
-            ReferenceMap.WEAK);
+    private Map<String, Chat> jidChats = Collections.synchronizedMap(new ReferenceMap<String, Chat>(ReferenceMap.HARD,
+            ReferenceMap.WEAK));
+
+    /**
+     * Maps base jids to chats
+     */
+    private Map<String, Chat> baseJidChats = Collections.synchronizedMap(new ReferenceMap<String, Chat>(ReferenceMap.HARD,
+	    ReferenceMap.WEAK));
 
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();
@@ -161,6 +171,7 @@ public class ChatManager {
         Chat chat = new Chat(this, userJID, threadID);
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
+        baseJidChats.put(StringUtils.parseBareAddress(userJID), chat);
 
         for(ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
@@ -179,8 +190,21 @@ public class ChatManager {
         return createChat(userJID, threadID, false);
     }
 
+    /**
+     * Try to get a matching chat for the given user JID.  Try the full
+     * JID map first, the try to match on the base JID if no match is
+     * found.
+     * 
+     * @param userJID
+     * @return
+     */
     private Chat getUserChat(String userJID) {
-        return jidChats.get(userJID);
+	Chat match = jidChats.get(userJID);
+	
+	if (match == null) {
+	    match = baseJidChats.get(StringUtils.parseBareAddress(userJID));
+	}
+	return match;
     }
 
     public Chat getThreadChat(String thread) {
