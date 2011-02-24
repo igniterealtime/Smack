@@ -189,7 +189,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
         // Create an XHTMLExtension and add it to the message
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
         xhtmlExtension.addBody(
-                "<body xml:lang=\"es-ES\"><h1>impresionante!</h1><p>Como Emerson dijo una vez:</p><blockquote><p>Una consistencia ridícula es el espantajo de mentes pequeñas.</p></blockquote></body>");
+                "<body xml:lang=\"es-ES\"><h1>impresionante!</h1><p>Como Emerson dijo una vez:</p><blockquote><p>Una consistencia ridicula es el espantajo de mentes pequenas.</p></blockquote></body>");
         xhtmlExtension.addBody(
                 "<body xml:lang=\"en-US\"><h1>awesome!</h1><p>As Emerson once said:</p><blockquote><p>A foolish consistency is the hobgoblin of little minds.</p></blockquote></body>");
         msg.addExtension(xhtmlExtension);
