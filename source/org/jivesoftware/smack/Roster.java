@@ -854,9 +854,11 @@ public class Roster {
                         // If the entry was in then list then update its state with the new values
                         RosterEntry oldEntry = entries.put(item.getUser(), entry);
 
-                        // Keep note that an entry has been updated but only if it's different
-                        if (oldEntry == null || !oldEntry.equalsDeep(entry)) {
-                            updatedEntries.add(item.getUser());
+                        RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
+                        //We have also to check if only the group names have changed from the item
+                        if (oldEntry == null || !oldEntry.equalsDeep(entry) || !item.getGroupNames().equals(oldItem.getGroupNames()))
+                        {
+                        updatedEntries.add(item.getUser());
                         }
                     }
                     // If the roster entry belongs to any groups, remove it from the
