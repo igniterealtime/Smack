@@ -39,7 +39,8 @@ public class QueueOverview implements PacketExtension {
      */
     public static String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
+    private static final String DATE_FORMAT = "yyyyMMdd'T'HH:mm:ss";
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
     private int averageWaitTime;
     private Date oldestEntry;
@@ -101,7 +102,7 @@ public class QueueOverview implements PacketExtension {
             buf.append("<count>").append(userCount).append("</count>");
         }
         if (oldestEntry != null) {
-            buf.append("<oldest>").append(DATE_FORMATTER.format(oldestEntry)).append("</oldest>");
+            buf.append("<oldest>").append(dateFormat.format(oldestEntry)).append("</oldest>");
         }
         if (averageWaitTime != -1) {
             buf.append("<time>").append(averageWaitTime).append("</time>");
@@ -118,7 +119,8 @@ public class QueueOverview implements PacketExtension {
 
         public PacketExtension parseExtension (XmlPullParser parser) throws Exception {
             int eventType = parser.getEventType();
-            QueueOverview queueOverview = new QueueOverview();
+            QueueOverview queueOverview = new QueueOverview();            
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
             if (eventType != XmlPullParser.START_TAG) {
                 // throw exception
@@ -135,7 +137,7 @@ public class QueueOverview implements PacketExtension {
                     queueOverview.setAverageWaitTime(Integer.parseInt(parser.nextText()));
                 }
                 else if ("oldest".equals(parser.getName())) {
-                    queueOverview.setOldestEntry((DATE_FORMATTER.parse(parser.nextText())));
+                    queueOverview.setOldestEntry((dateFormat.parse(parser.nextText())));                    
                 }
                 else if ("status".equals(parser.getName())) {
                     queueOverview.setStatus(WorkgroupQueue.Status.fromString(parser.nextText()));

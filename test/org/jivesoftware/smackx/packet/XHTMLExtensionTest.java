@@ -187,18 +187,18 @@ public class XHTMLExtensionTest extends SmackTestCase {
 	};
 	getConnection(1).addPacketListener(packetListener, packetFilter);
 
-	// User1 creates a message to send to user2
-	Message msg = new Message();
-	msg.setSubject("Any subject you want");
-	msg.setBody(
-	"awesome! As Emerson once said: A foolish consistency is the hobgoblin of little minds.");
-	// Create an XHTMLExtension and add it to the message
-	XHTMLExtension xhtmlExtension = new XHTMLExtension();
-	xhtmlExtension.addBody(
-	"<body xml:lang=\"es-ES\"><h1>impresionante!</h1><p>Como Emerson dijo una vez:</p><blockquote><p>Una consistencia ridicula es el espantajo de mentes pequenas.</p></blockquote></body>");
-	xhtmlExtension.addBody(
-	"<body xml:lang=\"en-US\"><h1>awesome!</h1><p>As Emerson once said:</p><blockquote><p>A foolish consistency is the hobgoblin of little minds.</p></blockquote></body>");
-	msg.addExtension(xhtmlExtension);
+        // User1 creates a message to send to user2
+        Message msg = new Message();
+        msg.setSubject("Any subject you want");
+        msg.setBody(
+                "awesome! As Emerson once said: A foolish consistency is the hobgoblin of little minds.");
+        // Create an XHTMLExtension and add it to the message
+        XHTMLExtension xhtmlExtension = new XHTMLExtension();
+        xhtmlExtension.addBody(
+                "<body xml:lang=\"es-ES\"><h1>impresionante!</h1><p>Como Emerson dijo una vez:</p><blockquote><p>Una consistencia ridicula es el espantajo de mentes pequenas.</p></blockquote></body>");
+        xhtmlExtension.addBody(
+                "<body xml:lang=\"en-US\"><h1>awesome!</h1><p>As Emerson once said:</p><blockquote><p>A foolish consistency is the hobgoblin of little minds.</p></blockquote></body>");
+        msg.addExtension(xhtmlExtension);
 
 	// User1 sends the message that contains the XHTML to user2
 	try {

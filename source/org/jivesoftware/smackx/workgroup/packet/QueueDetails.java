@@ -46,8 +46,9 @@ public class QueueDetails implements PacketExtension {
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
+    private static final String DATE_FORMAT = "yyyyMMdd'T'HH:mm:ss";
 
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     /**
      * The list of users in the queue.
      */
@@ -124,7 +125,7 @@ public class QueueDetails implements PacketExtension {
 
                 if (timestamp != null) {
                     buf.append("<join-time>");
-                    buf.append(DATE_FORMATTER.format(timestamp));
+                    buf.append(dateFormat.format(timestamp));
                     buf.append("</join-time>");
                 }
 
@@ -139,8 +140,10 @@ public class QueueDetails implements PacketExtension {
      * Provider class for QueueDetails packet extensions.
      */
     public static class Provider implements PacketExtensionProvider {
-
+        
         public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+            
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
 
             int eventType = parser.getEventType();
@@ -163,7 +166,7 @@ public class QueueDetails implements PacketExtension {
                     eventType = parser.next();
                     while ((eventType != XmlPullParser.END_TAG)
                                 || (! "user".equals(parser.getName())))
-                    {
+                    {                        
                         if ("position".equals(parser.getName())) {
                             position = Integer.parseInt(parser.nextText());
                         }
@@ -171,23 +174,19 @@ public class QueueDetails implements PacketExtension {
                             time = Integer.parseInt(parser.nextText());
                         }
                         else if ("join-time".equals(parser.getName())) {
-                            joinTime = DATE_FORMATTER.parse(parser.nextText());
+                            joinTime = dateFormat.parse(parser.nextText());                            
                         }
                         else if( parser.getName().equals( "waitTime" ) ) {
-                          Date wait = DATE_FORMATTER.parse( parser.nextText() );
-                          System.out.println( wait );
+                            Date wait = dateFormat.parse(parser.nextText());
+                            System.out.println( wait );
                         }
-                        
-                     
-                            
+
                         eventType = parser.next();
 
                         if (eventType != XmlPullParser.END_TAG) {
                             // throw exception
                         }
                     }
-                
-                       
 
                     queueDetails.addUser(new QueueUser(uid, position, time, joinTime));
 

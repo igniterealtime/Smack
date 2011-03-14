@@ -82,6 +82,40 @@ newChat.sendMessage(newMessage);
     }
 </pre>
 </div>
+
+<p class="subheader">
+    Incoming Chat
+</p>
+
+When chats are prompted by another user, the setup is slightly different since
+you are receiving a chat message first.  Instead of explicitly creating a chat to send
+messages, you need to register to handle newly created Chat instances when the ChatManager 
+creates them.  
+</br>
+</br>
+The ChatManager will already find a matching chat (by thread id) and if none exists, then it
+will create a new one that does match.  To get this new chat, you have to register to be 
+notified when it happens.  You can register a message listener to receive all future messages as
+part of this handler.<p>
+
+<div class="code"><pre><font color="gray"><i>// Assume we've created a Connection name "connection".</i></font>
+ChatManager chatmanager = connection.getChatManager().addChatListener(
+    new ChatManagerListener() {
+        @Override
+        public void chatCreated(Chat chat, boolean createdLocally)
+        {
+            if (!createdLocally)
+                chat.addMessageListener(new MyNewMessageListener());;
+        }
+    });
+</pre>
+</div>
+In addition to thread based chat messages, there are some clients that
+do not send a thread id as part of the chat.  To handle this scenario,
+Smack will attempt match the incoming messages to the best fit existing
+chat, based on the JID.  It will attempt to find a chat with the same full 
+JID, failing that, it will try the base JID.  If no existing chat to the 
+user can found, then a new one is created.
 <p>
 
     <br clear="all"/><br><br>
