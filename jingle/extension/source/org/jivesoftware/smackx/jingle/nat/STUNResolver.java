@@ -52,11 +52,6 @@ public class STUNResolver extends TransportResolver {
 	// The filename where the STUN servers are stored.
     public final static String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
 
-    // Fallback values when we don't have any STUN server to use...
-    private final static String FALLBACKHOSTNAME = "stun.xten.net";
-
-    private final static int FALLBACKHOSTPORT = 3478;
-
     // Current STUN server we are using
     protected STUNService currentServer;
 
@@ -189,10 +184,10 @@ public class STUNResolver extends TransportResolver {
 
         }
         catch (XmlPullParserException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
 
         currentServer = bestSTUNServer(serversList);
@@ -247,13 +242,7 @@ public class STUNResolver extends TransportResolver {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // If the list of candidates is empty, add at least one default server
-        if (serversList.isEmpty()) {
-            currentServer = new STUNService(FALLBACKHOSTNAME, FALLBACKHOSTPORT);
-            serversList.add(currentServer);
+            LOGGER.error(e.getMessage(), e);
         }
 
         return serversList;
@@ -370,14 +359,14 @@ public class STUNResolver extends TransportResolver {
                                             }
                                         }
                                         catch (Exception e) {
-                                            e.printStackTrace();
+                                            LOGGER.error(e.getMessage(), e);
                                         }
                                     }
                                 }
                             }
                         }
                         catch (SocketException e) {
-                            e.printStackTrace();
+                            LOGGER.error(e.getMessage(), e);
                         }
                         finally {
                             setInitialized();
@@ -524,7 +513,7 @@ public class STUNResolver extends TransportResolver {
                 }
             }
             catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
 
             return result;
