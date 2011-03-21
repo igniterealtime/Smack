@@ -316,7 +316,27 @@ public class EnhancedDebugger implements SmackDebugger {
         menu.add(menuItem1);
         // Add listener to the text area so the popup menu can come up.
         messageTextArea.addMouseListener(new PopupListener(menu));
-        allPane.setBottomComponent(new JScrollPane(messageTextArea));
+	JPanel sublayout = new JPanel(new BorderLayout());
+        sublayout.add(new JScrollPane(messageTextArea), BorderLayout.CENTER);
+       
+        JButton clearb = new JButton("Clear All Packets");
+        
+        clearb.addActionListener(new AbstractAction() {    
+	    private static final long serialVersionUID = -8576045822764763613L;
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		for(int i=0; i< messagesTable.getRowCount();i++)
+		{
+		messagesTable.removeRow(i);
+		}
+		
+	    }
+	});
+
+        sublayout.add(clearb, BorderLayout.NORTH);
+        allPane.setBottomComponent(sublayout);
+       
         allPane.setDividerLocation(150);
 
         tabbedPane.add("All Packets", allPane);
