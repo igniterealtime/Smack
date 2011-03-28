@@ -323,9 +323,13 @@ public abstract class Connection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server, then sets presence to available. If more than five seconds
-     * (default timeout) elapses in each step of the authentication process without
-     * a response from the server, or if an error occurs, a XMPPException will be thrown.<p>
+     * the server, then sets presence to available. If the server supports SASL authentication 
+     * then the user will be authenticated using SASL if not Non-SASL authentication will 
+     * be tried. If more than five seconds (default timeout) elapses in each step of the 
+     * authentication process without a response from the server, or if an error occurs, a 
+     * XMPPException will be thrown.<p>
+     * 
+     * Before logging in (i.e. authenticate) to the server the connection must be connected.
      * 
      * It is possible to log in without sending an initial available presence by using
      * {@link ConnectionConfiguration#setSendPresence(boolean)}. If this connection is
@@ -346,15 +350,13 @@ public abstract class Connection {
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
-     * the server. If the server supports SASL authentication then the user will be
-     * authenticated using SASL if not Non-SASL authentication will be tried. If more than
-     * five seconds (default timeout) elapses in each step of the authentication process
-     * without a response from the server, or if an error occurs, a XMPPException will be
-     * thrown.<p>
+     * the server, then sets presence to available. If the server supports SASL authentication 
+     * then the user will be authenticated using SASL if not Non-SASL authentication will 
+     * be tried. If more than five seconds (default timeout) elapses in each step of the 
+     * authentication process without a response from the server, or if an error occurs, a 
+     * XMPPException will be thrown.<p>
      * 
      * Before logging in (i.e. authenticate) to the server the connection must be connected.
-     * For compatibility and easiness of use the connection will automatically connect to the
-     * server if not already connected.<p>
      * 
      * It is possible to log in without sending an initial available presence by using
      * {@link ConnectionConfiguration#setSendPresence(boolean)}. If this connection is
