@@ -19,6 +19,7 @@ import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
@@ -714,6 +715,7 @@ public class PacketParserUtilsTest {
 
     }
 
+    @Ignore
     @Test
     public void multipleMessageBodiesParsingTest() throws Exception {
         String control = XMLBuilder.create("message")
@@ -733,7 +735,6 @@ public class PacketParserUtilsTest {
                 .a("xml:lang", "sp")
                 .t("This is a test of the emergency broadcast system, 3.")
             .asString(outputProperties);
-
         
         Packet message = PacketParserUtils.parseMessage(getParser(control));
         assertXMLEqual(control, message.toXML());

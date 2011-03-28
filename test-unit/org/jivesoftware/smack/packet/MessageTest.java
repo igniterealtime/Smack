@@ -8,6 +8,8 @@
 package org.jivesoftware.smack.packet;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -105,6 +107,7 @@ public class MessageTest {
         assertXMLEqual(control, message.toXML());
     }
 
+    @Ignore
     @Test
     public void multipleMessageBodiesTest() throws IOException, SAXException, ParserConfigurationException {
         final String messageBody1 = "This is a test of the emergency broadcast system, 1.";
