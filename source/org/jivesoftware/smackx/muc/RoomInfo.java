@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 
 import java.util.Iterator;
@@ -88,17 +89,14 @@ public class RoomInfo {
         // Get the information based on the discovered extended information
         Form form = Form.getFormFrom(info);
         if (form != null) {
-            this.description =
-                    form.getField("muc#roominfo_description").getValues().next();
-            Iterator<String> values = form.getField("muc#roominfo_subject").getValues();
-            if (values.hasNext()) {
-                this.subject = values.next();
-            }
-            else {
-                this.subject = "";
-            }
-            this.occupantsCount =
-                    Integer.parseInt(form.getField("muc#roominfo_occupants").getValues()
+            FormField descField = form.getField("muc#roominfo_description");
+            this.description = descField == null ? "" : descField.getValues().next();
+
+            FormField subjField = form.getField("muc#roominfo_subject");
+            this.subject = subjField == null ? "" : subjField.getValues().next();
+
+            FormField occCountField = form.getField("muc#roominfo_occupants");
+            this.occupantsCount = occCountField == null ? -1 : Integer.parseInt(occCountField.getValues()
                     .next());
         }
     }
