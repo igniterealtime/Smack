@@ -473,7 +473,7 @@ public class FileTransferNegotiator {
     private DataForm createDefaultInitiationForm() {
         DataForm form = new DataForm(Form.TYPE_FORM);
         FormField field = new FormField(STREAM_DATA_FIELD_NAME);
-        field.setType(FormField.TYPE_LIST_MULTI);
+        field.setType(FormField.TYPE_LIST_SINGLE);
         if (!IBB_ONLY) {
             field.addOption(new FormField.Option(Socks5BytestreamManager.NAMESPACE));
         }
