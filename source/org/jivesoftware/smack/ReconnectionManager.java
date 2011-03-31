@@ -1,7 +1,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.StreamError;
-
+import java.util.Random;
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
  * the application explictly closing it, the manager automatically tries to reconnect to
@@ -20,7 +20,9 @@ public class ReconnectionManager implements ConnectionListener {
 
     // Holds the connection to the server
     private Connection connection;
-
+    private Thread reconnectionThread;
+    private int randomBase = new Random().nextInt(11) + 5; // between 5 and 15 seconds
+    
     // Holds the state of the reconnection
     boolean done = false;
 
@@ -61,12 +63,15 @@ public class ReconnectionManager implements ConnectionListener {
      * <li>Finally it will try indefinitely every 5 minutes.
      * </ol>
      */
-    protected void reconnect() {
+    synchronized protected void reconnect() {
         if (this.isReconnectionAllowed()) {
             // Since there is no thread running, creates a new one to attempt
             // the reconnection.
-            Thread reconnectionThread = new Thread() {
-
+            // avoid to run duplicated reconnectionThread -- fd: 16/09/2010
+            if (reconnectionThread!=null && reconnectionThread.isAlive()) return;
+            
+            reconnectionThread = new Thread() {
+             			
                 /**
                  * Holds the current number of reconnection attempts
                  */
@@ -78,13 +83,14 @@ public class ReconnectionManager implements ConnectionListener {
                  * @return the number of seconds until the next reconnection attempt.
                  */
                 private int timeDelay() {
+                    attempts++;
                     if (attempts > 13) {
-                        return 60 * 5;      // 5 minutes
+                	return randomBase*6*5;      // between 2.5 and 7.5 minutes (~5 minutes)
                     }
                     if (attempts > 7) {
-                        return 60;          // 1 minute
+                	return randomBase*6;       // between 30 and 90 seconds (~1 minutes)
                     }
-                    return 10;              // 10 seconds
+                    return randomBase;       // 10 seconds
                 }
 
                 /**
