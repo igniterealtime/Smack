@@ -98,8 +98,8 @@
             destdir="${compile.dir}"
             includeAntRuntime="no"
             debug="on"
-            source="1.5"
-            target="1.5"
+            source="1.6"
+            target="1.6"
         >
             <src path="${basedir}/source" />
             <classpath>
@@ -113,8 +113,8 @@
             destdir="${compile.dir}/jingle/extension"
             includeAntRuntime="no"
             debug="on"
-            source="1.5"
-            target="1.5"
+            source="1.6"
+            target="1.6"
         >
             <src path="${basedir}/jingle/extension/source" />
             <classpath>
@@ -141,8 +141,8 @@
             destdir="${compile.test.dir}"
             includeAntRuntime="no"
             debug="on"
-            source="1.5"
-            target="1.5"
+            source="1.6"
+            target="1.6"
         >
             <src path="${test.dir}" />
             <classpath>
