@@ -161,7 +161,9 @@ public class ConfigureForm extends Form
 	public void setChildrenAssociationPolicy(ChildrenAssociationPolicy policy)
 	{
 		addField(ConfigureNodeFields.children_association_policy, FormField.TYPE_LIST_SINGLE);
-		setAnswer(ConfigureNodeFields.children_association_policy.getFieldName(), policy.toString());
+        List<String> values = new ArrayList<String>(1);
+        values.add(policy.toString());
+        setAnswer(ConfigureNodeFields.children_association_policy.getFieldName(), values);
 	}
 	
 	/**

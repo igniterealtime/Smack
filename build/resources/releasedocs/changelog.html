@@ -141,22 +141,22 @@ hr {
 
 	<div id="pageBody">
 	
-<h2>3.2.0 Beta -- <span style="font-weight: normal;">February 4, 2011</span></h2>
-<h2>New Feature</h2>
+<h2>3.2.0 -- <span style="font-weight: normal;">May 3, 2011</span></h2>
+<h3>New Feature</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-272'>SMACK-272</a>] - Add support for pubsub (XEP-0060)</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-296'>SMACK-296</a>] - Add support for XEP-0224: Attention</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-319'>SMACK-319</a>] - Add common interfaces for SOCKS5 Bytestreams and In-Band Bytestreams</li>
 </ul>
 
-<h2>Improvement</h2>
+<h3>Improvement</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-137'>SMACK-137</a>] - File Transfer Settings</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-156'>SMACK-156</a>] - Add the ability to register for roster events before logging in</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-261'>SMACK-261</a>] - Minor Jingle cleanup to better support Jingle in Spark</li>
-	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-266'>SMACK-266</a>] - Add provider for fastpath to smackx</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-277'>SMACK-277</a>] - Update XMLUnit to the latest version</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-282'>SMACK-282</a>] - Support SASL-related error conditions.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-283'>SMACK-283</a>] - Investigate why Jingle is connecting to stun.xten.net</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-285'>SMACK-285</a>] - Add support for Nicks</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-289'>SMACK-289</a>] - There is no way of retrieving items from a pubsub node when the user has multiple subscriptions.</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-294'>SMACK-294</a>] - Handle empty roster groups and no goups in the same way</li>
@@ -174,8 +174,9 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-310'>SMACK-310</a>] - Add Support for Localized Message Subjects</li>
 </ul>
 
-<h2>Bug</h2>
+<h3>Bug</h3>
 <ul>
+        <li>[<a href='http://issues.igniterealtime.org/browse/SMACK-163'>SMACK-163</a>] - Fix NPE in RoomInfo when subject has not value</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-207'>SMACK-207</a>] - Parsing of messages may disconnect Smack/Spark</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-225'>SMACK-225</a>] - Improper handeling of DNS SRV records</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-232'>SMACK-232</a>] - Better handling of Roster error</li>
@@ -184,6 +185,7 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-269'>SMACK-269</a>] - Smack 3.1.0 creates a new chat for every incoming message</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-271'>SMACK-271</a>] - Deadlock in XMPPConnection while login and parsing stream features</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-275'>SMACK-275</a>] - Patch: Fix for broken SASL DIGEST-MD5 implementation</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-280'>SMACK-280</a>] - The authentification should use the Connection#sendPacket method and work transparent with packets and packet listeners.</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-288'>SMACK-288</a>] - The parsing of the result for a LeafNode.getItems() call is incorrect.  It creates a DefaultPacketExtension instead of an Item for every other item in the result.</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-290'>SMACK-290</a>] - Deadlock while getting Roster before it&#39;s initialized</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-291'>SMACK-291</a>] - RosterGroup modifications should depend on roster push</li>
@@ -193,6 +195,8 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-312'>SMACK-312</a>] - Only fire RosterListener#entriesUpdated for RosterEntries that changed</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-327'>SMACK-327</a>] - getFeatures() method on DiscoverInfo is improperly set to be package protected instead of public</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-328'>SMACK-328</a>] - Number format exception while parsing dates.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-332'>SMACK-332</a>] -         Smack 3.2.0b2 shows wrong version in Smack Dubugger Window</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-334'>SMACK-334</a>] -         Error in form for FileTransferNegotiator</li>
 </ul>
     
 <h2>3.1.0 -- <span style="font-weight: normal;">November 20, 2008</span></h2>

@@ -32,6 +32,9 @@ public enum PubSubElementType
 	OPTIONS("options", PubSubNamespace.BASIC),
 	DEFAULT("default", PubSubNamespace.OWNER),	
 	ITEMS("items", PubSubNamespace.BASIC),
+	ITEMS_EVENT("items", PubSubNamespace.EVENT),
+	ITEM("item", PubSubNamespace.BASIC),
+	ITEM_EVENT("item", PubSubNamespace.EVENT),
 	PUBLISH("publish", PubSubNamespace.BASIC),
 	PUBLISH_OPTIONS("publish-options", PubSubNamespace.BASIC), 
 	PURGE_OWNER("purge", PubSubNamespace.OWNER),
@@ -41,7 +44,7 @@ public enum PubSubElementType
 	SUBSCRIBE("subscribe", PubSubNamespace.BASIC), 
 	SUBSCRIPTION("subscription", PubSubNamespace.BASIC),
 	SUBSCRIPTIONS("subscriptions", PubSubNamespace.BASIC), 
-	UNSUBSCRIBE("unsubscribe", PubSubNamespace.BASIC); 
+	UNSUBSCRIBE("unsubscribe", PubSubNamespace.BASIC);
 
 	private String eName;
 	private PubSubNamespace nSpace;

@@ -13,7 +13,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
 /**
@@ -39,7 +39,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * 
  * @author Robin Collier
  */
-public class Item implements PacketExtension
+public class Item extends NodeExtension
 {
 	private String id;
 	
@@ -52,6 +52,7 @@ public class Item implements PacketExtension
 	 */
 	public Item()
 	{
+		super(PubSubElementType.ITEM);
 	}
 	
 	/**
@@ -63,8 +64,27 @@ public class Item implements PacketExtension
 	 */
 	public Item(String itemId)
 	{
+		// The element type is actually irrelevant since we override getNamespace() to return null
+		super(PubSubElementType.ITEM);
 		id = itemId;
 	}
+
+	/**
+	 * Create an <tt>Item</tt> with an id and a node id.  
+	 * <p>
+	 * <b>Note:</b> This is not valid for publishing an item to a node, only receiving from 
+	 * one as part of {@link Message}.  If used to create an Item to publish 
+	 * (via {@link LeafNode#publish(Item)}, the server <i>may</i> return an
+	 * error for an invalid packet.
+	 * 
+	 * @param itemId The id of the item.
+	 * @param nodeId The id of the node which the item was published to.
+	 */
+    public Item(String itemId, String nodeId) 
+    {
+    	super(PubSubElementType.ITEM_EVENT, nodeId);
+        id = itemId;
+    }
 	
 	/**
 	 * Get the item id.  Unique to the node it is associated with.
@@ -76,16 +96,13 @@ public class Item implements PacketExtension
 		return id;
 	}
 	
-	public String getElementName()
-	{
-		return "item";
-	}
-
+	@Override
 	public String getNamespace()
 	{
 		return null;
 	}
 
+	@Override
 	public String toXML()
 	{
 		StringBuilder builder = new StringBuilder("<item");
@@ -96,6 +113,12 @@ public class Item implements PacketExtension
 			builder.append(id);
 			builder.append("'");
 		}
+		
+        if (getNode() != null) {
+            builder.append(" node='");
+            builder.append(getNode());
+            builder.append("'");
+        }
 		builder.append("/>");
 
 		return builder.toString();

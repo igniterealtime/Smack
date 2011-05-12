@@ -169,7 +169,7 @@ public class PrivacyItem {
      *
      * @param order indicates the order in the list.
      */
-    private void setOrder(int order) {
+    public void setOrder(int order) {
 		this.order = order;
 	}
 
