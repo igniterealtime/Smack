@@ -324,7 +324,8 @@ public class FileTransferNegotiator {
             throw new XMPPException(error.getMessage(), error);
         }
 
-        if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
+       //if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
+        if (isByteStream && isIBB) { 
             return new FaultTolerantNegotiator(connection,
                     byteStreamTransferManager,
                     inbandTransferManager);
