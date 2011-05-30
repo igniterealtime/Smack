@@ -23,6 +23,7 @@ package org.jivesoftware.smackx;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.packet.DataForm;
+import org.jivesoftware.smackx.packet.DataForm.Item;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,18 +70,18 @@ public class ReportedData {
      */
     private ReportedData(DataForm dataForm) {
         // Add the columns to the report based on the reported data fields
-        for (Iterator fields = dataForm.getReportedData().getFields(); fields.hasNext();) {
-            FormField field = (FormField)fields.next();
+        for (Iterator<FormField> fields = dataForm.getReportedData().getFields(); fields.hasNext();) {
+            FormField field = fields.next();
             columns.add(new Column(field.getLabel(), field.getVariable(), field.getType()));
         }
 
         // Add the rows to the report based on the form's items
-        for (Iterator items = dataForm.getItems(); items.hasNext();) {
-            DataForm.Item item = (DataForm.Item)items.next();
+        for (Iterator<Item> items = dataForm.getItems(); items.hasNext();) {
+            Item item = items.next();
             List<Field> fieldList = new ArrayList<Field>(columns.size());
             FormField field;
-            for (Iterator fields = item.getFields(); fields.hasNext();) {
-                field = (FormField) fields.next();
+            for (Iterator<FormField> fields = item.getFields(); fields.hasNext();) {
+                field = fields.next();
                 // The field is created with all the values of the data form's field
                 List<String> values = new ArrayList<String>();
                 for (Iterator<String> it=field.getValues(); it.hasNext();) {
@@ -231,7 +232,7 @@ public class ReportedData {
          * @param variable the variable to match.
          * @return the values of the field whose variable matches the requested variable.
          */
-        public Iterator getValues(String variable) {
+        public Iterator<String> getValues(String variable) {
             for(Iterator<Field> it=getFields();it.hasNext();) {
                 Field field = it.next();
                 if (variable.equalsIgnoreCase(field.getVariable())) {
