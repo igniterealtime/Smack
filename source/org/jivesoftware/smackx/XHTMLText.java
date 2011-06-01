@@ -131,7 +131,7 @@ public class XHTMLText {
      * 
      */
     public void appendBrTag() {
-        text.append("<br>");
+        text.append("<br/>");
     }
 
     /**
