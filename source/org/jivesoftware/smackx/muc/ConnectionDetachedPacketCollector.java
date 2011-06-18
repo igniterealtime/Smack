@@ -20,6 +20,7 @@
 
 package org.jivesoftware.smackx.muc;
 
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.Packet;
 
 import java.util.LinkedList;
@@ -38,7 +39,7 @@ class ConnectionDetachedPacketCollector {
      * reached, older packets will be automatically dropped from the queue as
      * new packets are added.
      */
-    private static final int MAX_PACKETS = 65536;
+    private int maxPackets = SmackConfiguration.getPacketCollectorSize();
 
     private LinkedList<Packet> resultQueue;
 
@@ -48,6 +49,15 @@ class ConnectionDetachedPacketCollector {
      */
     public ConnectionDetachedPacketCollector() {
         this.resultQueue = new LinkedList<Packet>();
+    }
+
+    /**
+     * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
+     * all packets will match this collector.
+     */
+    public ConnectionDetachedPacketCollector(int maxSize) {
+        this.resultQueue = new LinkedList<Packet>();
+        maxPackets = maxSize;
     }
 
     /**
@@ -124,7 +134,7 @@ class ConnectionDetachedPacketCollector {
             return;
         }
         // If the max number of packets has been reached, remove the oldest one.
-        if (resultQueue.size() == MAX_PACKETS) {
+        if (resultQueue.size() == maxPackets) {
             resultQueue.removeLast();
         }
         // Add the new packet.
