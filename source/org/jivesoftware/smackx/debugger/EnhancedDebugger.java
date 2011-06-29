@@ -326,10 +326,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		for(int i=0; i< messagesTable.getRowCount();i++)
-		{
-		messagesTable.removeRow(i);
-		}
+            messagesTable.setRowCount(0);
 		
 	    }
 	});
