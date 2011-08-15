@@ -13,10 +13,9 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
-
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
 /**
  * This class represents an item that has been, or will be published to a
