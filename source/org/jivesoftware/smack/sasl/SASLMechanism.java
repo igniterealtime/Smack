@@ -263,9 +263,6 @@ public abstract class SASLMechanism implements CallbackHandler {
             if (authenticationText != null) {
                 stanza.append(authenticationText);
             }
-            else {
-                stanza.append("=");
-            }
             stanza.append("</response>");
             return stanza.toString();
         }
