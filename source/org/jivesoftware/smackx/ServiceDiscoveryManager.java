@@ -115,7 +115,7 @@ public class ServiceDiscoveryManager {
     /**
      * Returns the type of client that will be returned when asked for the client identity in a 
      * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://www.jabber.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
      * 
      * @return the type of client that will be returned when asked for the client identity in a 
      *          disco request.
@@ -127,7 +127,7 @@ public class ServiceDiscoveryManager {
     /**
      * Sets the type of client that will be returned when asked for the client identity in a 
      * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://www.jabber.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
      * 
      * @param type the type of client that will be returned when asked for the client identity in a 
      *          disco request.
