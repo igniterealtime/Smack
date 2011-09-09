@@ -28,4 +28,7 @@
     <!-- Port of the local Socks5 proxy -->
     <localSocks5ProxyPort>7777</localSocks5ProxyPort>
 
+    <!-- Port of the local Socks5 proxy -->
+    <packetCollectorSize>10000</packetCollectorSize>
+
 </smack>

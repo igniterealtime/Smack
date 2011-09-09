@@ -60,7 +60,7 @@ class RoomListenerMultiplexor implements ConnectionListener {
      */
     public static RoomListenerMultiplexor getRoomMultiplexor(Connection conn) {
         synchronized (monitors) {
-            if (!monitors.containsKey(conn)) {
+            if (!monitors.containsKey(conn) || monitors.get(conn).get() == null) {
                 RoomListenerMultiplexor rm = new RoomListenerMultiplexor(conn, new RoomMultiplexFilter(),
                         new RoomMultiplexListener());
 

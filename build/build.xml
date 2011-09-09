@@ -26,9 +26,9 @@
 
     <!-- Smack Version -->
     <property name="version.major" value="3" />
-    <property name="version.minor" value="2" />
+    <property name="version.minor" value="3" />
     <property name="version.revision" value="0" />
-    <property name="version.extra" value="" /> 
+    <property name="version.extra" value="SNAPSHOT" /> 
 
     <if>
         <equals arg1="${version.extra}" arg2=""/>
