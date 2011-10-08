@@ -80,7 +80,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 
 	/**
 	 * Returns the output stream connected to the peer to transfer the file. It
-	 * is only available after it has been succesfully negotiated by the
+	 * is only available after it has been successfully negotiated by the
 	 * {@link StreamNegotiator}.
 	 *
 	 * @return Returns the output stream connected to the peer to transfer the
@@ -120,6 +120,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 							+ " been attempted on this file transfer");
 		}
 		try {
+			setFileInfo(fileName, fileSize);
 			this.outputStream = negotiateStream(fileName, fileSize, description);
 		} catch (XMPPException e) {
 			handleXMPPException(e);
@@ -159,6 +160,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 					"The negotation process has already"
 							+ " been attempted for this file transfer");
 		}
+        setFileInfo(fileName, fileSize);
         this.callback = progress;
         transferThread = new Thread(new Runnable() {
 			public void run() {
@@ -184,7 +186,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 
     /**
 	 * This method handles the stream negotiation process and transmits the file
-	 * to the remote user. It returns immediatly and the progress of the file
+	 * to the remote user. It returns immediately and the progress of the file
 	 * transfer can be monitored through several methods:
 	 *
 	 * <UL>
@@ -257,7 +259,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 
     /**
 	 * This method handles the stream negotiation process and transmits the file
-	 * to the remote user. It returns immediatly and the progress of the file
+	 * to the remote user. It returns immediately and the progress of the file
 	 * transfer can be monitored through several methods:
 	 *
 	 * <UL>
@@ -274,6 +276,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description){
 		checkTransferThread();
 
+		setFileInfo(fileName, fileSize);
 		transferThread = new Thread(new Runnable() {
 			public void run() {
                 //Create packet filter
@@ -339,7 +342,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * -1 if the file transfer has not started.
 	 * <p>
 	 * Note: This method is only useful when the {@link #sendFile(File, String)}
-	 * method is called, as it is the only method that actualy transmits the
+	 * method is called, as it is the only method that actually transmits the
 	 * file.
 	 *
 	 * @return Returns the amount of bytes that have been sent for the file
@@ -410,7 +413,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     }
 
     /**
-	 * A callback class to retrive the status of an outgoing transfer
+	 * A callback class to retrieve the status of an outgoing transfer
 	 * negotiation process.
 	 *
 	 * @author Alexander Wenckus
@@ -438,7 +441,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         /**
          * Called when an exception occurs during the negotiation progress.
          *
-         * @param e the exception that occured.
+         * @param e the exception that occurred.
          */
         void errorEstablishingStream(Exception e);
     }
