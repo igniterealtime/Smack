@@ -172,7 +172,7 @@ public class FileTransferManager {
 		IQ rejection = FileTransferNegotiator.createIQ(
 				initiation.getPacketID(), initiation.getFrom(), initiation
 						.getTo(), IQ.Type.ERROR);
-		rejection.setError(new XMPPError(XMPPError.Condition.forbidden));
+		rejection.setError(new XMPPError(XMPPError.Condition.no_acceptable));
 		connection.sendPacket(rejection);
 	}
 }
