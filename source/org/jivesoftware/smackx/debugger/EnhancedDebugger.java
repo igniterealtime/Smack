@@ -170,7 +170,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
         packetReaderListener = new PacketListener() {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss:SS aaa");
 
             public void processPacket(final Packet packet) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -185,7 +185,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // Create a thread that will listen for all outgoing packets and write them to
         // the GUI.
         packetWriterListener = new PacketListener() {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss:SS aaa");
 
             public void processPacket(final Packet packet) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -276,7 +276,7 @@ public class EnhancedDebugger implements SmackDebugger {
         table.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
         // Set the column "timestamp" size
         table.getColumnModel().getColumn(1).setMaxWidth(300);
-        table.getColumnModel().getColumn(1).setPreferredWidth(70);
+        table.getColumnModel().getColumn(1).setPreferredWidth(90);
         // Set the column "direction" icon size
         table.getColumnModel().getColumn(2).setMaxWidth(50);
         table.getColumnModel().getColumn(2).setPreferredWidth(30);
@@ -625,7 +625,7 @@ public class EnhancedDebugger implements SmackDebugger {
         connPanel.add(
                 label,
                 new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
-        field = new JFormattedTextField(new SimpleDateFormat("yyyy.MM.dd hh:mm:ss aaa"));
+        field = new JFormattedTextField(new SimpleDateFormat("yyyy.MM.dd hh:mm:ss:SS aaa"));
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setValue(creationTime);
