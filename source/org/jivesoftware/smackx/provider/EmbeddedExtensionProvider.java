@@ -78,6 +78,8 @@ import org.xmlpull.v1.XmlPullParser;
  * </pre>
  * 
  * @author Robin Collier
+ * 
+ * @deprecated This has been moved to {@link org.jivesoftware.smack.provider.EmbeddedExtensionProvider}
  */
 abstract public class EmbeddedExtensionProvider implements PacketExtensionProvider
 {
