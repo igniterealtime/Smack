@@ -79,8 +79,9 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
 
         connection.sendPacket(super.createInitiationAccept(initiation, getNamespaces()));
 
+        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(2);
         CompletionService<InputStream> service
-                = new ExecutorCompletionService<InputStream>(Executors.newFixedThreadPool(2));
+                = new ExecutorCompletionService<InputStream>(threadPoolExecutor);
         List<Future<InputStream>> futures = new ArrayList<Future<InputStream>>();
         InputStream stream = null;
         XMPPException exception = null;
@@ -119,6 +120,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 future.cancel(true);
             }
             collector.cancel();
+            threadPoolExecutor.shutdownNow();
         }
         if (stream == null) {
             if (exception != null) {
