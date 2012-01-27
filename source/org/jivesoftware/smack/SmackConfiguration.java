@@ -44,14 +44,14 @@ import java.util.*;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "3.2.1";
+    private static final String SMACK_VERSION = "3.2.2";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
     private static Vector<String> defaultMechs = new Vector<String>();
 
     private static boolean localSocks5ProxyEnabled = true;
-    private static int localSocks5ProxyPort = 7778;
+    private static int localSocks5ProxyPort = 7777;
     private static int packetCollectorSize = 5000;
 
     private SmackConfiguration() {

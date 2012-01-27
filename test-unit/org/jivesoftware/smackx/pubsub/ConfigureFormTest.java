@@ -53,7 +53,7 @@ public class ConfigureFormTest
 		}
 	}
 
-	@Test
+	@Test (expected=XMPPException.class)
 	public void getConfigFormWithTimeout() throws XMPPException
 	{
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
@@ -66,14 +66,7 @@ public class ConfigureFormTest
 		
 		Node node = mgr.getNode("princely_musings");
 		
-//		try
-//		{
-			SmackConfiguration.setPacketReplyTimeout(100);
-			node.getNodeConfiguration();
-//		}
-//		catch (XMPPException e)
-//		{
-//			Assert.assertEquals(XMPPError.Type.AUTH, e.getXMPPError().getType());
-//		}
+		SmackConfiguration.setPacketReplyTimeout(100);
+		node.getNodeConfiguration();
 	}
 }
