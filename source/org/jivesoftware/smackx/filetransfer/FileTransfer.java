@@ -130,10 +130,10 @@ public abstract class FileTransfer {
 
 	/**
 	 * Returns true if the transfer has been cancelled, if it has stopped because
-	 * of a an error, or the transfer completed succesfully.
+	 * of a an error, or the transfer completed successfully.
 	 *
 	 * @return Returns true if the transfer has been cancelled, if it has stopped
-	 *         because of a an error, or the transfer completed succesfully.
+	 *         because of a an error, or the transfer completed successfully.
 	 */
 	public boolean isDone() {
 		return status == Status.cancelled || status == Status.error
@@ -141,9 +141,9 @@ public abstract class FileTransfer {
 	}
 
 	/**
-	 * Retuns the current status of the file transfer.
+	 * Returns the current status of the file transfer.
 	 *
-	 * @return Retuns the current status of the file transfer.
+	 * @return Returns the current status of the file transfer.
 	 */
 	public Status getStatus() {
 		return status;
@@ -158,7 +158,7 @@ public abstract class FileTransfer {
 	 * during the transfer, the type of error can be retrieved through this
 	 * method.
 	 *
-	 * @return Returns the type of error that occured if one has occured.
+	 * @return Returns the type of error that occurred if one has occurred.
 	 */
 	public Error getError() {
 		return error;
@@ -166,9 +166,9 @@ public abstract class FileTransfer {
 
 	/**
 	 * If an exception occurs asynchronously it will be stored for later
-	 * retrival. If there is an error there maybe an exception set.
+	 * retrieval. If there is an error there maybe an exception set.
 	 *
-	 * @return The exception that occured or null if there was no exception.
+	 * @return The exception that occurred or null if there was no exception.
 	 * @see #getError()
 	 */
 	public Exception getException() {
@@ -246,7 +246,7 @@ public abstract class FileTransfer {
 	public enum Status {
 
 		/**
-		 * An error occured during the transfer.
+		 * An error occurred during the transfer.
 		 *
 		 * @see FileTransfer#getError()
 		 */
@@ -259,7 +259,7 @@ public abstract class FileTransfer {
 
         /**
 		 * The file transfer is being negotiated with the peer. The party
-		 * recieving the file has the option to accept or refuse a file transfer
+		 * Receiving the file has the option to accept or refuse a file transfer
 		 * request. If they accept, then the process of stream negotiation will
 		 * begin. If they refuse the file will not be transfered.
 		 *
@@ -283,7 +283,7 @@ public abstract class FileTransfer {
 		negotiating_stream("Negotiating Stream"),
 
 		/**
-		 * After the stream negotitation has completed the intermediate state
+		 * After the stream negotiation has completed the intermediate state
 		 * between the time when the negotiation is finished and the actual
 		 * transfer begins.
 		 */
@@ -302,7 +302,7 @@ public abstract class FileTransfer {
 		complete("Complete"),
 
 		/**
-		 * The file transfer was canceled
+		 * The file transfer was cancelled
 		 */
 		cancelled("Cancelled");
 
@@ -348,12 +348,12 @@ public abstract class FileTransfer {
 		no_response("The remote user did not respond or the connection timed out."),
 
 		/**
-		 * An error occured over the socket connected to send the file.
+		 * An error occurred over the socket connected to send the file.
 		 */
 		connection("An error occured over the socket connected to send the file."),
 
 		/**
-		 * An error occured while sending or recieving the file
+		 * An error occurred while sending or receiving the file
 		 */
 		stream("An error occured while sending or recieving the file.");
 

@@ -52,7 +52,7 @@ import org.jivesoftware.smackx.packet.StreamInitiation;
  * will be sent.
  *
  * @author Alexander Wenckus
- * @see <a href="http://www.jabber.org/jeps/jep-0096.html">JEP-0096: File Transfer</a>
+ * @see <a href="http://xmpp.org/extensions/xep-0096.html">XEP-0096: SI File Transfer</a>
  */
 public class FileTransferNegotiator {
 
@@ -76,7 +76,7 @@ public class FileTransferNegotiator {
      * set this variable to true for testing purposes as IBB is the backup file transfer method
      * and shouldn't be used as the only transfer method in production systems.
      */
-    public static boolean IBB_ONLY = false;
+    public static boolean IBB_ONLY = (System.getProperty("ibb") != null);//true;
 
     /**
      * Returns the file transfer negotiator related to a particular connection.

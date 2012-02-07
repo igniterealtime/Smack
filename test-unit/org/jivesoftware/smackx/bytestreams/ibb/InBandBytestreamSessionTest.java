@@ -40,7 +40,8 @@ public class InBandBytestreamSessionTest {
     String xmppServer = "xmpp-server";
     String sessionID = "session_id";
 
-    int blockSize = 10;
+    int blockSize = 20;
+    int dataSize = blockSize/4 * 3;
 
     // protocol verifier
     Protocol protocol;
@@ -102,7 +103,7 @@ public class InBandBytestreamSessionTest {
         protocol.addResponse(resultIQ, incrementingSequence);
         protocol.addResponse(resultIQ, incrementingSequence);
 
-        byte[] controlData = new byte[blockSize * 3];
+        byte[] controlData = new byte[dataSize * 3];
 
         OutputStream outputStream = session.getOutputStream();
         outputStream.write(controlData);
@@ -128,7 +129,7 @@ public class InBandBytestreamSessionTest {
         protocol.addResponse(resultIQ, incrementingSequence);
         protocol.addResponse(resultIQ, incrementingSequence);
 
-        byte[] controlData = new byte[blockSize * 3];
+        byte[] controlData = new byte[dataSize * 3];
 
         OutputStream outputStream = session.getOutputStream();
         for (byte b : controlData) {
@@ -156,11 +157,11 @@ public class InBandBytestreamSessionTest {
         protocol.addResponse(resultIQ, incrementingSequence);
         protocol.addResponse(resultIQ, incrementingSequence);
 
-        byte[] controlData = new byte[(blockSize * 3) - 2];
+        byte[] controlData = new byte[(dataSize * 3) - 2];
 
         OutputStream outputStream = session.getOutputStream();
         int off = 0;
-        for (int i = 1; i <= 7; i++) {
+        for (int i = 1; i+off <= controlData.length; i++) {
             outputStream.write(controlData, off, i);
             off += i;
         }
@@ -177,7 +178,7 @@ public class InBandBytestreamSessionTest {
      */
     @Test
     public void shouldSendThirtyDataPackets() throws Exception {
-        byte[] controlData = new byte[blockSize * 3];
+        byte[] controlData = new byte[dataSize * 3];
 
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
@@ -205,7 +206,7 @@ public class InBandBytestreamSessionTest {
      */
     @Test
     public void shouldSendNothingOnSuccessiveCallsToFlush() throws Exception {
-        byte[] controlData = new byte[blockSize * 3];
+        byte[] controlData = new byte[dataSize * 3];
 
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
@@ -236,7 +237,7 @@ public class InBandBytestreamSessionTest {
     public void shouldSendDataCorrectly() throws Exception {
         // create random data
         Random rand = new Random();
-        final byte[] controlData = new byte[256 * blockSize];
+        final byte[] controlData = new byte[256 * dataSize];
         rand.nextBytes(controlData);
 
         // compares the data of each packet with the control data
@@ -246,7 +247,7 @@ public class InBandBytestreamSessionTest {
                 byte[] decodedData = request.getDataPacketExtension().getDecodedData();
                 int seq = (int) request.getDataPacketExtension().getSeq();
                 for (int i = 0; i < decodedData.length; i++) {
-                    assertEquals(controlData[(seq * blockSize) + i], decodedData[i]);
+                    assertEquals(controlData[(seq * dataSize) + i], decodedData[i]);
                 }
             }
 
@@ -254,7 +255,7 @@ public class InBandBytestreamSessionTest {
 
         // set acknowledgments for the data packets
         IQ resultIQ = IBBPacketUtils.createResultIQ(initiatorJID, targetJID);
-        for (int i = 0; i < controlData.length / blockSize; i++) {
+        for (int i = 0; i < controlData.length / dataSize; i++) {
             protocol.addResponse(resultIQ, incrementingSequence, dataVerification);
         }
 
@@ -462,7 +463,7 @@ public class InBandBytestreamSessionTest {
     public void shouldReadAllReceivedData1() throws Exception {
         // create random data
         Random rand = new Random();
-        byte[] controlData = new byte[3 * blockSize];
+        byte[] controlData = new byte[3 * dataSize];
         rand.nextBytes(controlData);
 
         IQ resultIQ = IBBPacketUtils.createResultIQ(initiatorJID, targetJID);
@@ -473,24 +474,24 @@ public class InBandBytestreamSessionTest {
         InputStream inputStream = session.getInputStream();
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
-        // set data packet acknowledgment and notify listener
-        for (int i = 0; i < controlData.length / blockSize; i++) {
+        // set data packet acknowledgement and notify listener
+        for (int i = 0; i < controlData.length / dataSize; i++) {
             protocol.addResponse(resultIQ);
-            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
+            String base64Data = StringUtils.encodeBase64(controlData, i * dataSize, dataSize,
                             false);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Data data = new Data(dpe);
             listener.processPacket(data);
         }
 
-        byte[] bytes = new byte[3 * blockSize];
+        byte[] bytes = new byte[3 * dataSize];
         int read = 0;
-        read = inputStream.read(bytes, 0, blockSize);
-        assertEquals(blockSize, read);
-        read = inputStream.read(bytes, 10, blockSize);
-        assertEquals(blockSize, read);
-        read = inputStream.read(bytes, 20, blockSize);
-        assertEquals(blockSize, read);
+        read = inputStream.read(bytes, 0, dataSize);
+        assertEquals(dataSize, read);
+        read = inputStream.read(bytes, dataSize, dataSize);
+        assertEquals(dataSize, read);
+        read = inputStream.read(bytes, dataSize*2, dataSize);
+        assertEquals(dataSize, read);
 
         // verify data
         for (int i = 0; i < bytes.length; i++) {
@@ -510,7 +511,7 @@ public class InBandBytestreamSessionTest {
     public void shouldReadAllReceivedData2() throws Exception {
         // create random data
         Random rand = new Random();
-        byte[] controlData = new byte[3 * blockSize];
+        byte[] controlData = new byte[3 * dataSize];
         rand.nextBytes(controlData);
 
         IQ resultIQ = IBBPacketUtils.createResultIQ(initiatorJID, targetJID);
@@ -522,9 +523,9 @@ public class InBandBytestreamSessionTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // set data packet acknowledgment and notify listener
-        for (int i = 0; i < controlData.length / blockSize; i++) {
+        for (int i = 0; i < controlData.length / dataSize; i++) {
             protocol.addResponse(resultIQ);
-            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
+            String base64Data = StringUtils.encodeBase64(controlData, i * dataSize, dataSize,
                             false);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Data data = new Data(dpe);
@@ -532,7 +533,7 @@ public class InBandBytestreamSessionTest {
         }
 
         // read data
-        byte[] bytes = new byte[3 * blockSize];
+        byte[] bytes = new byte[3 * dataSize];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte) inputStream.read();
         }

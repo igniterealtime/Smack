@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smack.provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,8 +78,6 @@ import org.xmlpull.v1.XmlPullParser;
  * </pre>
  * 
  * @author Robin Collier
- * 
- * @deprecated This has been moved to {@link org.jivesoftware.smack.provider.EmbeddedExtensionProvider}
  */
 abstract public class EmbeddedExtensionProvider implements PacketExtensionProvider
 {

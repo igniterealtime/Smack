@@ -69,6 +69,7 @@
                 <include name="README.html" />
                 <include name="lib/*.jar" />
                 <include name="merge/*.jar" />
+                <include name="build/*.jar" />
             </fileset>
         </copy>
 		<copy todir="${release-dev.dir}/jingle/extension/build">

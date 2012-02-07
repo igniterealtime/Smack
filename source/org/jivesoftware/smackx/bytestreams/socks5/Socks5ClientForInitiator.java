@@ -20,9 +20,9 @@ import java.util.concurrent.TimeoutException;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
-import org.jivesoftware.smackx.packet.SyncPacketSend;
 
 /**
  * Implementation of a SOCKS5 client used on the initiators side. This is needed because connecting
