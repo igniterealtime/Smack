@@ -149,7 +149,7 @@ public class RosterExchangeManager {
     /**
      * Fires roster exchange listeners.
      */
-    private void fireRosterExchangeListeners(String from, Iterator remoteRosterEntries) {
+    private void fireRosterExchangeListeners(String from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
         RosterExchangeListener[] listeners = null;
         synchronized (rosterExchangeListeners) {
             listeners = new RosterExchangeListener[rosterExchangeListeners.size()];

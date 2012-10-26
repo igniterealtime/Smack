@@ -32,7 +32,7 @@ import java.util.*;
 public class ObservableReader extends Reader {
 
     Reader wrappedReader = null;
-    List listeners = new ArrayList();
+    List<ReaderListener> listeners = new ArrayList<ReaderListener>();
 
     public ObservableReader(Reader wrappedReader) {
         this.wrappedReader = wrappedReader;

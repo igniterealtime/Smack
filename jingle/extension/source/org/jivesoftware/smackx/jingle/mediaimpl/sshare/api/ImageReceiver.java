@@ -17,7 +17,8 @@ import java.net.SocketException;
  */
 public class ImageReceiver extends Canvas {
 
-    private boolean on = true;
+	private static final long serialVersionUID = -7000112305305269025L;
+	private boolean on = true;
     private DatagramSocket socket;
     private BufferedImage tiles[][];
     private static final int tileWidth = ImageTransmitter.tileWidth;

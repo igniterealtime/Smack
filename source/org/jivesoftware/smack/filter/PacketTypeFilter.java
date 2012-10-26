@@ -35,7 +35,7 @@ import org.jivesoftware.smack.packet.Packet;
  */
 public class PacketTypeFilter implements PacketFilter {
 
-    Class packetType;
+    Class<? extends Packet> packetType;
 
     /**
      * Creates a new packet type filter that will filter for packets that are the
@@ -43,7 +43,7 @@ public class PacketTypeFilter implements PacketFilter {
      *
      * @param packetType the Class type.
      */
-    public PacketTypeFilter(Class packetType) {
+    public PacketTypeFilter(Class<? extends Packet> packetType) {
         // Ensure the packet type is a sub-class of Packet.
         if (!Packet.class.isAssignableFrom(packetType)) {
             throw new IllegalArgumentException("Packet type must be a sub-class of Packet.");

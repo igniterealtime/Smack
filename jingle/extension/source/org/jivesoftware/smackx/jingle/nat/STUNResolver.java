@@ -134,8 +134,8 @@ public class STUNResolver extends TransportResolver {
      * @param stunConfigStream An InputStream with the configuration file.
      * @return A list of loaded servers
      */
-    public ArrayList loadSTUNServers(java.io.InputStream stunConfigStream) {
-        ArrayList serversList = new ArrayList();
+    public ArrayList<STUNService> loadSTUNServers(java.io.InputStream stunConfigStream) {
+        ArrayList<STUNService> serversList = new ArrayList<STUNService>();
         String serverName;
         int serverPort;
 
@@ -216,8 +216,8 @@ public class STUNResolver extends TransportResolver {
      *
      * @return a list of services
      */
-    public ArrayList loadSTUNServers() {
-        ArrayList serversList = new ArrayList();
+    public ArrayList<STUNService> loadSTUNServers() {
+        ArrayList<STUNService> serversList = new ArrayList<STUNService>();
 
         // Load the STUN configuration
         try {
@@ -228,11 +228,11 @@ public class STUNResolver extends TransportResolver {
             classLoaders[1] = Thread.currentThread().getContextClassLoader();
 
             for (int i = 0; i < classLoaders.length; i++) {
-                Enumeration stunConfigEnum = classLoaders[i]
+                Enumeration<URL> stunConfigEnum = classLoaders[i]
                         .getResources(STUNSERVERS_FILENAME);
 
                 while (stunConfigEnum.hasMoreElements() && serversList.isEmpty()) {
-                    URL url = (URL) stunConfigEnum.nextElement();
+                    URL url = stunConfigEnum.nextElement();
                     java.io.InputStream stunConfigStream = null;
 
                     stunConfigStream = url.openStream();
@@ -253,12 +253,12 @@ public class STUNResolver extends TransportResolver {
      *
      * @return the best STUN server that can be used.
      */
-    private STUNService bestSTUNServer(ArrayList listServers) {
+    private STUNService bestSTUNServer(ArrayList<STUNService> listServers) {
         if (listServers.isEmpty()) {
             return null;
         } else {
             // TODO: this should use some more advanced criteria...
-            return (STUNService) listServers.get(0);
+            return listServers.get(0);
         }
     }
 
@@ -305,19 +305,17 @@ public class STUNResolver extends TransportResolver {
                         // Iterate through the list of interfaces, and ask
                         // to the STUN server for our address.
                         try {
-                            Enumeration ifaces = NetworkInterface.getNetworkInterfaces();
+                            Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
                             String candAddress;
                             int candPort;
 
                             while (ifaces.hasMoreElements()) {
 
-                                NetworkInterface iface = (NetworkInterface) ifaces
-                                        .nextElement();
-                                Enumeration iaddresses = iface.getInetAddresses();
+                                NetworkInterface iface =  ifaces.nextElement();
+                                Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
 
                                 while (iaddresses.hasMoreElements()) {
-                                    InetAddress iaddress = (InetAddress) iaddresses
-                                            .nextElement();
+                                    InetAddress iaddress = iaddresses.nextElement();
                                     if (!iaddress.isLoopbackAddress()
                                             && !iaddress.isLinkLocalAddress()) {
 

@@ -52,7 +52,7 @@ import java.util.List;
  */
 public class RosterExchange implements PacketExtension {
 
-    private List remoteRosterEntries = new ArrayList();
+    private List<RemoteRosterEntry> remoteRosterEntries = new ArrayList<RemoteRosterEntry>();
 
     /**
      * Creates a new empty roster exchange package.
@@ -132,9 +132,9 @@ public class RosterExchange implements PacketExtension {
      *
      * @return an Iterator for the roster entries in the packet.
      */
-    public Iterator getRosterEntries() {
+    public Iterator<RemoteRosterEntry> getRosterEntries() {
         synchronized (remoteRosterEntries) {
-            List entries = Collections.unmodifiableList(new ArrayList(remoteRosterEntries));
+            List<RemoteRosterEntry> entries = Collections.unmodifiableList(new ArrayList<RemoteRosterEntry>(remoteRosterEntries));
             return entries.iterator();
         }
     }
@@ -170,8 +170,8 @@ public class RosterExchange implements PacketExtension {
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         // Loop through all roster entries and append them to the string buffer
-        for (Iterator i = getRosterEntries(); i.hasNext();) {
-            RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) i.next();
+        for (Iterator<RemoteRosterEntry> i = getRosterEntries(); i.hasNext();) {
+            RemoteRosterEntry remoteRosterEntry = i.next();
             buf.append(remoteRosterEntry.toXML());
         }
         buf.append("</").append(getElementName()).append(">");

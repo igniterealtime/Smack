@@ -318,8 +318,8 @@ public class AgentRoster {
                 }
                 // Fire an event.
                 synchronized (entries) {
-                    for (Iterator i = entries.iterator(); i.hasNext();) {
-                        String entry = (String)i.next();
+                    for (Iterator<String> i = entries.iterator(); i.hasNext();) {
+                        String entry = i.next();
                         if (entry.toLowerCase().equals(StringUtils.parseBareAddress(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
@@ -358,8 +358,8 @@ public class AgentRoster {
         public void processPacket(Packet packet) {
             if (packet instanceof AgentStatusRequest) {
                 AgentStatusRequest statusRequest = (AgentStatusRequest)packet;
-                for (Iterator i = statusRequest.getAgents().iterator(); i.hasNext();) {
-                    AgentStatusRequest.Item item = (AgentStatusRequest.Item)i.next();
+                for (Iterator<AgentStatusRequest.Item> i = statusRequest.getAgents().iterator(); i.hasNext();) {
+                    AgentStatusRequest.Item item = i.next();
                     String agentJID = item.getJID();
                     if ("remove".equals(item.getType())) {
 

@@ -27,7 +27,7 @@ public class SharedGroupManager {
      * @param connection connection to use to get the user's shared groups.
      * @return collection with the shared groups' name of the logged user.
      */
-    public static List getSharedGroups(Connection connection) throws XMPPException {
+    public static List<String> getSharedGroups(Connection connection) throws XMPPException {
         // Discover the shared groups of the logged user
         SharedGroupsInfo info = new SharedGroupsInfo();
         info.setType(IQ.Type.GET);

@@ -3,6 +3,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
  
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -129,14 +131,13 @@ public class SubscriberUseCases extends SingleUserTestCase
 //		assertEquals(true, sub.isConfigRequired());
 //	}
 //	
-
-	public void testGetItems() throws XMPPException
+	public void testGetItems() throws Exception
 	{
 		LeafNode node = getPubnode(true, false);
 		runNodeTests(node);
 	}
 	
-	private void runNodeTests(LeafNode node) throws XMPPException
+	private void runNodeTests(LeafNode node) throws Exception
 	{
 		node.send((Item)null);
 		node.send((Item)null);
@@ -176,18 +177,33 @@ public class SubscriberUseCases extends SingleUserTestCase
 		payloadNode.send(new PayloadItem<SimplePayload>("9-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>")));
 		
 		List<PayloadItem<SimplePayload>> payloadItems = payloadNode.getItems();
-		assertTrue(payloadItems.size() == 4);
-		assertEquals(payloadItems.get(0).getId(), "6-" + curTime);
-		assertEquals("<a xmlns='pubsub:test'/>", payloadItems.get(0).getPayload().toXML().replace('\"', '\''));
-		assertEquals(payloadItems.get(1).getId(), "7-" + curTime);
-		assertEquals("<a xmlns='pubsub:test' href=\'/up/here\'/>", payloadItems.get(1).getPayload().toXML().replace('\"', '\''));
-		assertEquals(payloadItems.get(2).getId(), "8-" + curTime);
-		assertEquals("<entity xmlns='pubsub:test'>text<inner>a</inner></entity>", payloadItems.get(2).getPayload().toXML().replace('\"', '\''));
-		assertEquals(payloadItems.get(3).getId(), "9-" + curTime);
-		assertEquals("<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>", payloadItems.get(3).getPayload().toXML().replace('\"', '\''));
+		Map<String, PayloadItem<SimplePayload>> idMap = new HashMap<String, PayloadItem<SimplePayload>>();
+		
+		for (PayloadItem<SimplePayload> payloadItem : payloadItems) 
+		{
+			idMap.put(payloadItem.getId(), payloadItem);
+		}
+		
+		assertEquals(4, payloadItems.size());
+
+		PayloadItem<SimplePayload> testItem = idMap.get("6-" + curTime);
+		assertNotNull(testItem);
+		assertXMLEqual("<a xmlns='pubsub:test'/>", testItem.getPayload().toXML());
+		
+		testItem = idMap.get("7-" + curTime);
+		assertNotNull(testItem);
+		assertXMLEqual("<a xmlns='pubsub:test' href=\'/up/here\'/>", testItem.getPayload().toXML());
+		
+		testItem = idMap.get("8-" + curTime);
+		assertNotNull(testItem);
+		assertXMLEqual("<entity xmlns='pubsub:test'>text<inner>a</inner></entity>", testItem.getPayload().toXML());
+
+		testItem = idMap.get("9-" + curTime);
+		assertNotNull(testItem);
+		assertXMLEqual("<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>", testItem.getPayload().toXML());
 	}
 
-	public void testGetSpecifiedItems() throws XMPPException
+	public void testGetSpecifiedItems() throws Exception
 	{
 		LeafNode node = getPubnode(true, true);
 		
@@ -204,12 +220,12 @@ public class SubscriberUseCases extends SingleUserTestCase
 
 		List<PayloadItem<SimplePayload>> items = node.getItems(ids);
 		assertEquals(3, items.size());
-		assertEquals(items.get(0).getId(), "1");
-		assertEquals("<a xmlns='pubsub:test' href='1'/>", items.get(0).getPayload().toXML().replace('\"', '\''));
-		assertEquals(items.get(1).getId(), "3");
-		assertEquals("<a xmlns='pubsub:test' href='3'/>", items.get(1).getPayload().toXML().replace('\"', '\''));
-		assertEquals(items.get(2).getId(), "4");
-		assertEquals("<a xmlns='pubsub:test' href='4'/>", items.get(2).getPayload().toXML().replace('\"', '\''));
+		assertEquals("1", items.get(0).getId());
+		assertXMLEqual("<a xmlns='pubsub:test' href='1'/>", items.get(0).getPayload().toXML());
+		assertEquals( "3", items.get(1).getId());
+		assertXMLEqual("<a xmlns='pubsub:test' href='3'/>", items.get(1).getPayload().toXML());
+		assertEquals("4", items.get(2).getId());
+		assertXMLEqual("<a xmlns='pubsub:test' href='4'/>", items.get(2).getPayload().toXML());
 	}
 
 	public void testGetLastNItems() throws XMPPException
@@ -224,8 +240,18 @@ public class SubscriberUseCases extends SingleUserTestCase
 		
 		List<Item> items = node.getItems(2);
 		assertEquals(2, items.size());
-		assertEquals(items.get(0).getId(), "4");
-		assertEquals(items.get(1).getId(), "5");
+		assertTrue(listContainsId("4", items));
+		assertTrue(listContainsId("5", items));
+	}
+
+	private static boolean listContainsId(String id, List<Item> items) 
+	{
+		for (Item item : items) 
+		{
+			if (item.getId().equals(id))
+				return true;
+		}
+		return false;
 	}
 
 	private String getJid()

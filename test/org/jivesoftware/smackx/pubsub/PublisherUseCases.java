@@ -3,7 +3,6 @@
  */
 package org.jivesoftware.smackx.pubsub;
  
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -105,7 +104,7 @@ public class PublisherUseCases extends SingleUserTestCase
 			assertNotNull(err.getExtension("payload-required", PubSubNamespace.ERROR.getXmlns()));
 		}
 	}
-		
+
 	public void testDeleteItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
@@ -118,8 +117,7 @@ public class PublisherUseCases extends SingleUserTestCase
 		node.deleteItem("1");
 		Collection<? extends Item> items = node.getItems();
 		
-		assertTrue(items.size() == 3);
-		assertEquals(items.iterator().next().getId(), "2");
+		assertEquals(3, items.size());
 	}
 
 	public void testPersistItems() throws XMPPException

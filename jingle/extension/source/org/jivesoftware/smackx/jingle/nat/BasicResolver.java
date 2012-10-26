@@ -54,7 +54,7 @@ public class BasicResolver extends TransportResolver {
 
         clearCandidates();
 
-        Enumeration ifaces = null;
+        Enumeration<NetworkInterface> ifaces = null;
 
         try {
             ifaces = NetworkInterface.getNetworkInterfaces();
@@ -64,11 +64,11 @@ public class BasicResolver extends TransportResolver {
 
         while (ifaces.hasMoreElements()) {
 
-            NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-            Enumeration iaddresses = iface.getInetAddresses();
+            NetworkInterface iface = ifaces.nextElement();
+            Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
             
             while (iaddresses.hasMoreElements()) {
-                InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                InetAddress iaddress = iaddresses.nextElement();
                 if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress() && !iaddress.isSiteLocalAddress()) {
                     TransportCandidate tr = new TransportCandidate.Fixed(iaddress.getHostAddress() != null ? iaddress.getHostAddress() : iaddress.getHostName(), getFreePort());
                     tr.setLocalIp(iaddress.getHostAddress() != null ? iaddress.getHostAddress() : iaddress.getHostName());
@@ -87,11 +87,11 @@ public class BasicResolver extends TransportResolver {
 
         while (ifaces.hasMoreElements()) {
 
-            NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-            Enumeration iaddresses = iface.getInetAddresses();
+            NetworkInterface iface = ifaces.nextElement();
+            Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
 
             while (iaddresses.hasMoreElements()) {
-                InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                InetAddress iaddress = iaddresses.nextElement();
                 if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress()) {
                     TransportCandidate tr = new TransportCandidate.Fixed(iaddress.getHostAddress() != null ? iaddress.getHostAddress() : iaddress.getHostName(), getFreePort());
                     tr.setLocalIp(iaddress.getHostAddress() != null ? iaddress.getHostAddress() : iaddress.getHostName());

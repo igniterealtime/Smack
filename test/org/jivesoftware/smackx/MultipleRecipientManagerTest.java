@@ -57,9 +57,9 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
 
         Message message = new Message();
         message.setBody("Hola");
-        List to = Arrays.asList(new String[]{getBareJID(1)});
-        List cc = Arrays.asList(new String[]{getBareJID(2)});
-        List bcc = Arrays.asList(new String[]{getBareJID(3)});
+        List<String> to = Arrays.asList(new String[]{getBareJID(1)});
+        List<String> cc = Arrays.asList(new String[]{getBareJID(2)});
+        List<String> bcc = Arrays.asList(new String[]{getBareJID(3)});
         MultipleRecipientManager.send(getConnection(0), message, to, cc, bcc);
 
         Packet message1 = collector1.nextResult(SmackConfiguration.getPacketReplyTimeout());
@@ -67,7 +67,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         MultipleRecipientInfo info1 = MultipleRecipientManager.getMultipleRecipientInfo(message1);
         assertNotNull("Message 1 does not contain MultipleRecipientInfo", info1);
         assertFalse("Message 1 should be 'replyable'", info1.shouldNotReply());
-        List addresses1 = info1.getTOAddresses();
+        List<?> addresses1 = info1.getTOAddresses();
         assertEquals("Incorrect number of TO addresses", 1, addresses1.size());
         String address1 = ((MultipleAddresses.Address) addresses1.get(0)).getJid();
         assertEquals("Incorrect TO address", getBareJID(1), address1);
@@ -81,7 +81,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         MultipleRecipientInfo info2 = MultipleRecipientManager.getMultipleRecipientInfo(message2);
         assertNotNull("Message 2 does not contain MultipleRecipientInfo", info2);
         assertFalse("Message 2 should be 'replyable'", info2.shouldNotReply());
-        List addresses2 = info2.getTOAddresses();
+        List<MultipleAddresses.Address> addresses2 = info2.getTOAddresses();
         assertEquals("Incorrect number of TO addresses", 1, addresses2.size());
         String address2 = ((MultipleAddresses.Address) addresses2.get(0)).getJid();
         assertEquals("Incorrect TO address", getBareJID(1), address2);
@@ -95,7 +95,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         MultipleRecipientInfo info3 = MultipleRecipientManager.getMultipleRecipientInfo(message3);
         assertNotNull("Message 3 does not contain MultipleRecipientInfo", info3);
         assertFalse("Message 3 should be 'replyable'", info3.shouldNotReply());
-        List addresses3 = info3.getTOAddresses();
+        List<MultipleAddresses.Address> addresses3 = info3.getTOAddresses();
         assertEquals("Incorrect number of TO addresses", 1, addresses3.size());
         String address3 = ((MultipleAddresses.Address) addresses3.get(0)).getJid();
         assertEquals("Incorrect TO address", getBareJID(1), address3);
@@ -125,9 +125,9 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         // Send the intial message with multiple recipients
         Message message = new Message();
         message.setBody("Hola");
-        List to = Arrays.asList(new String[]{getBareJID(1)});
-        List cc = Arrays.asList(new String[]{getBareJID(2)});
-        List bcc = Arrays.asList(new String[]{getBareJID(3)});
+        List<String> to = Arrays.asList(new String[]{getBareJID(1)});
+        List<String> cc = Arrays.asList(new String[]{getBareJID(2)});
+        List<String> bcc = Arrays.asList(new String[]{getBareJID(3)});
         MultipleRecipientManager.send(getConnection(0), message, to, cc, bcc);
 
         // Get the message and ensure it's ok
@@ -205,9 +205,9 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         // Send the intial message with multiple recipients
         Message message = new Message();
         message.setBody("Hola");
-        List to = Arrays.asList(new String[]{getBareJID(1)});
-        List cc = Arrays.asList(new String[]{getBareJID(2)});
-        List bcc = Arrays.asList(new String[]{getBareJID(3)});
+        List<String> to = Arrays.asList(new String[]{getBareJID(1)});
+        List<String> cc = Arrays.asList(new String[]{getBareJID(2)});
+        List<String> bcc = Arrays.asList(new String[]{getBareJID(3)});
         MultipleRecipientManager.send(getConnection(0), message, to, cc, bcc, null, null, true);
 
         // Get the message and ensure it's ok

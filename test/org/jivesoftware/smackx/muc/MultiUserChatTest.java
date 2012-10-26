@@ -378,7 +378,7 @@ public class MultiUserChatTest extends SmackTestCase {
     public void testDiscoverJoinedRooms() {
         try {
             // Check that user1 has joined only to one room
-            Iterator joinedRooms = MultiUserChat.getJoinedRooms(getConnection(1), getFullJID(0));
+            Iterator<String> joinedRooms = MultiUserChat.getJoinedRooms(getConnection(1), getFullJID(0));
             assertTrue("Joined rooms shouldn't be empty", joinedRooms.hasNext());
             assertEquals("Joined room is incorrect", joinedRooms.next(), room);
             assertFalse("User has joined more than one room", joinedRooms.hasNext());
@@ -427,12 +427,12 @@ public class MultiUserChatTest extends SmackTestCase {
 
     public void testDiscoverMUCService() {
         try {
-            Collection services = MultiUserChat.getServiceNames(getConnection(1));
+            Collection<String> services = MultiUserChat.getServiceNames(getConnection(1));
             assertFalse("No MUC service was found", services.isEmpty());
 
             // Discover the hosted rooms by the chat service.
-            Collection rooms = MultiUserChat.getHostedRooms(getConnection(1),
-                    (String) services.toArray()[0]);
+            Collection<HostedRoom> rooms = MultiUserChat.getHostedRooms(getConnection(1),
+                   services.toArray(new String[0])[0]);
             // Check that we have discovered the room used by this test
             assertFalse("No room was found", rooms.isEmpty());
             // Check that we have discovered the room used by this test
@@ -1553,22 +1553,21 @@ public class MultiUserChatTest extends SmackTestCase {
             muc.grantModerator("testbot3");
 
             // Check that the owner list is correct
-            Collection affiliates = muc.getOwners();
+            Collection<Affiliate> affiliates = muc.getOwners();
             assertEquals("Room does not have 2 owners", 2, affiliates.size());
-            for (Object affiliate1 : affiliates) {
-                Affiliate affiliate = (Affiliate) affiliate1;
-                if (getBareJID(0).equals(affiliate.getJid())) {
-                    assertEquals("Wrong affiliation", "owner", affiliate.getAffiliation());
-                    assertEquals("Wrong role", "moderator", affiliate.getRole());
-                    assertEquals("Wrong nick", "testbot", affiliate.getNick());
+            for (Affiliate affiliate1 : affiliates) {
+                if (getBareJID(0).equals(affiliate1.getJid())) {
+                    assertEquals("Wrong affiliation", "owner", affiliate1.getAffiliation());
+                    assertEquals("Wrong role", "moderator", affiliate1.getRole());
+                    assertEquals("Wrong nick", "testbot", affiliate1.getNick());
                 }
-                else if (getBareJID(1).equals(affiliate.getJid())) {
-                    assertEquals("Wrong affiliation", "owner", affiliate.getAffiliation());
-                    assertEquals("Wrong role", "moderator", affiliate.getRole());
-                    assertEquals("Wrong nick", "testbot2", affiliate.getNick());
+                else if (getBareJID(1).equals(affiliate1.getJid())) {
+                    assertEquals("Wrong affiliation", "owner", affiliate1.getAffiliation());
+                    assertEquals("Wrong role", "moderator", affiliate1.getRole());
+                    assertEquals("Wrong nick", "testbot2", affiliate1.getNick());
                 }
                 else {
-                    fail("Unknown owner " + affiliate.getJid());
+                    fail("Unknown owner " + affiliate1.getJid());
                 }
             }
 
@@ -1592,22 +1591,21 @@ public class MultiUserChatTest extends SmackTestCase {
             assertEquals("Room has outcasts", 0, affiliates.size());
 
             // Check that the moderator list is correct
-            Collection occupants = muc.getModerators();
+            Collection<Occupant> occupants = muc.getModerators();
             assertEquals("Room does not have 2 moderators", 2, occupants.size());
-            for (Object occupant1 : occupants) {
-                Occupant occupant = (Occupant) occupant1;
-                if (getFullJID(0).equals(occupant.getJid())) {
-                    assertEquals("Wrong affiliation", "owner", occupant.getAffiliation());
-                    assertEquals("Wrong role", "moderator", occupant.getRole());
-                    assertEquals("Wrong nick", "testbot", occupant.getNick());
+            for (Occupant occupant1 : occupants) {
+                if (getFullJID(0).equals(occupant1.getJid())) {
+                    assertEquals("Wrong affiliation", "owner", occupant1.getAffiliation());
+                    assertEquals("Wrong role", "moderator", occupant1.getRole());
+                    assertEquals("Wrong nick", "testbot", occupant1.getNick());
                 }
-                else if (getFullJID(2).equals(occupant.getJid())) {
-                    assertEquals("Wrong affiliation", "none", occupant.getAffiliation());
-                    assertEquals("Wrong role", "moderator", occupant.getRole());
-                    assertEquals("Wrong nick", "testbot3", occupant.getNick());
+                else if (getFullJID(2).equals(occupant1.getJid())) {
+                    assertEquals("Wrong affiliation", "none", occupant1.getAffiliation());
+                    assertEquals("Wrong role", "moderator", occupant1.getRole());
+                    assertEquals("Wrong nick", "testbot3", occupant1.getNick());
                 }
                 else {
-                    fail("Unknown moderator " + occupant.getJid());
+                    fail("Unknown moderator " + occupant1.getJid());
                 }
             }
 

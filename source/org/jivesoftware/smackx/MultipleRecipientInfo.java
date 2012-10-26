@@ -44,7 +44,7 @@ public class MultipleRecipientInfo {
      *
      * @return list of primary recipients of the packet.
      */
-    public List getTOAddresses() {
+    public List<MultipleAddresses.Address> getTOAddresses() {
         return extension.getAddressesOfType(MultipleAddresses.TO);
     }
 
@@ -54,7 +54,7 @@ public class MultipleRecipientInfo {
      *
      * @return list of secondary recipients of the packet.
      */
-    public List getCCAddresses() {
+    public List<MultipleAddresses.Address> getCCAddresses() {
         return extension.getAddressesOfType(MultipleAddresses.CC);
     }
 
@@ -68,7 +68,7 @@ public class MultipleRecipientInfo {
      *         no specific address was provided.
      */
     public String getReplyRoom() {
-        List replyRoom = extension.getAddressesOfType(MultipleAddresses.REPLY_ROOM);
+        List<MultipleAddresses.Address> replyRoom = extension.getAddressesOfType(MultipleAddresses.REPLY_ROOM);
         return replyRoom.isEmpty() ? null : ((MultipleAddresses.Address) replyRoom.get(0)).getJid();
     }
 
@@ -92,7 +92,7 @@ public class MultipleRecipientInfo {
      *         no specific address was provided.
      */
     public MultipleAddresses.Address getReplyAddress() {
-        List replyTo = extension.getAddressesOfType(MultipleAddresses.REPLY_TO);
+        List<MultipleAddresses.Address> replyTo = extension.getAddressesOfType(MultipleAddresses.REPLY_TO);
         return replyTo.isEmpty() ? null : (MultipleAddresses.Address) replyTo.get(0);
     }
 }

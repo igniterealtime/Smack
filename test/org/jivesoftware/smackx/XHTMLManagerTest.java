@@ -163,8 +163,8 @@ public class XHTMLManagerTest extends SmackTestCase {
             assertTrue(
                     "Message without XHTML bodies",
                     XHTMLManager.getBodies(message).hasNext());
-            for (Iterator it = XHTMLManager.getBodies(message); it.hasNext();) {
-                String body = (String) it.next();
+            for (Iterator<String> it = XHTMLManager.getBodies(message); it.hasNext();) {
+                String body = it.next();
                 System.out.println(body);
             }
         }
@@ -245,9 +245,9 @@ public class XHTMLManagerTest extends SmackTestCase {
             assertTrue(
                     "Message without XHTML bodies",
                     XHTMLManager.getBodies(message).hasNext());
-            for (Iterator it = XHTMLManager.getBodies(message); it.hasNext();) {
+            for (Iterator<String> it = XHTMLManager.getBodies(message); it.hasNext();) {
                 received++;
-                String body = (String) it.next();
+                String body = it.next();
                 System.out.println(body);
             }
             bodiesReceived = received;

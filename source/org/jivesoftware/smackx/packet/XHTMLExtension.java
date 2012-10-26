@@ -42,7 +42,7 @@ import java.util.List;
  */
 public class XHTMLExtension implements PacketExtension {
 
-    private List bodies = new ArrayList();
+    private List<String> bodies = new ArrayList<String>();
 
     /**
     * Returns the XML element name of the extension sub-packet root element.
@@ -85,8 +85,8 @@ public class XHTMLExtension implements PacketExtension {
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         // Loop through all the bodies and append them to the string buffer
-        for (Iterator i = getBodies(); i.hasNext();) {
-            buf.append((String) i.next());
+        for (Iterator<String> i = getBodies(); i.hasNext();) {
+            buf.append(i.next());
         }
         buf.append("</").append(getElementName()).append(">");
         return buf.toString();
@@ -97,9 +97,9 @@ public class XHTMLExtension implements PacketExtension {
      *
      * @return an Iterator for the bodies in the packet.
      */
-    public Iterator getBodies() {
+    public Iterator<String> getBodies() {
         synchronized (bodies) {
-            return Collections.unmodifiableList(new ArrayList(bodies)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(bodies)).iterator();
         }
     }
 

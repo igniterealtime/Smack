@@ -72,13 +72,13 @@ public class OctTreeQuantizer implements Quantizer {
 	private int reduceColors;
 	private int maximumColors;
 	private int colors = 0;
-	private Vector[] colorList;
+	private Vector<OctTreeNode>[] colorList;
 	
 	public OctTreeQuantizer() {
 		setup(256);
 		colorList = new Vector[MAX_LEVEL+1];
 		for (int i = 0; i < MAX_LEVEL+1; i++)
-			colorList[i] = new Vector();
+			colorList[i] = new Vector<OctTreeNode>();
 		root = new OctTreeNode();
 	}
 
@@ -200,10 +200,10 @@ public class OctTreeQuantizer implements Quantizer {
 
 	private void reduceTree(int numColors) {
 		for (int level = MAX_LEVEL-1; level >= 0; level--) {
-			Vector v = colorList[level];
+			Vector<OctTreeNode> v = colorList[level];
 			if (v != null && v.size() > 0) {
 				for (int j = 0; j < v.size(); j++) {
-					OctTreeNode node = (OctTreeNode)v.elementAt(j);
+					OctTreeNode node = v.elementAt(j);
 					if (node.children > 0) {
 						for (int i = 0; i < 8; i++) {
 							OctTreeNode child = node.leaf[i];

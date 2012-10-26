@@ -167,8 +167,8 @@ public class MessageEvent implements PacketExtension {
      *
      * @return an iterator over all the types of events of the MessageEvent.
      */
-    public Iterator getEventTypes() {
-        ArrayList allEvents = new ArrayList();
+    public Iterator<String> getEventTypes() {
+        ArrayList<String> allEvents = new ArrayList<String>();
         if (isDelivered()) {
             allEvents.add(MessageEvent.DELIVERED);
         }

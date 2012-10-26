@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import javax.security.sasl.Sasl;
-import javax.security.sasl.SaslClient;
 import javax.security.auth.callback.CallbackHandler;
 
 /**
@@ -61,7 +60,7 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
      */
     public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, XMPPException {
         String[] mechanisms = { getName() };
-        Map props = new HashMap();
+        Map<String,String> props = new HashMap<String,String>();
         props.put(Sasl.SERVER_AUTH,"TRUE");
         sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, cbh);
         authenticate();
@@ -80,7 +79,7 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
      */
     public void authenticate(String username, String host, String password) throws IOException, XMPPException {
         String[] mechanisms = { getName() };
-        Map props = new HashMap();
+        Map<String,String> props = new HashMap<String, String>();
         props.put(Sasl.SERVER_AUTH,"TRUE");
         sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, this);
         authenticate();

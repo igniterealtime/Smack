@@ -20,16 +20,6 @@
 
 package org.jivesoftware.smackx.packet;
 
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +32,17 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A VCard class for use with the
@@ -740,14 +741,14 @@ public class VCard extends IQ {
         }
 
         private void appendPhones(Map<String, String> phones, final String code) {
-            Iterator it = phones.entrySet().iterator();
+            Iterator<Map.Entry<String, String>> it = phones.entrySet().iterator();
             while (it.hasNext()) {
-                final Map.Entry entry = (Map.Entry) it.next();
+                final Map.Entry<String,String> entry = it.next();
                 appendTag("TEL", true, new ContentBuilder() {
                     public void addTagContent() {
                         appendEmptyTag(entry.getKey());
                         appendEmptyTag(code);
-                        appendTag("NUMBER", StringUtils.escapeForXML((String) entry.getValue()));
+                        appendTag("NUMBER", StringUtils.escapeForXML(entry.getValue()));
                     }
                 });
             }
@@ -759,10 +760,10 @@ public class VCard extends IQ {
                     public void addTagContent() {
                         appendEmptyTag(code);
 
-                        Iterator it = addr.entrySet().iterator();
+                        Iterator<Map.Entry<String, String>> it = addr.entrySet().iterator();
                         while (it.hasNext()) {
-                            final Map.Entry entry = (Map.Entry) it.next();
-                            appendTag((String) entry.getKey(), StringUtils.escapeForXML((String) entry.getValue()));
+                            final Entry<String, String> entry = it.next();
+                            appendTag(entry.getKey(), StringUtils.escapeForXML(entry.getValue()));
                         }
                     }
                 });
@@ -774,17 +775,17 @@ public class VCard extends IQ {
         }
 
         private void appendGenericFields() {
-            Iterator it = otherSimpleFields.entrySet().iterator();
+            Iterator<Map.Entry<String, String>> it = otherSimpleFields.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
+                Map.Entry<String, String> entry = it.next();
                 appendTag(entry.getKey().toString(),
-                        StringUtils.escapeForXML((String) entry.getValue()));
+                        StringUtils.escapeForXML(entry.getValue()));
             }
 
             it = otherUnescapableFields.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                appendTag(entry.getKey().toString(), (String) entry.getValue());
+                Map.Entry<String, String> entry = it.next();
+                appendTag(entry.getKey().toString(),entry.getValue());
             }
         }
 

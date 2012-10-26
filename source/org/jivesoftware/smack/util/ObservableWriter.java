@@ -32,7 +32,7 @@ import java.util.*;
 public class ObservableWriter extends Writer {
 
     Writer wrappedWriter = null;
-    List listeners = new ArrayList();
+    List<WriterListener> listeners = new ArrayList<WriterListener>();
 
     public ObservableWriter(Writer wrappedWriter) {
         this.wrappedWriter = wrappedWriter;

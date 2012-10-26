@@ -442,9 +442,9 @@ public class RTPBridge extends IQ {
 //            }
             
             DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
-            Iterator iter = discoInfo.getIdentities();
+            Iterator<DiscoverInfo.Identity> iter = discoInfo.getIdentities();
             while (iter.hasNext()) {
-                DiscoverInfo.Identity identity = (DiscoverInfo.Identity) iter.next();
+                DiscoverInfo.Identity identity = iter.next();
                 if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
 					return true;
 				}
@@ -528,7 +528,7 @@ public class RTPBridge extends IQ {
 
         if (response.getIp() == null || response.getIp().equals("")) return null;
 
-        Enumeration ifaces = null;
+        Enumeration<NetworkInterface> ifaces = null;
         try {
             ifaces = NetworkInterface.getNetworkInterfaces();
         }
@@ -537,11 +537,11 @@ public class RTPBridge extends IQ {
         }
         while (ifaces!=null&&ifaces.hasMoreElements()) {
 
-            NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-            Enumeration iaddresses = iface.getInetAddresses();
+            NetworkInterface iface = ifaces.nextElement();
+            Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
 
             while (iaddresses.hasMoreElements()) {
-                InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                InetAddress iaddress = iaddresses.nextElement();
                 if (!iaddress.isLoopbackAddress())
                     if (iaddress.getHostAddress().indexOf(response.getIp()) >= 0)
                         return null;

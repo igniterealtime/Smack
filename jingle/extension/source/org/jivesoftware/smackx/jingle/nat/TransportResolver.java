@@ -233,9 +233,9 @@ public abstract class TransportResolver {
      *
      * @return the list of listeners
      */
-    public ArrayList getListenersList() {
+    public ArrayList<TransportResolverListener> getListenersList() {
         synchronized (listeners) {
-            return new ArrayList(listeners);
+            return new ArrayList<TransportResolverListener>(listeners);
         }
     }
 
@@ -245,9 +245,9 @@ public abstract class TransportResolver {
      * @param cand The candidate added to the list of candidates.
      */
     protected void triggerCandidateAdded(TransportCandidate cand) {
-        Iterator iter = getListenersList().iterator();
+        Iterator<TransportResolverListener> iter = getListenersList().iterator();
         while (iter.hasNext()) {
-            TransportResolverListener trl = (TransportResolverListener) iter.next();
+            TransportResolverListener trl = iter.next();
             if (trl instanceof TransportResolverListener.Resolver) {
                 TransportResolverListener.Resolver li = (TransportResolverListener.Resolver) trl;
                 LOGGER.debug("triggerCandidateAdded : " + cand.getLocalIp());
@@ -260,9 +260,9 @@ public abstract class TransportResolver {
      * Trigger a event notifying the initialization of the resolution process.
      */
     private void triggerResolveInit() {
-        Iterator iter = getListenersList().iterator();
+        Iterator<TransportResolverListener> iter = getListenersList().iterator();
         while (iter.hasNext()) {
-            TransportResolverListener trl = (TransportResolverListener) iter.next();
+            TransportResolverListener trl = iter.next();
             if (trl instanceof TransportResolverListener.Resolver) {
                 TransportResolverListener.Resolver li = (TransportResolverListener.Resolver) trl;
                 li.init();
@@ -274,9 +274,9 @@ public abstract class TransportResolver {
      * Trigger a event notifying the obtention of all the candidates.
      */
     private void triggerResolveEnd() {
-        Iterator iter = getListenersList().iterator();
+        Iterator<TransportResolverListener> iter = getListenersList().iterator();
         while (iter.hasNext()) {
-            TransportResolverListener trl = (TransportResolverListener) iter.next();
+            TransportResolverListener trl = iter.next();
             if (trl instanceof TransportResolverListener.Resolver) {
                 TransportResolverListener.Resolver li = (TransportResolverListener.Resolver) trl;
                 li.end();
@@ -315,9 +315,9 @@ public abstract class TransportResolver {
      *
      * @return an iterator
      */
-    public Iterator getCandidates() {
+    public Iterator<TransportCandidate> getCandidates() {
         synchronized (candidates) {
-            return Collections.unmodifiableList(new ArrayList(candidates)).iterator();
+            return Collections.unmodifiableList(new ArrayList<TransportCandidate>(candidates)).iterator();
         }
     }
 
@@ -329,7 +329,13 @@ public abstract class TransportResolver {
     public TransportCandidate getPreferredCandidate() {
         TransportCandidate result = null;
 
-        ArrayList cands = (ArrayList) getCandidatesList();
+        ArrayList<ICECandidate> cands = new ArrayList<ICECandidate>();
+        for (TransportCandidate tpcan : getCandidatesList()) {
+            if (tpcan instanceof ICECandidate)
+                cands.add((ICECandidate) tpcan);
+        }
+        
+        // (ArrayList<ICECandidate>) getCandidatesList();
         if (cands.size() > 0) {
             Collections.sort(cands);
             // Return the last candidate

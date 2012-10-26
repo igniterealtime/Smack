@@ -122,9 +122,9 @@ class SimpleUserSearch extends IQ {
                 fields.add(field);
 
                 boolean exists = false;
-                Iterator cols = data.getColumns();
+                Iterator<ReportedData.Column> cols = data.getColumns();
                 while (cols.hasNext()) {
-                    ReportedData.Column column = (ReportedData.Column) cols.next();
+                    ReportedData.Column column = cols.next();
                     if (column.getVariable().equals(name)) {
                         exists = true;
                     }

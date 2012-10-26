@@ -58,9 +58,8 @@ public class Workgroup {
     private String workgroupJID;
     private Connection connection;
     private boolean inQueue;
-    private List invitationListeners;
-    private List queueListeners;
-    private List siteInviteListeners;
+    private List<WorkgroupInvitationListener> invitationListeners;
+    private List<QueueListener> queueListeners;
 
     private int queuePosition = -1;
     private int queueRemainingTime = -1;
@@ -84,9 +83,8 @@ public class Workgroup {
         this.workgroupJID = workgroupJID;
         this.connection = connection;
         inQueue = false;
-        invitationListeners = new ArrayList();
-        queueListeners = new ArrayList();
-        siteInviteListeners = new ArrayList();
+        invitationListeners = new ArrayList<WorkgroupInvitationListener>();
+        queueListeners = new ArrayList<QueueListener>();
 
         // Register as a queue listener for internal usage by this instance.
         addQueueListener(new QueueListener() {
@@ -378,7 +376,7 @@ public class Workgroup {
      *                       that a connection failure occured or that the server explicitly rejected the
      *                       request to join the queue.
      */
-    public void joinQueue(Map metadata, String userID) throws XMPPException {
+    public void joinQueue(Map<String,Object> metadata, String userID) throws XMPPException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -386,10 +384,10 @@ public class Workgroup {
 
         // Build dataform from metadata
         Form form = new Form(Form.TYPE_SUBMIT);
-        Iterator iter = metadata.keySet().iterator();
+        Iterator<String> iter = metadata.keySet().iterator();
         while (iter.hasNext()) {
-            String name = (String)iter.next();
-            String value = (String)metadata.get(name).toString();
+            String name = iter.next();
+            String value = metadata.get(name).toString();
 
             String escapedName = StringUtils.escapeForXML(name);
             String escapedValue = StringUtils.escapeForXML(value);
@@ -489,8 +487,8 @@ public class Workgroup {
 
     private void fireInvitationEvent(WorkgroupInvitation invitation) {
         synchronized (invitationListeners) {
-            for (Iterator i = invitationListeners.iterator(); i.hasNext();) {
-                WorkgroupInvitationListener listener = (WorkgroupInvitationListener)i.next();
+            for (Iterator<WorkgroupInvitationListener> i = invitationListeners.iterator(); i.hasNext();) {
+                WorkgroupInvitationListener listener = i.next();
                 listener.invitationReceived(invitation);
             }
         }
@@ -498,8 +496,8 @@ public class Workgroup {
 
     private void fireQueueJoinedEvent() {
         synchronized (queueListeners) {
-            for (Iterator i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = (QueueListener)i.next();
+            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
+                QueueListener listener = i.next();
                 listener.joinedQueue();
             }
         }
@@ -507,8 +505,8 @@ public class Workgroup {
 
     private void fireQueueDepartedEvent() {
         synchronized (queueListeners) {
-            for (Iterator i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = (QueueListener)i.next();
+            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
+                QueueListener listener = i.next();
                 listener.departedQueue();
             }
         }
@@ -516,8 +514,8 @@ public class Workgroup {
 
     private void fireQueuePositionEvent(int currentPosition) {
         synchronized (queueListeners) {
-            for (Iterator i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = (QueueListener)i.next();
+            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
+                QueueListener listener = i.next();
                 listener.queuePositionUpdated(currentPosition);
             }
         }
@@ -525,8 +523,8 @@ public class Workgroup {
 
     private void fireQueueTimeEvent(int secondsRemaining) {
         synchronized (queueListeners) {
-            for (Iterator i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = (QueueListener)i.next();
+            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
+                QueueListener listener = i.next();
                 listener.queueWaitTimeUpdated(secondsRemaining);
             }
         }
@@ -560,7 +558,7 @@ public class Workgroup {
                 MUCUser.Invite invite = mucUser != null ? mucUser.getInvite() : null;
                 if (invite != null && workgroupJID.equals(invite.getFrom())) {
                     String sessionID = null;
-                    Map metaData = null;
+                    Map<String, List<String>> metaData = null;
 
                     pe = msg.getExtension(SessionID.ELEMENT_NAME,
                             SessionID.NAMESPACE);

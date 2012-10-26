@@ -105,7 +105,7 @@ public class DataFormProvider implements PacketExtensionProvider {
 
     private DataForm.Item parseItem(XmlPullParser parser) throws Exception {
         boolean done = false;
-        List fields = new ArrayList();
+        List<FormField> fields = new ArrayList<FormField>();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -123,7 +123,7 @@ public class DataFormProvider implements PacketExtensionProvider {
 
     private DataForm.ReportedData parseReported(XmlPullParser parser) throws Exception {
         boolean done = false;
-        List fields = new ArrayList();
+        List<FormField> fields = new ArrayList<FormField>();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {

@@ -45,11 +45,11 @@ public class PrivacyTest extends SmackTestCase {
                         
             // Assert the list composition.
             assertEquals(listName, privacyManager.getActiveList().toString());
-            List privacyItems = privacyManager.getPrivacyList(listName).getItems();
+            List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
             assertEquals(1, privacyItems.size());
 
             // Assert the privacy item composition
-            PrivacyItem receivedItem = (PrivacyItem) privacyItems.get(0);
+            PrivacyItem receivedItem = privacyItems.get(0);
             assertEquals(1, receivedItem.getOrder());
             assertEquals(PrivacyItem.Type.jid, receivedItem.getType());
             assertEquals(true, receivedItem.isAllow());
@@ -278,11 +278,11 @@ public class PrivacyTest extends SmackTestCase {
 	    		    	
 	    	// Assert the list composition.
 	    	assertEquals(listName, privacyManager.getDefaultList().toString());
-	    	List privacyItems = privacyManager.getPrivacyList(listName).getItems();
+	    	List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
 	    	assertEquals(1, privacyItems.size());
 
 	    	// Assert the privacy item composition
-	    	PrivacyItem receivedItem = (PrivacyItem) privacyItems.get(0);
+	    	PrivacyItem receivedItem = privacyItems.get(0);
 	    	assertEquals(1, receivedItem.getOrder());
 	    	assertEquals(PrivacyItem.Type.jid, receivedItem.getType());
 	    	assertEquals(true, receivedItem.isAllow());
@@ -427,7 +427,7 @@ public class PrivacyTest extends SmackTestCase {
     		Thread.sleep(500);
 
 	    	// Assert the server list composition.
-	    	List privacyItems = privacyManager.getPrivacyList(listName).getItems();
+	    	List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
 	    	assertEquals(originalPrivacyItems.length, privacyItems.size());
 
 	    	// Assert the local and server privacy item composition
@@ -436,7 +436,7 @@ public class PrivacyTest extends SmackTestCase {
 	    	int index;
 	    	for (int j = 0; j < originalPrivacyItems.length; j++) {
 	    		// Look for the same server and original items
-	    		receivedItem = (PrivacyItem) privacyItems.get(j);
+	    		receivedItem = privacyItems.get(j);
 	    		index = 0;
 	    		while ((index < originalPrivacyItems.length) 
 	    				&& (originalPrivacyItems[index].getOrder() != receivedItem.getOrder())) {

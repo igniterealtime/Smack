@@ -96,7 +96,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleSession.class);
 
 	// static
-    private static final HashMap sessions = new HashMap();
+    private static final HashMap<Connection, JingleSession> sessions = new HashMap<Connection, JingleSession>();
 
     private static final Random randomGenerator = new Random();
 
@@ -116,13 +116,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     protected List<JingleMediaManager> jingleMediaManagers = null;
 
-    private boolean closed = false;
-
     private JingleSessionState sessionState;
 
     private List<ContentNegotiator> contentNegotiators;
-
-    private JingleSessionRequest sessionRequest;
 
     private Connection connection;
 
@@ -181,7 +177,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public JingleSession(Connection conn, JingleSessionRequest request, String initiator, String responder,
             List<JingleMediaManager> jingleMediaManagers) {
         this(conn, initiator, responder, generateSessionId(), jingleMediaManagers);
-        sessionRequest = request;
+        //sessionRequest = request; // unused
     }
 
     /**
@@ -525,29 +521,6 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     //            throw new IllegalStateException("Only session-initiate allowed in the UNKNOWN state.");
     //        }
     //    }
-    /**
-     *  @param inJingle
-     *  @param inAction
-     */
-    private void sendPendingStateAction(Jingle inJingle, JingleActionEnum inAction) {
-
-    }
-
-    /**
-     *  @param inJingle
-     *  @param inAction
-     */
-    private void sendActiveStateAction(Jingle inJingle, JingleActionEnum inAction) {
-
-    }
-
-    /**
-     *  @param inJingle
-     *  @param inAction
-     */
-    private void sendEndedStateAction(Jingle inJingle, JingleActionEnum inAction) {
-
-    }
 
     /**
      * Acknowledge a IQ packet.
@@ -670,7 +643,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         JingleSession result = null;
         synchronized (sessions) {
             if (sessions.containsKey(con)) {
-                result = (JingleSession) sessions.get(con);
+                result = sessions.get(con);
             }
         }
 

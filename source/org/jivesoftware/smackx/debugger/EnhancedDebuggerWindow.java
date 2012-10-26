@@ -226,7 +226,7 @@ public class EnhancedDebuggerWindow {
         Vector<String> providers = new Vector<String>();
         for (Object provider : ProviderManager.getInstance().getIQProviders()) {
             if (provider.getClass() == Class.class) {
-                providers.add(((Class) provider).getName());
+                providers.add(((Class<?>) provider).getName());
             }
             else {
                 providers.add(provider.getClass().getName());
@@ -245,7 +245,7 @@ public class EnhancedDebuggerWindow {
         providers = new Vector<String>();
         for (Object provider : ProviderManager.getInstance().getExtensionProviders()) {
             if (provider.getClass() == Class.class) {
-                providers.add(((Class) provider).getName());
+                providers.add(((Class<?>) provider).getName());
             }
             else {
                 providers.add(provider.getClass().getName());

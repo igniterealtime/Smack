@@ -1,5 +1,6 @@
 package org.jivesoftware.smackx.jingle.nat;
 
+import de.javawi.jstun.test.demo.StunServer;
 import de.javawi.jstun.test.demo.ice.Candidate;
 import de.javawi.jstun.test.demo.ice.ICENegociator;
 import de.javawi.jstun.util.UtilityException;
@@ -13,6 +14,7 @@ import org.jivesoftware.smackx.jingle.listeners.JingleSessionRequestListener;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.test.TestMediaManager;
+import org.jivesoftware.smackx.jingle.nat.STUNResolver.STUNService;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -182,7 +184,7 @@ public class STUNResolverTest extends SmackTestCase {
     public void testLoadSTUNServers() throws Exception {
         STUNResolver stunResolver = new STUNResolver() {
         };
-        ArrayList stunServers = stunResolver.loadSTUNServers();
+        ArrayList<STUNService> stunServers = stunResolver.loadSTUNServers();
 
         assertTrue(stunServers.size() > 0);
         System.out.println(stunServers.size() + " servers loaded");
@@ -244,8 +246,8 @@ public class STUNResolverTest extends SmackTestCase {
      *
      * @return A testing list
      */
-    private ArrayList getTestPayloads1() {
-        ArrayList result = new ArrayList();
+    private ArrayList<PayloadType> getTestPayloads1() {
+        ArrayList<PayloadType> result = new ArrayList<PayloadType>();
 
         result.add(new PayloadType.Audio(34, "supercodec-1", 2, 14000));
         result.add(new PayloadType.Audio(56, "supercodec-2", 1, 44000));
@@ -255,8 +257,8 @@ public class STUNResolverTest extends SmackTestCase {
         return result;
     }
 
-    private ArrayList getTestPayloads2() {
-        ArrayList result = new ArrayList();
+    private ArrayList<PayloadType> getTestPayloads2() {
+        ArrayList<PayloadType> result = new ArrayList<PayloadType>();
 
         result.add(new PayloadType.Audio(27, "supercodec-3", 2, 28000));
         result.add(new PayloadType.Audio(56, "supercodec-2", 1, 44000));

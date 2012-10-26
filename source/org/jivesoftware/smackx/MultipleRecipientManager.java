@@ -47,7 +47,7 @@ public class MultipleRecipientManager {
      * Create a cache to hold the 100 most recently accessed elements for a period of
      * 24 hours.
      */
-    private static Cache services = new Cache(100, 24 * 60 * 60 * 1000);
+    private static Cache<String, String> services = new Cache<String, String>(100, 24 * 60 * 60 * 1000);
 
     /**
      * Sends the specified packet to the list of specified recipients using the
@@ -67,7 +67,7 @@ public class MultipleRecipientManager {
      * @throws XMPPException if server does not support JEP-33: Extended Stanza Addressing and
      *                       some JEP-33 specific features were requested.
      */
-    public static void send(Connection connection, Packet packet, List to, List cc, List bcc)
+    public static void send(Connection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc)
             throws XMPPException {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
@@ -95,7 +95,7 @@ public class MultipleRecipientManager {
      * @throws XMPPException if server does not support JEP-33: Extended Stanza Addressing and
      *                       some JEP-33 specific features were requested.
      */
-    public static void send(Connection connection, Packet packet, List to, List cc, List bcc,
+    public static void send(Connection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc,
             String replyTo, String replyRoom, boolean noReply) throws XMPPException {
         String serviceAddress = getMultipleRecipienServiceAddress(connection);
         if (serviceAddress != null) {
@@ -151,14 +151,14 @@ public class MultipleRecipientManager {
         }
         else {
             // Send reply to multiple recipients
-            List to = new ArrayList();
-            List cc = new ArrayList();
-            for (Iterator it = info.getTOAddresses().iterator(); it.hasNext();) {
-                String jid = ((MultipleAddresses.Address) it.next()).getJid();
+            List<String> to = new ArrayList<String>();
+            List<String> cc = new ArrayList<String>();
+            for (Iterator<MultipleAddresses.Address> it = info.getTOAddresses().iterator(); it.hasNext();) {
+                String jid = it.next().getJid();
                 to.add(jid);
             }
-            for (Iterator it = info.getCCAddresses().iterator(); it.hasNext();) {
-                String jid = ((MultipleAddresses.Address) it.next()).getJid();
+            for (Iterator<MultipleAddresses.Address> it = info.getCCAddresses().iterator(); it.hasNext();) {
+                String jid = it.next().getJid();
                 cc.add(jid);
             }
             // Add original sender as a 'to' address (if not already present)
@@ -202,50 +202,50 @@ public class MultipleRecipientManager {
     }
 
     private static void sendToIndividualRecipients(Connection connection, Packet packet,
-            List to, List cc, List bcc) {
+            List<String> to, List<String> cc, List<String> bcc) {
         if (to != null) {
-            for (Iterator it = to.iterator(); it.hasNext();) {
-                String jid = (String) it.next();
+            for (Iterator<String> it = to.iterator(); it.hasNext();) {
+                String jid = it.next();
                 packet.setTo(jid);
                 connection.sendPacket(new PacketCopy(packet.toXML()));
             }
         }
         if (cc != null) {
-            for (Iterator it = cc.iterator(); it.hasNext();) {
-                String jid = (String) it.next();
+            for (Iterator<String> it = cc.iterator(); it.hasNext();) {
+                String jid = it.next();
                 packet.setTo(jid);
                 connection.sendPacket(new PacketCopy(packet.toXML()));
             }
         }
         if (bcc != null) {
-            for (Iterator it = bcc.iterator(); it.hasNext();) {
-                String jid = (String) it.next();
+            for (Iterator<String> it = bcc.iterator(); it.hasNext();) {
+                String jid = it.next();
                 packet.setTo(jid);
                 connection.sendPacket(new PacketCopy(packet.toXML()));
             }
         }
     }
 
-    private static void sendThroughService(Connection connection, Packet packet, List to,
-            List cc, List bcc, String replyTo, String replyRoom, boolean noReply,
+    private static void sendThroughService(Connection connection, Packet packet, List<String> to,
+            List<String> cc, List<String> bcc, String replyTo, String replyRoom, boolean noReply,
             String serviceAddress) {
         // Create multiple recipient extension
         MultipleAddresses multipleAddresses = new MultipleAddresses();
         if (to != null) {
-            for (Iterator it = to.iterator(); it.hasNext();) {
-                String jid = (String) it.next();
+            for (Iterator<String> it = to.iterator(); it.hasNext();) {
+                String jid = it.next();
                 multipleAddresses.addAddress(MultipleAddresses.TO, jid, null, null, false, null);
             }
         }
         if (cc != null) {
-            for (Iterator it = cc.iterator(); it.hasNext();) {
-                String jid = (String) it.next();
+            for (Iterator<String> it = cc.iterator(); it.hasNext();) {
+                String jid = it.next();
                 multipleAddresses.addAddress(MultipleAddresses.CC, jid, null, null, false, null);
             }
         }
         if (bcc != null) {
-            for (Iterator it = bcc.iterator(); it.hasNext();) {
-                String jid = (String) it.next();
+            for (Iterator<String> it = bcc.iterator(); it.hasNext();) {
+                String jid = it.next();
                 multipleAddresses.addAddress(MultipleAddresses.BCC, jid, null, null, false, null);
             }
         }
@@ -300,8 +300,8 @@ public class MultipleRecipientManager {
                             // Get the disco items and send the disco packet to each server item
                             DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection)
                                     .discoverItems(serviceName);
-                            for (Iterator it = items.getItems(); it.hasNext();) {
-                                DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+                            for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
+                                DiscoverItems.Item item = it.next();
                                 info = ServiceDiscoveryManager.getInstanceFor(connection)
                                         .discoverInfo(item.getEntityID(), item.getNode());
                                 if (info.containsFeature("http://jabber.org/protocol/address")) {

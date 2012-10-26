@@ -20,7 +20,7 @@ public class SharedGroupsTest extends SmackTestCase {
     }
 
     public void testGetUserSharedGroups() throws XMPPException {
-        List groups = SharedGroupManager.getSharedGroups(getConnection(0));
+        List<String> groups = SharedGroupManager.getSharedGroups(getConnection(0));
 
         assertNotNull("User groups was null", groups);
     }

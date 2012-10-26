@@ -41,7 +41,7 @@ public class MultipleAddresses implements PacketExtension {
     public static final String TO = "to";
 
 
-    private List addresses = new ArrayList();
+    private List<Address> addresses = new ArrayList<Address>();
 
     /**
      * Adds a new address to which the packet is going to be sent or was sent.
@@ -84,9 +84,9 @@ public class MultipleAddresses implements PacketExtension {
      * @param type Examples of address type are: TO, CC, BCC, etc.
      * @return the list of addresses that matches the specified type.
      */
-    public List getAddressesOfType(String type) {
-        List answer = new ArrayList(addresses.size());
-        for (Iterator it = addresses.iterator(); it.hasNext();) {
+    public List<Address> getAddressesOfType(String type) {
+        List<Address> answer = new ArrayList<Address>(addresses.size());
+        for (Iterator<Address> it = addresses.iterator(); it.hasNext();) {
             Address address = (Address) it.next();
             if (address.getType().equals(type)) {
                 answer.add(address);
@@ -109,7 +109,7 @@ public class MultipleAddresses implements PacketExtension {
         buf.append("<").append(getElementName());
         buf.append(" xmlns=\"").append(getNamespace()).append("\">");
         // Loop through all the addresses and append them to the string buffer
-        for (Iterator i = addresses.iterator(); i.hasNext();) {
+        for (Iterator<Address> i = addresses.iterator(); i.hasNext();) {
             Address address = (Address) i.next();
             buf.append(address.toXML());
         }

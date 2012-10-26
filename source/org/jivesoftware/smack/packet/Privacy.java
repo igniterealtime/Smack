@@ -58,7 +58,7 @@ public class Privacy extends IQ {
      * @param listItem the {@link PrivacyItem} that rules the list.
      * @return the privacy List.
      */
-    public List setPrivacyList(String listName, List<PrivacyItem> listItem) {
+    public List<PrivacyItem> setPrivacyList(String listName, List<PrivacyItem> listItem) {
         // Add new list to the itemLists
         this.getItemLists().put(listName, listItem);
         return listItem;

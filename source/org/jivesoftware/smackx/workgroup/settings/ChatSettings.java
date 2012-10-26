@@ -45,12 +45,12 @@ public class ChatSettings extends IQ {
      */
     public static final int BOT_SETTINGS = 2;
 
-    private List settings;
+    private List<ChatSetting> settings;
     private String key;
     private int type = -1;
 
     public ChatSettings() {
-        settings = new ArrayList();
+        settings = new ArrayList<ChatSetting>();
     }
 
     public ChatSettings(String key) {
@@ -69,16 +69,16 @@ public class ChatSettings extends IQ {
         settings.add(setting);
     }
 
-    public Collection getSettings() {
+    public Collection<ChatSetting> getSettings() {
         return settings;
     }
 
     public ChatSetting getChatSetting(String key) {
-        Collection col = getSettings();
+        Collection<ChatSetting> col = getSettings();
         if (col != null) {
-            Iterator iter = col.iterator();
+            Iterator<ChatSetting> iter = col.iterator();
             while (iter.hasNext()) {
-                ChatSetting chatSetting = (ChatSetting)iter.next();
+                ChatSetting chatSetting = iter.next();
                 if (chatSetting.getKey().equals(key)) {
                     return chatSetting;
                 }

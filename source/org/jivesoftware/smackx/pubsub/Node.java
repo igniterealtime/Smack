@@ -37,7 +37,7 @@ abstract public class Node
 	protected String id;
 	protected String to;
 	
-	protected ConcurrentHashMap<ItemEventListener, PacketListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener, PacketListener>();
+	protected ConcurrentHashMap<ItemEventListener<Item>, PacketListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, PacketListener>();
 	protected ConcurrentHashMap<ItemDeleteListener, PacketListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, PacketListener>();
 	protected ConcurrentHashMap<NodeConfigListener, PacketListener> configEventToListenerMap = new ConcurrentHashMap<NodeConfigListener, PacketListener>();
 	

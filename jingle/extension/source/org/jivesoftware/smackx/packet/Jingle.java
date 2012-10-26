@@ -218,7 +218,7 @@ public class Jingle extends IQ {
      */
     public Iterator<JingleContent> getContents() {
         synchronized (contents) {
-            return Collections.unmodifiableList(new ArrayList(contents)).iterator();
+            return Collections.unmodifiableList(new ArrayList<JingleContent>(contents)).iterator();
         }
     }
 

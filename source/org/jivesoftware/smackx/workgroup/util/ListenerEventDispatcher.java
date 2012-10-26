@@ -17,7 +17,8 @@
 package org.jivesoftware.smackx.workgroup.util;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * This class is a very flexible event dispatcher which implements Runnable so that it can
@@ -34,7 +35,7 @@ import java.util.*;
 public class ListenerEventDispatcher
     implements Runnable {
 
-    protected transient ArrayList triplets;
+    protected transient ArrayList<TripletContainer> triplets;
 
     protected transient boolean hasFinishedDispatching;
     protected transient boolean isRunning;
@@ -42,7 +43,7 @@ public class ListenerEventDispatcher
     public ListenerEventDispatcher () {
         super();
 
-        this.triplets = new ArrayList();
+        this.triplets = new ArrayList<TripletContainer>();
 
         this.hasFinishedDispatching = false;
         this.isRunning = false;
@@ -81,13 +82,13 @@ public class ListenerEventDispatcher
     }
 
     public void run() {
-        ListIterator li = null;
+        ListIterator<TripletContainer> li = null;
 
         this.isRunning = true;
 
         li = this.triplets.listIterator();
         while (li.hasNext()) {
-            TripletContainer tc = (TripletContainer)li.next();
+            TripletContainer tc = li.next();
 
             try {
                 tc.getListenerMethod().invoke(tc.getListenerInstance(), tc.getMethodArguments());

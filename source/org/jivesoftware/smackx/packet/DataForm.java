@@ -202,7 +202,7 @@ public class DataForm implements PacketExtension {
         if (getTitle() != null) {
             buf.append("<title>").append(getTitle()).append("</title>");
         }
-        for (Iterator it=getInstructions(); it.hasNext();) {
+        for (Iterator<String> it=getInstructions(); it.hasNext();) {
             buf.append("<instructions>").append(it.next()).append("</instructions>");
         }
         // Append the list of fields returned from a search
@@ -210,13 +210,13 @@ public class DataForm implements PacketExtension {
             buf.append(getReportedData().toXML());
         }
         // Loop through all the items returned from a search and append them to the string buffer
-        for (Iterator i = getItems(); i.hasNext();) {
-            Item item = (Item) i.next();
+        for (Iterator<Item> i = getItems(); i.hasNext();) {
+            Item item = i.next();
             buf.append(item.toXML());
         }
         // Loop through all the form fields and append them to the string buffer
-        for (Iterator i = getFields(); i.hasNext();) {
-            FormField field = (FormField) i.next();
+        for (Iterator<FormField> i = getFields(); i.hasNext();) {
+            FormField field = i.next();
             buf.append(field.toXML());
         }
         buf.append("</").append(getElementName()).append(">");
@@ -250,8 +250,8 @@ public class DataForm implements PacketExtension {
             StringBuilder buf = new StringBuilder();
             buf.append("<reported>");
             // Loop through all the form items and append them to the string buffer
-            for (Iterator i = getFields(); i.hasNext();) {
-                FormField field = (FormField) i.next();
+            for (Iterator<FormField> i = getFields(); i.hasNext();) {
+                FormField field = i.next();
                 buf.append(field.toXML());
             }
             buf.append("</reported>");
@@ -285,8 +285,8 @@ public class DataForm implements PacketExtension {
             StringBuilder buf = new StringBuilder();
             buf.append("<item>");
             // Loop through all the form items and append them to the string buffer
-            for (Iterator i = getFields(); i.hasNext();) {
-                FormField field = (FormField) i.next();
+            for (Iterator<FormField> i = getFields(); i.hasNext();) {
+                FormField field = i.next();
                 buf.append(field.toXML());
             }
             buf.append("</item>");

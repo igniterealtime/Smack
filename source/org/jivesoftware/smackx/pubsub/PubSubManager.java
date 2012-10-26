@@ -19,9 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
@@ -149,7 +149,7 @@ final public class PubSubManager
 	 * @return the node
 	 * @throws XMPPException The node does not exist
 	 */
-	public Node getNode(String id)
+	public <T extends Node> T getNode(String id)
 		throws XMPPException
 	{
 		Node node = nodeMap.get(id);
@@ -169,7 +169,7 @@ final public class PubSubManager
 			node.setTo(to);
 			nodeMap.put(id, node);
 		}
-		return node;
+		return (T) node;
 	}
 	
 	/**

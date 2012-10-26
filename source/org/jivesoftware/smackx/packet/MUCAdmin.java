@@ -19,12 +19,12 @@
  */
 
 package org.jivesoftware.smackx.packet;
-import org.jivesoftware.smack.packet.IQ;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * IQ packet that serves for kicking users, granting and revoking voice, banning users, 
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class MUCAdmin extends IQ {
 
-    private List items = new ArrayList();
+    private List<Item> items = new ArrayList<Item>();
 
     /**
      * Returns an Iterator for item childs that holds information about roles, affiliation, 
@@ -45,9 +45,9 @@ public class MUCAdmin extends IQ {
      * @return an Iterator for item childs that holds information about roles, affiliation,
      *          jids and nicks.
      */
-    public Iterator getItems() {
+    public Iterator<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList(items)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(items)).iterator();
         }
     }
 
@@ -67,7 +67,7 @@ public class MUCAdmin extends IQ {
         buf.append("<query xmlns=\"http://jabber.org/protocol/muc#admin\">");
         synchronized (items) {
             for (int i = 0; i < items.size(); i++) {
-                Item item = (Item) items.get(i);
+                Item item = items.get(i);
                 buf.append(item.toXML());
             }
         }

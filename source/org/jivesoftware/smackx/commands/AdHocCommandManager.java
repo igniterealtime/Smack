@@ -138,10 +138,10 @@ public class AdHocCommandManager {
      * @param name the human readable name of the command.
      * @param clazz the class of the command, which must extend {@link LocalCommand}.
      */
-    public void registerCommand(String node, String name, final Class clazz) {
+    public void registerCommand(String node, String name, final Class<? extends LocalCommand> clazz) {
         registerCommand(node, name, new LocalCommandFactory() {
             public LocalCommand getInstance() throws InstantiationException, IllegalAccessException  {
-                return (LocalCommand)clazz.newInstance();
+                return clazz.newInstance();
             }
         });
     }

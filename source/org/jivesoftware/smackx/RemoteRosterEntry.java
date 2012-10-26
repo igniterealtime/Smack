@@ -77,7 +77,7 @@ public class RemoteRosterEntry {
      *
      * @return an Iterator for the group names.
      */
-    public Iterator getGroupNames() {
+    public Iterator<String> getGroupNames() {
         synchronized (groupNames) {
             return Collections.unmodifiableList(groupNames).iterator();
         }

@@ -389,8 +389,8 @@ public class Form {
     public String getInstructions() {
         StringBuilder sb = new StringBuilder();
         // Join the list of instructions together separated by newlines
-        for (Iterator it = dataForm.getInstructions(); it.hasNext();) {
-            sb.append((String) it.next());
+        for (Iterator<String> it = dataForm.getInstructions(); it.hasNext();) {
+            sb.append(it.next());
             // If this is not the last instruction then append a newline
             if (it.hasNext()) {
                 sb.append("\n");

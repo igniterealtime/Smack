@@ -215,13 +215,13 @@ public class JingleManager implements JingleSessionListener {
 
         connection.getRoster().addRosterListener(new RosterListener() {
 
-            public void entriesAdded(Collection addresses) {
+            public void entriesAdded(Collection<String> addresses) {
             }
 
-            public void entriesUpdated(Collection addresses) {
+            public void entriesUpdated(Collection<String> addresses) {
             }
 
-            public void entriesDeleted(Collection addresses) {
+            public void entriesDeleted(Collection<String> addresses) {
             }
 
             public void presenceChanged(Presence presence) {

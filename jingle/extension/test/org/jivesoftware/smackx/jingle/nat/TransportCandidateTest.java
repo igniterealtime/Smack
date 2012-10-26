@@ -2,9 +2,6 @@ package org.jivesoftware.smackx.jingle.nat;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.net.InetAddress;
 
 import org.jivesoftware.smack.test.SmackTestCase;
 
@@ -35,18 +32,18 @@ public class TransportCandidateTest extends SmackTestCase {
     public void testCompareTo() {
         int highestPref = 100;
 
-        TransportCandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
+        ICECandidate cand1 = new ICECandidate("192.168.2.1", 3, 2,
                 "password", 3468, "username", 1, ICECandidate.Type.prflx);
-        TransportCandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
+        ICECandidate cand2 = new ICECandidate("192.168.5.1", 2, 10,
                 "password", 3469, "username", 15,ICECandidate.Type.prflx);
-        TransportCandidate candH = new ICECandidate("192.168.2.1", 1, 2,
+        ICECandidate candH = new ICECandidate("192.168.2.1", 1, 2,
                 "password", 3468, "username", highestPref, ICECandidate.Type.prflx);
-        TransportCandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
+        ICECandidate cand3 = new ICECandidate("192.168.2.10", 2, 10,
                 "password", 3469, "username", 2, ICECandidate.Type.prflx);
-        TransportCandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
+        ICECandidate cand4 = new ICECandidate("192.168.4.1", 3, 2,
                 "password", 3468, "username", 78, ICECandidate.Type.prflx);
 
-        ArrayList candList = new ArrayList();
+        ArrayList<ICECandidate> candList = new ArrayList<ICECandidate>();
         candList.add(cand1);
         candList.add(cand2);
         candList.add(candH);

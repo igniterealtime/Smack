@@ -74,22 +74,22 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             OfflineMessageManager offlineManager = new OfflineMessageManager(getConnection(1));
             assertEquals("Wrong number of offline messages", 2, offlineManager.getMessageCount());
             // Check the message headers
-            Iterator headers = offlineManager.getHeaders();
+            Iterator<OfflineMessageHeader> headers = offlineManager.getHeaders();
             assertTrue("No message header was found", headers.hasNext());
             List<String> stamps = new ArrayList<String>();
             while (headers.hasNext()) {
-                OfflineMessageHeader header = (OfflineMessageHeader) headers.next();
+                OfflineMessageHeader header = headers.next();
                 assertEquals("Incorrect sender", getFullJID(0), header.getJid());
                 assertNotNull("No stamp was found in the message header", header.getStamp());
                 stamps.add(header.getStamp());
             }
             assertEquals("Wrong number of headers", 2, stamps.size());
             // Get the offline messages
-            Iterator messages = offlineManager.getMessages(stamps);
+            Iterator<Message> messages = offlineManager.getMessages(stamps);
             assertTrue("No message was found", messages.hasNext());
             stamps = new ArrayList<String>();
             while (messages.hasNext()) {
-                Message message = (Message) messages.next();
+                Message message = messages.next();
                 OfflineMessageInfo info = (OfflineMessageInfo) message.getExtension("offline",
                         "http://jabber.org/protocol/offline");
                 assertNotNull("No offline information was included in the offline message", info);
@@ -143,11 +143,11 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             OfflineMessageManager offlineManager = new OfflineMessageManager(getConnection(1));
             assertEquals("Wrong number of offline messages", 2, offlineManager.getMessageCount());
             // Get all offline messages
-            Iterator messages = offlineManager.getMessages();
+            Iterator<Message> messages = offlineManager.getMessages();
             assertTrue("No message was found", messages.hasNext());
             List<String> stamps = new ArrayList<String>();
             while (messages.hasNext()) {
-                Message message = (Message) messages.next();
+                Message message = messages.next();
                 OfflineMessageInfo info = (OfflineMessageInfo) message.getExtension("offline",
                         "http://jabber.org/protocol/offline");
                 assertNotNull("No offline information was included in the offline message", info);

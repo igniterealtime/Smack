@@ -19,6 +19,7 @@
 
 package org.jivesoftware.smackx.workgroup;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
@@ -40,16 +41,16 @@ public class MetaData implements PacketExtension {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    private Map metaData;
+    private Map<String, List<String>> metaData;
 
-    public MetaData(Map metaData) {
+    public MetaData(Map<String, List<String>> metaData) {
         this.metaData = metaData;
     }
 
     /**
      * @return the Map of metadata contained by this instance
      */
-    public Map getMetaData() {
+    public Map<String, List<String>> getMetaData() {
         return metaData;
     }
 

@@ -184,8 +184,8 @@ public class VCardProvider implements IQProvider {
                 Element addressNode = (Element) allAddresses.item(i);
 
                 String type = null;
-                List code = new ArrayList();
-                List value = new ArrayList();
+                List<String> code = new ArrayList<String>();
+                List<String> value = new ArrayList<String>();
                 NodeList childNodes = addressNode.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     Node node = childNodes.item(j);

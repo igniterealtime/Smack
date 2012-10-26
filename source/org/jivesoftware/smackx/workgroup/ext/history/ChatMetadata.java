@@ -25,6 +25,7 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChatMetadata extends IQ {
@@ -51,13 +52,13 @@ public class ChatMetadata extends IQ {
     }
 
 
-    private Map map = new HashMap();
+    private Map<String, List<String>> map = new HashMap<String, List<String>>();
 
-    public void setMetadata(Map metadata){
+    public void setMetadata(Map<String, List<String>> metadata){
         this.map = metadata;
     }
 
-    public Map getMetadata(){
+    public Map<String, List<String>> getMetadata(){
         return map;
     }
 
@@ -94,7 +95,7 @@ public class ChatMetadata extends IQ {
                        chatM.setSessionID(parser.nextText());
                     }
                     else if (parser.getName().equals("metadata")) {
-                        Map map = MetaDataUtils.parseMetaData(parser);
+                        Map<String, List<String>> map = MetaDataUtils.parseMetaData(parser);
                         chatM.setMetadata(map);
                     }
                 }

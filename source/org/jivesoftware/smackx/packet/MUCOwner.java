@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class MUCOwner extends IQ {
 
-    private List items = new ArrayList();
+    private List<Item> items = new ArrayList<Item>();
     private Destroy destroy;
 
     /**
@@ -45,9 +45,9 @@ public class MUCOwner extends IQ {
      * @return an Iterator for item childs that holds information about affiliation,
      *          jids and nicks.
      */
-    public Iterator getItems() {
+    public Iterator<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList(items)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(items)).iterator();
         }
     }
 

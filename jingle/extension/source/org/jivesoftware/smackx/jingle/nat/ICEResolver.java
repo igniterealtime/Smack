@@ -136,7 +136,6 @@ public class ICEResolver extends TransportResolver {
 						i++;
 					}
 				} catch (SocketException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
                 
@@ -225,7 +224,7 @@ public class ICEResolver extends TransportResolver {
 
                 if (publicIp != null && !publicIp.equals("")) {
 
-                    Enumeration ifaces = null;
+                    Enumeration<NetworkInterface> ifaces = null;
 
                     try {
                         ifaces = NetworkInterface.getNetworkInterfaces();
@@ -240,11 +239,11 @@ public class ICEResolver extends TransportResolver {
 
                     while (ifaces.hasMoreElements() && !false) {
 
-                        NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-                        Enumeration iaddresses = iface.getInetAddresses();
+                        NetworkInterface iface = ifaces.nextElement();
+                        Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
 
                         while (iaddresses.hasMoreElements()) {
-                            InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                            InetAddress iaddress = iaddresses.nextElement();
                             if (iaddress.getHostAddress().indexOf(publicIp) > -1) {
                                 found = true;
                                 break;

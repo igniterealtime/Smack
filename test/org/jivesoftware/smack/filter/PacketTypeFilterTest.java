@@ -60,8 +60,6 @@ import org.jivesoftware.smack.packet.*;
  */
 public class PacketTypeFilterTest extends TestCase {
 
-    private class Dummy {}
-
     private class InnerClassDummy {
         public class DummyPacket extends Packet {
             public String toXML() {
@@ -88,12 +86,13 @@ public class PacketTypeFilterTest extends TestCase {
      * Test case for the constructor of PacketTypeFilter objects.
      */
     public void testConstructor() {
+        // We dont need to test this since PacketTypeFilter(Class<? extends Packet> packetType) only excepts Packets
         // Test a class that is not a subclass of Packet
-        try {
-            new PacketTypeFilter(Dummy.class);
-            fail("Parameter must be a subclass of Packet.");
-        }
-        catch (IllegalArgumentException e) {}
+        // try {
+        // new PacketTypeFilter(Dummy.class);
+        // fail("Parameter must be a subclass of Packet.");
+        // }
+        // catch (IllegalArgumentException e) {}
 
         // Test a class that is a subclass of Packet
         try {

@@ -150,8 +150,8 @@ public class XHTMLExtensionTest extends SmackTestCase {
 		    "Message without extension \"http://jabber.org/protocol/xhtml-im\"",
 		    xhtmlExtension);
 	    assertTrue("Message without XHTML bodies", xhtmlExtension.getBodiesCount() > 0);
-	    for (Iterator it = xhtmlExtension.getBodies(); it.hasNext();) {
-		String body = (String) it.next();
+	    for (Iterator<String> it = xhtmlExtension.getBodies(); it.hasNext();) {
+		String body = it.next();
 		System.out.println(body);
 	    }
 	}
@@ -222,9 +222,9 @@ public class XHTMLExtensionTest extends SmackTestCase {
 		    "Message without extension \"http://jabber.org/protocol/xhtml-im\"",
 		    xhtmlExtension);
 	    assertTrue("Message without XHTML bodies", xhtmlExtension.getBodiesCount() > 0);
-	    for (Iterator it = xhtmlExtension.getBodies(); it.hasNext();) {
+	    for (Iterator<String> it = xhtmlExtension.getBodies(); it.hasNext();) {
 		received++;
-		System.out.println((String) it.next());
+		System.out.println(it.next());
 	    }
 	    bodiesReceived = received;
 	}

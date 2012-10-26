@@ -157,10 +157,10 @@ public class ProviderManager {
             // Get an array of class loaders to try loading the providers files from.
             ClassLoader[] classLoaders = getClassLoaders();
             for (ClassLoader classLoader : classLoaders) {
-                Enumeration providerEnum = classLoader.getResources(
+                Enumeration<URL> providerEnum = classLoader.getResources(
                         "META-INF/smack.providers");
                 while (providerEnum.hasMoreElements()) {
-                    URL url = (URL) providerEnum.nextElement();
+                    URL url = providerEnum.nextElement();
                     InputStream providerStream = null;
                     try {
                         providerStream = url.openStream();
@@ -190,7 +190,7 @@ public class ProviderManager {
                                         // reflection later to create instances of the class.
                                         try {
                                             // Add the provider to the map.
-                                            Class provider = Class.forName(className);
+                                            Class<?> provider = Class.forName(className);
                                             if (IQProvider.class.isAssignableFrom(provider)) {
                                                 iqProviders.put(key, provider.newInstance());
                                             }
@@ -224,7 +224,7 @@ public class ProviderManager {
                                         // of the class.
                                         try {
                                             // Add the provider to the map.
-                                            Class provider = Class.forName(className);
+                                            Class<?> provider = Class.forName(className);
                                             if (PacketExtensionProvider.class.isAssignableFrom(
                                                     provider)) {
                                                 extensionProviders.put(key, provider.newInstance());
@@ -309,7 +309,7 @@ public class ProviderManager {
             Object provider)
     {
         if (!(provider instanceof IQProvider || (provider instanceof Class &&
-                IQ.class.isAssignableFrom((Class)provider))))
+                IQ.class.isAssignableFrom((Class<?>)provider))))
         {
             throw new IllegalArgumentException("Provider must be an IQProvider " +
                     "or a Class instance.");

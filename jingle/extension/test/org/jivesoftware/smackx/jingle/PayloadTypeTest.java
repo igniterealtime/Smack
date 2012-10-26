@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
+import org.jivesoftware.smackx.jingle.media.PayloadType.Audio;
 
 public class PayloadTypeTest extends SmackTestCase {
 
@@ -21,8 +22,8 @@ public class PayloadTypeTest extends SmackTestCase {
 	 * Test for the difference of payloads.
 	 */
 	public void testDifference() {
-		ArrayList set1 = new ArrayList();
-		ArrayList set2 = new ArrayList();
+		ArrayList<Audio> set1 = new ArrayList<Audio>();
+		ArrayList<Audio> set2 = new ArrayList<Audio>();
 		
 		PayloadType.Audio common1 = new PayloadType.Audio(34, "supercodec-1", 2, 14000);
 		PayloadType.Audio common2 = new PayloadType.Audio(56, "supercodec-2", 1, 44000);
@@ -38,7 +39,7 @@ public class PayloadTypeTest extends SmackTestCase {
 		set2.add(common1);
 		
 		// Get the difference
-		ArrayList commonSet = new ArrayList();			
+		ArrayList<Audio> commonSet = new ArrayList<Audio>();			
 		commonSet.addAll(set1);
 		commonSet.retainAll(set2);
 
@@ -54,8 +55,8 @@ public class PayloadTypeTest extends SmackTestCase {
 	 * Test for the difference of payloads when we are handling the same sets.
 	 */
 	public void testDifferenceSameSet() {
-		ArrayList set1 = new ArrayList();
-		ArrayList set2 = new ArrayList();
+		ArrayList<Audio> set1 = new ArrayList<Audio>();
+		ArrayList<Audio> set2 = new ArrayList<Audio>();
 		
 		PayloadType.Audio common1 = new PayloadType.Audio(34,  "supercodec-1", 2, 14000);
 		PayloadType.Audio common2 = new PayloadType.Audio(56,  "supercodec-2", 1, 44000);
@@ -73,7 +74,7 @@ public class PayloadTypeTest extends SmackTestCase {
 		set2.add(common4);
 		
 		// Get the difference
-		ArrayList commonSet = new ArrayList();			
+		ArrayList<Audio> commonSet = new ArrayList<Audio>();			
 		commonSet.addAll(set1);
 		commonSet.retainAll(set2);
 

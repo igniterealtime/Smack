@@ -19,21 +19,21 @@ import java.util.List;
  */
 public class SharedGroupsInfo extends IQ {
 
-    private List groups = new ArrayList();
+    private List<String> groups = new ArrayList<String>();
 
     /**
      * Returns a collection with the shared group names returned from the server.
      *
      * @return collection with the shared group names returned from the server.
      */
-    public List getGroups() {
+    public List<String> getGroups() {
         return groups;
     }
 
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<sharedgroup xmlns=\"http://www.jivesoftware.org/protocol/sharedgroup\">");
-        for (Iterator it=groups.iterator(); it.hasNext();) {
+        for (Iterator<String> it=groups.iterator(); it.hasNext();) {
             buf.append("<group>").append(it.next()).append("</group>");
         }
         buf.append("</sharedgroup>");

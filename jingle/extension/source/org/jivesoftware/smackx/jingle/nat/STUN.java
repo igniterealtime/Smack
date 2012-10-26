@@ -230,9 +230,9 @@ public class STUN extends IQ {
         try {
             DiscoverItems items = disco.discoverItems(connection.getServiceName());
 
-            Iterator iter = items.getItems();
+            Iterator<DiscoverItems.Item> iter = items.getItems();
             while (iter.hasNext()) {
-                DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
+                DiscoverItems.Item item = iter.next();
                 DiscoverInfo info = disco.discoverInfo(item.getEntityID());
 
                 Iterator<DiscoverInfo.Identity> iter2 = info.getIdentities();

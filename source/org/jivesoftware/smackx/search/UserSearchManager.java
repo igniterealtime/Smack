@@ -93,7 +93,7 @@ public class UserSearchManager {
      * @return a Collection of search services found on the server.
      * @throws XMPPException thrown if a server error has occurred.
      */
-    public Collection getSearchServices() throws XMPPException {
+    public Collection<String> getSearchServices() throws XMPPException {
         final List<String> searchServices = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         DiscoverItems items = discoManager.discoverItems(con.getServiceName());

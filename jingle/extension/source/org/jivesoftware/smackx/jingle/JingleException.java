@@ -10,8 +10,9 @@ import org.jivesoftware.smackx.packet.JingleError;
      * @author Alvaro Saurin <alvaro.saurin@gmail.com>
      */
     public class JingleException extends XMPPException {
-
-        private final JingleError error;
+	private static final long serialVersionUID = -1521230401958103382L;
+	
+		private final JingleError error;
 
         /**
          * Default constructor.

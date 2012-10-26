@@ -19,6 +19,7 @@
 
 package org.jivesoftware.smackx.workgroup;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +37,7 @@ public class WorkgroupInvitation {
     protected String issuingWorkgroupName;
     protected String messageBody;
     protected String invitationSender;
-    protected Map metaData;
+    protected Map<String, List<String>> metaData;
 
     /**
      * This calls the 5-argument constructor with a null MetaData argument value
@@ -65,7 +66,7 @@ public class WorkgroupInvitation {
      * @param metaData the metadata sent with the invitation
      */
     public WorkgroupInvitation (String jid, String group, String workgroup, String sessID, String msgBody,
-                       String from, Map metaData) {
+                       String from, Map<String, List<String>> metaData) {
         super();
 
         this.uniqueID = jid;
@@ -126,7 +127,7 @@ public class WorkgroupInvitation {
      * @return the meta data associated with the invitation, or null if this instance was
      *              constructed with none
      */
-    public Map getMetaData () {
+    public Map<String, List<String>> getMetaData () {
         return this.metaData;
     }
 

@@ -114,7 +114,7 @@ public class BridgedResolver extends TransportResolver {
     }
 
     public static String getLocalHost() {
-        Enumeration ifaces = null;
+        Enumeration<NetworkInterface> ifaces = null;
 
         try {
             ifaces = NetworkInterface.getNetworkInterfaces();
@@ -125,11 +125,11 @@ public class BridgedResolver extends TransportResolver {
 
         while (ifaces.hasMoreElements()) {
 
-            NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-            Enumeration iaddresses = iface.getInetAddresses();
+            NetworkInterface iface = ifaces.nextElement();
+            Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
 
             while (iaddresses.hasMoreElements()) {
-                InetAddress iaddress = (InetAddress) iaddresses.nextElement();
+                InetAddress iaddress = iaddresses.nextElement();
                 if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress() && !iaddress.isSiteLocalAddress() && !(iaddress instanceof Inet6Address)) {
                     return iaddress.getHostAddress();
                 }

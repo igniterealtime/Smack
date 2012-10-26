@@ -133,8 +133,8 @@ public class RosterExchangeTest extends SmackTestCase {
                     "Roster without entries",
                     rosterExchange.getRosterEntries().hasNext());
             // Add the roster entries to user2's roster
-            for (Iterator it = rosterExchange.getRosterEntries(); it.hasNext();) {
-                RemoteRosterEntry remoteRosterEntry = (RemoteRosterEntry) it.next();
+            for (Iterator<RemoteRosterEntry> it = rosterExchange.getRosterEntries(); it.hasNext();) {
+                RemoteRosterEntry remoteRosterEntry = it.next();
                 getConnection(1).getRoster().createEntry(
                         remoteRosterEntry.getUser(),
                         remoteRosterEntry.getName(),

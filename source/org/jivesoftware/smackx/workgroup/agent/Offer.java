@@ -24,6 +24,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,7 +45,7 @@ public class Offer {
     private String userID;
     private String workgroupName;
     private Date expiresDate;
-    private Map metaData;
+    private Map<String, List<String>> metaData;
     private OfferContent content;
 
     private boolean accepted = false;
@@ -66,7 +67,7 @@ public class Offer {
      */
     Offer(Connection conn, AgentSession agentSession, String userID,
             String userJID, String workgroupName, Date expiresDate,
-            String sessionID, Map metaData, OfferContent content)
+            String sessionID, Map<String, List<String>> metaData, OfferContent content)
     {
         this.connection = conn;
         this.session = agentSession;
@@ -155,7 +156,7 @@ public class Offer {
      *
      * @return the offer meta-data.
      */
-    public Map getMetaData() {
+    public Map<String, List<String>> getMetaData() {
         return this.metaData;
     }
 

@@ -310,7 +310,7 @@ public class MediaNegotiator extends JingleNegotiator {
     private IQ receiveSessionAcceptAction(Jingle jingle, JingleDescription description) throws JingleException {
         IQ response = null;
         PayloadType.Audio agreedCommonAudioPt;
-        List offeredPayloads = new ArrayList();
+        List<PayloadType> offeredPayloads = new ArrayList<PayloadType>();
 
         if (bestCommonAudioPt == null) {
             // Update the best common audio PT
@@ -358,7 +358,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     // Payload types
 
-    private PayloadType calculateBestCommonAudioPt(List remoteAudioPts) {
+    private PayloadType calculateBestCommonAudioPt(List<PayloadType> remoteAudioPts) {
         final ArrayList<PayloadType> commonAudioPtsHere = new ArrayList<PayloadType>();
         final ArrayList<PayloadType> commonAudioPtsThere = new ArrayList<PayloadType>();
         PayloadType result = null;

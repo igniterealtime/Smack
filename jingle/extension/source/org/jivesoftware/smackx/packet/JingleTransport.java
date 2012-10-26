@@ -95,7 +95,7 @@ public class JingleTransport implements PacketExtension {
      *
      * @return an iterator
      */
-    public Iterator getCandidates() {
+    public Iterator<JingleTransportCandidate> getCandidates() {
         return Collections.unmodifiableList(getCandidatesList()).iterator();
     }
 
@@ -160,11 +160,10 @@ public class JingleTransport implements PacketExtension {
         synchronized (candidates) {
             if (getCandidatesCount() > 0) {
                 buf.append(">");
-                Iterator iter = getCandidates();
+                Iterator<JingleTransportCandidate> iter = getCandidates();
 
                 while (iter.hasNext()) {
-                    JingleTransportCandidate candidate = (JingleTransportCandidate) iter
-                            .next();
+                    JingleTransportCandidate candidate = iter.next();
                     buf.append(candidate.toXML());
                 }
                 buf.append("</").append(getElementName()).append(">");

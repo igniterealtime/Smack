@@ -57,7 +57,7 @@ public class XHTMLManager {
      * @param message an XHTML message
      * @return an Iterator for the bodies in the message or null if none.
      */
-    public static Iterator getBodies(Message message) {
+    public static Iterator<String> getBodies(Message message) {
         XHTMLExtension xhtmlExtension = (XHTMLExtension) message.getExtension("html", namespace);
         if (xhtmlExtension != null)
             return xhtmlExtension.getBodies();

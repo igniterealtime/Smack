@@ -10,7 +10,6 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
-import org.jivesoftware.smackx.pubsub.util.XmlUtils;
 
 public class EntityUseCases extends SingleUserTestCase
 {
@@ -41,7 +40,7 @@ public class EntityUseCases extends SingleUserTestCase
 		
 		int count = 0;
 		
-		for(Iterator it = items.getItems(); it.hasNext(); it.next(),count++);
+		for(Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext(); it.next(),count++);
 		
 		assertEquals(4, count);
 	}

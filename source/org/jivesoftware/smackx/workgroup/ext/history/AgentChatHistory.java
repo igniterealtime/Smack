@@ -37,7 +37,7 @@ public class AgentChatHistory extends IQ {
     private int maxSessions;
     private long startDate;
 
-    private List agentChatSessions = new ArrayList();
+    private List<AgentChatSession> agentChatSessions = new ArrayList<AgentChatSession>();
 
     public AgentChatHistory(String agentJID, int maxSessions, Date startDate) {
         this.agentJID = agentJID;
@@ -58,7 +58,7 @@ public class AgentChatHistory extends IQ {
         agentChatSessions.add(chatSession);
     }
 
-    public Collection getAgentChatSessions() {
+    public Collection<AgentChatSession> getAgentChatSessions() {
         return agentChatSessions;
     }
 

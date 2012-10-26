@@ -57,6 +57,7 @@ import java.util.Iterator;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.packet.DiscoverInfo.Identity;
 
 
 /**
@@ -81,9 +82,9 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
             // Discover the information of another Smack client
             DiscoverInfo info = discoManager.discoverInfo(getFullJID(1));
             // Check the identity of the Smack client
-            Iterator identities = info.getIdentities();
+            Iterator<Identity> identities = info.getIdentities();
             assertTrue("No identities were found", identities.hasNext());
-            DiscoverInfo.Identity identity = (DiscoverInfo.Identity)identities.next();
+            Identity identity = identities.next();
             assertEquals("Name in identity is wrong", ServiceDiscoveryManager.getIdentityName(),
                     identity.getName());
             assertEquals("Category in identity is wrong", "client", identity.getCategory());

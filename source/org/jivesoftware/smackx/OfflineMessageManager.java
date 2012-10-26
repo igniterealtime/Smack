@@ -113,8 +113,8 @@ public class OfflineMessageManager {
         List<OfflineMessageHeader> answer = new ArrayList<OfflineMessageHeader>();
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                 null, namespace);
-        for (Iterator it = items.getItems(); it.hasNext();) {
-            DiscoverItems.Item item = (DiscoverItems.Item) it.next();
+        for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
+            DiscoverItems.Item item = it.next();
             answer.add(new OfflineMessageHeader(item));
         }
         return answer.iterator();

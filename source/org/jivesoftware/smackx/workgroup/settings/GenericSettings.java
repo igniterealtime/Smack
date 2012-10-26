@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class GenericSettings extends IQ {
 
-    private Map map = new HashMap();
+    private Map<String, String> map = new HashMap<String, String>();
 
     private String query;
 
@@ -41,11 +41,11 @@ public class GenericSettings extends IQ {
         this.query = query;
     }
 
-    public Map getMap() {
+    public Map<String, String> getMap() {
         return map;
     }
 
-    public void setMap(Map map) {
+    public void setMap(Map<String, String> map) {
         this.map = map;
     }
 

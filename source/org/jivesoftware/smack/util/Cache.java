@@ -477,7 +477,7 @@ public class Cache<K, V> implements Map<K, V> {
                 return false;
             }
 
-            final CacheObject cacheObject = (CacheObject) o;
+            final CacheObject<?> cacheObject = (CacheObject<?>) o;
 
             return object.equals(cacheObject.object);
 

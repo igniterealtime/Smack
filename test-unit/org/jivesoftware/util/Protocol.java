@@ -142,9 +142,9 @@ public class Protocol {
                 }
             }
 
-            Verification<?, ?>[] verifications = verificationList.get(i);
+            Verification<Packet, Packet>[] verifications = (Verification<Packet, Packet>[]) verificationList.get(i);
             if (verifications != null) {
-                for (Verification verification : verifications) {
+                for (Verification<Packet, Packet> verification : verifications) {
                     verification.verify(request, response);
                 }
             }

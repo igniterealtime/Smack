@@ -19,6 +19,7 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smackx.workgroup.MetaData;
@@ -41,7 +42,7 @@ public class MetaDataProvider implements PacketExtensionProvider {
      */
     public PacketExtension parseExtension (XmlPullParser parser)
         throws Exception {
-        Map metaData = MetaDataUtils.parseMetaData(parser);
+        Map<String, List<String>> metaData = MetaDataUtils.parseMetaData(parser);
 
         return new MetaData(metaData);
     }

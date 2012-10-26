@@ -3,6 +3,7 @@ package org.jivesoftware.smack;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.Privacy;
+import org.jivesoftware.smack.packet.PrivacyItem;
 
 /**
  * This class supports automated tests about privacy communication from the
@@ -27,7 +28,7 @@ public class PrivacyClient implements PrivacyListListener {
         super();
     }
 
-    public void setPrivacyList(String listName, List listItem) {
+    public void setPrivacyList(String listName, List<PrivacyItem> listItem) {
         privacy.setPrivacyList(listName, listItem);
     }
 

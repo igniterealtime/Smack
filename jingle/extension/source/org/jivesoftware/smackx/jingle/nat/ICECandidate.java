@@ -65,7 +65,7 @@ import org.jivesoftware.smackx.jingle.SmackLogger;
  *
  * @author Thiago Camargo
  */
-public class ICECandidate extends TransportCandidate implements Comparable {
+public class ICECandidate extends TransportCandidate implements Comparable<ICECandidate> {
 
 	private static final SmackLogger LOGGER = SmackLogger.getLogger(ICECandidate.class);
 
@@ -438,18 +438,14 @@ public class ICECandidate extends TransportCandidate implements Comparable {
      *         object is less than, equal to, or greater than the specified
      *         object
      */
-    public int compareTo(Object arg) {
-        if (arg instanceof ICECandidate) {
-            ICECandidate tc = (ICECandidate) arg;
-            if (getPreference() < tc.getPreference()) {
-                return -1;
-            }
-            else if (getPreference() > tc.getPreference()) {
-                return 1;
-            }
-        }
-        return 0;
-    }
+	public int compareTo(ICECandidate arg) {
+		if (getPreference() < arg.getPreference()) {
+			return -1;
+		} else if (getPreference() > arg.getPreference()) {
+			return 1;
+		}
+		return 0;
+	}
 
 }
 

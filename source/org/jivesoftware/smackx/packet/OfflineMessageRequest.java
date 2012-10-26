@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class OfflineMessageRequest extends IQ {
 
-    private List items = new ArrayList();
+    private List<Item> items = new ArrayList<Item>();
     private boolean purge = false;
     private boolean fetch = false;
 
@@ -48,9 +48,9 @@ public class OfflineMessageRequest extends IQ {
      * @return an Iterator for item childs that holds information about offline messages to
      *         view or delete.
      */
-    public Iterator getItems() {
+    public Iterator<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList(items)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(items)).iterator();
         }
     }
 
@@ -106,7 +106,7 @@ public class OfflineMessageRequest extends IQ {
         buf.append("<offline xmlns=\"http://jabber.org/protocol/offline\">");
         synchronized (items) {
             for (int i = 0; i < items.size(); i++) {
-                Item item = (Item) items.get(i);
+                Item item = items.get(i);
                 buf.append(item.toXML());
             }
         }

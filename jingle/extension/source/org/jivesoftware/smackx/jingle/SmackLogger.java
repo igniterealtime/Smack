@@ -44,7 +44,7 @@ public class SmackLogger {
 	 *  @param classToLog	This is the class that wants to log.  (This gives commons-logging a means to control log-level by class.)
 	 *  @return	An instance of a SmackLogger for the class that wants logging.
 	 */
-	public static SmackLogger getLogger(Class classToLog) {
+	public static SmackLogger getLogger(Class<?> classToLog) {
 		return new SmackLogger(classToLog);
 	}
 
@@ -53,7 +53,7 @@ public class SmackLogger {
 	 *  This is private to make it impossible to instantiate a new SmackLogger outside of the getLogger() static method.
 	 *  @param classToLog	This is the class that wants to log.  (This gives commons-logging a means to control log-level by class.)
 	 */
-	public SmackLogger(Class classToLog) {
+	public SmackLogger(Class<?> classToLog) {
 		setupSmackLogger(classToLog);
 	}
 
@@ -63,9 +63,9 @@ public class SmackLogger {
 	 *  @param classToLog
 	 *  @return
 	 */
-	private void setupSmackLogger(Class classToLog) {
+	private void setupSmackLogger(Class<?> classToLog) {
 		try {
-			Class logFactoryClass = SmackLogger.class.getClassLoader().loadClass("org.apache.commons.logging.LogFactory");
+			Class<?> logFactoryClass = SmackLogger.class.getClassLoader().loadClass("org.apache.commons.logging.LogFactory");
 			Method method = logFactoryClass.getMethod("getLog", Class.class);
 			//Constructor<Log> constructor = Log.class.getConstructor(new Class[] { Object.class });
 			commonsLogger = (Log) method.invoke(null, classToLog);

@@ -28,6 +28,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+
 /**
  * Utilty class to perform DNS lookups for XMPP services.
  *
@@ -39,13 +40,13 @@ public class DNSUtil {
      * Create a cache to hold the 100 most recently accessed DNS lookups for a period of
      * 10 minutes.
      */
-    private static Map cache = new Cache(100, 1000*60*10);
+    private static Map<String, HostAddress> cache = new Cache<String, HostAddress>(100, 1000*60*10);
 
     private static DirContext context;
 
     static {
         try {
-            Hashtable env = new Hashtable();
+            Hashtable<String, String> env = new Hashtable<String, String>();
             env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
             context = new InitialDirContext(env);
         }
@@ -97,9 +98,9 @@ public class DNSUtil {
         try {
             Attributes dnsLookup = context.getAttributes("_xmpp-client._tcp." + domain, new String[]{"SRV"});
             Attribute srvAttribute = dnsLookup.get("SRV");
-            NamingEnumeration srvRecords = srvAttribute.getAll();
+            NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
             while(srvRecords.hasMore()) {
-				String srvRecord = (String) srvRecords.next();
+				String srvRecord = srvRecords.next();
 	            String [] srvRecordEntries = srvRecord.split(" ");
 	            int priority = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 4]);
 	            int port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);

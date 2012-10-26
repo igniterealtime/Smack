@@ -21,6 +21,8 @@ package org.jivesoftware.smackx.workgroup.agent;
 
 import java.util.*;
 
+import org.jivesoftware.smackx.workgroup.QueueUser;
+
 /**
  * A queue in a workgroup, which is a pool of agents that are routed  a specific type of
  * chat request.
@@ -32,7 +34,7 @@ public class WorkgroupQueue {
 
     private int averageWaitTime = -1;
     private Date oldestEntry = null;
-    private Set users = Collections.EMPTY_SET;
+    private Set<QueueUser> users = Collections.emptySet();
 
     private int maxChats = 0;
     private int currentChats = 0;
@@ -87,14 +89,14 @@ public class WorkgroupQueue {
      *
      * @return an Iterator for the users waiting in the queue.
      */
-    public Iterator getUsers() {
+    public Iterator<QueueUser> getUsers() {
         if (users == null) {
-            return Collections.EMPTY_SET.iterator();
+            return new HashSet<QueueUser>().iterator();
         }
         return Collections.unmodifiableSet(users).iterator();
     }
 
-    void setUsers(Set users) {
+    void setUsers(Set<QueueUser> users) {
         this.users = users;
     }
 

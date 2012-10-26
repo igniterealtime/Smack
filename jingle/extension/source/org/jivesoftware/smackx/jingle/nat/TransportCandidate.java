@@ -66,6 +66,7 @@ import java.util.List;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.SmackLogger;
+import org.jivesoftware.smackx.jingle.nat.TransportResolverListener.Checker;
 
 /**
  * Transport candidate.
@@ -103,7 +104,7 @@ public abstract class TransportCandidate {
     private Thread echoThread = null;
 
     // Listeners for events
-    private final List<TransportResolverListener.Checker> listeners = new ArrayList();
+    private final List<TransportResolverListener.Checker> listeners = new ArrayList<Checker>();
 
     public void addCandidateEcho(JingleSession session) throws SocketException, UnknownHostException {
         candidateEcho = new CandidateEcho(this, session);
@@ -387,9 +388,9 @@ public abstract class TransportCandidate {
             public void run() {
                 boolean isUsable;
 
-                InetAddress candAddress;
+                
                 try {
-                    candAddress = InetAddress.getByName(getIp());
+                	InetAddress candAddress = InetAddress.getByName(getIp());
                     isUsable = true;//candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
                 }
                 catch (Exception e) {
@@ -425,7 +426,7 @@ public abstract class TransportCandidate {
      */
     public List<TransportResolverListener.Checker> getListenersList() {
         synchronized (listeners) {
-            return new ArrayList(listeners);
+            return new ArrayList<Checker>(listeners);
         }
     }
 

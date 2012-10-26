@@ -63,7 +63,7 @@ import java.util.*;
  */
 public class SASLAuthentication implements UserAuthentication {
 
-    private static Map<String, Class> implementedMechanisms = new HashMap<String, Class>();
+    private static Map<String, Class<? extends SASLMechanism>> implementedMechanisms = new HashMap<String, Class<? extends SASLMechanism>>();
     private static List<String> mechanismsPreferences = new ArrayList<String>();
 
     private Connection connection;
@@ -109,7 +109,7 @@ public class SASLAuthentication implements UserAuthentication {
      * @param name   common name of the SASL mechanism. E.g.: PLAIN, DIGEST-MD5 or KERBEROS_V4.
      * @param mClass a SASLMechanism subclass.
      */
-    public static void registerSASLMechanism(String name, Class mClass) {
+    public static void registerSASLMechanism(String name, Class<? extends SASLMechanism> mClass) {
         implementedMechanisms.put(name, mClass);
     }
 
@@ -167,8 +167,8 @@ public class SASLAuthentication implements UserAuthentication {
      *
      * @return the registerd SASLMechanism classes sorted by the level of preference.
      */
-    public static List<Class> getRegisterSASLMechanisms() {
-        List<Class> answer = new ArrayList<Class>();
+    public static List<Class<? extends SASLMechanism>> getRegisterSASLMechanisms() {
+        List<Class<? extends SASLMechanism>> answer = new ArrayList<Class<? extends SASLMechanism>>();
         for (String mechanismsPreference : mechanismsPreferences) {
             answer.add(implementedMechanisms.get(mechanismsPreference));
         }
@@ -228,9 +228,9 @@ public class SASLAuthentication implements UserAuthentication {
             // A SASL mechanism was found. Authenticate using the selected mechanism and then
             // proceed to bind a resource
             try {
-                Class mechanismClass = implementedMechanisms.get(selectedMechanism);
-                Constructor constructor = mechanismClass.getConstructor(SASLAuthentication.class);
-                currentMechanism = (SASLMechanism) constructor.newInstance(this);
+                Class<? extends SASLMechanism> mechanismClass = implementedMechanisms.get(selectedMechanism);
+                Constructor<? extends SASLMechanism> constructor = mechanismClass.getConstructor(SASLAuthentication.class);
+                currentMechanism = constructor.newInstance(this);
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
                 // may not match the XMPP domain.
@@ -310,9 +310,9 @@ public class SASLAuthentication implements UserAuthentication {
             // A SASL mechanism was found. Authenticate using the selected mechanism and then
             // proceed to bind a resource
             try {
-                Class mechanismClass = implementedMechanisms.get(selectedMechanism);
-                Constructor constructor = mechanismClass.getConstructor(SASLAuthentication.class);
-                currentMechanism = (SASLMechanism) constructor.newInstance(this);
+                Class<? extends SASLMechanism> mechanismClass = implementedMechanisms.get(selectedMechanism);
+                Constructor<? extends SASLMechanism> constructor = mechanismClass.getConstructor(SASLAuthentication.class);
+                currentMechanism = constructor.newInstance(this);
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
                 // may not match the XMPP domain.

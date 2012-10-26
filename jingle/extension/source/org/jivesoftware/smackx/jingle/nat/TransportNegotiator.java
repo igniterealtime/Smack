@@ -449,9 +449,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @return The list of valid (ie, already checked) remote candidates.
      */
-    final ArrayList getValidRemoteCandidatesList() {
+    final ArrayList<TransportCandidate> getValidRemoteCandidatesList() {
         synchronized (validRemoteCandidates) {
-            return new ArrayList(validRemoteCandidates);
+            return new ArrayList<TransportCandidate>(validRemoteCandidates);
         }
     }
 
@@ -461,7 +461,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @return The iterator for the list of valid (ie, already checked) remote
      *         candidates.
      */
-    public final Iterator getValidRemoteCandidates() {
+    public final Iterator<TransportCandidate> getValidRemoteCandidates() {
         return Collections.unmodifiableList(getRemoteCandidates()).iterator();
     }
 
@@ -471,11 +471,11 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @param rc the remote candidate to add.
      */
-    private void addRemoteCandidates(List rc) {
+    private void addRemoteCandidates(List<TransportCandidate> rc) {
         if (rc != null) {
             if (rc.size() > 0) {
-                for (Object aRc : rc) {
-                    addRemoteCandidate((TransportCandidate) aRc);
+                for (TransportCandidate aRc : rc) {
+                    addRemoteCandidate(aRc);
                 }
             }
         }
@@ -829,7 +829,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          */
         public TransportCandidate getBestRemoteCandidate() {
             // Hopefully, we only have one validRemoteCandidate
-            ArrayList cands = getValidRemoteCandidatesList();
+            ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 LOGGER.debug("RAW CAND");
                 return (TransportCandidate) cands.get(0);
@@ -883,14 +883,17 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         public TransportCandidate getBestRemoteCandidate() {
             ICECandidate result = null;
 
-            ArrayList<ICECandidate> cands = getValidRemoteCandidatesList();
+            ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 int highest = -1;
                 ICECandidate chose = null;
-                for (ICECandidate transportCandidate : cands) {
-                    if (transportCandidate.getPreference() > highest) {
-                        chose = transportCandidate;
-                        highest = transportCandidate.getPreference();
+                for (TransportCandidate transportCandidate : cands) {
+					if (transportCandidate instanceof ICECandidate) {
+						ICECandidate icecandidate = (ICECandidate) transportCandidate;
+						if (icecandidate.getPreference() > highest) {
+							chose = icecandidate;
+							highest = icecandidate.getPreference();
+						}
                     }
                 }
                 result = chose;

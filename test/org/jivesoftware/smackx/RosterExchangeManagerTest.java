@@ -128,14 +128,14 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
         // Create a RosterExchangeListener that will iterate over the received roster entries
         RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
-            public void entriesReceived(String from, Iterator remoteRosterEntries) {
+            public void entriesReceived(String from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
                 int received = 0;
                 assertNotNull("From is null", from);
                 assertNotNull("rosterEntries is null", remoteRosterEntries);
                 assertTrue("Roster without entries", remoteRosterEntries.hasNext());
                 while (remoteRosterEntries.hasNext()) {
                     received++;
-                    RemoteRosterEntry remoteEntry = (RemoteRosterEntry) remoteRosterEntries.next();
+                    RemoteRosterEntry remoteEntry = remoteRosterEntries.next();
                     System.out.println(remoteEntry);
                 }
                 entriesReceived = received;
@@ -178,7 +178,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
         // Create a RosterExchangeListener that will accept all the received roster entries
         RosterExchangeListener rosterExchangeListener = new RosterExchangeListener() {
-            public void entriesReceived(String from, Iterator remoteRosterEntries) {
+            public void entriesReceived(String from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
                 int received = 0;
                 assertNotNull("From is null", from);
                 assertNotNull("remoteRosterEntries is null", remoteRosterEntries);
@@ -186,8 +186,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
                 while (remoteRosterEntries.hasNext()) {
                     received++;
                     try {
-                        RemoteRosterEntry remoteRosterEntry =
-                            (RemoteRosterEntry) remoteRosterEntries.next();
+                        RemoteRosterEntry remoteRosterEntry = remoteRosterEntries.next();
                         getConnection(1).getRoster().createEntry(
                             remoteRosterEntry.getUser(),
                             remoteRosterEntry.getName(),

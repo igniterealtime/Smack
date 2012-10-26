@@ -258,7 +258,7 @@ public class EnhancedDebugger implements SmackDebugger {
                         return false;
                     }
 
-                    public Class getColumnClass(int columnIndex) {
+                    public Class<?> getColumnClass(int columnIndex) {
                         if (columnIndex == 2 || columnIndex == 3) {
                             return Icon.class;
                         }

@@ -1703,8 +1703,8 @@ public class MultiUserChat {
         }
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
-        for (Iterator it = answer.getItems(); it.hasNext();) {
-            affiliates.add(new Affiliate((MUCOwner.Item) it.next()));
+        for (Iterator<MUCOwner.Item> it = answer.getItems(); it.hasNext();) {
+            affiliates.add(new Affiliate(it.next()));
         }
         return affiliates;
     }
@@ -1744,8 +1744,8 @@ public class MultiUserChat {
         }
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
-        for (Iterator it = answer.getItems(); it.hasNext();) {
-            affiliates.add(new Affiliate((MUCAdmin.Item) it.next()));
+        for (Iterator<MUCAdmin.Item> it = answer.getItems(); it.hasNext();) {
+            affiliates.add(new Affiliate(it.next()));
         }
         return affiliates;
     }
@@ -1806,8 +1806,8 @@ public class MultiUserChat {
         }
         // Get the list of participants from the server's answer
         List<Occupant> participants = new ArrayList<Occupant>();
-        for (Iterator it = answer.getItems(); it.hasNext();) {
-            participants.add(new Occupant((MUCAdmin.Item) it.next()));
+        for (Iterator<MUCAdmin.Item> it = answer.getItems(); it.hasNext();) {
+            participants.add(new Occupant(it.next()));
         }
         return participants;
     }
@@ -2035,7 +2035,7 @@ public class MultiUserChat {
             userStatusListeners.toArray(listeners);
         }
         // Get the classes of the method parameters
-        Class[] paramClasses = new Class[params.length];
+        Class<?>[] paramClasses = new Class[params.length];
         for (int i = 0; i < params.length; i++) {
             paramClasses[i] = params[i].getClass();
         }
@@ -2088,7 +2088,7 @@ public class MultiUserChat {
         }
         try {
             // Get the method to execute based on the requested methodName and parameter
-            Class[] classes = new Class[params.size()];
+            Class<?>[] classes = new Class[params.size()];
             for (int i=0;i<params.size(); i++) {
                 classes[i] = String.class;
             }

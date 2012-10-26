@@ -51,7 +51,7 @@ public class DefaultPrivateData implements PrivateData {
 
     private String elementName;
     private String namespace;
-    private Map map;
+    private Map<String, String> map;
 
     /**
      * Creates a new generic private data object.
@@ -85,8 +85,8 @@ public class DefaultPrivateData implements PrivateData {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
-        for (Iterator i=getNames(); i.hasNext(); ) {
-            String name = (String)i.next();
+        for (Iterator<String> i=getNames(); i.hasNext(); ) {
+            String name = i.next();
             String value = getValue(name);
             buf.append("<").append(name).append(">");
             buf.append(value);
@@ -102,11 +102,11 @@ public class DefaultPrivateData implements PrivateData {
      *
      * @return an Iterator for the names.
      */
-    public synchronized Iterator getNames() {
+    public synchronized Iterator<String> getNames() {
         if (map == null) {
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.<String>emptyList().iterator();
         }
-        return Collections.unmodifiableMap(new HashMap(map)).keySet().iterator();
+        return Collections.unmodifiableSet(map.keySet()).iterator();
     }
 
     /**
@@ -130,7 +130,7 @@ public class DefaultPrivateData implements PrivateData {
      */
     public synchronized void setValue(String name, String value) {
         if (map == null) {
-            map = new HashMap();
+            map = new HashMap<String,String>();
         }
         map.put(name, value);
     }

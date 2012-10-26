@@ -90,7 +90,7 @@ public abstract class JingleDescription implements PacketExtension {
      */
     public void addAudioPayloadTypes(final List<PayloadType> pts) {
         synchronized (payloads) {
-            Iterator ptIter = pts.iterator();
+            Iterator<PayloadType> ptIter = pts.iterator();
             while (ptIter.hasNext()) {
                 PayloadType.Audio pt = (PayloadType.Audio) ptIter.next();
                 addPayloadType(new PayloadType.Audio(pt));
