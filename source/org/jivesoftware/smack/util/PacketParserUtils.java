@@ -20,15 +20,6 @@
 
 package org.jivesoftware.smack.util;
 
-import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,6 +29,26 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.packet.Authentication;
+import org.jivesoftware.smack.packet.Bind;
+import org.jivesoftware.smack.packet.DefaultPacketExtension;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
@@ -245,8 +256,12 @@ public class PacketParserUtils {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    presence.addExtension(
-                        PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
+                	try {
+                        presence.addExtension(PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
+                	}
+                	catch (Exception e) {
+                		System.err.println("Failed to parse extension packet in Presence packet.");
+                	}
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
