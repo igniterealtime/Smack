@@ -56,6 +56,7 @@
     <property name="javadoc.dest.dir" value="${basedir}/target/javadoc" />
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
     <property name="test.dir" value="${basedir}/test" />
+    <property name="test-unit.dir" value="${basedir}/test-unit" />
     <property name="resources.dir" value="${basedir}/build/resources" />
 	<property name="jingle.extension.merge.lib.dir" value="${basedir}/jingle/extension/build/merge" />	
 	<property name="jingle.extension.lib.dir" value="${basedir}/jingle/extension/build/lib" />	
@@ -144,16 +145,23 @@
             source="1.6"
             target="1.6"
         >
+            <src path="${basedir}/source" />
             <src path="${test.dir}" />
+            <src path="${test-unit.dir}" />
             <classpath>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
                 </fileset>
                 <fileset dir="${basedir}/build">
-                    <include name="junit.jar"/>
-                    <include name="xmlunit.jar"/>
+                    <include name="junit-4.10.jar"/>
+                    <include name="mockito-all-1.8.2.jar"/>
+                    <include name="powermock-mockito-1.3.5-full.jar"/>
                 </fileset>
-                <pathelement location="${compile.dir}" />
+                <fileset dir ="${basedir}/build/build">
+                	<include name="xmlunit.jar"/>
+		    		<include name="java-xmlbuilder-0.3.jar" />
+                </fileset>
+            	<pathelement location="${compile.dir}" />
             </classpath>
         </javac>
     </target>
@@ -311,11 +319,17 @@
             <sysproperty key="smack.debug" value="${test.smack.debug}" />
 
             <classpath>
-                <fileset dir="${basedir}/build/build">
-                    <include name="xmlunit.jar"/>
-                </fileset>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${basedir}/build">
+                    <include name="junit-4.10.jar"/>
+                    <include name="mockito-all-1.8.2.jar"/>
+                    <include name="powermock-mockito-1.3.5-full.jar"/>
+                </fileset>
+                <fileset dir ="${basedir}/build/build">
+                	<include name="xmlunit.jar"/>
+		    		<include name="java-xmlbuilder-0.3.jar" />
                 </fileset>
                 <fileset dir="${jar.dest.dir}">
                     <include name="smack-test.jar"/>
@@ -337,6 +351,48 @@
         <fail if="tests.failed" message="** Tests failed, see test log. **" />
     </target>
 
+    <!-- test-unit -->
+    <!-- ======================================================================================= -->
+    <target name="test-unit" depends="compile, jar-test" unless="no.test">
+
+        <junit printsummary="on"
+            fork="true"
+            haltonfailure="false"
+            failureproperty="tests.failed"
+            showoutput="true">
+
+            <classpath>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${basedir}/build">
+                    <include name="junit-4.10.jar"/>
+                    <include name="mockito-all-1.8.2.jar"/>
+                    <include name="powermock-mockito-1.3.5-full.jar"/>
+                </fileset>
+                <fileset dir ="${basedir}/build/build">
+                	<include name="xmlunit.jar"/>
+		    		<include name="java-xmlbuilder-0.3.jar" />
+                </fileset>
+                <fileset dir="${jar.dest.dir}">
+                    <include name="smack-test.jar"/>
+                </fileset>
+                <pathelement location="${compile.dir}" />
+                <pathelement location="${test-unit.dir}" />
+                <pathelement location="${resources.dir}" />
+            </classpath>
+
+            <formatter type="brief" usefile="false"/>
+
+            <batchtest>
+                <fileset dir="${basedir}/test-unit">
+                    <patternset refid="test.cases" />
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <fail if="tests.failed" message="** Tests failed, see test log. **" />
+    </target>
 
     <!-- test -->
     <!-- ======================================================================================= -->
