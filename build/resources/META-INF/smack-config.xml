@@ -30,5 +30,8 @@
 
     <!-- Port of the local Socks5 proxy -->
     <packetCollectorSize>10000</packetCollectorSize>
+    
+    <!-- Default interval in which the Ping Manager sends ping request to the server (30 minutes) -->
+    <defaultPingInterval>1800000</defaultPingInterval>
 
 </smack>

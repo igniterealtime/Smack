@@ -20,12 +20,16 @@
 
 package org.jivesoftware.smack;
 
-import org.xmlpull.mxp1.MXParser;
-import org.xmlpull.v1.XmlPullParser;
-
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -53,6 +57,8 @@ public final class SmackConfiguration {
     private static boolean localSocks5ProxyEnabled = true;
     private static int localSocks5ProxyPort = 7777;
     private static int packetCollectorSize = 5000;
+
+    private static int defaultPingInterval = 1800000; // 30 min (30*60*1000)
 
     private SmackConfiguration() {
     }
@@ -102,6 +108,9 @@ public final class SmackConfiguration {
                                 }
                                 else if (parser.getName().equals("packetCollectorSize")) {
                                     packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
+                                }
+ else if (parser.getName().equals("defaultPingInterval")) {
+                                    defaultPingInterval = parseIntProperty(parser, defaultPingInterval);
                                 }
                             }
                             eventType = parser.next();
@@ -297,6 +306,14 @@ public final class SmackConfiguration {
      */
     public static void setLocalSocks5ProxyPort(int localSocks5ProxyPort) {
         SmackConfiguration.localSocks5ProxyPort = localSocks5ProxyPort;
+    }
+
+    public static int getDefaultPingInterval() {
+        return defaultPingInterval;
+    }
+
+    public static void setDefaultPingInterval(int defaultPingInterval) {
+        SmackConfiguration.defaultPingInterval = defaultPingInterval;
     }
 
     private static void parseClassToLoad(XmlPullParser parser) throws Exception {

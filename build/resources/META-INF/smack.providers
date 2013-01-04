@@ -237,6 +237,13 @@
         <className>org.jivesoftware.smackx.provider.AdHocCommandDataProvider</className>
     </iqProvider>
 
+    <!-- Ping (XEP-199) Manager -->
+    <iqProvider>
+        <elementName>ping</elementName>
+        <namespace>urn:xmpp:ping</namespace>
+        <className>org.jivesoftware.smackx.provider.PingProvider</className>
+    </iqProvider>
+
     <extensionProvider>
         <elementName>bad-action</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
