@@ -13,19 +13,23 @@
  */
 package org.jivesoftware.smackx.bytestreams.socks5;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smackx.bytestreams.socks5.Socks5Proxy;
 import org.junit.After;
 import org.junit.Test;
 
@@ -191,7 +195,14 @@ public class Socks5ProxyTest {
         OutputStream out = socket.getOutputStream();
         out.write(new byte[] { 1, 2, 3 });
 
-        assertEquals(-1, socket.getInputStream().read());
+        int res;
+        try {
+            res = socket.getInputStream().read();
+        } catch (SocketException e) {
+            res = -1;
+        }
+
+        assertEquals(-1, res);
 
         proxy.stop();
 
