@@ -3,12 +3,12 @@
 <testcase>
 
     <!-- Host and port of the XMPP server to use -->
-    <host>sanctuary</host>
+    <host>localhost</host>
     <port>5222</port>
 
     <!-- Username prefix to use for creating accounts. Same value will be used for passwords. -->
     <username>user</username>
-	<password same='true'>passw0rd</password>
+    <password same='true'>passw0rd</password>
     <!-- Chat and MUC domain names to use -->
     <chat>chat</chat>
     <muc>conference</muc>
