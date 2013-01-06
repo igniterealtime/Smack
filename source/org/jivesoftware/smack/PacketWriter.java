@@ -149,6 +149,9 @@ class PacketWriter {
         synchronized (queue) {
             queue.notifyAll();
         }
+        // Interrupt the keep alive thread if one was created
+        if (keepAliveThread != null)
+                keepAliveThread.interrupt();
     }
 
     /**
@@ -232,10 +235,16 @@ class PacketWriter {
                 }
             }
         }
-        catch (IOException ioe){
-            if (!done) {
+        catch (IOException ioe) {
+            // The exception can be ignored if the the connection is 'done'
+            // or if the it was caused because the socket got closed
+            if (!(done || connection.isSocketClosed())) {
                 done = true;
-                connection.packetReader.notifyConnectionError(ioe);
+                // packetReader could be set to null by an concurrent disconnect() call.
+                // Therefore Prevent NPE exceptions by checking packetReader.
+                if (connection.packetReader != null) {
+                        connection.packetReader.notifyConnectionError(ioe);
+                }
             }
         }
     }

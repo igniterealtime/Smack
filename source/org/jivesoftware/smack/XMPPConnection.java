@@ -60,6 +60,10 @@ public class XMPPConnection extends Connection {
     String connectionID = null;
     private String user = null;
     private boolean connected = false;
+    // socketClosed is used concurrent
+    // by XMPPConnection, PacketReader, PacketWriter
+    private volatile boolean socketClosed = false;
+
     /**
      * Flag that indicates if the user is currently authenticated with the server.
      */
@@ -358,6 +362,10 @@ public class XMPPConnection extends Connection {
         return isUsingTLS();
     }
 
+    public boolean isSocketClosed() {
+        return socketClosed;
+    }
+
     public boolean isAuthenticated() {
         return authenticated;
     }
@@ -377,14 +385,20 @@ public class XMPPConnection extends Connection {
      */
     protected void shutdown(Presence unavailablePresence) {
         // Set presence to offline.
-        packetWriter.sendPacket(unavailablePresence);
+        if (packetWriter != null) {
+                packetWriter.sendPacket(unavailablePresence);
+        }
 
         this.setWasAuthenticated(authenticated);
         authenticated = false;
-        connected = false;
 
-        packetReader.shutdown();
-        packetWriter.shutdown();
+        if (packetReader != null) {
+                packetReader.shutdown();
+        }
+        if (packetWriter != null) {
+                packetWriter.shutdown();
+        }
+
         // Wait 150 ms for processes to clean-up, then shutdown.
         try {
             Thread.sleep(150);
@@ -393,9 +407,25 @@ public class XMPPConnection extends Connection {
             // Ignore.
         }
 
+	// Set socketClosed to true. This will cause the PacketReader
+	// and PacketWriter to ingore any Exceptions that are thrown
+	// because of a read/write from/to a closed stream.
+	// It is *important* that this is done before socket.close()!
+        socketClosed = true;
+        try {
+                socket.close();
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
+	// In most cases the close() should be successful, so set
+	// connected to false here.
+        connected = false;
+
         // Close down the readers and writers.
         if (reader != null) {
             try {
+		// Should already be closed by the previous
+		// socket.close(). But just in case do it explicitly.
                 reader.close();
             }
             catch (Throwable ignore) { /* ignore */ }
@@ -403,13 +433,17 @@ public class XMPPConnection extends Connection {
         }
         if (writer != null) {
             try {
+		// Should already be closed by the previous
+		// socket.close(). But just in case do it explicitly.
                 writer.close();
             }
             catch (Throwable ignore) { /* ignore */ }
             writer = null;
         }
 
+        // Make sure that the socket is really closed
         try {
+	    // Does nothing if the socket is already closed
             socket.close();
         }
         catch (Exception e) {
@@ -524,6 +558,7 @@ public class XMPPConnection extends Connection {
             throw new XMPPException(errorMessage, new XMPPError(
                     XMPPError.Condition.remote_server_error, errorMessage), ioe);
         }
+        socketClosed = false;
         initConnection();
     }
 
