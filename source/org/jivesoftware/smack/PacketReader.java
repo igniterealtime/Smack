@@ -134,7 +134,7 @@ class PacketReader {
                     listener.connectionClosed();
                 }
                 catch (Exception e) {
-                    // Cath and print any exception so we can recover
+                    // Catch and print any exception so we can recover
                     // from a faulty listener and finish the shutdown process
                     e.printStackTrace();
                 }
