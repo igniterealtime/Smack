@@ -277,9 +277,9 @@ class PacketWriter {
         
         public void run() {
             try {
-                // Sleep 15 seconds before sending first heartbeat. This will give time to
+                // Sleep a minimum of 15 seconds plus delay before sending first heartbeat. This will give time to
                 // properly finish TLS negotiation and then start sending heartbeats.
-                Thread.sleep(15000);
+                Thread.sleep(15000 + delay);
             }
             catch (InterruptedException ie) {
                 // Do nothing
