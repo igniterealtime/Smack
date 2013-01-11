@@ -296,7 +296,6 @@ public class PingManager {
             serverPingThread.interrupt();
             serverPingTask = null;
             serverPingThread = null;
-            System.err.println("Smack PingManger: Found existing serverPingTask");
         }
         
         if (pingInterval > 0) {
