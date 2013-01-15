@@ -37,9 +37,9 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.Ping;
-import org.jivesoftware.smackx.packet.Pong;
-import org.jivesoftware.smackx.provider.PingProvider;
+import org.jivesoftware.smackx.ping.packet.Ping;
+import org.jivesoftware.smackx.ping.packet.Pong;
+import org.jivesoftware.smackx.ping.provider.PingProvider;
 
 /**
  * Implements the XMPP Ping as defined by XEP-0199. This protocol offers an

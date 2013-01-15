@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smackx.ping.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smackx.packet.Ping;
+import org.jivesoftware.smackx.ping.packet.Ping;
 import org.xmlpull.v1.XmlPullParser;
 
 public class PingProvider implements IQProvider {

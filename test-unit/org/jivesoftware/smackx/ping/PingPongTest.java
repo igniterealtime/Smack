@@ -17,8 +17,8 @@ package org.jivesoftware.smackx.ping;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jivesoftware.smackx.packet.Ping;
-import org.jivesoftware.smackx.packet.Pong;
+import org.jivesoftware.smackx.ping.packet.Ping;
+import org.jivesoftware.smackx.ping.packet.Pong;
 import org.junit.Test;
 
 public class PingPongTest {

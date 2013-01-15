@@ -241,7 +241,7 @@
     <iqProvider>
         <elementName>ping</elementName>
         <namespace>urn:xmpp:ping</namespace>
-        <className>org.jivesoftware.smackx.provider.PingProvider</className>
+        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
     </iqProvider>
 
     <extensionProvider>
