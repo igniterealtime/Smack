@@ -154,7 +154,7 @@
                     <include name="*.jar"/>
                 </fileset>
                 <fileset dir="${basedir}/build">
-                    <include name="4.10.jar"/>
+                    <include name="junit-4.10.jar"/>
                     <include name="mockito-all-1.8.2.jar"/>
                     <include name="powermock-mockito-1.3.5-full.jar"/>
                 </fileset>
