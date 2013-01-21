@@ -75,6 +75,7 @@
 
     <patternset id="test.cases">
         <include name="org/jivesoftware/smack/**/*Test.java" />
+        <include name="org/jivesoftware/smackx/**/*Test.java" />
         <exclude name="org/jivesoftware/smack/**/Messenger*Test.java" />
     </patternset>
 
