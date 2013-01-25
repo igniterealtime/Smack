@@ -61,7 +61,6 @@ public class PingManager {
             Collections.synchronizedMap(new WeakHashMap<Connection, PingManager>());
     
     static {
-        ProviderManager.getInstance().addIQProvider(ELEMENT, NAMESPACE, new PingProvider());
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
                 new PingManager(connection);
