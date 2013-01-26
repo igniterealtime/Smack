@@ -66,7 +66,7 @@ class ServerPingTask implements Runnable {
                 break;
             }
             if (connection.isAuthenticated()) {
-                PingManager pingManager = PingManager.getInstaceFor(connection);
+                PingManager pingManager = PingManager.getInstanceFor(connection);
                 boolean res = false;
                 
                 for(int i = 0; i < tries; i++) {

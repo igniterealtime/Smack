@@ -93,7 +93,7 @@ public class PingManager {
         maybeStartPingServerTask();
     }
     
-    public static PingManager getInstaceFor(Connection connection) {
+    public static PingManager getInstanceFor(Connection connection) {
         PingManager pingManager = instances.get(connection);
         
         if (pingManager == null) {
