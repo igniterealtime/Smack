@@ -645,7 +645,7 @@
     <extensionProvider>
         <elementName>forwarded</elementName>
         <namespace>urn:xmpp:forward:0</namespace>
-        <className>org.jivesoftware.smackx.packet.Forwarded$Provider</className>
+        <className>org.jivesoftware.smackx.forward.Forwarded$Provider</className>
     </extensionProvider>
 
     <!-- XEP-0280 Message Carbons -->
