@@ -640,4 +640,23 @@
         <namespace>urn:xmpp:attention:0</namespace>
         <className>org.jivesoftware.smackx.packet.AttentionExtension$Provider</className>
     </extensionProvider>
+
+    <!-- XEP-0297 Stanza Forwarding -->
+    <extensionProvider>
+        <elementName>forwarded</elementName>
+        <namespace>urn:xmpp:forward:0</namespace>
+        <className>org.jivesoftware.smackx.packet.Forwarded$Provider</className>
+    </extensionProvider>
+
+    <!-- XEP-0280 Message Carbons -->
+    <extensionProvider>
+        <elementName>sent</elementName>
+        <namespace>urn:xmpp:carbons:2</namespace>
+        <className>org.jivesoftware.smackx.carbons.Carbon$Provider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>received</elementName>
+        <namespace>urn:xmpp:carbons:2</namespace>
+        <className>org.jivesoftware.smackx.carbons.Carbon$Provider</className>
+    </extensionProvider>
 </smackProviders>
