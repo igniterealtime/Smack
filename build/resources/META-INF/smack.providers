@@ -659,4 +659,11 @@
         <namespace>urn:xmpp:carbons:2</namespace>
         <className>org.jivesoftware.smackx.carbons.Carbon$Provider</className>
     </extensionProvider>
+
+    <!-- XEP-0199 XMPP Ping -->
+    <iqProvider>
+        <elementName>ping</elementName>
+        <namespace>urn:xmpp:ping</namespace>
+        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
+    </iqProvider>
 </smackProviders>
