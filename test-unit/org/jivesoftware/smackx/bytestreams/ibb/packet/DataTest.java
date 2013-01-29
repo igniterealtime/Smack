@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.Base64;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class DataTest {
 
     @Test
     public void shouldReturnValidIQStanzaXML() throws Exception {
-        String encodedData = Base64.encodeBytes("Test".getBytes());
+        String encodedData = StringUtils.encodeBase64("Test");
         
         String control = XMLBuilder.create("iq")
             .a("from", "romeo@montague.lit/orchard")

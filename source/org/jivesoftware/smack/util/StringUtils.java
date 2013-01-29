@@ -501,12 +501,21 @@ public class StringUtils {
 
     /**
      * Decodes a base64 String.
+     * Unlike Base64.decode() this method does not try to detect and decompress a gzip-compressed input.
      *
      * @param data a base64 encoded String to decode.
      * @return the decoded String.
      */
     public static byte[] decodeBase64(String data) {
-        return Base64.decode(data);
+        byte[] bytes;
+        try {
+            bytes = data.getBytes("UTF-8");
+        } catch (java.io.UnsupportedEncodingException uee) {
+            bytes = data.getBytes();
+        }
+
+        bytes = Base64.decode(bytes, 0, bytes.length, Base64.NO_OPTIONS);
+        return bytes;
     }
 
     /**
