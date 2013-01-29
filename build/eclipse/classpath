@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="jingle/extension/source"/>
+	<classpathentry kind="src" path="jingle/extension/test"/>
+	<classpathentry kind="src" path="source"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="test-unit"/>
+	<classpathentry kind="lib" path="build/ant-contrib.jar"/>
+	<classpathentry kind="lib" path="build/asm.jar"/>
+	<classpathentry kind="lib" path="build/build/java-xmlbuilder-0.3.jar"/>
+	<classpathentry kind="lib" path="build/build/xmlunit.jar"/>
+	<classpathentry kind="lib" path="build/javassist-3.10.0.GA.jar"/>
+	<classpathentry kind="lib" path="build/jaxen.jar"/>
+	<classpathentry kind="lib" path="build/merge/jzlib.jar"/>
+	<classpathentry kind="lib" path="build/merge/xpp.jar" sourcepath="/gtalksms/lib/xpp3-1.1.4c_src.zip"/>
+	<classpathentry kind="lib" path="build/mockito-all-1.8.2.jar"/>
+	<classpathentry kind="lib" path="build/objenesis-1.1.jar"/>
+	<classpathentry kind="lib" path="build/pmd.jar"/>
+	<classpathentry kind="lib" path="build/powermock-mockito-1.3.5-full.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/commons-logging-adapters-1.1.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/commons-logging-api-1.1.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/jmf.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/jspeex-0.9.7-jfcom.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/junit.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/mac/0JavaSoundStream.fix.mac.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/mac/0jmf.mac.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/lib/Speex.jar"/>
+	<classpathentry kind="lib" path="jingle/extension/build/merge/jstun.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="build/junit-4.10.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
