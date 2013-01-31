@@ -1986,6 +1986,7 @@ public class MultiUserChat {
             return;
         }
         rooms.remove(room);
+        cleanup();
     }
 
     /**
@@ -2530,7 +2531,7 @@ public class MultiUserChat {
         }
     }
 
-    protected void finalize() throws Throwable {
+    private void cleanup() {
         try {
             if (connection != null) {
                 roomListenerMultiplexor.removeRoom(room);
@@ -2539,10 +2540,13 @@ public class MultiUserChat {
                     connection.removePacketListener(connectionListener);
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Do nothing
         }
+    }
+
+    protected void finalize() throws Throwable {
+        cleanup();
         super.finalize();
     }
 
