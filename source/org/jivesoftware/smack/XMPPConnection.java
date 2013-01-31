@@ -832,7 +832,7 @@ public class XMPPConnection extends Connection {
         Socket plain = socket;
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
-                plain.getInetAddress().getHostName(), plain.getPort(), true);
+                plain.getInetAddress().getHostAddress(), plain.getPort(), true);
         socket.setSoTimeout(0);
         socket.setKeepAlive(true);
         // Initialize the reader and writer with the new secured version
