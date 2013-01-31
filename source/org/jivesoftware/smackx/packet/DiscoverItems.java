@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -94,7 +95,7 @@ public class DiscoverItems extends IQ {
         buf.append("<query xmlns=\"http://jabber.org/protocol/disco#items\"");
         if (getNode() != null) {
             buf.append(" node=\"");
-            buf.append(getNode());
+            buf.append(StringUtils.escapeForXML(getNode()));
             buf.append("\"");
         }
         buf.append(">");
@@ -222,13 +223,13 @@ public class DiscoverItems extends IQ {
             StringBuilder buf = new StringBuilder();
             buf.append("<item jid=\"").append(entityID).append("\"");
             if (name != null) {
-                buf.append(" name=\"").append(name).append("\"");
+                buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
             }
             if (node != null) {
-                buf.append(" node=\"").append(node).append("\"");
+                buf.append(" node=\"").append(StringUtils.escapeForXML(node)).append("\"");
             }
             if (action != null) {
-                buf.append(" action=\"").append(action).append("\"");
+                buf.append(" action=\"").append(StringUtils.escapeForXML(action)).append("\"");
             }
             buf.append("/>");
             return buf.toString();
