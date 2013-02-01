@@ -1,6 +1,6 @@
 .PHONY: all clean test-unit eclipse
 
-all: build-smack .settings
+all: build-smack
 
 # Can not use 'build' as target name, because there is a
 # directory called build
