@@ -48,7 +48,9 @@ public class VCardTest extends SmackTestCase {
             fail(e.getMessage());
         }
 
-        assertEquals("Should load own VCard successfully", origVCard.toString(), loaded.toString());
+        //assertEquals("Should load own VCard successfully", origVCard.toString(), loaded.toString());
+        assertEquals("Should load own VCard successfully", origVCard, loaded);
+
 
         loaded = new VCard();
         try {
@@ -58,7 +60,9 @@ public class VCardTest extends SmackTestCase {
             fail(e.getMessage());
         }
 
-        assertEquals("Should load another user's VCard successfully", origVCard.toString(), loaded.toString());
+        //assertEquals("Should load another user's VCard successfully", origVCard.toString(), loaded.toString());
+        assertEquals("Should load another user's VCard successfully", origVCard, loaded);
+
     }
 
     public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
