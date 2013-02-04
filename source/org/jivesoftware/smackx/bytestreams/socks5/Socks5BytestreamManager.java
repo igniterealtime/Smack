@@ -423,7 +423,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         List<String> proxies = new ArrayList<String>();
         // determine SOCKS5 proxies from XMPP-server
         try {
-            determineProxies();
+            proxies.addAll(determineProxies());
         } catch (XMPPException e) {
             // don't abort here, just remember the exception thrown by determineProxies()
             // determineStreamHostInfos() will at least add the local Socks5 proxy (if enabled)
