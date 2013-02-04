@@ -22,7 +22,6 @@
 	<classpathentry kind="lib" path="jingle/extension/build/lib/commons-logging-api-1.1.jar"/>
 	<classpathentry kind="lib" path="jingle/extension/build/lib/jmf.jar"/>
 	<classpathentry kind="lib" path="jingle/extension/build/lib/jspeex-0.9.7-jfcom.jar"/>
-	<classpathentry kind="lib" path="jingle/extension/build/lib/junit.jar"/>
 	<classpathentry kind="lib" path="jingle/extension/build/lib/mac/0JavaSoundStream.fix.mac.jar"/>
 	<classpathentry kind="lib" path="jingle/extension/build/lib/mac/0jmf.mac.jar"/>
 	<classpathentry kind="lib" path="jingle/extension/build/lib/Speex.jar"/>
