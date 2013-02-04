@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.UnknownFormatConversionException;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.packet.DataForm;
@@ -36,9 +37,7 @@ import org.jivesoftware.smackx.packet.DataForm;
  * @author Robin Collier
  */
 public class SubscribeForm extends Form
-{
-	private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-	
+{	
 	public SubscribeForm(DataForm configDataForm)
 	{
 		super(configDataForm);
@@ -127,7 +126,7 @@ public class SubscribeForm extends Form
 		String dateTime = getFieldValue(SubscribeOptionFields.expire);
 		try
 		{
-			return format.parse(dateTime);
+			return StringUtils.parseDate(dateTime);
 		}
 		catch (ParseException e)
 		{
@@ -145,7 +144,7 @@ public class SubscribeForm extends Form
 	public void setExpiry(Date expire)
 	{
 		addField(SubscribeOptionFields.expire, FormField.TYPE_TEXT_SINGLE);
-		setAnswer(SubscribeOptionFields.expire.getFieldName(), format.format(expire));
+		setAnswer(SubscribeOptionFields.expire.getFieldName(), StringUtils.formatXEP0082Date(expire));
 	}
 	
 	/**
