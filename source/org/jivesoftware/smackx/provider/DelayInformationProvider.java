@@ -65,7 +65,7 @@ public class DelayInformationProvider implements PacketExtensionProvider {
          * DelayInformation API specifies that null should be returned in that
          * case.
          */
-        reason = reason.isEmpty() ? null : reason;
+        reason = "".equals(reason) ? null : reason;
         delayInformation.setReason(reason);
         
         return delayInformation;
