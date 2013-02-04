@@ -20,14 +20,14 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.packet.DataForm;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.packet.DataForm;
 
 /**
  * Represents a Form for gathering data. The form could be of the following types:
@@ -308,6 +308,7 @@ public class Form {
             if (!FormField.TYPE_JID_MULTI.equals(field.getType())
                 && !FormField.TYPE_LIST_MULTI.equals(field.getType())
                 && !FormField.TYPE_LIST_SINGLE.equals(field.getType())
+                && !FormField.TYPE_TEXT_MULTI.equals(field.getType())
                 && !FormField.TYPE_HIDDEN.equals(field.getType())) {
                 throw new IllegalArgumentException("This field only accept list of values.");
             }
