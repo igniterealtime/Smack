@@ -26,27 +26,87 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A collection of utility methods for String objects.
  */
 public class StringUtils {
 
-    /**
+	/**
      * Date format as defined in XEP-0082 - XMPP Date and Time Profiles. The time zone is set to
      * UTC.
      * <p>
      * Date formats are not synchronized. Since multiple threads access the format concurrently, it
      * must be synchronized externally or you can use the convenience methods
      * {@link #parseXEP0082Date(String)} and {@link #formatXEP0082Date(Date)}.
+     * @deprecated This public version will be removed in favor of using the methods defined within this class.
      */
-    public static final DateFormat XEP_0082_UTC_FORMAT = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    public static final DateFormat XEP_0082_UTC_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    
+    /*
+     * private version to use internally so we don't have to be concerned with thread safety.
+     */
+    private static final DateFormat dateFormatter = DateFormatType.XEP_0082_DATE_PROFILE.createFormatter();
+    private static final Pattern datePattern = Pattern.compile("^\\d+-\\d+-\\d+$");
+    
+    private static final DateFormat timeFormatter = DateFormatType.XEP_0082_TIME_MILLIS_ZONE_PROFILE.createFormatter();
+    private static final Pattern timePattern = Pattern.compile("^(\\d+:){2}\\d+.\\d+(Z|([+-](\\d+:\\d+)))$");
+    private static final DateFormat timeNoZoneFormatter = DateFormatType.XEP_0082_TIME_MILLIS_PROFILE.createFormatter();
+    private static final Pattern timeNoZonePattern = Pattern.compile("^(\\d+:){2}\\d+.\\d+$");
+    
+    private static final DateFormat timeNoMillisFormatter = DateFormatType.XEP_0082_TIME_ZONE_PROFILE.createFormatter();
+    private static final Pattern timeNoMillisPattern = Pattern.compile("^(\\d+:){2}\\d+(Z|([+-](\\d+:\\d+)))$");
+    private static final DateFormat timeNoMillisNoZoneFormatter = DateFormatType.XEP_0082_TIME_PROFILE.createFormatter();
+    private static final Pattern timeNoMillisNoZonePattern = Pattern.compile("^(\\d+:){2}\\d+$");
+    
+    private static final DateFormat dateTimeFormatter = DateFormatType.XEP_0082_DATETIME_MILLIS_PROFILE.createFormatter();
+    private static final Pattern dateTimePattern = Pattern.compile("^\\d+(-\\d+){2}+T(\\d+:){2}\\d+.\\d+(Z|([+-](\\d+:\\d+)))?$");
+    private static final DateFormat dateTimeNoMillisFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private static final Pattern dateTimeNoMillisPattern = Pattern.compile("^\\d+(-\\d+){2}+T(\\d+:){2}\\d+(Z|([+-](\\d+:\\d+)))?$");
+
+    private static final DateFormat xep0091Formatter = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
+    private static final DateFormat xep0091Date6DigitFormatter = new SimpleDateFormat("yyyyMd'T'HH:mm:ss");
+    private static final DateFormat xep0091Date7Digit1MonthFormatter = new SimpleDateFormat("yyyyMdd'T'HH:mm:ss");
+    private static final DateFormat xep0091Date7Digit2MonthFormatter = new SimpleDateFormat("yyyyMMd'T'HH:mm:ss");
+    private static final Pattern xep0091Pattern = Pattern.compile("^\\d+T\\d+:\\d+:\\d+$");
+    
+    private static final List<PatternCouplings> couplings = new ArrayList<PatternCouplings>();
+    
     static {
-        XEP_0082_UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    	TimeZone utc = TimeZone.getTimeZone("UTC");
+        XEP_0082_UTC_FORMAT.setTimeZone(utc);
+        dateFormatter.setTimeZone(utc);
+        timeFormatter.setTimeZone(utc);
+        timeNoZoneFormatter.setTimeZone(utc);
+        timeNoMillisFormatter.setTimeZone(utc);
+        timeNoMillisNoZoneFormatter.setTimeZone(utc);
+        dateTimeFormatter.setTimeZone(utc);
+        dateTimeNoMillisFormatter.setTimeZone(utc);
+        
+        xep0091Formatter.setTimeZone(utc);
+        xep0091Date6DigitFormatter.setTimeZone(utc);
+        xep0091Date7Digit1MonthFormatter.setTimeZone(utc);
+        xep0091Date7Digit1MonthFormatter.setLenient(false);
+        xep0091Date7Digit2MonthFormatter.setTimeZone(utc);
+        xep0091Date7Digit2MonthFormatter.setLenient(false);
+        
+        couplings.add(new PatternCouplings(datePattern, dateFormatter));
+        couplings.add(new PatternCouplings(dateTimePattern, dateTimeFormatter));
+        couplings.add(new PatternCouplings(dateTimeNoMillisPattern, dateTimeNoMillisFormatter));
+        couplings.add(new PatternCouplings(timePattern, timeFormatter));
+        couplings.add(new PatternCouplings(timeNoZonePattern, timeNoZoneFormatter));
+        couplings.add(new PatternCouplings(timeNoMillisPattern, timeNoMillisFormatter));
+        couplings.add(new PatternCouplings(timeNoMillisNoZonePattern, timeNoMillisNoZoneFormatter));
     }
 
     private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
@@ -56,18 +116,139 @@ public class StringUtils {
     private static final char[] GT_ENCODE = "&gt;".toCharArray();
 
     /**
-     * Parses the given date string in the XEP-0082 - XMPP Date and Time Profiles format.
+     * Parses the given date string in the <a href="http://xmpp.org/extensions/xep-0082.html">XEP-0082 - XMPP Date and Time Profiles</a>.
      * 
      * @param dateString the date string to parse
      * @return the parsed Date
      * @throws ParseException if the specified string cannot be parsed
+     * @deprecated Use {@link #parseDate(String)} instead.
+     * 
      */
     public static Date parseXEP0082Date(String dateString) throws ParseException {
-        synchronized (XEP_0082_UTC_FORMAT) {
-            return XEP_0082_UTC_FORMAT.parse(dateString);
+    	return parseDate(dateString);
+    }
+    
+    /**
+     * Parses the given date string in either of the three profiles of <a href="http://xmpp.org/extensions/xep-0082.html">XEP-0082 - XMPP Date and Time Profiles</a>
+     * or <a href="http://xmpp.org/extensions/xep-0091.html">XEP-0091 - Legacy Delayed Delivery</a> format.
+     * <p>
+     * This method uses internal date formatters and is thus threadsafe.
+     * @param dateString the date string to parse
+     * @return the parsed Date
+     * @throws ParseException if the specified string cannot be parsed
+     */
+    public static Date parseDate(String dateString) throws ParseException {
+        Matcher matcher = xep0091Pattern.matcher(dateString);
+        
+        /*
+         * if date is in XEP-0091 format handle ambiguous dates missing the
+         * leading zero in month and day
+         */
+        if (matcher.matches()) {
+        	int length = dateString.split("T")[0].length();
+        	
+            if (length < 8) {
+                Date date = handleDateWithMissingLeadingZeros(dateString, length);
+
+                if (date != null)
+                	return date;
+            }
+            else {
+            	synchronized (xep0091Formatter) {
+                	return xep0091Formatter.parse(dateString);
+				}
+            }
+        }
+        else {
+        	for (PatternCouplings coupling : couplings) {
+                matcher = coupling.pattern.matcher(dateString);
+                
+                if (matcher.matches())
+                {
+                    synchronized (coupling.formatter) {
+                    	return coupling.formatter.parse(dateString);
+                    }
+                }
+			}
+        }
+        
+        /*
+         * We assume it is the XEP-0082 DateTime profile with no milliseconds at this point.  If it isn't, is is just not parseable, then we attempt
+         * to parse it regardless and let it throw the ParseException. 
+         */
+        synchronized (dateTimeNoMillisFormatter) {
+        	return dateTimeNoMillisFormatter.parse(dateString);
         }
     }
     
+    /**
+     * Parses the given date string in different ways and returns the date that
+     * lies in the past and/or is nearest to the current date-time.
+     * 
+     * @param stampString date in string representation
+     * @param dateLength 
+     * @param noFuture 
+     * @return the parsed date
+     * @throws ParseException The date string was of an unknown format
+     */
+    private static Date handleDateWithMissingLeadingZeros(String stampString, int dateLength) throws ParseException {
+        if (dateLength == 6) {
+        	synchronized (xep0091Date6DigitFormatter) {
+				return xep0091Date6DigitFormatter.parse(stampString);
+			}
+        }
+        Calendar now = Calendar.getInstance();
+        
+        Calendar oneDigitMonth = parseXEP91Date(stampString, xep0091Date7Digit1MonthFormatter);
+        Calendar twoDigitMonth = parseXEP91Date(stampString, xep0091Date7Digit2MonthFormatter);
+        
+        List<Calendar> dates = filterDatesBefore(now, oneDigitMonth, twoDigitMonth);
+        
+        if (!dates.isEmpty()) {
+            return determineNearestDate(now, dates).getTime();
+        } 
+        return null;
+    }
+
+    private static Calendar parseXEP91Date(String stampString, DateFormat dateFormat) {
+        try {
+            synchronized (dateFormat) {
+                dateFormat.parse(stampString);
+                return dateFormat.getCalendar();
+            }
+        }
+        catch (ParseException e) {
+            return null;
+        }
+    }
+
+    private static List<Calendar> filterDatesBefore(Calendar now, Calendar... dates) {
+        List<Calendar> result = new ArrayList<Calendar>();
+        
+        for (Calendar calendar : dates) {
+            if (calendar != null && calendar.before(now)) {
+                result.add(calendar);
+            }
+        }
+
+        return result;
+    }
+
+    private static Calendar determineNearestDate(final Calendar now, List<Calendar> dates) {
+        
+        Collections.sort(dates, new Comparator<Calendar>() {
+
+            public int compare(Calendar o1, Calendar o2) {
+                Long diff1 = new Long(now.getTimeInMillis() - o1.getTimeInMillis());
+                Long diff2 = new Long(now.getTimeInMillis() - o2.getTimeInMillis());
+                return diff1.compareTo(diff2);
+            }
+            
+        });
+        
+        return dates.get(0);
+    }
+
     /**
      * Formats a Date into a XEP-0082 - XMPP Date and Time Profiles string.
      * 
@@ -75,9 +256,14 @@ public class StringUtils {
      * @return the formatted time string in XEP-0082 format
      */
     public static String formatXEP0082Date(Date date) {
-        synchronized (XEP_0082_UTC_FORMAT) {
-            return XEP_0082_UTC_FORMAT.format(date);
+        synchronized (dateTimeFormatter) {
+            return dateTimeFormatter.format(date);
         }
+    }
+
+    public static String formatDate(Date toFormat, DateFormatType type)
+    {
+    	return null;
     }
     
     /**
@@ -562,4 +748,15 @@ public class StringUtils {
     private StringUtils() {
         // Not instantiable.
     }
+    
+    private static class PatternCouplings {
+    	Pattern pattern;
+    	DateFormat formatter;
+    	
+    	public PatternCouplings(Pattern datePattern, DateFormat dateFormat) {
+    		pattern = datePattern;
+    		formatter = dateFormat;
+		}
+	}
+
 }

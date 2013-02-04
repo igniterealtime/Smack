@@ -52,13 +52,23 @@
 
 package org.jivesoftware.smack.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.junit.Test;
 
 /**
  * A test case for the StringUtils class.
  */
-public class StringUtilsTest extends TestCase {
-
+public class StringUtilsTest  {
+	@Test
     public void testEscapeForXML() {
         String input = null;
 
@@ -98,6 +108,7 @@ public class StringUtilsTest extends TestCase {
         assertEquals("It&apos;s a good day today", StringUtils.escapeForXML(input));
     }
 
+	@Test
     public void testHash() {
         // Test null
         // @TODO - should the StringUtils.hash(String) method be fixed to handle null input?
@@ -148,6 +159,7 @@ public class StringUtilsTest extends TestCase {
         return valid;
     }
 
+	@Test
     public void testEncodeHex() {
         String input = "";
         String output = "";
@@ -163,6 +175,7 @@ public class StringUtilsTest extends TestCase {
     /**
      * This method tests 2 StringUtil methods - encodeBase64(String) and encodeBase64(byte[]).
      */
+	@Test
     public void testEncodeBase64() {
         String input = "";
         String output = "";
@@ -204,6 +217,7 @@ public class StringUtilsTest extends TestCase {
     }
     */
 
+	@Test
     public void testRandomString() {
         // Boundary test
         String result = StringUtils.randomString(-1);
@@ -222,6 +236,7 @@ public class StringUtilsTest extends TestCase {
         assertTrue(result.length() == 128);
     }
 
+	@Test
     public void testParsing() {
         String error = "Error parsing node name";
         assertEquals(error, "", StringUtils.parseName("yahoo.myjabber.net"));
@@ -236,4 +251,144 @@ public class StringUtilsTest extends TestCase {
         assertEquals(error, result, StringUtils.parseServer("user@yahoo.myjabber.net/registred"));
         assertEquals(error, result, StringUtils.parseServer("user@yahoo.myjabber.net"));
     }
+
+    @Test
+	public void parseXep0082DateProfile() throws Exception
+	{
+		Date date = StringUtils.parseDate("1971-07-21");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(1971, cal.get(Calendar.YEAR));
+		assertEquals(6, cal.get(Calendar.MONTH));
+		assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+	}
+    
+    @Test
+	public void parseXep0082TimeProfile() throws Exception
+	{
+		Date date = StringUtils.parseDate("02:56:15");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0082TimeWithMillisProfile() throws Exception
+	{
+		Date date = StringUtils.parseDate("02:56:15.123");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+		assertEquals(123, cal.get(Calendar.MILLISECOND));
+	}
+
+    @Test
+	public void parseXep0082DateTimeProfile() throws Exception
+	{
+		Date date = StringUtils.parseDate("1971-07-21T02:56:15Z");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(1971, cal.get(Calendar.YEAR));
+		assertEquals(6, cal.get(Calendar.MONTH));
+		assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+	}
+    
+    @Test
+	public void parseXep0082DateTimeProfileWithMillis() throws Exception
+	{
+		Date date = StringUtils.parseDate("1971-07-21T02:56:15.123Z");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(1971, cal.get(Calendar.YEAR));
+		assertEquals(6, cal.get(Calendar.MONTH));
+		assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+		assertEquals(123, cal.get(Calendar.MILLISECOND));
+	}
+    
+    @Test
+	public void parseXep0091() throws Exception
+	{
+		Date date = StringUtils.parseDate("20020910T23:08:25");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2002, cal.get(Calendar.YEAR));
+		assertEquals(8, cal.get(Calendar.MONTH));
+		assertEquals(10, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(23, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(8, cal.get(Calendar.MINUTE));
+		assertEquals(25, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0091NoLeading0() throws Exception
+	{
+		Date date = StringUtils.parseDate("200291T23:08:25");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2002, cal.get(Calendar.YEAR));
+		assertEquals(8, cal.get(Calendar.MONTH));
+		assertEquals(1, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(23, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(8, cal.get(Calendar.MINUTE));
+		assertEquals(25, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0091AmbiguousMonthDay() throws Exception
+	{
+		Date date = StringUtils.parseDate("2002101T23:08:25");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2002, cal.get(Calendar.YEAR));
+		assertEquals(9, cal.get(Calendar.MONTH));
+		assertEquals(1, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(23, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(8, cal.get(Calendar.MINUTE));
+		assertEquals(25, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0091SingleDigitMonth() throws Exception
+	{
+		Date date = StringUtils.parseDate("2002130T23:08:25");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2002, cal.get(Calendar.YEAR));
+		assertEquals(0, cal.get(Calendar.MONTH));
+		assertEquals(30, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(23, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(8, cal.get(Calendar.MINUTE));
+		assertEquals(25, cal.get(Calendar.SECOND));
+	}
+
+    @Test (expected=ParseException.class)
+	public void parseNoMonthDay() throws Exception
+	{
+		StringUtils.parseDate("2002T23:08:25");
+	}
+    
+    @Test (expected=ParseException.class)
+	public void parseNoYear() throws Exception
+	{
+		StringUtils.parseDate("130T23:08:25");
+	}
 }

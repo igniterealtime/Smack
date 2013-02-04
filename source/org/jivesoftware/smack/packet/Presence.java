@@ -209,7 +209,7 @@ public class Presence extends Packet {
      * @return the xml:lang of this Presence, or null if one has not been set.
      * @since 3.0.2
      */
-    private String getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
