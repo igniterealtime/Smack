@@ -414,23 +414,31 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     public Socks5BytestreamSession establishSession(String targetJID, String sessionID)
                     throws XMPPException, IOException, InterruptedException {
 
+        XMPPException discoveryException = null;
         // check if target supports SOCKS5 Bytestream
         if (!supportsSocks5(targetJID)) {
             throw new XMPPException(targetJID + " doesn't support SOCKS5 Bytestream");
         }
 
+        List<String> proxies = new ArrayList<String>();
         // determine SOCKS5 proxies from XMPP-server
-        List<String> proxies = determineProxies();
+        try {
+            determineProxies();
+        } catch (XMPPException e) {
+            // don't abort here, just remember the exception thrown by determineProxies()
+            // determineStreamHostInfos() will at least add the local Socks5 proxy (if enabled)
+            discoveryException = e;
+        }
 
         // determine address and port of each proxy
         List<StreamHost> streamHosts = determineStreamHostInfos(proxies);
 
+        if (streamHosts.isEmpty()) {
+            throw discoveryException != null ? discoveryException : new XMPPException("no SOCKS5 proxies available");
+        }
+
         // compute digest
         String digest = Socks5Utils.createDigest(sessionID, this.connection.getUser(), targetJID);
-
-        if (streamHosts.isEmpty()) {
-            throw new XMPPException("no SOCKS5 proxies available");
-        }
 
         // prioritize last working SOCKS5 proxy if exists
         if (this.proxyPrioritizationEnabled && this.lastWorkingProxy != null) {
