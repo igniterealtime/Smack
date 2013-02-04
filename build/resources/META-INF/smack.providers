@@ -666,4 +666,16 @@
         <namespace>urn:xmpp:ping</namespace>
         <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
     </iqProvider>
+
+    <!-- XEP-0184 Message Delivery Receipts -->
+    <extensionProvider>
+        <elementName>received</elementName>
+        <namespace>urn:xmpp:receipts</namespace>
+        <className>org.jivesoftware.smackx.receipts.DeliveryReceipt$Provider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>request</elementName>
+        <namespace>urn:xmpp:receipts</namespace>
+        <className>org.jivesoftware.smackx.receipts.DeliveryReceiptRequest$Provider</className>
+    </extensionProvider>
 </smackProviders>
