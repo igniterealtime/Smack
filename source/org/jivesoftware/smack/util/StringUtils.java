@@ -71,7 +71,7 @@ public class StringUtils {
     
     private static final DateFormat dateTimeFormatter = DateFormatType.XEP_0082_DATETIME_MILLIS_PROFILE.createFormatter();
     private static final Pattern dateTimePattern = Pattern.compile("^\\d+(-\\d+){2}+T(\\d+:){2}\\d+.\\d+(Z|([+-](\\d+:\\d+)))?$");
-    private static final DateFormat dateTimeNoMillisFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private static final DateFormat dateTimeNoMillisFormatter = DateFormatType.XEP_0082_DATETIME_PROFILE.createFormatter();
     private static final Pattern dateTimeNoMillisPattern = Pattern.compile("^\\d+(-\\d+){2}+T(\\d+:){2}\\d+(Z|([+-](\\d+:\\d+)))?$");
 
     private static final DateFormat xep0091Formatter = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
@@ -101,11 +101,11 @@ public class StringUtils {
         xep0091Date7Digit2MonthFormatter.setLenient(false);
         
         couplings.add(new PatternCouplings(datePattern, dateFormatter));
-        couplings.add(new PatternCouplings(dateTimePattern, dateTimeFormatter));
-        couplings.add(new PatternCouplings(dateTimeNoMillisPattern, dateTimeNoMillisFormatter));
-        couplings.add(new PatternCouplings(timePattern, timeFormatter));
+        couplings.add(new PatternCouplings(dateTimePattern, dateTimeFormatter, true));
+        couplings.add(new PatternCouplings(dateTimeNoMillisPattern, dateTimeNoMillisFormatter, true));
+        couplings.add(new PatternCouplings(timePattern, timeFormatter, true));
         couplings.add(new PatternCouplings(timeNoZonePattern, timeNoZoneFormatter));
-        couplings.add(new PatternCouplings(timeNoMillisPattern, timeNoMillisFormatter));
+        couplings.add(new PatternCouplings(timeNoMillisPattern, timeNoMillisFormatter, true));
         couplings.add(new PatternCouplings(timeNoMillisNoZonePattern, timeNoMillisNoZoneFormatter));
     }
 
@@ -165,6 +165,10 @@ public class StringUtils {
                 
                 if (matcher.matches())
                 {
+                	if (coupling.needToConvertTimeZone) {
+                		dateString = coupling.convertTime(dateString);
+                	}
+                		
                     synchronized (coupling.formatter) {
                     	return coupling.formatter.parse(dateString);
                     }
@@ -752,11 +756,31 @@ public class StringUtils {
     private static class PatternCouplings {
     	Pattern pattern;
     	DateFormat formatter;
+    	boolean needToConvertTimeZone = false;
     	
     	public PatternCouplings(Pattern datePattern, DateFormat dateFormat) {
     		pattern = datePattern;
     		formatter = dateFormat;
 		}
+
+    	public PatternCouplings(Pattern datePattern, DateFormat dateFormat, boolean shouldConvertToRFC822) {
+    		pattern = datePattern;
+    		formatter = dateFormat;
+    		needToConvertTimeZone = shouldConvertToRFC822;
+		}
+    	
+    	public String convertTime(String dateString) {
+            if (dateString.charAt(dateString.length() - 1) == 'Z') {
+                return dateString.replace("Z", "+0000");
+            }
+            else {
+            	// If the time zone wasn't specified with 'Z', then it's in
+            	// ISO8601 format (i.e. '(+|-)HH:mm')
+            	// RFC822 needs a similar format just without the colon (i.e.
+            	// '(+|-)HHmm)'), so remove it
+                return dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)","$1$2");
+    		}
+    	}
 	}
 
 }

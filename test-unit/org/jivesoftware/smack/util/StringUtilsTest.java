@@ -253,7 +253,7 @@ public class StringUtilsTest  {
     }
 
     @Test
-	public void parseXep0082DateProfile() throws Exception
+	public void parseXep0082Date() throws Exception
 	{
 		Date date = StringUtils.parseDate("1971-07-21");
 		Calendar cal = Calendar.getInstance();
@@ -265,7 +265,7 @@ public class StringUtilsTest  {
 	}
     
     @Test
-	public void parseXep0082TimeProfile() throws Exception
+	public void parseXep0082Time() throws Exception
 	{
 		Date date = StringUtils.parseDate("02:56:15");
 		Calendar cal = Calendar.getInstance();
@@ -277,7 +277,31 @@ public class StringUtilsTest  {
 	}
 
     @Test
-	public void parseXep0082TimeWithMillisProfile() throws Exception
+	public void parseXep0082TimeUTC() throws Exception
+	{
+		Date date = StringUtils.parseDate("02:56:15Z");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0082TimeWithZone() throws Exception
+	{
+		Date date = StringUtils.parseDate("04:40:15+02:30");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(10, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0082TimeWithMillis() throws Exception
 	{
 		Date date = StringUtils.parseDate("02:56:15.123");
 		Calendar cal = Calendar.getInstance();
@@ -290,7 +314,33 @@ public class StringUtilsTest  {
 	}
 
     @Test
-	public void parseXep0082DateTimeProfile() throws Exception
+	public void parseXep0082TimeWithMillisUTC() throws Exception
+	{
+		Date date = StringUtils.parseDate("02:56:15.123Z");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+		assertEquals(123, cal.get(Calendar.MILLISECOND));
+	}
+
+    @Test
+	public void parseXep0082TimeWithMillisZone() throws Exception
+	{
+		Date date = StringUtils.parseDate("02:56:15.123+01:00");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(1, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+		assertEquals(123, cal.get(Calendar.MILLISECOND));
+	}
+
+    @Test
+	public void parseXep0082DateTimeUTC() throws Exception
 	{
 		Date date = StringUtils.parseDate("1971-07-21T02:56:15Z");
 		Calendar cal = Calendar.getInstance();
@@ -303,9 +353,24 @@ public class StringUtilsTest  {
 		assertEquals(56, cal.get(Calendar.MINUTE));
 		assertEquals(15, cal.get(Calendar.SECOND));
 	}
-    
+
     @Test
-	public void parseXep0082DateTimeProfileWithMillis() throws Exception
+	public void parseXep0082DateTimeZone() throws Exception
+	{
+		Date date = StringUtils.parseDate("1971-07-21T02:56:15-01:00");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(1971, cal.get(Calendar.YEAR));
+		assertEquals(6, cal.get(Calendar.MONTH));
+		assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(3, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+	}
+
+    @Test
+	public void parseXep0082DateTimeWithMillisUTC() throws Exception
 	{
 		Date date = StringUtils.parseDate("1971-07-21T02:56:15.123Z");
 		Calendar cal = Calendar.getInstance();
@@ -315,6 +380,22 @@ public class StringUtilsTest  {
 		assertEquals(6, cal.get(Calendar.MONTH));
 		assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
 		assertEquals(2, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(56, cal.get(Calendar.MINUTE));
+		assertEquals(15, cal.get(Calendar.SECOND));
+		assertEquals(123, cal.get(Calendar.MILLISECOND));
+	}
+    
+    @Test
+	public void parseXep0082DateTimeWithMillisZone() throws Exception
+	{
+		Date date = StringUtils.parseDate("1971-07-21T02:56:15.123-01:00");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		assertEquals(1971, cal.get(Calendar.YEAR));
+		assertEquals(6, cal.get(Calendar.MONTH));
+		assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(3, cal.get(Calendar.HOUR_OF_DAY));
 		assertEquals(56, cal.get(Calendar.MINUTE));
 		assertEquals(15, cal.get(Calendar.SECOND));
 		assertEquals(123, cal.get(Calendar.MILLISECOND));
