@@ -1,3 +1,9 @@
+/**
+ * $RCSfile$
+ * $Revision: $
+ * $Date: $
+ *
+ */
 package org.jivesoftware.smack.util;
 
 /**
