@@ -20,10 +20,11 @@
 
 package org.jivesoftware.smackx.muc;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.Packet;
-
-import java.util.LinkedList;
 
 /**
  * A variant of the {@link org.jivesoftware.smack.PacketCollector} class
@@ -41,14 +42,14 @@ class ConnectionDetachedPacketCollector {
      */
     private int maxPackets = SmackConfiguration.getPacketCollectorSize();
 
-    private LinkedList<Packet> resultQueue;
+    private ArrayBlockingQueue<Packet> resultQueue;
 
     /**
      * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
      * all packets will match this collector.
      */
     public ConnectionDetachedPacketCollector() {
-        this.resultQueue = new LinkedList<Packet>();
+        this(SmackConfiguration.getPacketCollectorSize());
     }
 
     /**
@@ -56,8 +57,7 @@ class ConnectionDetachedPacketCollector {
      * all packets will match this collector.
      */
     public ConnectionDetachedPacketCollector(int maxSize) {
-        this.resultQueue = new LinkedList<Packet>();
-        maxPackets = maxSize;
+        this.resultQueue = new ArrayBlockingQueue<Packet>(maxSize);
     }
 
     /**
@@ -68,13 +68,8 @@ class ConnectionDetachedPacketCollector {
      * @return the next packet result, or <tt>null</tt> if there are no more
      *      results.
      */
-    public synchronized Packet pollResult() {
-        if (resultQueue.isEmpty()) {
-            return null;
-        }
-        else {
-            return resultQueue.removeLast();
-        }
+    public Packet pollResult() {
+    	return resultQueue.poll();
     }
 
     /**
@@ -83,17 +78,13 @@ class ConnectionDetachedPacketCollector {
      *
      * @return the next available packet.
      */
-    public synchronized Packet nextResult() {
-        // Wait indefinitely until there is a result to return.
-        while (resultQueue.isEmpty()) {
-            try {
-                wait();
-            }
-            catch (InterruptedException ie) {
-                // Ignore.
-            }
-        }
-        return resultQueue.removeLast();
+    public Packet nextResult() {
+        try {
+			return resultQueue.take();
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
     }
 
     /**
@@ -104,23 +95,13 @@ class ConnectionDetachedPacketCollector {
      * @param timeout the amount of time to wait for the next packet (in milleseconds).
      * @return the next available packet.
      */
-    public synchronized Packet nextResult(long timeout) {
-        // Wait up to the specified amount of time for a result.
-        if (resultQueue.isEmpty()) {
-            try {
-                wait(timeout);
-            }
-            catch (InterruptedException ie) {
-                // Ignore.
-            }
-        }
-        // If still no result, return null.
-        if (resultQueue.isEmpty()) {
-            return null;
-        }
-        else {
-            return resultQueue.removeLast();
-        }
+    public Packet nextResult(long timeout) {
+        try {
+        	return resultQueue.poll(timeout, TimeUnit.MILLISECONDS);
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
     }
 
     /**
@@ -129,17 +110,14 @@ class ConnectionDetachedPacketCollector {
      *
      * @param packet the packet to process.
      */
-    protected synchronized void processPacket(Packet packet) {
+    protected void processPacket(Packet packet) {
         if (packet == null) {
             return;
         }
-        // If the max number of packets has been reached, remove the oldest one.
-        if (resultQueue.size() == maxPackets) {
-            resultQueue.removeLast();
-        }
-        // Add the new packet.
-        resultQueue.addFirst(packet);
-        // Notify waiting threads a result is available.
-        notifyAll();
+        
+    	while (!resultQueue.offer(packet)) {
+    		// Since we know the queue is full, this poll should never actually block.
+    		resultQueue.poll();
+    	}
     }
 }
