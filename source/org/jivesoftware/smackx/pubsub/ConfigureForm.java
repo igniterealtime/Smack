@@ -677,7 +677,7 @@ public class ConfigureForm extends Form
 	{
 		FormField formField = getField(field.getFieldName());
 		
-		return formField.getValues().next();
+		return (formField.getValues().hasNext()) ? formField.getValues().next() : null;
 	}
 
 	private Iterator<String> getFieldValues(ConfigureNodeFields field)
