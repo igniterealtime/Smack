@@ -242,6 +242,15 @@ public abstract class SmackTestCase extends TestCase {
                 connections[i] = createConnection();
                 if (!createOfflineConnections())
                     connections[i].connect();
+
+                String currentPassword = usernamePrefix + (i+1);
+                String currentUser = currentPassword;
+
+                if (passwordPrefix != null)
+                    currentPassword = (samePassword ? passwordPrefix : passwordPrefix + (i+1));
+
+                usernames[i] = currentUser;
+                passwords[i] = currentPassword;
             }
             // Use the host name that the server reports. This is a good idea in most
             // cases, but could fail if the user set a hostname in their XMPP server
@@ -251,14 +260,8 @@ public abstract class SmackTestCase extends TestCase {
             
             if (!createOfflineConnections()) {
                 for (int i = 0; i < getMaxConnections(); i++) {
-                    String currentPassword = usernamePrefix + (i+1);
-                    String currentUser = currentPassword; 
-                    
-                    if (passwordPrefix != null)
-                        currentPassword = (samePassword ? passwordPrefix : passwordPrefix + (i+1));
-                    
-                    usernames[i] = currentUser;
-                    passwords[i] = currentPassword;
+                    String currentUser = usernames[i];
+                    String currentPassword = passwords[i];
                     
                     try {
                         getConnection(i).login(currentUser, currentPassword, "Smack");
