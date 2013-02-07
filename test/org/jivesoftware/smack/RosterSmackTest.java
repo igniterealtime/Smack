@@ -52,13 +52,13 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Tests the Roster functionality by creating and removing roster entries.
@@ -482,7 +482,7 @@ public class RosterSmackTest extends SmackTestCase {
                     new ConnectionConfiguration(getHost(), getPort(), getServiceName());
             XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
             conn4.connect();
-            conn4.login(getUsername(1), getUsername(1), "Home");
+            conn4.login(getUsername(1), getPassword(1), "Home");
 
             // Add a new roster entry
             Roster roster = getConnection(0).getRoster();
@@ -555,7 +555,7 @@ public class RosterSmackTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
-        conn4.login(getUsername(1), getUsername(1), "Home");
+        conn4.login(getUsername(1), getPassword(1), "Home");
 
         // Add a new roster entry
         Roster roster = conn4.getRoster();
@@ -620,7 +620,7 @@ public class RosterSmackTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn2 = new XMPPConnection(connectionConfiguration);
         conn2.connect();
-        conn2.login(getUsername(0), getUsername(0), "Home");
+        conn2.login(getUsername(0), getPassword(0), "Home");
 
         // Retrieve roster and verify that new contact is there and nickname is correct
         Roster roster2 = conn2.getRoster();

@@ -52,7 +52,22 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smack.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManagerListener;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
@@ -64,9 +79,6 @@ import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.XHTMLExtension;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Tests the new MUC functionalities.
@@ -1762,7 +1774,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
                 conns[i] = new XMPPConnection(connectionConfiguration);
                 conns[i].connect();
-                conns[i].login(getUsername(1), getUsername(1), "resource-" + i);
+                conns[i].login(getUsername(1), getPassword(1), "resource-" + i);
                 Thread.sleep(20);
             }
 

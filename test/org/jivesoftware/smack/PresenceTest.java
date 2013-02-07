@@ -20,10 +20,10 @@
 
 package org.jivesoftware.smack;
 
+import java.util.Iterator;
+
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.SmackTestCase;
-
-import java.util.Iterator;
 
 /**
  * Ensure that the server is delivering messages to the correct client based on the client's
@@ -95,7 +95,7 @@ public class PresenceTest extends SmackTestCase {
             // User_1 will log in again using another resource
             conn = createConnection();
             conn.connect();
-            conn.login(getUsername(1), getUsername(1), "OtherPlace");
+            conn.login(getUsername(1), getPassword(1), "OtherPlace");
             conn.sendPacket(new Presence(Presence.Type.available, null, 1,
                     Presence.Mode.available));
             chat2 = conn.getChatManager().createChat(getBareJID(0), chat0.getThreadID(), null);
@@ -147,7 +147,7 @@ public class PresenceTest extends SmackTestCase {
         // User_1 will log in again using another resource (that is going to be available)
         XMPPConnection conn = createConnection();
         conn.connect();
-        conn.login(getUsername(1), getUsername(1), "OtherPlace");
+        conn.login(getUsername(1), getPassword(1), "OtherPlace");
 
         // Create chats between participants
         Chat chat0 = getConnection(0).getChatManager().createChat(getFullJID(1), null);
@@ -174,7 +174,7 @@ public class PresenceTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
-        conn4.login(getUsername(1), getUsername(1), "Home");
+        conn4.login(getUsername(1), getPassword(1), "Home");
 
         // Add a new roster entry
         Roster roster = getConnection(0).getRoster();

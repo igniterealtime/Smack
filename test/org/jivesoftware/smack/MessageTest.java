@@ -199,7 +199,7 @@ public class MessageTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
-        conn3.login(getUsername(0), getUsername(0), "Home");
+        conn3.login(getUsername(0), getPassword(0), "Home");
         // Set this connection as highest priority
         Presence presence = new Presence(Presence.Type.available);
         presence.setPriority(10);
@@ -248,7 +248,7 @@ public class MessageTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
-        conn3.login(getUsername(0), getUsername(0), "Home");
+        conn3.login(getUsername(0), getPassword(0), "Home");
         // Set this connection as highest priority
         Presence presence = new Presence(Presence.Type.available);
         presence.setMode(Presence.Mode.away);
@@ -297,7 +297,7 @@ public class MessageTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
-        conn3.login(getUsername(0), getUsername(0), "Home");
+        conn3.login(getUsername(0), getPassword(0), "Home");
         // Set this connection as highest priority
         Presence presence = new Presence(Presence.Type.available);
         presence.setMode(Presence.Mode.available);
@@ -313,7 +313,7 @@ public class MessageTest extends SmackTestCase {
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
         XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
-        conn4.login(getUsername(0), getUsername(0), "Home2");
+        conn4.login(getUsername(0), getPassword(0), "Home2");
         presence = new Presence(Presence.Type.available);
         presence.setMode(Presence.Mode.available);
         presence.setPriority(4);

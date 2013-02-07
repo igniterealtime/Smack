@@ -49,7 +49,7 @@ public class ReconnectionTest extends SmackTestCase {
         // Connect to the server
         connection.connect();
         // Log into the server
-        connection.login(getUsername(0), getUsername(0), "MyOtherResource");
+        connection.login(getUsername(0), getPassword(0), "MyOtherResource");
 
         assertTrue("Failed to use compression", connection.isUsingCompression());
 

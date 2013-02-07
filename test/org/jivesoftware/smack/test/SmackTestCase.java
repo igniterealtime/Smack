@@ -19,19 +19,21 @@
  */
 package org.jivesoftware.smack.test;
 
-import junit.framework.TestCase;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.xmlpull.mxp1.MXParser;
-import org.xmlpull.v1.XmlPullParser;
-
-import javax.net.SocketFactory;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+import javax.net.SocketFactory;
+
+import junit.framework.TestCase;
+
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Base class for all the test cases which provides a pre-configured execution context. This 
@@ -59,6 +61,9 @@ public abstract class SmackTestCase extends TestCase {
     private boolean samePassword;
     private List<Integer> createdUserIdx = new ArrayList<Integer>();
 
+    private String[] usernames;
+    private String[] passwords;
+    
     private String chatDomain = "chat";
     private String mucDomain = "conference";
 
@@ -155,10 +160,18 @@ public abstract class SmackTestCase extends TestCase {
      * @return the user of the user (e.g. johndoe).
      */
     protected String getUsername(int index) {
-        if (index > getMaxConnections()) {
-            throw new IllegalArgumentException("Index out of bounds");
-        }
-        return usernamePrefix + (index + 1);
+        return usernames[index];
+    }
+    
+    /**
+     * Returns the password of the user (e.g. johndoe) that is using the connection 
+     * located at the requested position.
+     * 
+     * @param index the position in the pool of the connection to look for.
+     * @return the password of the user (e.g. johndoe).
+     */
+    protected String getPassword(int index) {
+        return passwords[index];
     }
 
     /**
@@ -220,6 +233,9 @@ public abstract class SmackTestCase extends TestCase {
             return;
         }
         connections = new XMPPConnection[getMaxConnections()];
+        usernames = new String[getMaxConnections()];
+        passwords = new String[getMaxConnections()];
+        
         try {
             // Connect to the server
             for (int i = 0; i < getMaxConnections(); i++) {
@@ -235,14 +251,17 @@ public abstract class SmackTestCase extends TestCase {
             
             if (!createOfflineConnections()) {
                 for (int i = 0; i < getMaxConnections(); i++) {
-                    String password = usernamePrefix + (i+1);
-                    String currentUser = password; 
+                    String currentPassword = usernamePrefix + (i+1);
+                    String currentUser = currentPassword; 
                     
                     if (passwordPrefix != null)
-                        password = (samePassword ? passwordPrefix : passwordPrefix + (i+1));
+                        currentPassword = (samePassword ? passwordPrefix : passwordPrefix + (i+1));
+                    
+                    usernames[i] = currentUser;
+                    passwords[i] = currentPassword;
                     
                     try {
-                        getConnection(i).login(currentUser, password, "Smack");
+                        getConnection(i).login(currentUser, currentPassword, "Smack");
                     } catch (XMPPException e) {
                         e.printStackTrace();
                         
@@ -253,7 +272,7 @@ public abstract class SmackTestCase extends TestCase {
                         // Create the account and try logging in again as the 
                         // same user.
                         try {
-                            createAccount(i, currentUser, password);
+                            createAccount(i, currentUser, currentPassword);
                         } catch (Exception e1) {
                             e1.printStackTrace();
                             fail("Could not create user: " + currentUser);
