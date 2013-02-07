@@ -1,7 +1,7 @@
 /**
  * $RCSfile$
- * $Revision: $
- * $Date: $
+ * $Revision$
+ * $Date$
  *
  */
 package org.jivesoftware.smack.util;
