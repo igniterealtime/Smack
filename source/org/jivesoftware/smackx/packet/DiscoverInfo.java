@@ -39,6 +39,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class DiscoverInfo extends IQ {
 
+    public static final String NAMESPACE = "http://jabber.org/protocol/disco#info";
+
     private final List<Feature> features = new CopyOnWriteArrayList<Feature>();
     private final List<Identity> identities = new CopyOnWriteArrayList<Identity>();
     private String node;
@@ -133,7 +135,7 @@ public class DiscoverInfo extends IQ {
 
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"http://jabber.org/protocol/disco#info\"");
+        buf.append("<query xmlns=\"" + NAMESPACE + "\"");
         if (getNode() != null) {
             buf.append(" node=\"");
             buf.append(StringUtils.escapeForXML(getNode()));

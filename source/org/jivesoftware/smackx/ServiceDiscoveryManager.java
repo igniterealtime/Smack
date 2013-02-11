@@ -143,6 +143,10 @@ public class ServiceDiscoveryManager {
     private void init() {
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
+
+        addFeature(DiscoverInfo.NAMESPACE);
+        addFeature(DiscoverItems.NAMESPACE);
+
         // Add a listener to the connection that removes the registered instance when
         // the connection is closed
         connection.addConnectionListener(new ConnectionListener() {
