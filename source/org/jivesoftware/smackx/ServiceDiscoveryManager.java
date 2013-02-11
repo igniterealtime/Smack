@@ -54,7 +54,7 @@ public class ServiceDiscoveryManager {
             new ConcurrentHashMap<Connection, ServiceDiscoveryManager>();
 
     private Connection connection;
-    private final List<String> features = new ArrayList<String>();
+    private final Set<String> features = new HashSet<String>();
     private DataForm extendedInfo = null;
     private Map<String, NodeInformationProvider> nodeInformationProviders =
             new ConcurrentHashMap<String, NodeInformationProvider>();
