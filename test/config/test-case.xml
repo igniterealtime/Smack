@@ -13,4 +13,12 @@
     <chat>chat</chat>
     <muc>conference</muc>
 
+    <!-- LoginTest parameters -->
+    <testAnonymousLogin>false</testAnonymousLogin>
+
+    <!-- Account creation parameters -->
+    <!--
+    <accountCreationParameters email="test@xcp.localhost" name="test"/>
+    -->
+
 </testcase>

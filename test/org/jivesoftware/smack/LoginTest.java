@@ -67,6 +67,8 @@ public class LoginTest extends SmackTestCase {
      * Check that the server handles anonymous users correctly.
      */
     public void testSASLAnonymousLogin() {
+        if (!isTestAnonymousLogin()) return;
+
         try {
             XMPPConnection conn1 = createConnection();
             XMPPConnection conn2 = createConnection();
@@ -84,8 +86,7 @@ public class LoginTest extends SmackTestCase {
                 assertNotNull("Username is null", StringUtils.parseName(conn2.getUser()));
             }
             catch (XMPPException e) {
-                e.printStackTrace();
-                //fail(e.getMessage());
+                fail(e.getMessage());
             }
             finally {
                 // Close the connection
@@ -103,6 +104,8 @@ public class LoginTest extends SmackTestCase {
      * Check that the server handles anonymous users correctly.
      */
     public void testNonSASLAnonymousLogin() {
+        if (!isTestAnonymousLogin()) return;
+
         try {
             ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
             config.setSASLAuthenticationEnabled(false);
@@ -126,7 +129,6 @@ public class LoginTest extends SmackTestCase {
                 assertNotNull("Username is null", StringUtils.parseName(conn2.getUser()));
             }
             catch (XMPPException e) {
-                e.printStackTrace();
                 fail(e.getMessage());
             }
             // Close the connection
@@ -147,12 +149,16 @@ public class LoginTest extends SmackTestCase {
             XMPPConnection conn = createConnection();
             conn.connect();
             try {
-                conn.getAccountManager().createAccount("user_1", "user_1");
+                conn.getAccountManager().createAccount("user_1", "user_1", getAccountCreationParameters());
             } catch (XMPPException e) {
-                // Do nothing if the accout already exists
+                // Do nothing if the account already exists
                 if (e.getXMPPError().getCode() != 409) {
                     throw e;
                 }
+                // Else recreate the connection, ins case the server closed it as
+                // a result of the error, so we can login.
+                conn = createConnection();
+                conn.connect();
             }
             conn.login("user_1", "user_1", (String) null);
             if (conn.getSASLAuthentication().isAuthenticated()) {
@@ -163,11 +169,15 @@ public class LoginTest extends SmackTestCase {
                 conn.disconnect();
             }
             else {
-                fail("User with no resource was able to log into the server");
+                fail("User with no resource was not able to log into the server");
             }
 
         } catch (XMPPException e) {
-            assertEquals("Wrong error code returned", 406, e.getXMPPError().getCode());
+            if (e.getXMPPError() != null) {
+                assertEquals("Wrong error code returned", 406, e.getXMPPError().getCode());
+            } else {
+                fail(e.getMessage());
+            }
         }
     }
 

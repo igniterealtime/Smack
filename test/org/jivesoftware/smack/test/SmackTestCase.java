@@ -23,7 +23,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.SocketFactory;
 
@@ -58,6 +60,8 @@ public abstract class SmackTestCase extends TestCase {
     private int port = 5222;
     private String usernamePrefix = "user";
     private String passwordPrefix;
+    private boolean testAnonymousLogin = false;
+    private Map<String, String> accountCreationParameters = new HashMap<String, String>();
     private boolean samePassword;
     private List<Integer> createdUserIdx = new ArrayList<Integer>();
 
@@ -435,8 +439,22 @@ public abstract class SmackTestCase extends TestCase {
                         usernamePrefix = parser.nextText();
                     }
                     else if (parser.getName().equals("password")) {
-                    	samePassword = "true".equals(parser.getAttributeValue(0));
+                        samePassword = "true".equals(parser.getAttributeValue(0));
                         passwordPrefix = parser.nextText();
+                    }
+                    else if (parser.getName().equals("testAnonymousLogin")) {
+                        testAnonymousLogin = "true".equals(parser.nextText());
+                    }
+                    else if (parser.getName().equals("accountCreationParameters")) {
+                        int numAttributes = parser.getAttributeCount();
+                        String key = null;
+                        String value = null;
+
+                        for (int i = 0; i < numAttributes; i++) {
+                            key = parser.getAttributeName(i);
+                            value = parser.getAttributeValue(i);
+                            accountCreationParameters.put(key, value);
+                        }
                     }
                 }
                 eventType = parser.next();
@@ -498,4 +516,11 @@ public abstract class SmackTestCase extends TestCase {
         }
     }
 
+    public boolean isTestAnonymousLogin() {
+        return testAnonymousLogin;
+    }
+
+    public Map<String, String> getAccountCreationParameters() {
+        return accountCreationParameters;
+    }
 }
