@@ -20,6 +20,8 @@
 
 package org.jivesoftware.smackx.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
@@ -29,16 +31,19 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A last activity IQ for retrieving information about the last activity associated with a Jabber ID.
- * LastActivity (JEP-012) allows for retrieval of how long a particular user has been idle and the
+ * LastActivity (XEP-0012) allows for retrieval of how long a particular user has been idle and the
  * message the specified when doing so. Use {@link org.jivesoftware.smackx.LastActivityManager}
  * to get the last activity of a user.
  *
  * @author Derek DeMoro
  */
 public class LastActivity extends IQ {
+
+    public static final String NAMESPACE = "jabber:iq:last";
 
     public long lastActivity = -1;
     public String message;
@@ -49,12 +54,11 @@ public class LastActivity extends IQ {
 
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-		buf.append("<query xmlns=\"jabber:iq:last\"");
-		if (lastActivity != -1) {
-			buf.append(" seconds=\"").append(lastActivity).append("\"");
-
-		}
-		buf.append("></query>");
+        buf.append("<query xmlns=\"" + NAMESPACE + "\"");
+        if (lastActivity != -1) {
+            buf.append(" seconds=\"").append(lastActivity).append("\"");
+        }
+        buf.append("></query>");
         return buf.toString();
     }
 
@@ -100,26 +104,29 @@ public class LastActivity extends IQ {
             super();
         }
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        public IQ parseIQ(XmlPullParser parser) throws XMPPException, XmlPullParserException {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
+                throw new XMPPException("Parser not in proper position, or bad XML.");
             }
 
             LastActivity lastActivity = new LastActivity();
+            String seconds = parser.getAttributeValue("", "seconds");
+            String message = null;
             try {
-                String seconds = parser.getAttributeValue("", "seconds");
-                String message = parser.nextText();
-                if (seconds != null) {
-                    long xmlSeconds = new Double(seconds).longValue();
-                    lastActivity.setLastActivity((int)xmlSeconds);
-                }
-
-                if (message != null) {
-                    lastActivity.setMessage(message);
+                message = parser.nextText();
+            } catch (IOException e1) {
+                // Ignore
+            }
+            if (seconds != null) {
+                try {
+                    lastActivity.setLastActivity(Long.parseLong(seconds));
+                } catch (NumberFormatException e) {
+                    // Ignore
                 }
             }
-            catch (Exception e) {
-                e.printStackTrace();
+
+            if (message != null) {
+                lastActivity.setMessage(message);
             }
             return lastActivity;
         }
