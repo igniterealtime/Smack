@@ -1,4 +1,4 @@
-.PHONY: all clean test-unit eclipse
+.PHONY: all clean javadoc test-unit eclipse
 
 export JAVA_TOOL_OPTIONS:='-Dfile.encoding=iso-8859-1'
 
@@ -17,6 +17,9 @@ unit-test:
 
 integration-test:
 	cd build && ant test
+	
+javadoc:
+	cd build && ant javadoc
 
 eclipse: .settings .classpath .project
 
