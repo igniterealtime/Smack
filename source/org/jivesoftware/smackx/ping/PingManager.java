@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Florian Schmaus
+ * Copyright 2012-2013 Florian Schmaus
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,10 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.ping.packet.Ping;
 import org.jivesoftware.smackx.ping.packet.Pong;
-import org.jivesoftware.smackx.ping.provider.PingProvider;
 
 /**
  * Implements the XMPP Ping as defined by XEP-0199. This protocol offers an
