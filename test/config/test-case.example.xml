@@ -1,14 +1,19 @@
 <?xml version="1.0"?>
-<!-- Default configuration for Smack test cases. -->
+<!-- Rename this file to test-case.xml to overwrite the default values of the Smack testcases -->
 <testcase>
 
     <!-- Host and port of the XMPP server to use -->
     <host>localhost</host>
     <port>5222</port>
 
-    <!-- Username prefix to use for creating accounts. Same value will be used for passwords. -->
+    <!-- Username prefix to use for creating accounts. -->
     <username>user</username>
+    <!-- Password prefix to use for creating connections -->
+    <!-- If same password is true, then the same password will be used for all accounts -->
+    <!-- If password is not set, the username will be used as password -->
+    <!--
     <password same='true'>passw0rd</password>
+    -->
     <!-- Chat and MUC domain names to use -->
     <chat>chat</chat>
     <muc>conference</muc>
