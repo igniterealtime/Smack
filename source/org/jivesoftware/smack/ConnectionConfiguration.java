@@ -24,6 +24,7 @@ import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.DNSUtil;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
 import javax.security.auth.callback.CallbackHandler;
 import java.io.File;
 
@@ -59,6 +60,7 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean selfSignedCertificateEnabled = false;
     private boolean expiredCertificatesCheckEnabled = false;
     private boolean notMatchingDomainCheckEnabled = false;
+    private SSLContext customSSLContext;
 
     private boolean compressionEnabled = false;
 
@@ -484,6 +486,25 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setNotMatchingDomainCheckEnabled(boolean notMatchingDomainCheckEnabled) {
         this.notMatchingDomainCheckEnabled = notMatchingDomainCheckEnabled;
+    }
+
+    /**
+     * Gets the custom SSLContext for SSL sockets. This is null by default.
+     *
+     * @return the SSLContext previously set with setCustomSSLContext() or null.
+     */
+    public SSLContext getCustomSSLContext() {
+        return this.customSSLContext;
+    }
+
+    /**
+     * Sets a custom SSLContext for creating SSL sockets. A custom Context causes all other
+     * SSL/TLS realted settings to be ignored.
+     *
+     * @param context the custom SSLContext for new sockets; null to reset default behavior.
+     */
+    public void setCustomSSLContext(SSLContext context) {
+        this.customSSLContext = context;
     }
 
     /**

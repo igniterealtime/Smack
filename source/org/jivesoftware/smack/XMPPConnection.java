@@ -763,14 +763,14 @@ public class XMPPConnection extends Connection {
      * @throws Exception if an exception occurs.
      */
     void proceedTLSReceived() throws Exception {
-        SSLContext context = SSLContext.getInstance("TLS");
+        SSLContext context = this.config.getCustomSSLContext();
         KeyStore ks = null;
         KeyManager[] kms = null;
         PasswordCallback pcb = null;
 
         if(config.getCallbackHandler() == null) {
            ks = null;
-        } else {
+        } else if (context == null) {
             //System.out.println("Keystore type: "+configuration.getKeystoreType());
             if(config.getKeystoreType().equals("NONE")) {
                 ks = null;
@@ -826,9 +826,11 @@ public class XMPPConnection extends Connection {
         }
 
         // Verify certificate presented by the server
-        context.init(kms,
-                new javax.net.ssl.TrustManager[]{new ServerTrustManager(getServiceName(), config)},
-                new java.security.SecureRandom());
+        if (context == null) {
+            context = SSLContext.getInstance("TLS");
+            context.init(kms, new javax.net.ssl.TrustManager[] { new ServerTrustManager(getServiceName(), config) },
+                    new java.security.SecureRandom());
+        }
         Socket plain = socket;
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
