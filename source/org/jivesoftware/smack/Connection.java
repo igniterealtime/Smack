@@ -23,8 +23,10 @@ package org.jivesoftware.smack;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +35,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jivesoftware.smack.compression.JzlibInputOutputStream;
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -90,6 +95,8 @@ public abstract class Connection {
     private final static Set<ConnectionCreationListener> connectionEstablishedListeners =
             new CopyOnWriteArraySet<ConnectionCreationListener>();
 
+    protected final static List<XMPPInputOutputStream> compressionHandlers = new ArrayList<XMPPInputOutputStream>(2);
+
     /**
      * Value that indicates whether debugging is enabled. When enabled, a debug
      * window will apear for each new connection that will contain the following
@@ -116,6 +123,10 @@ public abstract class Connection {
         }
         // Ensure the SmackConfiguration class is loaded by calling a method in it.
         SmackConfiguration.getVersion();
+        // Add the Java7 compression handler first, since it's preferred
+        compressionHandlers.add(new Java7ZlibInputOutputStream());
+        // If we don't have access to the Java7 API use the JZlib compression handler
+        compressionHandlers.add(new JzlibInputOutputStream());
     }
 
     /**
@@ -192,6 +203,8 @@ public abstract class Connection {
      * Holds the initial configuration used while creating the connection.
      */
     protected final ConnectionConfiguration config;
+
+    protected XMPPInputOutputStream compressionHandler;
 
     /**
      * Create a new Connection to a XMPP server.

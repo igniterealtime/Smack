@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="build/build/xmlunit.jar"/>
 	<classpathentry kind="lib" path="build/javassist-3.10.0.GA.jar"/>
 	<classpathentry kind="lib" path="build/jaxen.jar"/>
-	<classpathentry kind="lib" path="build/merge/jzlib.jar"/>
 	<classpathentry kind="lib" path="build/merge/xpp.jar" sourcepath="/gtalksms/lib/xpp3-1.1.4c_src.zip"/>
 	<classpathentry kind="lib" path="build/mockito-all-1.8.2.jar"/>
 	<classpathentry kind="lib" path="build/objenesis-1.1.jar"/>
@@ -28,5 +27,6 @@
 	<classpathentry kind="lib" path="jingle/extension/build/merge/jstun.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="build/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="build/merge/jzlib.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

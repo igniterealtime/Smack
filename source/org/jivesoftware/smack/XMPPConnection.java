@@ -20,6 +20,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -33,9 +34,17 @@ import javax.net.ssl.SSLSocket;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyStore;
@@ -85,10 +94,11 @@ public class XMPPConnection extends Connection {
      * Collection of available stream compression methods offered by the server.
      */
     private Collection<String> compressionMethods;
+
     /**
-     * Flag that indicates if stream compression is actually in use.
+     * Set to true by packet writer if the server acknowledged the compression
      */
-    private boolean usingCompression;
+    private boolean serverAckdCompression = false;
 
 
     /**
@@ -571,7 +581,8 @@ public class XMPPConnection extends Connection {
     private void initConnection() throws XMPPException {
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
         if (!isFirstInitialization) {
-            usingCompression = false;
+            compressionHandler = null;
+            serverAckdCompression = false;
         }
 
         // Set the reader and writer instance variables
@@ -669,7 +680,7 @@ public class XMPPConnection extends Connection {
 
     private void initReaderAndWriter() throws XMPPException {
         try {
-            if (!usingCompression) {
+            if (compressionHandler == null) {
                 reader =
                         new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                 writer = new BufferedWriter(
@@ -677,24 +688,15 @@ public class XMPPConnection extends Connection {
             }
             else {
                 try {
-                    Class<?> zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
-                    Constructor<?> constructor =
-                            zoClass.getConstructor(OutputStream.class, Integer.TYPE);
-                    Object out = constructor.newInstance(socket.getOutputStream(), 9);
-                    Method method = zoClass.getMethod("setFlushMode", Integer.TYPE);
-                    method.invoke(out, 2);
-                    writer =
-                            new BufferedWriter(new OutputStreamWriter((OutputStream) out, "UTF-8"));
+                    OutputStream os = compressionHandler.getOutputStream(socket.getOutputStream());
+                    writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-                    Class<?> ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
-                    constructor = ziClass.getConstructor(InputStream.class);
-                    Object in = constructor.newInstance(socket.getInputStream());
-                    method = ziClass.getMethod("setFlushMode", Integer.TYPE);
-                    method.invoke(in, 2);
-                    reader = new BufferedReader(new InputStreamReader((InputStream) in, "UTF-8"));
+                    InputStream is = compressionHandler.getInputStream(socket.getInputStream());
+                    reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                 }
                 catch (Exception e) {
                     e.printStackTrace();
+                    compressionHandler = null;
                     reader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream(), "UTF-8"));
                     writer = new BufferedWriter(
@@ -869,17 +871,27 @@ public class XMPPConnection extends Connection {
     }
 
     /**
-     * Returns true if the specified compression method was offered by the server.
-     *
-     * @param method the method to check.
-     * @return true if the specified compression method was offered by the server.
+     * Returns the compression handler that can be used for one compression methods offered by the server.
+     * 
+     * @return a instance of XMPPInputOutputStream or null if no suitable instance was found
+     * 
      */
-    private boolean hasAvailableCompressionMethod(String method) {
-        return compressionMethods != null && compressionMethods.contains(method);
+    private XMPPInputOutputStream maybeGetCompressionHandler() {
+        if (compressionMethods != null) {
+            for (XMPPInputOutputStream handler : compressionHandlers) {
+                if (!handler.isSupported())
+                    continue;
+
+                String method = handler.getCompressionMethod();
+                if (compressionMethods.contains(method))
+                    return handler;
+            }
+        }
+        return null;
     }
 
     public boolean isUsingCompression() {
-        return usingCompression;
+        return compressionHandler != null && serverAckdCompression;
     }
 
     /**
@@ -902,14 +914,9 @@ public class XMPPConnection extends Connection {
         if (authenticated) {
             throw new IllegalStateException("Compression should be negotiated before authentication.");
         }
-        try {
-            Class.forName("com.jcraft.jzlib.ZOutputStream");
-        }
-        catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Cannot use compression. Add smackx.jar to the classpath");
-        }
-        if (hasAvailableCompressionMethod("zlib")) {
-            requestStreamCompression();
+
+        if ((compressionHandler = maybeGetCompressionHandler()) != null) {
+            requestStreamCompression(compressionHandler.getCompressionMethod());
             // Wait until compression is being used or a timeout happened
             synchronized (this) {
                 try {
@@ -919,7 +926,7 @@ public class XMPPConnection extends Connection {
                     // Ignore.
                 }
             }
-            return usingCompression;
+            return isUsingCompression();
         }
         return false;
     }
@@ -929,10 +936,10 @@ public class XMPPConnection extends Connection {
      * then negotiation of stream compression can only happen after TLS was negotiated. If TLS
      * compression is being used the stream compression should not be used.
      */
-    private void requestStreamCompression() {
+    private void requestStreamCompression(String method) {
         try {
             writer.write("<compress xmlns='http://jabber.org/protocol/compress'>");
-            writer.write("<method>zlib</method></compress>");
+            writer.write("<method>" + method + "</method></compress>");
             writer.flush();
         }
         catch (IOException e) {
@@ -946,8 +953,7 @@ public class XMPPConnection extends Connection {
      * @throws Exception if there is an exception starting stream compression.
      */
     void startStreamCompression() throws Exception {
-        // Secure the plain connection
-        usingCompression = true;
+        serverAckdCompression = true;
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
 
@@ -986,7 +992,7 @@ public class XMPPConnection extends Connection {
      *      appropiate error messages to end-users.
      */
     public void connect() throws XMPPException {
-        // Stablishes the connection, readers and writers
+        // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
         // Automatically makes the login if the user was previouslly connected successfully
         // to the server and the connection was terminated abruptly

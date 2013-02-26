@@ -26,4 +26,6 @@
     <accountCreationParameters email="test@xcp.localhost" name="test"/>
     -->
 
+    <compressionEnabled>false</compressionEnabled>
+
 </testcase>
