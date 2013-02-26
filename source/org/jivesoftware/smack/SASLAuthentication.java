@@ -473,10 +473,6 @@ public class SASLAuthentication implements UserAuthentication {
                 throw new XMPPException(ack.getError());
             }
         }
-        else {
-            // Server never offered session establishment
-            throw new XMPPException("Session establishment not offered by server");
-        }
         return userJID;
     }
 
