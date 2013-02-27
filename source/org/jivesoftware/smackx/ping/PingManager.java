@@ -21,10 +21,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -51,13 +55,14 @@ import org.jivesoftware.smackx.ping.packet.Pong;
  *      Ping</a>
  */
 public class PingManager {
-    
+
     public static final String NAMESPACE = "urn:xmpp:ping";
     public static final String ELEMENT = "ping";
-    
+
+
     private static Map<Connection, PingManager> instances =
             Collections.synchronizedMap(new WeakHashMap<Connection, PingManager>());
-    
+
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
@@ -65,49 +70,96 @@ public class PingManager {
             }
         });
     }
-    
+
+    private ScheduledExecutorService periodicPingExecutorService;
     private Connection connection;
-    private Thread serverPingThread;
-    private ServerPingTask serverPingTask;
     private int pingInterval = SmackConfiguration.getDefaultPingInterval();
     private Set<PingFailedListener> pingFailedListeners = Collections
             .synchronizedSet(new HashSet<PingFailedListener>());
-    
+    private ScheduledFuture<?> periodicPingTask;
+    protected volatile long lastSuccessfulPingByTask = -1;
+
+
     // Ping Flood protection
     private long pingMinDelta = 100;
     private long lastPingStamp = 0; // timestamp of the last received ping
-    
-    // Last server pong timestamp if a ping request manually
-    private long lastServerPingStamp = -1;
-    
+
+    // Timestamp of the last pong received, either from the server or another entity
+    // Note, no need to synchronize this value, it will only increase over time
+    private long lastSuccessfulManualPing = -1;
+
     private PingManager(Connection connection) {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(NAMESPACE);
         this.connection = connection;
-        PacketFilter pingPacketFilter = new PacketTypeFilter(Ping.class);
-        connection.addPacketListener(new PingPacketListener(), pingPacketFilter);
-        connection.addConnectionListener(new PingConnectionListener());
-        instances.put(connection, this);
-        maybeStartPingServerTask();
+        init();
     }
-    
+
+    private void init() {
+        periodicPingExecutorService = new ScheduledThreadPoolExecutor(1);
+        PacketFilter pingPacketFilter = new PacketTypeFilter(Ping.class);
+        connection.addPacketListener(new PacketListener() {
+            /**
+             * Sends a Pong for every Ping
+             */
+            public void processPacket(Packet packet) {
+                if (pingMinDelta > 0) {
+                    // Ping flood protection enabled
+                    long currentMillies = System.currentTimeMillis();
+                    long delta = currentMillies - lastPingStamp;
+                    lastPingStamp = currentMillies;
+                    if (delta < pingMinDelta) {
+                        return;
+                    }
+                }
+                Pong pong = new Pong((Ping)packet);
+                connection.sendPacket(pong);
+            }
+        }
+        , pingPacketFilter);
+        connection.addConnectionListener(new ConnectionListener() {
+
+            @Override
+            public void connectionClosed() {
+                maybeStopPingServerTask();
+            }
+
+            @Override
+            public void connectionClosedOnError(Exception arg0) {
+                maybeStopPingServerTask();
+            }
+
+            @Override
+            public void reconnectionSuccessful() {
+                maybeSchedulePingServerTask();
+            }
+
+            @Override
+            public void reconnectingIn(int seconds) {
+            }
+
+            @Override
+            public void reconnectionFailed(Exception e) {
+            }
+        });
+        instances.put(connection, this);
+        maybeSchedulePingServerTask();
+    }
+
     public static PingManager getInstanceFor(Connection connection) {
         PingManager pingManager = instances.get(connection);
-        
+
         if (pingManager == null) {
             pingManager = new PingManager(connection);
         }
-        
+
         return pingManager;
     }
-    
+
     public void setPingIntervall(int pingIntervall) {
         this.pingInterval = pingIntervall;
-        if (serverPingTask != null) {
-            serverPingTask.setPingInterval(pingIntervall);
-        }
     }
-    
+
     public int getPingIntervall() {
         return pingInterval;
     }
@@ -189,11 +241,11 @@ public class PingManager {
      */
     public boolean pingEntity(String jid, long pingTimeout) {
         IQ result = ping(jid, pingTimeout);
-        
-        if (result == null 
-                || result.getType() == IQ.Type.ERROR) {
+
+        if (result == null || result.getType() == IQ.Type.ERROR) {
             return false;
-        } 
+        }
+        pongReceived();
         return true;
     }
     
@@ -218,7 +270,8 @@ public class PingManager {
             }
             return false;
         }
-        lastServerPingStamp = System.currentTimeMillis();
+        // Maybe not really a pong, but an answer is an answer
+        pongReceived();
         return true;
     }
     
@@ -257,80 +310,34 @@ public class PingManager {
      * @return
      */
     public long getLastSuccessfulPing() {
-        long taskLastSuccessfulPing = -1;
-        if (serverPingTask != null) {
-            taskLastSuccessfulPing = serverPingTask.getLastSucessfulPing();
-        }
-        return Math.max(taskLastSuccessfulPing, lastServerPingStamp);
+        return Math.max(lastSuccessfulPingByTask, lastSuccessfulManualPing);
     }
     
     protected Set<PingFailedListener> getPingFailedListeners() {
         return pingFailedListeners;
     }
-    
-    private class PingConnectionListener extends AbstractConnectionListener {
 
-        @Override
-        public void connectionClosed() {
-            maybeStopPingServerTask();
-        }
-
-        @Override
-        public void connectionClosedOnError(Exception arg0) {
-            maybeStopPingServerTask();
-        }
-
-        @Override
-        public void reconnectionSuccessful() {
-            maybeStartPingServerTask();
-        }
-
-    }
-    
-    private void maybeStartPingServerTask() {
-        if (serverPingTask != null) {
-            serverPingTask.setDone();
-            serverPingThread.interrupt();
-            serverPingTask = null;
-            serverPingThread = null;
-        }
-        
+    /**
+     * Cancels any existing periodic ping task if there is one and schedules a new ping task if pingInterval is greater
+     * then zero.
+     * 
+     */
+    protected synchronized void maybeSchedulePingServerTask() {
+        maybeStopPingServerTask();
         if (pingInterval > 0) {
-            serverPingTask = new ServerPingTask(connection, pingInterval);
-            serverPingThread = new Thread(serverPingTask);
-            serverPingThread.setDaemon(true);
-            serverPingThread.setName("Smack Ping Server Task (" + connection.getServiceName() + ")");
-            serverPingThread.start();
+            periodicPingTask = periodicPingExecutorService.schedule(new ServerPingTask(connection), pingInterval,
+                    TimeUnit.SECONDS);
         }
     }
-    
+
     private void maybeStopPingServerTask() {
-        if (serverPingThread != null) {
-            serverPingTask.setDone();
-            serverPingThread.interrupt();
+        if (periodicPingTask != null) {
+            periodicPingTask.cancel(true);
+            periodicPingTask = null;
         }
     }
 
-    private class PingPacketListener implements PacketListener {
-
-        public PingPacketListener() {
-        }
-        
-        /**
-         * Sends a Pong for every Ping
-         */
-        public void processPacket(Packet packet) {
-            if (pingMinDelta > 0) {
-                // Ping flood protection enabled
-                long currentMillies = System.currentTimeMillis();
-                long delta = currentMillies - lastPingStamp;
-                lastPingStamp = currentMillies;
-                if (delta < pingMinDelta) {
-                    return;
-                }
-            }
-            Pong pong = new Pong((Ping)packet);
-            connection.sendPacket(pong);
-        }
+    private void pongReceived() {
+        lastSuccessfulManualPing = System.currentTimeMillis();
     }
 }

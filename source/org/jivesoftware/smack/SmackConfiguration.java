@@ -58,7 +58,10 @@ public final class SmackConfiguration {
     private static int localSocks5ProxyPort = 7777;
     private static int packetCollectorSize = 5000;
 
-    private static int defaultPingInterval = 1800000; // 30 min (30*60*1000)
+    /**
+     * defaultPingInterval (in seconds)
+     */
+    private static int defaultPingInterval = 1800; // 30 min (30*60)
 
     private SmackConfiguration() {
     }
@@ -109,7 +112,7 @@ public final class SmackConfiguration {
                                 else if (parser.getName().equals("packetCollectorSize")) {
                                     packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
                                 }
- else if (parser.getName().equals("defaultPingInterval")) {
+                                else if (parser.getName().equals("defaultPingInterval")) {
                                     defaultPingInterval = parseIntProperty(parser, defaultPingInterval);
                                 }
                             }
@@ -308,10 +311,20 @@ public final class SmackConfiguration {
         SmackConfiguration.localSocks5ProxyPort = localSocks5ProxyPort;
     }
 
+    /**
+     * Returns the default ping interval (seconds)
+     * 
+     * @return
+     */
     public static int getDefaultPingInterval() {
         return defaultPingInterval;
     }
 
+    /**
+     * Sets the default ping interval (seconds). Set it to '-1' to disable the periodic ping
+     *
+     * @param defaultPingInterval
+     */
     public static void setDefaultPingInterval(int defaultPingInterval) {
         SmackConfiguration.defaultPingInterval = defaultPingInterval;
     }
