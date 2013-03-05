@@ -171,13 +171,13 @@ public class PacketParserUtils {
      */
     private static String parseContent(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
-        String content = "";
+        StringBuffer content = new StringBuffer();
         int parserDepth = parser.getDepth();
         while (!(parser.next() == XmlPullParser.END_TAG && parser
                         .getDepth() == parserDepth)) {
-            content += parser.getText();
+            content.append(parser.getText());
         }
-        return content;
+        return content.toString();
     }
 
     /**
@@ -325,6 +325,13 @@ public class PacketParserUtils {
                                     (Class<?>)provider, parser);
                         }
                     }
+                    // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
+                    // have to be answered with an IQ error response. See the code a few lines below
+                    else if (IQ.Type.RESULT == type){
+                        // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
+                        // so that the content of the IQ can be examined later on
+                        iqPacket = new UnparsedResultIQ(parseContent(parser));
+                    }
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -340,6 +347,7 @@ public class PacketParserUtils {
                 // qualified by a namespace it does not understand, then answer an IQ of
                 // type "error" with code 501 ("feature-not-implemented")
                 iqPacket = new IQ() {
+                    @Override
                     public String getChildElementXML() {
                         return null;
                     }
@@ -355,6 +363,7 @@ public class PacketParserUtils {
             else {
                 // If an IQ packet wasn't created above, create an empty IQ packet.
                 iqPacket = new IQ() {
+                    @Override
                     public String getChildElementXML() {
                         return null;
                     }
@@ -854,7 +863,7 @@ public class PacketParserUtils {
             }
         }
         return object;
-    }
+            }
 
     /**
      * Decodes a String into an object of the specified type. If the object
@@ -888,5 +897,25 @@ public class PacketParserUtils {
             return Class.forName(value);
         }
         return null;
+    }
+
+    /**
+     * This class represents and unparsed IQ of the type 'result'. Usually it's created when no IQProvider
+     * was found for the IQ element.
+     * 
+     * The child elements can be examined with the getChildElementXML() method.
+     *
+     */
+    public static class UnparsedResultIQ extends IQ {
+        public UnparsedResultIQ(String content) {
+            this.str = content;
+        }
+
+        private final String str;
+
+        @Override
+        public String getChildElementXML() {
+            return this.str;
+        }
     }
 }
