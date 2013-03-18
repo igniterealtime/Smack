@@ -689,7 +689,7 @@ public class RosterSmackTest extends SmackTestCase {
         Thread.sleep(200);
 
         // Break the connection
-        getConnection(0).packetReader.notifyConnectionError(new Exception("Simulated Error"));
+        getConnection(0).notifyConnectionError(new Exception("Simulated Error"));
 
         Presence presence = roster.getPresence(getBareJID(1));
         assertFalse("Unavailable presence not found for offline user", presence.isAvailable());

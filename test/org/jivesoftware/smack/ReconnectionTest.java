@@ -44,7 +44,7 @@ public class ReconnectionTest extends SmackTestCase {
         connection.addConnectionListener(listener);
 
         // Simulates an error in the connection
-        connection.packetReader.notifyConnectionError(new Exception("Simulated Error"));
+        connection.notifyConnectionError(new Exception("Simulated Error"));
         Thread.sleep(12000);
         // After 10 seconds, the reconnection manager must reestablishes the connection
         assertEquals("The ConnectionListener.connectionStablished() notification was not fired",
@@ -79,7 +79,7 @@ public class ReconnectionTest extends SmackTestCase {
         connection.addConnectionListener(listener);
 
         // Simulates an error in the connection
-        connection.packetReader.notifyConnectionError(new Exception("Simulated Error"));
+        connection.notifyConnectionError(new Exception("Simulated Error"));
         Thread.sleep(12000);
         // After 10 seconds, the reconnection manager must reestablishes the connection
         assertEquals("The ConnectionListener.connectionStablished() notification was not fired",
@@ -103,7 +103,7 @@ public class ReconnectionTest extends SmackTestCase {
         connection.addConnectionListener(listener);
 
         // Produces a connection error
-        connection.packetReader.notifyConnectionError(new Exception("Simulated Error"));
+        connection.notifyConnectionError(new Exception("Simulated Error"));
         assertEquals(
                 "An error occurs but the ConnectionListener.connectionClosedOnError(e) was not notified",
                 true, listener.connectionClosedOnError);
