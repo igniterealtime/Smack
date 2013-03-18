@@ -23,8 +23,10 @@ package org.jivesoftware.smackx.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -45,6 +47,36 @@ public class DiscoverInfo extends IQ {
     private final List<Identity> identities = new CopyOnWriteArrayList<Identity>();
     private String node;
 
+    public DiscoverInfo() {
+        super();
+    }
+
+    /**
+     * Copy constructor
+     * 
+     * @param d
+     */
+    public DiscoverInfo(DiscoverInfo d) {
+        super(d);
+
+        // Set node
+        setNode(d.getNode());
+
+        // Copy features
+        synchronized (d.features) {
+            for (Feature f : d.features) {
+                addFeature(f);
+            }
+        }
+
+        // Copy identities
+        synchronized (d.identities) {
+            for (Identity i : d.identities) {
+                addIdentity(i);
+            }
+        }
+    }
+
     /**
      * Adds a new feature to the discovered information.
      *
@@ -52,6 +84,18 @@ public class DiscoverInfo extends IQ {
      */
     public void addFeature(String feature) {
         addFeature(new Feature(feature));
+    }
+
+    /**
+     * Adds a collection of features to the packet. Does noting if featuresToAdd is null.
+     *
+     * @param featuresToAdd
+     */
+    public void addFeatures(Collection<String> featuresToAdd) {
+        if (featuresToAdd == null) return;
+        for (String feature : featuresToAdd) {
+            addFeature(feature);
+        }
     }
 
     private void addFeature(Feature feature) {
@@ -79,6 +123,18 @@ public class DiscoverInfo extends IQ {
     public void addIdentity(Identity identity) {
         synchronized (identities) {
             identities.add(identity);
+        }
+    }
+
+    /**
+     * Adds identities to the DiscoverInfo stanza
+     * 
+     * @param identitiesToAdd
+     */
+    public void addIdentities(Collection<Identity> identitiesToAdd) {
+        if (identitiesToAdd == null) return;
+        synchronized (identities) {
+            identities.addAll(identitiesToAdd);
         }
     }
 
@@ -159,6 +215,40 @@ public class DiscoverInfo extends IQ {
     }
 
     /**
+     * Test if a DiscoverInfo response contains duplicate identities.
+     * 
+     * @return true if duplicate identities where found, otherwise false
+     */
+    public boolean containsDuplicateIdentities() {
+        List<Identity> checkedIdentities = new LinkedList<Identity>();
+        for (Identity i : identities) {
+            for (Identity i2 : checkedIdentities) {
+                if (i.equals(i2))
+                    return true;
+            }
+            checkedIdentities.add(i);
+        }
+        return false;
+    }
+
+    /**
+     * Test if a DiscoverInfo response contains duplicate features.
+     * 
+     * @return true if duplicate identities where found, otherwise false
+     */
+    public boolean containsDuplicateFeatures() {
+        List<Feature> checkedFeatures = new LinkedList<Feature>();
+        for (Feature f : features) {
+            for (Feature f2 : checkedFeatures) {
+                if (f.equals(f2))
+                    return true;
+            }
+            checkedFeatures.add(f);
+        }
+        return false;
+    }
+
+    /**
      * Represents the identity of a given XMPP entity. An entity may have many identities but all
      * the identities SHOULD have the same name.<p>
      * 
@@ -167,21 +257,26 @@ public class DiscoverInfo extends IQ {
      * attributes.
      * 
      */
-    public static class Identity {
+    public static class Identity implements Comparable<Object> {
 
         private String category;
         private String name;
         private String type;
+        private String lang; // 'xml:lang;
 
         /**
          * Creates a new identity for an XMPP entity.
+         * 'category' and 'type' are required by 
+         * <a href="http://xmpp.org/extensions/xep-0030.html#schemas">XEP-30 XML Schemas</a>
          * 
-         * @param category the entity's category.
+         * @param category the entity's category (required as per XEP-30).
          * @param name the entity's name.
+         * @param type the entity's type (required as per XEP-30).
          */
-        public Identity(String category, String name) {
+        public Identity(String category, String name, String type) {
             this.category = category;
             this.name = name;
+            this.type = type;
         }
 
         /**
@@ -223,15 +318,105 @@ public class DiscoverInfo extends IQ {
             this.type = type;
         }
 
+        /**
+         * Sets the natural language (xml:lang) for this identity (optional)
+         * 
+         * @param lang the xml:lang of this Identity
+         */
+        public void setLanguage(String lang) {
+            this.lang = lang;
+        }
+
+        /**
+         * Returns the identities natural language if one is set
+         * 
+         * @return the value of xml:lang of this Identity
+         */
+        public String getLanguage() {
+            return lang;
+        }
+
         public String toXML() {
             StringBuilder buf = new StringBuilder();
-            buf.append("<identity category=\"").append(StringUtils.escapeForXML(category)).append("\"");
+            buf.append("<identity");
+            // Check if this packet has 'lang' set and maybe append it to the resulting string
+            if (lang != null)
+                buf.append(" xml:lang=\"").append(StringUtils.escapeForXML(lang)).append("\"");
+            // Category must always be set
+            buf.append(" category=\"").append(StringUtils.escapeForXML(category)).append("\"");
+            // Name must always be set
             buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
+            // Check if this packet has 'type' set and maybe append it to the resulting string
             if (type != null) {
                 buf.append(" type=\"").append(StringUtils.escapeForXML(type)).append("\"");
             }
             buf.append("/>");
             return buf.toString();
+        }
+
+        /** 
+         * Check equality for Identity  for category, type, lang and name
+         * in that order as defined by
+         * <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0015 5.4 Processing Method (Step 3.3)</a>
+         *  
+         */
+        public boolean equals(Object obj) {
+            if (obj == null)
+                return false;
+            if (obj == this)
+                return true;
+            if (obj.getClass() != getClass())
+                return false;
+
+            DiscoverInfo.Identity other = (DiscoverInfo.Identity) obj;
+            if (!this.category.equals(other.category))
+                return false;
+
+            String otherLang = other.lang == null ? "" : other.lang;
+            String thisLang = lang == null ? "" : lang;
+
+            if (!other.type.equals(type))
+                return false;
+            if (!otherLang.equals(thisLang))
+                return false;
+
+            String otherName = other.name == null ? "" : other.name;
+            String thisName = name == null ? "" : other.name;
+            if (!thisName.equals(otherName))
+                return false;
+
+            return true;
+        }
+
+        /**
+         * Compares and identity with another object. The comparison order is:
+         * Category, Type, Lang. If all three are identical the other Identity is considered equal.
+         * Name is not used for comparision, as defined by XEP-0115
+         * 
+         * @param obj
+         * @return
+         */
+        public int compareTo(Object obj) {
+
+            DiscoverInfo.Identity other = (DiscoverInfo.Identity) obj;
+            String otherLang = other.lang == null ? "" : other.lang;
+            String thisLang = lang == null ? "" : lang;
+
+            if (category.equals(other.category)) {
+                if (type.equals(other.type)) {
+                    if (thisLang.equals(otherLang)) {
+                        // Don't compare on name, XEP-30 says that name SHOULD
+                        // be equals for all identities of an entity
+                        return 0;
+                    } else {
+                        return thisLang.compareTo(otherLang);
+                    }
+                } else {
+                    return type.compareTo(other.type);
+                }
+            } else {
+                return category.compareTo(other.category);
+            }
         }
     }
 
@@ -267,6 +452,18 @@ public class DiscoverInfo extends IQ {
             StringBuilder buf = new StringBuilder();
             buf.append("<feature var=\"").append(StringUtils.escapeForXML(variable)).append("\"/>");
             return buf.toString();
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == null)
+                return false;
+            if (obj == this)
+                return true;
+            if (obj.getClass() != getClass())
+                return false;
+
+            DiscoverInfo.Feature other = (DiscoverInfo.Feature) obj;
+            return variable.equals(other.variable);
         }
     }
 }

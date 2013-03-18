@@ -247,8 +247,7 @@ public class Socks5ByteStreamManagerTest {
         // build discover info for proxy containing information about NOT being a Socks5
         // proxy
         DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity = new Identity("noproxy", proxyJID);
-        identity.setType("bytestreams");
+        Identity identity = new Identity("noproxy", proxyJID, "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the proxy identity if proxy is queried
@@ -312,8 +311,7 @@ public class Socks5ByteStreamManagerTest {
         // build discover info for proxy containing information about NOT being a Socks5
         // proxy
         DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity = new Identity("noproxy", proxyJID);
-        identity.setType("bytestreams");
+        Identity identity = new Identity("noproxy", proxyJID, "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the proxy identity if proxy is queried
@@ -403,8 +401,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
         DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity = new Identity("proxy", proxyJID);
-        identity.setType("bytestreams");
+        Identity identity = new Identity("proxy", proxyJID, "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
@@ -494,8 +491,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
         DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity = new Identity("proxy", proxyJID);
-        identity.setType("bytestreams");
+        Identity identity = new Identity("proxy", proxyJID, "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
@@ -577,8 +573,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
         DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity = new Identity("proxy", proxyJID);
-        identity.setType("bytestreams");
+        Identity identity = new Identity("proxy", proxyJID, "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
@@ -672,8 +667,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
         DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity = new Identity("proxy", proxyJID);
-        identity.setType("bytestreams");
+        Identity identity = new Identity("proxy", proxyJID, "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
@@ -1026,7 +1020,7 @@ public class Socks5ByteStreamManagerTest {
          */
         DiscoverInfo proxyInfo1 = Socks5PacketUtils.createDiscoverInfo("proxy2.xmpp-server",
                         initiatorJID);
-        Identity identity1 = new Identity("proxy", "proxy2.xmpp-server");
+        Identity identity1 = new Identity("proxy", "proxy2.xmpp-server", "bytestreams");
         identity1.setType("bytestreams");
         proxyInfo1.addIdentity(identity1);
 
@@ -1036,8 +1030,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
         DiscoverInfo proxyInfo2 = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
-        Identity identity2 = new Identity("proxy", proxyJID);
-        identity2.setType("bytestreams");
+        Identity identity2 = new Identity("proxy", proxyJID, "bytestreams");
         proxyInfo2.addIdentity(identity2);
 
         // return the SOCKS5 bytestream proxy identity if proxy is queried

@@ -52,6 +52,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smackx.Form;
@@ -131,6 +132,11 @@ public class MultiUserChat {
                         }
 
                         public List<DiscoverInfo.Identity> getNodeIdentities() {
+                            return null;
+                        }
+
+                        @Override
+                        public List<PacketExtension> getNodePacketExtensions() {
                             return null;
                         }
                     });

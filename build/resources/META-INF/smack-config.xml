@@ -30,8 +30,11 @@
 
     <!-- Port of the local Socks5 proxy -->
     <packetCollectorSize>10000</packetCollectorSize>
-    
+
     <!-- Default interval (seconds) in which the Ping Manager sends ping request to the server (30 minutes) -->
     <defaultPingInterval>1800</defaultPingInterval>
+
+    <!-- Automatic enable Entity Caps (XEP-0115) for new connections -->
+    <autoEnableEntityCaps>false</autoEnableEntityCaps>
 
 </smack>

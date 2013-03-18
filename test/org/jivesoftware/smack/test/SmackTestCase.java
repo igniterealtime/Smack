@@ -34,6 +34,7 @@ import junit.framework.TestCase;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.ConnectionUtils;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -502,6 +503,15 @@ public abstract class SmackTestCase extends TestCase {
         String fullClassName = this.getClass().getName();
         int firstChar = fullClassName.lastIndexOf('.') + 1;
         return "config/" + fullClassName.substring(firstChar) + ".xml";
+    }
+
+    /**
+     * Subscribes all connections with each other: They all become friends
+     * 
+     * @throws XMPPException
+     */
+    protected void letsAllBeFriends() throws XMPPException {
+        ConnectionUtils.letsAllBeFriends(connections);
     }
 
     /**
