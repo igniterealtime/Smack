@@ -5,15 +5,16 @@
     <!-- Classes that will be loaded when Smack starts -->
     <startupClasses>
         <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
-        <className>org.jivesoftware.smack.PrivacyListManager</className>        
+        <className>org.jivesoftware.smack.PrivacyListManager</className>
         <className>org.jivesoftware.smackx.XHTMLManager</className>
         <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
         <className>org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager</className>
-        <className>org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager</className>    
+        <className>org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager</className>
         <className>org.jivesoftware.smackx.filetransfer.FileTransferManager</className>
         <className>org.jivesoftware.smackx.LastActivityManager</className>
-        <className>org.jivesoftware.smack.ReconnectionManager</className>    
-        <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>    
+        <className>org.jivesoftware.smack.ReconnectionManager</className>
+        <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>
+        <className>org.jivesoftware.smack.util.dns.JavaxResolver</className>
     </startupClasses>
 
     <!-- Packet reply timeout in milliseconds -->
