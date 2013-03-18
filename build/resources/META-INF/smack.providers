@@ -678,4 +678,11 @@
         <namespace>urn:xmpp:receipts</namespace>
         <className>org.jivesoftware.smackx.receipts.DeliveryReceiptRequest$Provider</className>
     </extensionProvider>
+
+    <!-- XEP-0115 Entity Capabilities -->
+    <extensionProvider>
+        <elementName>c</elementName>
+        <namespace>http://jabber.org/protocol/caps</namespace>
+        <className>org.jivesoftware.smackx.entitycaps.provider.CapsExtensionProvider</className>
+    </extensionProvider>
 </smackProviders>

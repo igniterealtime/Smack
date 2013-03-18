@@ -21,6 +21,7 @@
 package org.jivesoftware.smackx.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.FormField;
 
 import java.util.ArrayList;
@@ -123,11 +124,11 @@ public class DataForm implements PacketExtension {
     }
 
     public String getElementName() {
-        return "x";
+        return Form.ELEMENT;
     }
 
     public String getNamespace() {
-        return "jabber:x:data";
+        return Form.NAMESPACE;
     }
 
     /**
@@ -193,6 +194,21 @@ public class DataForm implements PacketExtension {
         synchronized (items) {
             items.add(item);
         }
+    }
+
+    /**
+     * Returns true if this DataForm has at least one FORM_TYPE field which is
+     * hidden. This method is used for sanity checks.
+     *
+     * @return
+     */
+    public boolean hasHiddenFromTypeField() {
+        boolean found = false;
+        for (FormField f : fields) {
+            if (f.getVariable().equals("FORM_TYPE") && f.getType() != null && f.getType().equals("hidden"))
+                found = true;
+        }
+        return found;
     }
 
     public String toXML() {

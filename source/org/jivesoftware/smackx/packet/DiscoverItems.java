@@ -23,6 +23,7 @@ package org.jivesoftware.smackx.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,18 @@ public class DiscoverItems extends IQ {
     public void addItem(Item item) {
         synchronized (items) {
             items.add(item);
+        }
+    }
+
+    /**
+     * Adds a collection of items to the discovered information. Does nothing if itemsToAdd is null
+     *
+     * @param itemsToAdd
+     */
+    public void addItems(Collection<Item> itemsToAdd) {
+        if (itemsToAdd == null) return;
+        for (Item i : itemsToAdd) {
+            addItem(i);
         }
     }
 

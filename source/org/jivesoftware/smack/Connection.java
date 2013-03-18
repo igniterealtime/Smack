@@ -204,6 +204,11 @@ public abstract class Connection {
      */
     protected final ConnectionConfiguration config;
 
+    /**
+     * Holds the Caps Node information for the used XMPP service (i.e. the XMPP server)
+     */
+    private String serviceCapsNode;
+
     protected XMPPInputOutputStream compressionHandler;
 
     /**
@@ -795,7 +800,29 @@ public abstract class Connection {
         }
     }
 
+    /**
+     * Set the servers Entity Caps node
+     * 
+     * Connection holds this information in order to avoid a dependency to
+     * smackx where EntityCapsManager lives from smack.
+     * 
+     * @param node
+     */
+    protected void setServiceCapsNode(String node) {
+        serviceCapsNode = node;
+    }
 
+    /**
+     * Retrieve the servers Entity Caps node
+     * 
+     * Connection holds this information in order to avoid a dependency to
+     * smackx where EntityCapsManager lives from smack.
+     * 
+     * @return
+     */
+    public String getServiceCapsNode() {
+        return serviceCapsNode;
+    }
 
     /**
      * A wrapper class to associate a packet filter with a listener.

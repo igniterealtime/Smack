@@ -63,6 +63,11 @@ public final class SmackConfiguration {
      */
     private static int defaultPingInterval = 1800; // 30 min (30*60)
 
+    /**
+     * This automatically enables EntityCaps for new connections if it is set to true
+     */
+    private static boolean autoEnableEntityCaps = false;
+
     private SmackConfiguration() {
     }
 
@@ -114,6 +119,9 @@ public final class SmackConfiguration {
                                 }
                                 else if (parser.getName().equals("defaultPingInterval")) {
                                     defaultPingInterval = parseIntProperty(parser, defaultPingInterval);
+                                }
+                                else if (parser.getName().equals("autoEnableEntityCaps")) {
+                                    autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
                                 }
                             }
                             eventType = parser.next();
@@ -327,6 +335,23 @@ public final class SmackConfiguration {
      */
     public static void setDefaultPingInterval(int defaultPingInterval) {
         SmackConfiguration.defaultPingInterval = defaultPingInterval;
+    }
+
+    /**
+     * Check if Entity Caps are enabled as default for every new connection
+     * @return
+     */
+    public static boolean autoEnableEntityCaps() {
+        return autoEnableEntityCaps;
+    }
+
+    /**
+     * Set if Entity Caps are enabled or disabled for every new connection
+     * 
+     * @param true if Entity Caps should be auto enabled, false if not
+     */
+    public static void setAutoEnableEntityCaps(boolean b) {
+        autoEnableEntityCaps = b;
     }
 
     private static void parseClassToLoad(XmlPullParser parser) throws Exception {

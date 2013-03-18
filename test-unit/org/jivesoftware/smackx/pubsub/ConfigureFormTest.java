@@ -50,8 +50,7 @@ public class ConfigureFormTest
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
 		PubSubManager mgr = new PubSubManager(con);
 		DiscoverInfo info = new DiscoverInfo();
-		Identity ident = new Identity("pubsub", null);
-		ident.setType("leaf");
+		Identity ident = new Identity("pubsub", null, "leaf");
 		info.addIdentity(ident);
 		con.addIQReply(info);
 		
@@ -78,8 +77,7 @@ public class ConfigureFormTest
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
 		PubSubManager mgr = new PubSubManager(con);
 		DiscoverInfo info = new DiscoverInfo();
-		Identity ident = new Identity("pubsub", null);
-		ident.setType("leaf");
+		Identity ident = new Identity("pubsub", null, "leaf");
 		info.addIdentity(ident);
 		con.addIQReply(info);
 		

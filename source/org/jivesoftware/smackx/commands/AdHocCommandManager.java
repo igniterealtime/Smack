@@ -25,6 +25,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.Form;
@@ -181,10 +182,14 @@ public class AdHocCommandManager {
                     public List<DiscoverInfo.Identity> getNodeIdentities() {
                         List<DiscoverInfo.Identity> answer = new ArrayList<DiscoverInfo.Identity>();
                         DiscoverInfo.Identity identity = new DiscoverInfo.Identity(
-                                "automation", name);
-                        identity.setType("command-node");
+                                "automation", name, "command-node");
                         answer.add(identity);
                         return answer;
+                    }
+
+                    @Override
+                    public List<PacketExtension> getNodePacketExtensions() {
+                        return null;
                     }
 
                 });
@@ -317,6 +322,11 @@ public class AdHocCommandManager {
                             }
 
                             public List<Identity> getNodeIdentities() {
+                                return null;
+                            }
+
+                            @Override
+                            public List<PacketExtension> getNodePacketExtensions() {
                                 return null;
                             }
                         });
