@@ -193,9 +193,11 @@ class PacketWriter {
                 if (packet != null) {
                     synchronized (writer) {
                         writer.write(packet.toXML());
-                        writer.flush();
-                        // Keep track of the last time a stanza was sent to the server
-                        lastActive = System.currentTimeMillis();
+                        if (queue.isEmpty()) {
+                            writer.flush();
+                            // Keep track of the last time a stanza was sent to the server
+                            lastActive = System.currentTimeMillis();
+                        }
                     }
                 }
             }
