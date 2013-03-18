@@ -26,6 +26,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.dns.HostAddress;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -51,6 +52,9 @@ import java.security.KeyStore;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Creates a socket connection to a XMPP server. This is the default connection
@@ -546,27 +550,57 @@ public class XMPPConnection extends Connection {
     }
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {
-        String host = config.getHost();
-        int port = config.getPort();
-        try {
-            if (config.getSocketFactory() == null) {
-                this.socket = new Socket(host, port);
+        XMPPException exception = null;
+        Iterator<HostAddress> it = config.getHostAddresses().iterator();
+        List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
+        boolean xmppIOError = false;
+        while (it.hasNext()) {
+            exception = null;
+            HostAddress hostAddress = it.next();
+            String host = hostAddress.getFQDN();
+            int port = hostAddress.getPort();
+            try {
+                if (config.getSocketFactory() == null) {
+                    this.socket = new Socket(host, port);
+                }
+                else {
+                    this.socket = config.getSocketFactory().createSocket(host, port);
+                }
+            } catch (UnknownHostException uhe) {
+                String errorMessage = "Could not connect to " + host + ":" + port + ".";
+                exception = new XMPPException(errorMessage, new XMPPError(XMPPError.Condition.remote_server_timeout,
+                        errorMessage), uhe);
+            } catch (IOException ioe) {
+                String errorMessage = "XMPPError connecting to " + host + ":" + port + ".";
+                exception = new XMPPException(errorMessage, new XMPPError(XMPPError.Condition.remote_server_error,
+                        errorMessage), ioe);
+                xmppIOError = true;
             }
-            else {
-                this.socket = config.getSocketFactory().createSocket(host, port);
+            if (exception == null) {
+                // We found a host to connect to, break here
+                config.setUsedHostAddress(hostAddress);
+                break;
             }
-        }
-        catch (UnknownHostException uhe) {
-            String errorMessage = "Could not connect to " + host + ":" + port + ".";
-            throw new XMPPException(errorMessage, new XMPPError(
-                    XMPPError.Condition.remote_server_timeout, errorMessage),
-                    uhe);
-        }
-        catch (IOException ioe) {
-            String errorMessage = "XMPPError connecting to " + host + ":"
-                    + port + ".";
-            throw new XMPPException(errorMessage, new XMPPError(
-                    XMPPError.Condition.remote_server_error, errorMessage), ioe);
+            hostAddress.setException(exception);
+            failedAddresses.add(hostAddress);
+            if (!it.hasNext()) {
+                // There are no more host addresses to try
+                // throw an exception and report all tried
+                // HostAddresses in the exception
+                StringBuilder sb = new StringBuilder();
+                for (HostAddress fha : failedAddresses) {
+                    sb.append(fha.getErrorMessage());
+                    sb.append("; ");
+                }
+                XMPPError xmppError;
+                if (xmppIOError) {
+                    xmppError = new XMPPError(XMPPError.Condition.remote_server_error);
+                }
+                else {
+                    xmppError = new XMPPError(XMPPError.Condition.remote_server_timeout);
+                }
+                throw new XMPPException(sb.toString(), xmppError);
+            }
         }
         socketClosed = false;
         initConnection();

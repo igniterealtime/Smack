@@ -19,18 +19,20 @@
 
 package org.jivesoftware.smack.util;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import javax.naming.NamingEnumeration;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-
+import org.jivesoftware.smack.util.dns.DNSResolver;
+import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.dns.SRVRecord;
 
 /**
- * Utilty class to perform DNS lookups for XMPP services.
+ * Utility class to perform DNS lookups for XMPP services.
  *
  * @author Matt Tucker
  */
@@ -40,23 +42,30 @@ public class DNSUtil {
      * Create a cache to hold the 100 most recently accessed DNS lookups for a period of
      * 10 minutes.
      */
-    private static Map<String, HostAddress> cache = new Cache<String, HostAddress>(100, 1000*60*10);
+    private static Map<String, List<HostAddress>> cache = new Cache<String, List<HostAddress>>(100, 1000*60*10);
 
-    private static DirContext context;
+    private static DNSResolver dnsResolver = null;
 
-    static {
-        try {
-            Hashtable<String, String> env = new Hashtable<String, String>();
-            env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
-            context = new InitialDirContext(env);
-        }
-        catch (Exception e) {
-            // Ignore.
-        }
+    /**
+     * Set the DNS resolver that should be used to perform DNS lookups.
+     *
+     * @param resolver
+     */
+    public static void setDNSResolver(DNSResolver resolver) {
+        dnsResolver = resolver;
     }
 
     /**
-     * Returns the host name and port that the specified XMPP server can be
+     * Returns the current DNS resolved used to perform DNS lookups.
+     *
+     * @return
+     */
+    public static DNSResolver getDNSResolver() {
+        return dnsResolver;
+    }
+
+    /**
+     * Returns a list of HostAddresses under which the specified XMPP server can be
      * reached at for client-to-server communication. A DNS lookup for a SRV
      * record in the form "_xmpp-client._tcp.example.com" is attempted, according
      * to section 14.4 of RFC 3920. If that lookup fails, a lookup in the older form
@@ -67,81 +76,17 @@ public class DNSUtil {
      * of 5222.<p>
      *
      * As an example, a lookup for "example.com" may return "im.example.com:5269".
-     * 
-     * Note on SRV record selection.
-     * We now check priority and weight, but we still don't do this correctly.
-     * The missing behavior is this: if we fail to reach a host based on its SRV
-     * record then we need to select another host from the other SRV records.
-     * In Smack 3.1.1 we're not going to be able to do the major system redesign to
-     * correct this.
      *
      * @param domain the domain.
-     * @return a HostAddress, which encompasses the hostname and port that the XMPP
-     *      server can be reached at for the specified domain.
+     * @return List of HostAddress, which encompasses the hostname and port that the
+     *      XMPP server can be reached at for the specified domain.
      */
-    public static HostAddress resolveXMPPDomain(String domain) {
-        if (context == null) {
-            return new HostAddress(domain, 5222);
-        }
-        String key = "c" + domain;
-        // Return item from cache if it exists.
-        if (cache.containsKey(key)) {
-            HostAddress address = (HostAddress)cache.get(key);
-            if (address != null) {
-                return address;
-            }
-        }
-        String bestHost = domain;
-        int bestPort = 5222;
-        int bestPriority = 0;
-        int bestWeight = 0;
-        try {
-            Attributes dnsLookup = context.getAttributes("_xmpp-client._tcp." + domain, new String[]{"SRV"});
-            Attribute srvAttribute = dnsLookup.get("SRV");
-            NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
-            while(srvRecords.hasMore()) {
-				String srvRecord = srvRecords.next();
-	            String [] srvRecordEntries = srvRecord.split(" ");
-	            int priority = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 4]);
-	            int port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
-	            int weight = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 3]);
-	            String host = srvRecordEntries[srvRecordEntries.length-1];
-	            
-	            // Randomize the weight.
-	            weight *= Math.random() * weight;
-	            
-	            if ((bestPriority == 0) || (priority < bestPriority)) {
-	            	// Choose a server with the lowest priority.
-	            	bestPriority = priority;
-	            	bestWeight = weight;
-	            	bestHost = host;
-	            	bestPort = port;
-	            } else if (priority == bestPriority) {
-	            	// When we have like priorities then randomly choose a server based on its weight
-	            	// The weights were randomized above.
-	            	if (weight > bestWeight) {
-	            		bestWeight = weight;
-	            		bestHost = host;
-	            		bestPort = port;
-	            	}
-	            }
-			}
-        }
-        catch (Exception e) {
-            // Ignore.
-        }
-        // Host entries in DNS should end with a ".".
-        if (bestHost.endsWith(".")) {
-        	bestHost = bestHost.substring(0, bestHost.length()-1);
-        }
-        HostAddress address = new HostAddress(bestHost, bestPort);
-        // Add item to cache.
-        cache.put(key, address);
-        return address;
+    public static List<HostAddress> resolveXMPPDomain(String domain) {
+        return resolveDomain(domain, 'c');
     }
 
     /**
-     * Returns the host name and port that the specified XMPP server can be
+     * Returns a list of HostAddresses under which the specified XMPP server can be
      * reached at for server-to-server communication. A DNS lookup for a SRV
      * record in the form "_xmpp-server._tcp.example.com" is attempted, according
      * to section 14.4 of RFC 3920. If that lookup fails, a lookup in the older form
@@ -154,104 +99,131 @@ public class DNSUtil {
      * As an example, a lookup for "example.com" may return "im.example.com:5269".
      *
      * @param domain the domain.
-     * @return a HostAddress, which encompasses the hostname and port that the XMPP
-     *      server can be reached at for the specified domain.
+     * @return List of HostAddress, which encompasses the hostname and port that the
+     *      XMPP server can be reached at for the specified domain.
      */
-    public static HostAddress resolveXMPPServerDomain(String domain) {
-        if (context == null) {
-            return new HostAddress(domain, 5269);
-        }
-        String key = "s" + domain;
+    public static List<HostAddress> resolveXMPPServerDomain(String domain) {
+        return resolveDomain(domain, 's');
+    }
+
+    private static List<HostAddress> resolveDomain(String domain, char keyPrefix) {
+        // Prefix the key with 's' to distinguish him from the client domain lookups
+        String key = keyPrefix + domain;
         // Return item from cache if it exists.
         if (cache.containsKey(key)) {
-            HostAddress address = (HostAddress)cache.get(key);
-            if (address != null) {
-                return address;
+            List<HostAddress> addresses = cache.get(key);
+            if (addresses != null) {
+                return addresses;
             }
         }
-        String host = domain;
-        int port = 5269;
-        try {
-            Attributes dnsLookup =
-                    context.getAttributes("_xmpp-server._tcp." + domain, new String[]{"SRV"});
-            String srvRecord = (String)dnsLookup.get("SRV").get();
-            String [] srvRecordEntries = srvRecord.split(" ");
-            port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
-            host = srvRecordEntries[srvRecordEntries.length-1];
+
+        if (dnsResolver == null)
+            throw new IllegalStateException("No DNS resolver active.");
+
+        List<HostAddress> addresses = new ArrayList<HostAddress>();
+
+        // Step one: Do SRV lookups
+        String srvDomain;
+        if (keyPrefix == 's') {
+            srvDomain = "_xmpp-server._tcp." + domain;
+        } else if (keyPrefix == 'c') {
+            srvDomain = "_xmpp-client._tcp." + domain;
+        } else {
+            srvDomain = domain;
         }
-        catch (Exception e) {
-            // Attempt lookup with older "jabber" name.
-            try {
-                Attributes dnsLookup =
-                        context.getAttributes("_jabber._tcp." + domain, new String[]{"SRV"});
-                String srvRecord = (String)dnsLookup.get("SRV").get();
-                String [] srvRecordEntries = srvRecord.split(" ");
-                port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length-2]);
-                host = srvRecordEntries[srvRecordEntries.length-1];
-            }
-            catch (Exception e2) {
-                // Ignore.
-            }
-        }
-        // Host entries in DNS should end with a ".".
-        if (host.endsWith(".")) {
-            host = host.substring(0, host.length()-1);
-        }
-        HostAddress address = new HostAddress(host, port);
+        List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
+        List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
+        if (sortedRecords != null)
+            addresses.addAll(sortedRecords);
+
+        // Step two: Add the hostname to the end of the list
+        addresses.add(new HostAddress(domain));
+
         // Add item to cache.
-        cache.put(key, address);
-        return address;
+        cache.put(key, addresses);
+
+        return addresses;
     }
 
     /**
-     * Encapsulates a hostname and port.
+     * Sort a given list of SRVRecords as described in RFC 2782
+     * Note that we follow the RFC with one exception. In a group of the same priority, only the first entry
+     * is calculated by random. The others are ore simply ordered by their priority.
+     * 
+     * @param records
+     * @return
      */
-    public static class HostAddress {
+    protected static List<HostAddress> sortSRVRecords(List<SRVRecord> records) {
+        // RFC 2782, Usage rules: "If there is precisely one SRV RR, and its Target is "."
+        // (the root domain), abort."
+        if (records.size() == 1 && records.get(0).getFQDN().equals("."))
+            return null;
 
-        private String host;
-        private int port;
+        // sorting the records improves the performance of the bisection later
+        Collections.sort(records);
 
-        private HostAddress(String host, int port) {
-            this.host = host;
-            this.port = port;
-        }
-
-        /**
-         * Returns the hostname.
-         *
-         * @return the hostname.
-         */
-        public String getHost() {
-            return host;
-        }
-
-        /**
-         * Returns the port.
-         *
-         * @return the port.
-         */
-        public int getPort() {
-            return port;
-        }
-
-        public String toString() {
-            return host + ":" + port;
-        }
-
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
+        // create the priority buckets
+        SortedMap<Integer, List<SRVRecord>> buckets = new TreeMap<Integer, List<SRVRecord>>();
+        for (SRVRecord r : records) {
+            Integer priority = r.getPriority();
+            List<SRVRecord> bucket = buckets.get(priority);
+            // create the list of SRVRecords if it doesn't exist
+            if (bucket == null) {
+                bucket = new LinkedList<SRVRecord>();
+                buckets.put(priority, bucket);
             }
-            if (!(o instanceof HostAddress)) {
-                return false;
-            }
-
-            final HostAddress address = (HostAddress) o;
-
-            if (!host.equals(address.host)) {
-                return false;
-            }
-            return port == address.port;
+            bucket.add(r);
         }
+
+        List<HostAddress> res = new ArrayList<HostAddress>(records.size());
+
+        for (Integer priority : buckets.keySet()) {
+            List<SRVRecord> bucket = buckets.get(priority);
+            int bucketSize;
+            while ((bucketSize = bucket.size()) > 0) {
+                int[] totals = new int[bucket.size()];
+                int running_total = 0;
+                int count = 0;
+                int zeroWeight = 1;
+
+                for (SRVRecord r : bucket) {
+                    if (r.getWeight() > 0)
+                        zeroWeight = 0;
+                }
+
+                for (SRVRecord r : bucket) {
+                    running_total += (r.getWeight() + zeroWeight);
+                    totals[count] = running_total;
+                    count++;
+                }
+                int selectedPos;
+                if (running_total == 0) {
+                    // If running total is 0, then all weights in this priority
+                    // group are 0. So we simply select one of the weights randomly
+                    // as the other 'normal' algorithm is unable to handle this case
+                    selectedPos = (int) (Math.random() * bucketSize);
+                } else {
+                    double rnd = Math.random() * running_total;
+                    selectedPos = bisect(totals, rnd);
+                } 
+                // add the SRVRecord that was randomly chosen on it's weight
+                // to the start of the result list
+                SRVRecord chosenSRVRecord = bucket.remove(selectedPos);
+                res.add(chosenSRVRecord);
+            }
+        }
+
+        return res;
+    }
+
+    // TODO this is not yet really bisection just a stupid linear search
+    private static int bisect(int[] array, double value) {
+        int pos = 0;
+        for (int element : array) {
+            if (value < element)
+                break;
+            pos++;
+        }
+        return pos;
     }
 }
