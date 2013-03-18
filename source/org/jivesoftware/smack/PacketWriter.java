@@ -44,7 +44,7 @@ class PacketWriter {
     private Writer writer;
     private XMPPConnection connection;
     private final BlockingQueue<Packet> queue;
-    private boolean done;
+    volatile boolean done;
 
     /**
      * Timestamp when the last stanza was sent to the server. This information is used
@@ -245,7 +245,7 @@ class PacketWriter {
                 // packetReader could be set to null by an concurrent disconnect() call.
                 // Therefore Prevent NPE exceptions by checking packetReader.
                 if (connection.packetReader != null) {
-                        connection.packetReader.notifyConnectionError(ioe);
+                        connection.notifyConnectionError(ioe);
                 }
             }
         }

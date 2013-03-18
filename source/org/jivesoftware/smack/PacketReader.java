@@ -48,7 +48,7 @@ class PacketReader {
 
     private XMPPConnection connection;
     private XmlPullParser parser;
-    private boolean done;
+    volatile boolean done;
 
     private String connectionID = null;
     private Semaphore connectionSemaphore;
@@ -153,48 +153,6 @@ class PacketReader {
     void cleanup() {
         connection.recvListeners.clear();
         connection.collectors.clear();
-    }
-
-    /**
-     * Sends out a notification that there was an error with the connection
-     * and closes the connection.
-     *
-     * @param e the exception that causes the connection close event.
-     */
-    void notifyConnectionError(Exception e) {
-        done = true;
-        // Closes the connection temporary. A reconnection is possible
-        connection.shutdown(new Presence(Presence.Type.unavailable));
-        // Print the stack trace to help catch the problem
-        e.printStackTrace();
-        // Notify connection listeners of the error.
-        for (ConnectionListener listener : connection.getConnectionListeners()) {
-            try {
-                listener.connectionClosedOnError(e);
-            }
-            catch (Exception e2) {
-                // Catch and print any exception so we can recover
-                // from a faulty listener
-                e2.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Sends a notification indicating that the connection was reconnected successfully.
-     */
-    protected void notifyReconnection() {
-        // Notify connection listeners of the reconnection.
-        for (ConnectionListener listener : connection.getConnectionListeners()) {
-            try {
-                listener.reconnectionSuccessful();
-            }
-            catch (Exception e) {
-                // Catch and print any exception so we can recover
-                // from a faulty listener
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -332,7 +290,7 @@ class PacketReader {
             if (!(done || connection.isSocketClosed())) {
                 // Close the connection and notify connection listeners of the
                 // error.
-                notifyConnectionError(e);
+                connection.notifyConnectionError(e);
             }
         }
     }

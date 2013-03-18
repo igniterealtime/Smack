@@ -473,6 +473,10 @@ public class XMPPConnection extends Connection {
             return;
         }
 
+        if (!isConnected()) {
+            return;
+        }
+
         shutdown(unavailablePresence);
 
         if (roster != null) {
@@ -483,9 +487,7 @@ public class XMPPConnection extends Connection {
         wasAuthenticated = false;
 
         packetWriter.cleanup();
-        packetWriter = null;
         packetReader.cleanup();
-        packetReader = null;
     }
 
     public void sendPacket(Packet packet) {
@@ -614,10 +616,8 @@ public class XMPPConnection extends Connection {
      */
     private void initConnection() throws XMPPException {
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
-        if (!isFirstInitialization) {
-            compressionHandler = null;
-            serverAckdCompression = false;
-        }
+        compressionHandler = null;
+        serverAckdCompression = false;
 
         // Set the reader and writer instance variables
         initReaderAndWriter();
@@ -661,7 +661,7 @@ public class XMPPConnection extends Connection {
                 }
             }
             else if (!wasAuthenticated) {
-                packetReader.notifyReconnection();
+                notifyReconnection();
             }
 
         }
@@ -773,7 +773,7 @@ public class XMPPConnection extends Connection {
     void startTLSReceived(boolean required) {
         if (required && config.getSecurityMode() ==
                 ConnectionConfiguration.SecurityMode.disabled) {
-            packetReader.notifyConnectionError(new IllegalStateException(
+            notifyConnectionError(new IllegalStateException(
                     "TLS required by server but not allowed by connection configuration"));
             return;
         }
@@ -787,7 +787,7 @@ public class XMPPConnection extends Connection {
             writer.flush();
         }
         catch (IOException e) {
-            packetReader.notifyConnectionError(e);
+            notifyConnectionError(e);
         }
     }
 
@@ -977,7 +977,7 @@ public class XMPPConnection extends Connection {
             writer.flush();
         }
         catch (IOException e) {
-            packetReader.notifyConnectionError(e);
+            notifyConnectionError(e);
         }
     }
 
@@ -1041,7 +1041,7 @@ public class XMPPConnection extends Connection {
                     login(config.getUsername(), config.getPassword(),
                             config.getResource());
                 }
-                packetReader.notifyReconnection();
+                notifyReconnection();
             }
             catch (XMPPException e) {
                 e.printStackTrace();
@@ -1057,6 +1057,52 @@ public class XMPPConnection extends Connection {
     private void setWasAuthenticated(boolean wasAuthenticated) {
         if (!this.wasAuthenticated) {
             this.wasAuthenticated = wasAuthenticated;
+        }
+    }
+
+    /**
+     * Sends out a notification that there was an error with the connection
+     * and closes the connection. Also prints the stack trace of the given exception
+     *
+     * @param e the exception that causes the connection close event.
+     */
+    synchronized void notifyConnectionError(Exception e) {
+        // Listeners were already notified of the exception, return right here.
+        if (packetReader.done && packetWriter.done) return;
+
+        packetReader.done = true;
+        packetWriter.done = true;
+        // Closes the connection temporary. A reconnection is possible
+        shutdown(new Presence(Presence.Type.unavailable));
+        // Print the stack trace to help catch the problem
+        e.printStackTrace();
+        // Notify connection listeners of the error.
+        for (ConnectionListener listener : getConnectionListeners()) {
+            try {
+                listener.connectionClosedOnError(e);
+            }
+            catch (Exception e2) {
+                // Catch and print any exception so we can recover
+                // from a faulty listener
+                e2.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Sends a notification indicating that the connection was reconnected successfully.
+     */
+    protected void notifyReconnection() {
+        // Notify connection listeners of the reconnection.
+        for (ConnectionListener listener : getConnectionListeners()) {
+            try {
+                listener.reconnectionSuccessful();
+            }
+            catch (Exception e) {
+                // Catch and print any exception so we can recover
+                // from a faulty listener
+                e.printStackTrace();
+            }
         }
     }
 }
