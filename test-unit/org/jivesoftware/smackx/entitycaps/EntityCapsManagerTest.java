@@ -216,9 +216,7 @@ public class EntityCapsManagerTest {
     }
 
     public static File createTempDirectory() throws IOException {
-        String tmpdir = System.getProperty("java.io.tmpdir");
-        File tmp;
-        tmp = File.createTempFile(tmpdir, "entityCaps");
+        File tmp = File.createTempFile("entity", "caps");
         tmp.delete();
         tmp.mkdir();
         return tmp;
