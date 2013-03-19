@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.ping;
+package org.jivesoftware.smack.ping;
 
+/**
+ * Defines the callback used whenever the server ping fails.
+ */
 public interface PingFailedListener {
+    /**
+     * Called when the server ping fails.
+     */
     void pingFailed();
 }

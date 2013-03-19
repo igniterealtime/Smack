@@ -59,11 +59,6 @@ public final class SmackConfiguration {
     private static int packetCollectorSize = 5000;
 
     /**
-     * defaultPingInterval (in seconds)
-     */
-    private static int defaultPingInterval = 1800; // 30 min (30*60)
-
-    /**
      * This automatically enables EntityCaps for new connections if it is set to true
      */
     private static boolean autoEnableEntityCaps = false;
@@ -116,9 +111,6 @@ public final class SmackConfiguration {
                                 }
                                 else if (parser.getName().equals("packetCollectorSize")) {
                                     packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
-                                }
-                                else if (parser.getName().equals("defaultPingInterval")) {
-                                    defaultPingInterval = parseIntProperty(parser, defaultPingInterval);
                                 }
                                 else if (parser.getName().equals("autoEnableEntityCaps")) {
                                     autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
@@ -317,24 +309,6 @@ public final class SmackConfiguration {
      */
     public static void setLocalSocks5ProxyPort(int localSocks5ProxyPort) {
         SmackConfiguration.localSocks5ProxyPort = localSocks5ProxyPort;
-    }
-
-    /**
-     * Returns the default ping interval (seconds)
-     * 
-     * @return
-     */
-    public static int getDefaultPingInterval() {
-        return defaultPingInterval;
-    }
-
-    /**
-     * Sets the default ping interval (seconds). Set it to '-1' to disable the periodic ping
-     *
-     * @param defaultPingInterval
-     */
-    public static void setDefaultPingInterval(int defaultPingInterval) {
-        SmackConfiguration.defaultPingInterval = defaultPingInterval;
     }
 
     /**

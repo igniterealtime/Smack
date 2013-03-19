@@ -84,6 +84,8 @@ public class ConfigureFormTest
 		Node node = mgr.getNode("princely_musings");
 		
 		SmackConfiguration.setPacketReplyTimeout(100);
+		con.setTimeout();
+		
 		node.getNodeConfiguration();
 	}
 }

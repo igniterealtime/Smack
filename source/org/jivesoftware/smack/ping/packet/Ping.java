@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.ping.packet;
+package org.jivesoftware.smack.ping.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.ping.PingManager;
 
-public class Pong extends IQ {
+public class Ping extends IQ {
+
+    public static final String NAMESPACE = "urn:xmpp:ping";
+    public static final String ELEMENT = "ping";
     
-    /**
-     * Composes a Pong packet from a received ping packet. This basically swaps
-     * the 'from' and 'to' attributes. And sets the IQ type to result.
-     * 
-     * @param ping
-     */
-    public Pong(Ping ping) {
-        setType(IQ.Type.RESULT);
-        setFrom(ping.getTo());
-        setTo(ping.getFrom());
-        setPacketID(ping.getPacketID());
+    public Ping() {
     }
     
-    /*
-     * Returns the child element of the Pong reply, which is non-existent. This
-     * is why we return 'null' here. See e.g. Example 11 from
-     * http://xmpp.org/extensions/xep-0199.html#e2e
-     */
+    public Ping(String to) {
+        setTo(to);
+        setType(IQ.Type.GET);
+    }
+    
+    @Override
     public String getChildElementXML() {
-        return null;
+        return "<" + ELEMENT + " xmlns=\'" + NAMESPACE + "\' />";
     }
-
 }

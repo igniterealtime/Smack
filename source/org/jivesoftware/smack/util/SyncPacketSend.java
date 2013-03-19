@@ -47,7 +47,7 @@ final public class SyncPacketSend
         response.cancel();
 
         if (result == null) {
-            throw new XMPPException("No response from server.");
+            throw new XMPPException("No response from " + packet.getTo());
         }
         else if (result.getError() != null) {
             throw new XMPPException(result.getError());
