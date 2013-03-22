@@ -51,7 +51,6 @@ class PacketReader {
     volatile boolean done;
 
     private String connectionID = null;
-    private Semaphore connectionSemaphore;
 
     protected PacketReader(final XMPPConnection connection) {
         this.connection = connection;
@@ -97,21 +96,17 @@ class PacketReader {
      * @throws XMPPException if the server fails to send an opening stream back
      *      for more than five seconds.
      */
-    public void startup() throws XMPPException {
-        connectionSemaphore = new Semaphore(1);
-
+    synchronized public void startup() throws XMPPException {
         readerThread.start();
-        // Wait for stream tag before returing. We'll wait a couple of seconds before
+        // Wait for stream tag before returning. We'll wait a couple of seconds before
         // giving up and throwing an error.
         try {
-            connectionSemaphore.acquire();
-
             // A waiting thread may be woken up before the wait time or a notify
             // (although this is a rare thing). Therefore, we continue waiting
             // until either a connectionID has been set (and hence a notify was
             // made) or the total wait time has elapsed.
             int waitTime = SmackConfiguration.getPacketReplyTimeout();
-            connectionSemaphore.tryAcquire(3 * waitTime, TimeUnit.MILLISECONDS);
+            wait(3 * waitTime);
         }
         catch (InterruptedException ie) {
             // Ignore.
@@ -304,8 +299,8 @@ class PacketReader {
      * 3) TLS negotiation was successful
      *
      */
-    private void releaseConnectionIDLock() {
-        connectionSemaphore.release();
+    synchronized private void releaseConnectionIDLock() {
+        notify();
     }
 
     /**
