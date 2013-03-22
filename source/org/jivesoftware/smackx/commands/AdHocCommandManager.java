@@ -343,46 +343,7 @@ public class AdHocCommandManager {
         PacketFilter filter = new PacketTypeFilter(AdHocCommandData.class);
         connection.addPacketListener(listener, filter);
 
-        // Create a thread to reap sessions. But, we'll only start it later when commands are
-        // actually registered.
-        sessionsSweeper = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    for (String sessionId : executingCommands.keySet()) {
-                        LocalCommand command = executingCommands.get(sessionId);
-                        // Since the command could be removed in the meanwhile
-                        // of getting the key and getting the value - by a
-                        // processed packet. We must check if it still in the
-                        // map.
-                        if (command != null) {
-                            long creationStamp = command.getCreationDate();
-                            // Check if the Session data has expired (default is
-                            // 10 minutes)
-                            // To remove it from the session list it waits for
-                            // the double of the of time out time. This is to
-                            // let
-                            // the requester know why his execution request is
-                            // not accepted. If the session is removed just
-                            // after the time out, then whe the user request to
-                            // continue the execution he will recieved an
-                            // invalid session error and not a time out error.
-                            if (System.currentTimeMillis() - creationStamp > SESSION_TIMEOUT * 1000 * 2) {
-                                // Remove the expired session
-                                executingCommands.remove(sessionId);
-                            }
-                        }
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    }
-                    catch (InterruptedException ie) {
-                        // Ignore.
-                    }
-                }
-            }
-
-        });
-        sessionsSweeper.setDaemon(true);
+        sessionsSweeper = null;
     }
 
     /**
@@ -486,7 +447,45 @@ public class AdHocCommandManager {
                     response.setStatus(Status.executing);
                     executingCommands.put(sessionId, command);
                     // See if the session reaping thread is started. If not, start it.
-                    if (!sessionsSweeper.isAlive()) {
+                    if (sessionsSweeper == null) {
+                        sessionsSweeper = new Thread(new Runnable() {
+                            public void run() {
+                                while (true) {
+                                    for (String sessionId : executingCommands.keySet()) {
+                                        LocalCommand command = executingCommands.get(sessionId);
+                                        // Since the command could be removed in the meanwhile
+                                        // of getting the key and getting the value - by a
+                                        // processed packet. We must check if it still in the
+                                        // map.
+                                        if (command != null) {
+                                            long creationStamp = command.getCreationDate();
+                                            // Check if the Session data has expired (default is
+                                            // 10 minutes)
+                                            // To remove it from the session list it waits for
+                                            // the double of the of time out time. This is to
+                                            // let
+                                            // the requester know why his execution request is
+                                            // not accepted. If the session is removed just
+                                            // after the time out, then whe the user request to
+                                            // continue the execution he will recieved an
+                                            // invalid session error and not a time out error.
+                                            if (System.currentTimeMillis() - creationStamp > SESSION_TIMEOUT * 1000 * 2) {
+                                                // Remove the expired session
+                                                executingCommands.remove(sessionId);
+                                            }
+                                        }
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    }
+                                    catch (InterruptedException ie) {
+                                        // Ignore.
+                                    }
+                                }
+                            }
+
+                        });
+                        sessionsSweeper.setDaemon(true);
                         sessionsSweeper.start();
                     }
                 }
