@@ -363,6 +363,20 @@ public class StringUtils {
     }
 
     /**
+     * Returns true if jid is a full JID (i.e. a JID with resource part).
+     *
+     * @param jid
+     * @return true if full JID, false otherwise
+     */
+    public static boolean isFullJID(String jid) {
+        if (parseName(jid).length() <= 0 || parseServer(jid).length() <= 0
+                || parseResource(jid).length() <= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Escapes the node portion of a JID according to "JID Escaping" (JEP-0106).
      * Escaping replaces characters prohibited by node-prep with escape sequences,
      * as follows:<p>
