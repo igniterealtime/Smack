@@ -27,6 +27,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.StreamInitiation;
 
 import java.util.ArrayList;
@@ -125,18 +126,21 @@ public class FileTransferManager {
 	 * Creates an OutgoingFileTransfer to send a file to another user.
 	 * 
 	 * @param userID
-	 *            The fully qualified jabber ID with resource of the user to
+	 *            The fully qualified jabber ID (i.e. full JID) with resource of the user to
 	 *            send the file to.
 	 * @return The send file object on which the negotiated transfer can be run.
+	 * @exception IllegalArgumentException if userID is null or not a full JID
 	 */
 	public OutgoingFileTransfer createOutgoingFileTransfer(String userID) {
-//        Why is this only accepting fully qualified JID?
-//        if (userID == null || StringUtils.parseName(userID).length() <= 0
-//				|| StringUtils.parseServer(userID).length() <= 0
-//				|| StringUtils.parseResource(userID).length() <= 0) {
-//			throw new IllegalArgumentException(
-//					"The provided user id was not fully qualified");
-//		}
+        if (userID == null) {
+            throw new IllegalArgumentException("userID was null");
+        }
+        // We need to create outgoing file transfers with a full JID since this method will later
+        // use XEP-0095 to negotiate the stream. This is done with IQ stanzas that need to be addressed to a full JID
+        // in order to reach an client entity.
+        else if (!StringUtils.isFullJID(userID)) {
+            throw new IllegalArgumentException("The provided user id was not a full JID (i.e. with resource part)");
+        }
 
 		return new OutgoingFileTransfer(connection.getUser(), userID,
 				fileTransferNegotiator.getNextStreamID(),
