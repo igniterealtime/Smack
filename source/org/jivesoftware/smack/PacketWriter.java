@@ -163,7 +163,7 @@ class PacketWriter {
                 Packet packet = nextPacket();
                 if (packet != null) {
                     writer.write(packet.toXML());
-                    writer.flush();
+
                     if (queue.isEmpty()) {
                         writer.flush();
                     }
