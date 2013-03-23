@@ -338,22 +338,22 @@ public class VCard extends IQ {
     }
 
     /**
-     * Specify the bytes for the avatar to use.
+     * Removes the avatar from the vCard
      *
-     * @param bytes the bytes of the avatar.
+     *  This is done by setting the PHOTO value to the empty string as defined in XEP-0153
+     */
+    public void removeAvatar() {
+        setAvatar(null, "image/jpeg");
+    }
+
+    /**
+     * Specify the bytes for the avatar to use.
+     * If bytes is null, then the avatar will be removed.
+     *
+     * @param bytes the bytes of the avatar, or null to remove the avatar data
      */
     public void setAvatar(byte[] bytes) {
-        if (bytes == null) {
-            // Remove avatar (if any) from mappings
-            otherUnescapableFields.remove("PHOTO");
-            return;
-        }
-
-        // Otherwise, add to mappings.
-        String encodedImage = StringUtils.encodeBase64(bytes);
-        avatar = encodedImage;
-
-        setField("PHOTO", "<TYPE>image/jpeg</TYPE><BINVAL>" + encodedImage + "</BINVAL>", true);
+        setAvatar(bytes, "image/jpeg");
     }
 
     /**
