@@ -21,9 +21,12 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.ping.packet.Ping;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ServerPingTest {
+public class KeepaliveTest {
+    private static final long PING_MINIMUM = 1000;
     private static String TO = "juliet@capulet.lit/balcony";
     private static String ID = "s2c1";
 
@@ -31,7 +34,21 @@ public class ServerPingTest {
     {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
-
+    
+    private int originalTimeout;
+    
+    @Before
+    public void resetProperties()
+    {
+        originalTimeout = SmackConfiguration.getPacketReplyTimeout();
+        SmackConfiguration.setPacketReplyTimeout(1000);
+    }
+    
+    @After
+    public void restoreProperties()
+    {
+        SmackConfiguration.setPacketReplyTimeout(originalTimeout);
+    }
     /*
      * Stanza copied from spec
      */
@@ -133,7 +150,7 @@ public class ServerPingTest {
     private DummyConnection getConnection() {
         DummyConnection con = new DummyConnection();
         ServerPingManager mgr = ServerPingManager.getInstanceFor(con);
-        mgr.setPingInterval(ServerPingManager.PING_MINIMUM);
+        mgr.setPingInterval(PING_MINIMUM);
 
         return con;
     }
@@ -141,7 +158,7 @@ public class ServerPingTest {
     private ThreadedDummyConnection getThreadedConnection() {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
         ServerPingManager mgr = ServerPingManager.getInstanceFor(con);
-        mgr.setPingInterval(ServerPingManager.PING_MINIMUM);
+        mgr.setPingInterval(PING_MINIMUM);
 
         return con;
     }
@@ -157,6 +174,6 @@ public class ServerPingTest {
     }
 
     private long getWaitTime() {
-        return ServerPingManager.PING_MINIMUM + SmackConfiguration.getPacketReplyTimeout() + 3000;
+        return PING_MINIMUM + SmackConfiguration.getPacketReplyTimeout() + 3000;
     }
 }

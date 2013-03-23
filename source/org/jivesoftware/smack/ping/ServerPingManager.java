@@ -57,8 +57,6 @@ import org.jivesoftware.smackx.ServiceDiscoveryManager;
  * @author Florian Schmaus
  */
 public class ServerPingManager {
-    public static final long PING_MINIMUM = 10000;
-
     private static Map<Connection, ServerPingManager> instances = Collections
             .synchronizedMap(new WeakHashMap<Connection, ServerPingManager>());
     private static long defaultPingInterval = SmackConfiguration.getKeepAliveInterval(); 
@@ -173,12 +171,15 @@ public class ServerPingManager {
      * The new ping time interval in milliseconds.
      */
     public void setPingInterval(long newPingInterval) {
-        if (newPingInterval < PING_MINIMUM)
-            newPingInterval = PING_MINIMUM;
-
         if (pingInterval != newPingInterval) {
             pingInterval = newPingInterval;
-            schedulePingServerTask();
+            
+            if (pingInterval < 0) {
+                stopPinging();
+            }
+            else {
+                schedulePingServerTask();
+            }
         }
     }
 

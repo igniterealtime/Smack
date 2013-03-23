@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.ping;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackError;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.ping.ServerPingManager;
 import org.jivesoftware.smack.ping.packet.Ping;
@@ -49,7 +50,9 @@ public class PingManager {
     }
 
     /**
-     * Pings the given jid. This method will return false if an error occurs.
+     * Pings the given jid. This method will return false if an error occurs.  The exception 
+     * to this, is a server ping, which will always return true if the server is reachable, 
+     * event if there is an error on the ping itself (i.e. ping not supported).
      * <p>
      * Use {@link #isPingSupported(String)} to determine if XMPP Ping is supported 
      * by the entity.
@@ -65,7 +68,8 @@ public class PingManager {
             SyncPacketSend.getReply(connection, ping);
         }
         catch (XMPPException exc) {
-            return false;
+            
+            return (jid.equals(connection.getServiceName()) && (exc.getSmackError() != SmackError.NO_RESPONSE_FROM_SERVER));
         }
         return true;
     }
@@ -91,5 +95,18 @@ public class PingManager {
     public boolean isPingSupported(String jid) throws XMPPException {
         DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
         return result.containsFeature(Ping.NAMESPACE);
+    }
+
+    /**
+     * Pings the server. This method will return true if the server is reachable.  It
+     * is the equivalent of calling <code>ping</code> with the XMPP domain.
+     * <p>
+     * Unlike the {@link #ping(String)} case, this method will return true even if 
+     * {@link #isPingSupported(String)} is false.
+     * 
+     * @return true if a reply was received from the server, false otherwise.
+     */
+    public boolean pingMyServer() {
+        return ping(connection.getServiceName());
     }
 }

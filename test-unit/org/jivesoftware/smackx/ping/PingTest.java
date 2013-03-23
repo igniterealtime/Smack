@@ -23,19 +23,28 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.ping.packet.Ping;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class PingPongTest {
-
+public class PingTest {
+    private DummyConnection dummyCon;
+    private ThreadedDummyConnection threadedCon;
+    
+    @Before
+    public void setup() {
+        dummyCon = new DummyConnection();
+        threadedCon = new ThreadedDummyConnection();
+    }
+    
     @Test
     public void checkSendingPing() throws Exception {
-        DummyConnection con = new DummyConnection();
-        PingManager pinger = new PingManager(con);
+        dummyCon = new DummyConnection();
+        PingManager pinger = new PingManager(dummyCon);
         pinger.ping("test@myserver.com");
 
-        Packet sentPacket = con.getSentPacket();
+        Packet sentPacket = dummyCon.getSentPacket();
         
         assertTrue(sentPacket instanceof Ping);
         
@@ -43,9 +52,9 @@ public class PingPongTest {
 
     @Test
     public void checkSuccessfulPing() throws Exception {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        threadedCon = new ThreadedDummyConnection();
         
-        PingManager pinger = new PingManager(con);
+        PingManager pinger = new PingManager(threadedCon);
 
         boolean pingSuccess = pinger.ping("test@myserver.com");
         
@@ -59,8 +68,8 @@ public class PingPongTest {
      */
     @Test
     public void checkFailedPingOnTimeout() throws Exception {
-        DummyConnection con = new DummyConnection();
-        PingManager pinger = new PingManager(con);
+        dummyCon = new DummyConnection();
+        PingManager pinger = new PingManager(dummyCon);
 
         boolean pingSuccess = pinger.ping("test@myserver.com");
         
@@ -69,15 +78,51 @@ public class PingPongTest {
     }
     
     /**
-     * DummyConnection will not reply so it will timeout.
+     * Server returns an exception for entity.
      * @throws Exception
      */
     @Test
-    public void checkFailedPingError() throws Exception {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+    public void checkFailedPingToEntityError() throws Exception {
+        threadedCon = new ThreadedDummyConnection();
         //@formatter:off
         String reply = 
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com'>" +
+                        "<ping xmlns='urn:xmpp:ping'/>" +
+                        "<error type='cancel'>" +
+                            "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
+                        "</error>" + 
+                 "</iq>";
+        //@formatter:on
+        IQ serviceUnavailable = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), threadedCon);
+        threadedCon.addIQReply(serviceUnavailable);
+
+        PingManager pinger = new PingManager(threadedCon);
+
+        boolean pingSuccess = pinger.ping("test@myserver.com");
+        
+        assertFalse(pingSuccess);
+    }
+    
+    @Test
+    public void checkPingToServerSuccess() throws Exception {
+        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        PingManager pinger = new PingManager(con);
+
+        boolean pingSuccess = pinger.pingMyServer();
+        
+        assertTrue(pingSuccess);
+    }
+
+    /**
+     * Server returns an exception.
+     * @throws Exception
+     */
+    @Test
+    public void checkPingToServerError() throws Exception {
+        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        //@formatter:off
+        String reply = 
+                "<iq type='error' id='qrzSp-16' to='test@myserver.com' from='" + con.getServiceName() + "'>" +
                         "<ping xmlns='urn:xmpp:ping'/>" +
                         "<error type='cancel'>" +
                             "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
@@ -89,12 +134,21 @@ public class PingPongTest {
 
         PingManager pinger = new PingManager(con);
 
-        boolean pingSuccess = pinger.ping("test@myserver.com");
+        boolean pingSuccess = pinger.pingMyServer();
         
-        assertFalse(pingSuccess);
-        
+        assertTrue(pingSuccess);
     }
     
+    @Test
+    public void checkPingToServerTimeout() throws Exception {
+        DummyConnection con = new DummyConnection();
+        PingManager pinger = new PingManager(con);
+
+        boolean pingSuccess = pinger.pingMyServer();
+        
+        assertFalse(pingSuccess);
+    }
+
     @Test
     public void checkSuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = new ThreadedDummyConnection();

@@ -162,12 +162,10 @@ class PacketWriter {
             while (!done && (writerThread == thisThread)) {
                 Packet packet = nextPacket();
                 if (packet != null) {
-                    synchronized (writer) {
-                        writer.write(packet.toXML());
+                    writer.write(packet.toXML());
+                    writer.flush();
+                    if (queue.isEmpty()) {
                         writer.flush();
-                        if (queue.isEmpty()) {
-                            writer.flush();
-                        }
                     }
                 }
             }
@@ -175,13 +173,11 @@ class PacketWriter {
             // we won't have time to entirely flush it before the socket is forced closed
             // by the shutdown process.
             try {
-                synchronized (writer) {
-                   while (!queue.isEmpty()) {
-                       Packet packet = queue.remove();
-                        writer.write(packet.toXML());
-                    }
-                    writer.flush();
+               while (!queue.isEmpty()) {
+                   Packet packet = queue.remove();
+                    writer.write(packet.toXML());
                 }
+                writer.flush();
             }
             catch (Exception e) {
                 e.printStackTrace();
