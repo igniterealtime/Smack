@@ -1,122 +1,60 @@
-/**
- * $RCSfile$
- * $Revision$
- * $Date$
- *
- * Copyright 2003-2007 Jive Software.
- *
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.test.SmackTestCase;
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+
+import org.junit.Test;
+
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.packet.VCard;
+import org.jivesoftware.smackx.provider.VCardProvider;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Gaston
- * Date: Jun 18, 2005
- * Time: 1:29:30 AM
- * To change this template use File | Settings | File Templates.
- */
-public class VCardTest extends SmackTestCase {
+public class VCardUnitTest {
 
-    public VCardTest(String arg0) {
-        super(arg0);
+    @Test
+    public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
+        VCard card = VCardProvider.createVCardFromXML("<vcard><EMAIL><USERID>foo@fee.www.bar</USERID></EMAIL></vcard>");
+        assertEquals("foo@fee.www.bar", card.getEmailHome());
     }
 
-    public void testBigFunctional() throws XMPPException {
-        VCard origVCard = new VCard();
-
-        origVCard.setFirstName("kir");
-        origVCard.setLastName("max");
-        origVCard.setEmailHome("foo@fee.bar");
-        origVCard.setEmailWork("foo@fee.www.bar");
-
-        origVCard.setJabberId("jabber@id.org");
-        origVCard.setOrganization("Jetbrains, s.r.o");
-        origVCard.setNickName("KIR");
-
-        origVCard.setField("TITLE", "Mr");
-        origVCard.setAddressFieldHome("STREET", "Some street & House");
-        origVCard.setAddressFieldWork("STREET", "Some street work");
-
-        origVCard.setPhoneWork("FAX", "3443233");
-        origVCard.setPhoneHome("VOICE", "3443233");
-
-        origVCard.save(getConnection(0));
-
-        VCard loaded = new VCard();
-        try {
-            loaded.load(getConnection(0));
-        } catch (XMPPException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
-        //assertEquals("Should load own VCard successfully", origVCard.toString(), loaded.toString());
-        assertEquals("Should load own VCard successfully", origVCard, loaded);
-
-
-        loaded = new VCard();
-        try {
-            loaded.load(getConnection(1), getBareJID(0));
-        } catch (XMPPException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
-        //assertEquals("Should load another user's VCard successfully", origVCard.toString(), loaded.toString());
-        assertEquals("Should load another user's VCard successfully", origVCard, loaded);
+    @Test
+    public void testNoWorkHomeSpecifier_TEL() throws Throwable {
+        VCard card = VCardProvider.createVCardFromXML("<vcard><TEL><FAX/><NUMBER>3443233</NUMBER></TEL></vcard>");
+        assertEquals("3443233", card.getPhoneWork("FAX"));
     }
 
-    public void testBinaryAvatar() throws Throwable {
-        VCard card = new VCard();
-        card.setAvatar(getAvatarBinary());
-        card.save(getConnection(0));
+    @Test
+    public void testNoWorkHomeSpecifier_ADDR() throws Throwable {
+        VCard card = VCardProvider.createVCardFromXML("<vcard><ADR><STREET>Some street</STREET><FF>ddss</FF></ADR></vcard>");
+        assertEquals("Some street", card.getAddressFieldWork("STREET"));
+        assertEquals("ddss", card.getAddressFieldWork("FF"));
+    }
 
-        VCard loaded = new VCard();
-        try {
-            loaded.load(getConnection(0));
-        }
-        catch (XMPPException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+    @Test
+    public void testFN() throws Throwable {
+        VCard card = VCardProvider.createVCardFromXML("<vcard><FN>kir max</FN></vcard>");
+        assertEquals("kir max", card.getField("FN"));
+       // assertEquals("kir max", card.getFullName());
+    }
 
-        byte[] initialAvatar = card.getAvatar();
-        byte[] loadedAvatar = loaded.getAvatar();
-        assertEquals("Should load own Avatar successfully", initialAvatar, loadedAvatar);
-
-        loaded = new VCard();
-        try {
-            loaded.load(getConnection(1), getBareJID(0));
-        }
-        catch (XMPPException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
-        assertEquals("Should load avatar successfully", card.getAvatar(), loaded.getAvatar());
+    private final static String MIME_TYPE = "testtype";
+    private final static String VCARD_XML = "<vcard><PHOTO><BINVAL>" + getAvatarEncoded() + "</BINVAL><TYPE>" + MIME_TYPE + "</TYPE></PHOTO></vcard>";
+    @Test
+    public void testPhoto() throws Throwable {
+        VCard vc = VCardProvider.createVCardFromXML(VCARD_XML);
+        byte[] avatar = vc.getAvatar();
+        String mimeType = vc.getAvatarMimeType();
+        assertEquals(mimeType, MIME_TYPE);
+        
+        byte[] expectedAvatar = getAvatarBinary();
+        assertTrue(Arrays.equals(avatar, expectedAvatar));
     }
 
     public static byte[] getAvatarBinary() {
         return StringUtils.decodeBase64(getAvatarEncoded());
     }
-
-    public static String getAvatarEncoded() {
+    private static String getAvatarEncoded() {
         return "/9j/4AAQSkZJRgABAQEASABIAAD/4QAWRXhpZgAATU0AKgAAAAgAAAAAAAD/2wBDAAUDBAQEAwUE\n" +
                 "BAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/\n" +
                 "2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4e\n" +
@@ -165,23 +103,5 @@ public class VCardTest extends SmackTestCase {
                 "4jD9snicHiWBGvTnaFtnnmSeZCsQIKgj6v8AbV5jlDS1AXsqBRqqGJyVs8bM0pcEL9mz2e7pvivi\n" +
                 "3BvCirLZteMLLDHKjRS3QlQyiPsRCQQTIO4PFDnLI9NBZKKgpaCjtdPDR0YaPhBGgRI1UfKiqOgA\n" +
                 "CgADtrKoqPLpKaXPVXUdPtnXTNUBLlTQR4xHlj+gHT/7pjw8oTsf/9k=";
-    }
-
-    /*
-    public void testFullName() throws Throwable {
-        VCard card = new VCard();
-        card.setFirstName("kir");
-       // assertEquals("kir", card.getFullName());
-
-        card.setLastName("maximov");
-      //  assertEquals("kir maximov", card.getFullName());
-
-        card.setField("FN", "some name");
-       // assertEquals("some name", card.getFullName());
-    }
-    */
-
-    protected int getMaxConnections() {
-        return 2;
     }
 }

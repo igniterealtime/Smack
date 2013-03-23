@@ -114,7 +114,7 @@ public class VCardProvider implements IQProvider {
             vCard.setFirstName(getTagContents("GIVEN"));
             vCard.setLastName(getTagContents("FAMILY"));
             vCard.setMiddleName(getTagContents("MIDDLE"));
-            vCard.setEncodedImage(getTagContents("BINVAL"));
+            setupPhoto();
 
             setupEmails();
 
@@ -125,6 +125,41 @@ public class VCardProvider implements IQProvider {
 
             setupPhones();
             setupAddresses();
+        }
+
+        private void setupPhoto() {
+            String binval = null;
+            String mimetype = null;
+
+            NodeList photo = document.getElementsByTagName("PHOTO");
+            if (photo.getLength() != 1)
+                return;
+
+            Node photoNode = photo.item(0);
+            NodeList childNodes = photoNode.getChildNodes();
+
+            int childNodeCount = childNodes.getLength();
+            List<Node> nodes = new ArrayList<Node>(childNodeCount);
+            for (int i = 0; i < childNodeCount; i++)
+                nodes.add(childNodes.item(i));
+
+            String name = null;
+            String value = null;
+            for (Node n : nodes) {
+                name = n.getNodeName();
+                value = n.getTextContent();
+                if (name.equals("BINVAL")) {
+                    binval = value;
+                }
+                else if (name.equals("TYPE")) {
+                    mimetype = value;
+                }
+            }
+
+            if (binval == null || mimetype == null)
+                return;
+
+            vCard.setAvatar(binval, mimetype);
         }
 
         private void setupEmails() {
