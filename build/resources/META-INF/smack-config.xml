@@ -33,6 +33,7 @@
         <className>org.jivesoftware.smackx.LastActivityManager</className>
         <className>org.jivesoftware.smack.ReconnectionManager</className>    
         <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>    
+        <className>org.jivesoftware.smack.util.dns.JavaxResolver</className>
     </startupClasses>
 
 
