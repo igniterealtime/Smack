@@ -112,7 +112,8 @@ public class VCard extends IQ {
     private String organization;
     private String organizationUnit;
 
-    private String avatar;
+    private String photoMimeType;
+    private String photoBinval;
 
     /**
      * Such as DESC ROLE GEO etc.. see JEP-0054
@@ -343,12 +344,15 @@ public class VCard extends IQ {
      *  This is done by setting the PHOTO value to the empty string as defined in XEP-0153
      */
     public void removeAvatar() {
-        setAvatar(null, "image/jpeg");
+        // Remove avatar (if any)
+        photoBinval = null;
+        photoMimeType = null;
     }
 
     /**
-     * Specify the bytes for the avatar to use.
+     * Specify the bytes of the JPEG for the avatar to use.
      * If bytes is null, then the avatar will be removed.
+     * 'image/jpeg' will be used as MIME type.
      *
      * @param bytes the bytes of the avatar, or null to remove the avatar data
      */
@@ -363,27 +367,27 @@ public class VCard extends IQ {
      * @param mimeType the mime type of the avatar.
      */
     public void setAvatar(byte[] bytes, String mimeType) {
+        // If bytes is null, remove the avatar
         if (bytes == null) {
-            // Remove avatar (if any) from mappings
-            otherUnescapableFields.remove("PHOTO");
+            removeAvatar();
             return;
         }
 
         // Otherwise, add to mappings.
         String encodedImage = StringUtils.encodeBase64(bytes);
-        avatar = encodedImage;
 
-        setField("PHOTO", "<TYPE>" + mimeType + "</TYPE><BINVAL>" + encodedImage + "</BINVAL>", true);
+        setAvatar(encodedImage, mimeType);
     }
 
     /**
-     * Set the encoded avatar string. This is used by the provider.
+     * Specify the Avatar used for this vCard.
      *
-     * @param encodedAvatar the encoded avatar string.
+     * @param encodedImage the Base64 encoded image as String
+     * @param mimeType the MIME type of the image
      */
-    public void setEncodedImage(String encodedAvatar) {
-        //TODO Move VCard and VCardProvider into a vCard package.
-        this.avatar = encodedAvatar;
+    public void setAvatar(String encodedImage, String mimeType) {
+        photoBinval = encodedImage;
+        photoMimeType = mimeType;
     }
 
     /**
@@ -410,10 +414,19 @@ public class VCard extends IQ {
      * @return byte representation of avatar.
      */
     public byte[] getAvatar() {
-        if (avatar == null) {
+        if (photoBinval == null) {
             return null;
         }
-        return StringUtils.decodeBase64(avatar);
+        return StringUtils.decodeBase64(photoBinval);
+    }
+
+    /**
+     * Returns the MIME Type of the avatar or null if none is set
+     *
+     * @return the MIME Type of the avatar or null
+     */
+    public String getAvatarMimeType() {
+        return photoMimeType;
     }
 
     /**
@@ -570,16 +583,14 @@ public class VCard extends IQ {
         return sb.toString();
     }
 
-    private void copyFieldsFrom(VCard result) {
-        if (result == null) result = new VCard();
-
+    private void copyFieldsFrom(VCard from) {
         Field[] fields = VCard.class.getDeclaredFields();
         for (Field field : fields) {
             if (field.getDeclaringClass() == VCard.class &&
                     !Modifier.isFinal(field.getModifiers())) {
                 try {
                     field.setAccessible(true);
-                    field.set(this, field.get(result));
+                    field.set(this, field.get(from));
                 }
                 catch (IllegalAccessException e) {
                     throw new RuntimeException("This cannot happen:" + field, e);
@@ -612,6 +623,7 @@ public class VCard extends IQ {
                 || homePhones.size() > 0
                 || workAddr.size() > 0
                 || workPhones.size() > 0
+                || photoBinval != null
                 ;
     }
 
@@ -666,8 +678,11 @@ public class VCard extends IQ {
         if (!workAddr.equals(vCard.workAddr)) {
             return false;
         }
-        return workPhones.equals(vCard.workPhones);
+        if (photoBinval != null ? !photoBinval.equals(vCard.photoBinval) : vCard.photoBinval != null) {
+            return false;
+        }
 
+        return workPhones.equals(vCard.workPhones);
     }
 
     public int hashCode() {
@@ -684,6 +699,7 @@ public class VCard extends IQ {
         result = 29 * result + (organization != null ? organization.hashCode() : 0);
         result = 29 * result + (organizationUnit != null ? organizationUnit.hashCode() : 0);
         result = 29 * result + otherSimpleFields.hashCode();
+        result = 29 * result + (photoBinval != null ? photoBinval.hashCode() : 0);
         return result;
     }
 
@@ -716,6 +732,7 @@ public class VCard extends IQ {
 
             appendOrganization();
             appendGenericFields();
+            appendPhoto();
 
             appendEmail(emailWork, "WORK");
             appendEmail(emailHome, "HOME");
@@ -727,6 +744,17 @@ public class VCard extends IQ {
             appendAddress(homeAddr, "HOME");
         }
 
+        private void appendPhoto() {
+            if (photoBinval == null)
+                return;
+
+            appendTag("PHOTO", true, new ContentBuilder() {
+                public void addTagContent() {
+                    appendTag("BINVAL", photoBinval); // No need to escape photoBinval, as it's already Base64 encoded
+                    appendTag("TYPE", StringUtils.escapeForXML(photoMimeType));
+                }
+            });
+        }
         private void appendEmail(final String email, final String type) {
             if (email != null) {
                 appendTag("EMAIL", true, new ContentBuilder() {

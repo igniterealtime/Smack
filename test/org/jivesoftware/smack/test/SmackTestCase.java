@@ -272,8 +272,6 @@ public abstract class SmackTestCase extends TestCase {
                     try {
                         getConnection(i).login(currentUser, currentPassword, "Smack");
                     } catch (XMPPException e) {
-                        e.printStackTrace();
-                        
                         // Create the test accounts
                         if (!getConnection(0).getAccountManager().supportsAccountCreation())
                             fail("Server does not support account creation");
