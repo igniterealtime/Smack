@@ -85,14 +85,14 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Kirill Maximov (kir@maxkir.com)
  */
 public class VCard extends IQ {
-
+    private static final String DEFAULT_MIME_TYPE = "image/jpeg";
+    
     /**
      * Phone types:
      * VOICE?, FAX?, PAGER?, MSG?, CELL?, VIDEO?, BBS?, MODEM?, ISDN?, PCS?, PREF?
      */
     private Map<String, String> homePhones = new HashMap<String, String>();
     private Map<String, String> workPhones = new HashMap<String, String>();
-
 
     /**
      * Address types:
@@ -357,7 +357,7 @@ public class VCard extends IQ {
      * @param bytes the bytes of the avatar, or null to remove the avatar data
      */
     public void setAvatar(byte[] bytes) {
-        setAvatar(bytes, "image/jpeg");
+        setAvatar(bytes, DEFAULT_MIME_TYPE);
     }
 
     /**
@@ -390,6 +390,16 @@ public class VCard extends IQ {
         photoMimeType = mimeType;
     }
 
+    /**
+     * Set the encoded avatar string. This is used by the provider.
+     *
+     * @param encodedAvatar the encoded avatar string.
+     * @deprecated Use {@link #setAvatar(String, String)} instead.
+     */
+    public void setEncodedImage(String encodedAvatar) {
+        setAvatar(encodedAvatar, DEFAULT_MIME_TYPE);
+    }
+    
     /**
      * Return the byte representation of the avatar(if one exists), otherwise returns null if
      * no avatar could be found.
