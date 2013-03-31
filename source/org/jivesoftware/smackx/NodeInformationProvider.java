@@ -45,7 +45,7 @@ public interface NodeInformationProvider {
      *  
      * @return a list of the Items defined in the node.
      */
-    public abstract List<DiscoverItems.Item> getNodeItems();
+    List<DiscoverItems.Item> getNodeItems();
 
     /**
      * Returns a list of the features defined in the node. For
@@ -55,7 +55,7 @@ public interface NodeInformationProvider {
      *
      * @return a list of the feature strings defined in the node.
      */
-    public abstract List<String> getNodeFeatures();
+    List<String> getNodeFeatures();
 
     /**
      * Returns a list of the indentites defined in the node. For
@@ -64,12 +64,12 @@ public interface NodeInformationProvider {
      *
      * @return a list of the Identities defined in the node.
      */
-    public abstract List<DiscoverInfo.Identity> getNodeIdentities();
+    List<DiscoverInfo.Identity> getNodeIdentities();
 
     /**
      * Returns a list of the packet extensions defined in the node.
      *
      * @return a list of the packet extensions defined in the node.
      */
-    public abstract List<PacketExtension> getNodePacketExtensions();
+    List<PacketExtension> getNodePacketExtensions();
 }

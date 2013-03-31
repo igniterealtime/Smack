@@ -17,8 +17,6 @@
  */
 package org.jivesoftware.smack.util;
 
-// TODO move StringEncoder, Base64Encoder and Base32Encoder to smack.util
-
 public interface StringEncoder {
     /**
      * Encodes an string to another representation
@@ -26,7 +24,7 @@ public interface StringEncoder {
      * @param string
      * @return
      */
-    public String encode(String string);
+    String encode(String string);
     
     /**
      * Decodes an string back to it's initial representation
@@ -34,5 +32,5 @@ public interface StringEncoder {
      * @param string
      * @return
      */
-    public String decode(String string);
+    String decode(String string);
 }

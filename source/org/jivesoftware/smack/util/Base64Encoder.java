@@ -20,16 +20,13 @@ package org.jivesoftware.smack.util;
  */
 public class Base64Encoder implements StringEncoder {
 
-    private static Base64Encoder instance;
+    private static Base64Encoder instance = new Base64Encoder();
 
     private Base64Encoder() {
         // Use getInstance()
     }
 
     public static Base64Encoder getInstance() {
-        if (instance == null) {
-            instance = new Base64Encoder();
-        }
         return instance;
     }
 

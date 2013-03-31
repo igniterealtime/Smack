@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2009 Jonas Ådahl.
  * Copyright 2011-2013 Florian Schmaus
  *

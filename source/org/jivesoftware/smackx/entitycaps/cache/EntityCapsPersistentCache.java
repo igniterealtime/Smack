@@ -24,15 +24,15 @@ public interface EntityCapsPersistentCache {
      * @param node
      * @param info
      */
-    abstract void addDiscoverInfoByNodePersistent(String node, DiscoverInfo info);
+    void addDiscoverInfoByNodePersistent(String node, DiscoverInfo info);
 
     /**
      * Replay the Caches data into EntityCapsManager
      */
-    abstract void replay() throws IOException;
+    void replay() throws IOException;
 
     /**
      * Empty the Cache
      */
-    abstract void emptyCache();
+    void emptyCache();
 }

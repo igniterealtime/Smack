@@ -513,7 +513,7 @@ public class ServiceDiscoveryManager {
 
         // If the node version is known, store the new entry.
         if (nvh != null) {
-            if (EntityCapsManager.verifyDiscvoerInfoVersion(nvh.getVer(), nvh.getHash(), info))
+            if (EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(), info))
                 EntityCapsManager.addDiscoverInfoByNode(nvh.getNodeVer(), info);
         }
 
