@@ -66,9 +66,7 @@ public class VCardTest extends SmackTestCase {
             fail(e.getMessage());
         }
 
-        //assertEquals("Should load own VCard successfully", origVCard.toString(), loaded.toString());
         assertEquals("Should load own VCard successfully", origVCard, loaded);
-
 
         loaded = new VCard();
         try {
@@ -78,7 +76,6 @@ public class VCardTest extends SmackTestCase {
             fail(e.getMessage());
         }
 
-        //assertEquals("Should load another user's VCard successfully", origVCard.toString(), loaded.toString());
         assertEquals("Should load another user's VCard successfully", origVCard, loaded);
     }
 
@@ -166,20 +163,6 @@ public class VCardTest extends SmackTestCase {
                 "3BvCirLZteMLLDHKjRS3QlQyiPsRCQQTIO4PFDnLI9NBZKKgpaCjtdPDR0YaPhBGgRI1UfKiqOgA\n" +
                 "CgADtrKoqPLpKaXPVXUdPtnXTNUBLlTQR4xHlj+gHT/7pjw8oTsf/9k=";
     }
-
-    /*
-    public void testFullName() throws Throwable {
-        VCard card = new VCard();
-        card.setFirstName("kir");
-       // assertEquals("kir", card.getFullName());
-
-        card.setLastName("maximov");
-      //  assertEquals("kir maximov", card.getFullName());
-
-        card.setField("FN", "some name");
-       // assertEquals("some name", card.getFullName());
-    }
-    */
 
     protected int getMaxConnections() {
         return 2;
