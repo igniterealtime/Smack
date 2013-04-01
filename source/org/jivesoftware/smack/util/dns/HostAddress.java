@@ -23,10 +23,10 @@ public class HostAddress {
     /**
      * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
      * 
-     * @param fqdn
-     * @throws IllegalArgumentException
+     * @param fqdn Fully qualified domain name.
+     * @throws IllegalArgumentException If the fqdn is null.
      */
-    public HostAddress(String fqdn) throws IllegalArgumentException {
+    public HostAddress(String fqdn) {
         if (fqdn == null)
             throw new IllegalArgumentException("FQDN is null");
         if (fqdn.charAt(fqdn.length() - 1) == '.') {
@@ -39,7 +39,14 @@ public class HostAddress {
         this.port = 5222;
     }
 
-    public HostAddress(String fqdn, int port) throws IllegalArgumentException {
+    /**
+     * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
+     * 
+     * @param fqdn Fully qualified domain name.
+     * @param port The port to connect on.
+     * @throws IllegalArgumentException If the fqdn is null or port is out of valid range (0 - 65535).
+     */
+    public HostAddress(String fqdn, int port) {
         this(fqdn);
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
@@ -60,10 +67,12 @@ public class HostAddress {
         this.exception = e;
     }
 
+    @Override
     public String toString() {
         return fqdn + ":" + port;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -78,6 +87,13 @@ public class HostAddress {
             return false;
         }
         return port == address.port;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 37 * result + fqdn.hashCode();
+        return result * 37 + port;
     }
 
     public String getErrorMessage() {

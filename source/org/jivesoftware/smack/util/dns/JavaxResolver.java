@@ -28,12 +28,12 @@ import javax.naming.directory.InitialDirContext;
 import org.jivesoftware.smack.util.DNSUtil;
 
 /**
- * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namepsace.
+ * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
  * 
  * @author Florian Schmaus
  *
  */
-public class JavaxResolver extends DNSResolver {
+public class JavaxResolver implements DNSResolver {
     
     private static JavaxResolver instance;
     private static DirContext dirContext;
@@ -48,14 +48,14 @@ public class JavaxResolver extends DNSResolver {
         }
 
         // Try to set this DNS resolver as primary one
-        DNSUtil.setDNSResolver(maybeGetInstance());
+        DNSUtil.setDNSResolver(getInstance());
     }
     
     private JavaxResolver() {
         
     }
     
-    public static DNSResolver maybeGetInstance() {
+    public static DNSResolver getInstance() {
         if (instance == null && isSupported()) {
             instance = new JavaxResolver();
         }
