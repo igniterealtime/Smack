@@ -13,16 +13,14 @@
  */
 package org.jivesoftware.smackx.receipts;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Properties;
-import java.util.TimeZone;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
@@ -76,7 +74,7 @@ public class DeliveryReceiptTest {
         DeliveryReceiptManager drm = DeliveryReceiptManager.getInstanceFor(c);
 
         TestReceiptReceivedListener rrl = new TestReceiptReceivedListener();
-        drm.registerReceiptReceivedListener(rrl);
+        drm.addReceiptReceivedListener(rrl);
 
         Message m = new Message("romeo@montague.com", Message.Type.normal);
         m.setFrom("julia@capulet.com");
@@ -88,7 +86,7 @@ public class DeliveryReceiptTest {
         assertEquals("original-test-id", rrl.receiptId);
     }
 
-    private static class TestReceiptReceivedListener implements DeliveryReceiptManager.ReceiptReceivedListener {
+    private static class TestReceiptReceivedListener implements ReceiptReceivedListener {
         public String receiptId = null;
         @Override
         public void onReceiptReceived(String fromJid, String toJid, String receiptId) {
