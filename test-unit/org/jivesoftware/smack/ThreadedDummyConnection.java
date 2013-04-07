@@ -3,8 +3,6 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
- *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,6 +26,11 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.IQ.Type;
 
+/**
+ * 
+ * @author Robin Collier
+ *
+ */
 public class ThreadedDummyConnection extends DummyConnection {
     private BlockingQueue<IQ> replyQ = new ArrayBlockingQueue<IQ>(1);
     private BlockingQueue<Packet> messageQ = new LinkedBlockingQueue<Packet>(5);
