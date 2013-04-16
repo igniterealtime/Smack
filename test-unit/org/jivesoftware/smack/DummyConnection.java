@@ -49,6 +49,7 @@ public class DummyConnection extends Connection {
 
     private boolean authenticated = false;
     private boolean anonymous = false;
+    private boolean reconnect = false;
 
     private String user;
     private String connectionID;
@@ -71,6 +72,12 @@ public class DummyConnection extends Connection {
     @Override
     public void connect() throws XMPPException {
         connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
+
+        if (reconnect) {
+            for (ConnectionListener listener : getConnectionListeners()) {
+                listener.reconnectionSuccessful();
+            }
+        }
     }
 
     @Override
@@ -80,6 +87,11 @@ public class DummyConnection extends Connection {
         roster = null;
         authenticated = false;
         anonymous = false;
+        
+        for (ConnectionListener listener : getConnectionListeners()) {
+            listener.connectionClosed();
+        }
+        reconnect = true;
     }
 
     @Override

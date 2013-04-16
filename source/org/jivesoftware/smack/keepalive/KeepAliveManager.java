@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.ping;
+package org.jivesoftware.smack.keepalive;
 
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -33,17 +34,11 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.ping.PingFailedListener;
 import org.jivesoftware.smack.ping.packet.Ping;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
 
 /**
  * Using an implementation of <a href="http://www.xmpp.org/extensions/xep-0199.html">XMPP Ping (XEP-0199)</a>. This
@@ -56,25 +51,15 @@ import org.jivesoftware.smackx.ServiceDiscoveryManager;
  * 
  * @author Florian Schmaus
  */
-public class ServerPingManager {
-    private static Map<Connection, ServerPingManager> instances = Collections
-            .synchronizedMap(new WeakHashMap<Connection, ServerPingManager>());
-    private static long defaultPingInterval = SmackConfiguration.getKeepAliveInterval(); 
+public class KeepAliveManager {
+    private static Map<Connection, KeepAliveManager> instances = new HashMap<Connection, KeepAliveManager>();
+    private static volatile ScheduledExecutorService periodicPingExecutorService;
     
-    private static ScheduledExecutorService periodicPingExecutorService = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread pingThread = new Thread(runnable, "Smack Server Ping");
-            pingThread.setDaemon(true);
-            return pingThread;
-        }
-    });
-
     static {
-        if (defaultPingInterval > 0) {
+        if (SmackConfiguration.getKeepAliveInterval() > 0) {
             Connection.addConnectionCreationListener(new ConnectionCreationListener() {
                 public void connectionCreated(Connection connection) {
-                    new ServerPingManager(connection);
+                    new KeepAliveManager(connection);
                 }
             });
         }
@@ -87,56 +72,94 @@ public class ServerPingManager {
     private volatile long lastSuccessfulContact = -1;
 
     /**
-     * Retrieves a {@link ServerPingManager} for the specified {@link Connection}, creating one if it doesn't already
+     * Retrieves a {@link KeepAliveManager} for the specified {@link Connection}, creating one if it doesn't already
      * exist.
      * 
      * @param connection
      * The connection the manager is attached to.
      * @return The new or existing manager.
      */
-    public synchronized static ServerPingManager getInstanceFor(Connection connection) {
-        ServerPingManager pingManager = instances.get(connection);
+    public synchronized static KeepAliveManager getInstanceFor(Connection connection) {
+        KeepAliveManager pingManager = instances.get(connection);
 
         if (pingManager == null) {
-            pingManager = new ServerPingManager(connection);
+            pingManager = new KeepAliveManager(connection);
+            instances.put(connection, pingManager);
         }
         return pingManager;
     }
 
-    private ServerPingManager(Connection connection) {
-        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-        sdm.addFeature(Ping.NAMESPACE);
+    /*
+     * Start the executor service if it hasn't been started yet.
+     */
+    private synchronized static void enableExecutorService() {
+        if (periodicPingExecutorService == null) {
+            periodicPingExecutorService = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    Thread pingThread = new Thread(runnable, "Smack Keepalive");
+                    pingThread.setDaemon(true);
+                    return pingThread;
+                }
+            });
+        }
+    }
+
+    /*
+     * Stop the executor service if all monitored connections are disconnected.
+     */
+    private synchronized static void handleDisconnect(Connection con) {
+        if (periodicPingExecutorService != null) {
+            instances.remove(con);
+            
+            if (instances.isEmpty()) {
+                periodicPingExecutorService.shutdownNow();
+                periodicPingExecutorService = null;
+            }
+        }
+    }
+    
+    private KeepAliveManager(Connection connection) {
         this.connection = connection;
         init();
+        handleConnect();
+    }
+
+    /*
+     * Call after every connection to add the packet listener.
+     */
+    private void handleConnect() {
+        // Listen for all incoming packets and reset the scheduled ping whenever
+        // one arrives.
+        connection.addPacketListener(new PacketListener() {
+
+            @Override
+            public void processPacket(Packet packet) {
+                // reschedule the ping based on this last server contact
+                lastSuccessfulContact = System.currentTimeMillis();
+                schedulePingServerTask();
+            }
+        }, null);
     }
 
     private void init() {
-        PacketFilter pingPacketFilter = new AndFilter(new PacketTypeFilter(Ping.class), new IQTypeFilter(Type.GET));
-        
-        connection.addPacketListener(new PacketListener() {
-            /**
-             * Sends a Pong for every Ping
-             */
-            public void processPacket(Packet packet) {
-                IQ pong = IQ.createResultIQ((Ping) packet);
-                connection.sendPacket(pong);
-            }
-        }, pingPacketFilter);
-
         connection.addConnectionListener(new ConnectionListener() {
 
             @Override
             public void connectionClosed() {
                 stopPingServerTask();
+                handleDisconnect(connection);
             }
 
             @Override
             public void connectionClosedOnError(Exception arg0) {
                 stopPingServerTask();
+                handleDisconnect(connection);
             }
 
             @Override
             public void reconnectionSuccessful() {
+                handleConnect();
                 schedulePingServerTask();
             }
 
@@ -149,17 +172,6 @@ public class ServerPingManager {
             }
         });
 
-        // Listen for all incoming packets and reset the scheduled ping whenever
-        // one arrives.
-        connection.addPacketListener(new PacketListener() {
-
-            @Override
-            public void processPacket(Packet packet) {
-                // reschedule the ping based on this last server contact
-                lastSuccessfulContact = System.currentTimeMillis();
-                schedulePingServerTask();
-            }
-        }, null);
         instances.put(connection, this);
         schedulePingServerTask();
     }
@@ -171,15 +183,20 @@ public class ServerPingManager {
      * The new ping time interval in milliseconds.
      */
     public void setPingInterval(long newPingInterval) {
-        if (pingInterval != newPingInterval) {
-            pingInterval = newPingInterval;
+        if (pingInterval == newPingInterval) 
+            return;
+
+        // Enable the executor service
+        if (newPingInterval > 0)
+            enableExecutorService();
+        
+        pingInterval = newPingInterval;
             
-            if (pingInterval < 0) {
-                stopPinging();
-            }
-            else {
-                schedulePingServerTask();
-            }
+        if (pingInterval < 0) {
+            stopPinging();
+        }
+        else {
+            schedulePingServerTask();
         }
     }
 
@@ -227,12 +244,20 @@ public class ServerPingManager {
     }
 
     /**
-     * Returns the time of the last successful contact with the server. (i.e. the last time any message was received).
+     * Returns the elapsed time (in milliseconds) since the last successful contact with the server 
+     * (i.e. the last time any message was received).
+     * <p>
+     * <b>Note</b>: Result is -1 if no message has been received since manager was created and 
+     * 0 if the elapsed time is negative due to a clock reset. 
      * 
-     * @return Time of last message or -1 if none has been received since manager was created.
+     * @return Elapsed time since last message was received.  
      */
-    public long getLastSuccessfulContact() {
-        return lastSuccessfulContact;
+    public long getTimeSinceLastContact() {
+        if (lastSuccessfulContact == -1)
+            return lastSuccessfulContact;
+        long delta = System.currentTimeMillis() - lastSuccessfulContact;
+        
+        return (delta < 0) ? 0 : delta;
     }
 
     /**
@@ -242,6 +267,7 @@ public class ServerPingManager {
      * This is designed so only one executor is used for scheduling all pings on all connections.  This results in only 1 thread used for pinging.
      */
     private synchronized void schedulePingServerTask() {
+        enableExecutorService();
         stopPingServerTask();
         
         if (pingInterval > 0) {

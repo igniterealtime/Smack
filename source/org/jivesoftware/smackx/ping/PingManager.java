@@ -16,11 +16,25 @@
 
 package org.jivesoftware.smackx.ping;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackError;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.ping.ServerPingManager;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.keepalive.KeepAliveManager;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.ping.packet.Ping;
 import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
@@ -31,7 +45,7 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
  * allows one entity to 'ping' any other entity by simply sending a ping to 
  * the appropriate JID.
  * <p>
- * NOTE: The {@link ServerPingManager} already provides a keepalive functionality 
+ * NOTE: The {@link KeepAliveManager} already provides a keepalive functionality 
  * for regularly pinging the server to keep the underlying transport connection
  * alive.  This class is specifically intended to do manual pings of other 
  * entities.  
@@ -41,12 +55,57 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
  *      Ping</a>
  */
 public class PingManager {
+    private static Map<Connection, PingManager> instances = Collections
+            .synchronizedMap(new WeakHashMap<Connection, PingManager>());
+    
+    static {
+        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(Connection connection) {
+                new PingManager(connection);
+            }
+        });
+    }
+
     private Connection connection;
 
-    public PingManager(Connection connection) {
+    /**
+     * Retrieves a {@link PingManager} for the specified {@link Connection}, creating one if it doesn't already
+     * exist.
+     * 
+     * @param connection
+     * The connection the manager is attached to.
+     * @return The new or existing manager.
+     */
+    public synchronized static PingManager getInstanceFor(Connection connection) {
+        PingManager pingManager = instances.get(connection);
+
+        if (pingManager == null) {
+            pingManager = new PingManager(connection);
+        }
+        return pingManager;
+    }
+
+    private PingManager(Connection con) {
+        this.connection = con;
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+        
+        // The ServiceDiscoveryManager was not pre-initialized
+        if (sdm == null)
+            sdm = new ServiceDiscoveryManager(connection);
+        
         sdm.addFeature(Ping.NAMESPACE);
-        this.connection = connection;
+        
+        PacketFilter pingPacketFilter = new AndFilter(new PacketTypeFilter(Ping.class), new IQTypeFilter(Type.GET));
+        
+        connection.addPacketListener(new PacketListener() {
+            /**
+             * Sends a Pong for every Ping
+             */
+            public void processPacket(Packet packet) {
+                IQ pong = IQ.createResultIQ((Ping) packet);
+                connection.sendPacket(pong);
+            }
+        }, pingPacketFilter);
     }
 
     /**

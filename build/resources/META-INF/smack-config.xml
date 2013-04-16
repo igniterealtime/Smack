@@ -24,7 +24,7 @@
     <startupClasses>
         <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
         <className>org.jivesoftware.smack.PrivacyListManager</className>        
-        <className>org.jivesoftware.smack.ping.ServerPingManager</className>        
+        <className>org.jivesoftware.smack.keepalive.KeepAliveManager</className>        
         <className>org.jivesoftware.smackx.XHTMLManager</className>
         <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
         <className>org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager</className>
@@ -34,7 +34,7 @@
         <className>org.jivesoftware.smack.ReconnectionManager</className>    
         <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>    
         <className>org.jivesoftware.smack.util.dns.JavaxResolver</className>
+        <className>org.jivesoftware.smackx.ping.PingManager</className>
     </startupClasses>
-
 
 </smack>

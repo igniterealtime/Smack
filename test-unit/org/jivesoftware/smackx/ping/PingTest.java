@@ -39,9 +39,36 @@ public class PingTest {
     }
     
     @Test
+    public void checkProvider() throws Exception {
+        // @formatter:off
+        String control = "<iq from='capulet.lit' to='juliet@capulet.lit/balcony' id='s2c1' type='get'>"
+                + "<ping xmlns='urn:xmpp:ping'/>" 
+                + "</iq>";
+        // @formatter:on
+        DummyConnection con = new DummyConnection();
+        
+        // Enable ping for this connection
+        PingManager.getInstanceFor(con);
+        IQ pingRequest = PacketParserUtils.parseIQ(TestUtils.getIQParser(control), con);
+
+        assertTrue(pingRequest instanceof Ping);
+
+        con.processPacket(pingRequest);
+
+        Packet pongPacket = con.getSentPacket();
+        assertTrue(pongPacket instanceof IQ);
+
+        IQ pong = (IQ) pongPacket;
+        assertEquals("juliet@capulet.lit/balcony", pong.getFrom());
+        assertEquals("capulet.lit", pong.getTo());
+        assertEquals("s2c1", pong.getPacketID());
+        assertEquals(IQ.Type.RESULT, pong.getType());
+    }
+
+    @Test
     public void checkSendingPing() throws Exception {
         dummyCon = new DummyConnection();
-        PingManager pinger = new PingManager(dummyCon);
+        PingManager pinger = PingManager.getInstanceFor(dummyCon);
         pinger.ping("test@myserver.com");
 
         Packet sentPacket = dummyCon.getSentPacket();
@@ -54,7 +81,7 @@ public class PingTest {
     public void checkSuccessfulPing() throws Exception {
         threadedCon = new ThreadedDummyConnection();
         
-        PingManager pinger = new PingManager(threadedCon);
+        PingManager pinger = PingManager.getInstanceFor(threadedCon);
 
         boolean pingSuccess = pinger.ping("test@myserver.com");
         
@@ -69,7 +96,7 @@ public class PingTest {
     @Test
     public void checkFailedPingOnTimeout() throws Exception {
         dummyCon = new DummyConnection();
-        PingManager pinger = new PingManager(dummyCon);
+        PingManager pinger = PingManager.getInstanceFor(dummyCon);
 
         boolean pingSuccess = pinger.ping("test@myserver.com");
         
@@ -96,7 +123,7 @@ public class PingTest {
         IQ serviceUnavailable = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), threadedCon);
         threadedCon.addIQReply(serviceUnavailable);
 
-        PingManager pinger = new PingManager(threadedCon);
+        PingManager pinger = PingManager.getInstanceFor(threadedCon);
 
         boolean pingSuccess = pinger.ping("test@myserver.com");
         
@@ -106,7 +133,7 @@ public class PingTest {
     @Test
     public void checkPingToServerSuccess() throws Exception {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
-        PingManager pinger = new PingManager(con);
+        PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean pingSuccess = pinger.pingMyServer();
         
@@ -132,7 +159,7 @@ public class PingTest {
         IQ serviceUnavailable = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), con);
         con.addIQReply(serviceUnavailable);
 
-        PingManager pinger = new PingManager(con);
+        PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean pingSuccess = pinger.pingMyServer();
         
@@ -142,7 +169,7 @@ public class PingTest {
     @Test
     public void checkPingToServerTimeout() throws Exception {
         DummyConnection con = new DummyConnection();
-        PingManager pinger = new PingManager(con);
+        PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean pingSuccess = pinger.pingMyServer();
         
@@ -165,7 +192,7 @@ public class PingTest {
         IQ discoReply = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), con);
         con.addIQReply(discoReply);
 
-        PingManager pinger = new PingManager(con);
+        PingManager pinger = PingManager.getInstanceFor(con);
         boolean pingSupported = pinger.isPingSupported("test@myserver.com");
         
         assertTrue(pingSupported);
@@ -187,7 +214,7 @@ public class PingTest {
         IQ discoReply = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), con);
         con.addIQReply(discoReply);
 
-        PingManager pinger = new PingManager(con);
+        PingManager pinger = PingManager.getInstanceFor(con);
         boolean pingSupported = pinger.isPingSupported("test@myserver.com");
         
         assertFalse(pingSupported);

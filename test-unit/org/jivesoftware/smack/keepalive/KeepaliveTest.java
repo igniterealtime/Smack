@@ -1,4 +1,4 @@
-package org.jivesoftware.smack.ping;
+package org.jivesoftware.smack.keepalive;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
@@ -17,8 +17,10 @@ import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.keepalive.KeepAliveManager;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.ping.PingFailedListener;
 import org.jivesoftware.smack.ping.packet.Ping;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
@@ -40,6 +42,7 @@ public class KeepaliveTest {
     @Before
     public void resetProperties()
     {
+        SmackConfiguration.setKeepAliveInterval(-1);
         originalTimeout = SmackConfiguration.getPacketReplyTimeout();
         SmackConfiguration.setPacketReplyTimeout(1000);
     }
@@ -56,36 +59,13 @@ public class KeepaliveTest {
     public void validatePingStanzaXML() throws Exception {
         // @formatter:off
         String control = "<iq to='juliet@capulet.lit/balcony' id='s2c1' type='get'>"
-                + "<ping xmlns='urn:xmpp:ping'/>" + "</iq>";
+                + "<ping xmlns='urn:xmpp:ping'/></iq>";
         // @formatter:on
 
         Ping ping = new Ping(TO);
         ping.setPacketID(ID);
 
         assertXMLEqual(control, ping.toXML());
-    }
-
-    @Test
-    public void checkProvider() throws Exception {
-        // @formatter:off
-        String control = "<iq from='capulet.lit' to='juliet@capulet.lit/balcony' id='s2c1' type='get'>"
-                + "<ping xmlns='urn:xmpp:ping'/>" + "</iq>";
-        // @formatter:on
-        DummyConnection con = new DummyConnection();
-        IQ pingRequest = PacketParserUtils.parseIQ(TestUtils.getIQParser(control), con);
-
-        assertTrue(pingRequest instanceof Ping);
-
-        con.processPacket(pingRequest);
-
-        Packet pongPacket = con.getSentPacket();
-        assertTrue(pongPacket instanceof IQ);
-
-        IQ pong = (IQ) pongPacket;
-        assertEquals("juliet@capulet.lit/balcony", pong.getFrom());
-        assertEquals("capulet.lit", pong.getTo());
-        assertEquals("s2c1", pong.getPacketID());
-        assertEquals(IQ.Type.RESULT, pong.getType());
     }
 
     @Test
@@ -138,7 +118,7 @@ public class KeepaliveTest {
     }
 
     private void addPingFailedListener(DummyConnection con, final CountDownLatch latch) {
-        ServerPingManager manager = ServerPingManager.getInstanceFor(con);
+        KeepAliveManager manager = KeepAliveManager.getInstanceFor(con);
         manager.addPingFailedListener(new PingFailedListener() {
             @Override
             public void pingFailed() {
@@ -149,7 +129,7 @@ public class KeepaliveTest {
 
     private DummyConnection getConnection() {
         DummyConnection con = new DummyConnection();
-        ServerPingManager mgr = ServerPingManager.getInstanceFor(con);
+        KeepAliveManager mgr = KeepAliveManager.getInstanceFor(con);
         mgr.setPingInterval(PING_MINIMUM);
 
         return con;
@@ -157,7 +137,7 @@ public class KeepaliveTest {
     
     private ThreadedDummyConnection getThreadedConnection() {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
-        ServerPingManager mgr = ServerPingManager.getInstanceFor(con);
+        KeepAliveManager mgr = KeepAliveManager.getInstanceFor(con);
         mgr.setPingInterval(PING_MINIMUM);
 
         return con;
