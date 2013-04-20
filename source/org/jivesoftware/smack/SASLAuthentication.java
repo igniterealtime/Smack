@@ -315,8 +315,13 @@ public class SASLAuthentication implements UserAuthentication {
                 currentMechanism = constructor.newInstance(this);
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
-                // may not match the XMPP domain.
-                currentMechanism.authenticate(username, connection.getServiceName(), password);
+                // may not match the XMPP domain.    
+                
+                //The serviceName is basically the value that XMPP server sends to the client as being the location
+                //of the XMPP service we are trying to connect to. This should have the format: host [ "/" serv-name ]
+                //as per RFC-2831 guidelines
+                String serviceName = connection.getServiceName();               
+                currentMechanism.authenticate(username, connection.getHost(), serviceName, password);
 
                 // Wait until SASL negotiation finishes
                 synchronized (this) {
@@ -383,7 +388,7 @@ public class SASLAuthentication implements UserAuthentication {
     public String authenticateAnonymously() throws XMPPException {
         try {
             currentMechanism = new SASLAnonymous(this);
-            currentMechanism.authenticate(null,null,"");
+            currentMechanism.authenticate(null,null,null,"");
 
             // Wait until SASL negotiation finishes
             synchronized (this) {
