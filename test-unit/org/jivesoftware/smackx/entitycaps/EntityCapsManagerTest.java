@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.Base64Encoder;
+import org.jivesoftware.smack.util.Base64FileUrlEncoder;
 import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.entitycaps.EntityCapsManager;
@@ -37,7 +38,7 @@ public class EntityCapsManagerTest {
     @Test
     public void testSimpleDirectoryCacheBase64() throws IOException {
         EntityCapsManager.persistentCache = null;
-        testSimpleDirectoryCache(Base64Encoder.getInstance());
+        testSimpleDirectoryCache(Base64FileUrlEncoder.getInstance());
     }
 
     @Test
