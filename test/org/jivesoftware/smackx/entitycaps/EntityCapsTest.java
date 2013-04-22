@@ -35,10 +35,10 @@ public class EntityCapsTest extends SmackTestCase {
         return 2;
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         SmackConfiguration.setAutoEnableEntityCaps(true);
-        SmackConfiguration.setPacketReplyTimeout(1000 * 60 * 5);
         con0 = getConnection(0);
         con1 = getConnection(1);
         ecm0 = EntityCapsManager.getInstanceFor(getConnection(0));
@@ -47,7 +47,7 @@ public class EntityCapsTest extends SmackTestCase {
         sdm1 = ServiceDiscoveryManager.getInstanceFor(con1);
         letsAllBeFriends();
     }
-
+    
     public void testLocalEntityCaps() throws InterruptedException {
         DiscoverInfo info = EntityCapsManager.getDiscoveryInfoByNodeVer(ecm1.getLocalNodeVer());
         assertFalse(info.containsFeature(DISCOVER_TEST_FEATURE));
