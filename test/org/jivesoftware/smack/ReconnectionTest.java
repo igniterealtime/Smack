@@ -17,7 +17,11 @@
  */
 package org.jivesoftware.smack;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.jivesoftware.smack.test.SmackTestCase;
+import org.jivesoftware.smackx.ping.PingManager;
 
 /**
  * Tests the connection and reconnection mechanism
@@ -27,6 +31,8 @@ import org.jivesoftware.smack.test.SmackTestCase;
 
 public class ReconnectionTest extends SmackTestCase {
 
+    private static final long MIN_RECONNECT_WAIT = 17;  // Seconds
+    
     public ReconnectionTest(String arg0) {
         super(arg0);
     }
@@ -38,19 +44,17 @@ public class ReconnectionTest extends SmackTestCase {
 
     public void testAutomaticReconnection() throws Exception {
         XMPPConnection connection = getConnection(0);
-        XMPPConnectionTestListener listener = new XMPPConnectionTestListener();
+        CountDownLatch latch = new CountDownLatch(1);
+        XMPPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
         connection.addConnectionListener(listener);
 
         // Simulates an error in the connection
         connection.notifyConnectionError(new Exception("Simulated Error"));
-        Thread.sleep(12000);
+        latch.await(MIN_RECONNECT_WAIT, TimeUnit.SECONDS);
+        
         // After 10 seconds, the reconnection manager must reestablishes the connection
-        assertEquals("The ConnectionListener.connectionStablished() notification was not fired",
-                true, listener.reconnected);
-        assertEquals("The ConnectionListener.reconnectingIn() notification was not fired", 10,
-                listener.attemptsNotifications);
-        assertEquals("The ReconnectionManager algorithm has reconnected without waiting until 0", 0,
-                listener.remainingSeconds);
+        assertEquals("The ConnectionListener.connectionStablished() notification was not fired", true, listener.reconnected);
+        assertTrue("The ReconnectionManager algorithm has reconnected without waiting at least 5 seconds", listener.attemptsNotifications > 0);
 
         // Executes some server interaction testing the connection
         executeSomeServerInteraction(connection);
@@ -73,19 +77,17 @@ public class ReconnectionTest extends SmackTestCase {
         // Executes some server interaction testing the connection
         executeSomeServerInteraction(connection);
 
-        XMPPConnectionTestListener listener = new XMPPConnectionTestListener();
+        CountDownLatch latch = new CountDownLatch(1);
+        XMPPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
         connection.addConnectionListener(listener);
 
         // Simulates an error in the connection
         connection.notifyConnectionError(new Exception("Simulated Error"));
-        Thread.sleep(12000);
+        latch.await(MIN_RECONNECT_WAIT, TimeUnit.SECONDS);
+        
         // After 10 seconds, the reconnection manager must reestablishes the connection
-        assertEquals("The ConnectionListener.connectionStablished() notification was not fired",
-                true, listener.reconnected);
-        assertEquals("The ConnectionListener.reconnectingIn() notification was not fired", 10,
-                listener.attemptsNotifications);
-        assertEquals("The ReconnectionManager algorithm has reconnected without waiting until 0", 0,
-                listener.remainingSeconds);
+        assertEquals("The ConnectionListener.connectionEstablished() notification was not fired", true, listener.reconnected);
+        assertTrue("The ReconnectionManager algorithm has reconnected without waiting at least 5 seconds", listener.attemptsNotifications > 0);
 
         // Executes some server interaction testing the connection
         executeSomeServerInteraction(connection);
@@ -97,7 +99,8 @@ public class ReconnectionTest extends SmackTestCase {
      */
     public void testManualReconnectionWithCancelation() throws Exception {
         XMPPConnection connection = getConnection(0);
-        XMPPConnectionTestListener listener = new XMPPConnectionTestListener();
+        CountDownLatch latch = new CountDownLatch(1);
+        XMPPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
         connection.addConnectionListener(listener);
 
         // Produces a connection error
@@ -105,14 +108,14 @@ public class ReconnectionTest extends SmackTestCase {
         assertEquals(
                 "An error occurs but the ConnectionListener.connectionClosedOnError(e) was not notified",
                 true, listener.connectionClosedOnError);
-        Thread.sleep(1000);
+//        Thread.sleep(1000);
+        
         // Cancels the automatic reconnection
         connection.getConfiguration().setReconnectionAllowed(false);
         // Waits for a reconnection that must not happened.
-        Thread.sleep(10500);
+        Thread.sleep(MIN_RECONNECT_WAIT * 1000);
         // Cancels the automatic reconnection
-        assertEquals("The connection was stablished but it was not allowed to", false,
-                listener.reconnected);
+        assertEquals(false, listener.reconnected);
 
         // Makes a manual reconnection from an error terminated connection without reconnection
         connection.connect();
@@ -137,7 +140,7 @@ public class ReconnectionTest extends SmackTestCase {
         assertEquals("ConnectionListener.connectionClosed() was not notified",
                 true, listener.connectionClosed);
         // Waits 10 seconds waiting for a reconnection that must not happened.
-        Thread.sleep(12200);
+        Thread.sleep(MIN_RECONNECT_WAIT * 1000);
         assertEquals("The connection was stablished but it was not allowed to", false,
                 listener.reconnected);
 
@@ -187,8 +190,8 @@ public class ReconnectionTest extends SmackTestCase {
      * Execute some server interaction in order to test that the regenerated connection works fine.
      */
     private void executeSomeServerInteraction(XMPPConnection connection) throws XMPPException {
-        PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(connection);
-        privacyManager.getPrivacyLists();
+        PingManager pingManager = PingManager.getInstanceFor(connection);
+        pingManager.pingMyServer();
     }
 
     protected int getMaxConnections() {
@@ -198,19 +201,29 @@ public class ReconnectionTest extends SmackTestCase {
     private class XMPPConnectionTestListener implements ConnectionListener {
 
         // Variables to support listener notifications verification
-        private boolean connectionClosed = false;
-        private boolean connectionClosedOnError = false;
-        private boolean reconnected = false;
-        private boolean reconnectionFailed = false;
-        private int remainingSeconds = 0;
-        private int attemptsNotifications = 0;
-        private boolean reconnectionCanceled = false;
+        private volatile boolean connectionClosed = false;
+        private volatile boolean connectionClosedOnError = false;
+        private volatile boolean reconnected = false;
+        private volatile boolean reconnectionFailed = false;
+        private volatile int remainingSeconds = 0;
+        private volatile int attemptsNotifications = 0;
+        private volatile boolean reconnectionCanceled = false;
+        private CountDownLatch countDownLatch;
 
+        private XMPPConnectionTestListener(CountDownLatch latch) {
+            countDownLatch = latch; 
+        }
+
+        private XMPPConnectionTestListener() {
+        }
         /**
          * Methods to test the listener.
          */
         public void connectionClosed() {
             connectionClosed = true;
+            
+            if (countDownLatch != null)
+                countDownLatch.countDown();
         }
 
         public void connectionClosedOnError(Exception e) {
@@ -219,20 +232,28 @@ public class ReconnectionTest extends SmackTestCase {
 
         public void reconnectionCanceled() {
             reconnectionCanceled = true;
+
+            if (countDownLatch != null)
+                countDownLatch.countDown();
         }
 
         public void reconnectingIn(int seconds) {
             attemptsNotifications = attemptsNotifications + 1;
             remainingSeconds = seconds;
-
         }
 
         public void reconnectionSuccessful() {
             reconnected = true;
+
+            if (countDownLatch != null)
+                countDownLatch.countDown();
         }
 
         public void reconnectionFailed(Exception error) {
             reconnectionFailed = true;
+
+            if (countDownLatch != null)
+                countDownLatch.countDown();
         }
     }
 

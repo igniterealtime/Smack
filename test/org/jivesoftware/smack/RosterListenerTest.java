@@ -20,6 +20,7 @@ package org.jivesoftware.smack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -47,8 +48,6 @@ public class RosterListenerTest extends SmackTestCase {
 
         // add user1 to roster to create roster events stored at XMPP server
         inviterRoster.createEntry(getBareJID(inviteeIndex), getUsername(inviteeIndex), null);
-
-        Thread.sleep(500); // wait for XMPP server
 
         XMPPConnection inviteeConnection = getConnection(inviteeIndex);
         assertFalse("Invitee is already online", inviteeConnection.isConnected());
@@ -80,7 +79,7 @@ public class RosterListenerTest extends SmackTestCase {
         // connect after adding the listener
         connectAndLogin(inviteeIndex);
 
-        Thread.sleep(500); // wait for packets to be processed
+        Thread.sleep(5000); // wait for packets to be processed
 
         assertNotNull("inviter is not in roster", inviteeRoster.getEntry(getBareJID(inviterIndex)));
 
