@@ -36,14 +36,13 @@ public class ItemProvider implements PacketExtensionProvider
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception 
     {
         String id = parser.getAttributeValue(null, "id");
-        String node = parser.getAttributeValue(null, "node");
         String elem = parser.getName();
 
         int tag = parser.next();
 
         if (tag == XmlPullParser.END_TAG) 
         {
-            return new Item(id, node);
+            return new Item(id);
         }
         else 
         {
@@ -53,6 +52,7 @@ public class ItemProvider implements PacketExtensionProvider
             if (ProviderManager.getInstance().getExtensionProvider(payloadElemName, payloadNS) == null) 
             {
                 boolean done = false;
+                boolean isEmptyElement = false;
                 StringBuilder payloadText = new StringBuilder();
 
                 while (!done) 
@@ -76,7 +76,7 @@ public class ItemProvider implements PacketExtensionProvider
                         if (parser.isEmptyElementTag()) 
                         {
                             payloadText.append("/>");
-                            done = true;
+                            isEmptyElement = true;
                         }
                         else 
                         {
@@ -85,8 +85,8 @@ public class ItemProvider implements PacketExtensionProvider
                     }
                     else if (parser.getEventType() == XmlPullParser.END_TAG) 
                     {
-                        if (done) 
-                            done = false;
+                        if (isEmptyElement) 
+                            isEmptyElement = false;
                         else 
                             payloadText.append("</").append(parser.getName()).append(">");
                     }
@@ -96,10 +96,10 @@ public class ItemProvider implements PacketExtensionProvider
                     }
                     tag = parser.next();
                 }
-                return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText.toString()));
+                return new PayloadItem<SimplePayload>(id, new SimplePayload(payloadElemName, payloadNS, payloadText.toString()));
             }
             else {
-                return new PayloadItem<PacketExtension>(id, node, PacketParserUtils.parsePacketExtension(
+                return new PayloadItem<PacketExtension>(id, PacketParserUtils.parsePacketExtension(
                         payloadElemName, payloadNS, parser));
             }
         }
