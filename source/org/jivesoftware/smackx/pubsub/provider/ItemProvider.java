@@ -65,11 +65,11 @@ public class ItemProvider implements PacketExtensionProvider
                     else if (parser.getEventType() == XmlPullParser.START_TAG) 
                     {
                         payloadText.append("<").append(parser.getName());
-                        
-                        if (parser.getName().equals(payloadElemName) && (!payloadNS.isEmpty())) 
+
+                        if (parser.getName().equals(payloadElemName) && (payloadNS.length() > 0))
                             payloadText.append(" xmlns=\"").append(payloadNS).append("\"");
                         int n = parser.getAttributeCount();
-                        
+
                         for (int i = 0; i < n; i++) 
                             payloadText.append(" ").append(parser.getAttributeName(i)).append("=\"")
                                     .append(parser.getAttributeValue(i)).append("\"");
