@@ -2590,11 +2590,13 @@ public class MultiUserChat {
          */
         public static InvitationsMonitor getInvitationsMonitor(Connection conn) {
             synchronized (monitors) {
-                if (!monitors.containsKey(conn)) {
+                if (!monitors.containsKey(conn) || monitors.get(conn).get() == null) {
                     // We need to use a WeakReference because the monitor references the
                     // connection and this could prevent the GC from collecting the monitor
                     // when no other object references the monitor
-                    monitors.put(conn, new WeakReference<InvitationsMonitor>(new InvitationsMonitor(conn)));
+                    InvitationsMonitor ivm = new InvitationsMonitor(conn);
+                    monitors.put(conn, new WeakReference<InvitationsMonitor>(ivm));
+                    return ivm;
                 }
                 // Return the InvitationsMonitor that monitors the connection
                 return monitors.get(conn).get();
