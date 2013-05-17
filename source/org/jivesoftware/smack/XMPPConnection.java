@@ -1019,12 +1019,12 @@ public class XMPPConnection extends Connection {
      *      Two possible errors can occur which will be wrapped by an XMPPException --
      *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
      *      502). The error codes and wrapped exceptions can be used to present more
-     *      appropiate error messages to end-users.
+     *      appropriate error messages to end-users.
      */
     public void connect() throws XMPPException {
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
-        // Automatically makes the login if the user was previouslly connected successfully
+        // Automatically makes the login if the user was previously connected successfully
         // to the server and the connection was terminated abruptly
         if (connected && wasAuthenticated) {
             // Make the login
