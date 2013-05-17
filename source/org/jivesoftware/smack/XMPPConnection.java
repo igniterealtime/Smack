@@ -1028,20 +1028,14 @@ public class XMPPConnection extends Connection {
         // to the server and the connection was terminated abruptly
         if (connected && wasAuthenticated) {
             // Make the login
-            try {
-                if (isAnonymous()) {
-                    // Make the anonymous login
-                    loginAnonymously();
-                }
-                else {
-                    login(config.getUsername(), config.getPassword(),
-                            config.getResource());
-                }
-                notifyReconnection();
+            if (isAnonymous()) {
+                // Make the anonymous login
+                loginAnonymously();
             }
-            catch (XMPPException e) {
-                e.printStackTrace();
+            else {
+                login(config.getUsername(), config.getPassword(), config.getResource());
             }
+            notifyReconnection();
         }
     }
 
