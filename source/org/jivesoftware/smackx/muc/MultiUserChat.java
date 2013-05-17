@@ -2573,9 +2573,15 @@ public class MultiUserChat {
     private static class InvitationsMonitor implements ConnectionListener {
         // We use a WeakHashMap so that the GC can collect the monitor when the
         // connection is no longer referenced by any object.
+        // Note that when the InvitationsMonitor is used, i.e. when there are InvitationListeners, it will add a
+        // PacketListener to the Connection and therefore a strong reference from the Connection to the
+        // InvitationsMonior will exists, preventing it from beeing gc'ed. After the last InvitationListener is gone,
+        // the PacketListener will get removed (cancel()) allowing the garbage collection of the InvitationsMonitor
+        // instance.
         private final static Map<Connection, WeakReference<InvitationsMonitor>> monitors =
                 new WeakHashMap<Connection, WeakReference<InvitationsMonitor>>();
 
+        // We don't use a synchronized List here because it would break the semantic of (add|remove)InvitationListener
         private final List<InvitationListener> invitationsListeners =
                 new ArrayList<InvitationListener>();
         private Connection connection;
