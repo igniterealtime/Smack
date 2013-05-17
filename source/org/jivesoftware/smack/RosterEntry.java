@@ -181,6 +181,11 @@ public class RosterEntry {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return this.user.hashCode();
+    }
+
     /**
      * Indicates whether some other object is "equal to" this by comparing all members.
      * <p>
