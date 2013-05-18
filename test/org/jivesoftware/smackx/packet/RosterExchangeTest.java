@@ -17,10 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Created on 01/08/2003
- *
- */
 package org.jivesoftware.smackx.packet;
 
 import java.util.Iterator;

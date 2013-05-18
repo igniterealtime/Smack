@@ -506,7 +506,7 @@ public class EntityCapsManager {
      * @param info
      * @return true if it's valid and should be cache, false if not
      */
-    public static boolean verifyDiscvoerInfoVersion(String ver, String hash, DiscoverInfo info) {
+    public static boolean verifyDiscoverInfoVersion(String ver, String hash, DiscoverInfo info) {
         // step 3.3 check for duplicate identities
         if (info.containsDuplicateIdentities())
             return false;
@@ -583,7 +583,7 @@ public class EntityCapsManager {
         // NAME is not included (in accordance with XEP-0030, the category and
         // type MUST be included.
         SortedSet<DiscoverInfo.Identity> sortedIdentities = new TreeSet<DiscoverInfo.Identity>();
-        ;
+
         for (Iterator<DiscoverInfo.Identity> it = discoverInfo.getIdentities(); it.hasNext();)
             sortedIdentities.add(it.next());
 
@@ -616,7 +616,7 @@ public class EntityCapsManager {
         // only use the data form for calculation is it has a hidden FORM_TYPE
         // field
         // see XEP-0115 5.4 step 3.6
-        if (extendedInfo != null && extendedInfo.hasHiddenFromTypeField()) {
+        if (extendedInfo != null && extendedInfo.hasHiddenFormTypeField()) {
             synchronized (extendedInfo) {
                 // 6. If the service discovery information response includes
                 // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,

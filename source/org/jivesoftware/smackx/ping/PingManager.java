@@ -17,52 +17,47 @@
 package org.jivesoftware.smackx.ping;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackError;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.keepalive.KeepAliveManager;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.ping.packet.Ping;
+import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.ping.packet.Ping;
-import org.jivesoftware.smackx.ping.packet.Pong;
 
 /**
- * Implements the XMPP Ping as defined by XEP-0199. This protocol offers an
- * alternative to the traditional 'white space ping' approach of determining the
- * availability of an entity. The XMPP Ping protocol allows ping messages to be
- * send in a more XML-friendly approach, which can be used over more than one
- * hop in the communication path.
+ * Implements the XMPP Ping as defined by XEP-0199.  The XMPP Ping protocol 
+ * allows one entity to 'ping' any other entity by simply sending a ping to 
+ * the appropriate JID.
+ * <p>
+ * NOTE: The {@link KeepAliveManager} already provides a keepalive functionality 
+ * for regularly pinging the server to keep the underlying transport connection
+ * alive.  This class is specifically intended to do manual pings of other 
+ * entities.  
  * 
  * @author Florian Schmaus
  * @see <a href="http://www.xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP
  *      Ping</a>
  */
 public class PingManager {
-
-    public static final String NAMESPACE = "urn:xmpp:ping";
-    public static final String ELEMENT = "ping";
-
-
-    private static Map<Connection, PingManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<Connection, PingManager>());
-
+    private static Map<Connection, PingManager> instances = Collections
+            .synchronizedMap(new WeakHashMap<Connection, PingManager>());
+    
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
@@ -71,273 +66,106 @@ public class PingManager {
         });
     }
 
-    private ScheduledExecutorService periodicPingExecutorService;
     private Connection connection;
-    private int pingInterval = SmackConfiguration.getDefaultPingInterval();
-    private Set<PingFailedListener> pingFailedListeners = Collections
-            .synchronizedSet(new HashSet<PingFailedListener>());
-    private ScheduledFuture<?> periodicPingTask;
-    protected volatile long lastSuccessfulPingByTask = -1;
 
-
-    // Ping Flood protection
-    private long pingMinDelta = 100;
-    private long lastPingStamp = 0; // timestamp of the last received ping
-
-    // Timestamp of the last pong received, either from the server or another entity
-    // Note, no need to synchronize this value, it will only increase over time
-    private long lastSuccessfulManualPing = -1;
-
-    private PingManager(Connection connection) {
-        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-        sdm.addFeature(NAMESPACE);
-        this.connection = connection;
-        init();
-    }
-
-    private void init() {
-        periodicPingExecutorService = new ScheduledThreadPoolExecutor(1);
-        PacketFilter pingPacketFilter = new PacketTypeFilter(Ping.class);
-        connection.addPacketListener(new PacketListener() {
-            /**
-             * Sends a Pong for every Ping
-             */
-            public void processPacket(Packet packet) {
-                if (pingMinDelta > 0) {
-                    // Ping flood protection enabled
-                    long currentMillies = System.currentTimeMillis();
-                    long delta = currentMillies - lastPingStamp;
-                    lastPingStamp = currentMillies;
-                    if (delta < pingMinDelta) {
-                        return;
-                    }
-                }
-                Pong pong = new Pong((Ping)packet);
-                connection.sendPacket(pong);
-            }
-        }
-        , pingPacketFilter);
-        connection.addConnectionListener(new ConnectionListener() {
-
-            @Override
-            public void connectionClosed() {
-                maybeStopPingServerTask();
-            }
-
-            @Override
-            public void connectionClosedOnError(Exception arg0) {
-                maybeStopPingServerTask();
-            }
-
-            @Override
-            public void reconnectionSuccessful() {
-                maybeSchedulePingServerTask();
-            }
-
-            @Override
-            public void reconnectingIn(int seconds) {
-            }
-
-            @Override
-            public void reconnectionFailed(Exception e) {
-            }
-        });
-        instances.put(connection, this);
-        maybeSchedulePingServerTask();
-    }
-
-    public static PingManager getInstanceFor(Connection connection) {
+    /**
+     * Retrieves a {@link PingManager} for the specified {@link Connection}, creating one if it doesn't already
+     * exist.
+     * 
+     * @param connection
+     * The connection the manager is attached to.
+     * @return The new or existing manager.
+     */
+    public synchronized static PingManager getInstanceFor(Connection connection) {
         PingManager pingManager = instances.get(connection);
 
         if (pingManager == null) {
             pingManager = new PingManager(connection);
         }
-
         return pingManager;
     }
 
-    public void setPingIntervall(int pingIntervall) {
-        this.pingInterval = pingIntervall;
+    private PingManager(Connection con) {
+        this.connection = con;
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+        
+        // The ServiceDiscoveryManager was not pre-initialized
+        if (sdm == null)
+            sdm = new ServiceDiscoveryManager(connection);
+        
+        sdm.addFeature(Ping.NAMESPACE);
+        
+        PacketFilter pingPacketFilter = new AndFilter(new PacketTypeFilter(Ping.class), new IQTypeFilter(Type.GET));
+        
+        connection.addPacketListener(new PacketListener() {
+            /**
+             * Sends a Pong for every Ping
+             */
+            public void processPacket(Packet packet) {
+                IQ pong = IQ.createResultIQ((Ping) packet);
+                connection.sendPacket(pong);
+            }
+        }, pingPacketFilter);
     }
 
-    public int getPingIntervall() {
-        return pingInterval;
-    }
-    
-    public void registerPingFailedListener(PingFailedListener listener) {
-        pingFailedListeners.add(listener);
-    }
-    
-    public void unregisterPingFailedListener(PingFailedListener listener) {
-        pingFailedListeners.remove(listener);
-    }
-    
-    public void disablePingFloodProtection() {
-        setPingMinimumInterval(-1);
-    }
-    
-    public void setPingMinimumInterval(long ms) {
-        this.pingMinDelta = ms;
-    }
-    
-    public long getPingMinimumInterval() {
-        return this.pingMinDelta;
+    /**
+     * Pings the given jid. This method will return false if an error occurs.  The exception 
+     * to this, is a server ping, which will always return true if the server is reachable, 
+     * event if there is an error on the ping itself (i.e. ping not supported).
+     * <p>
+     * Use {@link #isPingSupported(String)} to determine if XMPP Ping is supported 
+     * by the entity.
+     * 
+     * @param jid The id of the entity the ping is being sent to
+     * @param pingTimeout The time to wait for a reply
+     * @return true if a reply was received from the entity, false otherwise.
+     */
+    public boolean ping(String jid, long pingTimeout) {
+        Ping ping = new Ping(jid);
+        
+        try {
+            SyncPacketSend.getReply(connection, ping);
+        }
+        catch (XMPPException exc) {
+            
+            return (jid.equals(connection.getServiceName()) && (exc.getSmackError() != SmackError.NO_RESPONSE_FROM_SERVER));
+        }
+        return true;
     }
     
     /**
-     * Pings the given jid and returns the IQ response which is either of 
-     * IQ.Type.ERROR or IQ.Type.RESULT. If we are not connected or if there was
-     * no reply, null is returned.
+     * Same as calling {@link #ping(String, long)} with the defaultpacket reply 
+     * timeout.
      * 
-     * You should use isPingSupported(jid) to determine if XMPP Ping is 
-     * supported by the user.
-     * 
-     * @param jid
-     * @param pingTimeout
-     * @return
+     * @param jid The id of the entity the ping is being sent to
+     * @return true if a reply was received from the entity, false otherwise.
      */
-    public IQ ping(String jid, long pingTimeout) {
-        // Make sure we actually connected to the server
-        if (!connection.isAuthenticated())
-            return null;
-        
-        Ping ping = new Ping(connection.getUser(), jid);
-        
-        PacketCollector collector =
-                connection.createPacketCollector(new PacketIDFilter(ping.getPacketID()));
-        
-        connection.sendPacket(ping);
-        
-        IQ result = (IQ) collector.nextResult(pingTimeout);
-        
-        collector.cancel();
-        return result;
-    }
-    
-    /**
-     * Pings the given jid and returns the IQ response with the default
-     * packet reply timeout
-     * 
-     * @param jid
-     * @return
-     */
-    public IQ ping(String jid) {
+    public boolean ping(String jid) {
         return ping(jid, SmackConfiguration.getPacketReplyTimeout());
     }
     
     /**
-     * Pings the given Entity.
+     * Query the specified entity to see if it supports the Ping protocol (XEP-0199)
      * 
-     * Note that XEP-199 shows that if we receive a error response
-     * service-unavailable there is no way to determine if the response was send
-     * by the entity (e.g. a user JID) or from a server in between. This is
-     * intended behavior to avoid presence leaks.
-     * 
-     * Always use isPingSupported(jid) to determine if XMPP Ping is supported
-     * by the entity.
-     * 
-     * @param jid
-     * @return True if a pong was received, otherwise false
+     * @param jid The id of the entity the query is being sent to
+     * @return true if it supports ping, false otherwise.
+     * @throws XMPPException An XMPP related error occurred during the request 
      */
-    public boolean pingEntity(String jid, long pingTimeout) {
-        IQ result = ping(jid, pingTimeout);
+    public boolean isPingSupported(String jid) throws XMPPException {
+        DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
+        return result.containsFeature(Ping.NAMESPACE);
+    }
 
-        if (result == null || result.getType() == IQ.Type.ERROR) {
-            return false;
-        }
-        pongReceived();
-        return true;
-    }
-    
-    public boolean pingEntity(String jid) {
-        return pingEntity(jid, SmackConfiguration.getPacketReplyTimeout());
-    }
-    
     /**
-     * Pings the user's server. Will notify the registered 
-     * pingFailedListeners in case of error.
+     * Pings the server. This method will return true if the server is reachable.  It
+     * is the equivalent of calling <code>ping</code> with the XMPP domain.
+     * <p>
+     * Unlike the {@link #ping(String)} case, this method will return true even if 
+     * {@link #isPingSupported(String)} is false.
      * 
-     * If we receive as response, we can be sure that it came from the server.
-     * 
-     * @return true if successful, otherwise false
-     */
-    public boolean pingMyServer(long pingTimeout) {
-        IQ result = ping(connection.getServiceName(), pingTimeout);
-
-        if (result == null) {
-            for (PingFailedListener l : pingFailedListeners) {
-                l.pingFailed();
-            }
-            return false;
-        }
-        // Maybe not really a pong, but an answer is an answer
-        pongReceived();
-        return true;
-    }
-    
-    /**
-     * Pings the user's server with the PacketReplyTimeout as defined
-     * in SmackConfiguration.
-     * 
-     * @return true if successful, otherwise false
+     * @return true if a reply was received from the server, false otherwise.
      */
     public boolean pingMyServer() {
-        return pingMyServer(SmackConfiguration.getPacketReplyTimeout());
-    }
-    
-    /**
-     * Returns true if XMPP Ping is supported by a given JID
-     * 
-     * @param jid
-     * @return
-     */
-    public boolean isPingSupported(String jid) {
-        try {
-            DiscoverInfo result =
-                ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
-            return result.containsFeature(NAMESPACE);
-        }
-        catch (XMPPException e) {
-            return false;
-        }
-    }
-    
-    /**
-     * Returns the time of the last successful Ping Pong with the 
-     * users server. If there was no successful Ping (e.g. because this
-     * feature is disabled) -1 will be returned.
-     *  
-     * @return
-     */
-    public long getLastSuccessfulPing() {
-        return Math.max(lastSuccessfulPingByTask, lastSuccessfulManualPing);
-    }
-    
-    protected Set<PingFailedListener> getPingFailedListeners() {
-        return pingFailedListeners;
-    }
-
-    /**
-     * Cancels any existing periodic ping task if there is one and schedules a new ping task if pingInterval is greater
-     * then zero.
-     * 
-     */
-    protected synchronized void maybeSchedulePingServerTask() {
-        maybeStopPingServerTask();
-        if (pingInterval > 0) {
-            periodicPingTask = periodicPingExecutorService.schedule(new ServerPingTask(connection), pingInterval,
-                    TimeUnit.SECONDS);
-        }
-    }
-
-    private void maybeStopPingServerTask() {
-        if (periodicPingTask != null) {
-            periodicPingTask.cancel(true);
-            periodicPingTask = null;
-        }
-    }
-
-    private void pongReceived() {
-        lastSuccessfulManualPing = System.currentTimeMillis();
+        return ping(connection.getServiceName());
     }
 }

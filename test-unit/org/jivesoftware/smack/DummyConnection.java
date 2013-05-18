@@ -49,6 +49,7 @@ public class DummyConnection extends Connection {
 
     private boolean authenticated = false;
     private boolean anonymous = false;
+    private boolean reconnect = false;
 
     private String user;
     private String connectionID;
@@ -57,16 +58,26 @@ public class DummyConnection extends Connection {
     private final BlockingQueue<Packet> queue = new LinkedBlockingQueue<Packet>();
 
     public DummyConnection() {
-        super(new ConnectionConfiguration("example.com"));
+	this(new ConnectionConfiguration("example.com"));
     }
 
     public DummyConnection(ConnectionConfiguration configuration) {
         super(configuration);
+
+	for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
+	    listener.connectionCreated(this);
+	}
     }
 
     @Override
     public void connect() throws XMPPException {
         connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
+
+        if (reconnect) {
+            for (ConnectionListener listener : getConnectionListeners()) {
+                listener.reconnectionSuccessful();
+            }
+        }
     }
 
     @Override
@@ -76,6 +87,11 @@ public class DummyConnection extends Connection {
         roster = null;
         authenticated = false;
         anonymous = false;
+        
+        for (ConnectionListener listener : getConnectionListeners()) {
+            listener.connectionClosed();
+        }
+        reconnect = true;
     }
 
     @Override
@@ -191,15 +207,27 @@ public class DummyConnection extends Connection {
     }
 
     /**
-     * Returns the first packet that's sent through {@link #sendPacket(Packet)} and
-     * that has not been returned by earlier calls to this method. This method
-     * will block for up to two seconds if no packets have been sent yet.
+     * Returns the first packet that's sent through {@link #sendPacket(Packet)}
+     * and that has not been returned by earlier calls to this method.
      * 
      * @return a sent packet.
      * @throws InterruptedException
      */
     public Packet getSentPacket() throws InterruptedException {
-        return queue.poll(2, TimeUnit.SECONDS);
+	return queue.poll();
+    }
+
+    /**
+     * Returns the first packet that's sent through {@link #sendPacket(Packet)}
+     * and that has not been returned by earlier calls to this method. This
+     * method will block for up to the specified number of seconds if no packets
+     * have been sent yet.
+     * 
+     * @return a sent packet.
+     * @throws InterruptedException
+     */
+    public Packet getSentPacket(int wait) throws InterruptedException {
+	return queue.poll(wait, TimeUnit.SECONDS);
     }
 
     /**

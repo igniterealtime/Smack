@@ -51,6 +51,30 @@ import javax.security.sasl.SaslException;
  *  using the CallbackHandler method.</li>
  *  <li>{@link #challengeReceived(String)} -- Handle a challenge from the server.</li>
  * </ul>
+ * 
+ * Basic XMPP SASL authentication steps:
+ * 1. Client authentication initialization, stanza sent to the server (Base64 encoded): 
+ *    <auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='DIGEST-MD5'/>
+ * 2. Server sends back to the client the challenge response (Base64 encoded)
+ *    sample: 
+ *    realm=<sasl server realm>,nonce="OA6MG9tEQGm2hh",qop="auth",charset=utf-8,algorithm=md5-sess
+ * 3. The client responds back to the server (Base 64 encoded):
+ *    sample:
+ *    username=<userid>,realm=<sasl server realm from above>,nonce="OA6MG9tEQGm2hh",
+ *    cnonce="OA6MHXh6VqTrRk",nc=00000001,qop=auth,
+ *    digest-uri=<digesturi>,
+ *    response=d388dad90d4bbd760a152321f2143af7,
+ *    charset=utf-8,
+ *    authzid=<id>
+ * 4. The server evaluates if the user is present and contained in the REALM
+ *    if successful it sends: <response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/> (Base64 encoded)
+ *    if not successful it sends:
+ *    sample:
+ *    <challenge xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>
+ *        cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
+ *    </challenge>       
+ * 
+
  *
  * @author Jay Kline
  */
@@ -62,37 +86,88 @@ public abstract class SASLMechanism implements CallbackHandler {
     protected String password;
     protected String hostname;
 
-
     public SASLMechanism(SASLAuthentication saslAuthentication) {
         this.saslAuthentication = saslAuthentication;
     }
 
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
-     * authentication is not recommended, since it is very inflexable.  Use
+     * authentication is not recommended, since it is very inflexable. Use
      * {@link #authenticate(String, String, CallbackHandler)} whenever possible.
-     *
+     * 
+     * Explanation of auth stanza:
+     * 
+     * The client authentication stanza needs to include the digest-uri of the form: xmpp/serverName 
+     * From RFC-2831: 
+     * digest-uri = "digest-uri" "=" digest-uri-value
+     * digest-uri-value = serv-type "/" host [ "/" serv-name ]
+     * 
+     * digest-uri: 
+     * Indicates the principal name of the service with which the client 
+     * wishes to connect, formed from the serv-type, host, and serv-name. 
+     * For example, the FTP service
+     * on "ftp.example.com" would have a "digest-uri" value of "ftp/ftp.example.com"; the SMTP
+     * server from the example above would have a "digest-uri" value of
+     * "smtp/mail3.example.com/example.com".
+     * 
+     * host:
+     * The DNS host name or IP address for the service requested. The DNS host name
+     * must be the fully-qualified canonical name of the host. The DNS host name is the
+     * preferred form; see notes on server processing of the digest-uri.
+     * 
+     * serv-name: 
+     * Indicates the name of the service if it is replicated. The service is
+     * considered to be replicated if the client's service-location process involves resolution
+     * using standard DNS lookup operations, and if these operations involve DNS records (such
+     * as SRV, or MX) which resolve one DNS name into a set of other DNS names. In this case,
+     * the initial name used by the client is the "serv-name", and the final name is the "host"
+     * component. For example, the incoming mail service for "example.com" may be replicated
+     * through the use of MX records stored in the DNS, one of which points at an SMTP server
+     * called "mail3.example.com"; it's "serv-name" would be "example.com", it's "host" would be
+     * "mail3.example.com". If the service is not replicated, or the serv-name is identical to
+     * the host, then the serv-name component MUST be omitted
+     * 
+     * digest-uri verification is needed for ejabberd 2.0.3 and higher   
+     * 
      * @param username the username of the user being authenticated.
-     * @param host     the hostname where the user account resides.
+     * @param host the hostname where the user account resides.
+     * @param serviceName the xmpp service location - used by the SASL client in digest-uri creation
+     * serviceName format is: host [ "/" serv-name ] as per RFC-2831
      * @param password the password for this account.
      * @throws IOException If a network error occurs while authenticating.
      * @throws XMPPException If a protocol error occurs or the user is not authenticated.
      */
-    public void authenticate(String username, String host, String password) throws IOException, XMPPException {
+    public void authenticate(String username, String host, String serviceName, String password) throws IOException, XMPPException {
         //Since we were not provided with a CallbackHandler, we will use our own with the given
         //information
 
         //Set the authenticationID as the username, since they must be the same in this case.
         this.authenticationId = username;
         this.password = password;
-        this.hostname = host;
+        this.hostname = host;        
 
         String[] mechanisms = { getName() };
-        Map<String,String> props = new HashMap<String,String>();
-        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, this);
+        Map<String,String> props = new HashMap<String,String>();        
+        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", serviceName, props, this);
         authenticate();
     }
 
+    /**
+     * Same as {@link #authenticate(String, String, String, String)}, but with the hostname used as the serviceName.
+     * <p>
+     * Kept for backward compatibility only.
+     * 
+     * @param username the username of the user being authenticated.
+     * @param host the hostname where the user account resides.
+     * @param password the password for this account.
+     * @throws IOException If a network error occurs while authenticating.
+     * @throws XMPPException If a protocol error occurs or the user is not authenticated.
+     * @deprecated Please use {@link #authenticate(String, String, String, String)} instead.
+     */
+    public void authenticate(String username, String host, String password) throws IOException, XMPPException {
+        authenticate(username, host, host, password);
+    }
+    
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
@@ -178,7 +253,13 @@ public abstract class SASLMechanism implements CallbackHandler {
                 pcb.setPassword(password.toCharArray());
             } else if(callbacks[i] instanceof RealmCallback) {
                 RealmCallback rcb = (RealmCallback)callbacks[i];
-                rcb.setText(hostname);
+                //Retrieve the REALM from the challenge response that the server returned when the client initiated the authentication 
+                //exchange. If this value is not null or empty, *this value* has to be sent back to the server in the client's response 
+                //to the server's challenge
+                String text = rcb.getDefaultText();
+                //The SASL client (sc) created in smack  uses rcb.getText when creating the negotiatedRealm to send it back to the server
+                //Make sure that this value matches the server's realm
+                rcb.setText(text);
             } else if(callbacks[i] instanceof RealmChoiceCallback){
                 //unused
                 //RealmChoiceCallback rccb = (RealmChoiceCallback)callbacks[i];
@@ -319,5 +400,5 @@ public abstract class SASLMechanism implements CallbackHandler {
             stanza.append("</failure>");
             return stanza.toString();
         }
-    }
+    }        
 }

@@ -3,8 +3,6 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
- *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,69 +26,79 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.IQ.Type;
 
-public class ThreadedDummyConnection extends DummyConnection
-{
-	private BlockingQueue<IQ>  replyQ = new ArrayBlockingQueue<IQ>(1);
-	private BlockingQueue<Packet>  messageQ = new LinkedBlockingQueue<Packet>(5);
+/**
+ * 
+ * @author Robin Collier
+ *
+ */
+public class ThreadedDummyConnection extends DummyConnection {
+    private BlockingQueue<IQ> replyQ = new ArrayBlockingQueue<IQ>(1);
+    private BlockingQueue<Packet> messageQ = new LinkedBlockingQueue<Packet>(5);
+    private volatile boolean timeout = false;
 
-	@Override
-	public void sendPacket(Packet packet)
-	{
-		super.sendPacket(packet);
+    @Override
+    public void sendPacket(Packet packet) {
+        super.sendPacket(packet);
 
-		if ((packet instanceof IQ) && !replyQ.isEmpty())
-		{
-			// Set reply packet to match one being sent.  We haven't started the 
-			// other thread yet so this is still safe.
-			IQ replyPacket = replyQ.peek();
-			replyPacket.setPacketID(packet.getPacketID());
-			replyPacket.setFrom(packet.getTo());
-			replyPacket.setTo(packet.getFrom());
-			replyPacket.setType(Type.RESULT);
-			
-			new ProcessQueue(replyQ).start();
-		}
-	}
-	
-	public void addMessage(Message msgToProcess)
-	{
-		messageQ.add(msgToProcess);
-	}
-	
-	public void addIQReply(IQ reply)
-	{
-		replyQ.add(reply);
-	}
-	
-	public void processMessages()
-	{
-		if (!messageQ.isEmpty())
-			new ProcessQueue(messageQ).start();
-		else
-			System.out.println("No messages to process");
-	}
+        if (packet instanceof IQ && !timeout) {
+            timeout = false;
+            // Set reply packet to match one being sent. We haven't started the
+            // other thread yet so this is still safe.
+            IQ replyPacket = replyQ.peek();
 
-	class ProcessQueue extends Thread
-	{
-		private BlockingQueue<? extends Packet> processQ;
-		
-		ProcessQueue(BlockingQueue<? extends Packet> queue)
-		{
-			processQ = queue;
-		}
-		
-		@Override
-		public void run()
-		{
-			try
-			{
-				processPacket(processQ.take());
-			} 
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	};
+            // If no reply has been set via addIQReply, then we create a simple reply
+            if (replyPacket == null) {
+                replyPacket = IQ.createResultIQ((IQ) packet);
+                replyQ.add(replyPacket);
+            }
+            replyPacket.setPacketID(packet.getPacketID());
+            replyPacket.setFrom(packet.getTo());
+            replyPacket.setTo(packet.getFrom());
+            replyPacket.setType(Type.RESULT);
+
+            new ProcessQueue(replyQ).start();
+        }
+    }
+
+    /**
+     * Calling this method will cause the next sendPacket call with an IQ packet to timeout.
+     * This is accomplished by simply stopping the auto creating of the reply packet 
+     * or processing one that was entered via {@link #processPacket(Packet)}.
+     */
+    public void setTimeout() {
+        timeout = true;
+    }
+    
+    public void addMessage(Message msgToProcess) {
+        messageQ.add(msgToProcess);
+    }
+
+    public void addIQReply(IQ reply) {
+        replyQ.add(reply);
+    }
+
+    public void processMessages() {
+        if (!messageQ.isEmpty())
+            new ProcessQueue(messageQ).start();
+        else
+            System.out.println("No messages to process");
+    }
+
+    class ProcessQueue extends Thread {
+        private BlockingQueue<? extends Packet> processQ;
+
+        ProcessQueue(BlockingQueue<? extends Packet> queue) {
+            processQ = queue;
+        }
+
+        @Override
+        public void run() {
+            try {
+                processPacket(processQ.take());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 }

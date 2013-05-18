@@ -40,17 +40,10 @@ import java.util.concurrent.BlockingQueue;
 class PacketWriter {
 
     private Thread writerThread;
-    private Thread keepAliveThread;
     private Writer writer;
     private XMPPConnection connection;
     private final BlockingQueue<Packet> queue;
     volatile boolean done;
-
-    /**
-     * Timestamp when the last stanza was sent to the server. This information is used
-     * by the keep alive process to only send heartbeats when the connection has been idle.
-     */
-    private long lastActive = System.currentTimeMillis();
 
     /**
      * Creates a new packet writer with the specified connection.
@@ -117,25 +110,6 @@ class PacketWriter {
         writerThread.start();
     }
 
-    /**
-     * Starts the keep alive process. A white space (aka heartbeat) is going to be
-     * sent to the server every 30 seconds (by default) since the last stanza was sent
-     * to the server.
-     */
-    void startKeepAliveProcess() {
-        // Schedule a keep-alive task to run if the feature is enabled. will write
-        // out a space character each time it runs to keep the TCP/IP connection open.
-        int keepAliveInterval = SmackConfiguration.getKeepAliveInterval();
-        if (keepAliveInterval > 0) {
-            KeepAliveTask task = new KeepAliveTask(keepAliveInterval);
-            keepAliveThread = new Thread(task);
-            task.setThread(keepAliveThread);
-            keepAliveThread.setDaemon(true);
-            keepAliveThread.setName("Smack Keep Alive (" + connection.connectionCounterValue + ")");
-            keepAliveThread.start();
-        }
-    }
-
     void setWriter(Writer writer) {
         this.writer = writer;
     }
@@ -149,9 +123,6 @@ class PacketWriter {
         synchronized (queue) {
             queue.notifyAll();
         }
-        // Interrupt the keep alive thread if one was created
-        if (keepAliveThread != null)
-                keepAliveThread.interrupt();
     }
 
     /**
@@ -191,13 +162,10 @@ class PacketWriter {
             while (!done && (writerThread == thisThread)) {
                 Packet packet = nextPacket();
                 if (packet != null) {
-                    synchronized (writer) {
-                        writer.write(packet.toXML());
-                        if (queue.isEmpty()) {
-                            writer.flush();
-                            // Keep track of the last time a stanza was sent to the server
-                            lastActive = System.currentTimeMillis();
-                        }
+                    writer.write(packet.toXML());
+
+                    if (queue.isEmpty()) {
+                        writer.flush();
                     }
                 }
             }
@@ -205,13 +173,11 @@ class PacketWriter {
             // we won't have time to entirely flush it before the socket is forced closed
             // by the shutdown process.
             try {
-                synchronized (writer) {
-                   while (!queue.isEmpty()) {
-                       Packet packet = queue.remove();
-                        writer.write(packet.toXML());
-                    }
-                    writer.flush();
+               while (!queue.isEmpty()) {
+                   Packet packet = queue.remove();
+                    writer.write(packet.toXML());
                 }
+                writer.flush();
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -267,55 +233,5 @@ class PacketWriter {
         stream.append(" version=\"1.0\">");
         writer.write(stream.toString());
         writer.flush();
-    }
-
-    /**
-     * A TimerTask that keeps connections to the server alive by sending a space
-     * character on an interval.
-     */
-    private class KeepAliveTask implements Runnable {
-
-        private int delay;
-        private Thread thread;
-
-        public KeepAliveTask(int delay) {
-            this.delay = delay;
-        }
-
-        protected void setThread(Thread thread) {
-            this.thread = thread;
-        }
-        
-        public void run() {
-            try {
-                // Sleep a minimum of 15 seconds plus delay before sending first heartbeat. This will give time to
-                // properly finish TLS negotiation and then start sending heartbeats.
-                Thread.sleep(15000 + delay);
-            }
-            catch (InterruptedException ie) {
-                // Do nothing
-            }
-            while (!done && keepAliveThread == thread) {
-                synchronized (writer) {
-                    // Send heartbeat if no packet has been sent to the server for a given time
-                    if (System.currentTimeMillis() - lastActive >= delay) {
-                        try {
-                            writer.write(" ");
-                            writer.flush();
-                        }
-                        catch (Exception e) {
-                            // Do nothing
-                        }
-                    }
-                }
-                try {
-                    // Sleep until we should write the next keep-alive.
-                    Thread.sleep(delay);
-                }
-                catch (InterruptedException ie) {
-                    // Do nothing
-                }
-            }
-        }
     }
 }

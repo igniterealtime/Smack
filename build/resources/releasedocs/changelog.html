@@ -141,9 +141,61 @@ hr {
 
 	<div id="pageBody">
 	
+<h2>3.3.0 -- <span style="font-weight: normal;">May 4, 2013</span></h2>
+
+<h2>Bug Fixes</h2>
+<ul>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-225'>SMACK-225</a>] - Improper handeling of DNS SRV records</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-238'>SMACK-238</a>] - The vCard avatar type always return jpg</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-270'>SMACK-270</a>] - Fix for a memory leak in MUC with MUC.finalize()</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-278'>SMACK-278</a>] - Deadlock during Smack disconnect</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-342'>SMACK-342</a>] - VCards causes ConcurrentModificationException</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-344'>SMACK-344</a>] - Bug in SASL authentication mechanism when SRV records are being used.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-351'>SMACK-351</a>] - Rework File Transfer</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-352'>SMACK-352</a>] - Update the licensing headers in various files.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-355'>SMACK-355</a>] - IO Error if smack cant use port for local proxy</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-371'>SMACK-371</a>] - Some MUC tasks are using stanza&#39;s as defined in an older version of the spec.  Fails to work on some servers.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-375'>SMACK-375</a>] - Node strings in the discovery info packets are not escaped as in the other packets</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-382'>SMACK-382</a>] - Prevent memory leak in AdHocCommandManager</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-384'>SMACK-384</a>] - Endless waiting for connection to be established</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-390'>SMACK-390</a>] - Smack login will fail if a bad delay packet is received</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-392'>SMACK-392</a>] - In ant build, compile-test target doesn&#39;t work.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-394'>SMACK-394</a>] - Erroneous cast in IBBInputStream&#39;s read() method</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-395'>SMACK-395</a>] - Socks5BytestreamManager&#39;s establishConnection() should still try to use the local streamhost proxy if the server doesn&#39;t provide one</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-404'>SMACK-404</a>] - Smack uses the wrong method to decode Base64 Strings</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-413'>SMACK-413</a>] - VCardProvider incorrectly parses binary value of avatars</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-415'>SMACK-415</a>] - ItemProvider relies on incorrect behavior of MXParser, violating the contract of the XMLPullParser interface</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-417'>SMACK-417</a>] - If both PacketReader and PacketWriter fail at the same time, connectionClosedonError() is called two times</li>
+</ul>
+    
+<h2>New Features</h2>
+<ul>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-331'>SMACK-331</a>] - Add support for XEP-0184: Message Delivery Receipts</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-345'>SMACK-345</a>] - Inproved detection of last activity</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-361'>SMACK-361</a>] - Add support for XEP-0115 Entity Capabilities</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-376'>SMACK-376</a>] - Setting a custom trust manager to control certificates from outside</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-388'>SMACK-388</a>] - XEP-199 XMPP Ping support</li>
+</ul>
+        
+<h2>Improvements</h2>
+<ul>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-341'>SMACK-341</a>] - Update the PacketCollector and ConnectionDetachedPacketCollector to use the java concurrent classes.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-358'>SMACK-358</a>] - Support additional properties for account creation in test cases.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-363'>SMACK-363</a>] - Code Cleanup</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-377'>SMACK-377</a>] - avoid unnecessary DNS requests in XMPPconnection</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-379'>SMACK-379</a>] - Sessions were removed from the specification but Smack still uses them.  Should be updated to reflect the spec changes.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-385'>SMACK-385</a>] - Reusing KeyStore in order to reduce memory usage</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-389'>SMACK-389</a>] - Add java.util.zip.Deflater(In|Out)putStream as Java7 API native alternative to JZlib </li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-391'>SMACK-391</a>] - Improve date parsing in StringUtils and make DelayInformationProvider use StringUtils for date parsing.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-412'>SMACK-412</a>] - Replace the whitespace ping with a XEP-0199 ping</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-419'>SMACK-419</a>] - PacketWriter: Only flush the BufferedWriter if the packet queue is empty</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-423'>SMACK-423</a>] - Investigate whether unhandled packets should still parse the child xml into a string as content</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-430'>SMACK-430</a>] - Throw an exception if FileTransferManager.createOutgoingFileTransfer() was used with a bare JID</li>
+</ul>
+	
 <h2>3.2.2 -- <span style="font-weight: normal;">Dec. 23, 2011</span></h2>
         
-<h3>Bug</h3>
+<h3>Bug Fixes</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-263'>SMACK-263</a>] - Set file info in all send* methods</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-322'>SMACK-322</a>] - NPE in XMPPConnection</li>
@@ -157,15 +209,14 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-362'>SMACK-362</a>] - smack throw NoSuchElementException if the muc#roominfo_subject has no values</li>
 </ul>
         
-<h3>Improvement</h3>
+<h3>Improvements</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-343'>SMACK-343</a>] - Make Smack jar an OSGi bundle.</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-354'>SMACK-354</a>] - Provide milliseconds in timestamp colum debugwindow</li>
 </ul>
-            
 
 <h2>3.2.1 -- <span style="font-weight: normal;">July 4, 2011</span></h2>
-<h3>Bug</h3>
+<h3>Bug Fixes</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-129'>SMACK-129</a>] - MultiUserChat will Store Messages in its PacketCollector irregardless of whether or not they are being read</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-230'>SMACK-230</a>] - Disconnect Can Cause Null Pointer Exception</li>
@@ -176,14 +227,14 @@ hr {
 </ul>
 
 <h2>3.2.0 -- <span style="font-weight: normal;">May 3, 2011</span></h2>
-<h3>New Feature</h3>
+<h3>New Features</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-272'>SMACK-272</a>] - Add support for pubsub (XEP-0060)</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-296'>SMACK-296</a>] - Add support for XEP-0224: Attention</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-319'>SMACK-319</a>] - Add common interfaces for SOCKS5 Bytestreams and In-Band Bytestreams</li>
 </ul>
 
-<h3>Improvement</h3>
+<h3>Improvements</h3>
 <ul>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-137'>SMACK-137</a>] - File Transfer Settings</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-156'>SMACK-156</a>] - Add the ability to register for roster events before logging in</li>
@@ -208,9 +259,9 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-310'>SMACK-310</a>] - Add Support for Localized Message Subjects</li>
 </ul>
 
-<h3>Bug</h3>
+<h3>Bug Fixes</h3>
 <ul>
-        <li>[<a href='http://issues.igniterealtime.org/browse/SMACK-163'>SMACK-163</a>] - Fix NPE in RoomInfo when subject has not value</li>
+    <li>[<a href='http://issues.igniterealtime.org/browse/SMACK-163'>SMACK-163</a>] - Fix NPE in RoomInfo when subject has not value</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-207'>SMACK-207</a>] - Parsing of messages may disconnect Smack/Spark</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-225'>SMACK-225</a>] - Improper handeling of DNS SRV records</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-232'>SMACK-232</a>] - Better handling of Roster error</li>

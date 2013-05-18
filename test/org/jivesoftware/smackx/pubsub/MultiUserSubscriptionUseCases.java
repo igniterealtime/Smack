@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2009 Robin Collier.
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,11 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.pubsub.test.PubSubTestCase;
 
+/**
+ * 
+ * @author Robin Collier
+ *
+ */
 public class MultiUserSubscriptionUseCases extends PubSubTestCase
 {
 

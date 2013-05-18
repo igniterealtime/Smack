@@ -299,24 +299,23 @@ public class FormField {
         return buf.toString();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
         if (obj == this)
             return true;
-        if (obj.getClass() != getClass())
+        if (!(obj instanceof FormField))
             return false;
 
         FormField other = (FormField) obj;
 
-        String thisXml = toXML();
-        String otherXml = other.toXML();
+        return toXML().equals(other.toXML());
+    }
 
-        if (thisXml.equals(otherXml)) {
-            return true;
-        } else {
-            return false;
-        }
+    @Override
+    public int hashCode() {
+        return toXML().hashCode();
     }
 
     /**
@@ -356,6 +355,7 @@ public class FormField {
             return value;
         }
 
+        @Override
         public String toString() {
             return getLabel();
         }
@@ -375,6 +375,7 @@ public class FormField {
             return buf.toString();
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (obj == null)
                 return false;
@@ -395,6 +396,14 @@ public class FormField {
                 return false;
 
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 37 * result + value.hashCode();
+            result = 37 * result + (label == null ? 0 : label.hashCode());
+            return result;
         }
     }
 }

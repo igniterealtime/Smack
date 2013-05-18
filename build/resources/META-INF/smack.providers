@@ -241,7 +241,7 @@
     <iqProvider>
         <elementName>ping</elementName>
         <namespace>urn:xmpp:ping</namespace>
-        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
+        <className>org.jivesoftware.smack.ping.provider.PingProvider</className>
     </iqProvider>
 
     <extensionProvider>
@@ -640,32 +640,6 @@
         <namespace>urn:xmpp:attention:0</namespace>
         <className>org.jivesoftware.smackx.packet.AttentionExtension$Provider</className>
     </extensionProvider>
-
-    <!-- XEP-0297 Stanza Forwarding -->
-    <extensionProvider>
-        <elementName>forwarded</elementName>
-        <namespace>urn:xmpp:forward:0</namespace>
-        <className>org.jivesoftware.smackx.forward.Forwarded$Provider</className>
-    </extensionProvider>
-
-    <!-- XEP-0280 Message Carbons -->
-    <extensionProvider>
-        <elementName>sent</elementName>
-        <namespace>urn:xmpp:carbons:2</namespace>
-        <className>org.jivesoftware.smackx.carbons.Carbon$Provider</className>
-    </extensionProvider>
-    <extensionProvider>
-        <elementName>received</elementName>
-        <namespace>urn:xmpp:carbons:2</namespace>
-        <className>org.jivesoftware.smackx.carbons.Carbon$Provider</className>
-    </extensionProvider>
-
-    <!-- XEP-0199 XMPP Ping -->
-    <iqProvider>
-        <elementName>ping</elementName>
-        <namespace>urn:xmpp:ping</namespace>
-        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
-    </iqProvider>
 
     <!-- XEP-0184 Message Delivery Receipts -->
     <extensionProvider>

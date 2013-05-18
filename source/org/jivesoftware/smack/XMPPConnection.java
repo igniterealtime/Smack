@@ -650,10 +650,6 @@ public class XMPPConnection extends Connection {
             // Make note of the fact that we're now connected.
             connected = true;
 
-            // Start keep alive process (after TLS was negotiated - if available)
-            packetWriter.startKeepAliveProcess();
-
-
             if (isFirstInitialization) {
                 // Notify listeners that a new connection has been established
                 for (ConnectionCreationListener listener : getConnectionCreationListeners()) {

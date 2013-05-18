@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2011 Robin Collier
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,11 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Robin Collier
+ *
+ */
 public class ConfigureFormTest
 {
 	@Test
@@ -84,6 +89,8 @@ public class ConfigureFormTest
 		Node node = mgr.getNode("princely_musings");
 		
 		SmackConfiguration.setPacketReplyTimeout(100);
+		con.setTimeout();
+		
 		node.getNodeConfiguration();
 	}
 }

@@ -24,20 +24,16 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 
 /**
- * Packet extension for XEP-0184: Message Delivery Receipts. This class implements
+ * Manager for XEP-0184: Message Delivery Receipts. This class implements
  * the manager for {@link DeliveryReceipt} support, enabling and disabling of
  * automatic DeliveryReceipt transmission.
  *
@@ -167,7 +163,7 @@ public class DeliveryReceiptManager implements PacketListener {
      * 
      * @param listener the listener to be informed about new receipts
      */
-    public void registerReceiptReceivedListener(ReceiptReceivedListener listener) {
+    public void addReceiptReceivedListener(ReceiptReceivedListener listener) {
         receiptReceivedListeners.add(listener);
     }
 
@@ -176,19 +172,9 @@ public class DeliveryReceiptManager implements PacketListener {
      * 
      * @param listener the listener to be removed
      */
-    public void unregisterReceiptReceivedListener(ReceiptReceivedListener listener) {
+    public void removeReceiptReceivedListener(ReceiptReceivedListener listener) {
         receiptReceivedListeners.remove(listener);
     }
-
-    /**
-     * Interface for received receipt notifications.
-     * 
-     * Implement this and add a listener to get notified. 
-     */
-    public static interface ReceiptReceivedListener {
-        void onReceiptReceived(String fromJid, String toJid, String receiptId);
-    }
-
 
     /**
      * Test if a packet requires a delivery receipt.

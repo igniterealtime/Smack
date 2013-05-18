@@ -178,12 +178,12 @@ public abstract class Connection {
     protected SmackDebugger debugger = null;
 
     /**
-     * The Reader which is used for the {@see debugger}.
+     * The Reader which is used for the debugger.
      */
     protected Reader reader;
 
     /**
-     * The Writer which is used for the {@see debugger}.
+     * The Writer which is used for the debugger.
      */
     protected Writer writer;
 

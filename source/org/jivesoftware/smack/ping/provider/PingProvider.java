@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.ping;
 
-import static org.junit.Assert.assertEquals;
+package org.jivesoftware.smack.ping.provider;
 
-import org.jivesoftware.smackx.ping.packet.Ping;
-import org.jivesoftware.smackx.ping.packet.Pong;
-import org.junit.Test;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.ping.packet.Ping;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.xmlpull.v1.XmlPullParser;
 
-public class PingPongTest {
-
-    @Test
-    public void createPongfromPingTest() {
-        Ping ping = new Ping("from@sender.local/resourceFrom", "to@receiver.local/resourceTo");
-
-        // create a pong from a ping
-        Pong pong = new Pong(ping);
-
-        assertEquals(pong.getFrom(), ping.getTo());
-        assertEquals(pong.getTo(), ping.getFrom());
-        assertEquals(pong.getPacketID(), ping.getPacketID());
+public class PingProvider implements IQProvider {
+    
+    public IQ parseIQ(XmlPullParser parser) throws Exception {
+        // No need to use the ping constructor with arguments. IQ will already
+        // have filled out all relevant fields ('from', 'to', 'id').
+        return new Ping();
     }
 
 }

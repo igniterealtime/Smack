@@ -27,7 +27,7 @@ import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.Base64Encoder;
+import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.entitycaps.EntityCapsManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
@@ -47,19 +47,20 @@ import org.xmlpull.v1.XmlPullParserException;
 public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache {
 
     private File cacheDir;
-    private StringEncoder stringEncoder;
+    private StringEncoder filenameEncoder;
 
     /**
      * Creates a new SimpleDirectoryPersistentCache Object. Make sure that the
      * cacheDir exists and that it's an directory.
-     * 
-     * If your cacheDir is case insensitive then make sure to set the
-     * StringEncoder to Base32.
+     * <p>
+     * Default filename encoder {@link Base32Encoder}, as this will work on all 
+     * filesystems, both case sensitive and case insensitive.  It does however 
+     * produce longer filenames.
      * 
      * @param cacheDir
      */
     public SimpleDirectoryPersistentCache(File cacheDir) {
-        this(cacheDir, Base64Encoder.getInstance());
+        this(cacheDir, Base32Encoder.getInstance());
     }
 
     /**
@@ -67,26 +68,25 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * cacheDir exists and that it's an directory.
      * 
      * If your cacheDir is case insensitive then make sure to set the
-     * StringEncoder to Base32.
+     * StringEncoder to {@link Base32Encoder} (which is the default).
      * 
-     * @param cacheDir
-     * @param stringEncoder
+     * @param cacheDir The directory where the cache will be stored.
+     * @param filenameEncoder Encodes the node string into a filename.
      */
-    public SimpleDirectoryPersistentCache(File cacheDir, StringEncoder stringEncoder) {
+    public SimpleDirectoryPersistentCache(File cacheDir, StringEncoder filenameEncoder) {
         if (!cacheDir.exists())
             throw new IllegalStateException("Cache directory \"" + cacheDir + "\" does not exist");
         if (!cacheDir.isDirectory())
             throw new IllegalStateException("Cache directory \"" + cacheDir + "\" is not a directory");
 
         this.cacheDir = cacheDir;
-        this.stringEncoder = stringEncoder;
+        this.filenameEncoder = filenameEncoder;
     }
 
     @Override
     public void addDiscoverInfoByNodePersistent(String node, DiscoverInfo info) {
-        String filename = stringEncoder.encode(node);
+        String filename = filenameEncoder.encode(node);
         File nodeFile = new File(cacheDir, filename);
-
         try {
             if (nodeFile.createNewFile())
                 writeInfoToFile(nodeFile, info);
@@ -99,7 +99,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     public void replay() throws IOException {
         File[] files = cacheDir.listFiles();
         for (File f : files) {
-            String node = stringEncoder.decode(f.getName());
+            String node = filenameEncoder.decode(f.getName());
             DiscoverInfo info = restoreInfoFromFile(f);
             if (info == null)
                 continue;

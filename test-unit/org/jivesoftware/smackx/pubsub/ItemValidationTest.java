@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2011 Robin Collier
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,19 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.ThreadedDummyConnection;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.provider.ItemsProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +39,11 @@ import org.junit.Test;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 
+/**
+ * 
+ * @author Robin Collier
+ *
+ */
 public class ItemValidationTest
 {
 	private ThreadedDummyConnection connection;
@@ -90,37 +100,146 @@ public class ItemValidationTest
 		assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML());
 	}
 
-//	@Test
-//	public void parseBasicItemWithoutNode() throws Exception
-//	{
-//		XmlPullParser parser = new MXParser();
-//		Reader reader = new StringReader(
-//				"<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
-//				"<items node='testNode'>" +
-//					"<item id='testid1' />" +
-//				"</items></event>");
-//		parser.setInput(reader);
-//		ItemsProvider itemsProvider = new ItemsProvider();
-//		ItemsExtension ext = (ItemsExtension) itemsProvider.parseExtension(parser);
-//		Item basicItem = (Item) ext.getItems().get(0);
-//
-//		assertEquals("testid1", basicItem.getId());
-//		assertNull(basicItem.getNode());
-//	}
+	@Test
+	public void parseBasicItem() throws Exception
+	{
+        XmlPullParser parser = TestUtils.getMessageParser(
+            "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
+                "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
+                    "<items node='testNode'>" +
+                        "<item id='testid1' />" +
+                    "</items>" + 
+                 "</event>" + 
+            "</message>");
+        
+        Packet message = PacketParserUtils.parseMessage(parser);
+        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        
+        assertTrue(eventExt instanceof EventElement);
+        EventElement event = (EventElement) eventExt;
+        assertEquals(EventElementType.items, event.getEventType());
+        assertEquals(1, event.getExtensions().size());
+        assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
+        assertEquals(1, ((ItemsExtension)event.getExtensions().get(0)).items.size());
+        
+        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        assertTrue(itemExt instanceof Item);
+        assertEquals("testid1", ((Item)itemExt).getId());
+	}
 
-//	@Test
-//	public void parseBasicItemNode() throws Exception
-//	{
-//		BlockingQueue<Item> itemQ = new ArrayBlockingQueue<Item>(1);
-//
-//		setupListener(itemQ);
-//		Message itemMsg = getMessage("<item id='testid1' node='testNode'>");
-//		connection.addMessage(itemMsg);
-//		
-//		Item basicItem = itemQ.poll(2, TimeUnit.SECONDS);
-//		
-//		assertNotNull(basicItem);
-//		assertEquals("testid1", basicItem.getId());
-//		assertEquals("testNode", basicItem.getNode());
-//	}
+    @Test
+    public void parseSimplePayloadItem() throws Exception
+    {
+        String itemContent = "<foo xmlns='smack:test'>Some text</foo>";
+        
+        XmlPullParser parser = TestUtils.getMessageParser(
+            "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
+                "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
+                    "<items node='testNode'>" +
+                        "<item id='testid1' >" +
+                            itemContent +
+                        "</item>" + 
+                    "</items>" + 
+                 "</event>" + 
+            "</message>");
+        
+        Packet message = PacketParserUtils.parseMessage(parser);
+        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        EventElement event = (EventElement) eventExt;
+        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+
+        assertTrue(itemExt instanceof PayloadItem<?>);
+        PayloadItem<?> item = (PayloadItem<?>)itemExt;
+        
+        assertEquals("testid1", item.getId());
+        assertTrue(item.getPayload() instanceof SimplePayload);
+        
+        SimplePayload payload = (SimplePayload) item.getPayload();
+        assertEquals("foo", payload.getElementName());
+        assertEquals("smack:test", payload.getNamespace());
+        assertXMLEqual(itemContent, payload.toXML());
+    }
+
+    @Test
+    public void parseComplexItem() throws Exception
+    {
+        String itemContent = 
+                "<entry xmlns='http://www.w3.org/2005/Atom'>" +
+                    "<title>Soliloquy</title>" +
+                    "<summary>" +
+                        "To be, or not to be: that is the question:" +
+                        "Whether 'tis nobler in the mind to suffer" +
+                        "The slings and arrows of outrageous fortune," +
+                        "Or to take arms against a sea of troubles," +
+                        "And by opposing end them?" +
+                    "</summary>" +
+                    "<link rel='alternate' type='text/html' href='http://denmark.lit/2003/12/13/atom03'/>" +
+                    "<id>tag:denmark.lit,2003:entry-32397</id>" +
+                    "<published>2003-12-13T18:30:02Z</published>" +
+                    "<updated>2003-12-13T18:30:02Z</updated>" +
+                "</entry>";
+        
+        XmlPullParser parser = TestUtils.getMessageParser(
+            "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
+                "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
+                    "<items node='testNode'>" +
+                        "<item id='testid1' >" +
+                            itemContent +
+                        "</item>" + 
+                    "</items>" + 
+                 "</event>" + 
+            "</message>");
+        
+        Packet message = PacketParserUtils.parseMessage(parser);
+        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        EventElement event = (EventElement) eventExt;
+        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+
+        assertTrue(itemExt instanceof PayloadItem<?>);
+        PayloadItem<?> item = (PayloadItem<?>)itemExt;
+        
+        assertEquals("testid1", item.getId());
+        assertTrue(item.getPayload() instanceof SimplePayload);
+        
+        SimplePayload payload = (SimplePayload) item.getPayload();
+        assertEquals("entry", payload.getElementName());
+        assertEquals("http://www.w3.org/2005/Atom", payload.getNamespace());
+        assertXMLEqual(itemContent, payload.toXML());
+    }
+    
+    @Test
+    public void parseEmptyTag() throws Exception
+    {
+        String itemContent = "<foo xmlns='smack:test'><bar/></foo>";
+        
+        XmlPullParser parser = TestUtils.getMessageParser(
+            "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
+                "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
+                    "<items node='testNode'>" +
+                        "<item id='testid1' >" +
+                            itemContent +
+                        "</item>" + 
+                    "</items>" + 
+                 "</event>" + 
+            "</message>");
+        
+        Packet message = PacketParserUtils.parseMessage(parser);
+        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        
+        assertTrue(eventExt instanceof EventElement);
+        EventElement event = (EventElement) eventExt;
+        assertEquals(EventElementType.items, event.getEventType());
+        assertEquals(1, event.getExtensions().size());
+        assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
+        assertEquals(1, ((ItemsExtension)event.getExtensions().get(0)).items.size());
+        
+        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        assertTrue(itemExt instanceof PayloadItem<?>);
+        PayloadItem<?> item = (PayloadItem<?>)itemExt;
+        
+        assertEquals("testid1", item.getId());
+        assertTrue(item.getPayload() instanceof SimplePayload);
+        
+        assertXMLEqual(itemContent, ((SimplePayload)item.getPayload()).toXML());
+    }
 }

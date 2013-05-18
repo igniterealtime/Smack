@@ -16,6 +16,7 @@ package org.jivesoftware.smack.util;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.SmackError;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -47,7 +48,7 @@ final public class SyncPacketSend
         response.cancel();
 
         if (result == null) {
-            throw new XMPPException("No response from server.");
+            throw new XMPPException(SmackError.NO_RESPONSE_FROM_SERVER);
         }
         else if (result.getError() != null) {
             throw new XMPPException(result.getError());

@@ -22,18 +22,19 @@ import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.Type;
 
-public class DNSJavaResolver extends DNSResolver {
+/**
+ * This implementation uses the <a href="http://www.dnsjava.org/">dnsjava</a> implementation for resolving DNS addresses.
+ *
+ */
+public class DNSJavaResolver implements DNSResolver {
     
-    private static DNSJavaResolver instance;
+    private static DNSJavaResolver instance = new DNSJavaResolver();
     
     private DNSJavaResolver() {
         
     }
     
     public static DNSResolver getInstance() {
-        if (instance == null) {
-            instance = new DNSJavaResolver();
-        }
         return instance;
     }
 

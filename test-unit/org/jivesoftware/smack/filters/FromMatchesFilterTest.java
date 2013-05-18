@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2011 Robin Collier
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,11 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Robin Collier
+ *
+ */
 public class FromMatchesFilterTest {
     private static final String BASE_JID1 = "ss@muc.myserver.com";
     private static final String FULL_JID1_R1 = BASE_JID1 + "/resource";

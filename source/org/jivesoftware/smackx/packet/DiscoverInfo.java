@@ -257,13 +257,25 @@ public class DiscoverInfo extends IQ {
      * attributes.
      * 
      */
-    public static class Identity implements Comparable<Object> {
+    public static class Identity implements Comparable<Identity> {
 
         private String category;
         private String name;
         private String type;
         private String lang; // 'xml:lang;
 
+        /**
+         * Creates a new identity for an XMPP entity.
+         * 
+         * @param category the entity's category.
+         * @param name the entity's name.
+         * @deprecated As per the spec, the type field is mandatory and the 3 argument constructor should be used instead.
+         */
+        public Identity(String category, String name) {
+            this.category = category;
+            this.name = name;
+        }
+        
         /**
          * Creates a new identity for an XMPP entity.
          * 'category' and 'type' are required by 
@@ -274,6 +286,9 @@ public class DiscoverInfo extends IQ {
          * @param type the entity's type (required as per XEP-30).
          */
         public Identity(String category, String name, String type) {
+            if ((category == null) || (type == null))
+                throw new IllegalArgumentException("category and type cannot be null");
+            
             this.category = category;
             this.name = name;
             this.type = type;
@@ -313,6 +328,7 @@ public class DiscoverInfo extends IQ {
          * 'type' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a> 
          *
          * @param type the identity's type.
+         * @deprecated As per the spec, this field is mandatory and the 3 argument constructor should be used instead.
          */
         public void setType(String type) {
             this.type = type;
@@ -374,10 +390,13 @@ public class DiscoverInfo extends IQ {
 
             String otherLang = other.lang == null ? "" : other.lang;
             String thisLang = lang == null ? "" : lang;
-
-            if (!other.type.equals(type))
-                return false;
             if (!otherLang.equals(thisLang))
+                return false;
+            
+            // This safeguard can be removed once the deprecated constructor is removed.
+            String otherType = other.type == null ? "" : other.type;
+            String thisType = type == null ? "" : type;
+            if (!otherType.equals(thisType))
                 return false;
 
             String otherName = other.name == null ? "" : other.name;
@@ -387,23 +406,35 @@ public class DiscoverInfo extends IQ {
 
             return true;
         }
+        
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 37 * result + category.hashCode();
+            result = 37 * result + (lang == null ? 0 : lang.hashCode());
+            result = 37 * result + (type == null ? 0 : type.hashCode());
+            result = 37 * result + (name == null ? 0 : name.hashCode());
+            return result;
+        }
 
         /**
-         * Compares and identity with another object. The comparison order is:
+         * Compares this identity with another one. The comparison order is:
          * Category, Type, Lang. If all three are identical the other Identity is considered equal.
          * Name is not used for comparision, as defined by XEP-0115
          * 
          * @param obj
          * @return
          */
-        public int compareTo(Object obj) {
-
-            DiscoverInfo.Identity other = (DiscoverInfo.Identity) obj;
+        public int compareTo(DiscoverInfo.Identity other) {
             String otherLang = other.lang == null ? "" : other.lang;
             String thisLang = lang == null ? "" : lang;
+            
+            // This can be removed once the deprecated constructor is removed.
+            String otherType = other.type == null ? "" : other.type;
+            String thisType = type == null ? "" : type;
 
             if (category.equals(other.category)) {
-                if (type.equals(other.type)) {
+                if (thisType.equals(otherType)) {
                     if (thisLang.equals(otherLang)) {
                         // Don't compare on name, XEP-30 says that name SHOULD
                         // be equals for all identities of an entity
@@ -412,7 +443,7 @@ public class DiscoverInfo extends IQ {
                         return thisLang.compareTo(otherLang);
                     }
                 } else {
-                    return type.compareTo(other.type);
+                    return thisType.compareTo(otherType);
                 }
             } else {
                 return category.compareTo(other.category);
@@ -436,6 +467,8 @@ public class DiscoverInfo extends IQ {
          * @param variable the feature's variable.
          */
         public Feature(String variable) {
+            if (variable == null)
+                throw new IllegalArgumentException("variable cannot be null");
             this.variable = variable;
         }
 
@@ -464,6 +497,11 @@ public class DiscoverInfo extends IQ {
 
             DiscoverInfo.Feature other = (DiscoverInfo.Feature) obj;
             return variable.equals(other.variable);
+        }
+
+        @Override
+        public int hashCode() {
+            return 37 * variable.hashCode();
         }
     }
 }

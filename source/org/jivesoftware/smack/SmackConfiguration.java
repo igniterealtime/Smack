@@ -48,7 +48,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "3.2.2";
+    private static final String SMACK_VERSION = "3.3.0";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
@@ -57,11 +57,6 @@ public final class SmackConfiguration {
     private static boolean localSocks5ProxyEnabled = true;
     private static int localSocks5ProxyPort = 7777;
     private static int packetCollectorSize = 5000;
-
-    /**
-     * defaultPingInterval (in seconds)
-     */
-    private static int defaultPingInterval = 1800; // 30 min (30*60)
 
     /**
      * This automatically enables EntityCaps for new connections if it is set to true
@@ -117,8 +112,8 @@ public final class SmackConfiguration {
                                 else if (parser.getName().equals("packetCollectorSize")) {
                                     packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
                                 }
-                                else if (parser.getName().equals("defaultPingInterval")) {
-                                    defaultPingInterval = parseIntProperty(parser, defaultPingInterval);
+                                else if (parser.getName().equals("autoEnableEntityCaps")) {
+                                    autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
                                 }
                                 else if (parser.getName().equals("autoEnableEntityCaps")) {
                                     autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
@@ -320,21 +315,12 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Returns the default ping interval (seconds)
+     * Set if Entity Caps are enabled or disabled for every new connection
      * 
-     * @return
+     * @param true if Entity Caps should be auto enabled, false if not
      */
-    public static int getDefaultPingInterval() {
-        return defaultPingInterval;
-    }
-
-    /**
-     * Sets the default ping interval (seconds). Set it to '-1' to disable the periodic ping
-     *
-     * @param defaultPingInterval
-     */
-    public static void setDefaultPingInterval(int defaultPingInterval) {
-        SmackConfiguration.defaultPingInterval = defaultPingInterval;
+    public static void setAutoEnableEntityCaps(boolean b) {
+        autoEnableEntityCaps = b;
     }
 
     /**
@@ -343,15 +329,6 @@ public final class SmackConfiguration {
      */
     public static boolean autoEnableEntityCaps() {
         return autoEnableEntityCaps;
-    }
-
-    /**
-     * Set if Entity Caps are enabled or disabled for every new connection
-     * 
-     * @param true if Entity Caps should be auto enabled, false if not
-     */
-    public static void setAutoEnableEntityCaps(boolean b) {
-        autoEnableEntityCaps = b;
     }
 
     private static void parseClassToLoad(XmlPullParser parser) throws Exception {

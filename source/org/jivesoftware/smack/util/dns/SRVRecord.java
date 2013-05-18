@@ -29,13 +29,13 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
     /**
      * Create a new SRVRecord
      * 
-     * @param fqdn
-     * @param port
-     * @param priority
-     * @param weight
-     * @throws IllegalArgumentException
+     * @param fqdn Fully qualified domain name
+     * @param port The connection port
+     * @param priority Priority of the target host
+     * @param weight Relative weight for records with same priority
+     * @throws IllegalArgumentException fqdn is null or any other field is not in valid range (0-65535).
      */
-    public SRVRecord(String fqdn, int port, int priority, int weight) throws IllegalArgumentException {
+    public SRVRecord(String fqdn, int port, int priority, int weight) {
         super(fqdn, port);
         if (weight < 0 || weight > 65535)
             throw new IllegalArgumentException(
@@ -60,6 +60,7 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
         return weight;
     }
 
+    @Override
     public int compareTo(SRVRecord other) {
         // According to RFC2782,
         // "[a] client MUST attempt to contact the target host with the lowest-numbered priority it can reach".
@@ -71,6 +72,7 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
         return res;
     }
 
+    @Override
     public String toString() {
         return super.toString() + " prio:" + priority + ":w:" + weight;
     }

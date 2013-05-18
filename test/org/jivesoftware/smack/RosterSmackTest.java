@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2005 Jive Software.
  *
  * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,16 @@
 package org.jivesoftware.smack;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smack.util.StringUtils;
+import org.mockito.internal.util.RemoveFirstLine;
 
 /**
  * Tests the Roster functionality by creating and removing roster entries.
@@ -43,6 +47,7 @@ public class RosterSmackTest extends SmackTestCase {
         super(name);
     }
 
+    
     /**
      * 1. Create entries in roster groups
      * 2. Iterate on the groups and remove the entry from each group
@@ -52,63 +57,77 @@ public class RosterSmackTest extends SmackTestCase {
         try {
             // Add a new roster entry
             Roster roster = getConnection(0).getRoster();
+
+            CountDownLatch latch = new CountDownLatch(2);
+            setupCountdown(latch, roster);
+            
             roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends", "Family" });
             roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
+            
+            waitForCountdown(latch, roster, 2);
 
-            // Wait until the server confirms the new entries
-            long initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000 && (
-                    !roster.getPresence(getBareJID(1)).isAvailable() ||
-                            !roster.getPresence(getBareJID(2)).isAvailable())) {
-                Thread.sleep(100);
-            }
+            final CountDownLatch removeLatch = new CountDownLatch(3);
+            RosterListener latchCounter = new RosterListener() {
+                @Override
+                public void presenceChanged(Presence presence) {}
+                
+                @Override
+                public void entriesUpdated(Collection<String> addresses) {
+                    removeLatch.countDown();
+                }
+                
+                @Override
+                public void entriesDeleted(Collection<String> addresses) {}
+                
+                @Override
+                public void entriesAdded(Collection<String> addresses) {}
+            }; 
+            
+            roster.addRosterListener(latchCounter);
 
             for (RosterEntry entry : roster.getEntries()) {
                 for (RosterGroup rosterGroup : entry.getGroups()) {
                     rosterGroup.removeEntry(entry);
                 }
             }
-            // Wait up to 2 seconds
-            initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000 &&
-                    (roster.getGroupCount() != 0 &&
-                    getConnection(2).getRoster().getEntryCount() != 2)) {
-                Thread.sleep(100);
-            }
-
-            assertEquals(
-                "The number of entries in connection 1 should be 1",
-                1,
-                getConnection(1).getRoster().getEntryCount());
-            assertEquals(
-                "The number of groups in connection 1 should be 0",
-                0,
-                getConnection(1).getRoster().getGroupCount());
-
-            assertEquals(
-                "The number of entries in connection 2 should be 1",
-                1,
-                getConnection(2).getRoster().getEntryCount());
-            assertEquals(
-                "The number of groups in connection 2 should be 0",
-                0,
-                getConnection(2).getRoster().getGroupCount());
-
-            assertEquals(
-                "The number of entries in connection 0 should be 2",
-                2,
-                roster.getEntryCount());
-            assertEquals(
-                "The number of groups in connection 0 should be 0",
-                0,
-                roster.getGroupCount());
+            
+            removeLatch.await(5, TimeUnit.SECONDS);
+            roster.removeRosterListener(latchCounter);
+            
+            assertEquals("The number of entries in connection 1 should be 1", 1, getConnection(1).getRoster().getEntryCount());
+            assertEquals("The number of groups in connection 1 should be 0", 0, getConnection(1).getRoster().getGroupCount());
+            assertEquals("The number of entries in connection 2 should be 1", 1, getConnection(2).getRoster().getEntryCount());
+            assertEquals("The number of groups in connection 2 should be 0", 0, getConnection(2).getRoster().getGroupCount());
+            assertEquals("The number of entries in connection 0 should be 2", 2, roster.getEntryCount());
+            assertEquals("The number of groups in connection 0 should be 0", 0, roster.getGroupCount());
         }
         catch (Exception e) {
             fail(e.getMessage());
         }
-        finally {
-            cleanUpRoster();
-        }
+    }
+
+    private void setupCountdown(final CountDownLatch latch, Roster roster) {
+        roster.addRosterListener(new RosterListener() {
+            
+            @Override
+            public void presenceChanged(Presence presence) {}
+            
+            @Override
+            public void entriesUpdated(Collection<String> addresses) {
+                latch.countDown();
+            }
+            
+            @Override
+            public void entriesDeleted(Collection<String> addresses) {}
+            
+            @Override
+            public void entriesAdded(Collection<String> addresses) {}
+        });
+    }
+
+    private void waitForCountdown(CountDownLatch latch, Roster roster, int entryCount) throws InterruptedException {
+        latch.await(5, TimeUnit.SECONDS);
+        assertEquals(entryCount, roster.getEntryCount());
     }
 
     /**
@@ -119,50 +138,30 @@ public class RosterSmackTest extends SmackTestCase {
     public void testDeleteAllRosterEntries() throws Exception {
         // Add a new roster entry
         Roster roster = getConnection(0).getRoster();
+        
+        CountDownLatch latch = new CountDownLatch(2);
+        setupCountdown(latch, roster);
+        
         roster.createEntry(getBareJID(1), "gato11", new String[] { "Friends" });
         roster.createEntry(getBareJID(2), "gato12", new String[] { "Family" });
 
-        // Wait up to 2 seconds to receive new roster contacts
-        long initial = System.currentTimeMillis();
-        while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 2) {
-            Thread.sleep(100);
-        }
+        waitForCountdown(latch, roster, 2);
 
-        assertEquals("Wrong number of entries in connection 0", 2, roster.getEntryCount());
-
-        // Wait up to 2 seconds to receive presences of the new roster contacts
-        initial = System.currentTimeMillis();
-        while (System.currentTimeMillis() - initial < 5000 &&
-                (!roster.getPresence(getBareJID(1)).isAvailable() ||
-                !roster.getPresence(getBareJID(2)).isAvailable()))
-        {
-            Thread.sleep(100);
-        }
-        assertTrue("Presence not received", roster.getPresence(getBareJID(1)).isAvailable());
-        assertTrue("Presence not received", roster.getPresence(getBareJID(2)).isAvailable());
+        CountDownLatch removeLatch = new CountDownLatch(2);
+        RosterListener latchCounter = new RemovalListener(removeLatch);
+        roster.addRosterListener(latchCounter);
 
         for (RosterEntry entry : roster.getEntries()) {
             roster.removeEntry(entry);
-            Thread.sleep(250);
         }
 
-        // Wait up to 2 seconds to receive roster removal notifications
-        initial = System.currentTimeMillis();
-        while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 0) {
-            Thread.sleep(100);
-        }
+        removeLatch.await(5, TimeUnit.SECONDS);
+        roster.removeRosterListener(latchCounter);
 
         assertEquals("Wrong number of entries in connection 0", 0, roster.getEntryCount());
         assertEquals("Wrong number of groups in connection 0", 0, roster.getGroupCount());
-
-        assertEquals(
-            "Wrong number of entries in connection 1",
-            0,
-            getConnection(1).getRoster().getEntryCount());
-        assertEquals(
-            "Wrong number of groups in connection 1",
-            0,
-            getConnection(1).getRoster().getGroupCount());
+        assertEquals("Wrong number of entries in connection 1", 0, getConnection(1).getRoster().getEntryCount());
+        assertEquals("Wrong number of groups in connection 1", 0, getConnection(1).getRoster().getGroupCount());
     }
 
     /**
@@ -174,41 +173,29 @@ public class RosterSmackTest extends SmackTestCase {
         try {
             // Add a new roster entry
             Roster roster = getConnection(0).getRoster();
+            
+            CountDownLatch latch = new CountDownLatch(2);
+            setupCountdown(latch, roster);
+            
             roster.createEntry(getBareJID(1), "gato11", null);
             roster.createEntry(getBareJID(2), "gato12", null);
 
-            // Wait up to 2 seconds to let the server process presence subscriptions
-            long initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000 && (
-                    !roster.getPresence(getBareJID(1)).isAvailable() ||
-                            !roster.getPresence(getBareJID(2)).isAvailable())) {
-                Thread.sleep(100);
-            }
-
-            Thread.sleep(200);
+            waitForCountdown(latch, roster, 2);
+            CountDownLatch removeLatch = new CountDownLatch(2);
+            RosterListener latchCounter = new RemovalListener(removeLatch);
+            roster.addRosterListener(latchCounter);
 
             for (RosterEntry entry : roster.getEntries()) {
                 roster.removeEntry(entry);
-                Thread.sleep(100);
             }
 
-            // Wait up to 2 seconds to receive roster removal notifications
-            initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000  && roster.getEntryCount() != 0) {
-                Thread.sleep(100);
-            }
+            removeLatch.await(5, TimeUnit.SECONDS);
+            roster.removeRosterListener(latchCounter);
 
             assertEquals("Wrong number of entries in connection 0", 0, roster.getEntryCount());
             assertEquals("Wrong number of groups in connection 0", 0, roster.getGroupCount());
-
-            assertEquals(
-                "Wrong number of entries in connection 1",
-                0,
-                getConnection(1).getRoster().getEntryCount());
-            assertEquals(
-                "Wrong number of groups in connection 1",
-                0,
-                getConnection(1).getRoster().getGroupCount());
+            assertEquals("Wrong number of entries in connection 1", 0, getConnection(1).getRoster().getEntryCount());
+            assertEquals("Wrong number of groups in connection 1", 0, getConnection(1).getRoster().getGroupCount());
         }
         catch (Exception e) {
             fail(e.getMessage());
@@ -226,15 +213,30 @@ public class RosterSmackTest extends SmackTestCase {
         try {
             // Add a new roster entry
             Roster roster = getConnection(0).getRoster();
+            CountDownLatch latch = new CountDownLatch(1);
+            setupCountdown(latch, roster);
+            
             roster.createEntry(getBareJID(1), null, null);
+            
+            waitForCountdown(latch, roster, 1);
 
-            // Wait up to 2 seconds to let the server process presence subscriptions
-            long initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000 &&
-                    !roster.getPresence(getBareJID(1)).isAvailable())
-            {
-                Thread.sleep(100);
-            }
+            final CountDownLatch updateLatch = new CountDownLatch(2);
+            RosterListener latchCounter = new RosterListener() {
+                @Override
+                public void entriesAdded(Collection<String> addresses) {}
+
+                @Override
+                public void entriesUpdated(Collection<String> addresses) {
+                    updateLatch.countDown();
+                }
+
+                @Override
+                public void entriesDeleted(Collection<String> addresses) {}
+
+                @Override
+                public void presenceChanged(Presence presence) {}
+            };
+            roster.addRosterListener(latchCounter);
 
             // Change the roster entry name and check if the change was made
             for (RosterEntry entry : roster.getEntries()) {
@@ -243,16 +245,15 @@ public class RosterSmackTest extends SmackTestCase {
             }
             // Reload the roster and check the name again
             roster.reload();
-            Thread.sleep(2000);
+            
+            updateLatch.await(5, TimeUnit.SECONDS);
+            
             for (RosterEntry entry : roster.getEntries()) {
                 assertEquals("gato11", entry.getName());
             }
         }
         catch (Exception e) {
             fail(e.getMessage());
-        }
-        finally {
-            cleanUpRoster();
         }
     }
 
@@ -302,9 +303,6 @@ public class RosterSmackTest extends SmackTestCase {
             assertTrue("Presence not received", roster.getPresence(getBareJID(1)).isAvailable());
         } catch (Exception e) {
             fail(e.getMessage());
-        }
-        finally {
-            cleanUpRoster();
         }
     }
 
@@ -360,9 +358,6 @@ public class RosterSmackTest extends SmackTestCase {
         }
         catch (Exception e) {
             fail(e.getMessage());
-        }
-        finally {
-            cleanUpRoster();
         }
     }
 
@@ -426,9 +421,6 @@ public class RosterSmackTest extends SmackTestCase {
         catch (Exception e) {
             fail(e.getMessage());
         }
-        finally {
-            cleanUpRoster();    
-        }
     }
 
     /**
@@ -441,75 +433,67 @@ public class RosterSmackTest extends SmackTestCase {
      * 5. Check that presence for each connected resource is correct
      */
     public void testRosterPresences() throws Exception {
-        Thread.sleep(200);
-        try {
-            Presence presence;
+        Presence presence;
 
-            // Create another connection for the same user of connection 1
-            ConnectionConfiguration connectionConfiguration =
-                    new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-            XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
-            conn4.connect();
-            conn4.login(getUsername(1), getPassword(1), "Home");
+        // Create another connection for the same user of connection 1
+        ConnectionConfiguration connectionConfiguration =
+                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+        XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
+        conn4.connect();
+        conn4.login(getUsername(1), getPassword(1), "Home");
 
-            // Add a new roster entry
-            Roster roster = getConnection(0).getRoster();
-            roster.createEntry(getBareJID(1), "gato11", null);
+        // Add a new roster entry
+        Roster roster = getConnection(0).getRoster();
+        roster.createEntry(getBareJID(1), "gato11", null);
 
-            // Wait up to 2 seconds
-            long initial = System.currentTimeMillis();
-            while (System.currentTimeMillis() - initial < 2000 &&
-                    (roster.getPresence(getBareJID(1)).getType() == Presence.Type.unavailable)) {
-                Thread.sleep(100);
-            }
-
-            // Check that a presence is returned for a user
-            presence = roster.getPresence(getBareJID(1));
-            assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
-
-            // Check that the right presence is returned for a user+resource
-            presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
-            assertEquals("Returned the wrong Presence", "Home",
-                    StringUtils.parseResource(presence.getFrom()));
-
-            // Check that the right presence is returned for a user+resource
-            presence = roster.getPresenceResource(getFullJID(1));
-            assertTrue("Presence not found for user " + getFullJID(1), presence.isAvailable());
-            assertEquals("Returned the wrong Presence", "Smack",
-                    StringUtils.parseResource(presence.getFrom()));
-
-            // Check the returned presence for a non-existent user+resource
-            presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
-            assertFalse("Available presence was returned for a non-existing user", presence.isAvailable());
-            assertEquals("Returned Presence for a non-existing user has the incorrect type",
-                    Presence.Type.unavailable, presence.getType());
-
-            // Check that the returned presences are correct
-            Iterator<Presence> presences = roster.getPresences(getBareJID(1));
-            int count = 0;
-            while (presences.hasNext()) {
-                count++;
-                presences.next();
-            }
-            assertEquals("Wrong number of returned presences", count, 2);
-
-            // Close the connection so one presence must go
-            conn4.disconnect();
-
-            // Check that the returned presences are correct
-            presences = roster.getPresences(getBareJID(1));
-            count = 0;
-            while (presences.hasNext()) {
-                count++;
-                presences.next();
-            }
-            assertEquals("Wrong number of returned presences", count, 1);
-
-            Thread.sleep(200);
+        // Wait up to 2 seconds
+        long initial = System.currentTimeMillis();
+        while (System.currentTimeMillis() - initial < 2000 &&
+                (roster.getPresence(getBareJID(1)).getType() == Presence.Type.unavailable)) {
+            Thread.sleep(100);
         }
-        finally {
-            cleanUpRoster();
+
+        // Check that a presence is returned for a user
+        presence = roster.getPresence(getBareJID(1));
+        assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
+
+        // Check that the right presence is returned for a user+resource
+        presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
+        assertEquals("Returned the wrong Presence", "Home",
+                StringUtils.parseResource(presence.getFrom()));
+
+        // Check that the right presence is returned for a user+resource
+        presence = roster.getPresenceResource(getFullJID(1));
+        assertTrue("Presence not found for user " + getFullJID(1), presence.isAvailable());
+        assertEquals("Returned the wrong Presence", "Smack",
+                StringUtils.parseResource(presence.getFrom()));
+
+        // Check the returned presence for a non-existent user+resource
+        presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
+        assertFalse("Available presence was returned for a non-existing user", presence.isAvailable());
+        assertEquals("Returned Presence for a non-existing user has the incorrect type",
+                Presence.Type.unavailable, presence.getType());
+
+        // Check that the returned presences are correct
+        Iterator<Presence> presences = roster.getPresences(getBareJID(1));
+        int count = 0;
+        while (presences.hasNext()) {
+            count++;
+            presences.next();
         }
+        assertEquals("Wrong number of returned presences", count, 2);
+
+        // Close the connection so one presence must go
+        conn4.disconnect();
+
+        // Check that the returned presences are correct
+        presences = roster.getPresences(getBareJID(1));
+        count = 0;
+        while (presences.hasNext()) {
+            count++;
+            presences.next();
+        }
+        assertEquals("Wrong number of returned presences", count, 1);
     }
 
     /**
@@ -605,6 +589,24 @@ public class RosterSmackTest extends SmackTestCase {
         for (int i=0; i<getMaxConnections(); i++) {
             // Delete all the entries from the roster
             Roster roster = getConnection(i).getRoster();
+            final CountDownLatch removalLatch = new CountDownLatch(roster.getEntryCount());
+            roster.addRosterListener(new RosterListener() {
+                
+                @Override
+                public void presenceChanged(Presence presence) {}
+                
+                @Override
+                public void entriesUpdated(Collection<String> addresses) {}
+                
+                @Override
+                public void entriesDeleted(Collection<String> addresses) {
+                    removalLatch.countDown();
+                }
+                
+                @Override
+                public void entriesAdded(Collection<String> addresses) {}
+            });
+            
             for (RosterEntry entry : roster.getEntries()) {
                 try {
                     roster.removeEntry(entry);
@@ -616,49 +618,16 @@ public class RosterSmackTest extends SmackTestCase {
             }
 
             try  {
-                Thread.sleep(700);
+                removalLatch.await(5, TimeUnit.SECONDS);
             }
             catch (InterruptedException e) {
                 fail(e.getMessage());
             }
         }
-        // Wait up to 6 seconds to receive roster removal notifications
-        long initial = System.currentTimeMillis();
-        while (System.currentTimeMillis() - initial < 6000 && (
-                getConnection(0).getRoster().getEntryCount() != 0 ||
-                        getConnection(1).getRoster().getEntryCount() != 0 ||
-                        getConnection(2).getRoster().getEntryCount() != 0)) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {}
-        }
 
-        assertEquals(
-            "Wrong number of entries in connection 0",
-            0,
-            getConnection(0).getRoster().getEntryCount());
-        assertEquals(
-            "Wrong number of groups in connection 0",
-            0,
-            getConnection(0).getRoster().getGroupCount());
-
-        assertEquals(
-            "Wrong number of entries in connection 1",
-            0,
-            getConnection(1).getRoster().getEntryCount());
-        assertEquals(
-            "Wrong number of groups in connection 1",
-            0,
-            getConnection(1).getRoster().getGroupCount());
-
-        assertEquals(
-            "Wrong number of entries in connection 2",
-            0,
-            getConnection(2).getRoster().getEntryCount());
-        assertEquals(
-            "Wrong number of groups in connection 2",
-            0,
-            getConnection(2).getRoster().getGroupCount());
+        assertEquals("Wrong number of entries in connection 0", 0, getConnection(0).getRoster().getEntryCount());
+        assertEquals("Wrong number of entries in connection 1", 0, getConnection(1).getRoster().getEntryCount());
+        assertEquals("Wrong number of entries in connection 2", 0, getConnection(2).getRoster().getEntryCount());
     }
 
     /**
@@ -708,15 +677,37 @@ public class RosterSmackTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        //XMPPConnection.DEBUG_ENABLED = false;
-
-        try  {
-            Thread.sleep(500);
-        }
-        catch (InterruptedException e) {
-            fail(e.getMessage());
-        }
-
         super.setUp();
+        cleanUpRoster();
     }
+
+
+    @Override
+    protected void tearDown() throws Exception {
+        cleanUpRoster();
+        super.tearDown();
+    }
+    
+    private class RemovalListener implements RosterListener {
+        private CountDownLatch latch;
+        
+        private RemovalListener(CountDownLatch removalLatch) {
+            latch = removalLatch;
+        }
+        
+        @Override
+        public void presenceChanged(Presence presence) {}
+        
+        @Override
+        public void entriesUpdated(Collection<String> addresses) {}
+        
+        @Override
+        public void entriesDeleted(Collection<String> addresses) {                
+            latch.countDown();
+        }
+        
+        @Override
+        public void entriesAdded(Collection<String> addresses) {}
+    }; 
+
 }

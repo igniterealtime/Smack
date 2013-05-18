@@ -24,7 +24,7 @@ public class DNSUtilTest {
 
     @Test
     public void xmppClientDomainJavaXTest() {
-        DNSResolver resolver = JavaxResolver.maybeGetInstance();
+        DNSResolver resolver = JavaxResolver.getInstance();
         assertNotNull(resolver);
         DNSUtil.setDNSResolver(resolver);
         xmppClientDomainTest();
@@ -32,7 +32,7 @@ public class DNSUtilTest {
 
     @Test
     public void xmppServerDomainJavaXTest() {
-        DNSResolver resolver = JavaxResolver.maybeGetInstance();
+        DNSResolver resolver = JavaxResolver.getInstance();
         assertNotNull(resolver);
         DNSUtil.setDNSResolver(resolver);
         xmppServerDomainTest();

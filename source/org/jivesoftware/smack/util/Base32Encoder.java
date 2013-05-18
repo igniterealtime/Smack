@@ -29,7 +29,7 @@ import java.io.IOException;
  */
 public class Base32Encoder implements StringEncoder {
 
-    private static Base32Encoder instance;
+    private static Base32Encoder instance = new Base32Encoder();
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ2345678";
 
     private Base32Encoder() {
@@ -37,9 +37,6 @@ public class Base32Encoder implements StringEncoder {
     }
 
     public static Base32Encoder getInstance() {
-        if (instance == null) {
-            instance = new Base32Encoder();
-        }
         return instance;
     }
 
