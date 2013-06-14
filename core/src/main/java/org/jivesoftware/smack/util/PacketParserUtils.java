@@ -703,7 +703,6 @@ public class PacketParserUtils {
      */
     public static XMPPError parseError(XmlPullParser parser) throws Exception {
         final String errorNamespace = "urn:ietf:params:xml:ns:xmpp-stanzas";
-    	String errorCode = "-1";
         String type = null;
         String message = null;
         String condition = null;
@@ -711,9 +710,6 @@ public class PacketParserUtils {
 
         // Parse the error header
         for (int i=0; i<parser.getAttributeCount(); i++) {
-            if (parser.getAttributeName(i).equals("code")) {
-                errorCode = parser.getAttributeValue("", "code");
-            }
             if (parser.getAttributeName(i).equals("type")) {
             	type = parser.getAttributeValue("", "type");
             }
@@ -754,7 +750,7 @@ public class PacketParserUtils {
         catch (IllegalArgumentException iae) {
             LOGGER.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(), iae);
         }
-        return new XMPPError(Integer.parseInt(errorCode), errorType, condition, message, extensions);
+        return new XMPPError(errorType, condition, message, extensions);
     }
 
     /**

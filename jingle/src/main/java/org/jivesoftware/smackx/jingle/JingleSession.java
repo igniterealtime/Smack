@@ -1085,7 +1085,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
             List<PacketExtension> extList = new ArrayList<PacketExtension>();
             extList.add(jingleError);
-            XMPPError error = new XMPPError(0, XMPPError.Type.CANCEL, jingleError.toString(), "", extList);
+            XMPPError error = new XMPPError(XMPPError.Type.CANCEL, jingleError.toString(), "", extList);
 
             // Fill in the fields with the info from the Jingle packet
             errorPacket.setPacketID(iq.getPacketID());
