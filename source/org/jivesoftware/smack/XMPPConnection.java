@@ -25,6 +25,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
@@ -88,6 +89,8 @@ public class XMPPConnection extends Connection {
     private boolean wasAuthenticated = false;
     private boolean anonymous = false;
     private boolean usingTLS = false;
+
+    private ParsingExceptionCallback parsingExceptionCallback = SmackConfiguration.getDefaultParsingExceptionCallback();
 
     PacketWriter packetWriter;
     PacketReader packetReader;
@@ -200,6 +203,25 @@ public class XMPPConnection extends Connection {
             return null;
         }
         return user;
+    }
+
+    /**
+     * Install a parsing exception callback, which will be invoked once an exception is encountered while parsing a
+     * stanza
+     * 
+     * @param callback the callback to install
+     */
+    public void setParsingExceptionCallback(ParsingExceptionCallback callback) {
+        parsingExceptionCallback = callback;
+    }
+
+    /**
+     * Get the current active parsing exception callback.
+     *  
+     * @return the active exception callback or null if there is none
+     */
+    public ParsingExceptionCallback getParsingExceptionCallback() {
+        return parsingExceptionCallback;
     }
 
     @Override

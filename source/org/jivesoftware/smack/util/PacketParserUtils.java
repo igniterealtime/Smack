@@ -171,10 +171,13 @@ public class PacketParserUtils {
      */
     private static String parseContent(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
-        StringBuffer content = new StringBuffer();
         int parserDepth = parser.getDepth();
-        while (!(parser.next() == XmlPullParser.END_TAG && parser
-                        .getDepth() == parserDepth)) {
+        return parseContentDepth(parser, parserDepth);
+    }
+
+    public static String parseContentDepth(XmlPullParser parser, int depth) throws XmlPullParserException, IOException {
+        StringBuffer content = new StringBuffer();
+        while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
             content.append(parser.getText());
         }
         return content.toString();
