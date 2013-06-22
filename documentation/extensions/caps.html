@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Entity Capabilities</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+
+<div class="header">Entity Capabilities</div><p>
+This section details the usage of Smacks implementation of Entity Capabilities.
+</p>
+<b>XEP related:</b> <a href="http://xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>
+
+<hr>
+
+<b>Description</b><p>
+
+Entity Capabilities is an extension to the Service Discovery (<a href="http://xmpp.org/extensions/xep-0030.html">XEP-0030</a>), which, in order to minimize network impact, caches the capabilities information of XMPP entities.
+
+</p>
+
+<b>Usage</b><p>
+
+Entity Capabilities work silenty in background when enabled. If the remote XMPP entity does not support XEP-0115 but XEP-0030 then XEP-0030 mechanisms are transparently used. You can enable or disable Entity Capabilities by using <i><b>EntityCapsManager</b></i>.<br>
+
+The cache used by Smack for Entity Capabilities is non-persistent as default. That is, the cache only uses memory. But it is also possible to set a persistent Entity Capabilities cache, which is recommended.
+</p>
+
+<b>Examples</b><p>
+
+Enable Entity Capabilities
+<br>
+<blockquote>
+<pre>
+      <font color="#3f7f5f">// Get an instance of entity caps manager for the specified connection</font>
+      Entity CapabilitiesManager mgr = new EntityCapsManager.getInstanceFor(con);
+
+      <font color="#3f7f5f">// Enable entity capabilities</font>
+      mgr.enableEntityCaps();
+</pre>
+</blockquote>
+
+Configure a persistent cache for Entity Capabilities
+<br>
+<blockquote>
+<pre>
+      <font color="#3f7f5f">// Get an instance of entity caps manager for the specified connection</font>
+      Entity CapabilitiesManager mgr = new EntityCapsManager.getInstanceFor(con);
+
+      <font color="#3f7f5f">// Create an cache, see smackx.entitycaps.cache for pre-defined cache implementations</font>
+      EntityCapsPersistentCache cache = new SimpleDirectoryPersistentCache(new File("/foo/cachedir"));
+
+      <font color="#3f7f5f">// Set the cache</font>
+      mgr.setPersistentCache(cache);
+</pre>
+</blockquote>
+</p>
+
+<hr>
+
+</body>
+
+</html>

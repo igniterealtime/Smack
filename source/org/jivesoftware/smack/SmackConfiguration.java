@@ -74,7 +74,7 @@ public final class SmackConfiguration {
     /**
      * This automatically enables EntityCaps for new connections if it is set to true
      */
-    private static boolean autoEnableEntityCaps = false;
+    private static boolean autoEnableEntityCaps = true;
 
     private SmackConfiguration() {
     }
