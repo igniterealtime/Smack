@@ -443,48 +443,22 @@ public class XMPPConnection extends Connection {
             // Ignore.
         }
 
-	// Set socketClosed to true. This will cause the PacketReader
-	// and PacketWriter to ingore any Exceptions that are thrown
-	// because of a read/write from/to a closed stream.
-	// It is *important* that this is done before socket.close()!
+        // Set socketClosed to true. This will cause the PacketReader
+        // and PacketWriter to ignore any Exceptions that are thrown
+        // because of a read/write from/to a closed stream.
+        // It is *important* that this is done before socket.close()!
         socketClosed = true;
         try {
                 socket.close();
         } catch (Exception e) {
                 e.printStackTrace();
         }
-	// In most cases the close() should be successful, so set
-	// connected to false here.
+        // In most cases the close() should be successful, so set
+        // connected to false here.
         connected = false;
 
-        // Close down the readers and writers.
-        if (reader != null) {
-            try {
-		// Should already be closed by the previous
-		// socket.close(). But just in case do it explicitly.
-                reader.close();
-            }
-            catch (Throwable ignore) { /* ignore */ }
-            reader = null;
-        }
-        if (writer != null) {
-            try {
-		// Should already be closed by the previous
-		// socket.close(). But just in case do it explicitly.
-                writer.close();
-            }
-            catch (Throwable ignore) { /* ignore */ }
-            writer = null;
-        }
-
-        // Make sure that the socket is really closed
-        try {
-	    // Does nothing if the socket is already closed
-            socket.close();
-        }
-        catch (Exception e) {
-            // Ignore.
-        }
+        reader = null;
+        writer = null;
 
         saslAuthentication.init();
     }
