@@ -22,6 +22,10 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.Connection.ListenerWrapper;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.parsing.UnparsedIQ;
+import org.jivesoftware.smack.parsing.UnparsedMessage;
+import org.jivesoftware.smack.parsing.UnparsedPresence;
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
 import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
@@ -176,14 +180,49 @@ class PacketReader {
             int eventType = parser.getEventType();
             do {
                 if (eventType == XmlPullParser.START_TAG) {
+                    int parserDepth = parser.getDepth();
+                    ParsingExceptionCallback callback = connection.getParsingExceptionCallback();
                     if (parser.getName().equals("message")) {
-                        processPacket(PacketParserUtils.parseMessage(parser));
+                        Packet packet;
+                        try {
+                            packet = PacketParserUtils.parseMessage(parser);
+                        } catch (Exception e) {
+                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+                            UnparsedMessage message = new UnparsedMessage(content, e);
+                            if (callback != null) {
+                                callback.messageParsingException(e, message);
+                            }
+                            continue;
+                        }
+                        processPacket(packet);
                     }
                     else if (parser.getName().equals("iq")) {
-                        processPacket(PacketParserUtils.parseIQ(parser, connection));
+                        IQ iq;
+                        try {
+                            iq = PacketParserUtils.parseIQ(parser, connection);
+                        } catch (Exception e) {
+                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+                            UnparsedIQ uniq = new UnparsedIQ(content, e);
+                            if (callback != null) {
+                                callback.iqParsingException(e, uniq);
+                            }
+                            continue;
+                        }
+                        processPacket(iq);
                     }
                     else if (parser.getName().equals("presence")) {
-                        processPacket(PacketParserUtils.parsePresence(parser));
+                        Presence presence;
+                        try {
+                            presence = PacketParserUtils.parsePresence(parser);
+                        } catch (Exception e) {
+                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+                            UnparsedPresence unpresence = new UnparsedPresence(content, e);
+                            if (callback != null) {
+                                callback.presenceParsingException(e, unpresence);
+                            }
+                            continue;
+                        }
+                        processPacket(presence);
                     }
                     // We found an opening stream. Record information about it, then notify
                     // the connectionID lock so that the packet reader startup can finish.
