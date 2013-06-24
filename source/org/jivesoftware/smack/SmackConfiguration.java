@@ -344,17 +344,6 @@ public final class SmackConfiguration {
         return autoEnableEntityCaps;
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * Set if Entity Caps are enabled or disabled for every new connection
-     * 
-     * @param true if Entity Caps should be auto enabled, false if not
-     */
-    public static void setAutoEnableEntityCaps(boolean b) {
-        autoEnableEntityCaps = b;
-    }
-
     /**
      * Set the default parsing exception callback for all newly created connections
      *
@@ -375,7 +364,6 @@ public final class SmackConfiguration {
         return defaultCallback;
     }
 
->>>>>>> SMACK-425 Introduced smack.parsing.ParsingExceptionCallback, a callback invoked when a exception is thrown while parsing a stanza. Smack is now able to either rethrow the exception ulitmatly causing a disconnect *or* log/ignore the exception and resume parsing after the faulty stanza.
     private static void parseClassToLoad(XmlPullParser parser) throws Exception {
         String className = parser.nextText();
         // Attempt to load the class so that the class can get initialized
