@@ -38,7 +38,7 @@ import java.util.zip.InflaterInputStream;
 public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
     private final static Method method;
     private final static boolean supported;
-    private final static int compressionLevel = Deflater.DEFAULT_STRATEGY;
+    private final static int compressionLevel = Deflater.DEFAULT_COMPRESSION;
 
     static {
         Method m = null;
