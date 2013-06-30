@@ -276,10 +276,10 @@ public class KeepAliveManager {
                 public void run() {
                     Ping ping = new Ping();
                     PacketFilter responseFilter = new PacketIDFilter(ping.getPacketID());
-                    final PacketCollector response = connection.createPacketCollector(responseFilter);
+                    final PacketCollector response = pingFailedListeners.isEmpty() ? null : connection.createPacketCollector(responseFilter);
                     connection.sendPacket(ping);
         
-                    if (!pingFailedListeners.isEmpty()) {
+                    if (response != null) {
                         // Schedule a collector for the ping reply, notify listeners if none is received.
                         periodicPingExecutorService.schedule(new Runnable() {
                             @Override
