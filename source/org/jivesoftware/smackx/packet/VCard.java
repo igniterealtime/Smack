@@ -568,20 +568,22 @@ public class VCard extends IQ {
         connection.sendPacket(this);
 
         VCard result = null;
-        try {
-            result = (VCard) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
+        Packet packet = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
 
-            if (result == null) {
-                String errorMessage = "Timeout getting VCard information";
-                throw new XMPPException(errorMessage, new XMPPError(
-                        XMPPError.Condition.request_timeout, errorMessage));
-            }
-            if (result.getError() != null) {
-                throw new XMPPException(result.getError());
-            }
+        if (packet == null) {
+            String errorMessage = "Timeout getting VCard information";
+            throw new XMPPException(errorMessage, new XMPPError(XMPPError.Condition.request_timeout, errorMessage));
+        }
+        if (packet.getError() != null) {
+            throw new XMPPException(packet.getError());
+        }
+
+        try {
+           result = (VCard) packet;
         }
         catch (ClassCastException e) {
             System.out.println("No VCard for " + user);
+            return;
         }
 
         copyFieldsFrom(result);
