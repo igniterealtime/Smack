@@ -31,7 +31,7 @@ package org.jivesoftware.smack.parsing;
  * stanza that caused the parsing error by using the getContent() (for example {@link UnparsedIQ#getContent()})
  * method.
  * 
- * Smack provides 2 predefined ParsingExceptionCallback's: {@link LogException} and {@link ThrowException}.
+ * Smack provides 2 predefined ParsingExceptionCallback's: {@link ExceptionLoggingCallback} and {@link ExceptionThrowingCallback}.
  * 
  * @author Florian Schmaus
  * 
@@ -41,36 +41,10 @@ public abstract class ParsingExceptionCallback {
     /**
      * Called when parsing an message stanza caused an exception.
      * 
-     * @param e
-     * the exception thrown while parsing the message stanza
-     * @param message
+     * @param stanzaData
      * the raw message stanza data that caused the exception
      * @throws Exception
      */
-    public void messageParsingException(Exception e, UnparsedMessage message) throws Exception {
-    }
-
-    /**
-     * Called when parsing an IQ stanza caused an exception.
-     * 
-     * @param e
-     * the exception thrown while parsing the iq stanza
-     * @param iq
-     * the raw iq stanza data that caused the exception
-     * @throws Exception
-     */
-    public void iqParsingException(Exception e, UnparsedIQ iq) throws Exception {
-    }
-
-    /**
-     * Called when parsing a presence stanza caused an exception.
-     * 
-     * @param e
-     * the exception thrown while parsing the presence stanza
-     * @param presence
-     * the raw presence stanza data that caused the exception
-     * @throws Exception
-     */
-    public void presenceParsingException(Exception e, UnparsedPresence presence) throws Exception {
+    public void handleUnparsablePacket(UnparsablePacket stanzaData) throws Exception {
     }
 }

@@ -29,20 +29,10 @@ import org.jivesoftware.smack.ConnectionListener;
  * @author Florian Schmaus
  * 
  */
-public class ThrowException extends ParsingExceptionCallback {
+public class ExceptionThrowingCallback extends ParsingExceptionCallback {
 
     @Override
-    public void messageParsingException(Exception e, UnparsedMessage message) throws Exception {
-        throw e;
-    }
-
-    @Override
-    public void iqParsingException(Exception e, UnparsedIQ iq) throws Exception {
-        throw e;
-    }
-
-    @Override
-    public void presenceParsingException(Exception e, UnparsedPresence presence) throws Exception {
-        throw e;
+    public void handleUnparsablePacket(UnparsablePacket packetData) throws Exception {
+        throw packetData.getParsingException();
     }
 }

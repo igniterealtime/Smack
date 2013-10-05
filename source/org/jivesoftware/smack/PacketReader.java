@@ -23,9 +23,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.Connection.ListenerWrapper;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
-import org.jivesoftware.smack.parsing.UnparsedIQ;
-import org.jivesoftware.smack.parsing.UnparsedMessage;
-import org.jivesoftware.smack.parsing.UnparsedPresence;
+import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
 import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
@@ -188,9 +186,9 @@ class PacketReader {
                             packet = PacketParserUtils.parseMessage(parser);
                         } catch (Exception e) {
                             String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
-                            UnparsedMessage message = new UnparsedMessage(content, e);
+                            UnparsablePacket message = new UnparsablePacket(content, e);
                             if (callback != null) {
-                                callback.messageParsingException(e, message);
+                                callback.handleUnparsablePacket(message);
                             }
                             continue;
                         }
@@ -202,9 +200,9 @@ class PacketReader {
                             iq = PacketParserUtils.parseIQ(parser, connection);
                         } catch (Exception e) {
                             String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
-                            UnparsedIQ uniq = new UnparsedIQ(content, e);
+                            UnparsablePacket message = new UnparsablePacket(content, e);
                             if (callback != null) {
-                                callback.iqParsingException(e, uniq);
+                                callback.handleUnparsablePacket(message);
                             }
                             continue;
                         }
@@ -216,9 +214,9 @@ class PacketReader {
                             presence = PacketParserUtils.parsePresence(parser);
                         } catch (Exception e) {
                             String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
-                            UnparsedPresence unpresence = new UnparsedPresence(content, e);
+                            UnparsablePacket message = new UnparsablePacket(content, e);
                             if (callback != null) {
-                                callback.presenceParsingException(e, unpresence);
+                                callback.handleUnparsablePacket(message);
                             }
                             continue;
                         }

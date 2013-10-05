@@ -20,43 +20,18 @@
 
 package org.jivesoftware.smack.parsing;
 
-import org.jivesoftware.smack.packet.IQ;
-
 /**
- * Representation of an unparsed IQ stanza.
+ * Simple parsing exception callback that only logs the encountered parsing exception to stderr.
  * 
  * @author Florian Schmaus
- *
+ * 
  */
-public class UnparsedIQ extends IQ {
-    private final String content;
-    private final Exception e;
-
-    public UnparsedIQ(final String content, final Exception e) {
-        this.content = content;
-        this.e = e;
-    }
-
-    /**
-     * 
-     * @return the exception that caused the parser to fail
-     */
-    public Exception getException() {
-        return e;
-    }
-
-    /**
-     * Retrieve the raw stanza data
-     * 
-     * @return the raw stanza data
-     */
-    public String getContent() {
-        return content;
-    }
+public class ExceptionLoggingCallback extends ParsingExceptionCallback {
 
     @Override
-    public String getChildElementXML() {
-        return null;
+    public void handleUnparsablePacket(UnparsablePacket unparsed) throws Exception {
+        System.err.print("Smack message parsing exception: " + unparsed.getParsingException().getMessage());
+        unparsed.getParsingException().printStackTrace();
+        System.err.println("Unparsed content: " + unparsed.getContent());
     }
-
 }

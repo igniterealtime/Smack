@@ -20,24 +20,18 @@
 
 package org.jivesoftware.smack.parsing;
 
-import org.jivesoftware.smack.packet.Presence;
 
 /**
- * Representation of an unparsed IQ stanza.
+ * Representation of an unparsable packet.
  * 
  * @author Florian Schmaus
  *
  */
-public class UnparsedPresence extends Presence {
-    private String content;
-    private Exception e;
-    
-    public UnparsedPresence(Type type) {
-        super(type);
-    }
-    
-    public UnparsedPresence(final String content, final Exception e) {
-        super(Presence.Type.error);
+public class UnparsablePacket {
+    private final String content;
+    private final Exception e;
+
+    public UnparsablePacket(final String content, final Exception e) {
         this.content = content;
         this.e = e;
     }
@@ -46,7 +40,7 @@ public class UnparsedPresence extends Presence {
      * 
      * @return the exception that caused the parser to fail
      */
-    public Exception getException() {
+    public Exception getParsingException() {
         return e;
     }
 
@@ -58,4 +52,5 @@ public class UnparsedPresence extends Presence {
     public String getContent() {
         return content;
     }
+
 }
