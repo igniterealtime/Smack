@@ -50,7 +50,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public final class SmackConfiguration {
 
-    private static final String SMACK_VERSION = "3.3.0";
+    private static final String SMACK_VERSION = "3.3.1";
 
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;

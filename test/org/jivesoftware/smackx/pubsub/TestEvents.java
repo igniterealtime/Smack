@@ -131,8 +131,6 @@ public class TestEvents extends SmackTestCase
 		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
 		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
-		ItemEventCoordinator<Item> creatorHandler = new ItemEventCoordinator<Item>(queue, "creator");
-		creatorNode.addItemEventListener(creatorHandler);
 		
 		// Setup event receiver
 		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
@@ -146,12 +144,9 @@ public class TestEvents extends SmackTestCase
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.send(new Item(itemId));
         
-        for(int i=0; i<2; i++)
-        {
-    		ItemEventCoordinator<Item> coord = queue.take();
-        	assertEquals(1, coord.events.getItems().size());
-        	assertEquals(itemId, coord.events.getItems().iterator().next().getId());
-        }
+		ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
+    	assertEquals(1, coord.events.getItems().size());
+    	assertEquals(itemId, coord.events.getItems().iterator().next().getId());
 	}
 	
 	public void testPublishAndReceiveNoPayload() throws Exception
@@ -175,7 +170,7 @@ public class TestEvents extends SmackTestCase
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.publish(new Item(itemId));
         
-   		ItemEventCoordinator<Item> coord = queue.take();
+   		ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
        	assertEquals(1, coord.events.getItems().size());
        	assertEquals(itemId, coord.events.getItems().get(0).getId());
 	}
@@ -202,7 +197,7 @@ public class TestEvents extends SmackTestCase
         String payloadString = "<book xmlns=\"pubsub:test:book\"><author>Sir Arthur Conan Doyle</author></book>";
         creatorNode.send(new PayloadItem<SimplePayload>(itemId, new SimplePayload("book", "pubsub:test:book", payloadString)));
         
-   		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.take();
+   		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
        	assertEquals(1, coord.events.getItems().size());
        	PayloadItem<SimplePayload> item = coord.events.getItems().get(0);
        	assertEquals(itemId, item.getId());
@@ -263,8 +258,6 @@ public class TestEvents extends SmackTestCase
 		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
 		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
-		ItemEventCoordinator<Item> creatorHandler = new ItemEventCoordinator<Item>(queue, "creator");
-		creatorNode.addItemEventListener(creatorHandler);
 		
 		// Setup event receiver
 		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
@@ -282,9 +275,12 @@ public class TestEvents extends SmackTestCase
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.send(new Item(itemId));
         
-        for(int i=0; i<3; i++)
+        for(int i=0; i<2; i++)
         {
-    		ItemEventCoordinator<Item> coord = queue.take();
+    		ItemEventCoordinator<Item> coord = queue.poll(10, TimeUnit.SECONDS);
+    		
+    		if (coord == null)
+    		    fail();
         	assertEquals(1, coord.events.getItems().size());
         	assertEquals(itemId, coord.events.getItems().iterator().next().getId());
         	
@@ -377,7 +373,7 @@ public class TestEvents extends SmackTestCase
 		subNode.addItemEventListener(sub1Handler);
 		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
-		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.take();
+		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
    		assertTrue(coord.events.isDelayed());
    		assertNotNull(coord.events.getPublishedDate());
 	}
@@ -491,7 +487,7 @@ public class TestEvents extends SmackTestCase
 		
 		for (int i=0; i<2; i++)
 		{
-			ItemEventCoordinator<Item> event = queue.take();
+			ItemEventCoordinator<Item> event = queue.poll(5, TimeUnit.SECONDS);
 			
 			if (event.id.equals("sub1"))
 			{
