@@ -61,6 +61,7 @@ public class ItemProvider implements PacketExtensionProvider
                     if (tag == XmlPullParser.END_TAG && parser.getName().equals(elem)) 
                     {
                         done = true;
+                        continue;
                     }
                     else if (parser.getEventType() == XmlPullParser.START_TAG) 
                     {
@@ -87,9 +88,13 @@ public class ItemProvider implements PacketExtensionProvider
                     else if (parser.getEventType() == XmlPullParser.END_TAG) 
                     {
                         if (isEmptyElement) 
+                        {
                             isEmptyElement = false;
+                        }
                         else 
+                        {
                             payloadText.append("</").append(parser.getName()).append(">");
+                        }
                     }
                     else if (parser.getEventType() == XmlPullParser.TEXT) 
                     {
@@ -99,9 +104,9 @@ public class ItemProvider implements PacketExtensionProvider
                 }
                 return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText.toString()));
             }
-            else {
-                return new PayloadItem<PacketExtension>(id, node, PacketParserUtils.parsePacketExtension(
-                        payloadElemName, payloadNS, parser));
+            else 
+            {
+                return new PayloadItem<PacketExtension>(id, node, PacketParserUtils.parsePacketExtension(payloadElemName, payloadNS, parser));
             }
         }
     }
