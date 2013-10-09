@@ -695,21 +695,33 @@ public class PacketParserUtils {
      */
     public static StreamError parseStreamError(XmlPullParser parser) throws IOException,
             XmlPullParserException {
-    StreamError streamError = null;
+    final int depth = parser.getDepth();
     boolean done = false;
+    String code = null;
+    String text = null;
     while (!done) {
         int eventType = parser.next();
 
         if (eventType == XmlPullParser.START_TAG) {
-            streamError = new StreamError(parser.getName());
-        }
-        else if (eventType == XmlPullParser.END_TAG) {
-            if (parser.getName().equals("error")) {
-                done = true;
+            String namespace = parser.getNamespace();
+            if (StreamError.NAMESPACE.equals(namespace)) {
+                String name = parser.getName();
+                if (name.equals("text") && !parser.isEmptyElementTag()) {
+                    parser.next();
+                    text = parser.getText();
+                }
+                else {
+                    // If it's not a text element, that is qualified by the StreamError.NAMESPACE,
+                    // then it has to be the stream error code
+                    code = name;
+                }
             }
         }
+        else if (eventType == XmlPullParser.END_TAG && depth == parser.getDepth()) {
+            done = true;
+        }
     }
-    return streamError;
+    return new StreamError(code, text);
 }
 
     /**

@@ -82,11 +82,19 @@ package org.jivesoftware.smack.packet;
  */
 public class StreamError {
 
+    public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-streams";
+
     private String code;
+    private String text;
 
     public StreamError(String code) {
         super();
         this.code = code;
+    }
+
+    public StreamError(String code, String text) {
+        this(code);
+        this.text = text;
     }
 
     /**
@@ -98,9 +106,19 @@ public class StreamError {
         return code;
     }
 
+    /**
+     * Returns the error text, which may be null.
+     *
+     * @return the error text.
+     */
+    public String getText() {
+        return text;
+    }
+
     public String toString() {
         StringBuilder txt = new StringBuilder();
         txt.append("stream:error (").append(code).append(")");
+        if (text != null) txt.append(" text: ").append(text);
         return txt.toString();
     }
 }
