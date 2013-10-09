@@ -59,6 +59,7 @@ class ServerTrustManager implements X509TrustManager {
         this.server = server;
 
         InputStream in = null;
+        char[] password = null;
         synchronized (stores) {
             KeyStoreOptions options = new KeyStoreOptions(configuration.getTruststoreType(),
                     configuration.getTruststorePath(), configuration.getTruststorePassword());
@@ -67,8 +68,18 @@ class ServerTrustManager implements X509TrustManager {
             } else {
                 try {
                     trustStore = KeyStore.getInstance(options.getType());
-                    in = new FileInputStream(options.getPath());
-                    trustStore.load(in, options.getPassword().toCharArray());
+                    if (options.getPassword() != null) {
+                        password = options.getPassword().toCharArray();
+                    }
+
+                    if (options.getPath() == null) {
+                        trustStore.load(null, password);
+                    }
+                    else {
+                        in = new FileInputStream(options.getPath());
+                        trustStore.load(in, password);
+                    }
+
                 } catch (Exception e) {
                     trustStore = null;
                     e.printStackTrace();
