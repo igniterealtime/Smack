@@ -597,7 +597,7 @@ public class XMPPConnection extends Connection {
                 else {
                     xmppError = new XMPPError(XMPPError.Condition.remote_server_timeout);
                 }
-                throw new XMPPException(sb.toString(), xmppError);
+                throw new XMPPException(sb.toString(), xmppError, exception);
             }
         }
         socketClosed = false;
