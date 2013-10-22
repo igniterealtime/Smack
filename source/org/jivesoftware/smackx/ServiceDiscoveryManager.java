@@ -54,7 +54,8 @@ public class ServiceDiscoveryManager {
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
 
-    private static List<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
+    private Set<DiscoverInfo.Identity> identities = new HashSet<DiscoverInfo.Identity>();
+    private DiscoverInfo.Identity identity = new Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
 
     private EntityCapsManager capsManager;
 
@@ -74,7 +75,6 @@ public class ServiceDiscoveryManager {
                 new ServiceDiscoveryManager(connection);
             }
         });
-        identities.add(new Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE));
     }
 
     /**
@@ -86,6 +86,7 @@ public class ServiceDiscoveryManager {
      */
     public ServiceDiscoveryManager(Connection connection) {
         this.connection = connection;
+        identities.add(identity);
 
         init();
     }
@@ -107,13 +108,8 @@ public class ServiceDiscoveryManager {
      * @return the name of the client that will be returned when asked for the client identity
      *          in a disco request.
      */
-    public static String getIdentityName() {
-        DiscoverInfo.Identity identity = identities.get(0);
-        if (identity != null) {
-            return identity.getName();
-        } else {
-            return null;
-        }
+    public String getIdentityName() {
+        return identity.getName();
     }
 
     /**
@@ -123,10 +119,8 @@ public class ServiceDiscoveryManager {
      * @param name the name of the client that will be returned when asked for the client identity
      *          in a disco request.
      */
-    public static void setIdentityName(String name) {
-        DiscoverInfo.Identity identity = identities.remove(0);
-        identity = new DiscoverInfo.Identity(DEFAULT_IDENTITY_CATEGORY, name, DEFAULT_IDENTITY_TYPE);
-        identities.add(identity);
+    public void setIdentityName(String name) {
+        identity.setName(name);
     }
 
     /**
@@ -137,13 +131,8 @@ public class ServiceDiscoveryManager {
      * @return the type of client that will be returned when asked for the client identity in a 
      *          disco request.
      */
-    public static String getIdentityType() {
-        DiscoverInfo.Identity identity = identities.get(0);
-        if (identity != null) {
-            return identity.getType();
-        } else {
-            return null;
-        }
+    public String getIdentityType() {
+        return identity.getType();
     }
 
     /**
@@ -154,14 +143,30 @@ public class ServiceDiscoveryManager {
      * @param type the type of client that will be returned when asked for the client identity in a 
      *          disco request.
      */
-    public static void setIdentityType(String type) {
-        DiscoverInfo.Identity identity = identities.get(0);
-        if (identity != null) {
-            identity.setType(type);
-        } else {
-            identity = new DiscoverInfo.Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, type);
-            identities.add(identity);
-        }
+    public void setIdentityType(String type) {
+        identity.setType(type);
+    }
+    
+    /**
+     * Add an identity to the client.
+     * 
+     * @param identity
+     */
+    public void addIdentity(DiscoverInfo.Identity identity) {
+        identities.add(identity);
+    }
+    
+    /**
+     * Remove an identity from the client. Note that the client needs at least one identity, the default identity, which
+     * can not be removed.
+     * 
+     * @param identity
+     * @return true, if successful. Otherwise the default identity was given.
+     */
+    public boolean removeIdentity(DiscoverInfo.Identity identity) {
+        if (identity.equals(this.identity)) return false;
+        identities.remove(identity);
+        return true;
     }
 
     /**
@@ -169,8 +174,8 @@ public class ServiceDiscoveryManager {
      * 
      * @return
      */
-    public static List<DiscoverInfo.Identity> getIdentities() {
-        return Collections.unmodifiableList(identities);
+    public Set<DiscoverInfo.Identity> getIdentities() {
+        return Collections.unmodifiableSet(identities);
     }
 
     /**
