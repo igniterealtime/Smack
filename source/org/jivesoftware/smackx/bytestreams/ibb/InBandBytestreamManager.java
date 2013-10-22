@@ -102,7 +102,13 @@ public class InBandBytestreamManager implements BytestreamManager {
                 // register shutdown listener
                 connection.addConnectionListener(new AbstractConnectionListener() {
 
+                    @Override
                     public void connectionClosed() {
+                        manager.disableService();
+                    }
+
+                    @Override
+                    public void connectionClosedOnError(Exception e) {
                         manager.disableService();
                     }
 
