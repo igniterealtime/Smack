@@ -652,9 +652,6 @@ public class XMPPConnection extends Connection {
                     listener.connectionCreated(this);
                 }
             }
-            else if (!wasAuthenticated) {
-                notifyReconnection();
-            }
 
         }
         catch (XMPPException ex) {
