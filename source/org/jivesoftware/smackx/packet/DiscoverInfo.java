@@ -328,7 +328,6 @@ public class DiscoverInfo extends IQ {
          * 'type' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a> 
          *
          * @param type the identity's type.
-         * @deprecated As per the spec, this field is mandatory and the 3 argument constructor should be used instead.
          */
         public void setType(String type) {
             this.type = type;
