@@ -72,7 +72,7 @@ public class ServiceDiscoveryManager {
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                new ServiceDiscoveryManager(connection);
+                getInstanceFor(connection);
             }
         });
         identities.add(new Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE));
