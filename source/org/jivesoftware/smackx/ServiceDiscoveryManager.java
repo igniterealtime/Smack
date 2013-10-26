@@ -53,9 +53,11 @@ public class ServiceDiscoveryManager {
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
+    private static DiscoverInfo.Identity defaultIdentity = new Identity(DEFAULT_IDENTITY_CATEGORY,
+            DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
 
     private Set<DiscoverInfo.Identity> identities = new HashSet<DiscoverInfo.Identity>();
-    private DiscoverInfo.Identity identity = new Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
+    private DiscoverInfo.Identity identity = defaultIdentity;
 
     private EntityCapsManager capsManager;
 
@@ -75,6 +77,16 @@ public class ServiceDiscoveryManager {
                 new ServiceDiscoveryManager(connection);
             }
         });
+    }
+
+    /**
+     * Set the default identity all new connections will have. If unchanged the default identity is an
+     * identity where category is set to 'client', type is set to 'pc' and name is set to 'Smack'.
+     * 
+     * @param identity
+     */
+    public static void setDefaultIdentity(DiscoverInfo.Identity identity) {
+        defaultIdentity = identity;
     }
 
     /**
