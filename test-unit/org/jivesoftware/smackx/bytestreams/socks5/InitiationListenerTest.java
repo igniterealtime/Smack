@@ -59,7 +59,7 @@ public class InitiationListenerTest {
         connection = mock(Connection.class);
 
         // create service discovery manager for mocked connection
-        new ServiceDiscoveryManager(connection);
+        ServiceDiscoveryManager.getInstanceFor(connection);
 
         // initialize Socks5ByteStreamManager to get the InitiationListener
         byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);

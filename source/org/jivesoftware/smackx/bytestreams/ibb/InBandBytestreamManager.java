@@ -95,21 +95,27 @@ public class InBandBytestreamManager implements BytestreamManager {
      */
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
-                final InBandBytestreamManager manager;
-                manager = InBandBytestreamManager.getByteStreamManager(connection);
+            public void connectionCreated(final Connection connection) {
+                // create the manager for this connection
+                InBandBytestreamManager.getByteStreamManager(connection);
 
                 // register shutdown listener
                 connection.addConnectionListener(new AbstractConnectionListener() {
 
                     @Override
                     public void connectionClosed() {
-                        manager.disableService();
+                        InBandBytestreamManager.getByteStreamManager(connection).disableService();
                     }
 
                     @Override
                     public void connectionClosedOnError(Exception e) {
-                        manager.disableService();
+                        InBandBytestreamManager.getByteStreamManager(connection).disableService();
+                    }
+
+                    @Override
+                    public void reconnectionSuccessful() {
+                        // re-create the manager for this connection
+                        InBandBytestreamManager.getByteStreamManager(connection);
                     }
 
                 });
@@ -526,7 +532,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
     /**
      * Disables the InBandBytestreamManager by removing its packet listeners and resetting its
-     * internal status.
+     * internal status, which includes removing this instance from the managers map.
      */
     private void disableService() {
 

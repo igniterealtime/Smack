@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Privacy;
 import org.jivesoftware.smack.packet.PrivacyItem;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -43,9 +44,10 @@ import java.util.*;
 public class PrivacyListManager {
 
     // Keep the list of instances of this class.
-	private static Map<Connection, PrivacyListManager> instances = new Hashtable<Connection, PrivacyListManager>();
+    private static Map<Connection, PrivacyListManager> instances = Collections
+            .synchronizedMap(new WeakHashMap<Connection, PrivacyListManager>());
 
-	private Connection connection;
+	private WeakReference<Connection> connection;
 	private final List<PrivacyListListener> listeners = new ArrayList<PrivacyListListener>();
 	PacketFilter packetFilter = new AndFilter(new IQTypeFilter(IQ.Type.SET),
     		new PacketExtensionFilter("query", "jabber:iq:privacy"));
@@ -67,49 +69,10 @@ public class PrivacyListManager {
      *
      * @param connection the XMPP connection.
      */
-	private PrivacyListManager(Connection connection) {
-        this.connection = connection;
-        this.init();
-    }
-
-	/** Answer the connection userJID that owns the privacy.
-	 * @return the userJID that owns the privacy
-	 */
-	private String getUser() {
-		return connection.getUser();
-	}
-
-    /**
-     * Initializes the packet listeners of the connection that will notify for any set privacy 
-     * package. 
-     */
-    private void init() {
+	private PrivacyListManager(final Connection connection) {
+        this.connection = new WeakReference<Connection>(connection);
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
-        // Add a listener to the connection that removes the registered instance when
-        // the connection is closed
-        connection.addConnectionListener(new ConnectionListener() {
-            public void connectionClosed() {
-                // Unregister this instance since the connection has been closed
-                instances.remove(connection);
-            }
-
-            public void connectionClosedOnError(Exception e) {
-                // ignore
-            }
-
-            public void reconnectionFailed(Exception e) {
-                // ignore
-            }
-
-            public void reconnectingIn(int seconds) {
-                // ignore
-            }
-
-            public void reconnectionSuccessful() {
-                // ignore
-            }
-        });
 
         connection.addPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
@@ -151,8 +114,14 @@ public class PrivacyListManager {
                 // Send create & join packet.
                 connection.sendPacket(iq);
             }
-        }, packetFilter);
-    }
+        }, packetFilter);    }
+
+	/** Answer the connection userJID that owns the privacy.
+	 * @return the userJID that owns the privacy
+	 */
+	private String getUser() {
+		return connection.get().getUser();
+	}
 
     /**
      * Returns the PrivacyListManager instance associated with a given Connection.
@@ -174,6 +143,8 @@ public class PrivacyListManager {
 	 * @exception XMPPException if the request or the answer failed, it raises an exception.
 	 */ 
 	private Privacy getRequest(Privacy requestPrivacy) throws XMPPException {
+        Connection connection = PrivacyListManager.this.connection.get();
+        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
 		// The request is a get iq type
 		requestPrivacy.setType(Privacy.Type.GET);
 		requestPrivacy.setFrom(this.getUser());
@@ -212,7 +183,8 @@ public class PrivacyListManager {
 	 * @exception XMPPException if the request or the answer failed, it raises an exception.
 	 */ 
 	private Packet setRequest(Privacy requestPrivacy) throws XMPPException {
-		
+        Connection connection = PrivacyListManager.this.connection.get();
+        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
 		// The request is a get iq type
 		requestPrivacy.setType(Privacy.Type.SET);
 		requestPrivacy.setFrom(this.getUser());

@@ -95,8 +95,8 @@ public class Socks5ByteStreamManagerTest {
          * create service discovery managers for the connections because the
          * ConnectionCreationListener is not called when creating mocked connections
          */
-        new ServiceDiscoveryManager(connection1);
-        new ServiceDiscoveryManager(connection2);
+        ServiceDiscoveryManager.getInstanceFor(connection1);
+        ServiceDiscoveryManager.getInstanceFor(connection2);
 
         // get bytestream manager for the first connection twice
         Socks5BytestreamManager conn1ByteStreamManager1 = Socks5BytestreamManager.getBytestreamManager(connection1);

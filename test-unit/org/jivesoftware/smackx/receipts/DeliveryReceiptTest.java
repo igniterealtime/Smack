@@ -70,7 +70,7 @@ public class DeliveryReceiptTest {
     @Test
     public void receiptManagerListenerTest() throws Exception {
         DummyConnection c = new DummyConnection();
-        ServiceDiscoveryManager sdm = new ServiceDiscoveryManager(c);
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(c);
         DeliveryReceiptManager drm = DeliveryReceiptManager.getInstanceFor(c);
 
         TestReceiptReceivedListener rrl = new TestReceiptReceivedListener();
@@ -100,7 +100,7 @@ public class DeliveryReceiptTest {
     @Test
     public void receiptManagerAutoReplyTest() throws Exception {
         DummyConnection c = new DummyConnection();
-        ServiceDiscoveryManager sdm = new ServiceDiscoveryManager(c);
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(c);
         DeliveryReceiptManager drm = DeliveryReceiptManager.getInstanceFor(c);
 
         drm.enableAutoReceipts();

@@ -34,6 +34,7 @@ import org.jivesoftware.smackx.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.packet.DataForm;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,9 +60,9 @@ public class ServiceDiscoveryManager {
     private EntityCapsManager capsManager;
 
     private static Map<Connection, ServiceDiscoveryManager> instances =
-            new ConcurrentHashMap<Connection, ServiceDiscoveryManager>();
+            Collections.synchronizedMap(new WeakHashMap<Connection, ServiceDiscoveryManager>());
 
-    private Connection connection;
+    private WeakReference<Connection> connection;
     private final Set<String> features = new HashSet<String>();
     private DataForm extendedInfo = null;
     private Map<String, NodeInformationProvider> nodeInformationProviders =
@@ -82,12 +83,100 @@ public class ServiceDiscoveryManager {
      * service manager will respond to any service discovery request that the connection may
      * receive. 
      * 
+     * @deprecated  use {@link #getInstanceFor(connection)} instead
      * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
+    @Deprecated
     public ServiceDiscoveryManager(Connection connection) {
-        this.connection = connection;
+        this.connection = new WeakReference<Connection>(connection);
+        // Register the new instance and associate it with the connection 
+        instances.put(connection, this);
 
-        init();
+        addFeature(DiscoverInfo.NAMESPACE);
+        addFeature(DiscoverItems.NAMESPACE);
+
+        // Listen for disco#items requests and answer with an empty result        
+        PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
+        PacketListener packetListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Connection connection = ServiceDiscoveryManager.this.connection.get();
+                if (connection == null) return;
+                DiscoverItems discoverItems = (DiscoverItems) packet;
+                // Send back the items defined in the client if the request is of type GET
+                if (discoverItems != null && discoverItems.getType() == IQ.Type.GET) {
+                    DiscoverItems response = new DiscoverItems();
+                    response.setType(IQ.Type.RESULT);
+                    response.setTo(discoverItems.getFrom());
+                    response.setPacketID(discoverItems.getPacketID());
+                    response.setNode(discoverItems.getNode());
+
+                    // Add the defined items related to the requested node. Look for 
+                    // the NodeInformationProvider associated with the requested node.  
+                    NodeInformationProvider nodeInformationProvider =
+                            getNodeInformationProvider(discoverItems.getNode());
+                    if (nodeInformationProvider != null) {
+                        // Specified node was found, add node items
+                        response.addItems(nodeInformationProvider.getNodeItems());
+                        // Add packet extensions
+                        response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
+                    } else if(discoverItems.getNode() != null) {
+                        // Return <item-not-found/> error since client doesn't contain
+                        // the specified node
+                        response.setType(IQ.Type.ERROR);
+                        response.setError(new XMPPError(XMPPError.Condition.item_not_found));
+                    }
+                    connection.sendPacket(response);
+                }
+            }
+        };
+        connection.addPacketListener(packetListener, packetFilter);
+
+        // Listen for disco#info requests and answer the client's supported features 
+        // To add a new feature as supported use the #addFeature message        
+        packetFilter = new PacketTypeFilter(DiscoverInfo.class);
+        packetListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Connection connection = ServiceDiscoveryManager.this.connection.get();
+                if (connection == null) return;
+                DiscoverInfo discoverInfo = (DiscoverInfo) packet;
+                // Answer the client's supported features if the request is of the GET type
+                if (discoverInfo != null && discoverInfo.getType() == IQ.Type.GET) {
+                    DiscoverInfo response = new DiscoverInfo();
+                    response.setType(IQ.Type.RESULT);
+                    response.setTo(discoverInfo.getFrom());
+                    response.setPacketID(discoverInfo.getPacketID());
+                    response.setNode(discoverInfo.getNode());
+                    // Add the client's identity and features only if "node" is null
+                    // and if the request was not send to a node. If Entity Caps are
+                    // enabled the client's identity and features are may also added
+                    // if the right node is chosen
+                    if (discoverInfo.getNode() == null) {
+                        addDiscoverInfoTo(response);
+                    }
+                    else {
+                        // Disco#info was sent to a node. Check if we have information of the
+                        // specified node
+                        NodeInformationProvider nodeInformationProvider =
+                                getNodeInformationProvider(discoverInfo.getNode());
+                        if (nodeInformationProvider != null) {
+                            // Node was found. Add node features
+                            response.addFeatures(nodeInformationProvider.getNodeFeatures());
+                            // Add node identities
+                            response.addIdentities(nodeInformationProvider.getNodeIdentities());
+                            // Add packet extensions
+                            response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
+                        }
+                        else {
+                            // Return <item-not-found/> error since specified node was not found
+                            response.setType(IQ.Type.ERROR);
+                            response.setError(new XMPPError(XMPPError.Condition.item_not_found));
+                        }
+                    }
+                    connection.sendPacket(response);
+                }
+            }
+        };
+        connection.addPacketListener(packetListener, packetFilter);
     }
 
     /**
@@ -96,8 +185,12 @@ public class ServiceDiscoveryManager {
      * @param connection the connection used to look for the proper ServiceDiscoveryManager.
      * @return the ServiceDiscoveryManager associated with a given Connection.
      */
-    public static ServiceDiscoveryManager getInstanceFor(Connection connection) {
-        return instances.get(connection);
+    public static synchronized ServiceDiscoveryManager getInstanceFor(Connection connection) {
+        ServiceDiscoveryManager sdm = instances.get(connection);
+        if (sdm == null) {
+            sdm = new ServiceDiscoveryManager(connection);
+        }
+        return sdm;
     }
 
     /**
@@ -171,122 +264,6 @@ public class ServiceDiscoveryManager {
      */
     public static List<DiscoverInfo.Identity> getIdentities() {
         return Collections.unmodifiableList(identities);
-    }
-
-    /**
-     * Initializes the packet listeners of the connection that will answer to any
-     * service discovery request. 
-     */
-    private void init() {
-        // Register the new instance and associate it with the connection 
-        instances.put(connection, this);
-
-        addFeature(DiscoverInfo.NAMESPACE);
-        addFeature(DiscoverItems.NAMESPACE);
-
-        // Add a listener to the connection that removes the registered instance when
-        // the connection is closed
-        connection.addConnectionListener(new ConnectionListener() {
-            public void connectionClosed() {
-                // Unregister this instance since the connection has been closed
-                instances.remove(connection);
-            }
-
-            public void connectionClosedOnError(Exception e) {
-                // ignore
-            }
-
-            public void reconnectionFailed(Exception e) {
-                // ignore
-            }
-
-            public void reconnectingIn(int seconds) {
-                // ignore
-            }
-
-            public void reconnectionSuccessful() {
-                // ignore
-            }
-        });
-
-        // Listen for disco#items requests and answer with an empty result        
-        PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
-        PacketListener packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                DiscoverItems discoverItems = (DiscoverItems) packet;
-                // Send back the items defined in the client if the request is of type GET
-                if (discoverItems != null && discoverItems.getType() == IQ.Type.GET) {
-                    DiscoverItems response = new DiscoverItems();
-                    response.setType(IQ.Type.RESULT);
-                    response.setTo(discoverItems.getFrom());
-                    response.setPacketID(discoverItems.getPacketID());
-                    response.setNode(discoverItems.getNode());
-
-                    // Add the defined items related to the requested node. Look for 
-                    // the NodeInformationProvider associated with the requested node.  
-                    NodeInformationProvider nodeInformationProvider =
-                            getNodeInformationProvider(discoverItems.getNode());
-                    if (nodeInformationProvider != null) {
-                        // Specified node was found, add node items
-                        response.addItems(nodeInformationProvider.getNodeItems());
-                        // Add packet extensions
-                        response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
-                    } else if(discoverItems.getNode() != null) {
-                        // Return <item-not-found/> error since client doesn't contain
-                        // the specified node
-                        response.setType(IQ.Type.ERROR);
-                        response.setError(new XMPPError(XMPPError.Condition.item_not_found));
-                    }
-                    connection.sendPacket(response);
-                }
-            }
-        };
-        connection.addPacketListener(packetListener, packetFilter);
-
-        // Listen for disco#info requests and answer the client's supported features 
-        // To add a new feature as supported use the #addFeature message        
-        packetFilter = new PacketTypeFilter(DiscoverInfo.class);
-        packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                DiscoverInfo discoverInfo = (DiscoverInfo) packet;
-                // Answer the client's supported features if the request is of the GET type
-                if (discoverInfo != null && discoverInfo.getType() == IQ.Type.GET) {
-                    DiscoverInfo response = new DiscoverInfo();
-                    response.setType(IQ.Type.RESULT);
-                    response.setTo(discoverInfo.getFrom());
-                    response.setPacketID(discoverInfo.getPacketID());
-                    response.setNode(discoverInfo.getNode());
-                    // Add the client's identity and features only if "node" is null
-                    // and if the request was not send to a node. If Entity Caps are
-                    // enabled the client's identity and features are may also added
-                    // if the right node is chosen
-                    if (discoverInfo.getNode() == null) {
-                        addDiscoverInfoTo(response);
-                    }
-                    else {
-                        // Disco#info was sent to a node. Check if we have information of the
-                        // specified node
-                        NodeInformationProvider nodeInformationProvider =
-                                getNodeInformationProvider(discoverInfo.getNode());
-                        if (nodeInformationProvider != null) {
-                            // Node was found. Add node features
-                            response.addFeatures(nodeInformationProvider.getNodeFeatures());
-                            // Add node identities
-                            response.addIdentities(nodeInformationProvider.getNodeIdentities());
-                            // Add packet extensions
-                            response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
-                        }
-                        else {
-                            // Return <item-not-found/> error since specified node was not found
-                            response.setType(IQ.Type.ERROR);
-                            response.setError(new XMPPError(XMPPError.Condition.item_not_found));
-                        }
-                    }
-                    connection.sendPacket(response);
-                }
-            }
-        };
-        connection.addPacketListener(packetListener, packetFilter);
     }
 
     /**
@@ -534,6 +511,9 @@ public class ServiceDiscoveryManager {
      * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverInfo discoverInfo(String entityID, String node) throws XMPPException {
+        Connection connection = ServiceDiscoveryManager.this.connection.get();
+        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
+
         // Discover the entity's info
         DiscoverInfo disco = new DiscoverInfo();
         disco.setType(IQ.Type.GET);
@@ -581,6 +561,9 @@ public class ServiceDiscoveryManager {
      * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverItems discoverItems(String entityID, String node) throws XMPPException {
+        Connection connection = ServiceDiscoveryManager.this.connection.get();
+        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
+
         // Discover the entity's items
         DiscoverItems disco = new DiscoverItems();
         disco.setType(IQ.Type.GET);
@@ -662,6 +645,9 @@ public class ServiceDiscoveryManager {
      */
     public void publishItems(String entityID, String node, DiscoverItems discoverItems)
             throws XMPPException {
+        Connection connection = ServiceDiscoveryManager.this.connection.get();
+        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
+
         discoverItems.setType(IQ.Type.SET);
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);

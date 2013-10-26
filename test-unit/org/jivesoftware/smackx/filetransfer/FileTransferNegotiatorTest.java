@@ -39,7 +39,7 @@ public class FileTransferNegotiatorTest {
         connection = new DummyConnection();
         connection.connect();
         connection.login("me", "secret");
-        new ServiceDiscoveryManager(connection);
+        ServiceDiscoveryManager.getInstanceFor(connection);
     }
 
     @After

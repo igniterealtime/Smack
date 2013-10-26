@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.ping;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.ScheduledExecutorService;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -91,7 +90,7 @@ public class PingManager {
         
         // The ServiceDiscoveryManager was not pre-initialized
         if (sdm == null)
-            sdm = new ServiceDiscoveryManager(connection);
+            sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         
         sdm.addFeature(Ping.NAMESPACE);
         

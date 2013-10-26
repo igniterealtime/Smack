@@ -38,10 +38,13 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -70,7 +73,7 @@ public class AdHocCommandManager {
      * pair for every active connection.
      */
     private static Map<Connection, AdHocCommandManager> instances =
-            new ConcurrentHashMap<Connection, AdHocCommandManager>();
+            Collections.synchronizedMap(new WeakHashMap<Connection, AdHocCommandManager>());
 
     /**
      * Register the listener for all the connection creations. When a new
@@ -92,26 +95,23 @@ public class AdHocCommandManager {
      * @param connection the XMPP connection.
      * @return the AdHocCommandManager associated with the connection.
      */
-    public static AdHocCommandManager getAddHocCommandsManager(Connection connection) {
-        return instances.get(connection);
+    public static synchronized AdHocCommandManager getAddHocCommandsManager(Connection connection) {
+        AdHocCommandManager ahcm = instances.get(connection);
+        if (ahcm == null) ahcm = new AdHocCommandManager(connection);
+        return ahcm;
     }
-
-    /**
-     * Thread that reaps stale sessions.
-     */
-    private Thread sessionsSweeper;
 
     /**
      * The Connection that this instances of AdHocCommandManager manages
      */
-    private Connection connection;
+    private final WeakReference<Connection> connection;
 
     /**
      * Map a command node with its AdHocCommandInfo. Note: Key=command node,
      * Value=command. Command node matches the node attribute sent by command
      * requesters.
      */
-    private Map<String, AdHocCommandInfo> commands = new ConcurrentHashMap<String, AdHocCommandInfo>();
+    private final Map<String, AdHocCommandInfo> commands = new ConcurrentHashMap<String, AdHocCommandInfo>();
 
     /**
      * Map a command session ID with the instance LocalCommand. The LocalCommand
@@ -119,174 +119,21 @@ public class AdHocCommandManager {
      * the command execution. Note: Key=session ID, Value=LocalCommand. Session
      * ID matches the sessionid attribute sent by command responders.
      */
-    private Map<String, LocalCommand> executingCommands = new ConcurrentHashMap<String, LocalCommand>();
+    private final Map<String, LocalCommand> executingCommands = new ConcurrentHashMap<String, LocalCommand>();
+    
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
+    
+    /**
+     * Thread that reaps stale sessions.
+     */
+    private Thread sessionsSweeper;
 
     private AdHocCommandManager(Connection connection) {
-        super();
-        this.connection = connection;
-        init();
-    }
-
-    /**
-     * Registers a new command with this command manager, which is related to a
-     * connection. The <tt>node</tt> is an unique identifier of that command for
-     * the connection related to this command manager. The <tt>name</tt> is the
-     * human readable name of the command. The <tt>class</tt> is the class of
-     * the command, which must extend {@link LocalCommand} and have a default
-     * constructor.
-     *
-     * @param node the unique identifier of the command.
-     * @param name the human readable name of the command.
-     * @param clazz the class of the command, which must extend {@link LocalCommand}.
-     */
-    public void registerCommand(String node, String name, final Class<? extends LocalCommand> clazz) {
-        registerCommand(node, name, new LocalCommandFactory() {
-            public LocalCommand getInstance() throws InstantiationException, IllegalAccessException  {
-                return clazz.newInstance();
-            }
-        });
-    }
-
-    /**
-     * Registers a new command with this command manager, which is related to a
-     * connection. The <tt>node</tt> is an unique identifier of that
-     * command for the connection related to this command manager. The <tt>name</tt>
-     * is the human readeale name of the command. The <tt>factory</tt> generates
-     * new instances of the command.
-     *
-     * @param node the unique identifier of the command.
-     * @param name the human readable name of the command.
-     * @param factory a factory to create new instances of the command.
-     */
-    public void registerCommand(String node, final String name, LocalCommandFactory factory) {
-        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection.getUser(), factory);
-
-        commands.put(node, commandInfo);
-        // Set the NodeInformationProvider that will provide information about
-        // the added command
-        ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(node,
-                new NodeInformationProvider() {
-                    public List<DiscoverItems.Item> getNodeItems() {
-                        return null;
-                    }
-
-                    public List<String> getNodeFeatures() {
-                        List<String> answer = new ArrayList<String>();
-                        answer.add(DISCO_NAMESPACE);
-                        // TODO: check if this service is provided by the
-                        // TODO: current connection.
-                        answer.add("jabber:x:data");
-                        return answer;
-                    }
-
-                    public List<DiscoverInfo.Identity> getNodeIdentities() {
-                        List<DiscoverInfo.Identity> answer = new ArrayList<DiscoverInfo.Identity>();
-                        DiscoverInfo.Identity identity = new DiscoverInfo.Identity(
-                                "automation", name, "command-node");
-                        answer.add(identity);
-                        return answer;
-                    }
-
-                    @Override
-                    public List<PacketExtension> getNodePacketExtensions() {
-                        return null;
-                    }
-
-                });
-    }
-
-    /**
-     * Discover the commands of an specific JID. The <code>jid</code> is a
-     * full JID.
-     *
-     * @param jid the full JID to retrieve the commands for.
-     * @return the discovered items.
-     * @throws XMPPException if the operation failed for some reason.
-     */
-    public DiscoverItems discoverCommands(String jid) throws XMPPException {
-        ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager
-                .getInstanceFor(connection);
-        return serviceDiscoveryManager.discoverItems(jid, discoNode);
-    }
-
-    /**
-     * Publish the commands to an specific JID.
-     *
-     * @param jid the full JID to publish the commands to.
-     * @throws XMPPException if the operation failed for some reason.
-     */
-    public void publishCommands(String jid) throws XMPPException {
-        ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager
-                .getInstanceFor(connection);
-
-        // Collects the commands to publish as items
-        DiscoverItems discoverItems = new DiscoverItems();
-        Collection<AdHocCommandInfo> xCommandsList = getRegisteredCommands();
-
-        for (AdHocCommandInfo info : xCommandsList) {
-            DiscoverItems.Item item = new DiscoverItems.Item(info.getOwnerJID());
-            item.setName(info.getName());
-            item.setNode(info.getNode());
-            discoverItems.addItem(item);
-        }
-
-        serviceDiscoveryManager.publishItems(jid, discoNode, discoverItems);
-    }
-
-    /**
-     * Returns a command that represents an instance of a command in a remote
-     * host. It is used to execute remote commands. The concept is similar to
-     * RMI. Every invocation on this command is equivalent to an invocation in
-     * the remote command.
-     *
-     * @param jid the full JID of the host of the remote command
-     * @param node the identifier of the command
-     * @return a local instance equivalent to the remote command.
-     */
-    public RemoteCommand getRemoteCommand(String jid, String node) {
-        return new RemoteCommand(connection, node, jid);
-    }
-
-    /**
-     * <ul>
-     * <li>Adds listeners to the connection</li>
-     * <li>Registers the ad-hoc command feature to the ServiceDiscoveryManager</li>
-     * <li>Registers the items of the feature</li>
-     * <li>Adds packet listeners to handle execution requests</li>
-     * <li>Creates and start the session sweeper</li>
-     * </ul>
-     */
-    private void init() {
+        this.connection = new WeakReference<Connection>(connection);
+        this.serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        
         // Register the new instance and associate it with the connection
         instances.put(connection, this);
-
-        // Add a listener to the connection that removes the registered instance
-        // when the connection is closed
-        connection.addConnectionListener(new ConnectionListener() {
-            public void connectionClosed() {
-                // Unregister this instance since the connection has been closed
-                instances.remove(connection);
-            }
-
-            public void connectionClosedOnError(Exception e) {
-                // Unregister this instance since the connection has been closed
-                instances.remove(connection);
-            }
-
-            public void reconnectionSuccessful() {
-                // Register this instance since the connection has been
-                // reestablished
-                instances.put(connection, AdHocCommandManager.this);
-            }
-
-            public void reconnectingIn(int seconds) {
-                // Nothing to do
-            }
-
-            public void reconnectionFailed(Exception e) {
-                // Nothing to do
-            }
-        });
 
         // Add the feature to the service discovery manage to show that this
         // connection supports the AdHoc-Commands protocol.
@@ -344,6 +191,121 @@ public class AdHocCommandManager {
         connection.addPacketListener(listener, filter);
 
         sessionsSweeper = null;
+    }
+
+    /**
+     * Registers a new command with this command manager, which is related to a
+     * connection. The <tt>node</tt> is an unique identifier of that command for
+     * the connection related to this command manager. The <tt>name</tt> is the
+     * human readable name of the command. The <tt>class</tt> is the class of
+     * the command, which must extend {@link LocalCommand} and have a default
+     * constructor.
+     *
+     * @param node the unique identifier of the command.
+     * @param name the human readable name of the command.
+     * @param clazz the class of the command, which must extend {@link LocalCommand}.
+     */
+    public void registerCommand(String node, String name, final Class<? extends LocalCommand> clazz) {
+        registerCommand(node, name, new LocalCommandFactory() {
+            public LocalCommand getInstance() throws InstantiationException, IllegalAccessException  {
+                return clazz.newInstance();
+            }
+        });
+    }
+
+    /**
+     * Registers a new command with this command manager, which is related to a
+     * connection. The <tt>node</tt> is an unique identifier of that
+     * command for the connection related to this command manager. The <tt>name</tt>
+     * is the human readeale name of the command. The <tt>factory</tt> generates
+     * new instances of the command.
+     *
+     * @param node the unique identifier of the command.
+     * @param name the human readable name of the command.
+     * @param factory a factory to create new instances of the command.
+     */
+    public void registerCommand(String node, final String name, LocalCommandFactory factory) {
+        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection.get().getUser(), factory);
+
+        commands.put(node, commandInfo);
+        // Set the NodeInformationProvider that will provide information about
+        // the added command
+        serviceDiscoveryManager.setNodeInformationProvider(node,
+                new NodeInformationProvider() {
+                    public List<DiscoverItems.Item> getNodeItems() {
+                        return null;
+                    }
+
+                    public List<String> getNodeFeatures() {
+                        List<String> answer = new ArrayList<String>();
+                        answer.add(DISCO_NAMESPACE);
+                        // TODO: check if this service is provided by the
+                        // TODO: current connection.
+                        answer.add("jabber:x:data");
+                        return answer;
+                    }
+
+                    public List<DiscoverInfo.Identity> getNodeIdentities() {
+                        List<DiscoverInfo.Identity> answer = new ArrayList<DiscoverInfo.Identity>();
+                        DiscoverInfo.Identity identity = new DiscoverInfo.Identity(
+                                "automation", name, "command-node");
+                        answer.add(identity);
+                        return answer;
+                    }
+
+                    @Override
+                    public List<PacketExtension> getNodePacketExtensions() {
+                        return null;
+                    }
+
+                });
+    }
+
+    /**
+     * Discover the commands of an specific JID. The <code>jid</code> is a
+     * full JID.
+     *
+     * @param jid the full JID to retrieve the commands for.
+     * @return the discovered items.
+     * @throws XMPPException if the operation failed for some reason.
+     */
+    public DiscoverItems discoverCommands(String jid) throws XMPPException {
+        return serviceDiscoveryManager.discoverItems(jid, discoNode);
+    }
+
+    /**
+     * Publish the commands to an specific JID.
+     *
+     * @param jid the full JID to publish the commands to.
+     * @throws XMPPException if the operation failed for some reason.
+     */
+    public void publishCommands(String jid) throws XMPPException {
+        // Collects the commands to publish as items
+        DiscoverItems discoverItems = new DiscoverItems();
+        Collection<AdHocCommandInfo> xCommandsList = getRegisteredCommands();
+
+        for (AdHocCommandInfo info : xCommandsList) {
+            DiscoverItems.Item item = new DiscoverItems.Item(info.getOwnerJID());
+            item.setName(info.getName());
+            item.setNode(info.getNode());
+            discoverItems.addItem(item);
+        }
+
+        serviceDiscoveryManager.publishItems(jid, discoNode, discoverItems);
+    }
+
+    /**
+     * Returns a command that represents an instance of a command in a remote
+     * host. It is used to execute remote commands. The concept is similar to
+     * RMI. Every invocation on this command is equivalent to an invocation in
+     * the remote command.
+     *
+     * @param jid the full JID of the host of the remote command
+     * @param node the identifier of the command
+     * @return a local instance equivalent to the remote command.
+     */
+    public RemoteCommand getRemoteCommand(String jid, String node) {
+        return new RemoteCommand(connection.get(), node, jid);
     }
 
     /**
@@ -491,7 +453,7 @@ public class AdHocCommandManager {
                 }
 
                 // Sends the response packet
-                connection.sendPacket(response);
+                connection.get().sendPacket(response);
 
             }
             catch (XMPPException e) {
@@ -607,7 +569,7 @@ public class AdHocCommandManager {
                         executingCommands.remove(sessionId);
                     }
 
-                    connection.sendPacket(response);
+                    connection.get().sendPacket(response);
                 }
                 catch (XMPPException e) {
                     // If there is an exception caused by the next, complete,
@@ -665,7 +627,7 @@ public class AdHocCommandManager {
     private void respondError(AdHocCommandData response, XMPPError error) {
         response.setType(IQ.Type.ERROR);
         response.setError(error);
-        connection.sendPacket(response);
+        connection.get().sendPacket(response);
     }
 
     /**

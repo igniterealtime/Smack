@@ -86,7 +86,7 @@ public class ConnectionUtils {
         when(collector.nextResult()).thenAnswer(answer);
 
         // initialize service discovery manager for this connection
-        new ServiceDiscoveryManager(connection);
+        ServiceDiscoveryManager.getInstanceFor(connection);
 
         return connection;
     }
