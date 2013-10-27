@@ -126,14 +126,6 @@ class PacketWriter {
     }
 
     /**
-     * Cleans up all resources used by the packet writer.
-     */
-    void cleanup() {
-        connection.interceptors.clear();
-        connection.sendListeners.clear();
-    }
-
-    /**
      * Returns the next available packet from the queue for writing.
      *
      * @return the next packet for writing.

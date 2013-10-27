@@ -145,14 +145,6 @@ class PacketReader {
     }
 
     /**
-     * Cleans up all resources used by the packet reader.
-     */
-    void cleanup() {
-        connection.recvListeners.clear();
-        connection.collectors.clear();
-    }
-
-    /**
      * Resets the parser using the latest connection's reader. Reseting the parser is necessary
      * when the plain connection has been secured or when a new opening stream element is going
      * to be sent by the server.

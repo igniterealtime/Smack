@@ -583,13 +583,6 @@ public class Roster {
     }
 
     /**
-     * Cleans up all resources used by the roster.
-     */
-    void cleanup() {
-        rosterListeners.clear();
-    }
-
-    /**
      * Returns the key to use in the presenceMap for a fully qualified XMPP ID.
      * The roster can contain any valid address format such us "domain/resource",
      * "user@domain" or "user@domain/resource". If the roster contains an entry

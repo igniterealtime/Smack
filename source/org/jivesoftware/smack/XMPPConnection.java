@@ -475,15 +475,7 @@ public class XMPPConnection extends Connection {
 
         shutdown(unavailablePresence);
 
-        if (roster != null) {
-            roster.cleanup();
-            roster = null;
-        }
-
         wasAuthenticated = false;
-
-        packetWriter.cleanup();
-        packetReader.cleanup();
     }
 
     public void sendPacket(Packet packet) {
