@@ -190,7 +190,7 @@ public class ServiceDiscoveryManager {
         Set<Identity> res = new HashSet<Identity>(identities);
         // Add the default identity that must exist
         res.add(defaultIdentity);
-        return res;
+        return Collections.unmodifiableSet(res);
     }
 
     /**
