@@ -527,15 +527,11 @@ public abstract class Connection {
 
     /**
      * Adds a connection listener to this connection that will be notified when
-     * the connection closes or fails. The connection needs to already be connected
-     * or otherwise an IllegalStateException will be thrown.
+     * the connection closes or fails.
      * 
      * @param connectionListener a connection listener.
      */
     public void addConnectionListener(ConnectionListener connectionListener) {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
         if (connectionListener == null) {
             return;
         }
