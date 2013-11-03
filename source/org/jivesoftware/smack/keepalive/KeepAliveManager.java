@@ -59,7 +59,7 @@ public class KeepAliveManager {
         if (SmackConfiguration.getKeepAliveInterval() > 0) {
             Connection.addConnectionCreationListener(new ConnectionCreationListener() {
                 public void connectionCreated(Connection connection) {
-                    new KeepAliveManager(connection);
+                    getInstanceFor(connection);
                 }
             });
         }

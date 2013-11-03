@@ -47,7 +47,7 @@ public class DeliveryReceiptManager implements PacketListener {
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                new DeliveryReceiptManager(connection);
+                getInstanceFor(connection);
             }
         });
     }
@@ -74,7 +74,7 @@ public class DeliveryReceiptManager implements PacketListener {
      *
      * @return the DeliveryReceiptManager instance for the given connection
      */
-    synchronized public static DeliveryReceiptManager getInstanceFor(Connection connection) {
+     public static synchronized DeliveryReceiptManager getInstanceFor(Connection connection) {
         DeliveryReceiptManager receiptManager = instances.get(connection);
 
         if (receiptManager == null) {

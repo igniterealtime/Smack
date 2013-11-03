@@ -83,7 +83,7 @@ public class AdHocCommandManager {
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                new AdHocCommandManager(connection);
+                getAddHocCommandsManager(connection);
             }
         });
     }

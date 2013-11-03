@@ -58,7 +58,7 @@ public class PrivacyListManager {
         // instance when the connection is closed.
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                new PrivacyListManager(connection);
+                getInstanceFor(connection);
             }
         });
     }
@@ -129,8 +129,10 @@ public class PrivacyListManager {
      * @param connection the connection used to look for the proper PrivacyListManager.
      * @return the PrivacyListManager associated with a given Connection.
      */
-    public static PrivacyListManager getInstanceFor(Connection connection) {
-        return instances.get(connection);
+    public static synchronized PrivacyListManager getInstanceFor(Connection connection) {
+        PrivacyListManager plm = instances.get(connection);
+        if (plm == null) plm = new PrivacyListManager(connection);
+        return plm;
     }
     
 	/**

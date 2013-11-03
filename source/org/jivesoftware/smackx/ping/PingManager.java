@@ -60,7 +60,7 @@ public class PingManager {
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                new PingManager(connection);
+                getInstanceFor(connection);
             }
         });
     }
