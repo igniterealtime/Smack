@@ -99,8 +99,7 @@ public class EntityCapsManager {
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                if (connection instanceof XMPPConnection)
-                    new EntityCapsManager(connection);
+                getInstanceFor(connection);
             }
         });
 
@@ -225,11 +224,6 @@ public class EntityCapsManager {
     private EntityCapsManager(Connection connection) {
         this.weakRefConnection = new WeakReference<Connection>(connection);
         this.sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-        init();
-    }
-
-    private void init() {
-        Connection connection = weakRefConnection.get();
         instances.put(connection, this);
 
         connection.addConnectionListener(new ConnectionListener() {
@@ -326,13 +320,8 @@ public class EntityCapsManager {
     }
 
     public static synchronized EntityCapsManager getInstanceFor(Connection connection) {
-        // For testing purposed forbid EntityCaps for non XMPPConnections
-        // it may work on BOSH connections too
-        if (!(connection instanceof XMPPConnection))
-            return null;
-
         if (SUPPORTED_HASHES.size() <= 0)
-            return null;
+            throw new IllegalStateException("No supported hashes for EntityCapsManager");
 
         EntityCapsManager entityCapsManager = instances.get(connection);
 

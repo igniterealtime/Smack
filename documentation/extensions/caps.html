@@ -33,7 +33,7 @@ Enable Entity Capabilities
 <blockquote>
 <pre>
       <font color="#3f7f5f">// Get an instance of entity caps manager for the specified connection</font>
-      Entity CapabilitiesManager mgr = new EntityCapsManager.getInstanceFor(con);
+      EntityCapsManager mgr = EntityCapsManager.getInstanceFor(connection);
 
       <font color="#3f7f5f">// Enable entity capabilities</font>
       mgr.enableEntityCaps();
@@ -45,7 +45,7 @@ Configure a persistent cache for Entity Capabilities
 <blockquote>
 <pre>
       <font color="#3f7f5f">// Get an instance of entity caps manager for the specified connection</font>
-      Entity CapabilitiesManager mgr = new EntityCapsManager.getInstanceFor(con);
+      EntityCapsManager mgr = EntityCapsManager.getInstanceFor(connection);
 
       <font color="#3f7f5f">// Create an cache, see smackx.entitycaps.cache for pre-defined cache implementations</font>
       EntityCapsPersistentCache cache = new SimpleDirectoryPersistentCache(new File("/foo/cachedir"));
