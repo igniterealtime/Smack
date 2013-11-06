@@ -17,7 +17,9 @@
 
 package org.jivesoftware.smackx.iqversion.packet;
 
+
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
@@ -46,10 +48,29 @@ import org.jivesoftware.smack.packet.IQ;
  * @author Gaston Dombiak
  */
 public class Version extends IQ {
+    public static final String NAMESPACE = "jabber:iq:version";
 
     private String name;
     private String version;
     private String os;
+
+    /**
+     * Creates a new Version object with given details.
+     *
+     * @param name The natural-language name of the software. This element is REQUIRED.
+     * @param version The specific version of the software. This element is REQUIRED.
+     * @param os The operating system of the queried entity. This element is OPTIONAL.
+     */
+    public Version(String name, String version, String os) {
+        this.setType(IQ.Type.RESULT);
+        this.name = name;
+        this.version = version;
+        this.os = os;
+    }
+
+    public Version(Version original) {
+        this(original.name, original.version, original.os);
+    }
 
     /**
      * Returns the natural-language name of the software. This property will always be
@@ -113,15 +134,17 @@ public class Version extends IQ {
 
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:version\">");
+        buf.append("<query xmlns=\"");
+        buf.append(Version.NAMESPACE);
+        buf.append("\">");
         if (name != null) {
-            buf.append("<name>").append(name).append("</name>");
+            buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
         }
         if (version != null) {
-            buf.append("<version>").append(version).append("</version>");
+            buf.append("<version>").append(StringUtils.escapeForXML(version)).append("</version>");
         }
         if (os != null) {
-            buf.append("<os>").append(os).append("</os>");
+            buf.append("<os>").append(StringUtils.escapeForXML(os)).append("</os>");
         }
         buf.append("</query>");
         return buf.toString();

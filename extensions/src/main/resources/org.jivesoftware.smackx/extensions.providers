@@ -127,7 +127,7 @@
     <iqProvider>
         <elementName>query</elementName>
         <namespace>jabber:iq:version</namespace>
-        <className>org.jivesoftware.smackx.iqversion.packet.Version</className> 
+        <className>org.jivesoftware.smackx.iqversion.provider.VersionProvider</className>
     </iqProvider>
 
     <!-- VCard -->
