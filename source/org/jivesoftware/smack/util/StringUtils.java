@@ -521,8 +521,50 @@ public class StringUtils {
     }
 
     /**
+     * Encodes a string for use in an XML attribute by escaping characters with
+     * a special meaning. In particular, white spaces are encoded as character
+     * references, such that they are not replaced by ' ' on parsing.
+     */
+    private static String xmlAttribEncodeBinary(String value) {
+        StringBuilder s = new StringBuilder();
+        char buf[] = value.toCharArray();
+        for (char c : buf) {
+            switch (c) {
+            case '<': s.append("&lt;"); break;
+            case '>': s.append("&gt;"); break;
+            case '&': s.append("&amp;"); break;
+            case '"': s.append("&quot;"); break;
+            case '\'': s.append("&apos;"); break;
+            default:
+                if (c <= 0x1f || (0x7f <= c && c <= 0x9f)) { // includes \t, \n, \r
+                    s.append("&#x");
+                    s.append(String.format("%X", (int)c));
+                    s.append(';');
+                } else  {
+                    s.append(c);
+                }
+            }
+        }
+        return s.toString();
+    }
+
+    /**
+     * Returns a string representing a XML attribute. The value parameter is escaped as necessary. In particular,
+     * white spaces are encoded as character references, such that they are not replaced by ' ' on parsing.
+     * @param name name of the XML attribute
+     * @param value value of the XML attribute
+     */
+    public static String xmlAttrib(String name, String value) {
+        return name + "=\"" + xmlAttribEncodeBinary(value) + "\"";
+    }
+
+
+    /**
      * Escapes all necessary characters in the String so that it can be used
      * in an XML doc.
+     *
+     * <strong>Warning:</strong> This method does not escape unicode character references
+     * (i.e. references of the from &#235;) 
      *
      * @param string the string to escape.
      * @return the string with appropriate characters escaped.

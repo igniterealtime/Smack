@@ -28,7 +28,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * A group of roster entries.
@@ -40,7 +41,7 @@ public class RosterGroup {
 
     private String name;
     private Connection connection;
-    private final List<RosterEntry> entries;
+    private final Set<RosterEntry> entries;
 
     /**
      * Creates a new roster group instance.
@@ -51,7 +52,7 @@ public class RosterGroup {
     RosterGroup(String name, Connection connection) {
         this.name = name;
         this.connection = connection;
-        entries = new ArrayList<RosterEntry>();
+        entries = new LinkedHashSet<RosterEntry>();
     }
 
     /**
@@ -235,7 +236,7 @@ public class RosterGroup {
     }
 
     void addEntryLocal(RosterEntry entry) {
-        // Only add the entry if it isn't already in the list.
+        // Update the entry if it is already in the list
         synchronized (entries) {
             entries.remove(entry);
             entries.add(entry);

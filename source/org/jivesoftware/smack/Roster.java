@@ -27,9 +27,11 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -55,7 +57,8 @@ public class Roster {
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
-    private Connection connection;
+    private final Connection connection;
+    private final RosterStore rosterStore;
     private final Map<String, RosterGroup> groups;
     private final Map<String,RosterEntry> entries;
     private final List<RosterEntry> unfiledEntries;
@@ -99,6 +102,7 @@ public class Roster {
      */
     Roster(final Connection connection) {
         this.connection = connection;
+        rosterStore = connection.getConfiguration().getRosterStore();
         groups = new ConcurrentHashMap<String, RosterGroup>();
         unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
         entries = new ConcurrentHashMap<String,RosterEntry>();
@@ -188,7 +192,13 @@ public class Roster {
             throw new IllegalStateException("Anonymous users can't have a roster.");
         }
 
-        connection.sendPacket(new RosterPacket());
+        RosterPacket packet = new RosterPacket();
+        if (rosterStore != null && connection.isRosterVersioningSupported()) {
+            packet.setVersion(rosterStore.getRosterVersion());
+            PacketFilter filter = new PacketIDFilter(packet.getPacketID());
+            connection.addPacketListener(new RosterResultListener(), filter);
+        }
+        connection.sendPacket(packet);
     }
 
     /**
@@ -660,6 +670,81 @@ public class Roster {
         }
     }
 
+    private void addUpdateEntry(Collection<String> addedEntries,
+            Collection<String> updatedEntries, RosterPacket.Item item,
+            RosterEntry entry) {
+        RosterEntry oldEntry = entries.put(item.getUser(), entry);
+        if (oldEntry == null) {
+            addedEntries.add(item.getUser());
+        }
+        else {
+            RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
+            if (!oldEntry.equalsDeep(entry) || !item.getGroupNames().equals(oldItem.getGroupNames())) {
+                updatedEntries.add(item.getUser());
+            }
+        }
+
+        // Mark the entry as unfiled if it does not belong to any groups.
+        if (item.getGroupNames().isEmpty()) {
+            if (!unfiledEntries.contains(entry)) {
+                unfiledEntries.add(entry);
+            }
+        }
+        else {
+            unfiledEntries.remove(entry);
+        }
+
+        // Add the user to the new groups
+
+        // Add the entry to the groups
+        List<String> newGroupNames = new ArrayList<String>();
+        for (String groupName : item.getGroupNames()) {
+            // Add the group name to the list.
+            newGroupNames.add(groupName);
+
+            // Add the entry to the group.
+            RosterGroup group = getGroup(groupName);
+            if (group == null) {
+                group = createGroup(groupName);
+                groups.put(groupName, group);
+            }
+            // Add the entry.
+            group.addEntryLocal(entry);
+        }
+
+        // Remove user from the remaining groups.
+        List<String> oldGroupNames = new ArrayList<String>();
+        for (RosterGroup group: getGroups()) {
+            oldGroupNames.add(group.getName());
+        }
+        oldGroupNames.removeAll(newGroupNames);
+
+        for (String groupName : oldGroupNames) {
+            RosterGroup group = getGroup(groupName);
+            group.removeEntryLocal(entry);
+            if (group.getEntryCount() == 0) {
+                groups.remove(groupName);
+            }
+        }
+    }
+
+    private void deleteEntry(Collection<String> deletedEntries, RosterEntry entry) {
+        String user = entry.getUser();
+        entries.remove(user);
+        unfiledEntries.remove(entry);
+        presenceMap.remove(StringUtils.parseBareAddress(user));
+        deletedEntries.add(user);
+
+        for (Entry<String,RosterGroup> e: groups.entrySet()) {
+            RosterGroup group = e.getValue();
+            group.removeEntryLocal(entry);
+            if (group.getEntryCount() == 0) {
+                groups.remove(e.getKey());
+            }
+        }
+    }
+
+
     /**
      * An enumeration for the subscription mode options.
      */
@@ -802,122 +887,97 @@ public class Roster {
     }
 
     /**
+     * Handles the case of the empty IQ-result for roster versioning.
+     *
+     * Intended to listen for a concrete roster result and deregisters
+     * itself after a processed packet.
+     */
+    private class RosterResultListener implements PacketListener {
+
+        @Override
+        public void processPacket(Packet packet) {
+            connection.removePacketListener(this);
+            if (packet instanceof RosterPacket) {
+                // Non-empty roster results are processed by the RosterPacketListener class
+                return;
+            }
+            if (!(packet instanceof IQ)) {
+                return;
+            }
+            IQ result = (IQ)packet;
+            if(result.getType().equals(IQ.Type.RESULT)){
+                Collection<String> addedEntries = new ArrayList<String>();
+                Collection<String> updatedEntries = new ArrayList<String>();
+                for(RosterPacket.Item item : rosterStore.getEntries()){
+                    RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                    addUpdateEntry(addedEntries,updatedEntries,item,entry);
+                }
+
+                synchronized (Roster.this) {
+                    rosterInitialized = true;
+                    Roster.this.notifyAll();
+                }
+                fireRosterChangedEvent(addedEntries,updatedEntries,
+                        Collections.<String>emptyList());
+            }
+        }
+
+    }
+
+    /**
      * Listens for all roster packets and processes them.
      */
     private class RosterPacketListener implements PacketListener {
 
         public void processPacket(Packet packet) {
-            // Keep a registry of the entries that were added, deleted or updated. An event
-            // will be fired for each affected entry
+            RosterPacket rosterPacket = (RosterPacket) packet;
             Collection<String> addedEntries = new ArrayList<String>();
             Collection<String> updatedEntries = new ArrayList<String>();
             Collection<String> deletedEntries = new ArrayList<String>();
 
-            RosterPacket rosterPacket = (RosterPacket) packet;
-            for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
-                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
+            String version = rosterPacket.getVersion();
 
-                // If the packet is of the type REMOVE then remove the entry
-                if (RosterPacket.ItemType.remove.equals(item.getItemType())) {
-                    // Remove the entry from the entry list.
-                    if (entries.containsKey(item.getUser())) {
-                        entries.remove(item.getUser());
-                    }
-                    // Remove the entry from the unfiled entry list.
-                    if (unfiledEntries.contains(entry)) {
-                        unfiledEntries.remove(entry);
-                    }
-                    // Removing the user from the roster, so remove any presence information
-                    // about them.
-                    String key = StringUtils.parseName(item.getUser()) + "@" +
-                            StringUtils.parseServer(item.getUser());
-                    presenceMap.remove(key);
-                    // Keep note that an entry has been removed
-                    deletedEntries.add(item.getUser());
+            if (rosterPacket.getType().equals(IQ.Type.SET)) {
+                // Roster push (RFC 6121, 2.1.6)
+                // A roster push with a non-empty from not matching our address MUST be ignored
+                String jid = StringUtils.parseBareAddress(connection.getUser());
+                if (rosterPacket.getFrom() != null &&
+                        !rosterPacket.getFrom().equals(jid)) {
+                    return;
                 }
-                else {
-                    // Make sure the entry is in the entry list.
-                    if (!entries.containsKey(item.getUser())) {
-                        entries.put(item.getUser(), entry);
-                        // Keep note that an entry has been added
-                        addedEntries.add(item.getUser());
-                    }
-                    else {
-                        // If the entry was in then list then update its state with the new values
-                        RosterEntry oldEntry = entries.put(item.getUser(), entry);
 
-                        RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
-                        //We have also to check if only the group names have changed from the item
-                        if (oldEntry == null || !oldEntry.equalsDeep(entry) || !item.getGroupNames().equals(oldItem.getGroupNames()))
-                        {
-                        updatedEntries.add(item.getUser());
-                        }
-                    }
-                    // If the roster entry belongs to any groups, remove it from the
-                    // list of unfiled entries.
-                    if (!item.getGroupNames().isEmpty()) {
-                        unfiledEntries.remove(entry);
-                    }
-                    // Otherwise add it to the list of unfiled entries.
-                    else {
-                        if (!unfiledEntries.contains(entry)) {
-                            unfiledEntries.add(entry);
-                        }
+                // A roster push must contain exactly one entry
+                Collection<Item> items = rosterPacket.getRosterItems();
+                if (items.size() != 1) {
+                    return;
+                }
+                Item item = items.iterator().next();
+                processPushItem(addedEntries, updatedEntries, deletedEntries, version, item);
+
+                connection.sendPacket(IQ.createResultIQ(rosterPacket));
+            }
+            else {
+                // Roster result (RFC 6121, 2.1.4)
+
+                // Ignore items without valid subscription type
+                ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
+                for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
+                    if (hasValidSubscriptionType(item)) {
+                        validItems.add(item);
                     }
                 }
 
-                // Find the list of groups that the user currently belongs to.
-                List<String> currentGroupNames = new ArrayList<String>();
-                for (RosterGroup group: getGroups()) {
-                    if (group.contains(entry)) {
-                        currentGroupNames.add(group.getName());
-                    }
-                }
+                processResult(addedEntries, updatedEntries, deletedEntries, version, validItems);
+            }
 
-                // If the packet is not of the type REMOVE then add the entry to the groups
-                if (!RosterPacket.ItemType.remove.equals(item.getItemType())) {
-                    // Create the new list of groups the user belongs to.
-                    List<String> newGroupNames = new ArrayList<String>();
-                    for (String groupName : item.getGroupNames()) {
-                        // Add the group name to the list.
-                        newGroupNames.add(groupName);
-
-                        // Add the entry to the group.
-                        RosterGroup group = getGroup(groupName);
-                        if (group == null) {
-                            group = createGroup(groupName);
-                            groups.put(groupName, group);
-                        }
-                        // Add the entry.
-                        group.addEntryLocal(entry);
-                    }
-
-                    // We have the list of old and new group names. We now need to
-                    // remove the entry from the all the groups it may no longer belong
-                    // to. We do this by subtracting the new group set from the old.
-                    for (String newGroupName : newGroupNames) {
-                        currentGroupNames.remove(newGroupName);
-                    }
-                }
-
-                // Loop through any groups that remain and remove the entries.
-                // This is necessary for the case of remote entry removals.
-                for (String groupName : currentGroupNames) {
-                    RosterGroup group = getGroup(groupName);
-                    group.removeEntryLocal(entry);
-                    if (group.getEntryCount() == 0) {
-                        groups.remove(groupName);
-                    }
-                }
-                // Remove all the groups with no entries. We have to do this because
-                // RosterGroup.removeEntry removes the entry immediately (locally) and the
-                // group could remain empty.
-                // TODO Check the performance/logic for rosters with large number of groups
-                for (RosterGroup group : getGroups()) {
-                    if (group.getEntryCount() == 0) {
-                        groups.remove(group.getName());
-                    }
+            // Remove all the groups with no entries. We have to do this because
+            // RosterGroup.removeEntry removes the entry immediately (locally) and the
+            // group could remain empty.
+            // TODO Check the performance/logic for rosters with large number of groups
+            for (RosterGroup group : getGroups()) {
+                if (group.getEntryCount() == 0) {
+                    groups.remove(group.getName());
                 }
             }
 
@@ -930,5 +990,58 @@ public class Roster {
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
         }
+
+        private void processPushItem(Collection<String> addedEntries, Collection<String> updatedEntries,
+                Collection<String> deletedEntries, String version, Item item) {
+            RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                    item.getItemType(), item.getItemStatus(), Roster.this, connection);
+
+            if (item.getItemType().equals(RosterPacket.ItemType.remove)) {
+                deleteEntry(deletedEntries, entry);
+                if (rosterStore != null) {
+                    rosterStore.removeEntry(entry.getUser(), version);
+                }
+            }
+            else if (hasValidSubscriptionType(item)) {
+                addUpdateEntry(addedEntries, updatedEntries, item, entry);
+                if (rosterStore != null) {
+                    rosterStore.addEntry(item, version);
+                }
+            }
+        }
+
+        private void processResult(Collection<String> addedEntries, Collection<String> updatedEntries,
+                Collection<String> deletedEntries, String version, Collection<Item> items) {
+            for (RosterPacket.Item item : items) {
+                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                addUpdateEntry(addedEntries, updatedEntries, item, entry);
+            }
+            List<String> toDelete = new ArrayList<String>();
+
+            // Delete all entries which where not added or updated
+            for (RosterEntry entry : entries.values()) {
+                toDelete.add(entry.getUser());
+            }
+            toDelete.removeAll(addedEntries);
+            toDelete.removeAll(updatedEntries);
+            for (String user : toDelete) {
+                deleteEntry(deletedEntries, entries.get(user));
+            }
+            
+            if (rosterStore != null) {
+                rosterStore.resetEntries(items, version);
+            }
+        }
+
+        /* Ignore ItemTypes as of RFC 6121, 2.1.2.5. */
+        private boolean hasValidSubscriptionType(RosterPacket.Item item) {
+            return item.getItemType().equals(RosterPacket.ItemType.none)
+                    || item.getItemType().equals(RosterPacket.ItemType.from)
+                    || item.getItemType().equals(RosterPacket.ItemType.to)
+                    || item.getItemType().equals(RosterPacket.ItemType.both);
+        }
+
     }
+
 }

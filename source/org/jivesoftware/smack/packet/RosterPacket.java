@@ -33,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class RosterPacket extends IQ {
 
     private final List<Item> rosterItems = new ArrayList<Item>();
+    private String rosterVersion;
 
     /**
      * Adds a roster item to the packet.
@@ -69,7 +70,13 @@ public class RosterPacket extends IQ {
 
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:roster\">");
+        buf.append("<query xmlns=\"jabber:iq:roster\"");
+        if (rosterVersion != null) {
+            buf.append(" ver=\"");
+            buf.append(rosterVersion);
+            buf.append('"');
+        }
+        buf.append(">");
         synchronized (rosterItems) {
             for (Item entry : rosterItems) {
                 buf.append(entry.toXML());
@@ -77,6 +84,14 @@ public class RosterPacket extends IQ {
         }
         buf.append("</query>");
         return buf.toString();
+    }
+
+    public String getVersion() {
+        return rosterVersion;
+    }
+
+    public void setVersion(String version) {
+        rosterVersion = version;
     }
 
     /**
@@ -198,7 +213,7 @@ public class RosterPacket extends IQ {
 
         public String toXML() {
             StringBuilder buf = new StringBuilder();
-            buf.append("<item jid=\"").append(user).append("\"");
+            buf.append("<item jid=\"").append(StringUtils.escapeForXML(user)).append("\"");
             if (name != null) {
                 buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
             }
@@ -215,53 +230,83 @@ public class RosterPacket extends IQ {
             buf.append("</item>");
             return buf.toString();
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((groupNames == null) ? 0 : groupNames.hashCode());
+            result = prime * result + ((itemStatus == null) ? 0 : itemStatus.hashCode());
+            result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((user == null) ? 0 : user.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Item other = (Item) obj;
+            if (groupNames == null) {
+                if (other.groupNames != null)
+                    return false;
+            }
+            else if (!groupNames.equals(other.groupNames))
+                return false;
+            if (itemStatus != other.itemStatus)
+                return false;
+            if (itemType != other.itemType)
+                return false;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            }
+            else if (!name.equals(other.name))
+                return false;
+            if (user == null) {
+                if (other.user != null)
+                    return false;
+            }
+            else if (!user.equals(other.user))
+                return false;
+            return true;
+        }
+
     }
 
     /**
      * The subscription status of a roster item. An optional element that indicates
      * the subscription status if a change request is pending.
      */
-    public static class ItemStatus {
+    public static enum ItemStatus {
+        /**
+         * Request to subscribe
+         */
+        subscribe,
 
         /**
-         * Request to subcribe.
+         * Request to unsubscribe
          */
-        public static final ItemStatus SUBSCRIPTION_PENDING = new ItemStatus("subscribe");
+        unsubscribe;
 
-        /**
-         * Request to unsubscribe.
-         */
-        public static final ItemStatus UNSUBSCRIPTION_PENDING = new ItemStatus("unsubscribe");
+        public static final ItemStatus SUBSCRIPTION_PENDING = subscribe;
+        public static final ItemStatus UNSUBSCRIPTION_PENDING = unsubscribe;
 
-        public static ItemStatus fromString(String value) {
-            if (value == null) {
+        public static ItemStatus fromString(String s) {
+            if (s == null) {
                 return null;
             }
-            value = value.toLowerCase();
-            if ("unsubscribe".equals(value)) {
-                return UNSUBSCRIPTION_PENDING;
+            try {
+                return ItemStatus.valueOf(s);
             }
-            else if ("subscribe".equals(value)) {
-                return SUBSCRIPTION_PENDING;
-            }
-            else {
+            catch (IllegalArgumentException e) {
                 return null;
             }
-        }
-
-        private String value;
-
-        /**
-         * Returns the item status associated with the specified string.
-         *
-         * @param value the item status.
-         */
-        private ItemStatus(String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
         }
     }
 

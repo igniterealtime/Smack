@@ -419,6 +419,10 @@ public class PacketParserUtils {
         RosterPacket roster = new RosterPacket();
         boolean done = false;
         RosterPacket.Item item = null;
+
+        String version = parser.getAttributeValue("", "ver");
+        roster.setVersion(version);
+
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -436,7 +440,7 @@ public class PacketParserUtils {
                     RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription != null ? subscription : "none");
                     item.setItemType(type);
                 }
-                if (parser.getName().equals("group") && item!= null) {
+                else if (parser.getName().equals("group") && item!= null) {
                     final String groupName = parser.nextText();
                     if (groupName != null && groupName.trim().length() > 0) {
                         item.addGroupName(groupName);

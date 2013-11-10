@@ -27,6 +27,7 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.callback.CallbackHandler;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,8 +91,13 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean sendPresence = true;
     private boolean rosterLoadedAtLogin = true;
     private SecurityMode securityMode = SecurityMode.enabled;
-	
-	// Holds the proxy information (such as proxyhost, proxyport, username, password etc)
+
+    /**
+     * Permanent store for the Roster, needed for roster versioning
+     */
+    private RosterStore rosterStore;
+
+    // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
     protected ProxyInfo proxy;
 
     /**
@@ -695,6 +701,21 @@ public class ConnectionConfiguration implements Cloneable {
     public List<HostAddress> getHostAddresses() {
         return Collections.unmodifiableList(hostAddresses);
     }
+
+    /**
+     * Set the permanent roster store
+     */
+    public void setRosterStore(RosterStore store) {
+        rosterStore = store;
+    }
+
+    /**
+     * Get the permanent roster store
+     */
+    public RosterStore getRosterStore() {
+        return rosterStore;
+    }
+
 
     /**
      * An enumeration for TLS security modes that are available when making a connection

@@ -169,6 +169,11 @@ public class RosterEntry {
         return buf.toString();
     }
 
+    @Override
+    public int hashCode() {
+        return (user == null ? 0 : user.hashCode());
+    }
+
     public boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -179,11 +184,6 @@ public class RosterEntry {
         else {
             return false;
         }
-    }
-
-    @Override
-    public int hashCode() {
-        return this.user.hashCode();
     }
 
     /**

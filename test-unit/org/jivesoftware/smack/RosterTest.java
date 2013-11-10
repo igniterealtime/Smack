@@ -356,6 +356,25 @@ public class RosterTest {
     }
 
     /**
+     * Tests that roster pushes with invalid from are ignored.
+     *
+     * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-syntax-actions-push">RFC 6121, Section 2.1.6</a>
+     */
+    @Test(timeout=5000)
+    public void testIgnoreInvalidFrom() {
+        RosterPacket packet = new RosterPacket();
+        packet.setType(Type.SET);
+        packet.setTo(connection.getUser());
+        packet.setFrom("mallory@example.com");
+        packet.addRosterItem(new Item("spam@example.com", "Cool products!"));
+
+        // Simulate receiving the roster push
+        connection.processPacket(packet);
+
+        assertNull("Contact was added to roster", connection.getRoster().getEntry("spam@example.com"));
+    }
+
+    /**
      * Test if adding an user with an empty group is equivalent with providing
      * no group.
      * 

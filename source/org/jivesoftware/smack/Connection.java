@@ -211,6 +211,11 @@ public abstract class Connection {
      */
     private String serviceCapsNode;
 
+    /**
+     * Stores whether the server supports rosterVersioning
+     */
+    private boolean rosterVersioningSupported = false;
+
     protected XMPPInputOutputStream compressionHandler;
 
     /**
@@ -827,6 +832,22 @@ public abstract class Connection {
      */
     public String getServiceCapsNode() {
         return serviceCapsNode;
+    }
+
+    /**
+     * Returns true if the server supports roster versioning as defined in XEP-0237.
+     *
+     * @return true if the server supports roster versioning
+     */
+    public boolean isRosterVersioningSupported() {
+        return rosterVersioningSupported;
+    }
+
+    /**
+     * Indicates that the server supports roster versioning as defined in XEP-0237.
+     */
+    protected void setRosterVersioningSupported() {
+        rosterVersioningSupported = true;
     }
 
     /**

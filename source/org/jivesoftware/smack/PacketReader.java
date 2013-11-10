@@ -396,6 +396,11 @@ class PacketReader {
                     // The server supports sessions
                     connection.getSASLAuthentication().sessionsSupported();
                 }
+                else if (parser.getName().equals("ver")) {
+                    if (parser.getNamespace().equals("urn:xmpp:features:rosterver")) {
+                        connection.setRosterVersioningSupported();
+                    }
+                }
                 else if (parser.getName().equals("compression")) {
                     // The server supports stream compression
                     connection.setAvailableCompressionMethods(PacketParserUtils.parseCompressionMethods(parser));
