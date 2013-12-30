@@ -56,6 +56,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
@@ -444,9 +445,9 @@ public class EntityCapsManager {
         if (connection != null)
             jidCaps.put(connection.getUser(), new NodeVerHash(ENTITY_NODE, currentCapsVersion, "sha-1"));
 
+        final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(ENTITY_NODE + '#' + currentCapsVersion, new NodeInformationProvider() {
             List<String> features = sdm.getFeaturesList();
-            List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getIdentities());
             List<PacketExtension> packetExtensions = sdm.getExtendedInfoAsList();
 
             @Override

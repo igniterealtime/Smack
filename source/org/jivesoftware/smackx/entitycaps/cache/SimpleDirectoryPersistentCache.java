@@ -28,7 +28,6 @@ import java.io.StringReader;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.Base32Encoder;
-import org.jivesoftware.smack.util.Base64Encoder;
 import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.entitycaps.EntityCapsManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;

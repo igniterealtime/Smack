@@ -54,8 +54,11 @@ public class ServiceDiscoveryManager {
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
+    private static DiscoverInfo.Identity defaultIdentity = new Identity(DEFAULT_IDENTITY_CATEGORY,
+            DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
 
-    private static List<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
+    private Set<DiscoverInfo.Identity> identities = new HashSet<DiscoverInfo.Identity>();
+    private DiscoverInfo.Identity identity = defaultIdentity;
 
     private EntityCapsManager capsManager;
 
@@ -75,7 +78,16 @@ public class ServiceDiscoveryManager {
                 getInstanceFor(connection);
             }
         });
-        identities.add(new Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE));
+    }
+
+    /**
+     * Set the default identity all new connections will have. If unchanged the default identity is an
+     * identity where category is set to 'client', type is set to 'pc' and name is set to 'Smack'.
+     * 
+     * @param identity
+     */
+    public static void setDefaultIdentity(DiscoverInfo.Identity identity) {
+        defaultIdentity = identity;
     }
 
     /**
@@ -89,6 +101,7 @@ public class ServiceDiscoveryManager {
     @Deprecated
     public ServiceDiscoveryManager(Connection connection) {
         this.connection = new WeakReference<Connection>(connection);
+
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
 
@@ -180,6 +193,90 @@ public class ServiceDiscoveryManager {
     }
 
     /**
+     * Returns the name of the client that will be returned when asked for the client identity
+     * in a disco request. The name could be any value you need to identity this client.
+     * 
+     * @return the name of the client that will be returned when asked for the client identity
+     *          in a disco request.
+     */
+    public String getIdentityName() {
+        return identity.getName();
+    }
+
+    /**
+     * Sets the name of the client that will be returned when asked for the client identity
+     * in a disco request. The name could be any value you need to identity this client.
+     * 
+     * @param name the name of the client that will be returned when asked for the client identity
+     *          in a disco request.
+     */
+    public void setIdentityName(String name) {
+        identity.setName(name);
+        renewEntityCapsVersion();
+    }
+
+    /**
+     * Returns the type of client that will be returned when asked for the client identity in a 
+     * disco request. The valid types are defined by the category client. Follow this link to learn 
+     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * 
+     * @return the type of client that will be returned when asked for the client identity in a 
+     *          disco request.
+     */
+    public String getIdentityType() {
+        return identity.getType();
+    }
+
+    /**
+     * Sets the type of client that will be returned when asked for the client identity in a 
+     * disco request. The valid types are defined by the category client. Follow this link to learn 
+     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * 
+     * @param type the type of client that will be returned when asked for the client identity in a 
+     *          disco request.
+     */
+    public void setIdentityType(String type) {
+        identity.setType(type);
+        renewEntityCapsVersion();
+    }
+
+    /**
+     * Add an identity to the client.
+     * 
+     * @param identity
+     */
+    public void addIdentity(DiscoverInfo.Identity identity) {
+        identities.add(identity);
+        renewEntityCapsVersion();
+    }
+
+    /**
+     * Remove an identity from the client. Note that the client needs at least one identity, the default identity, which
+     * can not be removed.
+     * 
+     * @param identity
+     * @return true, if successful. Otherwise the default identity was given.
+     */
+    public boolean removeIdentity(DiscoverInfo.Identity identity) {
+        if (identity.equals(this.identity)) return false;
+        identities.remove(identity);
+        renewEntityCapsVersion();
+        return true;
+    }
+
+    /**
+     * Returns all identities of this client as unmodifiable Collection
+     * 
+     * @return
+     */
+    public Set<DiscoverInfo.Identity> getIdentities() {
+        Set<Identity> res = new HashSet<Identity>(identities);
+        // Add the default identity that must exist
+        res.add(defaultIdentity);
+        return Collections.unmodifiableSet(res);
+    }
+
+    /**
      * Returns the ServiceDiscoveryManager instance associated with a given Connection.
      * 
      * @param connection the connection used to look for the proper ServiceDiscoveryManager.
@@ -194,79 +291,6 @@ public class ServiceDiscoveryManager {
     }
 
     /**
-     * Returns the name of the client that will be returned when asked for the client identity
-     * in a disco request. The name could be any value you need to identity this client.
-     * 
-     * @return the name of the client that will be returned when asked for the client identity
-     *          in a disco request.
-     */
-    public static String getIdentityName() {
-        DiscoverInfo.Identity identity = identities.get(0);
-        if (identity != null) {
-            return identity.getName();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Sets the name of the client that will be returned when asked for the client identity
-     * in a disco request. The name could be any value you need to identity this client.
-     * 
-     * @param name the name of the client that will be returned when asked for the client identity
-     *          in a disco request.
-     */
-    public static void setIdentityName(String name) {
-        DiscoverInfo.Identity identity = identities.remove(0);
-        identity = new DiscoverInfo.Identity(DEFAULT_IDENTITY_CATEGORY, name, DEFAULT_IDENTITY_TYPE);
-        identities.add(identity);
-    }
-
-    /**
-     * Returns the type of client that will be returned when asked for the client identity in a 
-     * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
-     * 
-     * @return the type of client that will be returned when asked for the client identity in a 
-     *          disco request.
-     */
-    public static String getIdentityType() {
-        DiscoverInfo.Identity identity = identities.get(0);
-        if (identity != null) {
-            return identity.getType();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Sets the type of client that will be returned when asked for the client identity in a 
-     * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
-     * 
-     * @param type the type of client that will be returned when asked for the client identity in a 
-     *          disco request.
-     */
-    public static void setIdentityType(String type) {
-        DiscoverInfo.Identity identity = identities.get(0);
-        if (identity != null) {
-            identity.setType(type);
-        } else {
-            identity = new DiscoverInfo.Identity(DEFAULT_IDENTITY_CATEGORY, DEFAULT_IDENTITY_NAME, type);
-            identities.add(identity);
-        }
-    }
-
-    /**
-     * Returns all identities of this client as unmodifiable Collection
-     * 
-     * @return
-     */
-    public static List<DiscoverInfo.Identity> getIdentities() {
-        return Collections.unmodifiableList(identities);
-    }
-
-    /**
      * Add discover info response data.
      * 
      * @see <a href="http://xmpp.org/extensions/xep-0030.html#info-basic">XEP-30 Basic Protocol; Example 2</a>
@@ -275,7 +299,7 @@ public class ServiceDiscoveryManager {
      */
     public void addDiscoverInfoTo(DiscoverInfo response) {
         // First add the identities of the connection
-        response.addIdentities(identities);
+        response.addIdentities(getIdentities());
 
         // Add the registered features to the response
         synchronized (features) {

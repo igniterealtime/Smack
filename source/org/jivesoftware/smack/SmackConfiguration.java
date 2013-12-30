@@ -28,8 +28,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
+import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -119,6 +119,9 @@ public final class SmackConfiguration {
                                 }
                                 else if (parser.getName().equals("packetCollectorSize")) {
                                     packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
+                                }
+                                else if (parser.getName().equals("autoEnableEntityCaps")) {
+                                    autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
                                 }
                                 else if (parser.getName().equals("autoEnableEntityCaps")) {
                                     autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
@@ -320,20 +323,20 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Check if Entity Caps are enabled as default for every new connection
-     * @return
-     */
-    public static boolean autoEnableEntityCaps() {
-        return autoEnableEntityCaps;
-    }
-
-    /**
      * Set if Entity Caps are enabled or disabled for every new connection
      * 
      * @param true if Entity Caps should be auto enabled, false if not
      */
     public static void setAutoEnableEntityCaps(boolean b) {
         autoEnableEntityCaps = b;
+    }
+
+    /**
+     * Check if Entity Caps are enabled as default for every new connection
+     * @return
+     */
+    public static boolean autoEnableEntityCaps() {
+        return autoEnableEntityCaps;
     }
 
     /**

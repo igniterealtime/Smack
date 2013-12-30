@@ -1,6 +1,8 @@
 package org.jivesoftware.smackx.entitycaps;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,11 +11,9 @@ import java.util.LinkedList;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Base32Encoder;
-import org.jivesoftware.smack.util.Base64Encoder;
 import org.jivesoftware.smack.util.Base64FileUrlEncoder;
 import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.FormField;
-import org.jivesoftware.smackx.entitycaps.EntityCapsManager;
 import org.jivesoftware.smackx.entitycaps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.entitycaps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.packet.DataForm;
