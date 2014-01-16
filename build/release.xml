@@ -43,10 +43,14 @@
             </else>
         </if>
         <property name="release.dir" value="${basedir}/target/release/${release.name}" />
+        <property name="release.samples.dir" value="${release.dir}/samples" />
         <property name="release-dev.dir" value="${basedir}/target/release/${release-dev.name}" />
+        <property name="release-dev.samples.dir" value="${release-dev.name}/samples" />
         <!-- create release dirs -->
         <mkdir dir="${release.dir}" />
+        <mkdir dir="${release.samples.dir}" />
         <mkdir dir="${release-dev.dir}" />
+        <mkdir dir="${release-dev.dir.samples}/samples" />
         <!-- Copy smack.jar -->
         <copy todir="${release.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
@@ -54,11 +58,19 @@
             <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
 			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
         </copy>
+        <copy todir="${release.samples.dir}">
+            <fileset dir="${basedir}/build/resources/META-INF" includes="sample.providers" />
+            <fileset dir="${basedir}/build/resources/META-INF" includes="smack-config.xml" />
+        </copy>
         <copy todir="${release-dev.dir}">
             <fileset dir="${jar.dest.dir}" includes="smack.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
             <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
 			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
+        </copy>
+        <copy todir="${release-dev.samples.dir}">
+            <fileset dir="${basedir}/build/resources/META-INF" includes="sample.providers" />
+            <fileset dir="${basedir}/build/resources/META-INF" includes="smack-config" />
         </copy>
         <!-- Copy build dir -->
         <copy todir="${release-dev.dir}/build">
@@ -110,7 +122,10 @@
         </copy>
         <!-- Copy resources -->
         <copy todir="${release-dev.dir}/build/resources">
-            <fileset dir="${basedir}/build/resources" includes="META-INF/smack.providers" />
+            <fileset dir="${basedir}/build/resources" includes="META-INF/core.providers" />
+            <fileset dir="${basedir}/build/resources" includes="META-INF/extension.providers" />
+            <fileset dir="${basedir}/build/resources" includes="META-INF/sample.providers" />
+            <fileset dir="${basedir}/build/resources" includes="META-INF/jul.properties" />
             <fileset dir="${basedir}/build/resources" includes="META-INF/smack-config.xml" />
         </copy>
         <copy todir="${release-dev.dir}/build/resources/images">
