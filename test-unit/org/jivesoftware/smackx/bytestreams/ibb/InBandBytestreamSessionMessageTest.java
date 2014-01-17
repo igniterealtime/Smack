@@ -57,7 +57,6 @@ public class InBandBytestreamSessionMessageTest {
     String sessionID = "session_id";
 
     int blockSize = 10;
-    int dataSize = blockSize/4 * 3;
 
     // protocol verifier
     Protocol protocol;
@@ -120,7 +119,7 @@ public class InBandBytestreamSessionMessageTest {
         protocol.addResponse(null, incrementingSequence);
         protocol.addResponse(null, incrementingSequence);
 
-        byte[] controlData = new byte[dataSize * 3];
+        byte[] controlData = new byte[blockSize * 3];
 
         OutputStream outputStream = session.getOutputStream();
         outputStream.write(controlData);
@@ -145,7 +144,7 @@ public class InBandBytestreamSessionMessageTest {
         protocol.addResponse(null, incrementingSequence);
         protocol.addResponse(null, incrementingSequence);
 
-        byte[] controlData = new byte[dataSize * 3];
+        byte[] controlData = new byte[blockSize * 3];
 
         OutputStream outputStream = session.getOutputStream();
         for (byte b : controlData) {
@@ -172,11 +171,11 @@ public class InBandBytestreamSessionMessageTest {
         protocol.addResponse(null, incrementingSequence);
         protocol.addResponse(null, incrementingSequence);
 
-        byte[] controlData = new byte[(dataSize * 3) - 2];
+        byte[] controlData = new byte[(blockSize * 3) - 2];
 
         OutputStream outputStream = session.getOutputStream();
         int off = 0;
-        for (int i = 1; off+i <= controlData.length; i++) {
+        for (int i = 1; i <= 7; i++) {
             outputStream.write(controlData, off, i);
             off += i;
         }
@@ -193,7 +192,7 @@ public class InBandBytestreamSessionMessageTest {
      */
     @Test
     public void shouldSendThirtyDataPackets() throws Exception {
-        byte[] controlData = new byte[dataSize * 3];
+        byte[] controlData = new byte[blockSize * 3];
 
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
@@ -220,7 +219,7 @@ public class InBandBytestreamSessionMessageTest {
      */
     @Test
     public void shouldSendNothingOnSuccessiveCallsToFlush() throws Exception {
-        byte[] controlData = new byte[dataSize * 3];
+        byte[] controlData = new byte[blockSize * 3];
 
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
@@ -291,7 +290,7 @@ public class InBandBytestreamSessionMessageTest {
     public void shouldReadAllReceivedData1() throws Exception {
         // create random data
         Random rand = new Random();
-        byte[] controlData = new byte[3 * dataSize];
+        byte[] controlData = new byte[3 * blockSize];
         rand.nextBytes(controlData);
 
         // get IBB sessions data packet listener
@@ -301,8 +300,8 @@ public class InBandBytestreamSessionMessageTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // verify data packet and notify listener
-        for (int i = 0; i < controlData.length / dataSize; i++) {
-            String base64Data = StringUtils.encodeBase64(controlData, i * dataSize, dataSize,
+        for (int i = 0; i < controlData.length / blockSize; i++) {
+            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
                             false);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Message dataMessage = new Message();
@@ -310,14 +309,14 @@ public class InBandBytestreamSessionMessageTest {
             listener.processPacket(dataMessage);
         }
 
-        byte[] bytes = new byte[3 * dataSize];
+        byte[] bytes = new byte[3 * blockSize];
         int read = 0;
-        read = inputStream.read(bytes, 0, dataSize);
-        assertEquals(dataSize, read);
-        read = inputStream.read(bytes, dataSize, dataSize);
-        assertEquals(dataSize, read);
-        read = inputStream.read(bytes, dataSize*2, dataSize);
-        assertEquals(dataSize, read);
+        read = inputStream.read(bytes, 0, blockSize);
+        assertEquals(blockSize, read);
+        read = inputStream.read(bytes, 10, blockSize);
+        assertEquals(blockSize, read);
+        read = inputStream.read(bytes, 20, blockSize);
+        assertEquals(blockSize, read);
 
         // verify data
         for (int i = 0; i < bytes.length; i++) {
@@ -337,7 +336,7 @@ public class InBandBytestreamSessionMessageTest {
     public void shouldReadAllReceivedData2() throws Exception {
         // create random data
         Random rand = new Random();
-        byte[] controlData = new byte[3 * dataSize];
+        byte[] controlData = new byte[3 * blockSize];
         rand.nextBytes(controlData);
 
         // get IBB sessions data packet listener
@@ -347,8 +346,8 @@ public class InBandBytestreamSessionMessageTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // verify data packet and notify listener
-        for (int i = 0; i < controlData.length / dataSize; i++) {
-            String base64Data = StringUtils.encodeBase64(controlData, i * dataSize, dataSize,
+        for (int i = 0; i < controlData.length / blockSize; i++) {
+            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
                             false);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Message dataMessage = new Message();
@@ -357,7 +356,7 @@ public class InBandBytestreamSessionMessageTest {
         }
 
         // read data
-        byte[] bytes = new byte[3 * dataSize];
+        byte[] bytes = new byte[3 * blockSize];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte) inputStream.read();
         }
