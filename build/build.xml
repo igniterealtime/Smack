@@ -26,9 +26,9 @@
 
     <!-- Smack Version -->
     <property name="version.major" value="3" />
-    <property name="version.minor" value="3" />
-    <property name="version.revision" value="1" />
-    <property name="version.extra" value="" />
+    <property name="version.minor" value="4" />
+    <property name="version.revision" value="0" />
+    <property name="version.extra" value="SNAPSHOT" />
 	
     <if>
         <equals arg1="${version.extra}" arg2=""/>
@@ -42,7 +42,7 @@
             <property name="version"
                       value="${version.major}.${version.minor}.${version.revision}.${version.extra}"/>
             <property name="version.filename"
-                      value="${version.major}_${version.minor}_${version.revision}_${version.extra}"/>
+                      value="${version.major}.${version.minor}.${version.revision}.${version.extra}"/>
         </else>
     </if>
     <tstamp>
@@ -205,7 +205,7 @@
             </manifest>
         </jar>
     	
-    	<property name="debug.jar.name" value="${jar.dest.dir}/smack-debug.jar" />
+    	<property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug.jar" />
 		<copy todir="${compile.dir}/images">
             <fileset dir="${basedir}/build/resources/images">
                 <include name="*.png"/>
@@ -225,7 +225,7 @@
             </manifest>
         </jar>
     	
-    	<property name="jingle.jar.name" value="${jar.dest.dir}/smack-jingle.jar" />
+    	<property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle.jar" />
         <jar destfile="${jingle.jar.name}"
             basedir="${compile.dir}/jingle/extension"
             includes="org/jivesoftware/smackx/**/*.class">
