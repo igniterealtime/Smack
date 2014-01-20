@@ -132,6 +132,23 @@
                                 <pathelement path="${compile.dir}"/>
             </classpath>
         </javac>
+
+    	<mkdir dir="${compile.dir}/workgroup" />
+        <javac
+            destdir="${compile.dir}/workgroup"
+            includeAntRuntime="no"
+            debug="on"
+            source="1.6"
+            target="1.6"
+        >
+            <src path="${basedir}/workgroup/source" />
+            <classpath>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <pathelement path="${compile.dir}"/>
+            </classpath>
+        </javac>
     </target>
 
     <!-- compile-test -->
@@ -221,7 +238,7 @@
         <bndwrap jars="${debug.jar.name}" output="${debug.jar.name}" />
         <jar file="${debug.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-ext-debug" />
+                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-debug" />
             </manifest>
         </jar>
     	
@@ -237,16 +254,35 @@
         <bndwrap jars="${jingle.jar.name}" output="${jingle.jar.name}" />
         <jar file="${jingle.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-ext-jingle" />
+                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-jingle" />
             </manifest>
         </jar>
-        <delete file="${compile.dir}/META-INF/smack-config.xml" />
+
+    	<property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup.jar" />
+        <copy todir="${compile.dir}/workgroup/META-INF" file="${basedir}/workgroup/resources/META-INF/workgroup.providers" />
+        <jar destfile="${workgroup.jar.name}"
+            basedir="${compile.dir}/workgroup"
+            includes="org/jivesoftware/smackx/workgroup/**/*.class, **/workgroup.providers">
+            <manifest>
+                <attribute name="Class-Path" value="smack.jar, smackx.jar" />
+            </manifest>
+        </jar>
+        <bndwrap jars="${workgroup.jar.name}" output="${workgroup.jar.name}" />
+        <jar file="${workgroup.jar.name}" update="true">
+            <manifest>
+                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-workgroup" />
+            </manifest>
+        </jar>
+
+    <!--
+    	<delete file="${compile.dir}/META-INF/smack-config.xml" />
         <delete file="${compile.dir}/META-INF/*.providers" />
         <delete>
             <fileset dir="${compile.dir}/images">
                 <include name="*.png"/>
             </fileset>
         </delete>
+        -->
     </target>
 
     <!-- jar -->
@@ -292,7 +328,7 @@
             <link href="http://java.sun.com/j2se/1.3/docs/api/" />
             <link href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" />
         </javadoc>
-    </target>
+</target>
 
 
     <!-- test -->

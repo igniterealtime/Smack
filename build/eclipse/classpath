@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="source"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="test-unit"/>
+	<classpathentry kind="src" path="workgroup/source"/>
 	<classpathentry kind="lib" path="build/ant-contrib.jar"/>
 	<classpathentry kind="lib" path="build/asm.jar"/>
 	<classpathentry kind="lib" path="build/build/java-xmlbuilder-0.3.jar"/>
