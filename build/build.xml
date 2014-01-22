@@ -288,17 +288,20 @@
     <!-- jar -->
     <!-- ======================================================================================= -->
     <target name="jar-test" depends="compile-test" description="Produces jar of test code">
+        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/jul.properties" />
+        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
+        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/core.providers" />
         <jar destfile="${jar.dest.dir}/smack-test.jar"
             basedir="${compile.test.dir}"
-            includes="org/jivesoftware/smack/**/*.class"
+            includes="org/jivesoftware/smack/**/*.class, **/smack-config.xml, **/core.providers, **/jul.properties"
         />
     </target>
 
     <target name="jar-test-smackx" depends="compile-test" description="Produces jar of test code">
+        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/extension.providers" />
         <jar destfile="${jar.dest.dir}/smack-test-smackx.jar"
             basedir="${compile.test.dir}"
-            includes="org/jivesoftware/smackx/**/*.class 
-		      org/jivesoftware/util/**/*.class"
+            includes="org/jivesoftware/smackx/**/*.class, org/jivesoftware/util/**/*.class, **/extension.providers"
         />
     </target>
 
@@ -410,7 +413,7 @@
     <!-- ======================================================================================= -->
     <target name="test-unit" depends="compile, jar-test, jar-test-smackx" unless="no.test">
         <junit printsummary="on"
-            fork="true"
+            fork="false"
             haltonfailure="false"
             failureproperty="tests.failed"
             showoutput="true">
@@ -430,7 +433,7 @@
                 </fileset>
                 <fileset dir="${jar.dest.dir}">
                     <include name="smack-test.jar"/>
-		    <include name="smack-test-smackx.jar" />
+                    <include name="smack-test-smackx.jar" />
                 </fileset>
                 <pathelement location="${compile.dir}" />
                 <pathelement location="${test-unit.dir}" />
