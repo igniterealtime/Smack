@@ -17,7 +17,7 @@
 
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
         <classpath>
-            <pathelement location="${basedir}/build/ant-contrib.jar"/>
+            <pathelement location="${basedir}/build/ant-contrib-1.0b2.jar"/>
         </classpath>
     </taskdef>
 
@@ -30,25 +30,26 @@
     <property name="version.revision" value="0" />
     <property name="version.extra" value="SNAPSHOT" />
 	
-    <if>
-        <equals arg1="${version.extra}" arg2=""/>
-        <then>
-            <property name="version"
-                      value="${version.major}.${version.minor}.${version.revision}"/>
-            <property name="version.filename"
-                      value="${version.major}_${version.minor}_${version.revision}"/>
-        </then>
-        <else>
-            <property name="version"
-                      value="${version.major}.${version.minor}.${version.revision}.${version.extra}"/>
-            <property name="version.filename"
-                      value="${version.major}.${version.minor}.${version.revision}.${version.extra}"/>
-        </else>
-    </if>
-    <tstamp>
-        <format property="builddate" pattern="MM/dd/yyyy"/>
-    </tstamp>
+    <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
 
+	<if>
+        <length string="${version.extra}" when="greater" length="0"/>
+        <then>
+        	<var name="mutable-version" value="${mutable-version}.${version.extra}"/>
+        </then>
+    </if>
+	
+	<if>
+        <equals arg1="${dailybuild}" arg2="true" />
+        <then>
+            <tstamp>
+                <format property="build.date" pattern="yyyyMMdd" locale="en"/>
+            </tstamp>
+        	<var name="mutable-version" value="${mutable-version}-${build.date}" />
+        </then>
+	</if>
+
+    <property name="version" value="${mutable-version}" />
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/target/classes" />
     <property name="compile.test.dir" value="${basedir}/target/classes-test" />
@@ -190,7 +191,7 @@
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/jul.properties" />
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/core.providers" />
-    	<property name="smack.jar.name" value="${jar.dest.dir}/smack.jar" />
+    	<property name="smack.jar.name" value="${jar.dest.dir}/smack-${version}.jar" />
         <jar destfile="${smack.jar.name}"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smack/**/*.class, **/smack-config.xml, **/core.providers, **/jul.properties">
@@ -204,7 +205,7 @@
             </manifest>
         </jar>
     	
-    	<property name="smackx.jar.name" value="${jar.dest.dir}/smackx.jar" />
+    	<property name="smackx.jar.name" value="${jar.dest.dir}/smackx-${version}.jar" />
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/extension.providers" />
         <jar destfile="${smackx.jar.name}"
             basedir="${compile.dir}"
@@ -222,7 +223,7 @@
             </manifest>
         </jar>
     	
-    	<property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug.jar" />
+    	<property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug-${version}.jar" />
 		<copy todir="${compile.dir}/images">
             <fileset dir="${basedir}/build/resources/images">
                 <include name="*.png"/>
@@ -242,7 +243,7 @@
             </manifest>
         </jar>
     	
-    	<property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle.jar" />
+    	<property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle-${version}.jar" />
         <jar destfile="${jingle.jar.name}"
             basedir="${compile.dir}/jingle/extension"
             includes="org/jivesoftware/smackx/**/*.class">
@@ -258,7 +259,7 @@
             </manifest>
         </jar>
 
-    	<property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup.jar" />
+    	<property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup-${version}.jar" />
         <copy todir="${compile.dir}/workgroup/META-INF" file="${basedir}/workgroup/resources/META-INF/workgroup.providers" />
         <jar destfile="${workgroup.jar.name}"
             basedir="${compile.dir}/workgroup"

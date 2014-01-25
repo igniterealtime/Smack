@@ -14,7 +14,7 @@
     <!-- Include Ant Optional Tasks -->
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
         <classpath>
-            <pathelement location="${basedir}/build/ant-contrib.jar"/>
+            <pathelement location="${basedir}/build/ant-contrib-1.0b2.jar"/>
         </classpath>
     </taskdef>
 
@@ -28,19 +28,7 @@
     <!-- ======================================================================================= -->
     <target name="all">
         <!-- create release properties -->
-        <if>
-            <equals arg1="${dailybuild}" arg2="true" />
-            <then>
-                <tstamp>
-                    <format property="build.date" pattern="yyyyMMdd" locale="en"/>
-                </tstamp>
-                <property name="release.name" value="smack-${version.filename}-${build.date}" />
-            </then>
-            <else>
-                <property name="release.name" value="smack-${version.filename}" />
-            </else>
-        </if>
-        <property name="release.dir" value="${basedir}/target/release/${release.name}" />
+        <property name="release.dir" value="${basedir}/target/release/${version}" />
         <property name="release.samples.dir" value="${release.dir}/samples" />
         
     	<!-- create release dirs -->
@@ -49,11 +37,11 @@
 
     	<!-- Copy smack.jar -->
         <copy todir="${release.dir}">
-            <fileset dir="${jar.dest.dir}" includes="smack.jar" />
-            <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
-            <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
-			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
-			<fileset dir="${jar.dest.dir}" includes="smackx-workgroup.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smack-${version}.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-${version}.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-debug-${version}.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-jingle-${version}.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-workgroup-${version}.jar" />
         </copy>
         <copy todir="${release.samples.dir}">
             <fileset dir="${basedir}/build/resources/META-INF" includes="sample.providers" />
@@ -76,19 +64,19 @@
         <copy todir="${release.dir}">
             <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
             <filterset>
-                <filter token="builddate" value="${builddate}"/>
+                <filter token="builddate" value="${build.date}"/>
                 <filter token="version" value="${version}"/>
             </filterset>
         </copy>
 
     	<!-- Package -->
-        <zip destfile="${basedir}/target/release/${release.name}.zip"
-            basedir="${release.dir}/.."
-            includes="${release.name}/**/*.*"
+        <zip destfile="${basedir}/target/release/smack-${version}.zip"
+            basedir="${release.dir}"
+            includes="**/*.*"
         />
-        <tar destfile="${basedir}/target/release/${release.name}.tar.gz"
-            basedir="${release.dir}/.."
-            includes="${release.name}/**/*.*"
+        <tar destfile="${basedir}/target/release/smack-${version}.tar.gz"
+            basedir="${release.dir}"
+            includes="**/*.*"
             compression="gzip"
         />
         <echo>
