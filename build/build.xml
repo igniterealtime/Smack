@@ -50,6 +50,7 @@
 	</if>
 
     <property name="version" value="${mutable-version}" />
+	<property name="bundle.name" value="org.igniterealtime.smack" />
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/target/classes" />
     <property name="compile.test.dir" value="${basedir}/target/classes-test" />
@@ -201,7 +202,8 @@
         <bndwrap jars="${smack.jar.name}" output="${smack.jar.name}" />
         <jar file="${smack.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack" />
+                <attribute name="Bundle-SymbolicName" value="${bundle.name}" />
+                <attribute name="Bundle-Version" value="${version}" />
             </manifest>
         </jar>
     	
@@ -219,7 +221,9 @@
         <bndwrap jars="${smackx.jar.name}" output="${smackx.jar.name}" />
         <jar file="${smackx.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-ext" />
+                <attribute name="Bundle-SymbolicName" value="${bundle.name}-ext" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
     	
@@ -239,7 +243,9 @@
         <bndwrap jars="${debug.jar.name}" output="${debug.jar.name}" />
         <jar file="${debug.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-debug" />
+                <attribute name="Bundle-SymbolicName" value="${bundle.name}-debug" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
     	
@@ -255,7 +261,9 @@
         <bndwrap jars="${jingle.jar.name}" output="${jingle.jar.name}" />
         <jar file="${jingle.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-jingle" />
+                <attribute name="Bundle-SymbolicName" value="${bundle.name}-jingle" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
 
@@ -271,7 +279,9 @@
         <bndwrap jars="${workgroup.jar.name}" output="${workgroup.jar.name}" />
         <jar file="${workgroup.jar.name}" update="true">
             <manifest>
-                <attribute name="Bundle-SymbolicName" value="org.igniterealtime.smack-workgroup" />
+                <attribute name="Bundle-SymbolicName" value="${bundle.name}-workgroup" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
 
