@@ -1,7 +1,6 @@
 package org.jivesoftware.smack.keepalive;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -16,13 +15,10 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.keepalive.KeepAliveManager;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.ping.PingFailedListener;
 import org.jivesoftware.smack.ping.packet.Ping;
-import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
