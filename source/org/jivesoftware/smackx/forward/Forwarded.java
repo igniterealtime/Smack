@@ -18,11 +18,7 @@ package org.jivesoftware.smackx.forward;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.packet.DelayInfo;
-import org.jivesoftware.smackx.provider.DelayInfoProvider;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Packet extension for <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297</a>: Stanza Forwarding.
@@ -44,6 +40,16 @@ public class Forwarded implements PacketExtension {
      */
     public Forwarded(DelayInfo delay, Packet fwdPacket) {
         this.delay = delay;
+        this.forwardedPacket = fwdPacket;
+    }
+
+    /**
+     * Creates a new Forwarded packet extension.
+     *
+     * @param delay an optional {@link DelayInfo} timestamp of the packet.
+     * @param fwdPacket the packet that is forwarded (required).
+     */
+    public Forwarded(Packet fwdPacket) {
         this.forwardedPacket = fwdPacket;
     }
 
