@@ -42,6 +42,7 @@
             <fileset dir="${jar.dest.dir}" includes="smackx-debug-${version}.jar" />
 			<fileset dir="${jar.dest.dir}" includes="smackx-jingle-${version}.jar" />
 			<fileset dir="${jar.dest.dir}" includes="smackx-workgroup-${version}.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-experimental-${experimental.version}.jar" />
         </copy>
         <copy todir="${release.samples.dir}">
             <fileset dir="${basedir}/build/resources/META-INF" includes="sample.providers" />

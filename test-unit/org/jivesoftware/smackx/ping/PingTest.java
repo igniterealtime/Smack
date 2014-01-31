@@ -16,11 +16,11 @@
 package org.jivesoftware.smackx.ping;
 
 import org.jivesoftware.smack.DummyConnection;
-import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.ping.packet.Ping;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.junit.Before;

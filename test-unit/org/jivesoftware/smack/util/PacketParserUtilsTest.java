@@ -24,10 +24,10 @@ import java.util.TimeZone;
 
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
-import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.junit.Ignore;
 import org.junit.Test;

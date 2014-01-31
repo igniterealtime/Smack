@@ -2,8 +2,8 @@ package org.jivesoftware.smack.packet;
 
 import static org.junit.Assert.*;
 
-import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

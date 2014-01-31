@@ -24,8 +24,8 @@ import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.packet.DelayInfo;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.Forwarded;

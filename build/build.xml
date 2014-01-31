@@ -31,11 +31,13 @@
     <property name="version.extra" value="SNAPSHOT" />
 	
     <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
+    <var name="mutable-experimental-version" value="0.1"/>
 
 	<if>
         <length string="${version.extra}" when="greater" length="0"/>
         <then>
         	<var name="mutable-version" value="${mutable-version}.${version.extra}"/>
+        	<var name="mutable-experimental-version" value="${mutable-experimental-version}.${version.extra}" />
         </then>
     </if>
 	
@@ -46,10 +48,13 @@
                 <format property="build.date" pattern="yyyyMMdd" locale="en"/>
             </tstamp>
         	<var name="mutable-version" value="${mutable-version}-${build.date}" />
+        	<var name="mutable-experimental-version" value="${mutable-experimental-version}-${build.date}" />
         </then>
 	</if>
 
     <property name="version" value="${mutable-version}" />
+    <property name="experimental.version" value="${mutable-experimental-version}" />
+	
 	<property name="bundle.name" value="org.igniterealtime.smack" />
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/target/classes" />
@@ -144,6 +149,23 @@
             target="1.6"
         >
             <src path="${basedir}/workgroup/source" />
+            <classpath>
+                <fileset dir="${merge.lib.dir}">
+                    <include name="*.jar"/>
+                </fileset>
+                <pathelement path="${compile.dir}"/>
+            </classpath>
+        </javac>
+
+    	<mkdir dir="${compile.dir}/experimental" />
+        <javac
+            destdir="${compile.dir}/experimental"
+            includeAntRuntime="no"
+            debug="on"
+            source="1.6"
+            target="1.6"
+        >
+            <src path="${basedir}/experimental/source" />
             <classpath>
                 <fileset dir="${merge.lib.dir}">
                     <include name="*.jar"/>
@@ -282,6 +304,24 @@
                 <attribute name="Bundle-SymbolicName" value="${bundle.name}-workgroup" />
                 <attribute name="Bundle-Version" value="${version}" />
                 <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
+            </manifest>
+        </jar>
+
+    	<property name="experimental.jar.name" value="${jar.dest.dir}/smackx-experimental-${experimental.version}.jar" />
+        <copy todir="${compile.dir}/experimental/META-INF" file="${basedir}/experimental/resources/META-INF/experimental.providers" />
+        <jar destfile="${experimental.jar.name}"
+            basedir="${compile.dir}/experimental"
+            includes="org/jivesoftware/smackx/**/*.class, **/experimental.providers">
+            <manifest>
+                <attribute name="Class-Path" value="smack.jar, smackx.jar" />
+            </manifest>
+        </jar>
+        <bndwrap jars="${experimental.jar.name}" output="${experimental.jar.name}" />
+        <jar file="${experimental.jar.name}" update="true">
+            <manifest>
+                <attribute name="Bundle-SymbolicName" value="${bundle.name}-experimental" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${experimental.version}" />
             </manifest>
         </jar>
 

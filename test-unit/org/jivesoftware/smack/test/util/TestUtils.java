@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.test.util;
 
 import java.io.IOException;
 import java.io.StringReader;
