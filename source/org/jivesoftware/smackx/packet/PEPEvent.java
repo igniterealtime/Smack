@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
  *
  * @author Jeff Williams
  */
+@Deprecated
 public class PEPEvent implements PacketExtension {
 
     PEPItem item;
