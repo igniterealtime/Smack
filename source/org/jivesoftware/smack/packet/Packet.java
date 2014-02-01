@@ -452,6 +452,7 @@ public abstract class Packet {
         return DEFAULT_LANGUAGE;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -472,6 +473,7 @@ public abstract class Packet {
         return !(xmlns != null ? !xmlns.equals(packet.xmlns) : packet.xmlns != null);
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = (xmlns != null ? xmlns.hashCode() : 0);
@@ -482,5 +484,10 @@ public abstract class Packet {
         result = 31 * result + properties.hashCode();
         result = 31 * result + (error != null ? error.hashCode() : 0);
         return result;
+    }
+    
+    @Override
+    public String toString() {
+        return toXML();
     }
 }
