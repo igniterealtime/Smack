@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Writes packets to a XMPP server. Packets are sent using a dedicated thread. Packet
@@ -38,7 +40,8 @@ import java.util.concurrent.BlockingQueue;
  * @author Matt Tucker
  */
 class PacketWriter {
-
+    private static Logger log = Logger.getLogger(PacketWriter.class.getName());
+    
     private Thread writerThread;
     private Writer writer;
     private XMPPConnection connection;
@@ -88,7 +91,7 @@ class PacketWriter {
                 queue.put(packet);
             }
             catch (InterruptedException ie) {
-                ie.printStackTrace();
+                log.log(Level.SEVERE, "Failed to queue packet to send to server: " + packet.toString(), ie);
                 return;
             }
             synchronized (queue) {
@@ -165,14 +168,14 @@ class PacketWriter {
             // we won't have time to entirely flush it before the socket is forced closed
             // by the shutdown process.
             try {
-               while (!queue.isEmpty()) {
-                   Packet packet = queue.remove();
+                while (!queue.isEmpty()) {
+                    Packet packet = queue.remove();
                     writer.write(packet.toXML());
                 }
                 writer.flush();
             }
             catch (Exception e) {
-                e.printStackTrace();
+                log.warning("Error flushing queue during shutdown, ignore and continue");
             }
 
             // Delete the queue contents (hopefully nothing is left).

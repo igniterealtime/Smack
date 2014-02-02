@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.packet.Authentication;
@@ -57,7 +59,8 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Gaston Dombiak
  */
 public class PacketParserUtils {
-
+    private static Logger logger = Logger.getLogger(PacketParserUtils.class.getName());
+    
     /**
      * Namespace used to store packet properties.
      */
@@ -198,7 +201,7 @@ public class PacketParserUtils {
                 type = Presence.Type.valueOf(typeString);
             }
             catch (IllegalArgumentException iae) {
-                System.err.println("Found invalid presence type " + typeString);
+                logger.warning("Found invalid presence type " + typeString);
             }
         }
         Presence presence = new Presence(type);
@@ -242,7 +245,7 @@ public class PacketParserUtils {
                         presence.setMode(Presence.Mode.valueOf(modeText));
                     }
                     catch (IllegalArgumentException iae) {
-                        System.err.println("Found invalid presence mode " + modeText);
+                        logger.warning("Found invalid presence mode " + modeText);
                     }
                 }
                 else if (elementName.equals("error")) {
@@ -263,7 +266,7 @@ public class PacketParserUtils {
                         presence.addExtension(PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
                 	}
                 	catch (Exception e) {
-                		System.err.println("Failed to parse extension packet in Presence packet.");
+                		logger.warning("Failed to parse extension packet in Presence packet.");
                 	}
                 }
             }
@@ -639,7 +642,7 @@ public class PacketParserUtils {
                                     value = in.readObject();
                                 }
                                 catch (Exception e) {
-                                    e.printStackTrace();
+                                    logger.log(Level.SEVERE, "Error parsing java object", e);
                                 }
                             }
                             if (name != null && value != null) {
@@ -782,8 +785,7 @@ public class PacketParserUtils {
             }
         }
         catch (IllegalArgumentException iae) {
-            // Print stack trace. We shouldn't be getting an illegal error type.
-            iae.printStackTrace();
+            logger.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(), iae);
         }
         return new XMPPError(Integer.parseInt(errorCode), errorType, condition, message, extensions);
     }

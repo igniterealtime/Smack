@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -40,13 +42,14 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * Simple implementation of an EntityCapsPersistentCache that uses a directory
  * to store the Caps information for every known node. Every node is represented
- * by an file.
+ * by a file.
  * 
  * @author Florian Schmaus
  * 
  */
 public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache {
-
+    private static Logger log = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
+    
     private File cacheDir;
     private StringEncoder filenameEncoder;
 
@@ -55,7 +58,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * cacheDir exists and that it's an directory.
      * <p>
      * Default filename encoder {@link Base32Encoder}, as this will work on all 
-     * filesystems, both case sensitive and case insensitive.  It does however 
+     * file systems, both case sensitive and case insensitive.  It does however 
      * produce longer filenames.
      * 
      * @param cacheDir
@@ -92,7 +95,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
             if (nodeFile.createNewFile())
                 writeInfoToFile(nodeFile, info);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to write disco info to file", e);
         }
     }
 
@@ -161,7 +164,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(reader);
         } catch (XmlPullParserException xppe) {
-            xppe.printStackTrace();
+            log.log(Level.SEVERE, "Exception initializing parser", xppe);
             return null;
         }
 

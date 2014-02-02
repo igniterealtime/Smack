@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.StreamError;
 import java.util.Random;
+import java.util.logging.Logger;
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
  * the application explictly closing it, the manager automatically tries to reconnect to
@@ -34,7 +35,8 @@ import java.util.Random;
  * @author Francisco Vives
  */
 public class ReconnectionManager implements ConnectionListener {
-
+    private static Logger log = Logger.getLogger(ReconnectionManager.class.getName());
+    
     // Holds the connection to the server
     private Connection connection;
     private Thread reconnectionThread;
@@ -133,7 +135,7 @@ public class ReconnectionManager implements ConnectionListener {
                                         .notifyAttemptToReconnectIn(remainingSeconds);
                             }
                             catch (InterruptedException e1) {
-                                e1.printStackTrace();
+                                log.warning("Sleeping thread interrupted");
                                 // Notify the reconnection has failed
                                 ReconnectionManager.this.notifyReconnectionFailed(e1);
                             }

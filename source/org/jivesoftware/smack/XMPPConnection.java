@@ -788,7 +788,6 @@ public class XMPPConnection extends Connection {
         if(config.getCallbackHandler() == null) {
            ks = null;
         } else if (context == null) {
-            //System.out.println("Keystore type: "+configuration.getKeystoreType());
             if(config.getKeystoreType().equals("NONE")) {
                 ks = null;
                 pcb = null;

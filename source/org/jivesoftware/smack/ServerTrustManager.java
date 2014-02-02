@@ -29,6 +29,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,8 @@ import java.util.regex.Pattern;
  * @author Gaston Dombiak
  */
 class ServerTrustManager implements X509TrustManager {
-
+    private static Logger log = Logger.getLogger(ServerTrustManager.class.getName());
+    
     private static Pattern cnPattern = Pattern.compile("(?i)(cn=)([^,]*)");
 
     private ConnectionConfiguration configuration;
@@ -153,8 +155,7 @@ class ServerTrustManager implements X509TrustManager {
                 trusted = trustStore.getCertificateAlias(x509Certificates[nSize - 1]) != null;
                 if (!trusted && nSize == 1 && configuration.isSelfSignedCertificateEnabled())
                 {
-                    System.out.println("Accepting self-signed certificate of remote server: " +
-                            peerIdentities);
+                    log.info("Accepting self-signed certificate of remote server: " + peerIdentities);
                     trusted = true;
                 }
             }
@@ -268,7 +269,7 @@ class ServerTrustManager implements X509TrustManager {
                     }
                 }
                 // Other types are not good for XMPP so ignore them
-                System.out.println("SubjectAltName of invalid type found: " + certificate);
+                log.info("SubjectAltName of invalid type found: " + certificate);
             }*/
         }
         catch (CertificateParsingException e) {

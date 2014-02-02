@@ -40,6 +40,8 @@ import org.jivesoftware.smackx.ReportedData;
 import org.jivesoftware.smackx.packet.MUCUser;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class embodies the agent's active presence within a given workgroup. The application
@@ -53,7 +55,8 @@ import java.util.*;
  * @author Derek DeMoro
  */
 public class AgentSession {
-
+    private static Logger log = Logger.getLogger(AgentSession.class.getName());
+    
     private Connection connection;
 
     private String workgroupJID;
@@ -118,7 +121,7 @@ public class AgentSession {
                     handlePacket(packet);
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    log.log(Level.SEVERE, "Error processing packet", e);
                 }
             }
         };
