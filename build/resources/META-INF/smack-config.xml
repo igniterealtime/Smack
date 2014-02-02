@@ -22,7 +22,6 @@
     
     <!-- Classes that will be loaded when Smack starts -->
     <startupClasses>
-        <className>org.jivesoftware.smack.LoggingInitializer</className>
         <className>org.jivesoftware.smack.provider.CoreInitializer</className>
         <className>org.jivesoftware.smack.provider.VmArgInitializer</className>
         <className>org.jivesoftware.smack.PrivacyListManager</className>        
