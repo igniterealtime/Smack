@@ -211,14 +211,12 @@
     <!-- jar -->
     <!-- ======================================================================================= -->
     <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
-        <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/jul.properties" />
-        <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
-        <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/core.providers" />
     	<property name="smack.jar.name" value="${jar.dest.dir}/smack-${version}.jar" />
         <jar destfile="${smack.jar.name}"
             basedir="${compile.dir}"
-            includes="org/jivesoftware/smack/**/*.class, **/smack-config.xml, **/core.providers, **/jul.properties">
-            <zipfileset src="${merge.lib.dir}/xpp.jar"/>
+            includes="org/jivesoftware/smack/**/*.class" >
+            <zipfileset src="${merge.lib.dir}/xpp.jar" />
+            <metainf dir="${basedir}/build/resources/META-INF/" includes="jul.properties smack-config.xml core.providers" />
         </jar>
         <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${basedir}/build/build/biz.aQute.bnd.jar"/>
         <bndwrap jars="${smack.jar.name}" output="${smack.jar.name}" />
@@ -230,14 +228,14 @@
         </jar>
     	
     	<property name="smackx.jar.name" value="${jar.dest.dir}/smackx-${version}.jar" />
-        <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/extension.providers" />
         <jar destfile="${smackx.jar.name}"
             basedir="${compile.dir}"
-            includes="org/jivesoftware/smackx/**/*.class, **/extension.providers"
+            includes="org/jivesoftware/smackx/**/*.class"
             excludes="org/jivesoftware/smackx/debugger/*.class">
             <manifest>
                 <attribute name="Class-Path" value="smack.jar" />
             </manifest>
+            <metainf dir="${basedir}/build/resources/META-INF/" includes="extension.providers" />
             <zipfileset src="${merge.lib.dir}/jzlib.jar"/>
         </jar>
         <bndwrap jars="${smackx.jar.name}" output="${smackx.jar.name}" />
@@ -290,13 +288,13 @@
         </jar>
 
     	<property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup-${version}.jar" />
-        <copy todir="${compile.dir}/workgroup/META-INF" file="${basedir}/workgroup/resources/META-INF/workgroup.providers" />
         <jar destfile="${workgroup.jar.name}"
             basedir="${compile.dir}/workgroup"
-            includes="org/jivesoftware/smackx/workgroup/**/*.class, **/workgroup.providers">
+            includes="org/jivesoftware/smackx/workgroup/**/*.class">
             <manifest>
                 <attribute name="Class-Path" value="smack.jar, smackx.jar" />
             </manifest>
+	    <metainf dir="${basedir}/workgroup/resources/META-INF/" includes="workgroup.providers" />
         </jar>
         <bndwrap jars="${workgroup.jar.name}" output="${workgroup.jar.name}" />
         <jar file="${workgroup.jar.name}" update="true">
@@ -308,13 +306,13 @@
         </jar>
 
     	<property name="experimental.jar.name" value="${jar.dest.dir}/smackx-experimental-${experimental.version}.jar" />
-        <copy todir="${compile.dir}/experimental/META-INF" file="${basedir}/experimental/resources/META-INF/experimental.providers" />
         <jar destfile="${experimental.jar.name}"
             basedir="${compile.dir}/experimental"
-            includes="org/jivesoftware/smackx/**/*.class, **/experimental.providers">
+            includes="org/jivesoftware/smackx/**/*.class" >
             <manifest>
                 <attribute name="Class-Path" value="smack.jar, smackx.jar" />
             </manifest>
+            <metainf dir="${basedir}/experimental/resources/META-INF/" includes="experimental.providers" />
         </jar>
         <bndwrap jars="${experimental.jar.name}" output="${experimental.jar.name}" />
         <jar file="${experimental.jar.name}" update="true">
@@ -339,21 +337,19 @@
     <!-- jar -->
     <!-- ======================================================================================= -->
     <target name="jar-test" depends="compile-test" description="Produces jar of test code">
-        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/jul.properties" />
-        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
-        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/core.providers" />
         <jar destfile="${jar.dest.dir}/smack-test.jar"
             basedir="${compile.test.dir}"
-            includes="org/jivesoftware/smack/**/*.class, **/smack-config.xml, **/core.providers, **/jul.properties"
-        />
+            includes="org/jivesoftware/smack/**/*.class" >
+            <metainf dir="${basedir}/build/resources/META-INF/" includes="jul.properties smack-config.xml core.providers" />
+        </jar>
     </target>
 
     <target name="jar-test-smackx" depends="compile-test" description="Produces jar of test code">
-        <copy todir="${compile.test.dir}/META-INF" file="${basedir}/build/resources/META-INF/extension.providers" />
         <jar destfile="${jar.dest.dir}/smack-test-smackx.jar"
             basedir="${compile.test.dir}"
-            includes="org/jivesoftware/smackx/**/*.class, org/jivesoftware/util/**/*.class, **/extension.providers"
-        />
+            includes="org/jivesoftware/smackx/**/*.class, org/jivesoftware/util/**/*.class" >
+            <metainf dir="${basedir}/build/resources/META-INF/" includes="extension.providers" />
+	</jar>
     </target>
 
 
