@@ -415,8 +415,8 @@ public final class SmackConfiguration {
     }
 
     private static void readFile(InputStream cfgFileStream) {
-        XmlPullParser parser = new MXParser();
         try {
+            XmlPullParser parser = new MXParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(cfgFileStream, "UTF-8");
             int eventType = parser.getEventType();
