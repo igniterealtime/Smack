@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.workgroup.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is a very flexible event dispatcher which implements Runnable so that it can
@@ -32,8 +34,8 @@ import java.util.ListIterator;
  *
  * @author loki der quaeler
  */
-public class ListenerEventDispatcher
-    implements Runnable {
+public class ListenerEventDispatcher implements Runnable {
+    private static Logger log = Logger.getLogger(ListenerEventDispatcher.class.getName());
 
     protected transient ArrayList<TripletContainer> triplets;
 
@@ -93,9 +95,7 @@ public class ListenerEventDispatcher
             try {
                 tc.getListenerMethod().invoke(tc.getListenerInstance(), tc.getMethodArguments());
             } catch (Exception e) {
-                System.err.println("Exception dispatching an event: " + e);
-
-                e.printStackTrace();
+                log.log(Level.SEVERE, "Exception dispatching an event", e);
             }
         }
 

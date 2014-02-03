@@ -849,20 +849,4 @@ public class Workgroup {
         }
         return Form.getFormFrom(response);
     }
-
-    /*
-    public static void main(String args[]) throws Exception {
-        Connection con = new XMPPConnection("anteros");
-        con.connect();
-        con.loginAnonymously();
-
-        Workgroup workgroup = new Workgroup("demo@workgroup.anteros", con);
-        WorkgroupProperties props = workgroup.getWorkgroupProperties("derek@anteros.com");
-
-        System.out.print(props);
-        con.disconnect();
-    }
-    */
-
-
 }

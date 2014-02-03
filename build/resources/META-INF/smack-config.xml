@@ -22,9 +22,12 @@
     
     <!-- Classes that will be loaded when Smack starts -->
     <startupClasses>
-        <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
+        <className>org.jivesoftware.smack.provider.CoreInitializer</className>
+        <className>org.jivesoftware.smack.provider.VmArgInitializer</className>
         <className>org.jivesoftware.smack.PrivacyListManager</className>        
         <className>org.jivesoftware.smack.keepalive.KeepAliveManager</className>        
+        <className>org.jivesoftware.smackx.provider.ExtensionInitializer</className>
+        <className>org.jivesoftware.smackx.ServiceDiscoveryManager</className>
         <className>org.jivesoftware.smackx.XHTMLManager</className>
         <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
         <className>org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager</className>

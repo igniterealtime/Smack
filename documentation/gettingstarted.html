@@ -40,6 +40,37 @@ over which features applications require:
 </ul>
 
 
+<p class="subheader">Configuration</p>
+Smack has an initialization process that involves 2 phases.
+<ul>
+<li>Initializing system properties - Initializing all the system properties accessible through the class 
+<b>SmackConfiguration</b>.  These properties are retrieve by the <i>getXXX</i> methods on that class.
+<li>Initializing startup classes - Initializing any classes meant to be active at startup by instantiating 
+the class, and then calling the <i>initialize</i> method on that class if it extends <b>SmackInitializer</b>.  
+If it does not extend this interface, then initialization will have to take place in a static block of code
+which is automatically executed when the class is loaded.
+</ul>
+<p>
+Initialization is accomplished via a configuration file.  By default, Smack will load the one embedded in
+the Smack jar at <i>META-INF/smack-config.xml</i>.  This particular configuration contains all the default
+property values as well as a list of initializer classes to load.  All manager type classes are contained 
+in this list of initializers.  If your application does not use all the features provided by Smack via the 
+aforementioned managers, you may want to 'turn them off' by providing a custom config file that does not
+include that feature.
+<p>
+If you want to change the configuration file used, you have two options:
+<ul>
+<li>Programmatically - Call the <i>setConfigFileUrl</i> method of <b>SmackConfiguration</b> with the location
+of a new config file.
+<pre>SmackConfiguration.setConfigFileUrl("classpath:test/smack-config.xml", null)</pre>
+<li>VM Argument - Set the VM argument <i>smack.config.file</i> to the location of a new config file.
+<pre>-Dsmack.config.file=file:///c:/com/myco/provider/myco_custom_config.xml</pre>
+</ul>
+
+<p>
+Please note, there is a copy of the <b>smack-config.xml</b> in the <i>samples</i> directory of the deployment
+archive file (zip or tar).
+
 <p class="subheader">
 Establishing a Connection
 </p>

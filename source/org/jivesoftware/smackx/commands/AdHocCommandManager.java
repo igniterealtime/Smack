@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * An AdHocCommandManager is responsible for keeping the list of available
@@ -58,7 +59,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Gabriel Guardincerri
  */
 public class AdHocCommandManager {
-
     private static final String DISCO_NAMESPACE = "http://jabber.org/protocol/commands";
 
     private static final String discoNode = DISCO_NAMESPACE;
@@ -470,7 +470,6 @@ public class AdHocCommandManager {
                     executingCommands.remove(sessionId);
                 }
                 respondError(response, error);
-                e.printStackTrace();
             }
         }
         else {
@@ -527,7 +526,7 @@ public class AdHocCommandManager {
                 }
 
                 try {
-                    // TODO: Check that all the requierd fields of the form are
+                    // TODO: Check that all the required fields of the form are
                     // TODO: filled, if not throw an exception. This will simplify the
                     // TODO: construction of new commands
 
@@ -585,8 +584,6 @@ public class AdHocCommandManager {
                         executingCommands.remove(sessionId);
                     }
                     respondError(response, error);
-
-                    e.printStackTrace();
                 }
             }
         }
@@ -650,12 +647,10 @@ public class AdHocCommandManager {
             command.setNode(commandInfo.getNode());
         }
         catch (InstantiationException e) {
-            e.printStackTrace();
             throw new XMPPException(new XMPPError(
                     XMPPError.Condition.interna_server_error));
         }
         catch (IllegalAccessException e) {
-            e.printStackTrace();
             throw new XMPPException(new XMPPError(
                     XMPPError.Condition.interna_server_error));
         }

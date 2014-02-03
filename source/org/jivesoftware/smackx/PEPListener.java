@@ -29,6 +29,7 @@ import org.jivesoftware.smackx.packet.PEPEvent;
  *
  * @author Jeff Williams
  */
+@Deprecated
 public interface PEPListener {
 
     /**

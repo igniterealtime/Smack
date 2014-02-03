@@ -14,7 +14,7 @@
     <!-- Include Ant Optional Tasks -->
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
         <classpath>
-            <pathelement location="${basedir}/build/ant-contrib.jar"/>
+            <pathelement location="${basedir}/build/ant-contrib-1.0b2.jar"/>
         </classpath>
     </taskdef>
 
@@ -28,155 +28,66 @@
     <!-- ======================================================================================= -->
     <target name="all">
         <!-- create release properties -->
-        <if>
-            <equals arg1="${dailybuild}" arg2="true" />
-            <then>
-                <tstamp>
-                    <format property="build.date" pattern="yyyy-MM-dd" locale="en"/>
-                </tstamp>
-                <property name="release.name" value="smack-${build.date}" />
-                <property name="release-dev.name" value="smack_src_${build.date}" />
-            </then>
-            <else>
-                <property name="release.name" value="smack_${version.filename}" />
-                <property name="release-dev.name" value="smack_src_${version.filename}" />
-            </else>
-        </if>
-        <property name="release.dir" value="${basedir}/target/release/${release.name}" />
-        <property name="release-dev.dir" value="${basedir}/target/release/${release-dev.name}" />
-        <!-- create release dirs -->
+        <property name="release.dir" value="${basedir}/target/release/${version}" />
+        <property name="release.samples.dir" value="${release.dir}/samples" />
+        <tstamp>
+            <format property="release.date" pattern="dd/MM/yyyy" locale="en"/>
+        </tstamp>
+
+    	<!-- create release dirs -->
         <mkdir dir="${release.dir}" />
-        <mkdir dir="${release-dev.dir}" />
-        <!-- Copy smack.jar -->
+        <mkdir dir="${release.samples.dir}" />
+
+    	<!-- Copy smack.jar -->
         <copy todir="${release.dir}">
-            <fileset dir="${jar.dest.dir}" includes="smack.jar" />
-            <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
-            <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
-			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smack-${version}.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-${version}.jar" />
+            <fileset dir="${jar.dest.dir}" includes="smackx-debug-${version}.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-jingle-${version}.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-workgroup-${version}.jar" />
+			<fileset dir="${jar.dest.dir}" includes="smackx-experimental-${experimental.version}.jar" />
         </copy>
-        <copy todir="${release-dev.dir}">
-            <fileset dir="${jar.dest.dir}" includes="smack.jar" />
-            <fileset dir="${jar.dest.dir}" includes="smackx.jar" />
-            <fileset dir="${jar.dest.dir}" includes="smackx-debug.jar" />
-			<fileset dir="${jar.dest.dir}" includes="smackx-jingle.jar" />
+        <copy todir="${release.samples.dir}">
+            <fileset dir="${basedir}/build/resources/META-INF" includes="sample.providers" />
+            <fileset dir="${basedir}/build/resources/META-INF" includes="smack-config.xml" />
         </copy>
-        <!-- Copy build dir -->
-        <copy todir="${release-dev.dir}/build">
-            <fileset dir="${basedir}/build">
-                <include name="ant*" />
-                <include name="junit.jar" />
-                <include name="build.xml" />
-                <include name="README.html" />
-                <include name="lib/*.jar" />
-                <include name="merge/*.jar" />
-                <include name="build/*.jar" />
-            </fileset>
-        </copy>
-		<copy todir="${release-dev.dir}/jingle/extension/build">
-            <fileset dir="${basedir}/jingle/extension/build">
-                <include name="ant*" />
-                <include name="junit.jar" />
-                <include name="build.xml" />
-                <include name="README.html" />
-                <include name="lib/*.jar" />
-                <include name="merge/*.jar" />
-            </fileset>
-        </copy>
-        <!-- Copy Javadocs -->
+
+
+    	<!-- Copy Javadocs -->
         <copy todir="${release.dir}/javadoc">
             <fileset dir="${basedir}/target/javadoc" includes="**/*.*" />
         </copy>
-        <copy todir="${release-dev.dir}/javadoc">
-            <fileset dir="${basedir}/target/javadoc" includes="**/*.*" />
-        </copy>
-        <!-- Copy documentation -->
+
+    	<!-- Copy documentation -->
         <copy todir="${release.dir}/documentation">
             <fileset dir="${basedir}/documentation" includes="**/*.*" />
         </copy>
-        <copy todir="${release-dev.dir}/documentation">
-            <fileset dir="${basedir}/documentation" includes="**/*.*" />
-        </copy>
-        <!-- Copy source -->
-        <copy todir="${release-dev.dir}/source">
-            <fileset dir="${basedir}/source" includes="**/*.java" />
-            <fileset dir="${basedir}/source" includes="**/*.html" />
-        </copy>
-        <copy todir="${release-dev.dir}/jingle/extension/source"> 
-		    <fileset dir="${basedir}/jingle/extension/source" includes="**/*.java" />
-            <fileset dir="${basedir}/jingle/extension/source" includes="**/*.html" />			
-        </copy>
-        <copy todir="${release-dev.dir}/test">
-            <fileset dir="${basedir}/test" includes="**/*.java" />
-        </copy>
-        <!-- Copy resources -->
-        <copy todir="${release-dev.dir}/build/resources">
-            <fileset dir="${basedir}/build/resources" includes="META-INF/smack.providers" />
-            <fileset dir="${basedir}/build/resources" includes="META-INF/smack-config.xml" />
-        </copy>
-        <copy todir="${release-dev.dir}/build/resources/images">
-            <fileset dir="${basedir}/build/resources/images">
-                <include name="*.png"/>
-            </fileset>
-        </copy>
-        <!-- Copy readme.html and changelog.html -->
+
+
+    	<!-- Copy readme.html and changelog.html -->
         <copy todir="${release.dir}">
             <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
             <filterset>
-                <filter token="builddate" value="${builddate}"/>
+                <filter token="releasedate" value="${release.date}"/>
                 <filter token="version" value="${version}"/>
             </filterset>
         </copy>
-        <copy todir="${release-dev.dir}">
-            <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
-            <filterset>
-                <filter token="builddate" value="${builddate}"/>
-                <filter token="version" value="${version}"/>
-            </filterset>
-        </copy>
-        <!-- Package -->
-        <if>
-            <equals arg1="${dailybuild}" arg2="true" />
-            <then>
-                <zip destfile="${basedir}/target/release/${release-dev.name}.zip"
-                    basedir="${release-dev.dir}/.."
-                    includes="${release-dev.name}/**/*.*"
-                />
-                <tar destfile="${basedir}/target/release/${release-dev.name}.tar.gz"
-                    basedir="${release-dev.dir}/.."
-                    includes="${release-dev.name}/**/*.*"
-                    compression="gzip"
-                />
-            </then>
-            <else>
-                <zip destfile="${basedir}/target/release/${release.name}.zip"
-                    basedir="${release.dir}/.."
-                    includes="${release.name}/**/*.*"
-                />
-                <tar destfile="${basedir}/target/release/${release.name}.tar.gz"
-                    basedir="${release.dir}/.."
-                    includes="${release.name}/**/*.*"
-                    compression="gzip"
-                />
-                <zip destfile="${basedir}/target/release/${release-dev.name}.zip"
-                    basedir="${release-dev.dir}/.."
-                    includes="${release-dev.name}/**/*.*"
-                />
-                <tar destfile="${basedir}/target/release/${release-dev.name}.tar.gz"
-                    basedir="${release-dev.dir}/.."
-                    includes="${release-dev.name}/**/*.*"
-                    compression="gzip"
-                />
-            </else>
-        </if>
 
+    	<!-- Package -->
+        <zip destfile="${basedir}/target/release/smack-${version}.zip"
+            basedir="${release.dir}"
+            includes="**/*.*"
+        />
+        <tar destfile="${basedir}/target/release/smack-${version}.tar.gz"
+            basedir="${release.dir}"
+            includes="**/*.*"
+            compression="gzip"
+        />
         <echo>
 -----------------------------------------------
-Release made, testing Ant targets of release...
+Release made
 -----------------------------------------------
         </echo>
-
-        <!-- call the release tester -->
-        <antcall target="test" />
     </target>
 
     <!-- test -->

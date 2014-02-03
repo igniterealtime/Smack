@@ -6,6 +6,9 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * This code was obtained from <a href="http://iharder.net/base64">http://iharder.net/base64</a></p>
@@ -17,9 +20,9 @@ package org.jivesoftware.smack.util;
  */
 public class Base64
 {
+    private static Logger log = Logger.getLogger(Base64.class.getName());
 
-/* ********  P U B L I C   F I E L D S  ******** */
-
+    /* ********  P U B L I C   F I E L D S  ******** */
 
     /** No options specified. Value is zero. */
     public final static int NO_OPTIONS = 0;
@@ -311,18 +314,6 @@ public class Base64
     /** Defeats instantiation. */
     private Base64(){}
 
-    /**
-     * Prints command line usage.
-     *
-     * @param msg A message to include with usage info.
-     */
-    private final static void usage( String msg )
-    {
-        System.err.println( msg );
-        System.err.println( "Usage: java Base64 -e|-d inputfile outputfile" );
-    }   // end usage
-
-
 /* ********  E N C O D I N G   M E T H O D S  ******** */
 
 
@@ -494,7 +485,7 @@ public class Base64
         }   // end try
         catch( java.io.IOException e )
         {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Error encoding object", e);
             return null;
         }   // end catch
         finally
@@ -623,7 +614,7 @@ public class Base64
             }   // end try
             catch( java.io.IOException e )
             {
-                e.printStackTrace();
+                log.log(Level.SEVERE, "Error encoding bytes", e);
                 return null;
             }   // end catch
             finally
@@ -778,10 +769,11 @@ public class Base64
 
             return 3;
             }catch( Exception e){
-                System.out.println(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) );
-                System.out.println(""+source[srcOffset+1]+  ": " + ( DECODABET[ source[ srcOffset + 1 ] ]  ) );
-                System.out.println(""+source[srcOffset+2]+  ": " + ( DECODABET[ source[ srcOffset + 2 ] ]  ) );
-                System.out.println(""+source[srcOffset+3]+  ": " + ( DECODABET[ source[ srcOffset + 3 ] ]  ) );
+                log.log(Level.SEVERE, e.getMessage(), e);
+                log.severe(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) );
+                log.severe(""+source[srcOffset+1]+  ": " + ( DECODABET[ source[ srcOffset + 1 ] ]  ) );
+                log.severe(""+source[srcOffset+2]+  ": " + ( DECODABET[ source[ srcOffset + 2 ] ]  ) );
+                log.severe(""+source[srcOffset+3]+  ": " + ( DECODABET[ source[ srcOffset + 3 ] ]  ) );
                 return -1;
             }   // end catch
         }
@@ -839,7 +831,7 @@ public class Base64
             }   // end if: white space, equals sign or better
             else
             {
-                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
+                log.warning("Bad Base64 input character at " + i + ": " + source[i] + "(decimal)");
                 return null;
             }   // end else:
         }   // each input character
@@ -967,12 +959,12 @@ public class Base64
         }   // end try
         catch( java.io.IOException e )
         {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Error reading object", e);
             obj = null;
         }   // end catch
         catch( java.lang.ClassNotFoundException e )
         {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Class not found for encoded object", e);
             obj = null;
         }   // end catch
         finally
@@ -1079,7 +1071,7 @@ public class Base64
             // Check for size of file
             if( file.length() > Integer.MAX_VALUE )
             {
-                System.err.println( "File is too big for this convenience method (" + file.length() + " bytes)." );
+                log.warning("File is too big for this convenience method (" + file.length() + " bytes).");
                 return null;
             }   // end if: file too big for int index
             buffer = new byte[ (int)file.length() ];
@@ -1100,7 +1092,7 @@ public class Base64
         }   // end try
         catch( java.io.IOException e )
         {
-            System.err.println( "Error decoding from file " + filename );
+            log.log(Level.SEVERE, "Error decoding from file " + filename, e);
         }   // end catch: IOException
         finally
         {
@@ -1148,7 +1140,7 @@ public class Base64
         }   // end try
         catch( java.io.IOException e )
         {
-            System.err.println( "Error encoding from file " + filename );
+            log.log(Level.SEVERE, "Error encoding from file " + filename, e);
         }   // end catch: IOException
         finally
         {
@@ -1175,7 +1167,7 @@ public class Base64
             out.write( encoded.getBytes("US-ASCII") ); // Strict, 7-bit output.
         }   // end try
         catch( java.io.IOException ex ) {
-            ex.printStackTrace();
+            log.log(Level.SEVERE, "Error encoding file " + infile, ex);
         }   // end catch
         finally {
             try { out.close(); }
@@ -1201,7 +1193,7 @@ public class Base64
             out.write( decoded );
         }   // end try
         catch( java.io.IOException ex ) {
-            ex.printStackTrace();
+            log.log(Level.SEVERE, "Error decoding file " + infile, ex);
         }   // end catch
         finally {
             try { out.close(); }

@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -33,39 +34,59 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.collections.ReferenceMap;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
- * in memory on its own so it is neccesary to keep a reference to the chat object itself. To be
+ * in memory on its own so it is necessary to keep a reference to the chat object itself. To be
  * made aware of new chats, register a listener by calling {@link #addChatListener(ChatManagerListener)}.
  *
  * @author Alexander Wenckus
  */
 public class ChatManager {
-
-    /**
-     * Returns the next unique id. Each id made up of a short alphanumeric
-     * prefix along with a unique numeric value.
-     *
-     * @return the next id.
+    /*
+     * Sets the default behaviour for allowing 'normal' messages to be used in chats. As some clients don't set
+     * the message type to chat, the type normal has to be accepted to allow chats with these clients.
      */
-    private static synchronized String nextID() {
-        return prefix + Long.toString(id++);
+    private static boolean defaultIsNormalInclude = true;
+    
+    /*
+     * Sets the default behaviour for how to match chats when there is NO thread id in the incoming message.
+     */
+    private static MatchMode defaultMatchMode = MatchMode.BARE_JID;
+    
+    /**
+     * Defines the different modes under which a match will be attempted with an existing chat when
+     * the incoming message does not have a thread id.
+     */
+    public enum MatchMode {
+        /**
+         * Will not attempt to match, always creates a new chat.
+         */
+        NONE,
+        /**
+         * Will match on the JID in the from field of the message. 
+         */
+        SUPPLIED_JID,
+        /**
+         * Will attempt to match on the JID in the from field, and then attempt the base JID if no match was found.
+         * This is the most lenient matching.
+         */
+        BARE_JID; 
     }
-
-    /**
-     * A prefix helps to make sure that ID's are unique across mutliple instances.
+    
+    /*
+     * Determines whether incoming messages of type normal can create chats. 
      */
-    private static String prefix = StringUtils.randomString(5);
-
-    /**
-     * Keeps track of the current increment, which is appended to the prefix to
-     * forum a unique ID.
+    private boolean normalIncluded = defaultIsNormalInclude;
+    
+    /*
+     * Determines how incoming message with no thread will be matched to existing chats.
      */
-    private static long id = 0;
-
+    private MatchMode matchMode = defaultMatchMode;
+    
     /**
      * Maps thread ID to chat.
      */
@@ -101,11 +122,11 @@ public class ChatManager {
                     return false;
                 }
                 Message.Type messageType = ((Message) packet).getType();
-                return messageType != Message.Type.groupchat &&
-                        messageType != Message.Type.headline;
+                return (messageType == Type.chat) || (normalIncluded ? messageType == Type.normal : false);
             }
         };
-        // Add a listener for all message packets so that we can deliver errant
+        
+        // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
         connection.addPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
@@ -116,10 +137,6 @@ public class ChatManager {
                 }
                 else {
                     chat = getThreadChat(message.getThread());
-                    if (chat == null) {
-                        // Try to locate the chat based on the sender of the message
-                    	chat = getUserChat(message.getFrom());
-                    }
                 }
 
                 if(chat == null) {
@@ -131,6 +148,44 @@ public class ChatManager {
     }
 
     /**
+     * Determines whether incoming messages of type <i>normal</i> will be used for creating new chats or matching
+     * a message to existing ones.
+     * 
+     * @return true if normal is allowed, false otherwise.
+     */
+    public boolean isNormalIncluded() {
+        return normalIncluded;
+    }
+
+    /**
+     * Sets whether to allow incoming messages of type <i>normal</i> to be used for creating new chats or matching
+     * a message to an existing one.
+     * 
+     * @param normalIncluded true to allow normal, false otherwise.
+     */
+    public void setNormalIncluded(boolean normalIncluded) {
+        this.normalIncluded = normalIncluded;
+    }
+
+    /**
+     * Gets the current mode for matching messages with <b>NO</b> thread id to existing chats.
+     * 
+     * @return The current mode.
+     */
+    public MatchMode getMatchMode() {
+        return matchMode;
+    }
+
+    /**
+     * Sets the mode for matching messages with <b>NO</b> thread id to existing chats.
+     * 
+     * @param matchMode The mode to set.
+     */
+    public void setMatchMode(MatchMode matchMode) {
+        this.matchMode = matchMode;
+    }
+
+    /**
      * Creates a new chat and returns it.
      *
      * @param userJID the user this chat is with.
@@ -138,12 +193,7 @@ public class ChatManager {
      * @return the created chat.
      */
     public Chat createChat(String userJID, MessageListener listener) {
-        String threadID;
-        do  {
-            threadID = nextID();
-        } while (threadChats.get(threadID) != null);
-
-        return createChat(userJID, threadID, listener);
+        return createChat(userJID, null, listener);
     }
 
     /**
@@ -155,7 +205,7 @@ public class ChatManager {
      * @return the created chat.
      */
     public Chat createChat(String userJID, String thread, MessageListener listener) {
-        if(thread == null) {
+        if (thread == null) {
             thread = nextID();
         }
         Chat chat = threadChats.get(thread);
@@ -191,20 +241,25 @@ public class ChatManager {
     }
 
     /**
-     * Try to get a matching chat for the given user JID.  Try the full
-     * JID map first, the try to match on the base JID if no match is
-     * found.
+     * Try to get a matching chat for the given user JID, based on the {@link MatchMode}.
+     * <li>NONE - return null
+     * <li>SUPPLIED_JID - match the jid in the from field of the message exactly.
+     * <li>BARE_JID - if not match for from field, try the bare jid. 
      * 
-     * @param userJID
-     * @return
+     * @param userJID jid in the from field of message.
+     * @return Matching chat, or null if no match found.
      */
     private Chat getUserChat(String userJID) {
-	Chat match = jidChats.get(userJID);
+        if (matchMode == MatchMode.NONE) {
+            return null;
+        }
+        
+        Chat match = jidChats.get(userJID);
 	
-	if (match == null) {
-	    match = baseJidChats.get(StringUtils.parseBareAddress(userJID));
-	}
-	return match;
+        if (match == null && (matchMode == MatchMode.BARE_JID)) {
+            match = baseJidChats.get(StringUtils.parseBareAddress(userJID));
+        }
+        return match;
     }
 
     public Chat getThreadChat(String thread) {
@@ -277,5 +332,22 @@ public class ChatManager {
         if (packetInterceptor != null) {
             interceptors.put(packetInterceptor, filter);
         }
+    }
+    
+    /**
+     * Returns a unique id.
+     *
+     * @return the next id.
+     */
+    private static String nextID() {
+        return UUID.randomUUID().toString();
+    }
+    
+    public static void setDefaultMatchMode(MatchMode mode) {
+        defaultMatchMode = mode;
+    }
+    
+    public static void setDefaultIsNormalIncluded(boolean allowNormal) {
+        defaultIsNormalInclude = allowNormal;
     }
 }

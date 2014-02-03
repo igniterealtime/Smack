@@ -80,7 +80,10 @@ public class Message extends Packet {
      */
     public Message(String to, Type type) {
         setTo(to);
-        this.type = type;
+        
+        if (type != null) {
+            this.type = type;
+        }
     }
 
     /**

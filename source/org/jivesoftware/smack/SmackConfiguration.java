@@ -20,16 +20,18 @@
 
 package org.jivesoftware.smack;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -49,16 +51,22 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Gaston Dombiak
  */
 public final class SmackConfiguration {
-
-    private static final String SMACK_VERSION = "3.3.1";
-
+    private static final String SMACK_VERSION = "3.4.0";
+    private static final String DEFAULT_CONFIG_FILE = "classpath:META-INF/smack-config.xml"; 
+    
+    private static final Logger log = Logger.getLogger(SmackConfiguration.class.getName());
+    
+    private static InputStream configFileStream;
+    
     private static int packetReplyTimeout = 5000;
     private static int keepAliveInterval = 30000;
-    private static Vector<String> defaultMechs = new Vector<String>();
+    private static List<String> defaultMechs = new ArrayList<String>();
 
     private static boolean localSocks5ProxyEnabled = true;
     private static int localSocks5ProxyPort = 7777;
     private static int packetCollectorSize = 5000;
+    
+    private static boolean initialized = false;
 
     /**
      * The default parsing exception callback is {@link ExceptionThrowingCallback} which will
@@ -81,75 +89,39 @@ public final class SmackConfiguration {
      * 1) a set of classes will be loaded in order to execute their static init block
      * 2) retrieve and set the current Smack release
      */
-    static {
+    
+    /**
+     * Sets the location of the config file on the classpath. Only required if changing from the default location of <i>classpath:META-INF/smack-config.xml</i>.
+     * 
+     * <p>
+     * This method must be called before accessing any other class in Smack.
+     * 
+     * @param configFileUrl The location of the config file.
+     * @param loader The classloader to use if the URL has a protocol of <b>classpath</> and the file is not located on the default classpath.  
+     * This can be set to null to use defaults and is ignored for all other protocols.
+     * @throws IllegalArgumentException If the config URL is invalid in that it cannot open an {@link InputStream}
+     */
+    public static void setConfigFileUrl(String configFileUrl, ClassLoader loader) {
         try {
-            // Get an array of class loaders to try loading the providers files from.
-            ClassLoader[] classLoaders = getClassLoaders();
-            for (ClassLoader classLoader : classLoaders) {
-                Enumeration<URL> configEnum = classLoader.getResources("META-INF/smack-config.xml");
-                while (configEnum.hasMoreElements()) {
-                    URL url = configEnum.nextElement();
-                    InputStream systemStream = null;
-                    try {
-                        systemStream = url.openStream();
-                        XmlPullParser parser = new MXParser();
-                        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-                        parser.setInput(systemStream, "UTF-8");
-                        int eventType = parser.getEventType();
-                        do {
-                            if (eventType == XmlPullParser.START_TAG) {
-                                if (parser.getName().equals("className")) {
-                                    // Attempt to load the class so that the class can get initialized
-                                    parseClassToLoad(parser);
-                                }
-                                else if (parser.getName().equals("packetReplyTimeout")) {
-                                    packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
-                                }
-                                else if (parser.getName().equals("keepAliveInterval")) {
-                                    keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
-                                }
-                                else if (parser.getName().equals("mechName")) {
-                                    defaultMechs.add(parser.nextText());
-                                } 
-                                else if (parser.getName().equals("localSocks5ProxyEnabled")) {
-                                    localSocks5ProxyEnabled = Boolean.parseBoolean(parser.nextText());
-                                } 
-                                else if (parser.getName().equals("localSocks5ProxyPort")) {
-                                    localSocks5ProxyPort = parseIntProperty(parser, localSocks5ProxyPort);
-                                }
-                                else if (parser.getName().equals("packetCollectorSize")) {
-                                    packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
-                                }
-                                else if (parser.getName().equals("autoEnableEntityCaps")) {
-                                    autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
-                                }
-                                else if (parser.getName().equals("autoEnableEntityCaps")) {
-                                    autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
-                                }
-                            }
-                            eventType = parser.next();
-                        }
-                        while (eventType != XmlPullParser.END_DOCUMENT);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    finally {
-                        try {
-                            systemStream.close();
-                        }
-                        catch (Exception e) {
-                            // Ignore.
-                        }
-                    }
-                }
-            }
-        }
+            configFileStream = FileUtils.getStreamForUrl(configFileUrl, loader);
+        } 
         catch (Exception e) {
-            e.printStackTrace();
-        }
+            throw new IllegalArgumentException("Failed to create input stream from specified file URL ["+ configFileUrl + "]", e);
+        } 
+        initialize();
     }
-
+    
+    /**
+     * Sets the {@link InputStream} representing the smack configuration file. This can be used to override the default with something that is not on the classpath.
+     * <p>
+     * This method must be called before accessing any other class in Smack.
+     * @param configFile
+     */
+    public static void setConfigFileStream(InputStream configFile) {
+        configFileStream = configFile;
+        initialize();
+    }
+    
     /**
      * Returns the Smack version information, eg "1.3.0".
      * 
@@ -166,6 +138,8 @@ public final class SmackConfiguration {
      * @return the milliseconds to wait for a response from the server
      */
     public static int getPacketReplyTimeout() {
+        initialize();
+        
         // The timeout value must be greater than 0 otherwise we will answer the default value
         if (packetReplyTimeout <= 0) {
             packetReplyTimeout = 5000;
@@ -180,6 +154,8 @@ public final class SmackConfiguration {
      * @param timeout the milliseconds to wait for a response from the server
      */
     public static void setPacketReplyTimeout(int timeout) {
+        initialize();
+
         if (timeout <= 0) {
             throw new IllegalArgumentException();
         }
@@ -195,6 +171,7 @@ public final class SmackConfiguration {
      *      no keep-alive should be sent.
      */
     public static int getKeepAliveInterval() {
+        initialize();
         return keepAliveInterval;
     }
 
@@ -207,6 +184,7 @@ public final class SmackConfiguration {
      *      or -1 if no keep-alive should be sent.
      */
     public static void setKeepAliveInterval(int interval) {
+        initialize();
         keepAliveInterval = interval;
     }
 
@@ -217,6 +195,7 @@ public final class SmackConfiguration {
      * @return The number of packets to queue before deleting older packets.
      */
     public static int getPacketCollectorSize() {
+        initialize();
     	return packetCollectorSize;
     }
 
@@ -227,6 +206,7 @@ public final class SmackConfiguration {
      * @param The number of packets to queue before deleting older packets.
      */
     public static void setPacketCollectorSize(int collectorSize) {
+        initialize();
     	packetCollectorSize = collectorSize;
     }
     
@@ -236,6 +216,8 @@ public final class SmackConfiguration {
      * @param mech the SASL mechanism to be added
      */
     public static void addSaslMech(String mech) {
+        initialize();
+
         if(! defaultMechs.contains(mech) ) {
             defaultMechs.add(mech);
         }
@@ -247,6 +229,8 @@ public final class SmackConfiguration {
      * @param mechs the Collection of SASL mechanisms to be added
      */
     public static void addSaslMechs(Collection<String> mechs) {
+        initialize();
+
         for(String mech : mechs) {
             addSaslMech(mech);
         }
@@ -258,9 +242,8 @@ public final class SmackConfiguration {
      * @param mech the SASL mechanism to be removed
      */
     public static void removeSaslMech(String mech) {
-        if( defaultMechs.contains(mech) ) {
-            defaultMechs.remove(mech);
-        }
+        initialize();
+        defaultMechs.remove(mech);
     }
 
    /**
@@ -269,9 +252,8 @@ public final class SmackConfiguration {
      * @param mechs the Collection of SASL mechanisms to be removed
      */
     public static void removeSaslMechs(Collection<String> mechs) {
-        for(String mech : mechs) {
-            removeSaslMech(mech);
-        }
+        initialize();
+        defaultMechs.removeAll(mechs);
     }
 
     /**
@@ -282,7 +264,7 @@ public final class SmackConfiguration {
      * @return the list of SASL mechanisms to be used.
      */
     public static List<String> getSaslMechs() {
-        return defaultMechs;
+        return Collections.unmodifiableList(defaultMechs);
     }
 
     /**
@@ -291,6 +273,7 @@ public final class SmackConfiguration {
      * @return if the local Socks5 proxy should be started
      */
     public static boolean isLocalSocks5ProxyEnabled() {
+        initialize();
         return localSocks5ProxyEnabled;
     }
 
@@ -300,6 +283,7 @@ public final class SmackConfiguration {
      * @param localSocks5ProxyEnabled if the local Socks5 proxy should be started
      */
     public static void setLocalSocks5ProxyEnabled(boolean localSocks5ProxyEnabled) {
+        initialize();
         SmackConfiguration.localSocks5ProxyEnabled = localSocks5ProxyEnabled;
     }
 
@@ -309,6 +293,7 @@ public final class SmackConfiguration {
      * @return the port of the local Socks5 proxy
      */
     public static int getLocalSocks5ProxyPort() {
+        initialize();
         return localSocks5ProxyPort;
     }
 
@@ -319,7 +304,17 @@ public final class SmackConfiguration {
      * @param localSocks5ProxyPort the port of the local Socks5 proxy to set
      */
     public static void setLocalSocks5ProxyPort(int localSocks5ProxyPort) {
+        initialize();
         SmackConfiguration.localSocks5ProxyPort = localSocks5ProxyPort;
+    }
+
+    /**
+     * Check if Entity Caps are enabled as default for every new connection
+     * @return
+     */
+    public static boolean autoEnableEntityCaps() {
+        initialize();
+        return autoEnableEntityCaps;
     }
 
     /**
@@ -328,15 +323,8 @@ public final class SmackConfiguration {
      * @param true if Entity Caps should be auto enabled, false if not
      */
     public static void setAutoEnableEntityCaps(boolean b) {
+        initialize();
         autoEnableEntityCaps = b;
-    }
-
-    /**
-     * Check if Entity Caps are enabled as default for every new connection
-     * @return
-     */
-    public static boolean autoEnableEntityCaps() {
-        return autoEnableEntityCaps;
     }
 
     /**
@@ -346,6 +334,7 @@ public final class SmackConfiguration {
      * @see ParsingExceptionCallback
      */
     public static void setDefaultParsingExceptionCallback(ParsingExceptionCallback callback) {
+        initialize();
         defaultCallback = callback;
     }
 
@@ -356,6 +345,7 @@ public final class SmackConfiguration {
      * @see ParsingExceptionCallback
      */
     public static ParsingExceptionCallback getDefaultParsingExceptionCallback() {
+        initialize();
         return defaultCallback;
     }
 
@@ -363,11 +353,15 @@ public final class SmackConfiguration {
         String className = parser.nextText();
         // Attempt to load the class so that the class can get initialized
         try {
-            Class.forName(className);
+            Class<?> initClass = Class.forName(className);
+            
+            if (SmackInitializer.class.isAssignableFrom(initClass)) {
+                SmackInitializer initializer = (SmackInitializer) initClass.newInstance();
+                initializer.initialize();
+            }
         }
         catch (ClassNotFoundException cnfe) {
-            System.err.println("Error! A startup class specified in smack-config.xml could " +
-                    "not be loaded: " + className);
+            log.log(Level.WARNING, "A startup class [" + className + "] specified in smack-config.xml could not be loaded: ");
         }
     }
 
@@ -378,27 +372,93 @@ public final class SmackConfiguration {
             return Integer.parseInt(parser.nextText());
         }
         catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
+            log.log(Level.SEVERE, "Could not parse integer", nfe);
             return defaultValue;
         }
     }
 
-    /**
-     * Returns an array of class loaders to load resources from.
-     *
-     * @return an array of ClassLoader instances.
+    /*
+     * Order of precedence for config file is VM arg, setConfigXXX methods and embedded default file location.
      */
-    private static ClassLoader[] getClassLoaders() {
-        ClassLoader[] classLoaders = new ClassLoader[2];
-        classLoaders[0] = SmackConfiguration.class.getClassLoader();
-        classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        // Clean up possible null values. Note that #getClassLoader may return a null value.
-        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
-        for (ClassLoader classLoader : classLoaders) {
-            if (classLoader != null) {
-                loaders.add(classLoader);
+    private static void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+        
+        String configFileLocation = System.getProperty("smack.config.file");
+
+        if (configFileLocation != null) {
+            try {
+                configFileStream = FileUtils.getStreamForUrl(configFileLocation, null);
+            }
+            catch (Exception e) {
+                log.log(Level.SEVERE, "Error creating input stream for config file [" + configFileLocation + "] from VM argument", e);
             }
         }
-        return loaders.toArray(new ClassLoader[loaders.size()]);
+            
+        if (configFileStream == null) {
+            try {
+                configFileStream = FileUtils.getStreamForUrl(DEFAULT_CONFIG_FILE, null);
+            }
+            catch (Exception e) {
+                log.log(Level.INFO, "Could not create input stream for default config file [" + DEFAULT_CONFIG_FILE + "]", e);
+            }
+        }
+        
+        if (configFileStream != null) {
+            readFile(configFileStream);
+        }
+        else {
+            log.log(Level.INFO, "No configuration file found");
+        }
+    }
+
+    private static void readFile(InputStream cfgFileStream) {
+        XmlPullParser parser = new MXParser();
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+            parser.setInput(cfgFileStream, "UTF-8");
+            int eventType = parser.getEventType();
+            do {
+                if (eventType == XmlPullParser.START_TAG) {
+                    if (parser.getName().equals("className")) {
+                        // Attempt to load the class so that the class can get initialized
+                        parseClassToLoad(parser);
+                    }
+                    else if (parser.getName().equals("packetReplyTimeout")) {
+                        packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
+                    }
+                    else if (parser.getName().equals("keepAliveInterval")) {
+                        keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
+                    }
+                    else if (parser.getName().equals("mechName")) {
+                        defaultMechs.add(parser.nextText());
+                    }
+                    else if (parser.getName().equals("localSocks5ProxyEnabled")) {
+                        localSocks5ProxyEnabled = Boolean.parseBoolean(parser.nextText());
+                    }
+                    else if (parser.getName().equals("localSocks5ProxyPort")) {
+                        localSocks5ProxyPort = parseIntProperty(parser, localSocks5ProxyPort);
+                    }
+                    else if (parser.getName().equals("packetCollectorSize")) {
+                        packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
+                    }
+                    else if (parser.getName().equals("autoEnableEntityCaps")) {
+                        autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
+                    }
+                }
+                eventType = parser.next();
+            } while (eventType != XmlPullParser.END_DOCUMENT);
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Error occurred while reading config file", e);
+        }
+        finally {
+            try {
+                cfgFileStream.close();
+            } catch (IOException e) {
+                log.log(Level.INFO, "Error while closing config file input stream", e);
+            }
+        }
     }
 }

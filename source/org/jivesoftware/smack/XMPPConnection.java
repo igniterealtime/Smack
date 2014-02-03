@@ -788,7 +788,6 @@ public class XMPPConnection extends Connection {
         if(config.getCallbackHandler() == null) {
            ks = null;
         } else if (context == null) {
-            //System.out.println("Keystore type: "+configuration.getKeystoreType());
             if(config.getKeystoreType().equals("NONE")) {
                 ks = null;
                 pcb = null;
@@ -1043,10 +1042,13 @@ public class XMPPConnection extends Connection {
      */
     synchronized void notifyConnectionError(Exception e) {
         // Listeners were already notified of the exception, return right here.
-        if (packetReader.done && packetWriter.done) return;
+        if ((packetReader == null || packetReader.done) &&
+                (packetWriter == null || packetWriter.done)) return;
 
-        packetReader.done = true;
-        packetWriter.done = true;
+        if (packetReader != null)
+            packetReader.done = true;
+        if (packetWriter != null)
+            packetWriter.done = true;
         // Closes the connection temporary. A reconnection is possible
         shutdown(new Presence(Presence.Type.unavailable));
         // Notify connection listeners of the error.

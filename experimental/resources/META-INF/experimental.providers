@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+<!-- Providers for workgroup extensions -->
+<smackProviders> 
+
+    <!-- XEP-0280 Message Carbons -->
+    <extensionProvider>
+        <elementName>sent</elementName>
+        <namespace>urn:xmpp:carbons:2</namespace>
+        <className>org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>received</elementName>
+        <namespace>urn:xmpp:carbons:2</namespace>
+        <className>org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider</className>
+    </extensionProvider>
+
+</smackProviders>

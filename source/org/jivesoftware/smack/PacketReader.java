@@ -34,6 +34,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
@@ -45,6 +47,8 @@ import java.util.concurrent.*;
  */
 class PacketReader {
 
+    private static Logger log = Logger.getLogger(PacketReader.class.getName());
+    
     private Thread readerThread;
     private ExecutorService listenerExecutor;
 
@@ -134,7 +138,7 @@ class PacketReader {
                 catch (Exception e) {
                     // Catch and print any exception so we can recover
                     // from a faulty listener and finish the shutdown process
-                    e.printStackTrace();
+                    log.log(Level.SEVERE, "Error in listener while closing connection", e);
                 }
             }
         }
@@ -156,7 +160,7 @@ class PacketReader {
             parser.setInput(connection.reader);
         }
         catch (XmlPullParserException xppe) {
-            xppe.printStackTrace();
+            log.log(Level.WARNING, "Error while resetting parser", xppe);
         }
     }
 
@@ -451,8 +455,7 @@ class PacketReader {
                 try {
                     listenerWrapper.notifyListener(packet);
                 } catch (Exception e) {
-                    System.err.println("Exception in packet listener: " + e);
-                    e.printStackTrace();
+                    log.log(Level.SEVERE, "Exception in packet listener", e);
                 }
             }
         }

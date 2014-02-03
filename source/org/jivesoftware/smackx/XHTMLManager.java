@@ -28,6 +28,8 @@ import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.XHTMLExtension;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to 
@@ -38,6 +40,8 @@ import java.util.Iterator;
  */
 public class XHTMLManager {
 
+    private static Logger log = Logger.getLogger(XHTMLManager.class.getName());
+    
     private final static String namespace = "http://jabber.org/protocol/xhtml-im";
 
     // Enable the XHTML support on every established connection
@@ -137,7 +141,7 @@ public class XHTMLManager {
             return result.containsFeature(namespace);
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Error checking if service is available", e);
             return false;
         }
     }

@@ -26,10 +26,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.provider.ItemsProvider;

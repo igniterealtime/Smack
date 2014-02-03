@@ -1,0 +1,17 @@
+<?xml version="1.0"?> 
+<!-- Sample providers file -->
+<smackProviders> 
+    
+    <iqProvider> 
+        <elementName>element</elementName> 
+        <namespace>ns</namespace> 
+        <className>com.myco.MyIQProvider</className> 
+    </iqProvider>
+    
+    <extensionProvider>
+        <elementName>elem</elementName>
+        <namespace>http://jabber.org/protocol/whoknows</namespace>
+        <className>com.myco.MyExtProvider</className>
+    </extensionProvider>
+
+</smackProviders>

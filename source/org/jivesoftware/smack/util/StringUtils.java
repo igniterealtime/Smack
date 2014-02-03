@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +43,8 @@ import java.util.regex.Pattern;
  * A collection of utility methods for String objects.
  */
 public class StringUtils {
-
+    private static Logger log = Logger.getLogger(StringUtils.class.getName());
+    
 	/**
      * Date format as defined in XEP-0082 - XMPP Date and Time Profiles. The time zone is set to
      * UTC.
@@ -619,8 +622,7 @@ public class StringUtils {
                 digest = MessageDigest.getInstance("SHA-1");
             }
             catch (NoSuchAlgorithmException nsae) {
-                System.err.println("Failed to load the SHA-1 MessageDigest. " +
-                "Jive will be unable to function normally.");
+                log.log(Level.SEVERE, "Failed to load the SHA-1 MessageDigest. Smack will be unable to function normally.", nsae);
             }
         }
         // Now, compute hash.
@@ -628,7 +630,7 @@ public class StringUtils {
             digest.update(data.getBytes("UTF-8"));
         }
         catch (UnsupportedEncodingException e) {
-            System.err.println(e);
+            log.log(Level.SEVERE, "Error computing hash", e);
         }
         return encodeHex(digest.digest());
     }
@@ -664,7 +666,7 @@ public class StringUtils {
             bytes = data.getBytes("ISO-8859-1");
         }
         catch (UnsupportedEncodingException uee) {
-            uee.printStackTrace();
+            throw new IllegalStateException(uee);
         }
         return encodeBase64(bytes);
     }

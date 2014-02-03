@@ -22,6 +22,7 @@ package org.jivesoftware.smack.util;
 import org.jivesoftware.smack.util.collections.AbstractMapEntry;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * A specialized Map that is size-limited (using an LRU algorithm) and
@@ -49,7 +50,7 @@ import java.util.*;
  * @author Matt Tucker
  */
 public class Cache<K, V> implements Map<K, V> {
-
+    private static Logger log = Logger.getLogger(Cache.class.getName());
     /**
      * The map the keys and values are stored in.
      */
@@ -382,8 +383,7 @@ public class Cache<K, V> implements Map<K, V> {
 
         while (expireTime > node.timestamp) {
             if (remove(node.object, true) == null) {
-                System.err.println("Error attempting to remove(" + node.object.toString() +
-                ") - cacheObject not found in cache!");
+                log.warning("Error attempting to remove(" + node.object.toString() + ") - cacheObject not found in cache!");
                 // remove from the ageList
                 node.remove();
             }
@@ -417,9 +417,7 @@ public class Cache<K, V> implements Map<K, V> {
             for (int i=map.size(); i>desiredSize; i--) {
                 // Get the key and invoke the remove method on it.
                 if (remove(lastAccessedList.getLast().object, true) == null) {
-                    System.err.println("Error attempting to cullCache with remove(" +
-                            lastAccessedList.getLast().object.toString() + ") - " +
-                            "cacheObject not found in cache!");
+                    log.warning("Error attempting to cullCache with remove(" + lastAccessedList.getLast().object.toString() + ") - cacheObject not found in cache!");
                     lastAccessedList.getLast().remove();
                 }
             }

@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.PacketCollector;
@@ -85,6 +87,8 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Kirill Maximov (kir@maxkir.com)
  */
 public class VCard extends IQ {
+    private static Logger log = Logger.getLogger(VCard.class.getName());
+    
     private static final String DEFAULT_MIME_TYPE = "image/jpeg";
     
     /**
@@ -332,7 +336,7 @@ public class VCard extends IQ {
             bytes = getBytes(avatarURL);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Error getting bytes from URL: " + avatarURL, e);
         }
 
         setAvatar(bytes);
@@ -489,7 +493,7 @@ public class VCard extends IQ {
             digest = MessageDigest.getInstance("SHA-1");
         }
         catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to get message digest", e);
             return null;
         }
 
@@ -582,7 +586,7 @@ public class VCard extends IQ {
            result = (VCard) packet;
         }
         catch (ClassCastException e) {
-            System.out.println("No VCard for " + user);
+            log.log(Level.SEVERE, "No VCard for " + user, e);
             return;
         }
 

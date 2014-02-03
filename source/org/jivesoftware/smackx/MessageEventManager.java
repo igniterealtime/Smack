@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Connection;
@@ -42,7 +44,8 @@ import org.jivesoftware.smackx.packet.MessageEvent;
  * @author Gaston Dombiak
  */
 public class MessageEventManager {
-
+    private static Logger log = Logger.getLogger(MessageEventManager.class.getName());
+    
     private List<MessageEventNotificationListener> messageEventNotificationListeners = new ArrayList<MessageEventNotificationListener>();
     private List<MessageEventRequestListener> messageEventRequestListeners = new ArrayList<MessageEventRequestListener>();
 
@@ -157,12 +160,8 @@ public class MessageEventManager {
             for (int i = 0; i < listeners.length; i++) {
                 method.invoke(listeners[i], new Object[] { from, packetID, this });
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Error while invoking MessageEventRequestListener", e);
         }
     }
 
@@ -188,12 +187,8 @@ public class MessageEventManager {
             for (int i = 0; i < listeners.length; i++) {
                 method.invoke(listeners[i], new Object[] { from, packetID });
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener", e);
         }
     }
 

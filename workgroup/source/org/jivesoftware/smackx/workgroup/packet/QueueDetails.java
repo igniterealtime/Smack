@@ -29,13 +29,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Queue details packet extension, which contains details about the users
  * currently in a queue.
  */
 public class QueueDetails implements PacketExtension {
-
+    private static Logger log = Logger.getLogger(QueueDetails.class.getName());
+    
     /**
      * Element name of the packet extension.
      */
@@ -178,7 +180,7 @@ public class QueueDetails implements PacketExtension {
                         }
                         else if( parser.getName().equals( "waitTime" ) ) {
                             Date wait = dateFormat.parse(parser.nextText());
-                            System.out.println( wait );
+                            log.fine(wait.toString());
                         }
 
                         eventType = parser.next();

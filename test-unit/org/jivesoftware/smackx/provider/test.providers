@@ -1,0 +1,11 @@
+<?xml version="1.0"?> 
+<!-- Providers file for default Smack extensions -->
+<smackProviders> 
+    
+    <iqProvider>
+        <elementName>provider</elementName>
+        <namespace>test:file_provider</namespace>
+        <className>org.jivesoftware.smackx.provider.ProviderConfigTest$TestIQProvider</className>
+    </iqProvider>
+
+</smackProviders>

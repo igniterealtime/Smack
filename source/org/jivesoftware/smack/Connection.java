@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compression.JzlibInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
@@ -83,7 +84,8 @@ import org.jivesoftware.smack.packet.Presence;
  * @author Guenther Niess
  */
 public abstract class Connection {
-
+    private static Logger log = Logger.getLogger(Connection.class.getName());
+    
     /** 
      * Counter to uniquely identify connections that are created.
      */
@@ -593,9 +595,13 @@ public abstract class Connection {
     }
 
     /**
-     * Registers a packet listener with this connection. A packet filter determines
+     * Registers a packet listener with this connection. A packet listener will be invoked only
+     * when an incoming packet is received. A packet filter determines
      * which packets will be delivered to the listener. If the same packet listener
      * is added again with a different filter, only the new filter will be used.
+     * 
+     * <p>
+     * NOTE: If you want get a similar callback for outgoing packets, see {@link #addPacketInterceptor(PacketInterceptor, PacketFilter)}.
      * 
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter   the packet filter to use.
@@ -681,6 +687,9 @@ public abstract class Connection {
      * invoked every time a packet is about to be sent by this connection. Interceptors
      * may modify the packet to be sent. A packet filter determines which packets
      * will be delivered to the interceptor.
+     * 
+     * <p>
+     * NOTE: For a similar functionality on incoming packets, see {@link #addPacketListener(PacketListener, PacketFilter)}.
      *
      * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
      * @param packetFilter      the packet filter to use.
@@ -757,7 +766,7 @@ public abstract class Connection {
                         debuggerClass = Class.forName(className);
                     }
                     catch (Exception e) {
-                        e.printStackTrace();
+                        log.warning("Unabled to instantiate debugger class " + className);
                     }
                 }
                 if (debuggerClass == null) {
@@ -771,7 +780,7 @@ public abstract class Connection {
                                     Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
                         }
                         catch (Exception ex2) {
-                            ex2.printStackTrace();
+                            log.warning("Unabled to instantiate either Smack debugger class");
                         }
                     }
                 }

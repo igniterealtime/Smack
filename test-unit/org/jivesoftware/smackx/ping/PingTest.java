@@ -15,18 +15,20 @@
  */
 package org.jivesoftware.smackx.ping;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.jivesoftware.smack.DummyConnection;
-import org.jivesoftware.smack.TestUtils;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.ping.packet.Ping;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PingTest {
     private DummyConnection dummyCon;

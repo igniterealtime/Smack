@@ -27,6 +27,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Base class for XMPP packets. Every packet has a unique ID (which is automatically
@@ -41,7 +43,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Matt Tucker
  */
 public abstract class Packet {
-
+    private static Logger log = Logger.getLogger(Packet.class.getName());
+    
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase();
 
@@ -411,7 +414,7 @@ public abstract class Packet {
                         buf.append(encodedVal).append("</value>");
                     }
                     catch (Exception e) {
-                        e.printStackTrace();
+                        log.log(Level.SEVERE, "Error encoding java object", e);
                     }
                     finally {
                         if (out != null) {
@@ -452,6 +455,7 @@ public abstract class Packet {
         return DEFAULT_LANGUAGE;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -472,6 +476,7 @@ public abstract class Packet {
         return !(xmlns != null ? !xmlns.equals(packet.xmlns) : packet.xmlns != null);
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = (xmlns != null ? xmlns.hashCode() : 0);
@@ -482,5 +487,10 @@ public abstract class Packet {
         result = 31 * result + properties.hashCode();
         result = 31 * result + (error != null ? error.hashCode() : 0);
         return result;
+    }
+    
+    @Override
+    public String toString() {
+        return toXML();
     }
 }

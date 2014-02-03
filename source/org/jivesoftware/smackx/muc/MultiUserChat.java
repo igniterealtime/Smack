@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -76,7 +78,8 @@ import org.jivesoftware.smackx.packet.MUCUser;
  * @author Gaston Dombiak, Larry Kirschner
  */
 public class MultiUserChat {
-
+    private static Logger log = Logger.getLogger(MultiUserChat.class.getName());
+    
     private final static String discoNamespace = "http://jabber.org/protocol/muc";
     private final static String discoNode = "http://jabber.org/protocol/muc#rooms";
 
@@ -179,7 +182,7 @@ public class MultiUserChat {
             return result.containsFeature(discoNamespace);
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Error checking user [" + user + "] for MUC support", e);
             return false;
         }
     }
@@ -222,7 +225,7 @@ public class MultiUserChat {
             return answer.iterator();
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Error getting joined rooms for user [" + user + "]", e);
             // Return an iterator on an empty collection
             return new ArrayList<String>().iterator();
         }
@@ -953,13 +956,12 @@ public class MultiUserChat {
                 DiscoverInfo.Identity identity = identities.next();
                 return identity.getName();
             }
-            // If no Identity was found then the user does not have a reserved room nickname
-            return null;
         }
         catch (XMPPException e) {
-            e.printStackTrace();
-            return null;
+            log.log(Level.SEVERE, "Error retrieving room nickname", e);
         }
+        // If no Identity was found then the user does not have a reserved room nickname
+        return null;
     }
 
     /**
@@ -2061,11 +2063,11 @@ public class MultiUserChat {
                 method.invoke(listener, params);
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to invoke method on UserStatusListener", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to invoke method on UserStatusListener", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to invoke method on UserStatusListener", e);
         }
     }
 
@@ -2112,11 +2114,11 @@ public class MultiUserChat {
                 method.invoke(listener, params.toArray());
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
         }
     }
 

@@ -26,6 +26,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.Connection.ListenerWrapper;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 

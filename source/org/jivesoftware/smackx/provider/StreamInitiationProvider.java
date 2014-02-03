@@ -21,6 +21,8 @@ package org.jivesoftware.smackx.provider;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -37,7 +39,8 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  */
 public class StreamInitiationProvider implements IQProvider {
-
+    private static Logger log = Logger.getLogger(StreamInitiationProvider.class.getName());
+    
 	public IQ parseIQ(final XmlPullParser parser) throws Exception {
 		boolean done = false;
 
@@ -90,7 +93,7 @@ public class StreamInitiationProvider implements IQProvider {
                             fileSize = Long.parseLong(size);
                         }
                         catch (NumberFormatException e) {
-                            e.printStackTrace();
+                            log.log(Level.SEVERE, "Failed to parse file size from " + fileSize, e);
                         }
                     }
                     

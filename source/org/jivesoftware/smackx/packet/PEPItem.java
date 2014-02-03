@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
  *
  * @author Jeff Williams
  */
+@Deprecated
 public abstract class PEPItem implements PacketExtension {
     
     String id;

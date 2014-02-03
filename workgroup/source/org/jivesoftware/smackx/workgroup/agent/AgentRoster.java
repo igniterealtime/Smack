@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Manges information about the agents in a workgroup and their presence.
@@ -45,7 +46,7 @@ import java.util.Set;
  * @see AgentSession#getAgentRoster()
  */
 public class AgentRoster {
-
+    private static Logger log = Logger.getLogger(AgentRoster.class.getName());
     private static final int EVENT_AGENT_ADDED = 0;
     private static final int EVENT_AGENT_REMOVED = 1;
     private static final int EVENT_PRESENCE_CHANGED = 2;
@@ -284,7 +285,7 @@ public class AgentRoster {
             String from = presence.getFrom();
             if (from == null) {
                 // TODO Check if we need to ignore these presences or this is a server bug?
-                System.out.println("Presence with no FROM: " + presence.toXML());
+                log.warning("Presence with no FROM: " + presence.toXML());
                 return;
             }
             String key = getPresenceMapKey(from);

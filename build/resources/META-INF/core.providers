@@ -1,0 +1,19 @@
+<?xml version="1.0"?> 
+<!-- Providers file for default Smack extensions -->
+<smackProviders> 
+    
+    <!-- Privacy -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:privacy</namespace>
+        <className>org.jivesoftware.smack.provider.PrivacyProvider</className>
+    </iqProvider>
+
+    <!-- Ping (XEP-199) Manager -->
+    <iqProvider>
+        <elementName>ping</elementName>
+        <namespace>urn:xmpp:ping</namespace>
+        <className>org.jivesoftware.smack.ping.provider.PingProvider</className>
+    </iqProvider>
+
+</smackProviders>

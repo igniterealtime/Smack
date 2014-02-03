@@ -20,15 +20,12 @@
 
 package org.jivesoftware.smack.provider;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.xmlpull.mxp1.MXParser;
-import org.xmlpull.v1.XmlPullParser;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * Manages providers for parsing custom XML sub-documents of XMPP packets. Two types of
@@ -102,20 +99,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * can either implement the PacketExtensionProvider interface or be a standard Java Bean. In
  * the former case, each extension provider is responsible for parsing the raw XML stream to
  * contruct an object. In the latter case, bean introspection is used to try to automatically
- * set the properties of the class using the values in the packet extension sub-element. When an
+ * set the properties of th class using the values in the packet extension sub-element. When an
  * extension provider is not registered for an element name and namespace combination, Smack will
  * store all top-level elements of the sub-packet in DefaultPacketExtension object and then
  * attach it to the packet.<p>
  *
- * It is possible to provide a custom provider manager instead of the default implementation
- * provided by Smack. If you want to provide your own provider manager then you need to do it
- * before creating any {@link org.jivesoftware.smack.Connection} by sending the static
- * {@link #setInstance(ProviderManager)} message. Trying to change the provider manager after
- * an Connection was created will result in an {@link IllegalStateException} error.
- *
  * @author Matt Tucker
  */
-public class ProviderManager {
+public final class ProviderManager {
 
     private static ProviderManager instance;
 
@@ -123,9 +114,7 @@ public class ProviderManager {
     private Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
 
     /**
-     * Returns the only ProviderManager valid instance.  Use {@link #setInstance(ProviderManager)}
-     * to configure your own provider manager. If non was provided then an instance of this
-     * class will be used.
+     * Returns the ProviderManager instance.
      *
      * @return the only ProviderManager valid instance.
      */
@@ -136,130 +125,28 @@ public class ProviderManager {
         return instance;
     }
 
-    /**
-     * Sets the only ProviderManager valid instance to be used by all Connections. If you
-     * want to provide your own provider manager then you need to do it before creating
-     * any Connection. Otherwise an IllegalStateException will be thrown.
-     *
-     * @param providerManager the only ProviderManager valid instance to be used.
-     * @throws IllegalStateException if a provider manager was already configued.
-     */
-    public static synchronized void setInstance(ProviderManager providerManager) {
-        if (instance != null) {
-            throw new IllegalStateException("ProviderManager singleton already set");
-        }
-        instance = providerManager;
+    private ProviderManager() {
+        super();
     }
 
-    protected void initialize() {
-        // Load IQ processing providers.
-        try {
-            // Get an array of class loaders to try loading the providers files from.
-            ClassLoader[] classLoaders = getClassLoaders();
-            for (ClassLoader classLoader : classLoaders) {
-                Enumeration<URL> providerEnum = classLoader.getResources(
-                        "META-INF/smack.providers");
-                while (providerEnum.hasMoreElements()) {
-                    URL url = providerEnum.nextElement();
-                    InputStream providerStream = null;
-                    try {
-                        providerStream = url.openStream();
-                        XmlPullParser parser = new MXParser();
-                        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-                        parser.setInput(providerStream, "UTF-8");
-                        int eventType = parser.getEventType();
-                        do {
-                            if (eventType == XmlPullParser.START_TAG) {
-                                if (parser.getName().equals("iqProvider")) {
-                                    parser.next();
-                                    parser.next();
-                                    String elementName = parser.nextText();
-                                    parser.next();
-                                    parser.next();
-                                    String namespace = parser.nextText();
-                                    parser.next();
-                                    parser.next();
-                                    String className = parser.nextText();
-                                    // Only add the provider for the namespace if one isn't
-                                    // already registered.
-                                    String key = getProviderKey(elementName, namespace);
-                                    if (!iqProviders.containsKey(key)) {
-                                        // Attempt to load the provider class and then create
-                                        // a new instance if it's an IQProvider. Otherwise, if it's
-                                        // an IQ class, add the class object itself, then we'll use
-                                        // reflection later to create instances of the class.
-                                        try {
-                                            // Add the provider to the map.
-                                            Class<?> provider = Class.forName(className);
-                                            if (IQProvider.class.isAssignableFrom(provider)) {
-                                                iqProviders.put(key, provider.newInstance());
-                                            }
-                                            else if (IQ.class.isAssignableFrom(provider)) {
-                                                iqProviders.put(key, provider);
-                                            }
-                                        }
-                                        catch (ClassNotFoundException cnfe) {
-                                            cnfe.printStackTrace();
-                                        }
-                                    }
-                                }
-                                else if (parser.getName().equals("extensionProvider")) {
-                                    parser.next();
-                                    parser.next();
-                                    String elementName = parser.nextText();
-                                    parser.next();
-                                    parser.next();
-                                    String namespace = parser.nextText();
-                                    parser.next();
-                                    parser.next();
-                                    String className = parser.nextText();
-                                    // Only add the provider for the namespace if one isn't
-                                    // already registered.
-                                    String key = getProviderKey(elementName, namespace);
-                                    if (!extensionProviders.containsKey(key)) {
-                                        // Attempt to load the provider class and then create
-                                        // a new instance if it's a Provider. Otherwise, if it's
-                                        // a PacketExtension, add the class object itself and
-                                        // then we'll use reflection later to create instances
-                                        // of the class.
-                                        try {
-                                            // Add the provider to the map.
-                                            Class<?> provider = Class.forName(className);
-                                            if (PacketExtensionProvider.class.isAssignableFrom(
-                                                    provider)) {
-                                                extensionProviders.put(key, provider.newInstance());
-                                            }
-                                            else if (PacketExtension.class.isAssignableFrom(
-                                                    provider)) {
-                                                extensionProviders.put(key, provider);
-                                            }
-                                        }
-                                        catch (ClassNotFoundException cnfe) {
-                                            cnfe.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-                            eventType = parser.next();
-                        }
-                        while (eventType != XmlPullParser.END_DOCUMENT);
-                    }
-                    finally {
-                        try {
-                            providerStream.close();
-                        }
-                        catch (Exception e) {
-                            // Ignore.
-                        }
-                    }
-                }
+    public void addLoader(ProviderLoader loader) {
+        if (loader == null) {
+            throw new IllegalArgumentException("loader cannot be null");
+        }
+        
+        if (loader.getIQProviderInfo() != null) {
+            for (IQProviderInfo info : loader.getIQProviderInfo()) {
+                iqProviders.put(getProviderKey(info.getElementName(), info.getNamespace()), info.getProvider());
             }
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        
+        if (loader.getExtensionProviderInfo() != null) {
+            for (ExtensionProviderInfo info : loader.getExtensionProviderInfo()) {
+                extensionProviders.put(getProviderKey(info.getElementName(), info.getNamespace()), info.getProvider());
+            }
         }
     }
-
+    
     /**
      * Returns the IQ provider registered to the specified XML element name and namespace.
      * For example, if a provider was registered to the element name "query" and the
@@ -410,29 +297,5 @@ public class ProviderManager {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
         return buf.toString();
-    }
-
-    /**
-     * Returns an array of class loaders to load resources from.
-     *
-     * @return an array of ClassLoader instances.
-     */
-    private ClassLoader[] getClassLoaders() {
-        ClassLoader[] classLoaders = new ClassLoader[2];
-        classLoaders[0] = ProviderManager.class.getClassLoader();
-        classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        // Clean up possible null values. Note that #getClassLoader may return a null value.
-        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
-        for (ClassLoader classLoader : classLoaders) {
-            if (classLoader != null) {
-                loaders.add(classLoader);
-            }
-        }
-        return loaders.toArray(new ClassLoader[loaders.size()]);
-    }
-
-    private ProviderManager() {
-        super();
-        initialize();
     }
 }

@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
@@ -67,7 +69,8 @@ import org.jivesoftware.smack.XMPPException;
  * @author Henning Staib
  */
 public class Socks5Proxy {
-
+    private static Logger log = Logger.getLogger(Socks5Proxy.class.getName());
+    
     /* SOCKS5 proxy singleton */
     private static Socks5Proxy socks5Server;
 
@@ -150,8 +153,7 @@ public class Socks5Proxy {
         }
         catch (IOException e) {
             // couldn't setup server
-            System.err.println("couldn't setup local SOCKS5 proxy on port "
-                            + SmackConfiguration.getLocalSocks5ProxyPort() + ": " + e.getMessage());
+            log.log(Level.SEVERE, "couldn't setup local SOCKS5 proxy on port " + SmackConfiguration.getLocalSocks5ProxyPort(), e);
         }
     }
 

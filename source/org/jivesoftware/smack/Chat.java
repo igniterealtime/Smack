@@ -170,7 +170,19 @@ public class Chat {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "Chat [(participant=" + participant + "), (thread=" + threadID + ")]";
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + threadID.hashCode();
+        hash = hash * 31 + participant.hashCode();
+        return hash;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Chat
