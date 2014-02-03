@@ -140,6 +140,47 @@ hr {
 	</div>
 
 	<div id="pageBody">
+
+<h2>3.4.0 -- <span style="font-weight: normal;">Feb 2, 2014</span></h2>
+
+<h2>Bug Fixes</h2>
+<ul>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-442'>SMACK-442</a>] - Manager&#39;s should also handle connectionClosedOnError()</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-443'>SMACK-443</a>] - ReconnectionSuccessful listeners are invoked twice on reconnection if connect() failed before</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-452'>SMACK-452</a>] - PacketParserUtils.parseStreamError() is not aware of optional text element and therefore failes to parse stream error&#39;s correctly. Prevents ReconnectionManager from reconnecting.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-458'>SMACK-458</a>] - Smack&#39;s Managers should not remove itself when the connection is closed or should re-add themselfs if the connection get reconnected</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-462'>SMACK-462</a>] - Prevent duplicate manager instances by using the manager&#39;s constructor in the ConnectionCreationListener&#39;s connectionCreated</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-463'>SMACK-463</a>] - packet listeners silently fail when preceding listener caused exception</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-524'>SMACK-524</a>] - Use correct block-size definition for IBB transfers</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-525'>SMACK-525</a>] - NPE in XMPPConnection.notifyConnectionError</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-529'>SMACK-529</a>] - Add support for XEP-0280 &quot;Message Carbons&quot;</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-530'>SMACK-530</a>] -     DNSUtilTest requires an internet connection to work, it should be moved to integration tests.</li>
+</ul>
+        
+<h2>New Feature</h2>
+<ul>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-286'>SMACK-286</a>] - Need to change ProviderManager to support loading smack.providers from alternative locations</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-387'>SMACK-387</a>] - Allow configuration of ChatManager to be able to allow message handling to be customized.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-403'>SMACK-403</a>] - Add support for XEP-0297 &quot;Stanza Forwarding&quot;</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-434'>SMACK-434</a>] - Create a project to contain non production ready implementations of specifications</li>
+</ul>
+
+<h2>Improvement</h2>
+<ul>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-343'>SMACK-343</a>] - Make Smack jar an OSGi bundle.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-381'>SMACK-381</a>] - Separate the configuration for smack extension related classes from the smack jar.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-444'>SMACK-444</a>] - Allow &#39;null&#39; for TruststorePath and TruststorePassword in ServerTrustManager</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-456'>SMACK-456</a>] - Add the causing exception to the XMPPExceptions thrown in XMPPConnection</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-457'>SMACK-457</a>] - Remove unnecessary printStackTrace() in XMPPConnection</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-460'>SMACK-460</a>] - ServiceDiscoveryManager should not use the constructor in connectionCreated()</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-461'>SMACK-461</a>] - Remove incorrect deprecated marker for DiscoverInfo.Identity.setType()</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-464'>SMACK-464</a>] - Make it clear that PacketListener&#39;s added with Connection.addPacketListener() are only for received packets</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-534'>SMACK-534</a>] - Convert all System.out and printStackTrace calls to use Java util logging.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-339'>SMACK-339</a>] - Allow ConnectionListeners to be added before Connection is connected.  Currently throws exception</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-373'>SMACK-373</a>] - Don&#39;t remove listeners after a disconnect() , keep state of Connection between disconnect() and connect()/login()</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-434'>SMACK-434</a>] - Create a project to contain non production ready implementations of specifications</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-526'>SMACK-526</a>] - Deprecate all PEP related classes.</li>
+</ul>
 	
 <h2>3.3.1 -- <span style="font-weight: normal;">Oct 6, 2013</span></h2>
 

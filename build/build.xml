@@ -28,7 +28,7 @@
     <property name="version.major" value="3" />
     <property name="version.minor" value="4" />
     <property name="version.revision" value="0" />
-    <property name="version.extra" value="SNAPSHOT" />
+    <property name="version.extra" value="" />
 	
     <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
     <var name="mutable-experimental-version" value="0.1"/>

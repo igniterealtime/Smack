@@ -51,7 +51,7 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Gaston Dombiak
  */
 public final class SmackConfiguration {
-    private static final String SMACK_VERSION = "3.3.1";
+    private static final String SMACK_VERSION = "3.4.0";
     private static final String DEFAULT_CONFIG_FILE = "classpath:META-INF/smack-config.xml"; 
     
     private static final Logger log = Logger.getLogger(SmackConfiguration.class.getName());

@@ -30,7 +30,10 @@
         <!-- create release properties -->
         <property name="release.dir" value="${basedir}/target/release/${version}" />
         <property name="release.samples.dir" value="${release.dir}/samples" />
-        
+        <tstamp>
+            <format property="release.date" pattern="dd/MM/yyyy" locale="en"/>
+        </tstamp>
+
     	<!-- create release dirs -->
         <mkdir dir="${release.dir}" />
         <mkdir dir="${release.samples.dir}" />
@@ -65,7 +68,7 @@
         <copy todir="${release.dir}">
             <fileset dir="${basedir}/build/resources/releasedocs" includes="*.html" />
             <filterset>
-                <filter token="builddate" value="${build.date}"/>
+                <filter token="releasedate" value="${release.date}"/>
                 <filter token="version" value="${version}"/>
             </filterset>
         </copy>
