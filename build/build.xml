@@ -467,7 +467,8 @@
             fork="false"
             haltonfailure="false"
             failureproperty="tests.failed"
-            showoutput="true">
+            showoutput="true"
+            reloading="false" >
 
             <classpath>
                 <fileset dir="${merge.lib.dir}">
