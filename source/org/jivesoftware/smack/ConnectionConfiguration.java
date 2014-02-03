@@ -95,6 +95,13 @@ public class ConnectionConfiguration implements Cloneable {
     protected ProxyInfo proxy;
 
     /**
+     * Constructor used for subclassing ConnectionConfiguration
+     */
+    ConnectionConfiguration() {
+      /* Does nothing */
+    }
+
+    /**
      * Creates a new ConnectionConfiguration for the specified service name.
      * A DNS SRV lookup will be performed to find out the actual host address
      * and port to use for the connection.
