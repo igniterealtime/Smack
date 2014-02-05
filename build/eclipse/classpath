@@ -33,5 +33,6 @@
 	<classpathentry kind="lib" path="build/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="build/merge/jzlib.jar"/>
 	<classpathentry kind="lib" path="build/merge/org.xbill.dns_2.1.4.jar"/>
+	<classpathentry kind="lib" path="build/resources"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
