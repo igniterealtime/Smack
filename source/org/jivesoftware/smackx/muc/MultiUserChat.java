@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -116,12 +117,16 @@ public class MultiUserChat {
                 // Chat protocol. This information will be used when another client tries to
                 // discover whether this client supports MUC or not.
                 ServiceDiscoveryManager.getInstanceFor(connection).addFeature(discoNamespace);
+
                 // Set the NodeInformationProvider that will provide information about the
                 // joined rooms whenever a disco request is received
+                final WeakReference<Connection> weakRefConnection = new WeakReference<Connection>(connection);
                 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
                     discoNode,
                     new NodeInformationProvider() {
                         public List<DiscoverItems.Item> getNodeItems() {
+                            Connection connection = weakRefConnection.get();
+                            if (connection == null) return new LinkedList<DiscoverItems.Item>();
                             List<DiscoverItems.Item> answer = new ArrayList<DiscoverItems.Item>();
                             Iterator<String> rooms=MultiUserChat.getJoinedRooms(connection);
                             while (rooms.hasNext()) {
