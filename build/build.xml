@@ -547,25 +547,25 @@
         <ant antfile="${basedir}/build/release.xml" />
     </target>
 
-        <!-- checkcode -->
-        <!-- ======================================================================================= -->
-        <target name="checkcode" >
-                <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
-                <classpath>
-                    <pathelement location="${basedir}/build/pmd.jar" />
-                    <pathelement location="${basedir}/build/asm.jar" />
-                    <pathelement location="${basedir}/build/jaxen.jar" />
-                </classpath>
-                </taskdef>
-                <pmd shortFilenames="true">
-                        <ruleset>migrating</ruleset>
-                        <ruleset>finalizers</ruleset>
-                        <formatter type="html" toFile="target/pmd_report.html" toConsole="true" />
-                        <fileset dir="source/">
-                                <include name="**/*.java" />
-                        </fileset>
-                </pmd>
-        </target>
+    <!-- checkcode -->
+    <!-- ======================================================================================= -->
+    <target name="checkcode" >
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+            <classpath>
+                <pathelement location="${basedir}/build/pmd.jar" />
+                <pathelement location="${basedir}/build/asm.jar" />
+                <pathelement location="${basedir}/build/jaxen.jar" />
+            </classpath>
+        </taskdef>
+        <pmd shortFilenames="true">
+            <ruleset>migrating</ruleset>
+            <ruleset>finalizers</ruleset>
+            <formatter type="html" toFile="target/pmd_report.html" toConsole="true" />
+            <fileset dir="source/">
+                <include name="**/*.java" />
+            </fileset>
+        </pmd>
+    </target>
 
     <!-- clean -->
     <!-- ======================================================================================= -->
