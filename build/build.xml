@@ -64,6 +64,7 @@
     <property name="merge.lib.dir" value="${basedir}/build/merge" />
     <property name="test.dir" value="${basedir}/test" />
     <property name="test-unit.dir" value="${basedir}/test-unit" />
+    <property name="test-unit-reports.dir" value="${basedir}/test-reports" />
     <property name="resources.dir" value="${basedir}/build/resources" />
     <property name="jingle.extension.merge.lib.dir" value="${basedir}/jingle/extension/build/merge" />
     <property name="jingle.extension.lib.dir" value="${basedir}/jingle/extension/build/lib" />
@@ -459,6 +460,7 @@
     <!-- test-unit -->
     <!-- ======================================================================================= -->
     <target name="test-unit" depends="compile, jar-test, jar-test-smackx" unless="no.test">
+        <mkdir dir="${test-unit-reports.dir}" />
         <junit printsummary="on"
             fork="false"
             haltonfailure="false"
@@ -489,8 +491,9 @@
             </classpath>
 
             <formatter type="brief" usefile="false"/>
+            <formatter type="xml" />
 
-            <batchtest>
+            <batchtest todir="${test-unit-reports.dir}">
                 <fileset dir="${basedir}/test-unit">
                     <patternset refid="test.cases" />
                 </fileset>
