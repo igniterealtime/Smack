@@ -29,33 +29,33 @@
     <property name="version.minor" value="4" />
     <property name="version.revision" value="0" />
     <property name="version.extra" value="" />
-	
+
     <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
     <var name="mutable-experimental-version" value="0.1"/>
 
-	<if>
+    <if>
         <length string="${version.extra}" when="greater" length="0"/>
         <then>
-        	<var name="mutable-version" value="${mutable-version}.${version.extra}"/>
-        	<var name="mutable-experimental-version" value="${mutable-experimental-version}.${version.extra}" />
+            <var name="mutable-version" value="${mutable-version}.${version.extra}"/>
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}.${version.extra}" />
         </then>
     </if>
-	
-	<if>
+
+    <if>
         <equals arg1="${dailybuild}" arg2="true" />
         <then>
             <tstamp>
                 <format property="build.date" pattern="yyyyMMdd" locale="en"/>
             </tstamp>
-        	<var name="mutable-version" value="${mutable-version}-${build.date}" />
-        	<var name="mutable-experimental-version" value="${mutable-experimental-version}-${build.date}" />
+            <var name="mutable-version" value="${mutable-version}-${build.date}" />
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}-${build.date}" />
         </then>
-	</if>
+    </if>
 
     <property name="version" value="${mutable-version}" />
     <property name="experimental.version" value="${mutable-experimental-version}" />
-	
-	<property name="bundle.name" value="org.igniterealtime.smack" />
+
+    <property name="bundle.name" value="org.igniterealtime.smack" />
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/target/classes" />
     <property name="compile.test.dir" value="${basedir}/target/classes-test" />
@@ -140,7 +140,7 @@
             </classpath>
         </javac>
 
-    	<mkdir dir="${compile.dir}/workgroup" />
+        <mkdir dir="${compile.dir}/workgroup" />
         <javac
             destdir="${compile.dir}/workgroup"
             includeAntRuntime="no"
@@ -157,7 +157,7 @@
             </classpath>
         </javac>
 
-    	<mkdir dir="${compile.dir}/experimental" />
+        <mkdir dir="${compile.dir}/experimental" />
         <javac
             destdir="${compile.dir}/experimental"
             includeAntRuntime="no"
@@ -214,7 +214,7 @@
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/jul.properties" />
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/smack-config.xml" />
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/core.providers" />
-    	<property name="smack.jar.name" value="${jar.dest.dir}/smack-${version}.jar" />
+        <property name="smack.jar.name" value="${jar.dest.dir}/smack-${version}.jar" />
         <jar destfile="${smack.jar.name}"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smack/**/*.class, **/smack-config.xml, **/core.providers, **/jul.properties">
@@ -228,8 +228,8 @@
                 <attribute name="Bundle-Version" value="${version}" />
             </manifest>
         </jar>
-    	
-    	<property name="smackx.jar.name" value="${jar.dest.dir}/smackx-${version}.jar" />
+
+        <property name="smackx.jar.name" value="${jar.dest.dir}/smackx-${version}.jar" />
         <copy todir="${compile.dir}/META-INF" file="${basedir}/build/resources/META-INF/extension.providers" />
         <jar destfile="${smackx.jar.name}"
             basedir="${compile.dir}"
@@ -248,9 +248,9 @@
                 <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
-    	
-    	<property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug-${version}.jar" />
-		<copy todir="${compile.dir}/images">
+
+        <property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug-${version}.jar" />
+        <copy todir="${compile.dir}/images">
             <fileset dir="${basedir}/build/resources/images">
                 <include name="*.png"/>
             </fileset>
@@ -270,8 +270,8 @@
                 <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
-    	
-    	<property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle-${version}.jar" />
+
+        <property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle-${version}.jar" />
         <jar destfile="${jingle.jar.name}"
             basedir="${compile.dir}/jingle/extension"
             includes="org/jivesoftware/smackx/**/*.class">
@@ -289,7 +289,7 @@
             </manifest>
         </jar>
 
-    	<property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup-${version}.jar" />
+        <property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup-${version}.jar" />
         <copy todir="${compile.dir}/workgroup/META-INF" file="${basedir}/workgroup/resources/META-INF/workgroup.providers" />
         <jar destfile="${workgroup.jar.name}"
             basedir="${compile.dir}/workgroup"
@@ -307,7 +307,7 @@
             </manifest>
         </jar>
 
-    	<property name="experimental.jar.name" value="${jar.dest.dir}/smackx-experimental-${experimental.version}.jar" />
+        <property name="experimental.jar.name" value="${jar.dest.dir}/smackx-experimental-${experimental.version}.jar" />
         <copy todir="${compile.dir}/experimental/META-INF" file="${basedir}/experimental/resources/META-INF/experimental.providers" />
         <jar destfile="${experimental.jar.name}"
             basedir="${compile.dir}/experimental"
@@ -326,7 +326,7 @@
         </jar>
 
     <!--
-    	<delete file="${compile.dir}/META-INF/smack-config.xml" />
+        <delete file="${compile.dir}/META-INF/smack-config.xml" />
         <delete file="${compile.dir}/META-INF/*.providers" />
         <delete>
             <fileset dir="${compile.dir}/images">
