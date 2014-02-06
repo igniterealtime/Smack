@@ -544,13 +544,7 @@
 
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" description="Builds a release" if="release.exists" depends="release-exists">
-        <antcall target="jar">
-            <param name="no.test" value="true" />
-        </antcall>
-        <antcall target="javadoc">
-            <param name="no.test" value="true" />
-        </antcall>
+    <target name="release" description="Builds a release" depends="jar,javadoc">
         <ant antfile="${basedir}/build/release.xml" />
     </target>
 
@@ -573,13 +567,6 @@
                         </fileset>
                 </pmd>
         </target>
-
-    <!-- release-exists -->
-    <!-- ======================================================================================= -->
-    <target name="release-exists" >
-        <available file="${basedir}/build/release.xml" property="release.exists"/>
-    </target>
-
 
     <!-- clean -->
     <!-- ======================================================================================= -->
