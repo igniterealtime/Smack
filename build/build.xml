@@ -33,6 +33,27 @@
     <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
     <var name="mutable-experimental-version" value="0.1"/>
 
+    <available file=".git" type="dir" property="gitDir.present"/>
+
+    <!-- <target name="git.revision" description="Store git revision in ${repository.version}" if="gitDir.present"> -->
+    <if>
+        <isset property="gitDir.present"/>
+            <then>
+                <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+                    <arg value="log"/>
+                    <arg value="-n 1"/>
+                    <arg value="--pretty=format:%h"/>
+                </exec>
+            </then>
+        </if>
+        <condition property="repository.version" value="${git.revision}" else="">
+            <and>
+                <isset property="git.revision"/>
+                <length string="${git.revision}" trim="yes" length="0" when="greater"/>
+            </and>
+        </condition>
+    <!-- </target> -->
+
     <if>
         <length string="${version.extra}" when="greater" length="0"/>
         <then>
@@ -49,6 +70,14 @@
             </tstamp>
             <var name="mutable-version" value="${mutable-version}-${build.date}" />
             <var name="mutable-experimental-version" value="${mutable-experimental-version}-${build.date}" />
+        </then>
+    </if>
+
+    <if>
+        <length string="${repository.version}" when="greater" length="0"/>
+        <then>
+            <var name="mutable-version" value="${mutable-version}-${repository.version}"/>
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}-${repository.version}" />
         </then>
     </if>
 
