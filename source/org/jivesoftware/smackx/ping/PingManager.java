@@ -16,6 +16,7 @@
 
 package org.jivesoftware.smackx.ping;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -65,7 +66,7 @@ public class PingManager {
         });
     }
 
-    private Connection connection;
+    private WeakReference<Connection> weakRefConnection;
 
     /**
      * Retrieves a {@link PingManager} for the specified {@link Connection}, creating one if it doesn't already
@@ -84,8 +85,8 @@ public class PingManager {
         return pingManager;
     }
 
-    private PingManager(Connection con) {
-        this.connection = con;
+    private PingManager(Connection connection) {
+        weakRefConnection = new WeakReference<Connection>(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         
         // The ServiceDiscoveryManager was not pre-initialized
@@ -101,6 +102,7 @@ public class PingManager {
              * Sends a Pong for every Ping
              */
             public void processPacket(Packet packet) {
+                Connection connection = weakRefConnection.get();
                 IQ pong = IQ.createResultIQ((Ping) packet);
                 connection.sendPacket(pong);
             }
@@ -121,7 +123,7 @@ public class PingManager {
      */
     public boolean ping(String jid, long pingTimeout) {
         Ping ping = new Ping(jid);
-        
+        Connection connection = weakRefConnection.get();
         try {
             SyncPacketSend.getReply(connection, ping);
         }
@@ -151,6 +153,7 @@ public class PingManager {
      * @throws XMPPException An XMPP related error occurred during the request 
      */
     public boolean isPingSupported(String jid) throws XMPPException {
+        Connection connection = weakRefConnection.get();
         DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
         return result.containsFeature(Ping.NAMESPACE);
     }
@@ -165,6 +168,7 @@ public class PingManager {
      * @return true if a reply was received from the server, false otherwise.
      */
     public boolean pingMyServer() {
+        Connection connection = weakRefConnection.get();
         return ping(connection.getServiceName());
     }
 }

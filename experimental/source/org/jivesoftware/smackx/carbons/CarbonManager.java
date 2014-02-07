@@ -16,6 +16,7 @@
 
 package org.jivesoftware.smackx.carbons;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -56,13 +57,13 @@ public class CarbonManager {
         });
     }
     
-    private Connection connection;
+    private WeakReference<Connection> weakRefConnection;
     private volatile boolean enabled_state = false;
 
     private CarbonManager(Connection connection) {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Carbon.NAMESPACE);
-        this.connection = connection;
+        weakRefConnection = new WeakReference<Connection>(connection);
         instances.put(connection, this);
     }
 
@@ -99,6 +100,7 @@ public class CarbonManager {
      * @return true if supported
      */
     public boolean isSupportedByServer() {
+        Connection connection = weakRefConnection.get();
         try {
             DiscoverInfo result = ServiceDiscoveryManager
                 .getInstanceFor(connection).discoverInfo(connection.getServiceName());
@@ -118,6 +120,7 @@ public class CarbonManager {
      * @param new_state whether carbons should be enabled or disabled
      */
     public void sendCarbonsEnabled(final boolean new_state) {
+        final Connection connection = weakRefConnection.get();
         IQ setIQ = carbonsEnabledIQ(new_state);
 
         connection.addPacketListener(new PacketListener() {
@@ -148,6 +151,7 @@ public class CarbonManager {
         if (enabled_state == new_state)
             return true;
 
+        Connection connection = weakRefConnection.get();
         IQ setIQ = carbonsEnabledIQ(new_state);
 
         PacketCollector collector =

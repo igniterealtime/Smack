@@ -16,6 +16,7 @@
 
 package org.jivesoftware.smackx.receipts;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class DeliveryReceiptManager implements PacketListener {
         });
     }
 
-    private Connection connection;
+    private WeakReference<Connection> weakRefConnection;
     private boolean auto_receipts_enabled = false;
     private Set<ReceiptReceivedListener> receiptReceivedListeners = Collections
             .synchronizedSet(new HashSet<ReceiptReceivedListener>());
@@ -60,7 +61,7 @@ public class DeliveryReceiptManager implements PacketListener {
     private DeliveryReceiptManager(Connection connection) {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
-        this.connection = connection;
+        weakRefConnection = new WeakReference<Connection>(connection);
         instances.put(connection, this);
 
         // register listener for delivery receipts and requests
@@ -91,6 +92,7 @@ public class DeliveryReceiptManager implements PacketListener {
      * @return true if supported
      */
     public boolean isSupported(String jid) {
+        Connection connection = weakRefConnection.get();
         try {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
@@ -119,6 +121,7 @@ public class DeliveryReceiptManager implements PacketListener {
             DeliveryReceiptRequest drr = (DeliveryReceiptRequest)packet.getExtension(
                     DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
             if (drr != null) {
+                Connection connection = weakRefConnection.get();
                 Message ack = new Message(packet.getFrom(), Message.Type.normal);
                 ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
                 connection.sendPacket(ack);
