@@ -51,7 +51,7 @@ public class CarbonManager {
     static {
         Connection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(Connection connection) {
-                new CarbonManager(connection);
+                getInstanceFor(connection);
             }
         });
     }
@@ -73,7 +73,7 @@ public class CarbonManager {
      *
      * @return a CarbonManager instance
      */
-    public static CarbonManager getInstanceFor(Connection connection) {
+    public static synchronized CarbonManager getInstanceFor(Connection connection) {
         CarbonManager carbonManager = instances.get(connection);
 
         if (carbonManager == null) {
