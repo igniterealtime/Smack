@@ -57,8 +57,8 @@
     <if>
         <length string="${version.extra}" when="greater" length="0"/>
         <then>
-            <var name="mutable-version" value="${mutable-version}.${version.extra}"/>
-            <var name="mutable-experimental-version" value="${mutable-experimental-version}.${version.extra}" />
+            <var name="mutable-version" value="${mutable-version}-${version.extra}"/>
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}-${version.extra}" />
         </then>
     </if>
 
