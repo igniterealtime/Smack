@@ -70,8 +70,8 @@ package org.jivesoftware.smack.packet;
  *      <tr><td> unsupported-version </td><td> the value of the 'version' attribute provided by
  *          the initiating entity in the stream header specifies a version of XMPP that is not
  *          supported. </td></tr>
- *      <tr><td> xml-not-well-formed </td><td> the initiating entity has sent XML that is
- *          not well-formed. </td></tr>
+ *      <tr><td> not-well-formed </td><td> the initiating entity has sent XML that is not
+ *          well-formed. </td></tr>
  * </table>
  *
  * @author Gaston Dombiak
