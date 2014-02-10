@@ -16,12 +16,12 @@
 
 package org.jivesoftware.smack.keepalive;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -52,7 +52,7 @@ import org.jivesoftware.smack.ping.packet.Ping;
  * @author Florian Schmaus
  */
 public class KeepAliveManager {
-    private static Map<Connection, KeepAliveManager> instances = new HashMap<Connection, KeepAliveManager>();
+    private static Map<Connection, KeepAliveManager> instances = Collections.synchronizedMap(new WeakHashMap<Connection, KeepAliveManager>());
     private static volatile ScheduledExecutorService periodicPingExecutorService;
     
     static {
@@ -65,7 +65,7 @@ public class KeepAliveManager {
         }
     }
 
-    private Connection connection;
+    private WeakReference<Connection> weakRefConnection;
     private long pingInterval = SmackConfiguration.getKeepAliveInterval();
     private Set<PingFailedListener> pingFailedListeners = Collections.synchronizedSet(new HashSet<PingFailedListener>());
     private volatile ScheduledFuture<?> periodicPingTask;
@@ -120,40 +120,21 @@ public class KeepAliveManager {
     }
     
     private KeepAliveManager(Connection connection) {
-        this.connection = connection;
-        init();
-        handleConnect();
-    }
+        weakRefConnection = new WeakReference<Connection>(connection);
 
-    /*
-     * Call after every connection to add the packet listener.
-     */
-    private void handleConnect() {
-        // Listen for all incoming packets and reset the scheduled ping whenever
-        // one arrives.
-        connection.addPacketListener(new PacketListener() {
-
-            @Override
-            public void processPacket(Packet packet) {
-                // reschedule the ping based on this last server contact
-                lastSuccessfulContact = System.currentTimeMillis();
-                schedulePingServerTask();
-            }
-        }, null);
-    }
-
-    private void init() {
         connection.addConnectionListener(new ConnectionListener() {
 
             @Override
             public void connectionClosed() {
                 stopPingServerTask();
+                Connection connection = weakRefConnection.get();
                 handleDisconnect(connection);
             }
 
             @Override
             public void connectionClosedOnError(Exception arg0) {
                 stopPingServerTask();
+                Connection connection = weakRefConnection.get();
                 handleDisconnect(connection);
             }
 
@@ -174,6 +155,25 @@ public class KeepAliveManager {
 
         instances.put(connection, this);
         schedulePingServerTask();
+        handleConnect();
+    }
+
+    /*
+     * Call after every connection to add the packet listener.
+     */
+    private void handleConnect() {
+        Connection connection = weakRefConnection.get();
+        // Listen for all incoming packets and reset the scheduled ping whenever
+        // one arrives.
+        connection.addPacketListener(new PacketListener() {
+
+            @Override
+            public void processPacket(Packet packet) {
+                // reschedule the ping based on this last server contact
+                lastSuccessfulContact = System.currentTimeMillis();
+                schedulePingServerTask();
+            }
+        }, null);
     }
 
     /**
@@ -276,6 +276,7 @@ public class KeepAliveManager {
                 public void run() {
                     Ping ping = new Ping();
                     PacketFilter responseFilter = new PacketIDFilter(ping.getPacketID());
+                    Connection connection = weakRefConnection.get();
                     final PacketCollector response = pingFailedListeners.isEmpty() ? null : connection.createPacketCollector(responseFilter);
                     connection.sendPacket(ping);
         

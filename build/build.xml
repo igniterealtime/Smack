@@ -26,36 +26,65 @@
 
     <!-- Smack Version -->
     <property name="version.major" value="3" />
-    <property name="version.minor" value="4" />
-    <property name="version.revision" value="1" />
+    <property name="version.minor" value="5" />
+    <property name="version.revision" value="0" />
     <property name="version.extra" value="SNAPSHOT" />
-	
-    <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
-    <var name="mutable-experimental-version" value="0.1"/>
 
-	<if>
+    <var name="mutable-version" value="${version.major}.${version.minor}.${version.revision}"/>
+    <var name="mutable-experimental-version" value="0.2"/>
+
+    <available file=".git" type="dir" property="gitDir.present"/>
+
+    <!-- <target name="git.revision" description="Store git revision in ${repository.version}" if="gitDir.present"> -->
+    <if>
+        <isset property="gitDir.present"/>
+            <then>
+                <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+                    <arg value="log"/>
+                    <arg value="-n 1"/>
+                    <arg value="--pretty=format:%h"/>
+                </exec>
+            </then>
+        </if>
+        <condition property="repository.version" value="${git.revision}" else="">
+            <and>
+                <isset property="git.revision"/>
+                <length string="${git.revision}" trim="yes" length="0" when="greater"/>
+            </and>
+        </condition>
+    <!-- </target> -->
+
+    <if>
         <length string="${version.extra}" when="greater" length="0"/>
         <then>
-        	<var name="mutable-version" value="${mutable-version}.${version.extra}"/>
-        	<var name="mutable-experimental-version" value="${mutable-experimental-version}.${version.extra}" />
+            <var name="mutable-version" value="${mutable-version}-${version.extra}"/>
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}-${version.extra}" />
         </then>
     </if>
-	
-	<if>
+
+    <if>
         <equals arg1="${dailybuild}" arg2="true" />
         <then>
             <tstamp>
                 <format property="build.date" pattern="yyyyMMdd" locale="en"/>
             </tstamp>
-        	<var name="mutable-version" value="${mutable-version}-${build.date}" />
-        	<var name="mutable-experimental-version" value="${mutable-experimental-version}-${build.date}" />
+            <var name="mutable-version" value="${mutable-version}-${build.date}" />
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}-${build.date}" />
         </then>
-	</if>
+    </if>
+
+    <if>
+        <length string="${repository.version}" when="greater" length="0"/>
+        <then>
+            <var name="mutable-version" value="${mutable-version}-${repository.version}"/>
+            <var name="mutable-experimental-version" value="${mutable-experimental-version}-${repository.version}" />
+        </then>
+    </if>
 
     <property name="version" value="${mutable-version}" />
     <property name="experimental.version" value="${mutable-experimental-version}" />
-	
-	<property name="bundle.name" value="org.igniterealtime.smack" />
+
+    <property name="bundle.name" value="org.igniterealtime.smack" />
     <property file="${basedir}/build/build.properties" />
     <property name="compile.dir" value="${basedir}/target/classes" />
     <property name="compile.test.dir" value="${basedir}/target/classes-test" />
@@ -141,7 +170,7 @@
             </classpath>
         </javac>
 
-    	<mkdir dir="${compile.dir}/workgroup" />
+        <mkdir dir="${compile.dir}/workgroup" />
         <javac
             destdir="${compile.dir}/workgroup"
             includeAntRuntime="no"
@@ -158,7 +187,7 @@
             </classpath>
         </javac>
 
-    	<mkdir dir="${compile.dir}/experimental" />
+        <mkdir dir="${compile.dir}/experimental" />
         <javac
             destdir="${compile.dir}/experimental"
             includeAntRuntime="no"
@@ -212,7 +241,7 @@
     <!-- jar -->
     <!-- ======================================================================================= -->
     <target name="jar" depends="compile" unless="jar.uptodate" description="Produces smack.jar">
-    	<property name="smack.jar.name" value="${jar.dest.dir}/smack-${version}.jar" />
+        <property name="smack.jar.name" value="${jar.dest.dir}/smack-${version}.jar" />
         <jar destfile="${smack.jar.name}"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smack/**/*.class" >
@@ -227,8 +256,7 @@
                 <attribute name="Bundle-Version" value="${version}" />
             </manifest>
         </jar>
-    	
-    	<property name="smackx.jar.name" value="${jar.dest.dir}/smackx-${version}.jar" />
+        <property name="smackx.jar.name" value="${jar.dest.dir}/smackx-${version}.jar" />
         <jar destfile="${smackx.jar.name}"
             basedir="${compile.dir}"
             includes="org/jivesoftware/smackx/**/*.class"
@@ -247,9 +275,9 @@
                 <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
-    	
-    	<property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug-${version}.jar" />
-		<copy todir="${compile.dir}/images">
+
+        <property name="debug.jar.name" value="${jar.dest.dir}/smackx-debug-${version}.jar" />
+        <copy todir="${compile.dir}/images">
             <fileset dir="${basedir}/build/resources/images">
                 <include name="*.png"/>
             </fileset>
@@ -269,8 +297,8 @@
                 <attribute name="Fragment-Host" value="${bundle.name};bundle-version=${version}" />
             </manifest>
         </jar>
-    	
-    	<property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle-${version}.jar" />
+
+        <property name="jingle.jar.name" value="${jar.dest.dir}/smackx-jingle-${version}.jar" />
         <jar destfile="${jingle.jar.name}"
             basedir="${compile.dir}/jingle/extension"
             includes="org/jivesoftware/smackx/**/*.class">
@@ -288,14 +316,14 @@
             </manifest>
         </jar>
 
-    	<property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup-${version}.jar" />
+        <property name="workgroup.jar.name" value="${jar.dest.dir}/smackx-workgroup-${version}.jar" />
         <jar destfile="${workgroup.jar.name}"
             basedir="${compile.dir}/workgroup"
             includes="org/jivesoftware/smackx/workgroup/**/*.class">
             <manifest>
                 <attribute name="Class-Path" value="smack.jar, smackx.jar" />
             </manifest>
-	    <metainf dir="${basedir}/workgroup/resources/META-INF/" includes="workgroup.providers" />
+        <metainf dir="${basedir}/workgroup/resources/META-INF/" includes="workgroup.providers" />
         </jar>
         <bndwrap jars="${workgroup.jar.name}" output="${workgroup.jar.name}" />
         <jar file="${workgroup.jar.name}" update="true">
@@ -306,7 +334,7 @@
             </manifest>
         </jar>
 
-    	<property name="experimental.jar.name" value="${jar.dest.dir}/smackx-experimental-${experimental.version}.jar" />
+        <property name="experimental.jar.name" value="${jar.dest.dir}/smackx-experimental-${experimental.version}.jar" />
         <jar destfile="${experimental.jar.name}"
             basedir="${compile.dir}/experimental"
             includes="org/jivesoftware/smackx/**/*.class" >
@@ -325,7 +353,7 @@
         </jar>
 
     <!--
-    	<delete file="${compile.dir}/META-INF/smack-config.xml" />
+        <delete file="${compile.dir}/META-INF/smack-config.xml" />
         <delete file="${compile.dir}/META-INF/*.providers" />
         <delete>
             <fileset dir="${compile.dir}/images">
@@ -350,7 +378,7 @@
             basedir="${compile.test.dir}"
             includes="org/jivesoftware/smackx/**/*.class, org/jivesoftware/util/**/*.class" >
             <metainf dir="${basedir}/build/resources/META-INF/" includes="extension.providers" />
-	</jar>
+        </jar>
     </target>
 
 
@@ -376,10 +404,9 @@
             <doctitle><![CDATA[<font face="arial,helvetica">Smack ${version}</font>]]></doctitle>
             <header><![CDATA[<b>Smack</b>]]></header>
             <bottom><![CDATA[<i>Copyright &copy; 2003-2007 Jive Software. </i>]]></bottom>
-            <link href="http://java.sun.com/j2se/1.3/docs/api/" />
-            <link href="http://java.sun.com/j2ee/sdk_1.2.1/techdocs/api/" />
+            <link href="http://docs.oracle.com/javase/7/docs/api/" />
         </javadoc>
-</target>
+    </target>
 
 
     <!-- test -->
@@ -515,42 +542,29 @@
 
     <!-- release -->
     <!-- ======================================================================================= -->
-    <target name="release" description="Builds a release" if="release.exists" depends="release-exists">
-        <antcall target="jar">
-            <param name="no.test" value="true" />
-        </antcall>
-        <antcall target="javadoc">
-            <param name="no.test" value="true" />
-        </antcall>
+    <target name="release" description="Builds a release" depends="jar,javadoc">
         <ant antfile="${basedir}/build/release.xml" />
     </target>
 
-        <!-- checkcode -->
-        <!-- ======================================================================================= -->
-        <target name="checkcode" >
-                <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
-                <classpath>
-                    <pathelement location="${basedir}/build/pmd.jar" />
-                    <pathelement location="${basedir}/build/asm.jar" />
-                    <pathelement location="${basedir}/build/jaxen.jar" />
-                </classpath>
-                </taskdef>
-                <pmd shortFilenames="true">
-                        <ruleset>migrating</ruleset>
-                        <ruleset>finalizers</ruleset>
-                        <formatter type="html" toFile="target/pmd_report.html" toConsole="true" />
-                        <fileset dir="source/">
-                                <include name="**/*.java" />
-                        </fileset>
-                </pmd>
-        </target>
-
-    <!-- release-exists -->
+    <!-- checkcode -->
     <!-- ======================================================================================= -->
-    <target name="release-exists" >
-        <available file="${basedir}/build/release.xml" property="release.exists"/>
+    <target name="checkcode" >
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+            <classpath>
+                <pathelement location="${basedir}/build/pmd.jar" />
+                <pathelement location="${basedir}/build/asm.jar" />
+                <pathelement location="${basedir}/build/jaxen.jar" />
+            </classpath>
+        </taskdef>
+        <pmd shortFilenames="true">
+            <ruleset>migrating</ruleset>
+            <ruleset>finalizers</ruleset>
+            <formatter type="html" toFile="target/pmd_report.html" toConsole="true" />
+            <fileset dir="source/">
+                <include name="**/*.java" />
+            </fileset>
+        </pmd>
     </target>
-
 
     <!-- clean -->
     <!-- ======================================================================================= -->
@@ -568,3 +582,7 @@
     </target>
 
 </project>
+
+<!-- Local Variables: -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->
