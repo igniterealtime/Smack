@@ -1,7 +1,4 @@
 /**
- * $RCSfile: PEPProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/11/06 02:05:09 $
  *
  * Copyright 2003-2007 Jive Software.
  *

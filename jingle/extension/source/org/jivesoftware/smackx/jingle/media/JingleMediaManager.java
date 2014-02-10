@@ -1,7 +1,4 @@
 /**
- * $RCSfile: JingleMediaManager.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/07/18 19:48:23 $11-07-2006
  *
  * Copyright 2003-2006 Jive Software.
  *

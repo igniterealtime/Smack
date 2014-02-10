@@ -1,6 +1,4 @@
 /**
- * $Revision$
- * $Date$
  *
  * Copyright 2006-2007 Jive Software.
  *

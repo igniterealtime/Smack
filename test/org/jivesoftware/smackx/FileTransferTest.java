@@ -1,7 +1,4 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
  *
  * Copyright 2006 Jive Software.
  *

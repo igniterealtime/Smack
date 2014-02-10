@@ -66,7 +66,6 @@ public class ItemPublishEvent <T extends Item> extends SubscriptionEvent
 	 * @param nodeId The id of the node the event came from
 	 * @param eventItems The list of {@link Item} that were published 
 	 * @param subscriptionIds The list of subscriptionIds
-	 * @param publishedDate The original publishing date of the events
 	 */
 	public ItemPublishEvent(String nodeId, List<T> eventItems, List<String> subscriptionIds, Date publishedDate)
 	{
@@ -106,7 +105,6 @@ public class ItemPublishEvent <T extends Item> extends SubscriptionEvent
 	 * Gets the original date the items were published.  This is only 
 	 * valid if {@link #isDelayed()} is true.
 	 * 
-	 * @return Date items were published if {@link #isDelayed()} is true, null otherwise.
 	 */
 	public Date getPublishedDate()
 	{

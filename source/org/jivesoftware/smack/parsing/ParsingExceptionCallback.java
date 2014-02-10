@@ -1,7 +1,4 @@
 /**
- * $RCSfile$
- * $Revision$
- * $Date$
  *
  * Copyright 2013 Florian Schmaus.
  *

@@ -1,6 +1,4 @@
 /**
- * $Revision$
- * $Date$
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -59,7 +57,6 @@ public class Offer {
      * @param userID  the userID of the user from which the offer originates.
      * @param userJID the XMPP address of the user from which the offer originates.
      * @param workgroupName the fully qualified name of the workgroup.
-     * @param expiresDate the date at which this offer expires.
      * @param sessionID the session id associated with the offer.
      * @param metaData the metadata associated with the offer.
      * @param content content of the offer. The content explains the reason for the offer

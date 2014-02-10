@@ -1,6 +1,4 @@
 /**
- * $Revision$
- * $Date$
  *
  * Copyright 2003-2007 Jive Software.
  *
@@ -858,7 +856,6 @@ public class AgentSession {
      *
      * @param jid the jid of the agent.
      * @param maxSessions the max number of sessions to retrieve.
-     * @param startDate the starting date of sessions to retrieve.
      * @return the chat history associated with a given jid.
      * @throws XMPPException if an error occurs while retrieving the AgentChatHistory.
      */

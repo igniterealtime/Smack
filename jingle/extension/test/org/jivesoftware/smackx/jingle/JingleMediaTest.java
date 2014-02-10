@@ -1,9 +1,6 @@
 package org.jivesoftware.smackx.jingle;
 
 /**
- * $RCSfile: JingleMediaTest.java,v $
- * $Revision: 1.2 $
- * $Date: 09/11/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
  * <p/>

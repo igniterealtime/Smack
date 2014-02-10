@@ -1,7 +1,4 @@
 /**
- * $RCSfile: JingleSessionRequest.java,v $
- * $Revision: 1.2 $
- * $Date: 15/11/2006
  *
  * Copyright 2003-2006 Jive Software.
  *

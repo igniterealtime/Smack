@@ -1,7 +1,4 @@
 /**
- * $RCSfile: JingleDescription.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/07/02 17:41:08 $
  *
  * Copyright 2003-2005 Jive Software.
  *

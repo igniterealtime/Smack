@@ -8,9 +8,6 @@ import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
- * $RCSfile: ICETransportManager.java,v $
- * $Revision: 1.1 $
- * $Date: 02/01/2007
  * <p/>
  * Copyright 2003-2006 Jive Software.
  * <p/>

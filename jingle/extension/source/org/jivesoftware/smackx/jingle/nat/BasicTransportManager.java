@@ -3,9 +3,6 @@ package org.jivesoftware.smackx.jingle.nat;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
 /**
- * $RCSfile: BasicTransportManager.java,v $
- * $Revision: 1.1 $
- * $Date: 15/11/2006
  *
  * Copyright 2003-2006 Jive Software.
  *

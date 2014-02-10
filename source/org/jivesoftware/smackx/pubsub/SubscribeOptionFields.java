@@ -46,7 +46,6 @@ public enum SubscribeOptionFields
 	digest_frequency,
 
 	/**
-	 * The DateTime at which a leased subsscription will end ro has ended.
 	 * 
 	 * <p><b>Value: {@link Calendar}</b></p>
 	 */

@@ -1,7 +1,4 @@
 /**
- * $RCSfile: JingleContentProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/07/04 00:52:33 $
  *
  * Copyright 2003-2005 Jive Software.
  *

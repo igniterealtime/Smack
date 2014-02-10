@@ -1,7 +1,4 @@
 /**
- * $RCSfile: PEPManager.java,v $
- * $Revision: 1.4 $
- * $Date: 2007/11/06 21:43:40 $
  *
  * Copyright 2003-2007 Jive Software.
  *

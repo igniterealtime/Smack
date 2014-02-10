@@ -1,7 +1,4 @@
 /**
- * $RCSfile: Demo.java,v $
- * $Revision: 1.3 $
- * $Date: 28/12/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
  * <p/>

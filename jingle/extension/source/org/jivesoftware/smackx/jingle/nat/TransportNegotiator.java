@@ -1,7 +1,4 @@
 /**
- * $RCSfile: TransportNegotiator.java,v $
- * $Revision: 1.9 $
- * $Date: 15/11/2006
  *
  * Copyright 2003-2006 Jive Software.
  *

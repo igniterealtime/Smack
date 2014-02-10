@@ -1,7 +1,4 @@
 /**
- * $RCSfile: TestMediaManager.java,v $
- * $Revision: 1.3 $
- * $Date: 25/12/2006
  * <p/>
  * Copyright 2003-2006 Jive Software.
  * <p/>

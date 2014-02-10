@@ -1,7 +1,4 @@
 /**
- * $RCSfile: MediaNegotiator.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/07/04 00:12:39 $
  *
  * Copyright 2003-2005 Jive Software.
  *
