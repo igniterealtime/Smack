@@ -45,8 +45,6 @@ package org.jivesoftware.smack.packet;
  *          misconfiguration. </td></tr>
  *      <tr><td> invalid-from </td><td> the JID or hostname provided in a 'from' address does
  *          not match an authorized JID. </td></tr>
- *      <tr><td> invalid-id </td><td> the stream ID or dialback ID is invalid or does not match
- *          an ID previously provided. </td></tr>
  *      <tr><td> invalid-namespace </td><td> the streams namespace name is invalid. </td></tr>
  *      <tr><td> invalid-xml </td><td> the entity has sent invalid XML over the stream. </td></tr>
  *      <tr><td> not-authorized </td><td> the entity has attempted to send data before the
