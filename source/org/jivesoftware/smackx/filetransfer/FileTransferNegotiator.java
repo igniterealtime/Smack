@@ -396,7 +396,7 @@ public class FileTransferNegotiator {
             final String streamID, final String fileName, final long size,
             final String desc, int responseTimeout) throws XMPPException {
         StreamInitiation si = new StreamInitiation();
-        si.setSesssionID(streamID);
+        si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));
 
         StreamInitiation.File siFile = new StreamInitiation.File(fileName, size);

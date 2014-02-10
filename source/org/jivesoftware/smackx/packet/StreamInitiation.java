@@ -46,7 +46,7 @@ public class StreamInitiation extends IQ {
      *
      * @param id The "id" attribute.
      */
-    public void setSesssionID(final String id) {
+    public void setSessionID(final String id) {
         this.id = id;
     }
 
@@ -54,7 +54,7 @@ public class StreamInitiation extends IQ {
      * Uniquely identifies a stream initiation to the recipient.
      *
      * @return The "id" attribute.
-     * @see #setSesssionID(String)
+     * @see #setSessionID(String)
      */
     public String getSessionID() {
         return id;

@@ -113,7 +113,7 @@ public class StreamInitiationProvider implements IQProvider {
 			}
 		}
 
-		initiation.setSesssionID(id);
+		initiation.setSessionID(id);
 		initiation.setMimeType(mimeType);
 
 		initiation.setFeatureNegotiationForm(form);
