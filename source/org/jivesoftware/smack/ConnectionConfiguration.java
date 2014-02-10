@@ -28,7 +28,6 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.callback.CallbackHandler;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,17 +54,9 @@ public class ConnectionConfiguration implements Cloneable {
     private int port;
     protected List<HostAddress> hostAddresses;
 
-    private String truststorePath;
-    private String truststoreType;
-    private String truststorePassword;
     private String keystorePath;
     private String keystoreType;
     private String pkcs11Library;
-    private boolean verifyChainEnabled = false;
-    private boolean verifyRootCAEnabled = false;
-    private boolean selfSignedCertificateEnabled = false;
-    private boolean expiredCertificatesCheckEnabled = false;
-    private boolean notMatchingDomainCheckEnabled = false;
     private SSLContext customSSLContext;
 
     private boolean compressionEnabled = false;
@@ -203,18 +194,6 @@ public class ConnectionConfiguration implements Cloneable {
         this.serviceName = serviceName;
         this.proxy = proxy;
 
-        // Build the default path to the cacert truststore file. By default we are
-        // going to use the file located in $JREHOME/lib/security/cacerts.
-        String javaHome = System.getProperty("java.home");
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(javaHome).append(File.separator).append("lib");
-        buffer.append(File.separator).append("security");
-        buffer.append(File.separator).append("cacerts");
-        truststorePath = buffer.toString();
-        // Set the default store type
-        truststoreType = "jks";
-        // Set the default password of the cacert file that is "changeit"
-        truststorePassword = "changeit";
         keystorePath = System.getProperty("javax.net.ssl.keyStore");
         keystoreType = "jks";
         pkcs11Library = "pkcs11.config";
@@ -288,66 +267,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Retuns the path to the trust store file. The trust store file contains the root
-     * certificates of several well known CAs. By default, will attempt to use the
-     * the file located in $JREHOME/lib/security/cacerts.
-     *
-     * @return the path to the truststore file.
-     */
-    public String getTruststorePath() {
-        return truststorePath;
-    }
-
-    /**
-     * Sets the path to the trust store file. The truststore file contains the root
-     * certificates of several well?known CAs. By default Smack is going to use
-     * the file located in $JREHOME/lib/security/cacerts.
-     *
-     * @param truststorePath the path to the truststore file.
-     */
-    public void setTruststorePath(String truststorePath) {
-        this.truststorePath = truststorePath;
-    }
-
-    /**
-     * Returns the trust store type, or <tt>null</tt> if it's not set.
-     *
-     * @return the trust store type.
-     */
-    public String getTruststoreType() {
-        return truststoreType;
-    }
-
-    /**
-     * Sets the trust store type.
-     *
-     * @param truststoreType the trust store type.
-     */
-    public void setTruststoreType(String truststoreType) {
-        this.truststoreType = truststoreType;
-    }
-
-    /**
-     * Returns the password to use to access the trust store file. It is assumed that all
-     * certificates share the same password in the trust store.
-     *
-     * @return the password to use to access the truststore file.
-     */
-    public String getTruststorePassword() {
-        return truststorePassword;
-    }
-
-    /**
-     * Sets the password to use to access the trust store file. It is assumed that all
-     * certificates share the same password in the trust store.
-     *
-     * @param truststorePassword the password to use to access the truststore file.
-     */
-    public void setTruststorePassword(String truststorePassword) {
-        this.truststorePassword = truststorePassword;
-    }
-
-    /**
      * Retuns the path to the keystore file. The key store file contains the 
      * certificates that may be used to authenticate the client to the server,
      * in the event the server requests or requires it.
@@ -406,110 +325,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setPKCS11Library(String pkcs11Library) {
         this.pkcs11Library = pkcs11Library;
-    }
-
-    /**
-     * Returns true if the whole chain of certificates presented by the server are going to
-     * be checked. By default the certificate chain is not verified.
-     *
-     * @return true if the whole chaing of certificates presented by the server are going to
-     *         be checked.
-     */
-    public boolean isVerifyChainEnabled() {
-        return verifyChainEnabled;
-    }
-
-    /**
-     * Sets if the whole chain of certificates presented by the server are going to
-     * be checked. By default the certificate chain is not verified.
-     *
-     * @param verifyChainEnabled if the whole chaing of certificates presented by the server
-     *        are going to be checked.
-     */
-    public void setVerifyChainEnabled(boolean verifyChainEnabled) {
-        this.verifyChainEnabled = verifyChainEnabled;
-    }
-
-    /**
-     * Returns true if root CA checking is going to be done. By default checking is disabled.
-     *
-     * @return true if root CA checking is going to be done.
-     */
-    public boolean isVerifyRootCAEnabled() {
-        return verifyRootCAEnabled;
-    }
-
-    /**
-     * Sets if root CA checking is going to be done. By default checking is disabled.
-     *
-     * @param verifyRootCAEnabled if root CA checking is going to be done.
-     */
-    public void setVerifyRootCAEnabled(boolean verifyRootCAEnabled) {
-        this.verifyRootCAEnabled = verifyRootCAEnabled;
-    }
-
-    /**
-     * Returns true if self-signed certificates are going to be accepted. By default
-     * this option is disabled.
-     *
-     * @return true if self-signed certificates are going to be accepted.
-     */
-    public boolean isSelfSignedCertificateEnabled() {
-        return selfSignedCertificateEnabled;
-    }
-
-    /**
-     * Sets if self-signed certificates are going to be accepted. By default
-     * this option is disabled.
-     *
-     * @param selfSignedCertificateEnabled if self-signed certificates are going to be accepted.
-     */
-    public void setSelfSignedCertificateEnabled(boolean selfSignedCertificateEnabled) {
-        this.selfSignedCertificateEnabled = selfSignedCertificateEnabled;
-    }
-
-    /**
-     * Returns true if certificates presented by the server are going to be checked for their
-     * validity. By default certificates are not verified.
-     *
-     * @return true if certificates presented by the server are going to be checked for their
-     *         validity.
-     */
-    public boolean isExpiredCertificatesCheckEnabled() {
-        return expiredCertificatesCheckEnabled;
-    }
-
-    /**
-     * Sets if certificates presented by the server are going to be checked for their
-     * validity. By default certificates are not verified.
-     *
-     * @param expiredCertificatesCheckEnabled if certificates presented by the server are going
-     *        to be checked for their validity.
-     */
-    public void setExpiredCertificatesCheckEnabled(boolean expiredCertificatesCheckEnabled) {
-        this.expiredCertificatesCheckEnabled = expiredCertificatesCheckEnabled;
-    }
-
-    /**
-     * Returns true if certificates presented by the server are going to be checked for their
-     * domain. By default certificates are not verified.
-     *
-     * @return true if certificates presented by the server are going to be checked for their
-     *         domain.
-     */
-    public boolean isNotMatchingDomainCheckEnabled() {
-        return notMatchingDomainCheckEnabled;
-    }
-
-    /**
-     * Sets if certificates presented by the server are going to be checked for their
-     * domain. By default certificates are not verified.
-     *
-     * @param notMatchingDomainCheckEnabled if certificates presented by the server are going
-     *        to be checked for their domain.
-     */
-    public void setNotMatchingDomainCheckEnabled(boolean notMatchingDomainCheckEnabled) {
-        this.notMatchingDomainCheckEnabled = notMatchingDomainCheckEnabled;
     }
 
     /**

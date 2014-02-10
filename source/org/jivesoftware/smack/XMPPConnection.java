@@ -844,8 +844,7 @@ public class XMPPConnection extends Connection {
         // Verify certificate presented by the server
         if (context == null) {
             context = SSLContext.getInstance("TLS");
-            context.init(kms, new javax.net.ssl.TrustManager[] { new ServerTrustManager(getServiceName(), config) },
-                    new java.security.SecureRandom());
+            context.init(kms, null, new java.security.SecureRandom());
         }
         Socket plain = socket;
         // Secure the plain connection
