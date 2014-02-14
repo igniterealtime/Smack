@@ -1,0 +1,5 @@
+signing.keyId=0x78548E35
+signing.secretKeyRingFile=/home/foo/.gnupg/secring.gpg
+
+sonatypeUsername=User
+sonatypePassword=Password

@@ -1,6 +1,19 @@
 .classpath
 .project
 .settings
+.gradle
+gradle.properties
+
+build/
+core/build/
+debug/build/
+experimental/build/
+extensions/build/
+
+bin/
+core/bin
+debug/bin
+experimental/bin
+extensions/bin
 
 target/
-test-reports/
