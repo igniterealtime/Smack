@@ -41,7 +41,7 @@ import org.jivesoftware.smack.packet.IQ;
  *
  * Because many more IQ types are part of XMPP and its extensions, a pluggable IQ parsing
  * mechanism is provided. IQ providers are registered programatically or by creating a
- * smack.providers file in the META-INF directory of your JAR file. The file is an XML
+ * providers file. The file is an XML
  * document that contains one or more iqProvider entries, as in the following example:
  *
  * <pre>

@@ -442,4 +442,11 @@
 		<className>org.jivesoftware.smackx.forward.provider.ForwardedProvider</className>
 	</extensionProvider>
 
+    <!-- Ping (XEP-199) Manager -->
+    <iqProvider>
+        <elementName>ping</elementName>
+        <namespace>urn:xmpp:ping</namespace>
+        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
+    </iqProvider>
+
 </smackProviders>

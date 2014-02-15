@@ -1,4 +1,6 @@
-package org.jivesoftware.smack.provider;
+package org.jivesoftware.smack.initializer;
+
+import org.jivesoftware.smack.provider.ProviderManager;
 
 
 /**

@@ -1,4 +1,8 @@
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.initializer;
+
+import java.util.List;
+
+import org.jivesoftware.smack.SmackConfiguration;
 
 /**
  * Defines an initialization class that will be instantiated and invoked by the {@link SmackConfiguration} class during initialization.
@@ -11,4 +15,5 @@ package org.jivesoftware.smack;
  */
 public interface SmackInitializer {
     void initialize();
+    List<Exception> getExceptions();
 }

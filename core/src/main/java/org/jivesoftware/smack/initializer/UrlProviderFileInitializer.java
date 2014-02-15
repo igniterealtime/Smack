@@ -1,15 +1,19 @@
-package org.jivesoftware.smack.provider;
+package org.jivesoftware.smack.initializer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackInitializer;
+import org.jivesoftware.smack.provider.ProviderFileLoader;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.FileUtils;
 
 /**
@@ -21,6 +25,8 @@ import org.jivesoftware.smack.util.FileUtils;
 public abstract class UrlProviderFileInitializer implements SmackInitializer {
     private static final Logger log = Logger.getLogger(UrlProviderFileInitializer.class.getName());
 
+    private List<Exception> exceptions = new LinkedList<Exception>();
+
     @Override
     public void initialize() {
         String filePath = getFilePath();
@@ -30,15 +36,24 @@ public abstract class UrlProviderFileInitializer implements SmackInitializer {
             
             if (is != null) {
                 log.log(Level.INFO, "Loading providers for file [" + filePath + "]");
-                ProviderManager.getInstance().addLoader(new ProviderFileLoader(is));
+                ProviderFileLoader pfl = new ProviderFileLoader(is);
+                ProviderManager.getInstance().addLoader(pfl);
+                exceptions.addAll(pfl.getLoadingExceptions());
             }
             else {
                 log.log(Level.WARNING, "No input stream created for " + filePath);
+                exceptions.add(new IOException("No input stream created for " + filePath));
             }
         }
         catch (Exception e) {
             log.log(Level.SEVERE, "Error trying to load provider file " + filePath, e);
+            exceptions.add(e);
         }
+    }
+
+    @Override
+    public List<Exception> getExceptions() {
+    	return Collections.unmodifiableList(exceptions);
     }
 
     protected abstract String getFilePath();

@@ -1,0 +1,13 @@
+<smack>
+    <startupClasses>
+        <className>org.jivesoftware.smackx.disco.ServiceDiscoveryManager</className>
+        <className>org.jivesoftware.smackx.xhtmlim.XHTMLManager</className>
+        <className>org.jivesoftware.smackx.muc.MultiUserChat</className>
+        <className>org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager</className>
+        <className>org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager</className>
+        <className>org.jivesoftware.smackx.filetransfer.FileTransferManager</className>
+        <className>org.jivesoftware.smackx.iqlast.LastActivityManager</className>
+        <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>
+        <className>org.jivesoftware.smackx.ping.PingManager</className>
+    </startupClasses>
+</smack>

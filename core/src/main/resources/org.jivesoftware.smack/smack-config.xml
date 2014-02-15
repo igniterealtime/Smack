@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!-- Smack configuration file. -->
+<smack>
+
+    <!-- Packet reply timeout in milliseconds -->
+    <packetReplyTimeout>5000</packetReplyTimeout>
+
+    <!-- Enable/Disable local Socks5 proxy -->
+    <localSocks5ProxyEnabled>true</localSocks5ProxyEnabled>
+
+    <!-- Port of the local Socks5 proxy -->
+    <localSocks5ProxyPort>7777</localSocks5ProxyPort>
+
+    <!-- Port of the local Socks5 proxy -->
+    <packetCollectorSize>10000</packetCollectorSize>
+    
+    <!-- Automatic enable Entity Caps (XEP-0115) for new connections -->
+    <autoEnableEntityCaps>false</autoEnableEntityCaps>
+    
+    <!-- Classes that will be loaded when Smack starts -->
+    <startupClasses>
+        <className>org.jivesoftware.smack.initializer.CoreInitializer</className>
+        <className>org.jivesoftware.smack.initializer.VmArgInitializer</className>
+        <className>org.jivesoftware.smack.PrivacyListManager</className>
+        <className>org.jivesoftware.smack.ReconnectionManager</className>
+    </startupClasses>
+
+    <optionalStartupClasses>
+        <className>org.jivesoftware.smack.util.dns.JavaxResolver</className>
+        <className>org.jivesoftware.smackx.ExtensionsProviderInitializer</className>
+        <className>org.jivesoftware.smackx.ExtensionsStartupClasses</className>
+        <className>org.jivesoftware.smackx.ExperimentalProviderInitializer</className>
+        <className>org.jivesoftware.smackx.WorkgroupProviderInitializer</className>
+    </optionalStartupClasses>
+</smack>

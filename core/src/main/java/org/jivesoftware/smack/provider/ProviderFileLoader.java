@@ -3,6 +3,9 @@ package org.jivesoftware.smack.provider;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +27,7 @@ public class ProviderFileLoader implements ProviderLoader {
     private Collection<IQProviderInfo> iqProviders;
     private Collection<ExtensionProviderInfo> extProviders;
     private InputStream providerStream;
+    private List<Exception> exceptions = new LinkedList<Exception>();
     
     public ProviderFileLoader(InputStream providerFileInputStream) {
         setInputStream(providerFileInputStream);
@@ -42,6 +46,10 @@ public class ProviderFileLoader implements ProviderLoader {
     public Collection<ExtensionProviderInfo> getExtensionProviderInfo() {
         initialize();
         return extProviders;
+    }
+    
+    public List<Exception> getLoadingExceptions() {
+    	return Collections.unmodifiableList(exceptions);
     }
 
     @SuppressWarnings("unchecked")
@@ -112,11 +120,13 @@ public class ProviderFileLoader implements ProviderLoader {
                             }
                             catch (ClassNotFoundException cnfe) {
                                 log.log(Level.SEVERE, "Could not find provider class", cnfe);
+                                exceptions.add(cnfe);
                             }
                         }
                     }
                     catch (IllegalArgumentException illExc) {
                         log.log(Level.SEVERE, "Invalid provider type found [" + typeName + "] when expecting iqProvider or extensionProvider", illExc);
+                        exceptions.add(illExc);
                     }
                 }
                 eventType = parser.next();

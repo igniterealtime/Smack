@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.experimental;
+package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.provider.UrlProviderFileInitializer;
+import org.jivesoftware.smack.initializer.UrlProviderFileInitializer;
 
 /**
  * Initializes the providers in the experimental code stream.
@@ -28,6 +28,6 @@ public class ExperimentalProviderInitializer  extends UrlProviderFileInitializer
 
     @Override
     protected String getFilePath() {
-        return "classpath:META-INF/experimental.providers";
+        return "classpath:org.jivesoftware.smackx/experimental.providers";
     }
 }

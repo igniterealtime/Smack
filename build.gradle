@@ -220,6 +220,24 @@ Smack core components.
 		compression compressionJar
 		dns dnsJar
 	}
+	task createVersionResource(type: CreateFileTask) {
+		fileContent = version
+		outputFile = new File(projectDir, 'src/main/resources/org.jivesoftware.smack/version')
+	}
+	compileJava.dependsOn(createVersionResource)
+}
+
+class CreateFileTask extends DefaultTask {
+	@Input
+	String fileContent
+
+	@OutputFile
+	File outputFile
+
+	@TaskAction
+	def createFile() {
+		outputFile.text = fileContent
+	}
 }
 
 project(':compression-jzlib') {

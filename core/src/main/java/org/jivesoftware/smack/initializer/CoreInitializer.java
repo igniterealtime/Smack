@@ -1,6 +1,5 @@
-package org.jivesoftware.smack.provider;
+package org.jivesoftware.smack.initializer;
 
-import org.jivesoftware.smack.SmackInitializer;
 
 /**
  * Loads the default provider file for the Smack core on initialization.
@@ -10,6 +9,6 @@ import org.jivesoftware.smack.SmackInitializer;
  */
 public class CoreInitializer extends UrlProviderFileInitializer implements SmackInitializer {
     protected String getFilePath() {
-        return "classpath:META-INF/core.providers";
+        return "classpath:org.jivesoftware.smack/core.providers";
     }
 }

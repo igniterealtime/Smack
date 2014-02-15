@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,11 +27,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -42,21 +45,20 @@ import org.xmlpull.v1.XmlPullParser;
  *          via the API will override settings in the configuration file.
  * </ul>
  *
- * Configuration settings are stored in META-INF/smack-config.xml (typically inside the
+ * Configuration settings are stored in org.jivesoftware.smack/smack-config.xml (typically inside the
  * smack.jar file).
  * 
  * @author Gaston Dombiak
  */
 public final class SmackConfiguration {
-    private static final String SMACK_VERSION = "3.4.0";
-    private static final String DEFAULT_CONFIG_FILE = "classpath:META-INF/smack-config.xml"; 
+    private static final String SMACK_VERSION;
+    private static final String DEFAULT_CONFIG_FILE = "classpath:org.jivesoftware.smack/smack-config.xml";
     
     private static final Logger log = Logger.getLogger(SmackConfiguration.class.getName());
     
     private static InputStream configFileStream;
     
     private static int packetReplyTimeout = 5000;
-    private static int keepAliveInterval = 30000;
     private static List<String> defaultMechs = new ArrayList<String>();
 
     private static boolean localSocks5ProxyEnabled = true;
@@ -64,6 +66,20 @@ public final class SmackConfiguration {
     private static int packetCollectorSize = 5000;
     
     private static boolean initialized = false;
+
+    static {
+        String smackVersion;
+        try {
+            InputStream is = FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null);
+            byte[] buf = new byte[1024];
+            is.read(buf);
+            smackVersion = new String(buf, Charset.forName("UTF-8"));
+        } catch(Exception e) {
+            log.log(Level.SEVERE, "Could not determine Smack version", e);
+            smackVersion = "unkown";
+        }
+        SMACK_VERSION = smackVersion;
+    }
 
     /**
      * The default parsing exception callback is {@link ExceptionThrowingCallback} which will
@@ -88,7 +104,7 @@ public final class SmackConfiguration {
      */
     
     /**
-     * Sets the location of the config file on the classpath. Only required if changing from the default location of <i>classpath:META-INF/smack-config.xml</i>.
+     * Sets the location of the config file on the classpath. Only required if changing from the default location of <i>classpath:org.jivesoftware.smack/smack-config.xml</i>.
      * 
      * <p>
      * This method must be called before accessing any other class in Smack.
@@ -320,8 +336,21 @@ public final class SmackConfiguration {
         return defaultCallback;
     }
 
-    private static void parseClassToLoad(XmlPullParser parser) throws Exception {
-        String className = parser.nextText();
+    public static void parseClassesToLoad(XmlPullParser parser, boolean optional) throws XmlPullParserException, IOException, Exception {
+        final String startName = parser.getName();
+        int eventType;
+        String name;
+        do {
+            eventType = parser.next();
+            name = parser.getName();
+            if (eventType == XmlPullParser.START_TAG && "className".equals(name)) {
+                String classToLoad = parser.nextText();
+                loadSmackClass(classToLoad, optional);
+            }
+        } while (! (eventType == XmlPullParser.END_TAG && startName.equals(name)));
+    }
+
+    public static void loadSmackClass(String className, boolean optional) throws Exception {
         // Attempt to load the class so that the class can get initialized
         try {
             Class<?> initClass = Class.forName(className);
@@ -332,7 +361,17 @@ public final class SmackConfiguration {
             }
         }
         catch (ClassNotFoundException cnfe) {
-            log.log(Level.WARNING, "A startup class [" + className + "] specified in smack-config.xml could not be loaded: ");
+            Level logLevel;
+            if (optional) {
+                logLevel = Level.FINE;
+            }
+            else {
+                logLevel = Level.WARNING;
+            }
+            log.log(logLevel, "A startup class [" + className
+                            + "] specified in smack-config.xml could not be loaded: ");
+            if (!optional)
+                throw cnfe;
         }
     }
 
@@ -373,63 +412,63 @@ public final class SmackConfiguration {
                 configFileStream = FileUtils.getStreamForUrl(DEFAULT_CONFIG_FILE, null);
             }
             catch (Exception e) {
-                log.log(Level.INFO, "Could not create input stream for default config file [" + DEFAULT_CONFIG_FILE + "]", e);
+                throw new IllegalStateException(e);
             }
         }
         
         if (configFileStream != null) {
-            readFile(configFileStream);
+            try {
+                readFile(configFileStream);
+            }
+            catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
         }
         else {
             log.log(Level.INFO, "No configuration file found");
         }
     }
 
-    private static void readFile(InputStream cfgFileStream) {
-        try {
-            XmlPullParser parser = new MXParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(cfgFileStream, "UTF-8");
-            int eventType = parser.getEventType();
-            do {
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (parser.getName().equals("className")) {
-                        // Attempt to load the class so that the class can get initialized
-                        parseClassToLoad(parser);
-                    }
-                    else if (parser.getName().equals("packetReplyTimeout")) {
-                        packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
-                    }
-                    else if (parser.getName().equals("keepAliveInterval")) {
-                        keepAliveInterval = parseIntProperty(parser, keepAliveInterval);
-                    }
-                    else if (parser.getName().equals("mechName")) {
-                        defaultMechs.add(parser.nextText());
-                    }
-                    else if (parser.getName().equals("localSocks5ProxyEnabled")) {
-                        localSocks5ProxyEnabled = Boolean.parseBoolean(parser.nextText());
-                    }
-                    else if (parser.getName().equals("localSocks5ProxyPort")) {
-                        localSocks5ProxyPort = parseIntProperty(parser, localSocks5ProxyPort);
-                    }
-                    else if (parser.getName().equals("packetCollectorSize")) {
-                        packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
-                    }
-                    else if (parser.getName().equals("autoEnableEntityCaps")) {
-                        autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
-                    }
+    private static void readFile(InputStream cfgFileStream) throws Exception {
+        XmlPullParser parser = new MXParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(cfgFileStream, "UTF-8");
+        int eventType = parser.getEventType();
+        do {
+            if (eventType == XmlPullParser.START_TAG) {
+                if (parser.getName().equals("startupClasses")) {
+                    parseClassesToLoad(parser, false);
                 }
-                eventType = parser.next();
-            } while (eventType != XmlPullParser.END_DOCUMENT);
-        } catch (Exception e) {
-            log.log(Level.SEVERE, "Error occurred while reading config file", e);
-        }
-        finally {
-            try {
-                cfgFileStream.close();
-            } catch (IOException e) {
-                log.log(Level.INFO, "Error while closing config file input stream", e);
+                else if (parser.getName().equals("optionalStartupClasses")) {
+                    parseClassesToLoad(parser, true);
+                }
+                else if (parser.getName().equals("packetReplyTimeout")) {
+                    packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
+                }
+                else if (parser.getName().equals("mechName")) {
+                    defaultMechs.add(parser.nextText());
+                }
+                else if (parser.getName().equals("localSocks5ProxyEnabled")) {
+                    localSocks5ProxyEnabled = Boolean.parseBoolean(parser.nextText());
+                }
+                else if (parser.getName().equals("localSocks5ProxyPort")) {
+                    localSocks5ProxyPort = parseIntProperty(parser, localSocks5ProxyPort);
+                }
+                else if (parser.getName().equals("packetCollectorSize")) {
+                    packetCollectorSize = parseIntProperty(parser, packetCollectorSize);
+                }
+                else if (parser.getName().equals("autoEnableEntityCaps")) {
+                    autoEnableEntityCaps = Boolean.parseBoolean(parser.nextText());
+                }
             }
+            eventType = parser.next();
+        }
+        while (eventType != XmlPullParser.END_DOCUMENT);
+        try {
+            cfgFileStream.close();
+        }
+        catch (IOException e) {
+            log.log(Level.SEVERE, "Error while closing config file input stream", e);
         }
     }
 }
