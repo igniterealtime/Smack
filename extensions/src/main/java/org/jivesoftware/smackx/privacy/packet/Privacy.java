@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.packet;
+package org.jivesoftware.smackx.privacy.packet;
 
 import java.util.*;
 
+import org.jivesoftware.smack.packet.IQ;
+
 /**
- * A Privacy IQ Packet, is used by the {@link org.jivesoftware.smack.PrivacyListManager}
- * and {@link org.jivesoftware.smack.provider.PrivacyProvider} to allow and block
+ * A Privacy IQ Packet, is used by the {@link org.jivesoftware.smackx.privacy.PrivacyListManager}
+ * and {@link org.jivesoftware.smackx.privacy.provider.PrivacyProvider} to allow and block
  * communications from other users. It contains the appropriate structure to suit
  * user-defined privacy lists. Different configured Privacy packages are used in the
  * server & manager communication in order to:

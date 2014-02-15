@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.packet;
+package org.jivesoftware.smackx.privacy.packet;
 
 /**
  * A privacy item acts a rule that when matched defines if a packet should be blocked or not.

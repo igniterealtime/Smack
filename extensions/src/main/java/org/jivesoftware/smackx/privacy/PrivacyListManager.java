@@ -15,13 +15,19 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smackx.privacy;
 
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Privacy;
-import org.jivesoftware.smack.packet.PrivacyItem;
+import org.jivesoftware.smackx.privacy.packet.Privacy;
+import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
 import java.lang.ref.WeakReference;
 import java.util.*;

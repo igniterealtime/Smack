@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smackx.privacy;
 
-import org.jivesoftware.smack.packet.PrivacyItem;
+import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
 import java.util.List;
 

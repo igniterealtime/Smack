@@ -19,9 +19,7 @@
     
     <!-- Classes that will be loaded when Smack starts -->
     <startupClasses>
-        <className>org.jivesoftware.smack.initializer.CoreInitializer</className>
         <className>org.jivesoftware.smack.initializer.VmArgInitializer</className>
-        <className>org.jivesoftware.smack.PrivacyListManager</className>
         <className>org.jivesoftware.smack.ReconnectionManager</className>
     </startupClasses>
 

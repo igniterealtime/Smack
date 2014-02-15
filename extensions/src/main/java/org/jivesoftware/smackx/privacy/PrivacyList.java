@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smackx.privacy;
 
-import org.jivesoftware.smack.packet.PrivacyItem;
+import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * A privacy list represents a list of contacts that is a read only class used to represent a set of allowed or blocked communications. 
  * Basically it can:<ul>
  *
- *      <li>Handle many {@link org.jivesoftware.smack.packet.PrivacyItem}.</li>
+ *      <li>Handle many {@link org.jivesoftware.smackx.privacy.packet.PrivacyItem}.</li>
  *      <li>Answer if it is the default list.</li>
  *      <li>Answer if it is the active list.</li>
  * </ul>

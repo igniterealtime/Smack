@@ -449,4 +449,11 @@
         <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
     </iqProvider>
 
+    <!-- Privacy -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:privacy</namespace>
+        <className>org.jivesoftware.smackx.privacy.provider.PrivacyProvider</className>
+    </iqProvider>
+
 </smackProviders>

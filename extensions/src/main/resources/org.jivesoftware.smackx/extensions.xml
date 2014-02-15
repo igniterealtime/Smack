@@ -9,5 +9,6 @@
         <className>org.jivesoftware.smackx.iqlast.LastActivityManager</className>
         <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>
         <className>org.jivesoftware.smackx.ping.PingManager</className>
+        <className>org.jivesoftware.smackx.privacy.PrivacyListManager</className>
     </startupClasses>
 </smack>

@@ -12,12 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.provider;
+package org.jivesoftware.smackx.privacy.provider;
 
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Privacy;
-import org.jivesoftware.smack.packet.PrivacyItem;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smackx.privacy.packet.Privacy;
+import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
  * Parses the <tt>query</tt> sub-document and creates an instance of {@link Privacy}.
  * For each <tt>item</tt> in the <tt>list</tt> element, it creates an instance 
- * of {@link PrivacyItem} and {@link org.jivesoftware.smack.packet.PrivacyItem.PrivacyRule}.
+ * of {@link PrivacyItem} and {@link org.jivesoftware.smackx.privacy.packet.PrivacyItem.PrivacyRule}.
  * 
  * @author Francisco Vives
  */
