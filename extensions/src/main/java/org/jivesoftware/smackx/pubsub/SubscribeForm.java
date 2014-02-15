@@ -22,9 +22,9 @@ import java.util.Iterator;
 import java.util.UnknownFormatConversionException;
 
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.FormField;
-import org.jivesoftware.smackx.packet.DataForm;
+import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * A decorator for a {@link Form} to easily enable reading and updating

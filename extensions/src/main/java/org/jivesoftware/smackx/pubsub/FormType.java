@@ -13,7 +13,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * Defines the allowable types for a {@link Form}

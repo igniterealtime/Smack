@@ -31,12 +31,13 @@ import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**
  * Packet extension for XEP-0280: Message Carbons. This class implements
- * the manager for registering {@link Carbon} support, enabling and disabling
+ * the manager for registering {@link CarbonExtension} support, enabling and disabling
  * message carbons.
  *
  * You should call enableCarbons() before sending your first undirected
@@ -62,7 +63,7 @@ public class CarbonManager {
 
     private CarbonManager(Connection connection) {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-        sdm.addFeature(Carbon.NAMESPACE);
+        sdm.addFeature(CarbonExtension.NAMESPACE);
         weakRefConnection = new WeakReference<Connection>(connection);
         instances.put(connection, this);
     }
@@ -87,7 +88,7 @@ public class CarbonManager {
     private IQ carbonsEnabledIQ(final boolean new_state) {
         IQ setIQ = new IQ() {
             public String getChildElementXML() {
-                return "<" + (new_state? "enable" : "disable") + " xmlns='" + Carbon.NAMESPACE + "'/>";
+                return "<" + (new_state? "enable" : "disable") + " xmlns='" + CarbonExtension.NAMESPACE + "'/>";
             }
         };
         setIQ.setType(IQ.Type.SET);
@@ -104,7 +105,7 @@ public class CarbonManager {
         try {
             DiscoverInfo result = ServiceDiscoveryManager
                 .getInstanceFor(connection).discoverInfo(connection.getServiceName());
-            return result.containsFeature(Carbon.NAMESPACE);
+            return result.containsFeature(CarbonExtension.NAMESPACE);
         }
         catch (XMPPException e) {
             return false;
@@ -199,10 +200,10 @@ public class CarbonManager {
      *
      * @return a Carbon if available, null otherwise.
      */
-    public static Carbon getCarbon(Message msg) {
-        Carbon cc = (Carbon)msg.getExtension("received", Carbon.NAMESPACE);
+    public static CarbonExtension getCarbon(Message msg) {
+        CarbonExtension cc = (CarbonExtension)msg.getExtension("received", CarbonExtension.NAMESPACE);
         if (cc == null)
-            cc = (Carbon)msg.getExtension("sent", Carbon.NAMESPACE);
+            cc = (CarbonExtension)msg.getExtension("sent", CarbonExtension.NAMESPACE);
         return cc;
     }
 
@@ -212,6 +213,6 @@ public class CarbonManager {
      * @param msg Message object to mark private
      */
     public static void disableCarbons(Message msg) {
-        msg.addExtension(new Carbon.Private());
+        msg.addExtension(new CarbonExtension.Private());
     }
 }

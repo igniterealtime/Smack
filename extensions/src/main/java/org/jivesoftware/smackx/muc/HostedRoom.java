@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.packet.DiscoverItems;
+import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
 /**
  * Hosted rooms by a chat service may be discovered if they are configured to appear in the room

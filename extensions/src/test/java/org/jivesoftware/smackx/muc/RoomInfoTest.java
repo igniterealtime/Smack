@@ -16,12 +16,14 @@
  */
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.FormField;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.muc.RoomInfo;
-import org.jivesoftware.smackx.packet.DataForm;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class RoomInfoTest {

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bookmark;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.PrivateDataManager;
+import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
 
 import java.util.*;
 

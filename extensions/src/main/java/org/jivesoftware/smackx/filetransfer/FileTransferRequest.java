@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smackx.packet.StreamInitiation;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 /**
  * A request to send a file recieved from another user.

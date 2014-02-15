@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider;
 import org.jivesoftware.smackx.forward.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
@@ -44,7 +45,7 @@ public class CarbonTest {
     public void carbonSentTest() throws Exception {
         XmlPullParser parser;
         String control;
-        Carbon cc;
+        CarbonExtension cc;
         Forwarded fwd;
         
         control = XMLBuilder.create("sent")
@@ -55,11 +56,11 @@ public class CarbonTest {
             .asString(outputProperties);
         
         parser = TestUtils.getParser(control, "sent");
-        cc = (Carbon) new CarbonManagerProvider().parseExtension(parser);
+        cc = (CarbonExtension) new CarbonManagerProvider().parseExtension(parser);
         fwd = cc.getForwarded();
 
         // meta
-        assertEquals(Carbon.Direction.sent, cc.getDirection());
+        assertEquals(CarbonExtension.Direction.sent, cc.getDirection());
         
         // no delay in packet
         assertEquals(null, fwd.getDelayInfo());
@@ -76,7 +77,7 @@ public class CarbonTest {
     public void carbonReceivedTest() throws Exception {
         XmlPullParser parser;
         String control;
-        Carbon cc;
+        CarbonExtension cc;
         
         control = XMLBuilder.create("received")
             .e("forwarded")
@@ -86,9 +87,9 @@ public class CarbonTest {
             .asString(outputProperties);
         
         parser = TestUtils.getParser(control, "received");
-        cc = (Carbon) new CarbonManagerProvider().parseExtension(parser);
+        cc = (CarbonExtension) new CarbonManagerProvider().parseExtension(parser);
 
-        assertEquals(Carbon.Direction.received, cc.getDirection());
+        assertEquals(CarbonExtension.Direction.received, cc.getDirection());
         
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());

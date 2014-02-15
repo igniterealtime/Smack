@@ -17,8 +17,8 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.packet.MUCAdmin;
-import org.jivesoftware.smackx.packet.MUCOwner;
+import org.jivesoftware.smackx.muc.packet.MUCAdmin;
+import org.jivesoftware.smackx.muc.packet.MUCOwner;
 
 /**
  * Represents an affiliation of a user to a given room. The affiliate's information will always have

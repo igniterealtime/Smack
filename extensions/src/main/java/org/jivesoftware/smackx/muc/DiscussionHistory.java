@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muc;
 
 import java.util.Date;
 
-import org.jivesoftware.smackx.packet.MUCInitialPresence;
+import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 
 /**
  * The DiscussionHistory class controls the number of characters or messages to receive

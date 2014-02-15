@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.commands;
 
-import org.jivesoftware.smackx.packet.AdHocCommandData;
+import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 
 /**
  * Represents a command that can be executed locally from a remote location. This

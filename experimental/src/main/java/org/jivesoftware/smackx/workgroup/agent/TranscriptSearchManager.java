@@ -17,15 +17,15 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
+import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.packet.TranscriptSearch;
+import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.ReportedData;
 
 /**
  * A TranscriptSearchManager helps to retrieve the form to use for searching transcripts

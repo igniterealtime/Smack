@@ -25,8 +25,10 @@ import java.util.Properties;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.packet.DelayInfo;
-import org.jivesoftware.smackx.packet.DelayInformation;
+import org.jivesoftware.smackx.delay.packet.DelayInfo;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.delay.provider.DelayInfoProvider;
+import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.junit.Test;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;

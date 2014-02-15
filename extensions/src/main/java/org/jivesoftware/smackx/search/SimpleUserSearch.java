@@ -17,9 +17,8 @@
 package org.jivesoftware.smackx.search;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.FormField;
-import org.jivesoftware.smackx.ReportedData;
+import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;

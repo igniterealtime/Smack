@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
-import org.jivesoftware.smackx.packet.StreamInitiation;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 /**
  * Negotiates a SOCKS5 Bytestream to be used for file transfers. The implementation is based on the

@@ -26,8 +26,8 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smackx.packet.DelayInfo;
-import org.jivesoftware.smackx.packet.DelayInformation;
+import org.jivesoftware.smackx.delay.packet.DelayInfo;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.junit.Test;

@@ -25,7 +25,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.packet.StreamInitiation;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 import java.util.ArrayList;
 import java.util.List;

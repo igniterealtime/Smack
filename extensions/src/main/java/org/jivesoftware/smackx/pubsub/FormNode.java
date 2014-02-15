@@ -13,7 +13,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * Generic packet extension which represents any pubsub form that is

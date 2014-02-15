@@ -55,15 +55,15 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Registration;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.NodeInformationProvider;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.DiscoverItems;
-import org.jivesoftware.smackx.packet.MUCAdmin;
-import org.jivesoftware.smackx.packet.MUCInitialPresence;
-import org.jivesoftware.smackx.packet.MUCOwner;
-import org.jivesoftware.smackx.packet.MUCUser;
+import org.jivesoftware.smackx.disco.NodeInformationProvider;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.packet.MUCAdmin;
+import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
+import org.jivesoftware.smackx.muc.packet.MUCOwner;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
+import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * A MultiUserChat is a conversation that takes place among many users in a virtual

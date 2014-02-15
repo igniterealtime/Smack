@@ -24,8 +24,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.packet.AdHocCommandData;
+import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
+import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * Represents a command that is in a remote location. Invoking one of the

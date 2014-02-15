@@ -19,14 +19,14 @@ package org.jivesoftware.smackx.carbons.provider;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.carbons.Carbon;
-import org.jivesoftware.smackx.carbons.Carbon.Direction;
+import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
+import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.forward.Forwarded;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
  * This class implements the {@link PacketExtensionProvider} to parse
- * cabon copied messages from a packet.  It will return a {@link Carbon} packet extension.
+ * cabon copied messages from a packet.  It will return a {@link CarbonExtension} packet extension.
  * 
  * @author Georg Lukas
  *
@@ -48,6 +48,6 @@ public class CarbonManagerProvider implements PacketExtensionProvider {
         }
         if (fwd == null)
             throw new Exception("sent/received must contain exactly one <forwarded> tag");
-        return new Carbon(dir, fwd);
+        return new CarbonExtension(dir, fwd);
     }
 }

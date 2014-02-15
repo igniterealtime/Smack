@@ -31,11 +31,8 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.packet.DelayInformation;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.Header;
-import org.jivesoftware.smackx.packet.HeadersExtension;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;
 import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
@@ -43,6 +40,9 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.packet.SyncPacketSend;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
+import org.jivesoftware.smackx.shim.packet.Header;
+import org.jivesoftware.smackx.shim.packet.HeadersExtension;
+import org.jivesoftware.smackx.xdata.Form;
 
 abstract public class Node
 {

@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.forward;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.packet.DelayInfo;
+import org.jivesoftware.smackx.delay.packet.DelayInfo;
 
 /**
  * Packet extension for <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297</a>: Stanza Forwarding.

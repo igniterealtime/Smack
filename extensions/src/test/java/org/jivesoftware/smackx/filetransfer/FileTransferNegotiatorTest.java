@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

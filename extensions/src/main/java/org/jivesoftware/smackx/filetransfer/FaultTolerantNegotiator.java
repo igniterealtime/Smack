@@ -23,7 +23,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.packet.StreamInitiation;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 import java.io.InputStream;
 import java.io.OutputStream;

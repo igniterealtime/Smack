@@ -15,7 +15,7 @@ package org.jivesoftware.smackx.entitycaps.cache;
 
 import java.io.IOException;
 
-import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 public interface EntityCapsPersistentCache {
     /**

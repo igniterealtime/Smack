@@ -18,11 +18,10 @@ package org.jivesoftware.smackx.search;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.ReportedData;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.DiscoverItems;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.xdata.Form;
 
 import java.util.ArrayList;
 import java.util.Collection;

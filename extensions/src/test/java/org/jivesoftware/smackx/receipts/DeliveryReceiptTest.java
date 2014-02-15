@@ -26,7 +26,7 @@ import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlpull.mxp1.MXParser;

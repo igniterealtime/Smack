@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.packet.AdHocCommandData;
+import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
+import org.jivesoftware.smackx.xdata.Form;
 
 import java.util.List;
 

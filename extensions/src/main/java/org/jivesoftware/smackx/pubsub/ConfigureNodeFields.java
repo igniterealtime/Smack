@@ -15,7 +15,7 @@ package org.jivesoftware.smackx.pubsub;
 
 import java.net.URL;
 
-import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * This enumeration represents all the fields of a node configuration form.  This enumeration

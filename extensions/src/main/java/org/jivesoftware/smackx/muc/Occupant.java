@@ -17,8 +17,8 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.packet.MUCAdmin;
-import org.jivesoftware.smackx.packet.MUCUser;
+import org.jivesoftware.smackx.muc.packet.MUCAdmin;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 

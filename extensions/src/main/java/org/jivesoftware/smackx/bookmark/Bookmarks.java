@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.bookmark;
 
-import org.jivesoftware.smackx.packet.PrivateData;
-import org.jivesoftware.smackx.provider.PrivateDataProvider;
+import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
+import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

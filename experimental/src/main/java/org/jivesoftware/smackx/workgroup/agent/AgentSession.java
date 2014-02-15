@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
+import org.jivesoftware.smackx.muc.packet.MUCUser;
+import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.QueueUser;
 import org.jivesoftware.smackx.workgroup.WorkgroupInvitation;
@@ -29,13 +31,11 @@ import org.jivesoftware.smackx.workgroup.ext.notes.ChatNotes;
 import org.jivesoftware.smackx.workgroup.packet.*;
 import org.jivesoftware.smackx.workgroup.settings.GenericSettings;
 import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
+import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.ReportedData;
-import org.jivesoftware.smackx.packet.MUCUser;
 
 import java.util.*;
 import java.util.logging.Level;

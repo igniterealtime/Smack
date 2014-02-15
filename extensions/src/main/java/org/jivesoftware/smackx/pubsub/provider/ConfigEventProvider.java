@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.packet.DataForm;
-import org.jivesoftware.smackx.provider.EmbeddedExtensionProvider;
+import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smackx.pubsub.ConfigurationEvent;
 import org.jivesoftware.smackx.pubsub.ConfigureForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * Parses the node configuration element out of the message event stanza from 

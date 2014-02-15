@@ -14,10 +14,10 @@
 package org.jivesoftware.smackx.pubsub.util;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.FormNode;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
+import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * Utility for extracting information from packets.

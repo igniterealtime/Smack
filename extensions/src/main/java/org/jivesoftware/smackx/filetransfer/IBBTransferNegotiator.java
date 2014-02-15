@@ -31,7 +31,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
-import org.jivesoftware.smackx.packet.StreamInitiation;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 /**
  * The In-Band Bytestream file transfer method, or IBB for short, transfers the

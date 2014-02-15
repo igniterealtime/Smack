@@ -20,7 +20,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 

@@ -13,11 +13,11 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.Base64FileUrlEncoder;
 import org.jivesoftware.smack.util.StringEncoder;
-import org.jivesoftware.smackx.FormField;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.entitycaps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.entitycaps.cache.SimpleDirectoryPersistentCache;
-import org.jivesoftware.smackx.packet.DataForm;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Ignore;
 import org.junit.Test;
 

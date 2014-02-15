@@ -20,8 +20,8 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.delay.packet.DelayInfo;
 import org.jivesoftware.smackx.forward.Forwarded;
-import org.jivesoftware.smackx.packet.DelayInfo;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
