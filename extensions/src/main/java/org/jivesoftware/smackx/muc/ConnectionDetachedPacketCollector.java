@@ -32,13 +32,6 @@ import org.jivesoftware.smack.packet.Packet;
  * @author Larry Kirschner
  */
 class ConnectionDetachedPacketCollector {
-    /**
-     * Max number of packets that any one collector can hold. After the max is
-     * reached, older packets will be automatically dropped from the queue as
-     * new packets are added.
-     */
-    private int maxPackets = SmackConfiguration.getPacketCollectorSize();
-
     private ArrayBlockingQueue<Packet> resultQueue;
 
     /**

@@ -23,7 +23,7 @@ import java.util.List;
  */
 abstract public class SubscriptionEvent extends NodeEvent
 {
-	private List<String> subIds = Collections.EMPTY_LIST;
+	private List<String> subIds = Collections.emptyList();
 
 	/**
 	 * Construct an event with no subscription id's.  This can 

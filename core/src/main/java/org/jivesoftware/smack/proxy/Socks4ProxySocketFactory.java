@@ -74,8 +74,7 @@ public class Socks4ProxySocketFactory
         String proxy_host = proxy.getProxyAddress();
         int proxy_port = proxy.getProxyPort();
         String user = proxy.getProxyUsername();
-        String passwd = proxy.getProxyPassword();
-        
+
         try
         {
             socket=new Socket(proxy_host, proxy_port);    

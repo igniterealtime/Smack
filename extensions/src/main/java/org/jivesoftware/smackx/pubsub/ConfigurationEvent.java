@@ -49,7 +49,7 @@ public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketE
 	public List<PacketExtension> getExtensions()
 	{
 		if (getConfiguration() == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		else
 			return Arrays.asList(((PacketExtension)getConfiguration().getDataFormToSend()));
 	}

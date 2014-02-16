@@ -124,6 +124,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 		return type;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<PacketExtension> getExtensions()
 	{
 		return (List<PacketExtension>)getItems();

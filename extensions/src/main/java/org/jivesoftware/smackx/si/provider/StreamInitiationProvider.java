@@ -98,7 +98,7 @@ public class StreamInitiationProvider implements IQProvider {
                     Date fileDate = new Date();
                     if (date != null) {
                         try {
-                            fileDate = StringUtils.parseXEP0082Date(date);
+                            fileDate = StringUtils.parseDate(date);
                         } catch (ParseException e) {
                             // couldn't parse date, use current date-time
                         }

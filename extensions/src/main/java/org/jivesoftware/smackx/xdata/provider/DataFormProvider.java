@@ -42,7 +42,6 @@ public class DataFormProvider implements PacketExtensionProvider {
 
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
         boolean done = false;
-        StringBuilder buffer = null;
         DataForm dataForm = new DataForm(parser.getAttributeValue("", "type"));
         while (!done) {
             int eventType = parser.next();

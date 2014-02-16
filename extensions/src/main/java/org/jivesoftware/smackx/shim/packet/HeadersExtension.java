@@ -30,7 +30,7 @@ public class HeadersExtension implements PacketExtension
 {
 	public static final String NAMESPACE = "http://jabber.org/protocol/shim";
 	
-	private Collection<Header> headers = Collections.EMPTY_LIST;
+	private Collection<Header> headers = Collections.emptyList();
 	
 	public HeadersExtension(Collection<Header> headerList)
 	{

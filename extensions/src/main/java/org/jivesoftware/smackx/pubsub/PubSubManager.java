@@ -149,6 +149,7 @@ final public class PubSubManager
 	 * @return the node
 	 * @throws XMPPException The node does not exist
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Node> T getNode(String id)
 		throws XMPPException
 	{

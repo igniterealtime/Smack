@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class ItemDeleteEvent extends SubscriptionEvent
 {
-	private List<String> itemIds = Collections.EMPTY_LIST;
+	private List<String> itemIds = Collections.emptyList();
 	
 	/**
 	 * Constructs an <tt>ItemDeleteEvent</tt> that indicates the the supplied

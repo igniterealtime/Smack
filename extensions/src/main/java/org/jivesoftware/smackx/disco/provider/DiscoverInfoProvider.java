@@ -33,7 +33,6 @@ public class DiscoverInfoProvider implements IQProvider {
     public IQ parseIQ(XmlPullParser parser) throws Exception {
         DiscoverInfo discoverInfo = new DiscoverInfo();
         boolean done = false;
-        DiscoverInfo.Feature feature = null;
         DiscoverInfo.Identity identity = null;
         String category = "";
         String name = "";

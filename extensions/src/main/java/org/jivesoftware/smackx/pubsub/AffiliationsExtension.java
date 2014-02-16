@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class AffiliationsExtension extends NodeExtension
 {
-	protected List<Affiliation> items = Collections.EMPTY_LIST;
+	protected List<Affiliation> items = Collections.emptyList();
 	
 	public AffiliationsExtension()
 	{

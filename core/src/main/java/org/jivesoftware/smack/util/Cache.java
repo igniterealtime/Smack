@@ -253,6 +253,7 @@ public class Cache<K, V> implements Map<K, V> {
         return map.containsKey(key);
     }
 
+    @SuppressWarnings("unchecked")
     public void putAll(Map<? extends K, ? extends V> map) {
         for (Entry<? extends K, ? extends V> entry : map.entrySet()) {
             V value = entry.getValue();
@@ -273,6 +274,7 @@ public class Cache<K, V> implements Map<K, V> {
         deleteExpiredEntries();
 
         //noinspection unchecked
+        @SuppressWarnings("unchecked")
         CacheObject<V> cacheObject = new CacheObject<V>((V) value);
 
         return map.containsValue(cacheObject);
@@ -454,6 +456,7 @@ public class Cache<K, V> implements Map<K, V> {
         /**
          * A count of the number of times the object has been read from cache.
          */
+        @SuppressWarnings("unused")
         public int readCount = 0;
 
         /**
@@ -509,6 +512,7 @@ public class Cache<K, V> implements Map<K, V> {
          *
          * @return the first element of the list.
          */
+        @SuppressWarnings("unused")
         public LinkedListNode getFirst() {
             LinkedListNode node = head.next;
             if (node == head) {
@@ -565,6 +569,7 @@ public class Cache<K, V> implements Map<K, V> {
          * @param object the object to add to the end of the list.
          * @return the node created to wrap the object.
          */
+        @SuppressWarnings("unused")
         public LinkedListNode addLast(Object object) {
             LinkedListNode node = new LinkedListNode(object, head, head.previous);
             node.previous.next = node;

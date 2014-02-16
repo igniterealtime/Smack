@@ -21,8 +21,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 
-import java.util.Iterator;
-
 /**
  * Represents the room information that was discovered using Service Discovery. It's possible to
  * obtain information about a room before joining the room but only for rooms that are public (i.e.

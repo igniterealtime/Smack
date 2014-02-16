@@ -63,6 +63,7 @@ public class LeafNode extends Node
 	 * 
 	 * @throws XMPPException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems()
 		throws XMPPException
 	{
@@ -84,6 +85,7 @@ public class LeafNode extends Node
 	 * 
 	 * @throws XMPPException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(String subscriptionId)
 		throws XMPPException
 	{
@@ -107,6 +109,7 @@ public class LeafNode extends Node
 	 * 
 	 * @throws XMPPException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(Collection<String> ids)
 		throws XMPPException
 	{
@@ -132,6 +135,7 @@ public class LeafNode extends Node
 	 * 
 	 * @throws XMPPException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(int maxItems)
 		throws XMPPException
 	{
@@ -154,6 +158,7 @@ public class LeafNode extends Node
 	 * 
 	 * @throws XMPPException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(int maxItems, String subscriptionId)
 		throws XMPPException
 	{
@@ -198,6 +203,7 @@ public class LeafNode extends Node
 	 * 
 	 * @param item - The item being sent
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> void publish(T item)
 	{
 		Collection<T> items = new ArrayList<T>(1);
@@ -268,6 +274,7 @@ public class LeafNode extends Node
 	 * 
 	 * @throws XMPPException
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Item> void send(T item)
 		throws XMPPException
 	{

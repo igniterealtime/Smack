@@ -17,7 +17,12 @@
 
 package org.jivesoftware.smackx.iqlast;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -113,6 +118,8 @@ public class LastActivityManager {
                     // We assume that only a switch to available and chat indicates user activity
                     // since other mode changes could be also a result of some sort of automatism
                     resetIdleTime();
+                default:
+                    break;
                 }
             }
         }, new PacketTypeFilter(Presence.class));

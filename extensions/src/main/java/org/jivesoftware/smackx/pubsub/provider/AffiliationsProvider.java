@@ -29,6 +29,7 @@ import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
  * @author Robin Collier
  */public class AffiliationsProvider extends EmbeddedExtensionProvider
 {
+	@SuppressWarnings("unchecked")
 	@Override
 	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
 	{

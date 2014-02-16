@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class SubscriptionsExtension extends NodeExtension
 {
-	protected List<Subscription> items = Collections.EMPTY_LIST;
+	protected List<Subscription> items = Collections.emptyList();
 	
 	/**
 	 * Subscriptions to the root node
