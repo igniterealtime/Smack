@@ -304,6 +304,23 @@ between patch versions.
 	}
 }
 
+
+project(':legacy') {
+	description = """\
+Smack legacy extensions.
+Usually XEPs in the state 'retracted', 'rejected', 'deprecated',
+'obsolete' or in a long standing 'deferred' state.
+"""
+	dependencies {
+		compile project(':core')
+		compile project(':extensions')
+		testCompile project(':core').sourceSets.test.runtimeClasspath
+		// Test dependencies (junit, …) are interfered from the sourceSet.test of the core project
+		// So there is no need to add them explicitly here again
+	}
+}
+
+
 project(':debug') {
 	description = """\
 Smack GUI debugger.
