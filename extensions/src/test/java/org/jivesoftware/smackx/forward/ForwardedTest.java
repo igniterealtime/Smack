@@ -1,5 +1,8 @@
 /**
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ *
+ * Copyright the original author or authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,26 +18,12 @@ package org.jivesoftware.smackx.forward;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Properties;
-import java.util.TimeZone;
-
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smackx.delay.packet.DelayInfo;
-import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.junit.Test;
-import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import com.jamesmurty.utils.XMLBuilder;
 
 public class ForwardedTest {

@@ -2,7 +2,7 @@
  *
  * Copyright 2010 Jive Software.
  *
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -28,7 +28,6 @@ import org.jivesoftware.smack.ChatManager.MatchMode;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -337,6 +336,7 @@ public class ChatConnectionTest {
         assertNull(listener.getNewChat());
     }
 
+    @SuppressWarnings("unused")
     private ChatManager getChatManager(boolean includeNormal, MatchMode mode) {
         ChatManager cm = getConnection().getChatManager();
         cm.setMatchMode(mode);
@@ -428,6 +428,7 @@ public class ChatConnectionTest {
             counter++;
         }
         
+        @SuppressWarnings("unused")
         public Chat getChat() {
             return msgChat;
         }

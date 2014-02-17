@@ -2,7 +2,7 @@
  *
  * Copyright 2010 Jive Software.
  *
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -30,7 +30,6 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.Connection.ListenerWrapper;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 

@@ -3,7 +3,7 @@
   - $$Revision$$
   - $$Date$$
   -
-  - Copyright (C) 2002-2003 Jive Software. All rights reserved.
+  - Copyright (C) 2002-2003 Jive Software. 
   - 
   - The Jive Software License (based on Apache Software License, Version 1.1)
   - Redistribution and use in source and binary forms, with or without

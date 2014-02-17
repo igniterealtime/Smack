@@ -2,7 +2,7 @@
  *
  * Copyright 2011 Robin Collier
  *
- * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -21,8 +21,6 @@ import static org.junit.Assert.assertEquals;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;

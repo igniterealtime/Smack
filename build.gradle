@@ -94,7 +94,6 @@ subprojects {
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
-		ignoreFailures = true
 	}
 	pmd {
 		ignoreFailures = true

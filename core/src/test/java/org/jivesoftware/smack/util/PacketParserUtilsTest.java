@@ -1,24 +1,31 @@
 /**
  *
- * Copyright (C) 2007 Jive Software. All rights reserved.
- * This software is the proprietary information of Jive Software. Use is subject to license terms.
+ * Copyright (C) 2007 Jive Software.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jivesoftware.smack.util;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLNotEqual;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.TimeZone;
 
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
@@ -43,6 +50,7 @@ public class PacketParserUtilsTest {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
         
+    @SuppressWarnings("deprecation")
     @Test
     public void singleMessageBodyTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -192,6 +200,7 @@ public class PacketParserUtilsTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void singleMessageSubjectTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -341,6 +350,7 @@ public class PacketParserUtilsTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void multipleMessageBodiesTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -494,6 +504,7 @@ public class PacketParserUtilsTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void multipleMessageSubjectsTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -647,6 +658,7 @@ public class PacketParserUtilsTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Ignore // gradle migration
     @Test
     public void invalidMessageBodyContainingTagTest() throws Exception {
@@ -681,6 +693,7 @@ public class PacketParserUtilsTest {
         
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void invalidXMLInMessageBody() throws Exception {
         String validControl = XMLBuilder.create("message")
@@ -756,6 +769,7 @@ public class PacketParserUtilsTest {
     	assertXMLEqual(stanza, presence.toXML());
     }
     
+    @SuppressWarnings("deprecation")
     @Test
     public void validatePresenceProbe() throws Exception {
     	String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
@@ -766,6 +780,7 @@ public class PacketParserUtilsTest {
     	assertEquals(Presence.Type.unsubscribed, presence.getType());
     }
     
+    @SuppressWarnings("deprecation")
     @Test
     public void validatePresenceOptionalElements() throws Exception {
     	String stanza = "<presence xml:lang='en' type='unsubscribed'>"
@@ -814,6 +829,7 @@ public class PacketParserUtilsTest {
 //    	assertEquals(cal.getTime(), delay.getStamp());
 //    }
 
+    @SuppressWarnings("deprecation")
     @Ignore // gradle migration
     @Test
     public void parsePresenceWithInvalidDelayedDelivery() throws Exception {
