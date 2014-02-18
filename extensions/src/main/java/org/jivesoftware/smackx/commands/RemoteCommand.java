@@ -17,13 +17,10 @@
 
 package org.jivesoftware.smackx.commands;
 
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
 
@@ -79,7 +76,7 @@ public class RemoteCommand extends AdHocCommand {
         this.connection = connection;
         this.jid = jid;
         this.setNode(node);
-        this.packetReplyTimeout = SmackConfiguration.getPacketReplyTimeout();
+        this.packetReplyTimeout = SmackConfiguration.getDefaultPacketReplyTimeout();
     }
 
     @Override
@@ -148,23 +145,9 @@ public class RemoteCommand extends AdHocCommand {
             data.setForm(form.getDataFormToSend());
         }
 
-        PacketCollector collector = connection.createPacketCollector(
-                new PacketIDFilter(data.getPacketID()));
+        AdHocCommandData responseData = (AdHocCommandData) connection.createPacketCollectorAndSend(
+                        data).nextResultOrThrow();
 
-        connection.sendPacket(data);
-
-        Packet response = collector.nextResult(timeout);
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
-
-        AdHocCommandData responseData = (AdHocCommandData) response;
         this.sessionID = responseData.getSessionID();
         super.setData(responseData);
     }

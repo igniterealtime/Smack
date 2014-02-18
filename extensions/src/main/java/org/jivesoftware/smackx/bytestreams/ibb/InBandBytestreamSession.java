@@ -36,7 +36,6 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
@@ -210,7 +209,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             Close close = new Close(this.byteStreamRequest.getSessionID());
             close.setTo(this.remoteJID);
             try {
-                SyncPacketSend.getReply(this.connection, close);
+                connection.createPacketCollectorAndSend(close).nextResultOrThrow();
             }
             catch (XMPPException e) {
                 throw new IOException("Error while closing stream: " + e.getMessage());
@@ -763,7 +762,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             iq.setTo(remoteJID);
 
             try {
-                SyncPacketSend.getReply(connection, iq);
+                connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
             }
             catch (XMPPException e) {
                 // close session unless it is already closed

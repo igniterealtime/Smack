@@ -2,8 +2,8 @@
 <!-- Smack configuration file. -->
 <smack>
 
-    <!-- Packet reply timeout in milliseconds -->
-    <packetReplyTimeout>5000</packetReplyTimeout>
+    <!-- Default Packet reply timeout in milliseconds -->
+    <defaultPacketReplyTimeout>5000</defaultPacketReplyTimeout>
 
     <!-- Enable/Disable local Socks5 proxy -->
     <localSocks5ProxyEnabled>true</localSocks5ProxyEnabled>

@@ -18,9 +18,7 @@ package org.jivesoftware.smackx.privacy;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
@@ -153,68 +151,30 @@ public class PrivacyListManager {
 		// The request is a get iq type
 		requestPrivacy.setType(Privacy.Type.GET);
 		requestPrivacy.setFrom(this.getUser());
-		
-		// Filter packets looking for an answer from the server.
-		PacketFilter responseFilter = new PacketIDFilter(requestPrivacy.getPacketID());
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        
-        // Send create & join packet.
-        connection.sendPacket(requestPrivacy);
-        
-        // Wait up to a certain number of seconds for a reply.
-        Privacy privacyAnswer =
-            (Privacy) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        
-        // Stop queuing results
-        response.cancel();
 
-        // Interprete the result and answer the privacy only if it is valid
-        if (privacyAnswer == null) {
-            throw new XMPPException("No response from server.");
-        }
-        else if (privacyAnswer.getError() != null) {
-            throw new XMPPException(privacyAnswer.getError());
-        }
+        Privacy privacyAnswer = (Privacy) connection.createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
         return privacyAnswer;
 	}
-	
-	/**
-	 * Send the {@link Privacy} packet to the server in order to modify the server privacy and 
-	 * waits for the answer.
-	 * 
-	 * @param requestPrivacy is the {@link Privacy} packet configured properly whose xml will be sent
-	 * to the server.
-	 * @return a new {@link Privacy} with the data received from the server.
-	 * @exception XMPPException if the request or the answer failed, it raises an exception.
-	 */ 
-	private Packet setRequest(Privacy requestPrivacy) throws XMPPException {
+
+    /**
+     * Send the {@link Privacy} packet to the server in order to modify the server privacy and waits
+     * for the answer.
+     * 
+     * @param requestPrivacy is the {@link Privacy} packet configured properly whose xml will be
+     *        sent to the server.
+     * @return a new {@link Privacy} with the data received from the server.
+     * @exception XMPPException if the request or the answer failed, it raises an exception.
+     */
+    private Packet setRequest(Privacy requestPrivacy) throws XMPPException {
         Connection connection = PrivacyListManager.this.connection.get();
-        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
-		// The request is a get iq type
-		requestPrivacy.setType(Privacy.Type.SET);
-		requestPrivacy.setFrom(this.getUser());
-		
-		// Filter packets looking for an answer from the server.
-		PacketFilter responseFilter = new PacketIDFilter(requestPrivacy.getPacketID());
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        
-        // Send create & join packet.
-        connection.sendPacket(requestPrivacy);
-        
-        // Wait up to a certain number of seconds for a reply.
-        Packet privacyAnswer = response.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        
-        // Stop queuing results
-        response.cancel();
+        if (connection == null)
+            throw new XMPPException("Connection instance already gc'ed");
+        // The request is a get iq type
+        requestPrivacy.setType(Privacy.Type.SET);
+        requestPrivacy.setFrom(this.getUser());
 
-        // Interprete the result and answer the privacy only if it is valid
-        if (privacyAnswer == null) {
-            throw new XMPPException("No response from server.");
-        } else if (privacyAnswer.getError() != null) {
-            throw new XMPPException(privacyAnswer.getError());
-        }
-        return privacyAnswer;
-	}
+        return connection.createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
+    }
 
 	/**
 	 * Answer a privacy containing the list structre without {@link PrivacyItem}.

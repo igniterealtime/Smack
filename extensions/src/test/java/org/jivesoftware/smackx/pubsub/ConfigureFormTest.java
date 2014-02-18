@@ -83,7 +83,7 @@ public class ConfigureFormTest
 		
 		Node node = mgr.getNode("princely_musings");
 		
-		SmackConfiguration.setPacketReplyTimeout(100);
+		SmackConfiguration.setDefaultPacketReplyTimeout(100);
 		con.setTimeout();
 		
 		node.getNodeConfiguration();

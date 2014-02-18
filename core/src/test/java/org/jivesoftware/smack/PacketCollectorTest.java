@@ -38,10 +38,10 @@ public class PacketCollectorTest
 		}
 		
 		// Assert that '0' has rolled off
-		assertEquals("1", collector.nextResult().getPacketID());
-		assertEquals("2", collector.nextResult().getPacketID());
-		assertEquals("3", collector.nextResult().getPacketID());
-		assertEquals("4", collector.nextResult().getPacketID());
+		assertEquals("1", collector.nextResultBlockForever().getPacketID());
+		assertEquals("2", collector.nextResultBlockForever().getPacketID());
+		assertEquals("3", collector.nextResultBlockForever().getPacketID());
+		assertEquals("4", collector.nextResultBlockForever().getPacketID());
 		assertEquals("5", collector.pollResult().getPacketID());
 		assertNull(collector.pollResult());
 		
@@ -51,10 +51,10 @@ public class PacketCollectorTest
 			collector.processPacket(testPacket);
 		}
 		
-		assertEquals("10", collector.nextResult().getPacketID());
-		assertEquals("11", collector.nextResult().getPacketID());
-		assertEquals("12", collector.nextResult().getPacketID());
-		assertEquals("13", collector.nextResult().getPacketID());
+		assertEquals("10", collector.nextResultBlockForever().getPacketID());
+		assertEquals("11", collector.nextResultBlockForever().getPacketID());
+		assertEquals("12", collector.nextResultBlockForever().getPacketID());
+		assertEquals("13", collector.nextResultBlockForever().getPacketID());
 		assertEquals("14", collector.pollResult().getPacketID());
 		assertNull(collector.pollResult());
 		
@@ -87,7 +87,8 @@ public class PacketCollectorTest
 						catch (InterruptedException e)
 						{
 						}
-						Packet packet = collector.nextResult();
+						@SuppressWarnings("unused")
+						Packet packet = collector.nextResultBlockForever();
 //						System.out.println(Thread.currentThread().getName() + "  packet: " + packet);
 					}
 				}

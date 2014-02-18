@@ -108,7 +108,7 @@ class PacketReader {
             // (although this is a rare thing). Therefore, we continue waiting
             // until either a connectionID has been set (and hence a notify was
             // made) or the total wait time has elapsed.
-            int waitTime = SmackConfiguration.getPacketReplyTimeout();
+            int waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
             wait(3 * waitTime);
         }
         catch (InterruptedException ie) {

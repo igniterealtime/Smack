@@ -60,9 +60,10 @@ public class Socks5ByteStreamRequestTest {
 
     /**
      * Initialize fields used in the tests.
+     * @throws XMPPException 
      */
     @Before
-    public void setup() {
+    public void setup() throws XMPPException {
 
         // build protocol verifier
         protocol = new Protocol();

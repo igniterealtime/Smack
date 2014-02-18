@@ -23,9 +23,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -147,43 +145,36 @@ public class CarbonManager {
      * @param new_state whether carbons should be enabled or disabled
      *
      * @return true if the operation was successful
+     * @throws XMPPException 
      */
-    public boolean setCarbonsEnabled(final boolean new_state) {
-        if (enabled_state == new_state)
-            return true;
+    public void setCarbonsEnabled(final boolean new_state) throws XMPPException {
+        if (enabled_state == new_state) return;
 
         Connection connection = weakRefConnection.get();
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        PacketCollector collector =
-                connection.createPacketCollector(new PacketIDFilter(setIQ.getPacketID()));
-        connection.sendPacket(setIQ);
-        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        collector.cancel();
-
-        if (result != null && result.getType() == IQ.Type.RESULT) {
-            enabled_state = new_state;
-            return true;
-        }
-        return false;
+        connection.createPacketCollectorAndSend(setIQ).nextResultOrThrow();
+        enabled_state = new_state;
     }
 
     /**
      * Helper method to enable carbons.
      *
      * @return true if the operation was successful
+     * @throws XMPPException 
      */
-    public boolean enableCarbons() {
-        return setCarbonsEnabled(true);
+    public void enableCarbons() throws XMPPException {
+        setCarbonsEnabled(true);
     }
 
     /**
      * Helper method to disable carbons.
      *
      * @return true if the operation was successful
+     * @throws XMPPException 
      */
-    public boolean disableCarbons() {
-        return setCarbonsEnabled(false);
+    public void disableCarbons() throws XMPPException {
+        setCarbonsEnabled(false);
     }
 
     /**

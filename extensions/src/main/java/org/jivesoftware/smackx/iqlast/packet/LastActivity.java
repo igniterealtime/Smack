@@ -19,11 +19,8 @@ package org.jivesoftware.smackx.iqlast.packet;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
@@ -143,19 +140,7 @@ public class LastActivity extends IQ {
         jid = StringUtils.parseBareAddress(jid);
         activity.setTo(jid);
 
-        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(activity.getPacketID()));
-        con.sendPacket(activity);
-
-        LastActivity response = (LastActivity) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        LastActivity response = (LastActivity) con.createPacketCollectorAndSend(activity).nextResultOrThrow();
         return response;
     }
 }

@@ -16,11 +16,8 @@
  */
 package org.jivesoftware.smackx.search;
 
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -69,19 +66,7 @@ public class UserSearch extends IQ {
         search.setType(IQ.Type.GET);
         search.setTo(searchService);
 
-        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(search.getPacketID()));
-        con.sendPacket(search);
-
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        IQ response = (IQ) con.createPacketCollectorAndSend(search).nextResultOrThrow();
         return Form.getFormFrom(response);
     }
 
@@ -101,22 +86,7 @@ public class UserSearch extends IQ {
         search.setTo(searchService);
         search.addExtension(searchForm.getDataFormToSend());
 
-        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(search.getPacketID()));
-
-        con.sendPacket(search);
-
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            return sendSimpleSearchForm(con, searchForm, searchService);
-        }
-
-
+        IQ response = (IQ) con.createPacketCollectorAndSend(search).nextResultOrThrow();
         return ReportedData.getReportedDataFrom(response);
     }
 
@@ -136,25 +106,8 @@ public class UserSearch extends IQ {
         search.setType(IQ.Type.SET);
         search.setTo(searchService);
 
-        PacketCollector collector = con.createPacketCollector(new PacketIDFilter(search.getPacketID()));
-
-        con.sendPacket(search);
-
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
-
-        if (response instanceof SimpleUserSearch) {
-            return ((SimpleUserSearch) response).getReportedData();
-        }
-        return null;
+        SimpleUserSearch response = (SimpleUserSearch) con.createPacketCollectorAndSend(search).nextResultOrThrow();
+        return response.getReportedData();
     }
 
     /**

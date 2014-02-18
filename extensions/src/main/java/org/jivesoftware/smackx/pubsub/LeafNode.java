@@ -25,7 +25,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
-import org.jivesoftware.smackx.pubsub.packet.SyncPacketSend;
 
 /**
  * The main class for the majority of pubsub functionality.  In general
@@ -56,7 +55,7 @@ public class LeafNode extends Node
 		DiscoverItems items = new DiscoverItems();
 		items.setTo(to);
 		items.setNode(getId());
-		return (DiscoverItems)SyncPacketSend.getReply(con, items);
+		return (DiscoverItems) con.createPacketCollectorAndSend(items).nextResultOrThrow();
 	}
 
 	/**
@@ -72,7 +71,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId()));
 		
-		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
 	}
@@ -94,7 +93,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId(), subscriptionId));
 		
-		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
 	}
@@ -124,7 +123,7 @@ public class LeafNode extends Node
 		}
 		PubSub request = createPubsubPacket(Type.GET, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
 		
-		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
 	}
@@ -144,7 +143,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId(), maxItems));
 		
-		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
 	}
@@ -167,7 +166,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.GET, new GetItemsRequest(getId(), subscriptionId, maxItems));
 		
-		PubSub result = (PubSub)SyncPacketSend.getReply(con, request);
+		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
 	}
@@ -253,7 +252,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.SET, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 		
-		SyncPacketSend.getReply(con, packet);
+		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 	
 	/**
@@ -306,7 +305,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.SET, new PublishItem<T>(getId(), items));
 		
-		SyncPacketSend.getReply(con, packet);
+		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 	
 	/**
@@ -322,7 +321,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.SET, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()), PubSubElementType.PURGE_OWNER.getNamespace());
 		
-		SyncPacketSend.getReply(con, request);
+		con.createPacketCollectorAndSend(request).nextResultOrThrow();
 	}
 	
 	/**
@@ -357,6 +356,6 @@ public class LeafNode extends Node
 			items.add(new Item(id));
 		}
 		PubSub request = createPubsubPacket(Type.SET, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
-		SyncPacketSend.getReply(con, request);
+		con.createPacketCollectorAndSend(request).nextResultOrThrow();
 	}
 }

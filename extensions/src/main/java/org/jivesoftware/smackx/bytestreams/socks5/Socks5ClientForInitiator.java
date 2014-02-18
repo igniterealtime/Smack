@@ -23,7 +23,6 @@ import java.util.concurrent.TimeoutException;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
@@ -97,8 +96,8 @@ class Socks5ClientForInitiator extends Socks5Client {
      */
     private void activate() throws XMPPException {
         Bytestream activate = createStreamHostActivation();
-        // if activation fails #getReply throws an exception
-        SyncPacketSend.getReply(this.connection, activate);
+        // if activation fails #nextResultOrThrow() throws an exception
+        connection.createPacketCollectorAndSend(activate).nextResultOrThrow();
     }
 
     /**

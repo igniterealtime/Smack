@@ -178,15 +178,7 @@ public class RosterGroup {
             }
         }
         if (collector != null) {
-            IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-            collector.cancel();
-            if (response == null) {
-                throw new XMPPException("No response from the server.");
-            }
-            // If the server replied with an error, throw an exception.
-            else if (response.getType() == IQ.Type.ERROR) {
-                throw new XMPPException(response.getError());
-            }
+            collector.nextResultOrThrow();
         }
     }
 
@@ -220,15 +212,7 @@ public class RosterGroup {
             }
         }
         if (collector != null) {
-            IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-            collector.cancel();
-            if (response == null) {
-                throw new XMPPException("No response from the server.");
-            }
-            // If the server replied with an error, throw an exception.
-            else if (response.getType() == IQ.Type.ERROR) {
-                throw new XMPPException(response.getError());
-            }
+            collector.nextResultOrThrow();
         }
     }
 

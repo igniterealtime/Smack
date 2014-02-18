@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
 
 /**
  * Provides a mechanism to collect packets into a result queue that pass a
@@ -105,26 +106,35 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the next available packet. The method call will block (not return)
-     * until a packet is available.
-     *
+     * Returns the next available packet. The method call will block (not return) until a packet is
+     * available.
+     * 
      * @return the next available packet.
      */
-    public Packet nextResult() {
+    public Packet nextResultBlockForever() {
         try {
-			return resultQueue.take();
-		}
-		catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+            return resultQueue.take();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the next available packet. The method call will block until the connection's default
+     * timeout has elapsed.
+     * 
+     * @return the next availabe packet.
+     */
+    public Packet nextResult() {
+        return nextResult(connection.getPacketReplyTimeout());
     }
 
     /**
      * Returns the next available packet. The method call will block (not return)
-     * until a packet is available or the <tt>timeout</tt> has elapased. If the
+     * until a packet is available or the <tt>timeout</tt> has elapsed. If the
      * timeout elapses without a result, <tt>null</tt> will be returned.
      *
-     * @param timeout the amount of time to wait for the next packet (in milleseconds).
      * @return the next available packet.
      */
     public Packet nextResult(long timeout) {
@@ -134,6 +144,41 @@ public class PacketCollector {
 		catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+    }
+
+    /**
+     * Returns the next available packet. The method call will block until a packet is available or
+     * the connections reply timeout has elapsed. If the timeout elapses without a result,
+     * <tt>null</tt> will be returned. This method does also cancel the PacketCollector.
+     * 
+     * @return the next available packet.
+     * @throws XMPPException
+     */
+    public Packet nextResultOrThrow() throws XMPPException {
+        return nextResultOrThrow(connection.getPacketReplyTimeout());
+    }
+
+    /**
+     * Returns the next available packet. The method call will block until a packet is available or
+     * the <tt>timeout</tt> has elapsed. This method does also cancel the PacketCollector.
+     * 
+     * @param timeout the amount of time to wait for the next packet (in milleseconds).
+     * @return the next available packet.
+     * @throws XMPPException in case of no response or error response
+     */
+    public Packet nextResultOrThrow(long timeout) throws XMPPException {
+        Packet result = nextResult(timeout);
+        cancel();
+        if (result == null) {
+            throw new XMPPException(SmackError.NO_RESPONSE_FROM_SERVER);
+        }
+
+        XMPPError xmppError = result.getError();
+        if (xmppError != null) {
+            throw new XMPPException(xmppError);
+        }
+
+        return result;
     }
 
     /**

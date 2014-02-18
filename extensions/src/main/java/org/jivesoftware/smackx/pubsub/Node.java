@@ -38,7 +38,6 @@ import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
-import org.jivesoftware.smackx.pubsub.packet.SyncPacketSend;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
@@ -109,7 +108,7 @@ abstract public class Node
 		throws XMPPException
 	{
 		PubSub packet = createPubsubPacket(Type.SET, new FormNode(FormNodeType.CONFIGURE_OWNER, getId(), submitForm), PubSubNamespace.OWNER);
-		SyncPacketSend.getReply(con, packet);
+		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 	
 	/**
@@ -125,7 +124,7 @@ abstract public class Node
 		DiscoverInfo info = new DiscoverInfo();
 		info.setTo(to);
 		info.setNode(getId());
-		return (DiscoverInfo)SyncPacketSend.getReply(con, info);
+		return (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
 	}
 	
 	/**

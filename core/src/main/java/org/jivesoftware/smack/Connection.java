@@ -37,6 +37,7 @@ import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
@@ -171,6 +172,11 @@ public abstract class Connection {
      * The ChatManager keeps track of references to all current chats.
      */
     private ChatManager chatManager = null;
+
+    /**
+     * 
+     */
+    private long packetReplyTimeout = SmackConfiguration.getDefaultPacketReplyTimeout();
 
     /**
      * The SmackDebugger allows to log and debug XML traffic.
@@ -564,6 +570,24 @@ public abstract class Connection {
     }
 
     /**
+     * Creates a new packet collector collecting packets that are replies to <code>packet</code>.
+     * Does also send <code>packet</code>. Note that the packet filter is at the moment created as
+     * ID filter of <code>packet</code>'s ID. This may change in the future to also check the
+     * correct "from JID" value.
+     * 
+     * @param packet the packet to filter responses from
+     * @return a new packet collector.
+     */
+    public PacketCollector createPacketCollectorAndSend(Packet packet) {
+        PacketFilter packetFilter = new PacketIDFilter(packet.getPacketID());
+        // Create the packet collector before sending the packet
+        PacketCollector packetCollector = createPacketCollector(packetFilter);
+        // Now we can send the packet as the collector has been created
+        sendPacket(packet);
+        return packetCollector;
+    }
+
+    /**
      * Creates a new packet collector for this connection. A packet filter determines
      * which packets will be accumulated by the collector. A PacketCollector is
      * more suitable to use than a {@link PacketListener} when you need to wait for
@@ -846,6 +870,10 @@ public abstract class Connection {
      */
     protected void setRosterVersioningSupported() {
         rosterVersioningSupported = true;
+    }
+
+    public long getPacketReplyTimeout() {
+        return packetReplyTimeout;
     }
 
     /**

@@ -227,19 +227,7 @@ public class AccountManager {
         attributes.put("username",username);
         attributes.put("password",password);
         reg.setAttributes(attributes);
-        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
-                new PacketTypeFilter(IQ.class));
-        PacketCollector collector = connection.createPacketCollector(filter);
-        connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from server.");
-        }
-        else if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
+        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -262,15 +250,7 @@ public class AccountManager {
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = connection.createPacketCollector(filter);
         connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from server.");
-        }
-        else if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
+        collector.nextResultOrThrow();
     }
 
     /**
@@ -292,19 +272,7 @@ public class AccountManager {
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
         reg.setAttributes(attributes);
-        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
-                new PacketTypeFilter(IQ.class));
-        PacketCollector collector = connection.createPacketCollector(filter);
-        connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from server.");
-        }
-        else if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
+        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -315,21 +283,6 @@ public class AccountManager {
     private synchronized void getRegistrationInfo() throws XMPPException {
         Registration reg = new Registration();
         reg.setTo(connection.getServiceName());
-        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
-                new PacketTypeFilter(IQ.class));
-        PacketCollector collector = connection.createPacketCollector(filter);
-        connection.sendPacket(reg);
-        IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from server.");
-        }
-        else if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
-        else {
-            info = (Registration)result;
-        }
+        info = (Registration) connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 }

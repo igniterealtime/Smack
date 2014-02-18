@@ -17,9 +17,7 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.sasl.*;
@@ -443,37 +441,12 @@ public class SASLAuthentication implements UserAuthentication {
         Bind bindResource = new Bind();
         bindResource.setResource(resource);
 
-        PacketCollector collector = connection
-                .createPacketCollector(new PacketIDFilter(bindResource.getPacketID()));
-        // Send the packet
-        connection.sendPacket(bindResource);
-        // Wait up to a certain number of seconds for a response from the server.
-        Bind response = (Bind) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
+        Bind response = (Bind) connection.createPacketCollectorAndSend(bindResource).nextResultOrThrow();
         String userJID = response.getJid();
 
         if (sessionSupported) {
             Session session = new Session();
-            collector = connection.createPacketCollector(new PacketIDFilter(session.getPacketID()));
-            // Send the packet
-            connection.sendPacket(session);
-            // Wait up to a certain number of seconds for a response from the server.
-            IQ ack = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-            collector.cancel();
-            if (ack == null) {
-                throw new XMPPException("No response from the server.");
-            }
-            // If the server replied with an error, throw an exception.
-            else if (ack.getType() == IQ.Type.ERROR) {
-                throw new XMPPException(ack.getError());
-            }
+            connection.createPacketCollectorAndSend(session).nextResultOrThrow();
         }
         return userJID;
     }

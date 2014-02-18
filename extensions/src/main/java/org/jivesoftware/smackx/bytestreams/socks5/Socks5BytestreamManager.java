@@ -36,7 +36,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -481,7 +480,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
             Bytestream initiation = createBytestreamInitiation(sessionID, targetJID, streamHosts);
 
             // send initiation packet
-            Packet response = SyncPacketSend.getReply(this.connection, initiation,
+            Packet response = connection.createPacketCollectorAndSend(initiation).nextResultOrThrow(
                             getTargetResponseTimeout());
 
             // extract used stream host from response
@@ -612,8 +611,8 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         for (String proxy : proxies) {
             Bytestream streamHostRequest = createStreamHostRequest(proxy);
             try {
-                Bytestream response = (Bytestream) SyncPacketSend.getReply(this.connection,
-                                streamHostRequest);
+                Bytestream response = (Bytestream) connection.createPacketCollectorAndSend(
+                                streamHostRequest).nextResultOrThrow();
                 streamHosts.addAll(response.getStreamHosts());
             }
             catch (XMPPException e) {

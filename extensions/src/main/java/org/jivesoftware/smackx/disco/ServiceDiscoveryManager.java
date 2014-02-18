@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.disco;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -232,6 +231,7 @@ public class ServiceDiscoveryManager {
      * @param type the type of client that will be returned when asked for the client identity in a 
      *          disco request.
      */
+    @SuppressWarnings("deprecation")
     public void setIdentityType(String type) {
         identity.setType(type);
         renewEntityCapsVersion();
@@ -541,22 +541,8 @@ public class ServiceDiscoveryManager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        // Create a packet collector to listen for a response.
-        PacketCollector collector =
-            connection.createPacketCollector(new PacketIDFilter(disco.getPacketID()));
+        Packet result = connection.createPacketCollectorAndSend(disco).nextResultOrThrow();
 
-        connection.sendPacket(disco);
-
-        // Wait up to 5 seconds for a result.
-        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
         return (DiscoverInfo) result;
     }
 
@@ -591,22 +577,7 @@ public class ServiceDiscoveryManager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        // Create a packet collector to listen for a response.
-        PacketCollector collector =
-            connection.createPacketCollector(new PacketIDFilter(disco.getPacketID()));
-
-        connection.sendPacket(disco);
-
-        // Wait up to 5 seconds for a result.
-        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
+        Packet result = connection.createPacketCollectorAndSend(disco).nextResultOrThrow();
         return (DiscoverItems) result;
     }
 
@@ -673,22 +644,7 @@ public class ServiceDiscoveryManager {
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);
 
-        // Create a packet collector to listen for a response.
-        PacketCollector collector =
-            connection.createPacketCollector(new PacketIDFilter(discoverItems.getPacketID()));
-
-        connection.sendPacket(discoverItems);
-
-        // Wait up to 5 seconds for a result.
-        IQ result = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (result == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        if (result.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(result.getError());
-        }
+        connection.createPacketCollectorAndSend(discoverItems).nextResultOrThrow();
     }
 
     /**

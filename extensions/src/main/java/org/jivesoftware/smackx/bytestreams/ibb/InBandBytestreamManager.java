@@ -30,7 +30,6 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -428,7 +427,7 @@ public class InBandBytestreamManager implements BytestreamManager {
         byteStreamRequest.setTo(targetJID);
 
         // sending packet will throw exception on timeout or error reply
-        SyncPacketSend.getReply(this.connection, byteStreamRequest);
+        connection.createPacketCollectorAndSend(byteStreamRequest).nextResultOrThrow();
 
         InBandBytestreamSession inBandBytestreamSession = new InBandBytestreamSession(
                         this.connection, byteStreamRequest, targetJID);

@@ -58,7 +58,7 @@ public final class SmackConfiguration {
     
     private static InputStream configFileStream;
     
-    private static int packetReplyTimeout = 5000;
+    private static int defaultPacketReplyTimeout = 5000;
     private static List<String> defaultMechs = new ArrayList<String>();
 
     private static boolean localSocks5ProxyEnabled = true;
@@ -150,14 +150,14 @@ public final class SmackConfiguration {
      * 
      * @return the milliseconds to wait for a response from the server
      */
-    public static int getPacketReplyTimeout() {
+    public static int getDefaultPacketReplyTimeout() {
         initialize();
         
         // The timeout value must be greater than 0 otherwise we will answer the default value
-        if (packetReplyTimeout <= 0) {
-            packetReplyTimeout = 5000;
+        if (defaultPacketReplyTimeout <= 0) {
+            defaultPacketReplyTimeout = 5000;
         }
-        return packetReplyTimeout;
+        return defaultPacketReplyTimeout;
     }
 
     /**
@@ -166,13 +166,13 @@ public final class SmackConfiguration {
      * 
      * @param timeout the milliseconds to wait for a response from the server
      */
-    public static void setPacketReplyTimeout(int timeout) {
+    public static void setDefaultPacketReplyTimeout(int timeout) {
         initialize();
 
         if (timeout <= 0) {
             throw new IllegalArgumentException();
         }
-        packetReplyTimeout = timeout;
+        defaultPacketReplyTimeout = timeout;
     }
 
     /**
@@ -442,8 +442,8 @@ public final class SmackConfiguration {
                 else if (parser.getName().equals("optionalStartupClasses")) {
                     parseClassesToLoad(parser, true);
                 }
-                else if (parser.getName().equals("packetReplyTimeout")) {
-                    packetReplyTimeout = parseIntProperty(parser, packetReplyTimeout);
+                else if (parser.getName().equals("defaultPacketReplyTimeout")) {
+                    defaultPacketReplyTimeout = parseIntProperty(parser, defaultPacketReplyTimeout);
                 }
                 else if (parser.getName().equals("mechName")) {
                     defaultMechs.add(parser.nextText());

@@ -34,7 +34,6 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.util.SyncPacketSend;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.ping.packet.Ping;
@@ -120,7 +119,7 @@ public class PingManager {
         Ping ping = new Ping(jid);
         Connection connection = weakRefConnection.get();
         try {
-            SyncPacketSend.getReply(connection, ping);
+            connection.createPacketCollectorAndSend(ping).nextResultOrThrow();
         }
         catch (XMPPException exc) {
             
@@ -137,7 +136,7 @@ public class PingManager {
      * @return true if a reply was received from the entity, false otherwise.
      */
     public boolean ping(String jid) {
-        return ping(jid, SmackConfiguration.getPacketReplyTimeout());
+        return ping(jid, SmackConfiguration.getDefaultPacketReplyTimeout());
     }
     
     /**

@@ -153,8 +153,9 @@ public class Workgroup {
      * available only when agents are available for this workgroup.
      *
      * @return true if the workgroup is available for receiving new requests.
+     * @throws XMPPException 
      */
-    public boolean isAvailable() {
+    public boolean isAvailable() throws XMPPException {
         Presence directedPresence = new Presence(Presence.Type.available);
         directedPresence.setTo(workgroupJID);
         PacketFilter typeFilter = new PacketTypeFilter(Presence.class);
@@ -164,19 +165,8 @@ public class Workgroup {
 
         connection.sendPacket(directedPresence);
 
-        Presence response = (Presence)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            return false;
-        }
-        else if (response.getError() != null) {
-            return false;
-        }
-        else {
-            return Presence.Type.available == response.getType();
-        }
+        Presence response = (Presence)collector.nextResultOrThrow();
+        return Presence.Type.available == response.getType();
     }
 
     /**
@@ -323,22 +313,7 @@ public class Workgroup {
 
         JoinQueuePacket joinPacket = new JoinQueuePacket(workgroupJID, answerForm, userID);
 
-
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(joinPacket.getPacketID()));
-
-        this.connection.sendPacket(joinPacket);
-
-        IQ response = (IQ)collector.nextResult(10000);
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
-
+        connection.createPacketCollectorAndSend(joinPacket).nextResultOrThrow();
         // Notify listeners that we've joined the queue.
         fireQueueJoinedEvent();
     }
@@ -418,18 +393,7 @@ public class Workgroup {
         }
 
         DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
-        PacketCollector collector = this.connection.createPacketCollector(new PacketIDFilter(departPacket.getPacketID()));
-
-        connection.sendPacket(departPacket);
-
-        IQ response = (IQ)collector.nextResult(5000);
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(departPacket).nextResultOrThrow();
 
         // Notify listeners that we're no longer in the queue.
         fireQueueDepartedEvent();
@@ -670,20 +634,8 @@ public class Workgroup {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
+        ChatSettings response = (ChatSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
 
-
-        ChatSettings response = (ChatSettings)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
         return response;
     }
 
@@ -717,20 +669,8 @@ public class Workgroup {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        OfflineSettings response = (OfflineSettings)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        OfflineSettings response = (OfflineSettings) connection.createPacketCollectorAndSend(
+                        request).nextResultOrThrow();
         return response;
     }
 
@@ -745,20 +685,7 @@ public class Workgroup {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        SoundSettings response = (SoundSettings)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        SoundSettings response = (SoundSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -773,20 +700,8 @@ public class Workgroup {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        WorkgroupProperties response = (WorkgroupProperties)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        WorkgroupProperties response = (WorkgroupProperties) connection.createPacketCollectorAndSend(
+                        request).nextResultOrThrow();
         return response;
     }
 
@@ -803,20 +718,8 @@ public class Workgroup {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        WorkgroupProperties response = (WorkgroupProperties)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        WorkgroupProperties response = (WorkgroupProperties) connection.createPacketCollectorAndSend(
+                        request).nextResultOrThrow();
         return response;
     }
 
@@ -834,19 +737,8 @@ public class Workgroup {
         workgroupForm.setType(IQ.Type.GET);
         workgroupForm.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(workgroupForm.getPacketID()));
-        connection.sendPacket(workgroupForm);
-
-        WorkgroupForm response = (WorkgroupForm)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        WorkgroupForm response = (WorkgroupForm) connection.createPacketCollectorAndSend(
+                        workgroupForm).nextResultOrThrow();
         return Form.getFormFrom(response);
     }
 }

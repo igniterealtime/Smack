@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -87,8 +86,7 @@ public abstract class StreamNegotiator {
                 .createPacketCollector(getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()));
         connection.sendPacket(response);
 
-        Packet streamMethodInitiation = collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
+        Packet streamMethodInitiation = collector.nextResult();
         collector.cancel();
         if (streamMethodInitiation == null) {
             throw new XMPPException("No response from file transfer initiator");

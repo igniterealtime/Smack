@@ -34,13 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -526,19 +521,7 @@ public class VCard extends IQ {
 
         setType(IQ.Type.SET);
         setFrom(connection.getUser());
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(getPacketID()));
-        connection.sendPacket(this);
-
-        Packet response = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(this).nextResultOrThrow();
     }
 
     /**
@@ -564,29 +547,7 @@ public class VCard extends IQ {
 
     private void doLoad(Connection connection, String user) throws XMPPException {
         setType(Type.GET);
-        PacketCollector collector = connection.createPacketCollector(
-                new PacketIDFilter(getPacketID()));
-        connection.sendPacket(this);
-
-        VCard result = null;
-        Packet packet = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        if (packet == null) {
-            String errorMessage = "Timeout getting VCard information";
-            throw new XMPPException(errorMessage, new XMPPError(XMPPError.Condition.request_timeout, errorMessage));
-        }
-        if (packet.getError() != null) {
-            throw new XMPPException(packet.getError());
-        }
-
-        try {
-           result = (VCard) packet;
-        }
-        catch (ClassCastException e) {
-            log.log(Level.SEVERE, "No VCard for " + user, e);
-            return;
-        }
-
+        VCard result = (VCard) connection.createPacketCollectorAndSend(this).nextResultOrThrow();
         copyFieldsFrom(result);
     }
 

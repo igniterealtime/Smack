@@ -25,6 +25,7 @@ import java.util.Random;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
@@ -71,9 +72,10 @@ public class InBandBytestreamSessionMessageTest {
 
     /**
      * Initialize fields used in the tests.
+     * @throws XMPPException 
      */
     @Before
-    public void setup() {
+    public void setup() throws XMPPException {
 
         // build protocol verifier
         protocol = new Protocol();

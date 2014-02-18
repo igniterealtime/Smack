@@ -25,7 +25,7 @@ public class SmackConfigurationTest {
     @Test
     public void testSmackConfiguration() {
         try {
-            SmackConfiguration.getPacketReplyTimeout();
+            SmackConfiguration.getDefaultPacketReplyTimeout();
         } catch (Throwable t) {
             fail("SmackConfiguration threw Throwable");
         }

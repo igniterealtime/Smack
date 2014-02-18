@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.OrFilter;
@@ -171,8 +170,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         }
 
         public InputStream call() throws Exception {
-            Packet streamInitiation = collector.nextResult(
-                    SmackConfiguration.getPacketReplyTimeout() * 2);
+            Packet streamInitiation = collector.nextResult();
             if (streamInitiation == null) {
                 throw new XMPPException("No response from remote client");
             }

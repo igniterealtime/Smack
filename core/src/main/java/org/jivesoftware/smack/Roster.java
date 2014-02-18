@@ -277,19 +277,7 @@ public class Roster {
             }
         }
         rosterPacket.addRosterItem(item);
-        // Wait up to a certain number of seconds for a reply from the server.
-        PacketCollector collector = connection.createPacketCollector(
-                new PacketIDFilter(rosterPacket.getPacketID()));
-        connection.sendPacket(rosterPacket);
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(rosterPacket).nextResultOrThrow();
 
         // Create a presence subscription packet and send.
         Presence presencePacket = new Presence(Presence.Type.subscribe);
@@ -326,18 +314,7 @@ public class Roster {
         // Set the item type as REMOVE so that the server will delete the entry
         item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
-        PacketCollector collector = connection.createPacketCollector(
-                new PacketIDFilter(packet.getPacketID()));
-        connection.sendPacket(packet);
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
     }
 
     /**

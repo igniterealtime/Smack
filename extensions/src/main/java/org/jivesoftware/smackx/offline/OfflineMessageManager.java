@@ -21,8 +21,10 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -139,9 +141,8 @@ public class OfflineMessageManager {
             item.setAction("view");
             request.addItem(item);
         }
-        // Filter packets looking for an answer from the server.
-        PacketFilter responseFilter = new PacketIDFilter(request.getPacketID());
-        PacketCollector response = connection.createPacketCollector(responseFilter);
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+
         // Filter offline messages that were requested by this request
         PacketFilter messageFilter = new AndFilter(packetFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -151,27 +152,13 @@ public class OfflineMessageManager {
             }
         });
         PacketCollector messageCollector = connection.createPacketCollector(messageFilter);
-        // Send the retrieval request to the server.
-        connection.sendPacket(request);
-        // Wait up to a certain number of seconds for a reply.
-        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        response.cancel();
-
-        if (answer == null) {
-            throw new XMPPException("No response from server.");
-        } else if (answer.getError() != null) {
-            throw new XMPPException(answer.getError());
-        }
-
         // Collect the received offline messages
-        Message message = (Message) messageCollector.nextResult(
-                SmackConfiguration.getPacketReplyTimeout());
+        Message message = (Message) messageCollector.nextResult();
         while (message != null) {
             messages.add(message);
             message =
                     (Message) messageCollector.nextResult(
-                            SmackConfiguration.getPacketReplyTimeout());
+                            SmackConfiguration.getDefaultPacketReplyTimeout());
         }
         // Stop queuing offline messages
         messageCollector.cancel();
@@ -191,32 +178,16 @@ public class OfflineMessageManager {
         List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
-        // Filter packets looking for an answer from the server.
-        PacketFilter responseFilter = new PacketIDFilter(request.getPacketID());
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Filter offline messages that were requested by this request
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+
         PacketCollector messageCollector = connection.createPacketCollector(packetFilter);
-        // Send the retrieval request to the server.
-        connection.sendPacket(request);
-        // Wait up to a certain number of seconds for a reply.
-        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        response.cancel();
-
-        if (answer == null) {
-            throw new XMPPException("No response from server.");
-        } else if (answer.getError() != null) {
-            throw new XMPPException(answer.getError());
-        }
-
         // Collect the received offline messages
-        Message message = (Message) messageCollector.nextResult(
-                SmackConfiguration.getPacketReplyTimeout());
+        Message message = (Message) messageCollector.nextResult();
         while (message != null) {
             messages.add(message);
             message =
                     (Message) messageCollector.nextResult(
-                            SmackConfiguration.getPacketReplyTimeout());
+                            SmackConfiguration.getDefaultPacketReplyTimeout());
         }
         // Stop queuing offline messages
         messageCollector.cancel();
@@ -238,21 +209,7 @@ public class OfflineMessageManager {
             item.setAction("remove");
             request.addItem(item);
         }
-        // Filter packets looking for an answer from the server.
-        PacketFilter responseFilter = new PacketIDFilter(request.getPacketID());
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Send the deletion request to the server.
-        connection.sendPacket(request);
-        // Wait up to a certain number of seconds for a reply.
-        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        response.cancel();
-
-        if (answer == null) {
-            throw new XMPPException("No response from server.");
-        } else if (answer.getError() != null) {
-            throw new XMPPException(answer.getError());
-        }
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -264,20 +221,6 @@ public class OfflineMessageManager {
     public void deleteMessages() throws XMPPException {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setPurge(true);
-        // Filter packets looking for an answer from the server.
-        PacketFilter responseFilter = new PacketIDFilter(request.getPacketID());
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Send the deletion request to the server.
-        connection.sendPacket(request);
-        // Wait up to a certain number of seconds for a reply.
-        IQ answer = (IQ) response.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        response.cancel();
-
-        if (answer == null) {
-            throw new XMPPException("No response from server.");
-        } else if (answer.getError() != null) {
-            throw new XMPPException(answer.getError());
-        }
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
     }
 }

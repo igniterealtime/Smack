@@ -17,9 +17,9 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Authentication;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
 
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
@@ -60,22 +60,9 @@ class NonSASLAuthentication implements UserAuthentication {
         discoveryAuth.setType(IQ.Type.GET);
         discoveryAuth.setUsername(username);
 
-        PacketCollector collector =
-            connection.createPacketCollector(new PacketIDFilter(discoveryAuth.getPacketID()));
-        // Send the packet
-        connection.sendPacket(discoveryAuth);
-        // Wait up to a certain number of seconds for a response from the server.
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
         // Otherwise, no error so continue processing.
-        Authentication authTypes = (Authentication) response;
-        collector.cancel();
+        Authentication authTypes = (Authentication) connection.createPacketCollectorAndSend(
+                        discoveryAuth).nextResultOrThrow();
 
         // Now, create the authentication packet we'll send to the server.
         Authentication auth = new Authentication();
@@ -94,19 +81,7 @@ class NonSASLAuthentication implements UserAuthentication {
 
         auth.setResource(resource);
 
-        collector = connection.createPacketCollector(new PacketIDFilter(auth.getPacketID()));
-        // Send the packet.
-        connection.sendPacket(auth);
-        // Wait up to a certain number of seconds for a response from the server.
-        response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (response == null) {
-            throw new XMPPException("Authentication failed.");
-        }
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
-        // We're done with the collector, so explicitly cancel it.
-        collector.cancel();
+        Packet response = connection.createPacketCollectorAndSend(auth).nextResultOrThrow();
 
         return response.getTo();
     }
@@ -115,20 +90,7 @@ class NonSASLAuthentication implements UserAuthentication {
         // Create the authentication packet we'll send to the server.
         Authentication auth = new Authentication();
 
-        PacketCollector collector =
-            connection.createPacketCollector(new PacketIDFilter(auth.getPacketID()));
-        // Send the packet.
-        connection.sendPacket(auth);
-        // Wait up to a certain number of seconds for a response from the server.
-        IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        if (response == null) {
-            throw new XMPPException("Anonymous login failed.");
-        }
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
-        // We're done with the collector, so explicitly cancel it.
-        collector.cancel();
+        Packet response = connection.createPacketCollectorAndSend(auth).nextResultOrThrow();
 
         if (response.getTo() != null) {
             return response.getTo();

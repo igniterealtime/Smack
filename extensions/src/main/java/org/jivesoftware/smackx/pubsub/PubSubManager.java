@@ -30,7 +30,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
-import org.jivesoftware.smackx.pubsub.packet.SyncPacketSend;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -164,7 +163,7 @@ final public class PubSubManager
 			info.setTo(to);
 			info.setNode(id);
 			
-			DiscoverInfo infoReply = (DiscoverInfo)SyncPacketSend.getReply(con, info);
+			DiscoverInfo infoReply = (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
 			
 			if (infoReply.getIdentities().next().getType().equals(NodeType.leaf.toString()))
 				node = new LeafNode(con, id);
@@ -198,7 +197,7 @@ final public class PubSubManager
 		if (nodeId != null)
 			items.setNode(nodeId);
 		items.setTo(to);
-		DiscoverItems nodeItems = (DiscoverItems)SyncPacketSend.getReply(con, items);
+		DiscoverItems nodeItems = (DiscoverItems) con.createPacketCollectorAndSend(items).nextResultOrThrow();
 		return nodeItems;
 	}
 	
@@ -315,7 +314,7 @@ final public class PubSubManager
 	static Packet sendPubsubPacket(Connection con, String to, Type type, PacketExtension ext, PubSubNamespace ns)
 		throws XMPPException
 	{
-		return SyncPacketSend.getReply(con, createPubsubPacket(to, type, ext, ns));
+		return con.createPacketCollectorAndSend(createPubsubPacket(to, type, ext, ns)).nextResultOrThrow();
 	}
 
 	static Packet sendPubsubPacket(Connection con, String to, Type type, PubSub packet)
@@ -327,7 +326,7 @@ final public class PubSubManager
 	static Packet sendPubsubPacket(Connection con, String to, Type type, PubSub packet, PubSubNamespace ns)
 		throws XMPPException
 	{
-		return SyncPacketSend.getReply(con, packet);
+		return con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 }

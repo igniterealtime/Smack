@@ -367,7 +367,7 @@ public class XMPPConnection extends Connection {
         if (!roster.rosterInitialized) {
             try {
                 synchronized (roster) {
-                    long waitTime = SmackConfiguration.getPacketReplyTimeout();
+                    long waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
                     long start = System.currentTimeMillis();
                     while (!roster.rosterInitialized) {
                         if (waitTime <= 0) {
@@ -930,7 +930,7 @@ public class XMPPConnection extends Connection {
             // Wait until compression is being used or a timeout happened
             synchronized (this) {
                 try {
-                    this.wait(SmackConfiguration.getPacketReplyTimeout() * 5);
+                    this.wait(SmackConfiguration.getDefaultPacketReplyTimeout() * 5);
                 }
                 catch (InterruptedException e) {
                     // Ignore.

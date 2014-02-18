@@ -266,15 +266,7 @@ public class AgentSession {
 
             connection.sendPacket(presence);
 
-            presence = (Presence)collector.nextResult(5000);
-            collector.cancel();
-            if (!presence.isAvailable()) {
-                throw new XMPPException("No response from server on status set.");
-            }
-
-            if (presence.getError() != null) {
-                throw new XMPPException(presence.getError());
-            }
+            presence = (Presence)collector.nextResultOrThrow();
 
             // We can safely update this iv since we didn't get any error
             this.online = online;
@@ -371,15 +363,7 @@ public class AgentSession {
 
         this.connection.sendPacket(presence);
 
-        presence = (Presence)collector.nextResult(5000);
-        collector.cancel();
-        if (!presence.isAvailable()) {
-            throw new XMPPException("No response from server on status set.");
-        }
-
-        if (presence.getError() != null) {
-            throw new XMPPException(presence.getError());
-        }
+        collector.nextResultOrThrow();
     }
 
     /**
@@ -422,15 +406,7 @@ public class AgentSession {
 
         this.connection.sendPacket(presence);
 
-        presence = (Presence)collector.nextResult(5000);
-        collector.cancel();
-        if (!presence.isAvailable()) {
-            throw new XMPPException("No response from server on status set.");
-        }
-
-        if (presence.getError() != null) {
-            throw new XMPPException(presence.getError());
-        }
+        collector.nextResultOrThrow();
     }
 
     /**
@@ -513,19 +489,7 @@ public class AgentSession {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-        OccupantsInfo response = (OccupantsInfo)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        OccupantsInfo response = (OccupantsInfo) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -809,16 +773,7 @@ public class AgentSession {
         // Send the request
         connection.sendPacket(notes);
 
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        collector.nextResultOrThrow();
     }
 
     /**
@@ -834,21 +789,8 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-        ChatNotes response = (ChatNotes)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        ChatNotes response = (ChatNotes) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         return response;
-
     }
 
     /**
@@ -871,19 +813,9 @@ public class AgentSession {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
+        AgentChatHistory response = (AgentChatHistory) connection.createPacketCollectorAndSend(
+                        request).nextResult();
 
-        AgentChatHistory response = (AgentChatHistory)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
         return response;
     }
 
@@ -898,20 +830,7 @@ public class AgentSession {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        SearchSettings response = (SearchSettings)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        SearchSettings response = (SearchSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -928,20 +847,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setPersonal(!global);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        Macros response = (Macros)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        Macros response = (Macros) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         return response.getRootGroup();
     }
 
@@ -958,20 +864,7 @@ public class AgentSession {
         request.setPersonal(true);
         request.setPersonalMacroGroup(group);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -987,20 +880,8 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
+        ChatMetadata response = (ChatMetadata) connection.createPacketCollectorAndSend(request).nextResult();
 
-
-        ChatMetadata response = (ChatMetadata)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
         return response.getMetadata();
     }
 
@@ -1043,19 +924,7 @@ public class AgentSession {
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(iq.getPacketID()));
-        connection.sendPacket(iq);
-
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
     }
 
     /**
@@ -1095,19 +964,7 @@ public class AgentSession {
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(iq.getPacketID()));
-        connection.sendPacket(iq);
-
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
     }
 
     /**
@@ -1123,19 +980,8 @@ public class AgentSession {
         setting.setType(IQ.Type.GET);
         setting.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(setting.getPacketID()));
-        connection.sendPacket(setting);
-
-        GenericSettings response = (GenericSettings)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        GenericSettings response = (GenericSettings) connection.createPacketCollectorAndSend(
+                        setting).nextResultOrThrow();
         return response;
     }
 
@@ -1144,21 +990,8 @@ public class AgentSession {
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
 
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-        MonitorPacket response = (MonitorPacket)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        MonitorPacket response = (MonitorPacket) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         return response.isMonitor();
-
     }
 
     public void makeRoomOwner(Connection con, String sessionID) throws XMPPException {
@@ -1167,19 +1000,6 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(request.getPacketID()));
-        connection.sendPacket(request);
-
-        Packet response = collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-
-        // Cancel the collector.
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from server on status set.");
-        }
-        if (response.getError() != null) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
     }
 }

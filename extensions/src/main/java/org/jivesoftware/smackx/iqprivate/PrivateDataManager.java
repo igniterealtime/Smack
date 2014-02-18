@@ -17,11 +17,8 @@
 
 package org.jivesoftware.smackx.iqprivate;
 
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
@@ -191,25 +188,9 @@ public class PrivateDataManager {
             privateDataGet.setTo(user);
         }
 
-        // Setup a listener for the reply to the set operation.
-        String packetID = privateDataGet.getPacketID();
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(packetID));
-
-        // Send the private data.
-        connection.sendPacket(privateDataGet);
-
-        // Wait up to five seconds for a response from the server.
-        IQ response = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        // Stop queuing results
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
-        return ((PrivateDataResult)response).getPrivateData();
+        PrivateDataResult response = (PrivateDataResult) connection.createPacketCollectorAndSend(
+                        privateDataGet).nextResultOrThrow();
+        return response.getPrivateData();
     }
 
     /**
@@ -237,24 +218,7 @@ public class PrivateDataManager {
             privateDataSet.setTo(user);
         }
 
-        // Setup a listener for the reply to the set operation.
-        String packetID = privateDataSet.getPacketID();
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(packetID));
-
-        // Send the private data.
-        connection.sendPacket(privateDataSet);
-
-        // Wait up to five seconds for a response from the server.
-        IQ response = (IQ)collector.nextResult(5000);
-        // Stop queuing results
-        collector.cancel();
-        if (response == null) {
-            throw new XMPPException("No response from the server.");
-        }
-        // If the server replied with an error, throw an exception.
-        else if (response.getType() == IQ.Type.ERROR) {
-            throw new XMPPException(response.getError());
-        }
+        connection.createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
     }
 
     /**
