@@ -1,9 +1,14 @@
 Smack
 =====
 
-[Smack] is an Open Source, cross-platform, easy to use Java XMPP client library. 
+About
+-----
 
-Communicate with XMPP servers to perform real-time collaboration, including instant messaging and group chat.
+[Smack] is an Open Source, cross-platform, easy to use Java XMPP
+client library.
+
+Communicate with XMPP servers to perform real-time collaboration,
+including instant messaging and group chat.
 
 Key Advantages :
   - Extremely simple to use, yet powerful API. Sending a text message to a user can be accomplished in only a few lines of code:
@@ -27,11 +32,35 @@ Key Advantages :
   - Provides easy machine to machine communication. Smack lets you set any number of properties on each message, including properties that are Java objects.
   - Open Source under the Apache License, which means you can incorporate Smack into your commercial or non-commercial applications.
 
-[Smack] is an Open Source [XMPP (Jabber)] client library for instant messaging and presence. 
-A pure Java library, it can be embedded into your applications to create anything from a full 
-XMPP client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
+[Smack] is an Open Source [XMPP (Jabber)] client library for instant
+messaging and presence. A pure Java library, it can be embedded into
+your applications to create anything from a full XMPP client to simple
+XMPP integrations such as sending notification messages and
+presence-enabling devices.
 
 [Smack] - an [Ignite Realtime] community project.
+
+Bug Reporting
+-------------
+
+Only a few usrs have acces for for filling bugs in the tracker. New
+users should:
+
+1. Create a forums account (only e-mail is a requirement, you can skip all the other fields).
+2. Login to a forum account
+3. Press New in your toolbar and choose Discussion
+4. Choose the [Smack Dev forum](http://community.igniterealtime.org/community/developers/smack) of Smack and add the tag 'bug_report' to your new post
+
+Please search for your issues in the bug tracker before reporting.
+
+Contact
+-------
+
+The developeres hang around in #smack (freenode, IRC). Remeber that it
+may take some time (~hours) to get a response.
+ 
+You can also reach us via the
+[Smack Developers Forum](http://community.igniterealtime.org/community/developers/smack).
 
 Resources
 ---------
@@ -41,7 +70,6 @@ Resources
 - User Forum: http://community.igniterealtime.org/community/support/smack_users
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
 - Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
-
 
 Ignite Realtime
 ===============
