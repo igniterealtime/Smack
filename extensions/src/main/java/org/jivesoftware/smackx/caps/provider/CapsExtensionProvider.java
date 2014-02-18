@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.entitycaps.provider;
+package org.jivesoftware.smackx.caps.provider;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smackx.entitycaps.EntityCapsManager;
-import org.jivesoftware.smackx.entitycaps.packet.CapsExtension;
-
+import org.jivesoftware.smackx.caps.EntityCapsManager;
+import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

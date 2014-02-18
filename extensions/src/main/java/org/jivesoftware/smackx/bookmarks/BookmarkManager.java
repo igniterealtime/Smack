@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.bookmark;
+package org.jivesoftware.smackx.bookmarks;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;

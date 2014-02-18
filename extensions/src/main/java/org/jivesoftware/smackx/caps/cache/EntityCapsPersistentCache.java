@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.entitycaps.cache;
+package org.jivesoftware.smackx.caps.cache;
 
 import java.io.IOException;
 

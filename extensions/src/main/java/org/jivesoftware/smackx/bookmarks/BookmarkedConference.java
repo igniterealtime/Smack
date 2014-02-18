@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.bookmark;
+package org.jivesoftware.smackx.bookmarks;
 
 /**
  * Respresents a Conference Room bookmarked on the server using JEP-0048 Bookmark Storage JEP.

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.bookmark;
+package org.jivesoftware.smackx.bookmarks;
 
 /**
  *  Interface to indicate if a bookmark is shared across the server.

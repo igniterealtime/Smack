@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.entitycaps;
+package org.jivesoftware.smackx.caps;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -34,14 +34,14 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.util.Base64;
 import org.jivesoftware.smack.util.Cache;
+import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
+import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
-import org.jivesoftware.smackx.entitycaps.cache.EntityCapsPersistentCache;
-import org.jivesoftware.smackx.entitycaps.packet.CapsExtension;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;

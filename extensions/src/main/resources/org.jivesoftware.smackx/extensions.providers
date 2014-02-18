@@ -432,7 +432,7 @@
     <extensionProvider>
         <elementName>c</elementName>
         <namespace>http://jabber.org/protocol/caps</namespace>
-        <className>org.jivesoftware.smackx.entitycaps.provider.CapsExtensionProvider</className>
+        <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
     </extensionProvider>
 
    	<!-- XEP-0297 Stanza Forwarding -->

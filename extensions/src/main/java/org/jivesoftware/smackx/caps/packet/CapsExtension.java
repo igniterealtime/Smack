@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.entitycaps.packet;
+package org.jivesoftware.smackx.caps.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.entitycaps.EntityCapsManager;
+import org.jivesoftware.smackx.caps.EntityCapsManager;
 
 public class CapsExtension implements PacketExtension {
 

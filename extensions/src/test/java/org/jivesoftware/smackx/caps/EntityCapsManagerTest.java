@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.entitycaps;
+package org.jivesoftware.smackx.caps;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,9 +29,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.Base64FileUrlEncoder;
 import org.jivesoftware.smack.util.StringEncoder;
+import org.jivesoftware.smackx.caps.EntityCapsManager;
+import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
+import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.entitycaps.cache.EntityCapsPersistentCache;
-import org.jivesoftware.smackx.entitycaps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Ignore;
