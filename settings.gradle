@@ -1,3 +1,10 @@
-include 'core', 'extensions', 'experimental',
-		'debug', 'resolver-dnsjava', 'resolver-javax',
-		'compression-jzlib', 'legacy', 'jingle'
+include 'core',
+		'extensions',
+		'experimental',
+		'debug',
+		'resolver-dnsjava',
+		'resolver-javax',
+		'compression-jzlib',
+		'legacy',
+		'jingle',
+		'bosh'

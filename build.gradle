@@ -359,6 +359,17 @@ Warning: This API is beta, outdated and currenlty unmaintained.
 	}
 }
 
+project(':bosh') {
+	description = """\
+Smack BOSH API.
+This API is considered beta quality.
+"""
+	dependencies {
+		compile project(':core')
+		compile 'org.igniterealtime.jbosh:jbosh:0.6.0'
+	}
+}
+
 (subprojects - project(':core'))*.jar {
 	manifest {
 		attributes('Bundle-SymbolicName': project.group + '-' + appendix,
