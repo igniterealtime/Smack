@@ -1,13 +1,13 @@
 /**
- * <p/>
+ *
  * Copyright 2003-2006 Jive Software.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.media.Codec;
 import javax.media.Controller;
@@ -45,7 +46,6 @@ import javax.media.rtp.RTPManager;
 import javax.media.rtp.SendStream;
 import javax.media.rtp.SessionAddress;
 
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 
 /**
@@ -68,7 +68,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
  */
 public class AudioChannel {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(AudioChannel.class);
+	private static final Logger LOGGER = Logger.getLogger(AudioChannel.class.getName());
 	
 	private MediaLocator locator;
     private String localIpAddress;
@@ -249,8 +249,7 @@ public class AudioChannel {
                     }
                     if (chosen != null) {
                         tracks[i].setFormat(chosen);
-                        LOGGER.error("Track " + i + " is set to transmit as:");
-                        LOGGER.error("  " + chosen);
+                        LOGGER.severe("Track " + i + " is set to transmit as: " + chosen);
 
                         if (tracks[i].getFormat() instanceof AudioFormat) {
                             int packetRate = 20;
@@ -385,7 +384,7 @@ public class AudioChannel {
 
                 rtpMgrs[i].addTarget(destAddr);
 
-                LOGGER.error("Created RTP session at " + localPort + " to: " + remoteIpAddress + " " + port);
+                LOGGER.severe("Created RTP session at " + localPort + " to: " + remoteIpAddress + " " + port);
 
                 sendStream = rtpMgrs[i].createSendStream(dataOutput, i);
 
@@ -414,11 +413,11 @@ public class AudioChannel {
             try {
                 if (active) {
                     sendStream.start();
-                    LOGGER.debug("START");
+                    LOGGER.fine("START");
                 }
                 else {
                     sendStream.stop();
-                    LOGGER.debug("STOP");
+                    LOGGER.fine("STOP");
                 }
             }
             catch (IOException e) {

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
@@ -30,7 +31,6 @@ import org.jivesoftware.smackx.jingle.JingleException;
 import org.jivesoftware.smackx.jingle.JingleNegotiator;
 import org.jivesoftware.smackx.jingle.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleTransportListener;
 import org.jivesoftware.smackx.packet.Jingle;
@@ -49,7 +49,7 @@ import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
  */
 public abstract class TransportNegotiator extends JingleNegotiator {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(TransportNegotiator.class);
+	private static final Logger LOGGER = Logger.getLogger(TransportNegotiator.class.getName());
 
 	// The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
@@ -139,7 +139,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 return;
             }
         }
-        LOGGER.debug("BEST: ip=" + bestLocalCandidate.getIp() + " port=" + bestLocalCandidate.getPort() + " has not been offered.");
+        LOGGER.fine("BEST: ip=" + bestLocalCandidate.getIp() + " port=" + bestLocalCandidate.getPort() + " has not been offered.");
         //throw new XMPPException("Local transport candidate has not be offered.");
     }
 
@@ -435,7 +435,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         // Add the candidate to the list
         if (remoteCandidate != null) {
             synchronized (validRemoteCandidates) {
-                LOGGER.debug("Added valid candidate: " + remoteCandidate.getIp() + ":" + remoteCandidate.getPort());
+                LOGGER.fine("Added valid candidate: " + remoteCandidate.getIp() + ":" + remoteCandidate.getPort());
                 validRemoteCandidates.add(remoteCandidate);
             }
         }
@@ -563,7 +563,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
         if (!(resolver.isResolving() || resolver.isResolved())) {
             // Resolve our IP and port
-            LOGGER.debug("RESOLVER CALLED");
+            LOGGER.fine("RESOLVER CALLED");
             resolver.resolve(session);
         }
     }
@@ -728,14 +728,14 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (!accepted.isEmpty()) {
 
             for (TransportCandidate cand : accepted) {
-                LOGGER.debug("Remote acccepted candidate addr: " + cand.getIp());
+                LOGGER.fine("Remote acccepted candidate addr: " + cand.getIp());
             }
 
             TransportCandidate cand = (TransportCandidate) accepted.get(0);
             setAcceptedLocalCandidate(cand);
 
             if (isEstablished()) {
-                LOGGER.debug(cand.getIp() + " is set active");
+                LOGGER.fine(cand.getIp() + " is set active");
                 //setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
             }
         }
@@ -749,7 +749,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     private IQ receiveSessionAcceptAction(Jingle jingle) {
         IQ response = null;
 
-        LOGGER.debug("Transport stabilished");
+        LOGGER.fine("Transport stabilished");
         //triggerTransportEstablished(getAcceptedLocalCandidate(), getBestRemoteCandidate());
 
         //setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
@@ -768,7 +768,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         for (JingleListener li : listeners) {
             if (li instanceof JingleTransportListener) {
                 JingleTransportListener mli = (JingleTransportListener) li;
-                LOGGER.debug("triggerTransportEstablished " + local.getLocalIp() + ":" + local.getPort() + " <-> "
+                LOGGER.fine("triggerTransportEstablished " + local.getLocalIp() + ":" + local.getPort() + " <-> "
                         + remote.getIp() + ":" + remote.getPort());
                 mli.transportEstablished(local, remote);
             }
@@ -828,10 +828,10 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             // Hopefully, we only have one validRemoteCandidate
             ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
-                LOGGER.debug("RAW CAND");
+                LOGGER.fine("RAW CAND");
                 return (TransportCandidate) cands.get(0);
             } else {
-                LOGGER.debug("No Remote Candidate");
+                LOGGER.fine("No Remote Candidate");
                 return null;
             }
         }
@@ -897,7 +897,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             }
 
             if (result != null && result.getType().equals("relay"))
-                LOGGER.debug("Relay Type");
+                LOGGER.fine("Relay Type");
 
             return result;
         }

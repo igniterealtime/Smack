@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
@@ -40,7 +41,7 @@ import org.jivesoftware.smackx.jingle.listeners.JingleListener;
  */
 public abstract class JingleNegotiator {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleNegotiator.class);
+	private static final Logger LOGGER = Logger.getLogger(JingleNegotiator.class.getName());
 
 	//private Connection connection; // The connection associated
 
@@ -79,7 +80,7 @@ public abstract class JingleNegotiator {
         
         JingleNegotiatorState stateWas = state;
         
-        LOGGER.debug("Negotiator state change: " + stateWas + "->" + stateIs  + "(" + this.getClass().getSimpleName() + ")");
+        LOGGER.fine("Negotiator state change: " + stateWas + "->" + stateIs  + "(" + this.getClass().getSimpleName() + ")");
 
         switch (stateIs) {
             case PENDING:

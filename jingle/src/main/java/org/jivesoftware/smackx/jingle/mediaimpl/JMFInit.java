@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,13 +20,12 @@ import java.awt.Frame;
 import java.awt.TextArea;
 import java.awt.Toolkit;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.media.Format;
 import javax.media.PlugInManager;
 import javax.media.Renderer;
 import javax.media.format.AudioFormat;
-
-import org.jivesoftware.smackx.jingle.SmackLogger;
 
 import com.sun.media.ExclusiveUse;
 import com.sun.media.util.Registry;
@@ -33,7 +34,7 @@ public class JMFInit extends Frame implements Runnable {
 
 	private static final long serialVersionUID = 6476412003260641680L;
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(JMFInit.class);
+	private static final Logger LOGGER = Logger.getLogger(JMFInit.class.getName());
 
 	private String tempDir = "/tmp";
 
@@ -271,7 +272,7 @@ public class JMFInit extends Frame implements Runnable {
     }
 
     private void message(String mesg) {
-        LOGGER.debug(mesg);
+        LOGGER.fine(mesg);
     }
 
     private void createGUI() {

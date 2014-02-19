@@ -1,21 +1,22 @@
 /**
- * <p/>
+ *
  * Copyright 2003-2006 Jive Software.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle.mediaimpl.jmf;
+
+import java.util.logging.Logger;
 
 import javax.media.ControllerErrorEvent;
 import javax.media.ControllerEvent;
@@ -36,7 +37,6 @@ import javax.media.rtp.event.RemotePayloadChangeEvent;
 import javax.media.rtp.event.SessionEvent;
 import javax.media.rtp.event.StreamMappedEvent;
 
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 
 /**
@@ -47,7 +47,7 @@ import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 public class AudioReceiver implements ReceiveStreamListener, SessionListener,
         ControllerListener {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(AudioReceiver.class);
+	private static final Logger LOGGER = Logger.getLogger(AudioReceiver.class.getName());
 
 	boolean dataReceived = false;
 
@@ -65,7 +65,7 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
     public synchronized void update(SessionEvent evt) {
         if (evt instanceof NewParticipantEvent) {
             Participant p = ((NewParticipantEvent) evt).getParticipant();
-            LOGGER.error("  - A new participant had just joined: " + p.getCNAME());
+            LOGGER.fine("  - A new participant had just joined: " + p.getCNAME());
         }
     }
 
@@ -78,8 +78,8 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
         ReceiveStream stream = evt.getReceiveStream();  // could be null.
 
         if (evt instanceof RemotePayloadChangeEvent) {
-            LOGGER.error("  - Received an RTP PayloadChangeEvent.");
-            LOGGER.error("Sorry, cannot handle payload change.");
+            LOGGER.severe("  - Received an RTP PayloadChangeEvent.");
+            LOGGER.severe("Sorry, cannot handle payload change.");
 
         }
         else if (evt instanceof NewReceiveStreamEvent) {
@@ -91,15 +91,15 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
                 // Find out the formats.
                 RTPControl ctl = (RTPControl) ds.getControl("javax.jmf.rtp.RTPControl");
                 if (ctl != null) {
-                    LOGGER.error("  - Recevied new RTP stream: " + ctl.getFormat());
+                    LOGGER.severe("  - Recevied new RTP stream: " + ctl.getFormat());
                 }
                 else
-                    LOGGER.error("  - Recevied new RTP stream");
+                    LOGGER.severe("  - Recevied new RTP stream");
 
                 if (participant == null)
-                    LOGGER.error("      The sender of this stream had yet to be identified.");
+                    LOGGER.severe("      The sender of this stream had yet to be identified.");
                 else {
-                    LOGGER.error("      The stream comes from: " + participant.getCNAME());
+                    LOGGER.severe("      The stream comes from: " + participant.getCNAME());
                 }
 
                 // create a player by passing datasource to the Media Manager
@@ -119,7 +119,7 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
 
             }
             catch (Exception e) {
-                LOGGER.error("NewReceiveStreamEvent exception " + e.getMessage());
+                LOGGER.severe("NewReceiveStreamEvent exception " + e.getMessage());
                 return;
             }
 
@@ -130,15 +130,15 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
                 DataSource ds = stream.getDataSource();
                 // Find out the formats.
                 RTPControl ctl = (RTPControl) ds.getControl("javax.jmf.rtp.RTPControl");
-                LOGGER.error("  - The previously unidentified stream ");
+                LOGGER.severe("  - The previously unidentified stream ");
                 if (ctl != null)
-                    LOGGER.error("      " + ctl.getFormat());
-                LOGGER.error("      had now been identified as sent by: " + participant.getCNAME());
+                    LOGGER.severe("      " + ctl.getFormat());
+                LOGGER.severe("      had now been identified as sent by: " + participant.getCNAME());
             }
         }
         else if (evt instanceof ByeEvent) {
 
-            LOGGER.error("  - Got \"bye\" from: " + participant.getCNAME());
+            LOGGER.severe("  - Got \"bye\" from: " + participant.getCNAME());
 
         }
 
@@ -161,7 +161,7 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
 
         if (ce instanceof ControllerErrorEvent) {
             p.removeControllerListener(this);
-            LOGGER.error("Receiver internal error: " + ce);
+            LOGGER.severe("Receiver internal error: " + ce);
         }
 
     }

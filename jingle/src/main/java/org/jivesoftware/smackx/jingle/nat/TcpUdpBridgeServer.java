@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jivesoftware.smackx.jingle.nat;
 
 import java.io.IOException;
@@ -22,8 +25,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import org.jivesoftware.smackx.jingle.SmackLogger;
+import java.util.logging.Logger;
 
 /**
  * A Simple and Experimental Bridge.
@@ -32,7 +34,7 @@ import org.jivesoftware.smackx.jingle.SmackLogger;
  */
 public class TcpUdpBridgeServer {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(TcpUdpBridgeServer.class);
+	private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeServer.class.getName());
 
 	private String remoteTcpHost = null;
     private String remoteUdpHost = null;
@@ -54,7 +56,7 @@ public class TcpUdpBridgeServer {
             serverTcpSocket = new ServerSocket(remoteTcpPort);
             localUdpSocket = new DatagramSocket(0);
             localUdpPort = localUdpSocket.getLocalPort();
-            LOGGER.debug("UDP: " + localUdpSocket.getLocalPort());
+            LOGGER.fine("UDP: " + localUdpSocket.getLocalPort());
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -78,11 +80,11 @@ public class TcpUdpBridgeServer {
                         localUdpSocket.receive(p);
                         if (p.getLength() == 0) continue;
 
-                        LOGGER.debug("UDP Server Received and Sending to TCP Client:" + new String(p.getData(), 0, p.getLength(), "UTF-8"));
+                        LOGGER.fine("UDP Server Received and Sending to TCP Client:" + new String(p.getData(), 0, p.getLength(), "UTF-8"));
 
                         out.write(p.getData(), 0, p.getLength());
                         out.flush();
-                        LOGGER.debug("Server Flush");
+                        LOGGER.fine("Server Flush");
                     }
 
                 }
@@ -109,7 +111,7 @@ public class TcpUdpBridgeServer {
                         int s = in.read(b);
                         //if (s == -1) continue;
 
-                        LOGGER.debug("TCP Server:" + new String(b, 0, s, "UTF-8"));
+                        LOGGER.fine("TCP Server:" + new String(b, 0, s, "UTF-8"));
 
                         DatagramPacket udpPacket = new DatagramPacket(b, s);
 

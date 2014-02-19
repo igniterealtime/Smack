@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle;
 
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.packet.JingleError;
@@ -24,7 +28,7 @@ import org.jivesoftware.smackx.packet.JingleError;
  */
 public class JingleSessionStateEnded extends JingleSessionState {
 	
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleSessionStateEnded.class);
+	private static final Logger LOGGER = Logger.getLogger(JingleSessionStateEnded.class.getName());
 
 	private static JingleSessionStateEnded INSTANCE = null;
 
@@ -45,8 +49,8 @@ public class JingleSessionStateEnded extends JingleSessionState {
     }
 
     public void enter() {
-        LOGGER.debug("Session Ended");
-        LOGGER.debug("-------------------------------------------------------------------");
+        LOGGER.fine("Session Ended");
+        LOGGER.fine("-------------------------------------------------------------------");
 
     }
 

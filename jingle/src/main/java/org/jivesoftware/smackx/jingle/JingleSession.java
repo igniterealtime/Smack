@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
@@ -56,7 +58,7 @@ import org.jivesoftware.smackx.packet.JingleError;
  */
 public class JingleSession extends JingleNegotiator implements MediaReceivedListener {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleSession.class);
+	private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
 
 	// static
     private static final HashMap<Connection, JingleSession> sessions = new HashMap<Connection, JingleSession>();
@@ -235,7 +237,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     public void setSessionState(JingleSessionState stateIs) {
 
-        LOGGER.debug("Session state change: " + sessionState + "->" + stateIs);
+        LOGGER.fine("Session state change: " + sessionState + "->" + stateIs);
         stateIs.enter();
         sessionState = stateIs;
     }
@@ -278,7 +280,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         String responseId = null;
 
-        LOGGER.debug("Packet: " + iq.toXML());
+        LOGGER.fine("Packet: " + iq.toXML());
 
         try {
 
@@ -647,7 +649,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     	if (connectionListener != null) {
     		getConnection().removeConnectionListener(connectionListener);
     		
-    		LOGGER.debug("JINGLE SESSION: REMOVE CONNECTION LISTENER");
+    		LOGGER.fine("JINGLE SESSION: REMOVE CONNECTION LISTENER");
     	}
     }
 
@@ -658,7 +660,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         if (packetListener != null) {
             getConnection().removePacketListener(packetListener);
 
-            LOGGER.debug("JINGLE SESSION: REMOVE PACKET LISTENER");
+            LOGGER.fine("JINGLE SESSION: REMOVE PACKET LISTENER");
         }
     }
 
@@ -669,7 +671,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     protected void updatePacketListener() {
         removePacketListener();
 
-        LOGGER.debug("UpdatePacketListener");
+        LOGGER.fine("UpdatePacketListener");
 
         packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
@@ -704,21 +706,21 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
                         String sid = jin.getSid();
                         if (sid == null || !sid.equals(getSid())) {
-                            LOGGER.debug("Ignored Jingle(SID) " + sid + "|" + getSid() + " :" + iq.toXML());
+                            LOGGER.fine("Ignored Jingle(SID) " + sid + "|" + getSid() + " :" + iq.toXML());
                             return false;
                         }
                         String ini = jin.getInitiator();
                         if (!ini.equals(getInitiator())) {
-                            LOGGER.debug("Ignored Jingle(INI): " + iq.toXML());
+                            LOGGER.fine("Ignored Jingle(INI): " + iq.toXML());
                             return false;
                         }
                     } else {
                         // We accept some non-Jingle IQ packets: ERRORs and ACKs
                         if (iq.getType().equals(IQ.Type.SET)) {
-                            LOGGER.debug("Ignored Jingle(TYPE): " + iq.toXML());
+                            LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
                         } else if (iq.getType().equals(IQ.Type.GET)) {
-                            LOGGER.debug("Ignored Jingle(TYPE): " + iq.toXML());
+                            LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
                         }
                     }
@@ -974,7 +976,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public void terminate(String reason) throws XMPPException {
         if (isClosed())
             return;
-        LOGGER.debug("Terminate " + reason);
+        LOGGER.fine("Terminate " + reason);
         Jingle jout = new Jingle(JingleActionEnum.SESSION_TERMINATE);
         jout.setType(IQ.Type.SET);
         sendPacket(jout);
@@ -1003,7 +1005,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         removePacketListener();
         removeConnectionListener();
         getConnection().removeConnectionListener(connectionListener);
-        LOGGER.debug("Negotiation Closed: " + getConnection().getUser() + " " + sid);
+        LOGGER.fine("Negotiation Closed: " + getConnection().getUser() + " " + sid);
         super.close();
 
     }
@@ -1062,7 +1064,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         IQ iqError = createIQ(ID, to, from, IQ.Type.ERROR);
         iqError.setError(error);
 
-        LOGGER.debug("Created Error Packet:" + iqError.toXML());
+        LOGGER.fine("Created Error Packet:" + iqError.toXML());
 
         return iqError;
     }
@@ -1093,7 +1095,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
             // NO! Let the normal state machinery do all of the sending.
             // getConnection().sendPacket(perror);
-            LOGGER.error("Error sent: " + errorPacket.toXML());
+            LOGGER.severe("Error sent: " + errorPacket.toXML());
         }
         return errorPacket;
     }

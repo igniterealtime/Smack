@@ -22,18 +22,17 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.jingle.SmackLogger;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -49,7 +48,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class RTPBridge extends IQ {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(RTPBridge.class);
+	private static final Logger LOGGER = Logger.getLogger(RTPBridge.class.getName());
 
 	private String sid;
     private String pass;
@@ -403,8 +402,7 @@ public class RTPBridge extends IQ {
 
         connection.sendPacket(rtpPacket);
 
-        RTPBridge response = (RTPBridge) collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
+        RTPBridge response = (RTPBridge) collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();
@@ -424,7 +422,7 @@ public class RTPBridge extends IQ {
             return false;
         }
 
-        LOGGER.debug("Service listing");
+        LOGGER.fine("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(connection);
@@ -483,8 +481,7 @@ public class RTPBridge extends IQ {
 
         connection.sendPacket(rtpPacket);
 
-        RTPBridge response = (RTPBridge) collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
+        RTPBridge response = (RTPBridge) collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();
@@ -515,8 +512,7 @@ public class RTPBridge extends IQ {
 
         xmppConnection.sendPacket(rtpPacket);
 
-        RTPBridge response = (RTPBridge) collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
+        RTPBridge response = (RTPBridge) collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();

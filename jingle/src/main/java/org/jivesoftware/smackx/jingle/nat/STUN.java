@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,19 +19,18 @@ package org.jivesoftware.smackx.jingle.nat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.jingle.SmackLogger;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.DiscoverItems;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -45,7 +44,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class STUN extends IQ {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(STUN.class);
+	private static final Logger LOGGER = Logger.getLogger(STUN.class.getName());
 
 	private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
 
@@ -199,8 +198,7 @@ public class STUN extends IQ {
 
         connection.sendPacket(stunPacket);
 
-        STUN response = (STUN) collector
-                .nextResult(SmackConfiguration.getPacketReplyTimeout());
+        STUN response = (STUN) collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();
@@ -220,7 +218,7 @@ public class STUN extends IQ {
             return false;
         }
 
-        LOGGER.debug("Service listing");
+        LOGGER.fine("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(connection);
@@ -240,7 +238,7 @@ public class STUN extends IQ {
                             return true;
                 }
 
-                LOGGER.debug(item.getName()+"-"+info.getType());
+                LOGGER.fine(item.getName()+"-"+info.getType());
 
             }
         }

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
@@ -32,7 +32,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
  */
 public abstract class JingleDescription implements PacketExtension {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleDescription.class);
+	private static final Logger LOGGER = Logger.getLogger(JingleDescription.class.getName());
 
 	// static
 
@@ -73,7 +73,7 @@ public abstract class JingleDescription implements PacketExtension {
     public void addPayloadType(final PayloadType pt) {
         synchronized (payloads) {
             if (pt == null) {
-                LOGGER.error("Null payload type");
+                LOGGER.severe("Null payload type");
             } else {
                 payloads.add(pt);
             }

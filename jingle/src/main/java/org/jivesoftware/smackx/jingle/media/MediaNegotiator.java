@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingle.media;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
@@ -27,7 +28,6 @@ import org.jivesoftware.smackx.jingle.JingleException;
 import org.jivesoftware.smackx.jingle.JingleNegotiator;
 import org.jivesoftware.smackx.jingle.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleMediaListener;
 import org.jivesoftware.smackx.packet.Jingle;
@@ -45,7 +45,7 @@ import org.jivesoftware.smackx.packet.JingleError;
  */
 public class MediaNegotiator extends JingleNegotiator {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(MediaNegotiator.class);
+	private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());
 
 	//private JingleSession session; // The session this negotiation
 
@@ -216,7 +216,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
             setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
             triggerMediaEstablished(getBestCommonAudioPt());
-            LOGGER.error("Media choice:" + getBestCommonAudioPt().getName());
+            LOGGER.severe("Media choice:" + getBestCommonAudioPt().getName());
 
             response = session.createAck(jingle);
         }

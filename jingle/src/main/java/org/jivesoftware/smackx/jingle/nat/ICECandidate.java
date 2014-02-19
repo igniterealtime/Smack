@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,8 +19,7 @@ package org.jivesoftware.smackx.jingle.nat;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-
-import org.jivesoftware.smackx.jingle.SmackLogger;
+import java.util.logging.Logger;
 
 /**
  * ICE Transport candidate.
@@ -30,7 +31,7 @@ import org.jivesoftware.smackx.jingle.SmackLogger;
  */
 public class ICECandidate extends TransportCandidate implements Comparable<ICECandidate> {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(ICECandidate.class);
+	private static final Logger LOGGER = Logger.getLogger(ICECandidate.class.getName());
 
 	private String id; // An identification
 
@@ -240,7 +241,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
                     public void testFinished(TestResult testResult, TransportCandidate candidate) {
                         if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
-                            LOGGER.debug("Candidate reachable: " + candidate.getIp() + ":" + candidate.getPort() + " from " + getIp() +":" + getPort());
+                            LOGGER.fine("Candidate reachable: " + candidate.getIp() + ":" + candidate.getPort() + " from " + getIp() +":" + getPort());
                         }
                     }
                 };
@@ -266,7 +267,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
 
                 for (int i = 0; i < 10 && !result.isReachable(); i++)
                     try {
-                        LOGGER.error("ICE Candidate retry #" + i);
+                        LOGGER.severe("ICE Candidate retry #" + i);
                         Thread.sleep(400);
                     }
                     catch (InterruptedException e) {

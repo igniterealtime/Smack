@@ -1,25 +1,24 @@
-/*
-Copyright 2006 Jerry Huxtable
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+/**
+ *
+ * Copyright 2006 Jerry Huxtable
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare.api;
 
 import java.io.PrintStream;
 import java.util.Vector;
-
-import org.jivesoftware.smackx.jingle.SmackLogger;
+import java.util.logging.Logger;
 
 /**
  * An image Quantizer based on the Octree algorithm. This is a very basic implementation
@@ -28,7 +27,7 @@ import org.jivesoftware.smackx.jingle.SmackLogger;
  */
 public class OctTreeQuantizer implements Quantizer {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(OctTreeQuantizer.class);
+	private static final Logger LOGGER = Logger.getLogger(OctTreeQuantizer.class.getName());
 
 	/**
 	 * The greatest depth the tree is allowed to reach
@@ -58,9 +57,9 @@ public class OctTreeQuantizer implements Quantizer {
 			for (int i = 0; i < level; i++)
 				indentStr += " ";
 			if (count == 0)
-				LOGGER.debug(indentStr + index + ": count=" + count);
+				LOGGER.fine(indentStr + index + ": count=" + count);
 			else
-				LOGGER.debug(indentStr + index + ": count=" + count + " red=" + (totalRed/count) + " green=" + (totalGreen / count) + " blue=" + (totalBlue / count));
+				LOGGER.fine(indentStr + index + ": count=" + count + " red=" + (totalRed/count) + " green=" + (totalGreen / count) + " blue=" + (totalBlue / count));
 			for (int i = 0; i < 8; i++)
 				if (leaf[i] != null)
 					leaf[i].list(s, level+2);
@@ -138,7 +137,7 @@ public class OctTreeQuantizer implements Quantizer {
 			else
 				node = child;
 		}
-		LOGGER.debug("getIndexForColor failed");
+		LOGGER.fine("getIndexForColor failed");
 		return 0;
 	}
 
@@ -149,7 +148,7 @@ public class OctTreeQuantizer implements Quantizer {
 
 		OctTreeNode node = root;
 
-//		LOGGER.debug("insertColor="+Integer.toHexString(rgb));
+//		LOGGER.fine("insertColor="+Integer.toHexString(rgb));
 		for (int level = 0; level <= MAX_LEVEL; level++) {
 			OctTreeNode child;
 			int bit = 0x80 >> level;
@@ -195,7 +194,7 @@ public class OctTreeQuantizer implements Quantizer {
 			} else
 				node = child;
 		}
-		LOGGER.debug("insertColor failed");
+		LOGGER.fine("insertColor failed");
 	}
 
 	private void reduceTree(int numColors) {
@@ -209,7 +208,7 @@ public class OctTreeQuantizer implements Quantizer {
 							OctTreeNode child = node.leaf[i];
 							if (child != null) {
 								if (!child.isLeaf)
-									LOGGER.debug("not a leaf!");
+									LOGGER.fine("not a leaf!");
 								node.count += child.count;
 								node.totalRed += child.totalRed;
 								node.totalGreen += child.totalGreen;
@@ -230,7 +229,7 @@ public class OctTreeQuantizer implements Quantizer {
 			}
 		}
 
-		LOGGER.debug("Unable to reduce the OctTree");
+		LOGGER.fine("Unable to reduce the OctTree");
 	}
 
     /**

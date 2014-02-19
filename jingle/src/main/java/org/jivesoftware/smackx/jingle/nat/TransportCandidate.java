@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle.nat;
 
 import java.io.IOException;
@@ -25,10 +26,10 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.nat.TransportResolverListener.Checker;
 
 /**
@@ -42,7 +43,7 @@ import org.jivesoftware.smackx.jingle.nat.TransportResolverListener.Checker;
  */
 public abstract class TransportCandidate {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(TransportCandidate.class);
+	private static final Logger LOGGER = Logger.getLogger(TransportCandidate.class.getName());
 
 	private String name;
 
@@ -651,14 +652,14 @@ public abstract class TransportCandidate {
 
         public void run() {
             try {
-                LOGGER.debug("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
+                LOGGER.fine("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
                 while (true) {
 
                     DatagramPacket packet = new DatagramPacket(new byte[150], 150);
 
                     socket.receive(packet);
 
-                    //LOGGER.debug("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
+                    //LOGGER.fine("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
                     boolean accept = false;
 
@@ -747,7 +748,7 @@ public abstract class TransportCandidate {
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
 
                             try {
-                                LOGGER.debug("ECHO Received to: " + candidate.getIp() + ":" + candidate.getPort() + "  data: " + new String(datagramPacket.getData(), "UTF-8"));
+                                LOGGER.fine("ECHO Received to: " + candidate.getIp() + ":" + candidate.getPort() + "  data: " + new String(datagramPacket.getData(), "UTF-8"));
                                 String str[] = new String(datagramPacket.getData(), "UTF-8").split(";");
                                 String pass = str[0];
                                 String addr[] = str[1].split(":");
@@ -757,7 +758,7 @@ public abstract class TransportCandidate {
                                 if (pass.equals(password) 
                                 		&& transportCandidate.getIp().indexOf(ip) != -1 
                                 		&& transportCandidate.getPort() == Integer.parseInt(pt)) {
-                                    LOGGER.debug("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
+                                    LOGGER.fine("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
                                     TestResult testResult = new TestResult();
                                     testResult.setResult(true);
                                     ended = true;
@@ -770,7 +771,7 @@ public abstract class TransportCandidate {
                                 e.printStackTrace();
                             }
 
-                            LOGGER.debug("ECHO Wrong Data: " + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
+                            LOGGER.fine("ECHO Wrong Data: " + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
                             return false;
                         }
                     };

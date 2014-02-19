@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle.nat;
 
 import java.io.BufferedReader;
@@ -23,15 +24,15 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.StringTokenizer;
-
-import org.jivesoftware.smackx.jingle.SmackLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A very Simple HTTP Server
  */
 public class HttpServer {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(HttpServer.class);
+	private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());
 
 	public HttpServer(int port) {
         ServerSocket server_socket;
@@ -39,12 +40,12 @@ public class HttpServer {
         try {
 
             server_socket = new ServerSocket(port);
-            LOGGER.debug("httpServer running on port " +
+            LOGGER.fine("httpServer running on port " +
                     server_socket.getLocalPort());
 
             while (true) {
                 Socket socket = server_socket.accept();
-                LOGGER.debug("New connection accepted " +
+                LOGGER.fine("New connection accepted " +
                         socket.getInetAddress() +
                         ":" + socket.getPort());
 
@@ -57,13 +58,13 @@ public class HttpServer {
                     thread.start();
                 }
                 catch (Exception e) {
-                    LOGGER.debug("", e);
+                    LOGGER.log(Level.FINE, "Exception", e);
                 }
             }
         }
 
         catch (IOException e) {
-            LOGGER.debug("", e);
+            LOGGER.log(Level.FINE, "Exception", e);
         }
 
     }
@@ -100,7 +101,7 @@ public class HttpServer {
             while (true) {
 
                 String headerLine = br.readLine();
-                LOGGER.debug(headerLine);
+                LOGGER.fine(headerLine);
                 if (headerLine.equals(CRLF) || headerLine.equals("")) break;
 
                 StringTokenizer s = new StringTokenizer(headerLine);

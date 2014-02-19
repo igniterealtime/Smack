@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle.nat;
 
 import java.net.InetAddress;
@@ -25,11 +24,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 
 import de.javawi.jstun.test.demo.ice.Candidate;
 import de.javawi.jstun.test.demo.ice.ICENegociator;
@@ -44,7 +43,7 @@ import de.javawi.jstun.util.UtilityException;
  */
 public class ICEResolver extends TransportResolver {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(ICEResolver.class);
+	private static final Logger LOGGER = Logger.getLogger(ICEResolver.class.getName());
 
     Connection connection;
     Random random = new Random();
@@ -64,7 +63,7 @@ public class ICEResolver extends TransportResolver {
 
     public void initialize() throws XMPPException {
         if (!isResolving() && !isResolved()) {
-            LOGGER.debug("Initialized");
+            LOGGER.fine("Initialized");
 
             // Negotiation with a STUN server for a set of interfaces is quite slow, but the results
             // never change over then instance of a JVM.  To increase connection performance considerably
@@ -147,7 +146,7 @@ public class ICEResolver extends TransportResolver {
                 }
                 this.addCandidate(transportCandidate);
 
-                LOGGER.debug("Candidate addr: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " Priority:" + candidate.getPriority());
+                LOGGER.fine("Candidate addr: " + candidate.getAddress().getInetAddress() + "|" + candidate.getBase().getAddress().getInetAddress() + " Priority:" + candidate.getPriority());
 
             }
             catch (UtilityException e) {

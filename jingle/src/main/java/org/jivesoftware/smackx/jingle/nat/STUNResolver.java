@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +23,11 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -44,7 +45,7 @@ import de.javawi.jstun.test.DiscoveryTest;
  */
 public class STUNResolver extends TransportResolver {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(STUNResolver.class);
+	private static final Logger LOGGER = Logger.getLogger(STUNResolver.class.getName());
 
 	// The filename where the STUN servers are stored.
     public final static String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
@@ -181,10 +182,10 @@ public class STUNResolver extends TransportResolver {
 
         }
         catch (XmlPullParserException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Exception", e);
         }
         catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Exception", e);
         }
 
         currentServer = bestSTUNServer(serversList);
@@ -239,7 +240,7 @@ public class STUNResolver extends TransportResolver {
             }
         }
         catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Exception", e);
         }
 
         return serversList;
@@ -272,7 +273,7 @@ public class STUNResolver extends TransportResolver {
                 resolvedPublicIP, getFreePort());
         candidate.setLocalIp(resolvedLocalIP);
 
-        LOGGER.debug("RESOLVING : " + resolvedPublicIP + ":" + candidate.getPort());
+        LOGGER.fine("RESOLVING : " + resolvedPublicIP + ":" + candidate.getPort());
 
         addCandidate(candidate);
 
@@ -286,7 +287,7 @@ public class STUNResolver extends TransportResolver {
      * @throws XMPPException
      */
     public void initialize() throws XMPPException {
-        LOGGER.debug("Initialized");
+        LOGGER.fine("Initialized");
         if (!isResolving()&&!isResolved()) {
             // Get the best STUN server available
             if (currentServer.isNull()) {
@@ -354,14 +355,14 @@ public class STUNResolver extends TransportResolver {
                                             }
                                         }
                                         catch (Exception e) {
-                                            LOGGER.error(e.getMessage(), e);
+                                            LOGGER.log(Level.SEVERE, "Exception", e);
                                         }
                                     }
                                 }
                             }
                         }
                         catch (SocketException e) {
-                            LOGGER.error(e.getMessage(), e);
+                            LOGGER.log(Level.SEVERE, "Exception", e);
                         }
                         finally {
                             setInitialized();
@@ -508,7 +509,7 @@ public class STUNResolver extends TransportResolver {
                 }
             }
             catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, "Exception in checkBinding", e);
             }
 
             return result;

@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,8 +27,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
-
-import org.jivesoftware.smackx.jingle.SmackLogger;
+import java.util.logging.Logger;
 
 /**
  * UDP Image Receiver.
@@ -36,7 +37,7 @@ import org.jivesoftware.smackx.jingle.SmackLogger;
  */
 public class ImageTransmitter implements Runnable {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(ImageTransmitter.class);
+	private static final Logger LOGGER = Logger.getLogger(ImageTransmitter.class.getName());
 
 	private Robot robot;
     private InetAddress localHost;
@@ -100,7 +101,7 @@ public class ImageTransmitter implements Runnable {
                 if (++keyframe > KEYFRAME) {
                     keyframe = 0;
                 }
-                LOGGER.debug("KEYFRAME:" + keyframe);
+                LOGGER.fine("KEYFRAME:" + keyframe);
 
                 for (int i = 0; i < maxI; i++) {
                     for (int j = 0; j < maxJ; j++) {
@@ -130,7 +131,7 @@ public class ImageTransmitter implements Runnable {
                                             byte[] bytesOut = baos.toByteArray();
 
                                             if (bytesOut.length > 1000)
-                                                LOGGER.error("Bytes out > 1000. Equals " + bytesOut.length);
+                                                LOGGER.severe("Bytes out > 1000. Equals " + bytesOut.length);
 
                                             p.setData(bytesOut);
                                             p.setAddress(remoteHost);
@@ -162,7 +163,7 @@ public class ImageTransmitter implements Runnable {
                 }
 
                 trace = (System.currentTimeMillis() - trace);
-                LOGGER.debug("Loop Time:" + trace);
+                LOGGER.fine("Loop Time:" + trace);
 
                 if (trace < 500) {
                     try {

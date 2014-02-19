@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
@@ -32,7 +32,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleSessionListener;
@@ -42,7 +42,7 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.BasicTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
-import org.jivesoftware.smackx.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.Jingle;
 import org.jivesoftware.smackx.provider.JingleProvider;
 
@@ -181,7 +181,7 @@ import org.jivesoftware.smackx.provider.JingleProvider;
  */
 public class JingleManager implements JingleSessionListener {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(JingleManager.class);
+	private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
 	
 	// non-static
 
@@ -415,7 +415,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
         jingleSession.close();
-        LOGGER.error("Declined:" + reason);
+        LOGGER.severe("Declined:" + reason);
     }
 
     public void sessionRedirected(String redirection, JingleSession jingleSession) {

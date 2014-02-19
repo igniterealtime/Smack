@@ -1,3 +1,3 @@
 include 'core', 'extensions', 'experimental',
 		'debug', 'resolver-dnsjava', 'resolver-javax',
-		'compression-jzlib', 'legacy'
+		'compression-jzlib', 'legacy', 'jingle'

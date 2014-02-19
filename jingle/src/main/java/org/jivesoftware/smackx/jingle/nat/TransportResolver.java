@@ -1,5 +1,7 @@
 /**
  *
+ * Copyright the original author or authors
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle.nat;
 
 import java.io.IOException;
@@ -21,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 
 /**
  * A TransportResolver is used for obtaining a list of valid transport
@@ -36,7 +37,7 @@ import org.jivesoftware.smackx.jingle.SmackLogger;
  */
 public abstract class TransportResolver {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(TransportResolver.class);
+	private static final Logger LOGGER = Logger.getLogger(TransportResolver.class.getName());
 	
 	public enum Type {
 
@@ -213,7 +214,7 @@ public abstract class TransportResolver {
             TransportResolverListener trl = iter.next();
             if (trl instanceof TransportResolverListener.Resolver) {
                 TransportResolverListener.Resolver li = (TransportResolverListener.Resolver) trl;
-                LOGGER.debug("triggerCandidateAdded : " + cand.getLocalIp());
+                LOGGER.fine("triggerCandidateAdded : " + cand.getLocalIp());
                 li.candidateAdded(cand);
             }
         }
@@ -303,7 +304,7 @@ public abstract class TransportResolver {
             Collections.sort(cands);
             // Return the last candidate
             result = (TransportCandidate) cands.get(cands.size() - 1);
-            LOGGER.debug("Result: " + result.getIp());
+            LOGGER.fine("Result: " + result.getIp());
         }
 
         return result;
@@ -355,12 +356,12 @@ public abstract class TransportResolver {
     public void initializeAndWait() throws XMPPException {
         this.initialize();
         try {
-            LOGGER.debug("Initializing transport resolver...");
+            LOGGER.fine("Initializing transport resolver...");
             while (!this.isInitialized()) {
-                LOGGER.debug("Resolver init still pending");
+                LOGGER.fine("Resolver init still pending");
                 Thread.sleep(1000);
             }
-            LOGGER.debug("Transport resolved\n");
+            LOGGER.fine("Transport resolved");
         }
         catch (Exception e) {
             e.printStackTrace();

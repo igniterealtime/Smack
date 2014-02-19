@@ -1,13 +1,13 @@
 /**
- * <p/>
+ *
  * Copyright 2003-2006 Jive Software.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,12 +24,12 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.jivesoftware.smackx.jingle.JingleSession;
-import org.jivesoftware.smackx.jingle.SmackLogger;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.mediaimpl.sshare.api.ImageDecoder;
@@ -49,7 +49,7 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
  */
 public class ScreenShareSession extends JingleMediaSession {
 
-	private static final SmackLogger LOGGER = SmackLogger.getLogger(ScreenShareSession.class);
+	private static final Logger LOGGER = Logger.getLogger(ScreenShareSession.class.getName());
 
 	private ImageTransmitter transmitter = null;
     private ImageReceiver receiver = null;
@@ -104,7 +104,7 @@ public class ScreenShareSession extends JingleMediaSession {
             try {
                 receiver = new ImageReceiver(InetAddress.getByName("0.0.0.0"), getRemote().getPort(), getLocal().getPort(), width,
                         height);
-                LOGGER.debug("Receiving on:" + receiver.getLocalPort());
+                LOGGER.fine("Receiving on:" + receiver.getLocalPort());
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
