@@ -17,6 +17,7 @@ allprojects {
 		sonatypeSnapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
 		sonatypeStagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
 		buildDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
+		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.6
@@ -66,40 +67,17 @@ jar {
 	enabled = false
 }
 
-import org.gradle.plugins.signing.Sign
-gradle.taskGraph.whenReady { taskGraph ->
-	if (signingRequired && taskGraph.allTasks.any { it instanceof Sign }) {
-		// Use Java 6's console to read from the console (no good for a CI environment)
-		Console console = System.console()
-		console.printf '\n\nWe have to sign some things in this build.\n\nPlease enter your signing details.\n\n'
-		def password = console.readPassword('GnuPG Private Key Password: ')
-
-		allprojects { ext.'signing.password' = password }
-
-		console.printf '\nThanks.\n\n'
-	}
-}
-
 description = """\
 Smack ${version}
-An Open Source XMPP (Jabber) client library.
-"""
+${oneLineDesc}."""
 
 subprojects {
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
-	apply plugin: 'pmd'
 	apply plugin: 'checkstyle'
-	apply plugin: 'findbugs'
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
-	}
-	pmd {
-		ignoreFailures = true
-	}
-	findbugs {
-		ignoreFailures = true
 	}
 	repositories {
 		mavenCentral()
@@ -141,8 +119,9 @@ subprojects {
 				pom.project {
 					name 'Smack'
 					packaging 'jar'
+					inceptionYear '2003'
 					url 'http://www.igniterealtime.org/projects/smack/'
-
+					
 					issueManagement {
 						system 'JIRA'
 						url 'http://issues.igniterealtime.org/browse/SMACK'
@@ -194,8 +173,8 @@ subprojects {
 
 project(':core') {
 	description = """\
-Smack core components.
-"""
+Smack core components."""
+
 	configurations {
 		compression
 		dns
@@ -238,24 +217,11 @@ Smack core components.
 	compileJava.dependsOn(createVersionResource)
 }
 
-class CreateFileTask extends DefaultTask {
-	@Input
-	String fileContent
-
-	@OutputFile
-	File outputFile
-
-	@TaskAction
-	def createFile() {
-		outputFile.text = fileContent
-	}
-}
-
 project(':compression-jzlib') {
 	description = """\
 Compression with jzlib
-Allow to compress the XMPP stream with help of jzlib.
-"""
+Allow to compress the XMPP stream with help of jzlib."""
+
 	dependencies {
 		compile project(path: ':core', configuration: 'compression')
 		compile 'com.jcraft:jzlib:1.1.3'
@@ -266,8 +232,8 @@ project(':resolver-dnsjava') {
 	description = """\
 DNS SRV with dnsjava
 Use dnsjava for DNS SRV lookups. For platforms that don't provide the
-javax.naming API (e.g. Android)
-"""
+javax.naming API (e.g. Android)."""
+
 	dependencies {
 		compile project(path: ':core', configuration: 'dns')
 		compile 'dnsjava:dnsjava:2.1.1'
@@ -278,24 +244,25 @@ project(':resolver-javax') {
 	description = """\
 DNS SRV with Java7
 Use javax.naming for DNS SRV lookups. The javax.naming API is availabe in JavaSE
-since Java7.
-"""
+since Java7."""
+
 	dependencies {
 		compile project(path: ':core', configuration: 'dns')
 	}
 }
 
+// Now the "real" Smack sub-projects
+// Note that test dependencies (junit, …) are interfered from the sourceSet.test of the core sub-project
+
 project(':extensions') {
 	description = """\
 Smack extensions.
 Classes and methods that implement support for the various XMPP XEPs
-(Multi-User Chat, PubSub, …) and other XMPP extensions.
-"""
+(Multi-User Chat, PubSub, …) and other XMPP extensions."""
+
 	dependencies {
 		compile project(':core')
 		testCompile project(':core').sourceSets.test.runtimeClasspath
-		// Test dependencies (junit, …) are interfered from the sourceSet.test of the core project
-		// So there is no need to add them explicitly here again
 	}
 }
 
@@ -304,14 +271,12 @@ project(':experimental') {
 Smack experimental extensions.
 Classes and methods for XEPs that are in status 'experimental' or that should
 otherwise carefully considered for deployment. The API may change even
-between patch versions.
-"""
+between patch versions."""
+
 	dependencies {
 		compile project(':core')
 		compile project(':extensions')
 		testCompile project(':core').sourceSets.test.runtimeClasspath
-		// Test dependencies (junit, …) are interfered from the sourceSet.test of the core project
-		// So there is no need to add them explicitly here again
 	}
 }
 
@@ -319,51 +284,45 @@ project(':legacy') {
 	description = """\
 Smack legacy extensions.
 Usually XEPs in the state 'retracted', 'rejected', 'deprecated',
-'obsolete' or in a long standing 'deferred' state.
-"""
+'obsolete' or in a long standing 'deferred' state."""
+
 	dependencies {
 		compile project(':core')
 		compile project(':extensions')
 		testCompile project(':core').sourceSets.test.runtimeClasspath
-		// Test dependencies (junit, …) are interfered from the sourceSet.test of the core project
-		// So there is no need to add them explicitly here again
 	}
 }
 
 project(':debug') {
 	description = """\
 Smack GUI debugger.
-Inspect the exchanged XMPP stanzas.
-"""
+Inspect the exchanged XMPP stanzas."""
+
 	dependencies {
 		compile project(':core')
 		testCompile project(':core').sourceSets.test.runtimeClasspath
-		// Test dependencies (junit, …) are interfered from the sourceSet.test of the core project
-		// So there is no need to add them explicitly here again
 	}
 }
 
 project(':jingle') {
 	description = """\
 Smack Jingle API.
-Warning: This API is beta, outdated and currenlty unmaintained.
-"""
+Warning: This API is beta, outdated and currenlty unmaintained."""
+
 	dependencies {
 		compile project(':core')
 		compile project(':extensions')
 		compile 'javax.media:jmf:2.1.1e'
 		compile files('libs/jspeex-0.9.7-jfcom.jar', 'libs/jstun.jar', 'libs/Speex.jar')
 		testCompile project(':core').sourceSets.test.runtimeClasspath
-		// Test dependencies (junit, …) are interfered from the sourceSet.test of the core project
-		// So there is no need to add them explicitly here again
 	}
 }
 
 project(':bosh') {
 	description = """\
 Smack BOSH API.
-This API is considered beta quality.
-"""
+This API is considered beta quality."""
+
 	dependencies {
 		compile project(':core')
 		compile 'org.igniterealtime.jbosh:jbosh:0.6.0'
@@ -375,6 +334,45 @@ This API is considered beta quality.
 		attributes('Bundle-SymbolicName': project.group + '-' + appendix,
 				   'Fragment-Host': project.group)
 		from sharedManifest
+	}
+}
+
+// This is not really beautifully, but it's the only way I found to add
+// the sub-projects description as description element to the POM
+subprojects*.uploadArchives {
+	repositories {
+		mavenDeployer {
+			pom.project {
+				description project.description
+			}
+		}
+	}
+}
+
+import org.gradle.plugins.signing.Sign
+gradle.taskGraph.whenReady { taskGraph ->
+	if (signingRequired && taskGraph.allTasks.any { it instanceof Sign }) {
+		// Use Java 6's console to read from the console (no good for a CI environment)
+		Console console = System.console()
+		console.printf '\n\nWe have to sign some things in this build.\n\nPlease enter your signing details.\n\n'
+		def password = console.readPassword('GnuPG Private Key Password: ')
+
+		allprojects { ext.'signing.password' = password }
+
+		console.printf '\nThanks.\n\n'
+	}
+}
+
+class CreateFileTask extends DefaultTask {
+	@Input
+	String fileContent
+
+	@OutputFile
+	File outputFile
+
+	@TaskAction
+	def createFile() {
+		outputFile.text = fileContent
 	}
 }
 
