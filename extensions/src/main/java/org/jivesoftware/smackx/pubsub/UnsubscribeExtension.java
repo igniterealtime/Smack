@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smackx.pubsub.util.XmlUtils;
+import org.jivesoftware.smack.util.XmlUtils;
 
 
 /**
