@@ -18,7 +18,6 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
-import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -483,57 +482,6 @@ public class XMPPConnection extends Connection {
             throw new NullPointerException("Packet is null.");
         }
         packetWriter.sendPacket(packet);
-    }
-
-    /**
-     * Registers a packet interceptor with this connection. The interceptor will be
-     * invoked every time a packet is about to be sent by this connection. Interceptors
-     * may modify the packet to be sent. A packet filter determines which packets
-     * will be delivered to the interceptor.
-     *
-     * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
-     * @param packetFilter      the packet filter to use.
-     * @deprecated replaced by {@link Connection#addPacketInterceptor(PacketInterceptor, PacketFilter)}.
-     */
-    public void addPacketWriterInterceptor(PacketInterceptor packetInterceptor,
-            PacketFilter packetFilter) {
-        addPacketInterceptor(packetInterceptor, packetFilter);
-    }
-
-    /**
-     * Removes a packet interceptor.
-     *
-     * @param packetInterceptor the packet interceptor to remove.
-     * @deprecated replaced by {@link Connection#removePacketInterceptor(PacketInterceptor)}.
-     */
-    public void removePacketWriterInterceptor(PacketInterceptor packetInterceptor) {
-        removePacketInterceptor(packetInterceptor);
-    }
-
-    /**
-     * Registers a packet listener with this connection. The listener will be
-     * notified of every packet that this connection sends. A packet filter determines
-     * which packets will be delivered to the listener. Note that the thread
-     * that writes packets will be used to invoke the listeners. Therefore, each
-     * packet listener should complete all operations quickly or use a different
-     * thread for processing.
-     *
-     * @param packetListener the packet listener to notify of sent packets.
-     * @param packetFilter   the packet filter to use.
-     * @deprecated replaced by {@link #addPacketSendingListener(PacketListener, PacketFilter)}.
-     */
-    public void addPacketWriterListener(PacketListener packetListener, PacketFilter packetFilter) {
-        addPacketSendingListener(packetListener, packetFilter);
-    }
-
-    /**
-     * Removes a packet listener for sending packets from this connection.
-     *
-     * @param packetListener the packet listener to remove.
-     * @deprecated replaced by {@link #removePacketSendingListener(PacketListener)}.
-     */
-    public void removePacketWriterListener(PacketListener packetListener) {
-        removePacketSendingListener(packetListener);
     }
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {

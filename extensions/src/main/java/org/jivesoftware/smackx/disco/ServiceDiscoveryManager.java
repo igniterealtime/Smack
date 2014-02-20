@@ -91,11 +91,9 @@ public class ServiceDiscoveryManager {
      * service manager will respond to any service discovery request that the connection may
      * receive. 
      * 
-     * @deprecated  use {@link #getInstanceFor(connection)} instead
      * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
-    @Deprecated
-    public ServiceDiscoveryManager(Connection connection) {
+    private ServiceDiscoveryManager(Connection connection) {
         this.connection = new WeakReference<Connection>(connection);
 
         // Register the new instance and associate it with the connection 
