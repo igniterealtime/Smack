@@ -22,7 +22,7 @@ import java.io.StringReader;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -179,7 +179,7 @@ public class Macros extends IQ {
         public MacroGroup parseMacroGroups(String macros) throws Exception {
 
         	MacroGroup group = null;
-        	XmlPullParser parser = new MXParser();
+        	XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         	parser.setInput(new StringReader(macros));
 			int eventType = parser.getEventType();
 			while (eventType != XmlPullParser.END_DOCUMENT) {		

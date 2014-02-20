@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaTyp
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.smackx.bytestreams.ibb.provider.OpenIQProvider;
 import org.junit.Test;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -76,7 +76,7 @@ public class OpenIQProviderTest {
 
     private XmlPullParser getParser(String control) throws XmlPullParserException,
                     IOException {
-        XmlPullParser parser = new MXParser();
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setInput(new StringReader(control));
         while (true) {
             if (parser.next() == XmlPullParser.START_TAG

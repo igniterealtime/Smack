@@ -32,7 +32,7 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.ConnectionUtils;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -411,7 +411,7 @@ public abstract class SmackTestCase extends TestCase {
         InputStream systemStream = null;
         try {
             systemStream = url.openStream();
-            XmlPullParser parser = new MXParser();
+            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(systemStream, "UTF-8");
             int eventType = parser.getEventType();

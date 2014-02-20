@@ -24,7 +24,7 @@ import java.util.List;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.FileUtils;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 public class ExtensionsStartupClasses implements SmackInitializer {
@@ -41,7 +41,7 @@ public class ExtensionsStartupClasses implements SmackInitializer {
         int eventType;
         try {
             is = FileUtils.getStreamForUrl(EXTENSIONS_XML, null);
-            parser = new MXParser();
+            parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(is, "UTF-8");
             eventType = parser.getEventType();

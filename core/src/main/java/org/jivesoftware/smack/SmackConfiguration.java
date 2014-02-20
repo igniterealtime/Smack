@@ -31,7 +31,7 @@ import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.FileUtils;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -430,7 +430,7 @@ public final class SmackConfiguration {
     }
 
     private static void readFile(InputStream cfgFileStream) throws Exception {
-        XmlPullParser parser = new MXParser();
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
         parser.setInput(cfgFileStream, "UTF-8");
         int eventType = parser.getEventType();

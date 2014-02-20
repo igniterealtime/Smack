@@ -32,7 +32,7 @@ import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.StringUtils;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -200,7 +200,7 @@ public class DefaultRosterStore implements RosterStore {
         List<String> groupNames = new ArrayList<String>();
 
         try {
-            XmlPullParser parser = new MXParser();
+            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setInput(new StringReader(s));
 
             boolean done = false;

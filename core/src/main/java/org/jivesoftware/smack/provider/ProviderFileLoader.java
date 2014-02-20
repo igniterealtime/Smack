@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -83,7 +83,7 @@ public class ProviderFileLoader implements ProviderLoader {
         
         // Load processing providers.
         try {
-            XmlPullParser parser = new MXParser();
+            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(providerStream, "UTF-8");
             int eventType = parser.getEventType();

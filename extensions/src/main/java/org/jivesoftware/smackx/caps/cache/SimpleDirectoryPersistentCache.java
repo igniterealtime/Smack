@@ -34,7 +34,7 @@ import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.provider.DiscoverInfoProvider;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -159,7 +159,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
         Reader reader = new StringReader(fileContent);
         XmlPullParser parser;
         try {
-            parser = new MXParser();
+            parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(reader);
         } catch (XmlPullParserException xppe) {

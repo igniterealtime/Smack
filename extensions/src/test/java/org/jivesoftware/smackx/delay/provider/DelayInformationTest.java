@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInfoProvider;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.junit.Test;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -237,7 +237,7 @@ public class DelayInformationTest {
     
     private XmlPullParser getParser(String control, String startTag)
                     throws XmlPullParserException, IOException {
-        XmlPullParser parser = new MXParser();
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
         parser.setInput(new StringReader(control));
 

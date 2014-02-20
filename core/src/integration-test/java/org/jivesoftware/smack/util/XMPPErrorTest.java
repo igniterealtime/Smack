@@ -20,7 +20,7 @@ import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -191,7 +191,7 @@ public class XMPPErrorTest extends SmackTestCase {
     }
     
     private XmlPullParser getParserFromXML(String xml) throws XmlPullParserException {
-    	MXParser parser = new MXParser();
+    	XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
     	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
     	parser.setInput(new StringReader(xml));
     	return parser;

@@ -32,7 +32,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -132,7 +132,7 @@ public class DeliveryReceiptTest {
 
     private XmlPullParser getParser(String control, String startTag)
                     throws XmlPullParserException, IOException {
-        XmlPullParser parser = new MXParser();
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
         parser.setInput(new StringReader(control));
         while (true) {

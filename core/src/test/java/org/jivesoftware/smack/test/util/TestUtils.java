@@ -19,7 +19,7 @@ package org.jivesoftware.smack.test.util;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -40,8 +40,9 @@ final public class TestUtils {
     }
 
     public static XmlPullParser getParser(String stanza, String startTag) {
-        XmlPullParser parser = new MXParser();
+        XmlPullParser parser;
         try {
+            parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(new StringReader(stanza));
             boolean found = false;

@@ -26,7 +26,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -152,7 +152,7 @@ class PacketReader {
      */
     private void resetParser() {
         try {
-            parser = new MXParser();
+            parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(connection.reader);
         }
