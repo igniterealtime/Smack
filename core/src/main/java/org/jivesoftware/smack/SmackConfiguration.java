@@ -19,7 +19,6 @@ package org.jivesoftware.smack;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,7 +72,7 @@ public final class SmackConfiguration {
             InputStream is = FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null);
             byte[] buf = new byte[1024];
             is.read(buf);
-            smackVersion = new String(buf, Charset.forName("UTF-8"));
+            smackVersion = new String(buf, "UTF-8");
         } catch(Exception e) {
             log.log(Level.SEVERE, "Could not determine Smack version", e);
             smackVersion = "unkown";
