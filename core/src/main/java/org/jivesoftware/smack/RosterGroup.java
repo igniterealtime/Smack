@@ -154,7 +154,7 @@ public class RosterGroup {
     /**
      * Adds a roster entry to this group. If the entry was unfiled then it will be removed from 
      * the unfiled list and will be added to this group.
-     * Note that this is an asynchronous call -- Smack must wait for the server
+     * Note that this is a synchronous call -- Smack must wait for the server
      * to receive the updated roster.
      *
      * @param entry a roster entry.
@@ -183,11 +183,11 @@ public class RosterGroup {
      * Removes a roster entry from this group. If the entry does not belong to any other group 
      * then it will be considered as unfiled, therefore it will be added to the list of unfiled 
      * entries.
-     * Note that this is an asynchronous call -- Smack must wait for the server
+     * Note that this is a synchronous call -- Smack must wait for the server
      * to receive the updated roster.
      *
      * @param entry a roster entry.
-     * @throws XMPPException if an error occured while trying to remove the entry from the group. 
+     * @throws XMPPException if an error occurred while trying to remove the entry from the group. 
      */
     public void removeEntry(RosterEntry entry) throws XMPPException {
         PacketCollector collector = null;

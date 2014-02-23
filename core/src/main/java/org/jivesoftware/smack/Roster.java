@@ -296,7 +296,7 @@ public class Roster {
     /**
      * Removes a roster entry from the roster. The roster entry will also be removed from the
      * unfiled entries or from any roster group where it could belong and will no longer be part
-     * of the roster. Note that this is an asynchronous call -- Smack must wait for the server
+     * of the roster. Note that this is a synchronous call -- Smack must wait for the server
      * to send an updated subscription status.
      *
      * @param entry a roster entry.
