@@ -186,7 +186,7 @@ public class PingTest {
     public void checkSuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
         DiscoverInfo info = new DiscoverInfo();
-        info.addFeature(Ping.NAMESPACE);
+        info.addFeature(PingManager.NAMESPACE);
         
         //@formatter:off
         String reply = 
@@ -209,7 +209,7 @@ public class PingTest {
     public void checkUnuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
         DiscoverInfo info = new DiscoverInfo();
-        info.addFeature(Ping.NAMESPACE);
+        info.addFeature(PingManager.NAMESPACE);
         
         //@formatter:off
         String reply = 

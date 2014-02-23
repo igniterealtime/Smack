@@ -30,6 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -221,6 +225,8 @@ public abstract class Connection {
     private boolean rosterVersioningSupported = false;
 
     protected XMPPInputOutputStream compressionHandler;
+
+    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
 
     /**
      * Create a new Connection to a XMPP server.
@@ -950,5 +956,9 @@ public abstract class Connection {
                 packetInterceptor.interceptPacket(packet);
             }
         }
+    }
+
+    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+        return executorService.schedule(command, delay, unit);
     }
 }
