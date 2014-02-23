@@ -77,6 +77,9 @@ public class Socks5Proxy {
     /* SOCKS5 proxy singleton */
     private static Socks5Proxy socks5Server;
 
+    private static boolean localSocks5ProxyEnabled = true;
+    private static int localSocks5ProxyPort = 7777;
+
     /* reusable implementation of a SOCKS5 proxy server process */
     private Socks5ServerProcess serverProcess;
 
@@ -110,6 +113,43 @@ public class Socks5Proxy {
 
     }
 
+   /**
+    * Returns true if the local Socks5 proxy should be started. Default is true.
+    * 
+    * @return if the local Socks5 proxy should be started
+    */
+   public static boolean isLocalSocks5ProxyEnabled() {
+       return localSocks5ProxyEnabled;
+   }
+
+   /**
+    * Sets if the local Socks5 proxy should be started. Default is true.
+    * 
+    * @param localSocks5ProxyEnabled if the local Socks5 proxy should be started
+    */
+   public static void setLocalSocks5ProxyEnabled(boolean localSocks5ProxyEnabled) {
+       Socks5Proxy.localSocks5ProxyEnabled = localSocks5ProxyEnabled;
+   }
+
+   /**
+    * Return the port of the local Socks5 proxy. Default is 7777.
+    * 
+    * @return the port of the local Socks5 proxy
+    */
+   public static int getLocalSocks5ProxyPort() {
+       return localSocks5ProxyPort;
+   }
+
+   /**
+    * Sets the port of the local Socks5 proxy. Default is 7777. If you set the port to a negative
+    * value Smack tries the absolute value and all following until it finds an open port.
+    * 
+    * @param localSocks5ProxyPort the port of the local Socks5 proxy to set
+    */
+   public static void setLocalSocks5ProxyPort(int localSocks5ProxyPort) {
+       Socks5Proxy.localSocks5ProxyPort = localSocks5ProxyPort;
+   }
+
     /**
      * Returns the local SOCKS5 proxy server.
      * 
@@ -119,7 +159,7 @@ public class Socks5Proxy {
         if (socks5Server == null) {
             socks5Server = new Socks5Proxy();
         }
-        if (SmackConfiguration.isLocalSocks5ProxyEnabled()) {
+        if (isLocalSocks5ProxyEnabled()) {
             socks5Server.start();
         }
         return socks5Server;
@@ -133,8 +173,8 @@ public class Socks5Proxy {
             return;
         }
         try {
-            if (SmackConfiguration.getLocalSocks5ProxyPort() < 0) {
-                int port = Math.abs(SmackConfiguration.getLocalSocks5ProxyPort());
+            if (getLocalSocks5ProxyPort() < 0) {
+                int port = Math.abs(getLocalSocks5ProxyPort());
                 for (int i = 0; i < 65535 - port; i++) {
                     try {
                         this.serverSocket = new ServerSocket(port + i);
@@ -146,7 +186,7 @@ public class Socks5Proxy {
                 }
             }
             else {
-                this.serverSocket = new ServerSocket(SmackConfiguration.getLocalSocks5ProxyPort());
+                this.serverSocket = new ServerSocket(getLocalSocks5ProxyPort());
             }
 
             if (this.serverSocket != null) {
@@ -156,7 +196,7 @@ public class Socks5Proxy {
         }
         catch (IOException e) {
             // couldn't setup server
-            log.log(Level.SEVERE, "couldn't setup local SOCKS5 proxy on port " + SmackConfiguration.getLocalSocks5ProxyPort(), e);
+            log.log(Level.SEVERE, "couldn't setup local SOCKS5 proxy on port " + getLocalSocks5ProxyPort(), e);
         }
     }
 

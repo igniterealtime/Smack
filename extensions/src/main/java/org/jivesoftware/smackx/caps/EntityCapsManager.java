@@ -21,7 +21,6 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -77,6 +76,8 @@ public class EntityCapsManager {
     private static final Map<String, MessageDigest> SUPPORTED_HASHES = new HashMap<String, MessageDigest>();
 
     protected static EntityCapsPersistentCache persistentCache;
+
+    private static boolean autoEnableEntityCaps = true;
 
     private static Map<Connection, EntityCapsManager> instances = Collections
             .synchronizedMap(new WeakHashMap<Connection, EntityCapsManager>());
@@ -249,7 +250,7 @@ public class EntityCapsManager {
         // This calculates the local entity caps version
         updateLocalEntityCaps();
 
-        if (SmackConfiguration.autoEnableEntityCaps())
+        if (autoEnableEntityCaps)
             enableEntityCaps();
 
         PacketFilter packetFilter = new AndFilter(new PacketTypeFilter(Presence.class), new PacketExtensionFilter(

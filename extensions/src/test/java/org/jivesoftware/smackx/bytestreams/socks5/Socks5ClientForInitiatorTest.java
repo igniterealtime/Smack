@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -87,7 +86,7 @@ public class Socks5ClientForInitiatorTest {
     public void shouldFailIfTargetIsNotConnectedToLocalSocks5Proxy() throws Exception {
 
         // start a local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyPort(proxyPort);
+        Socks5Proxy.setLocalSocks5ProxyPort(proxyPort);
         Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
         socks5Proxy.start();
 
@@ -125,7 +124,7 @@ public class Socks5ClientForInitiatorTest {
     public void shouldSuccessfullyConnectThroughLocalSocks5Proxy() throws Exception {
 
         // start a local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyPort(proxyPort);
+        Socks5Proxy.setLocalSocks5ProxyPort(proxyPort);
         Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
         socks5Proxy.start();
 
@@ -308,7 +307,7 @@ public class Socks5ClientForInitiatorTest {
      */
     @After
     public void cleanup() {
-        SmackConfiguration.setLocalSocks5ProxyPort(7777);
+        Socks5Proxy.setLocalSocks5ProxyPort(7777);
     }
 
 }

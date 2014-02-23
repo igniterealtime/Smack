@@ -24,7 +24,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -427,7 +426,7 @@ public class Socks5ByteStreamRequestTest {
     @After
     public void cleanUp() {
         Socks5TestProxy.stopProxy();
-        SmackConfiguration.setLocalSocks5ProxyEnabled(true);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(true);
     }
 
 }

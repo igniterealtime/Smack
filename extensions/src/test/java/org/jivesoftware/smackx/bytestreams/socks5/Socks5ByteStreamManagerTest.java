@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -169,7 +168,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldFailIfNoSocks5ProxyFound1() {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -220,7 +219,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldFailIfNoSocks5ProxyFound2() {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -284,7 +283,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldBlacklistNonSocks5Proxies() {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -375,7 +374,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldFailIfTargetDoesNotAcceptSocks5Bytestream() {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -465,7 +464,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldFailIfTargetUsesInvalidSocks5Proxy() {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -547,7 +546,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldFailIfInitiatorCannotConnectToSocks5Proxy() {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -641,7 +640,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldNegotiateSocks5BytestreamAndTransferData() throws Exception {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -754,8 +753,8 @@ public class Socks5ByteStreamManagerTest {
     public void shouldUseMultipleAddressesForLocalSocks5Proxy() throws Exception {
 
         // enable clients local SOCKS5 proxy on port 7778
-        SmackConfiguration.setLocalSocks5ProxyEnabled(true);
-        SmackConfiguration.setLocalSocks5ProxyPort(7778);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(true);
+        Socks5Proxy.setLocalSocks5ProxyPort(7778);
 
         // start a local SOCKS5 proxy
         Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
@@ -837,7 +836,7 @@ public class Socks5ByteStreamManagerTest {
         // reset proxy settings
         socks5Proxy.stop();
         socks5Proxy.removeLocalAddress("localAddress");
-        SmackConfiguration.setLocalSocks5ProxyPort(7777);
+        Socks5Proxy.setLocalSocks5ProxyPort(7777);
 
     }
 
@@ -852,7 +851,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldPrioritizeSecondSocks5ProxyOnSecondAttempt() throws Exception {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -935,7 +934,7 @@ public class Socks5ByteStreamManagerTest {
     public void shouldNotPrioritizeSocks5ProxyIfPrioritizationDisabled() throws Exception {
 
         // disable clients local SOCKS5 proxy
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
@@ -1093,7 +1092,7 @@ public class Socks5ByteStreamManagerTest {
     @After
     public void cleanUp() {
         Socks5TestProxy.stopProxy();
-        SmackConfiguration.setLocalSocks5ProxyEnabled(true);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(true);
     }
 
 }

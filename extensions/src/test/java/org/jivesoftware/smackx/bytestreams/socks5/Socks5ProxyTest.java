@@ -32,7 +32,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.SmackConfiguration;
 import org.junit.After;
 import org.junit.Test;
 
@@ -48,7 +47,7 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldBeASingleton() {
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
 
         Socks5Proxy proxy1 = Socks5Proxy.getSocks5Proxy();
         Socks5Proxy proxy2 = Socks5Proxy.getSocks5Proxy();
@@ -63,7 +62,7 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldNotBeRunningIfDisabled() {
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         assertFalse(proxy.isRunning());
     }
@@ -75,12 +74,12 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldUseFreePortOnNegativeValues() throws Exception {
-        SmackConfiguration.setLocalSocks5ProxyEnabled(false);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(false);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         assertFalse(proxy.isRunning());
 
         ServerSocket serverSocket = new ServerSocket(0);
-        SmackConfiguration.setLocalSocks5ProxyPort(-serverSocket.getLocalPort());
+        Socks5Proxy.setLocalSocks5ProxyPort(-serverSocket.getLocalPort());
 
         proxy.start();
 
@@ -155,7 +154,7 @@ public class Socks5ProxyTest {
     public void shouldOnlyStartOneServerThread() {
         int threadCount = Thread.activeCount();
 
-        SmackConfiguration.setLocalSocks5ProxyPort(7890);
+        Socks5Proxy.setLocalSocks5ProxyPort(7890);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
@@ -189,7 +188,7 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldCloseSocketIfNoSocks5Request() throws Exception {
-        SmackConfiguration.setLocalSocks5ProxyPort(7890);
+        Socks5Proxy.setLocalSocks5ProxyPort(7890);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
@@ -219,7 +218,7 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldRespondWithErrorIfNoSupportedAuthenticationMethod() throws Exception {
-        SmackConfiguration.setLocalSocks5ProxyPort(7890);
+        Socks5Proxy.setLocalSocks5ProxyPort(7890);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
@@ -249,7 +248,7 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldRespondWithErrorIfConnectionIsNotAllowed() throws Exception {
-        SmackConfiguration.setLocalSocks5ProxyPort(7890);
+        Socks5Proxy.setLocalSocks5ProxyPort(7890);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
@@ -290,7 +289,7 @@ public class Socks5ProxyTest {
      */
     @Test
     public void shouldSuccessfullyEstablishConnection() throws Exception {
-        SmackConfiguration.setLocalSocks5ProxyPort(7890);
+        Socks5Proxy.setLocalSocks5ProxyPort(7890);
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
@@ -355,8 +354,8 @@ public class Socks5ProxyTest {
      */
     @After
     public void cleanup() {
-        SmackConfiguration.setLocalSocks5ProxyEnabled(true);
-        SmackConfiguration.setLocalSocks5ProxyPort(7777);
+        Socks5Proxy.setLocalSocks5ProxyEnabled(true);
+        Socks5Proxy.setLocalSocks5ProxyPort(7777);
         Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
         try {
             String address = InetAddress.getLocalHost().getHostAddress();
