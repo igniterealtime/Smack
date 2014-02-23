@@ -49,23 +49,23 @@ public class PacketCollector {
      * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
      * all packets will match this collector.
      *
-     * @param conection the connection the collector is tied to.
+     * @param connection the connection the collector is tied to.
      * @param packetFilter determines which packets will be returned by this collector.
      */
-    protected PacketCollector(Connection conection, PacketFilter packetFilter) {
-    	this(conection, packetFilter, SmackConfiguration.getPacketCollectorSize());
+    protected PacketCollector(Connection connection, PacketFilter packetFilter) {
+        this(connection, packetFilter, SmackConfiguration.getPacketCollectorSize());
     }
 
     /**
      * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
      * all packets will match this collector.
      *
-     * @param conection the connection the collector is tied to.
+     * @param connection the connection the collector is tied to.
      * @param packetFilter determines which packets will be returned by this collector.
      * @param maxSize the maximum number of packets that will be stored in the collector.
      */
-    protected PacketCollector(Connection conection, PacketFilter packetFilter, int maxSize) {
-        this.connection = conection;
+    protected PacketCollector(Connection connection, PacketFilter packetFilter, int maxSize) {
+        this.connection = connection;
         this.packetFilter = packetFilter;
         this.resultQueue = new ArrayBlockingQueue<Packet>(maxSize);
     }
