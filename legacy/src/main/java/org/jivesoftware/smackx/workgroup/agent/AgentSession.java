@@ -769,11 +769,7 @@ public class AgentSession {
         notes.setTo(workgroupJID);
         notes.setSessionID(sessionID);
         notes.setNotes(note);
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(notes.getPacketID()));
-        // Send the request
-        connection.sendPacket(notes);
-
-        collector.nextResultOrThrow();
+        connection.createPacketCollectorAndSend(notes).nextResultOrThrow();
     }
 
     /**

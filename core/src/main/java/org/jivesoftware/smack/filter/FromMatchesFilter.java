@@ -37,30 +37,72 @@ public class FromMatchesFilter implements PacketFilter {
     private boolean matchBareJID = false;
 
     /**
-     * Creates a "from" filter using the "from" field part. If the specified address is a bare JID
-     * then the filter will match any address whose bare JID matches the specified JID. But if the
-     * specified address is a full JID then the filter will only match if the sender of the packet
-     * matches the specified resource.
-     *
-     * @param address the from field value the packet must match. Could be a full or bare JID.
+     * @see FromMatchesFilter#create(String)
      */
+    @Deprecated
     public FromMatchesFilter(String address) {
-        if (address == null) {
-            throw new IllegalArgumentException("Parameter cannot be null.");
-        }
-        this.address = address.toLowerCase();
-        matchBareJID = "".equals(StringUtils.parseResource(address));
+        this(address, "".equals(StringUtils.parseResource(address)));
+    }
+
+    /**
+     * Creates a filter matching on the "from" field. The from address must be the same as the
+     * filter address. The second parameter specifies whether the full or the bare addresses are
+     * compared.
+     *
+     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     *        have a from address.
+     * @param matchBare
+     */
+    public FromMatchesFilter(String address, boolean matchBare) {
+        this.address = (address == null) ? null : address.toLowerCase();
+        matchBareJID = matchBare;
+    }
+
+    /**
+     * Creates a filter matching on the "from" field. If the filter address is bare, compares
+     * the filter address with the bare from address. Otherwise, compares the filter address
+     * with the full from address.
+     *
+     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     *        have a from address.
+     */
+    public static FromMatchesFilter create(String address) {
+        return new FromMatchesFilter(address, "".equals(StringUtils.parseResource(address))) ;
+    }
+
+    /**
+     * Creates a filter matching on the "from" field. Compares the bare version of from and filter
+     * address.
+     *
+     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     *        have a from address.
+     */
+    public static FromMatchesFilter createBare(String address) {
+        address = (address == null) ? null : StringUtils.parseBareAddress(address);
+        return new FromMatchesFilter(address, true);
+    }
+
+
+    /**
+     * Creates a filter matching on the "from" field. Compares the full version of from and filter
+     * address.
+     *
+     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     *        have a from address.
+     */
+    public static FromMatchesFilter createFull(String address) {
+        return new FromMatchesFilter(address, false);
     }
 
     public boolean accept(Packet packet) {
         String from = packet.getFrom();
         if (from == null) {
-            return false;
+            return address == null;
         }
         if (matchBareJID) {
-            from = StringUtils.parseBareAddress(from);
+            from = StringUtils.parseBareAddress(from).toLowerCase();
         }
-        return address.equals(from.toLowerCase());
+        return address.equals(from);
     }
 
     public String toString() {

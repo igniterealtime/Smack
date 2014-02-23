@@ -24,10 +24,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -397,10 +396,7 @@ public class RTPBridge extends IQ {
         RTPBridge rtpPacket = new RTPBridge(sessionID);
         rtpPacket.setTo(RTPBridge.NAME + "." + connection.getServiceName());
 
-        PacketCollector collector = connection
-                .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
-
-        connection.sendPacket(rtpPacket);
+        PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
 
         RTPBridge response = (RTPBridge) collector.nextResult();
 
@@ -476,10 +472,7 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        PacketCollector collector = connection
-                .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
-
-        connection.sendPacket(rtpPacket);
+        PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
 
         RTPBridge response = (RTPBridge) collector.nextResult();
 
@@ -507,10 +500,7 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        PacketCollector collector = xmppConnection
-                .createPacketCollector(new PacketIDFilter(rtpPacket.getPacketID()));
-
-        xmppConnection.sendPacket(rtpPacket);
+        PacketCollector collector = xmppConnection.createPacketCollectorAndSend(rtpPacket);
 
         RTPBridge response = (RTPBridge) collector.nextResult();
 

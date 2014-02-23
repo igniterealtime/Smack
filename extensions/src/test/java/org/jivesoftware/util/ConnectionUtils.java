@@ -23,6 +23,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -79,7 +80,7 @@ public class ConnectionUtils {
             }
 
         };
-        when(connection.createPacketCollectorAndSend(isA(Packet.class))).thenAnswer(collectorAndSend);
+        when(connection.createPacketCollectorAndSend(isA(IQ.class))).thenAnswer(collectorAndSend);
 
         // mock send method
         Answer<Object> addIncoming = new Answer<Object>() {

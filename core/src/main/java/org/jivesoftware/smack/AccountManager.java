@@ -17,20 +17,16 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Registration;
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -246,11 +242,7 @@ public class AccountManager {
         map.put("username",StringUtils.parseName(connection.getUser()));
         map.put("password",newPassword);
         reg.setAttributes(map);
-        PacketFilter filter = new AndFilter(new PacketIDFilter(reg.getPacketID()),
-                new PacketTypeFilter(IQ.class));
-        PacketCollector collector = connection.createPacketCollector(filter);
-        connection.sendPacket(reg);
-        collector.nextResultOrThrow();
+        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**

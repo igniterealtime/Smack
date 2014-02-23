@@ -35,79 +35,333 @@ public class FromMatchesFilterTest {
     private static final String BASE_JID2 = "sss@muc.myserver.com";
     private static final String FULL_JID2 = BASE_JID2 + "/resource";
 
+    private static final String BASE_JID3 = "ss@muc.myserver.comm.net";
+
     private static final String SERVICE_JID1 = "muc.myserver.com";
     private static final String SERVICE_JID2 = "pubsub.myserver.com";
 
     @Test
-    public void compareMatchingFullJid()
+    public void oldCompareMatchingFullJid()
     {
-	FromMatchesFilter filter = new FromMatchesFilter(FULL_JID1_R1);
-	Packet packet = new Packet() {
-	    @Override
-	    public String toXML() { return null; }
-	};
+        FromMatchesFilter filter = new FromMatchesFilter(FULL_JID1_R1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
 
-	packet.setFrom(FULL_JID1_R1);
-	assertTrue(filter.accept(packet));
-	
-	packet.setFrom(BASE_JID1);
-	assertFalse(filter.accept(packet));
-	
-	packet.setFrom(FULL_JID1_R2);
-	assertFalse(filter.accept(packet));
-	
-	packet.setFrom(BASE_JID2);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
 
-	packet.setFrom(FULL_JID2);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
     }
 
     @Test
-    public void compareMatchingBaseJid()
+    public void oldCompareMatchingBaseJid()
     {
-	FromMatchesFilter filter = new FromMatchesFilter(BASE_JID1);
-	Packet packet = new Packet() {
-	    @Override
-	    public String toXML() { return null; }
-	};
+        FromMatchesFilter filter = new FromMatchesFilter(BASE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
 
-	packet.setFrom(BASE_JID1);
-	assertTrue(filter.accept(packet));
+        packet.setFrom(BASE_JID1);
+        assertTrue(filter.accept(packet));
 
-	packet.setFrom(FULL_JID1_R1);
-	assertTrue(filter.accept(packet));
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
 
-	packet.setFrom(FULL_JID1_R2);
-	assertTrue(filter.accept(packet));
+        packet.setFrom(FULL_JID1_R2);
+        assertTrue(filter.accept(packet));
 
-	packet.setFrom(BASE_JID2);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
 
-	packet.setFrom(FULL_JID2);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
     }
 
     @Test
-    public void compareMatchingServiceJid()
+    public void oldCompareMatchingServiceJid()
     {
-	FromMatchesFilter filter = new FromMatchesFilter(SERVICE_JID1);
-	Packet packet = new Packet() {
-	    @Override
-	    public String toXML() { return null; }
-	};
+        FromMatchesFilter filter = new FromMatchesFilter(SERVICE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
 
-	packet.setFrom(SERVICE_JID1);
-	assertTrue(filter.accept(packet));
+        packet.setFrom(SERVICE_JID1);
+        assertTrue(filter.accept(packet));
 
-	packet.setFrom(SERVICE_JID2);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(SERVICE_JID2);
+        assertFalse(filter.accept(packet));
 
-	packet.setFrom(BASE_JID1);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
 
-	packet.setFrom(FULL_JID1_R1);
-	assertFalse(filter.accept(packet));
+        packet.setFrom(FULL_JID1_R1);
+        assertFalse(filter.accept(packet));
 
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
     }
+
+    @Test
+    public void autoCompareMatchingFullJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.create(FULL_JID1_R1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
+    @Test
+    public void autoCompareMatchingBaseJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.create(BASE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(BASE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+}
+
+    @Test
+    public void autoCompareMatchingServiceJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.create(SERVICE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(SERVICE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(SERVICE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
+    @Test
+    public void bareCompareMatchingFullJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.createBare(FULL_JID1_R1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(BASE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
+    @Test
+    public void bareCompareMatchingBaseJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.createBare(BASE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(BASE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+}
+
+    @Test
+    public void bareCompareMatchingServiceJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.createBare(SERVICE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(SERVICE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(SERVICE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
+    @Test
+    public void fullCompareMatchingFullJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.createFull(FULL_JID1_R1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(FULL_JID1_R1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
+    @Test
+    public void fullCompareMatchingBaseJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.createFull(BASE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(BASE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
+    @Test
+    public void fullCompareMatchingServiceJid()
+    {
+        FromMatchesFilter filter = FromMatchesFilter.createFull(SERVICE_JID1);
+        Packet packet = new Packet() {
+            @Override
+            public String toXML() { return null; }
+        };
+
+        packet.setFrom(SERVICE_JID1);
+        assertTrue(filter.accept(packet));
+
+        packet.setFrom(SERVICE_JID2);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(FULL_JID1_R1);
+        assertFalse(filter.accept(packet));
+
+        packet.setFrom(BASE_JID3);
+        assertFalse(filter.accept(packet));
+    }
+
 }

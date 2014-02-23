@@ -21,10 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -193,10 +192,7 @@ public class STUN extends IQ {
         STUN stunPacket = new STUN();
         stunPacket.setTo(DOMAIN + "." + connection.getServiceName());
 
-        PacketCollector collector = connection
-                .createPacketCollector(new PacketIDFilter(stunPacket.getPacketID()));
-
-        connection.sendPacket(stunPacket);
+        PacketCollector collector = connection.createPacketCollectorAndSend(stunPacket);
 
         STUN response = (STUN) collector.nextResult();
 

@@ -25,7 +25,7 @@ import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -130,7 +130,7 @@ public class CarbonManager {
                 }
                 connection.removePacketListener(this);
             }
-        }, new PacketIDFilter(setIQ.getPacketID()));
+        }, new IQReplyFilter(setIQ, connection));
 
         connection.sendPacket(setIQ);
     }

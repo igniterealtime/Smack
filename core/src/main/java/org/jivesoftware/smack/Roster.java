@@ -17,8 +17,21 @@
 
 package org.jivesoftware.smack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -26,11 +39,6 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.StringUtils;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
@@ -192,7 +200,7 @@ public class Roster {
         RosterPacket packet = new RosterPacket();
         if (rosterStore != null && connection.isRosterVersioningSupported()) {
             packet.setVersion(rosterStore.getRosterVersion());
-            PacketFilter filter = new PacketIDFilter(packet.getPacketID());
+            PacketFilter filter = new IQReplyFilter(packet, connection);
             connection.addPacketListener(new RosterResultListener(), filter);
         }
         connection.sendPacket(packet);

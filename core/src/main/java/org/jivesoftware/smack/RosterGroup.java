@@ -17,16 +17,15 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.RosterPacket;
-import org.jivesoftware.smack.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A group of roster entries.
@@ -172,9 +171,7 @@ public class RosterGroup {
                 item.addGroupName(getName());
                 packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
-                collector = connection
-                        .createPacketCollector(new PacketIDFilter(packet.getPacketID()));
-                connection.sendPacket(packet);
+                collector = connection.createPacketCollectorAndSend(packet);
             }
         }
         if (collector != null) {
@@ -206,9 +203,7 @@ public class RosterGroup {
                 item.removeGroupName(this.getName());
                 packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
-                collector = connection
-                        .createPacketCollector(new PacketIDFilter(packet.getPacketID()));
-                connection.sendPacket(packet);
+                collector = connection.createPacketCollectorAndSend(packet);
             }
         }
         if (collector != null) {

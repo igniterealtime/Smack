@@ -37,11 +37,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
@@ -577,15 +578,15 @@ public abstract class Connection {
 
     /**
      * Creates a new packet collector collecting packets that are replies to <code>packet</code>.
-     * Does also send <code>packet</code>. Note that the packet filter is at the moment created as
-     * ID filter of <code>packet</code>'s ID. This may change in the future to also check the
-     * correct "from JID" value.
-     * 
+     * Does also send <code>packet</code>. The packet filter for the collector is an
+     * {@link IQReplyFilter}, guaranteeing that packet id and JID in the 'from' address have
+     * expected values.
+     *
      * @param packet the packet to filter responses from
      * @return a new packet collector.
      */
-    public PacketCollector createPacketCollectorAndSend(Packet packet) {
-        PacketFilter packetFilter = new PacketIDFilter(packet.getPacketID());
+    public PacketCollector createPacketCollectorAndSend(IQ packet) {
+        PacketFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollector(packetFilter);
         // Now we can send the packet as the collector has been created

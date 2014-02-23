@@ -31,7 +31,6 @@ import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -409,9 +408,7 @@ public class FileTransferNegotiator {
         si.setTo(userID);
         si.setType(IQ.Type.SET);
 
-        PacketCollector collector = connection
-                .createPacketCollector(new PacketIDFilter(si.getPacketID()));
-        connection.sendPacket(si);
+        PacketCollector collector = connection.createPacketCollectorAndSend(si);
         Packet siResponse = collector.nextResult(responseTimeout);
         collector.cancel();
 
