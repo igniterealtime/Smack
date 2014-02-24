@@ -141,8 +141,6 @@ public class OfflineMessageManager {
             item.setAction("view");
             request.addItem(item);
         }
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
-
         // Filter offline messages that were requested by this request
         PacketFilter messageFilter = new AndFilter(packetFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -152,6 +150,7 @@ public class OfflineMessageManager {
             }
         });
         PacketCollector messageCollector = connection.createPacketCollector(messageFilter);
+        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
         // Collect the received offline messages
         Message message = (Message) messageCollector.nextResult();
         while (message != null) {
