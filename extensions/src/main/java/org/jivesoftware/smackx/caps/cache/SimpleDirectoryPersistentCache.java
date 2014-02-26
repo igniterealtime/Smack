@@ -47,7 +47,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  */
 public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache {
-    private static Logger log = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
     
     private File cacheDir;
     private StringEncoder filenameEncoder;
@@ -94,7 +94,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
             if (nodeFile.createNewFile())
                 writeInfoToFile(nodeFile, info);
         } catch (IOException e) {
-            log.log(Level.SEVERE, "Failed to write disco info to file", e);
+            LOGGER.log(Level.SEVERE, "Failed to write disco info to file", e);
         }
     }
 
@@ -163,7 +163,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(reader);
         } catch (XmlPullParserException xppe) {
-            log.log(Level.SEVERE, "Exception initializing parser", xppe);
+            LOGGER.log(Level.SEVERE, "Exception initializing parser", xppe);
             return null;
         }
 

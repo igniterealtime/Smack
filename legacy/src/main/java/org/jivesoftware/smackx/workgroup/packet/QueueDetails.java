@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * currently in a queue.
  */
 public class QueueDetails implements PacketExtension {
-    private static Logger log = Logger.getLogger(QueueDetails.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(QueueDetails.class.getName());
     
     /**
      * Element name of the packet extension.
@@ -178,7 +178,7 @@ public class QueueDetails implements PacketExtension {
                         }
                         else if( parser.getName().equals( "waitTime" ) ) {
                             Date wait = dateFormat.parse(parser.nextText());
-                            log.fine(wait.toString());
+                            LOGGER.fine(wait.toString());
                         }
 
                         eventType = parser.next();

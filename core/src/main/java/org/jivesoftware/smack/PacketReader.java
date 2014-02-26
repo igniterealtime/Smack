@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  */
 class PacketReader {
 
-    private static Logger log = Logger.getLogger(PacketReader.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PacketReader.class.getName());
     
     private Thread readerThread;
     private ExecutorService listenerExecutor;
@@ -135,7 +135,7 @@ class PacketReader {
                 catch (Exception e) {
                     // Catch and print any exception so we can recover
                     // from a faulty listener and finish the shutdown process
-                    log.log(Level.SEVERE, "Error in listener while closing connection", e);
+                    LOGGER.log(Level.SEVERE, "Error in listener while closing connection", e);
                 }
             }
         }
@@ -157,7 +157,7 @@ class PacketReader {
             parser.setInput(connection.reader);
         }
         catch (XmlPullParserException xppe) {
-            log.log(Level.WARNING, "Error while resetting parser", xppe);
+            LOGGER.log(Level.WARNING, "Error while resetting parser", xppe);
         }
     }
 
@@ -457,7 +457,7 @@ class PacketReader {
                 try {
                     listenerWrapper.notifyListener(packet);
                 } catch (Exception e) {
-                    log.log(Level.SEVERE, "Exception in packet listener", e);
+                    LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
                 }
             }
         }

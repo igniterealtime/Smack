@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * @author loki der quaeler
  */
 public class ListenerEventDispatcher implements Runnable {
-    private static Logger log = Logger.getLogger(ListenerEventDispatcher.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ListenerEventDispatcher.class.getName());
 
     protected transient ArrayList<TripletContainer> triplets;
 
@@ -95,7 +95,7 @@ public class ListenerEventDispatcher implements Runnable {
             try {
                 tc.getListenerMethod().invoke(tc.getListenerInstance(), tc.getMethodArguments());
             } catch (Exception e) {
-                log.log(Level.SEVERE, "Exception dispatching an event", e);
+                LOGGER.log(Level.SEVERE, "Exception dispatching an event", e);
             }
         }
 

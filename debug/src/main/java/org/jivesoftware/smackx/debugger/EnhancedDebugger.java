@@ -63,7 +63,7 @@ import java.util.logging.Logger;
  */
 public class EnhancedDebugger implements SmackDebugger {
 
-    private static Logger log = Logger.getLogger(EnhancedDebugger.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(EnhancedDebugger.class.getName());
     
     private static final String NEWLINE = "\n";
 
@@ -428,7 +428,7 @@ public class EnhancedDebugger implements SmackDebugger {
                                     receivedText.replaceRange("", 0, receivedText.getLineEndOffset(0));
                                 }
                                 catch (BadLocationException e) {
-                                    log.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: " + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
+                                    LOGGER.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: " + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
                                 }
                             }
                             receivedText.append(str.substring(0, index + 1));
@@ -463,7 +463,7 @@ public class EnhancedDebugger implements SmackDebugger {
                                 sentText.replaceRange("", 0, sentText.getLineEndOffset(0));
                             }
                             catch (BadLocationException e) {
-                                log.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: " + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
+                                LOGGER.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: " + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
                             }
                         }
 
@@ -896,10 +896,10 @@ public class EnhancedDebugger implements SmackDebugger {
 
         }
         catch (TransformerConfigurationException tce) {
-            log.log(Level.SEVERE, "Transformer Factory error", tce);
+            LOGGER.log(Level.SEVERE, "Transformer Factory error", tce);
         }
         catch (TransformerException te) {
-            log.log(Level.SEVERE, "Transformation error", te);
+            LOGGER.log(Level.SEVERE, "Transformation error", te);
         }
         return str;
     }

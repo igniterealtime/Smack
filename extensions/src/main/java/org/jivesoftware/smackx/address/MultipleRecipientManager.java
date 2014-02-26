@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * @author Gaston Dombiak
  */
 public class MultipleRecipientManager {
-    private static Logger log = Logger.getLogger(MultipleRecipientManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MultipleRecipientManager.class.getName());
     
     /**
      * Create a cache to hold the 100 most recently accessed elements for a period of
@@ -315,7 +315,7 @@ public class MultipleRecipientManager {
                         services.put(serviceName, serviceAddress == null ? "" : serviceAddress);
                     }
                     catch (XMPPException e) {
-                        log.log(Level.SEVERE, "Error occurred retrieving multiple recipients service", e);
+                        LOGGER.log(Level.SEVERE, "Error occurred retrieving multiple recipients service", e);
                     }
                 }
             }

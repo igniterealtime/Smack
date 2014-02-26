@@ -33,7 +33,7 @@ import org.jivesoftware.smack.util.FileUtils;
  */
 public class LoggingInitializer implements SmackInitializer {
 
-    private static Logger log = Logger.getLogger(LoggingInitializer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(LoggingInitializer.class.getName());
     
     private List<Exception> exceptions = new LinkedList<Exception>();
 
@@ -43,7 +43,7 @@ public class LoggingInitializer implements SmackInitializer {
             LogManager.getLogManager().readConfiguration(FileUtils.getStreamForUrl("classpath:org.jivesofware.smack/jul.properties", null));
         } 
         catch (Exception e) {
-            log .log(Level.WARNING, "Could not initialize Java Logging from default file.", e);
+            LOGGER.log(Level.WARNING, "Could not initialize Java Logging from default file.", e);
             exceptions.add(e);
         }
     }

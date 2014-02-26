@@ -37,7 +37,7 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  */
 public class StreamInitiationProvider implements IQProvider {
-    private static Logger log = Logger.getLogger(StreamInitiationProvider.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StreamInitiationProvider.class.getName());
     
 	public IQ parseIQ(final XmlPullParser parser) throws Exception {
 		boolean done = false;
@@ -91,7 +91,7 @@ public class StreamInitiationProvider implements IQProvider {
                             fileSize = Long.parseLong(size);
                         }
                         catch (NumberFormatException e) {
-                            log.log(Level.SEVERE, "Failed to parse file size from " + fileSize, e);
+                            LOGGER.log(Level.SEVERE, "Failed to parse file size from " + fileSize, e);
                         }
                     }
                     

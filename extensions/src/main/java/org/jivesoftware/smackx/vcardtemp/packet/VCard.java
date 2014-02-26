@@ -79,7 +79,7 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Kirill Maximov (kir@maxkir.com)
  */
 public class VCard extends IQ {
-    private static Logger log = Logger.getLogger(VCard.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(VCard.class.getName());
     
     private static final String DEFAULT_MIME_TYPE = "image/jpeg";
     
@@ -328,7 +328,7 @@ public class VCard extends IQ {
             bytes = getBytes(avatarURL);
         }
         catch (IOException e) {
-            log.log(Level.SEVERE, "Error getting bytes from URL: " + avatarURL, e);
+            LOGGER.log(Level.SEVERE, "Error getting bytes from URL: " + avatarURL, e);
         }
 
         setAvatar(bytes);
@@ -485,7 +485,7 @@ public class VCard extends IQ {
             digest = MessageDigest.getInstance("SHA-1");
         }
         catch (NoSuchAlgorithmException e) {
-            log.log(Level.SEVERE, "Failed to get message digest", e);
+            LOGGER.log(Level.SEVERE, "Failed to get message digest", e);
             return null;
         }
 

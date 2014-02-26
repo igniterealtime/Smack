@@ -55,7 +55,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Gaston Dombiak
  */
 public class PacketParserUtils {
-    private static Logger logger = Logger.getLogger(PacketParserUtils.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PacketParserUtils.class.getName());
     
     /**
      * Namespace used to store packet properties.
@@ -197,7 +197,7 @@ public class PacketParserUtils {
                 type = Presence.Type.valueOf(typeString);
             }
             catch (IllegalArgumentException iae) {
-                logger.warning("Found invalid presence type " + typeString);
+                LOGGER.warning("Found invalid presence type " + typeString);
             }
         }
         Presence presence = new Presence(type);
@@ -241,7 +241,7 @@ public class PacketParserUtils {
                         presence.setMode(Presence.Mode.valueOf(modeText));
                     }
                     catch (IllegalArgumentException iae) {
-                        logger.warning("Found invalid presence mode " + modeText);
+                        LOGGER.warning("Found invalid presence mode " + modeText);
                     }
                 }
                 else if (elementName.equals("error")) {
@@ -262,7 +262,7 @@ public class PacketParserUtils {
                         presence.addExtension(PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
                 	}
                 	catch (Exception e) {
-                		logger.warning("Failed to parse extension packet in Presence packet.");
+                		LOGGER.warning("Failed to parse extension packet in Presence packet.");
                 	}
                 }
             }
@@ -642,7 +642,7 @@ public class PacketParserUtils {
                                     value = in.readObject();
                                 }
                                 catch (Exception e) {
-                                    logger.log(Level.SEVERE, "Error parsing java object", e);
+                                    LOGGER.log(Level.SEVERE, "Error parsing java object", e);
                                 }
                             }
                             if (name != null && value != null) {
@@ -785,7 +785,7 @@ public class PacketParserUtils {
             }
         }
         catch (IllegalArgumentException iae) {
-            logger.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(), iae);
+            LOGGER.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(), iae);
         }
         return new XMPPError(Integer.parseInt(errorCode), errorType, condition, message, extensions);
     }

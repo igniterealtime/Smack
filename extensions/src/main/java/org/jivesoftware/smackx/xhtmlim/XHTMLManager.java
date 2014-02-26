@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  */
 public class XHTMLManager {
 
-    private static Logger log = Logger.getLogger(XHTMLManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(XHTMLManager.class.getName());
     
     private final static String namespace = "http://jabber.org/protocol/xhtml-im";
 
@@ -139,7 +139,7 @@ public class XHTMLManager {
             return result.containsFeature(namespace);
         }
         catch (XMPPException e) {
-            log.log(Level.SEVERE, "Error checking if service is available", e);
+            LOGGER.log(Level.SEVERE, "Error checking if service is available", e);
             return false;
         }
     }

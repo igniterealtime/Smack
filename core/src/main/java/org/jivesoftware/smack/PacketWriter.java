@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * @author Matt Tucker
  */
 class PacketWriter {
-    private static Logger log = Logger.getLogger(PacketWriter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PacketWriter.class.getName());
     
     private Thread writerThread;
     private Writer writer;
@@ -88,7 +88,7 @@ class PacketWriter {
                 queue.put(packet);
             }
             catch (InterruptedException ie) {
-                log.log(Level.SEVERE, "Failed to queue packet to send to server: " + packet.toString(), ie);
+                LOGGER.log(Level.SEVERE, "Failed to queue packet to send to server: " + packet.toString(), ie);
                 return;
             }
             synchronized (queue) {
@@ -172,7 +172,7 @@ class PacketWriter {
                 writer.flush();
             }
             catch (Exception e) {
-                log.warning("Error flushing queue during shutdown, ignore and continue");
+                LOGGER.warning("Error flushing queue during shutdown, ignore and continue");
             }
 
             // Delete the queue contents (hopefully nothing is left).

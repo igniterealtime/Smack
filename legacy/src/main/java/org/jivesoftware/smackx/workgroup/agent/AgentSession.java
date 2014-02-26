@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Derek DeMoro
  */
 public class AgentSession {
-    private static Logger log = Logger.getLogger(AgentSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AgentSession.class.getName());
     
     private Connection connection;
 
@@ -119,7 +119,7 @@ public class AgentSession {
                     handlePacket(packet);
                 }
                 catch (Exception e) {
-                    log.log(Level.SEVERE, "Error processing packet", e);
+                    LOGGER.log(Level.SEVERE, "Error processing packet", e);
                 }
             }
         };

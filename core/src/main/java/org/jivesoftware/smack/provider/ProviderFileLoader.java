@@ -38,7 +38,7 @@ import org.xmlpull.v1.XmlPullParser;
  *
  */
 public class ProviderFileLoader implements ProviderLoader {
-    private final static Logger log = Logger.getLogger(ProviderFileLoader.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ProviderFileLoader.class.getName());
     
     private Collection<IQProviderInfo> iqProviders;
     private Collection<ExtensionProviderInfo> extProviders;
@@ -135,13 +135,13 @@ public class ProviderFileLoader implements ProviderLoader {
                                 }
                             }
                             catch (ClassNotFoundException cnfe) {
-                                log.log(Level.SEVERE, "Could not find provider class", cnfe);
+                                LOGGER.log(Level.SEVERE, "Could not find provider class", cnfe);
                                 exceptions.add(cnfe);
                             }
                         }
                     }
                     catch (IllegalArgumentException illExc) {
-                        log.log(Level.SEVERE, "Invalid provider type found [" + typeName + "] when expecting iqProvider or extensionProvider", illExc);
+                        LOGGER.log(Level.SEVERE, "Invalid provider type found [" + typeName + "] when expecting iqProvider or extensionProvider", illExc);
                         exceptions.add(illExc);
                     }
                 }
@@ -150,7 +150,7 @@ public class ProviderFileLoader implements ProviderLoader {
             while (eventType != XmlPullParser.END_DOCUMENT);
         }
         catch (Exception e){
-            log.log(Level.SEVERE, "Unknown error occurred while parsing provider file", e);
+            LOGGER.log(Level.SEVERE, "Unknown error occurred while parsing provider file", e);
         }
         finally {
             try {

@@ -55,7 +55,7 @@ public final class SmackConfiguration {
     private static final String SMACK_VERSION;
     private static final String DEFAULT_CONFIG_FILE = "classpath:org.jivesoftware.smack/smack-config.xml";
     
-    private static final Logger log = Logger.getLogger(SmackConfiguration.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SmackConfiguration.class.getName());
 
     private static int defaultPacketReplyTimeout = 5000;
     private static int packetCollectorSize = 5000;
@@ -72,7 +72,7 @@ public final class SmackConfiguration {
             is.read(buf);
             smackVersion = new String(buf, "UTF-8");
         } catch(Exception e) {
-            log.log(Level.SEVERE, "Could not determine Smack version", e);
+            LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);
             smackVersion = "unkown";
         }
         SMACK_VERSION = smackVersion;
@@ -271,7 +271,7 @@ public final class SmackConfiguration {
             cfgFileStream.close();
         }
         catch (IOException e) {
-            log.log(Level.SEVERE, "Error while closing config file input stream", e);
+            LOGGER.log(Level.SEVERE, "Error while closing config file input stream", e);
         }
     }
 
@@ -284,7 +284,7 @@ public final class SmackConfiguration {
             name = parser.getName();
             if (eventType == XmlPullParser.START_TAG && "className".equals(name)) {
                 if (disabledSmackClasses.contains(name)) {
-                    log.info("Not loading disabled Smack class " + name);
+                    LOGGER.info("Not loading disabled Smack class " + name);
                 }
                 else {
                     String classToLoad = parser.nextText();
@@ -316,7 +316,7 @@ public final class SmackConfiguration {
             else {
                 logLevel = Level.WARNING;
             }
-            log.log(logLevel, "A startup class [" + className
+            LOGGER.log(logLevel, "A startup class [" + className
                             + "] specified in smack-config.xml could not be loaded: ");
             if (!optional)
                 throw cnfe;

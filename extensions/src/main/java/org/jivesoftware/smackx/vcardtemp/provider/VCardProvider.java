@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * @author Derek DeMoro
  */
 public class VCardProvider implements IQProvider {
-    private static Logger log = Logger.getLogger(VCardProvider.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(VCardProvider.class.getName());
     
     private static final String PREFERRED_ENCODING = "UTF-8";
 
@@ -72,10 +72,10 @@ public class VCardProvider implements IQProvider {
             }
         }
         catch (XmlPullParserException e) {
-            log.log(Level.SEVERE, "Exception parsing VCard", e);
+            LOGGER.log(Level.SEVERE, "Exception parsing VCard", e);
         }
         catch (IOException e) {
-            log.log(Level.SEVERE, "Exception parsing VCard", e);
+            LOGGER.log(Level.SEVERE, "Exception parsing VCard", e);
         }
 
         String xmlText = sb.toString();

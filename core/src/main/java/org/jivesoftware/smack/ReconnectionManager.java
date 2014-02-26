@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * @author Francisco Vives
  */
 public class ReconnectionManager implements ConnectionListener {
-    private static Logger log = Logger.getLogger(ReconnectionManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ReconnectionManager.class.getName());
     
     // Holds the connection to the server
     private Connection connection;
@@ -134,7 +134,7 @@ public class ReconnectionManager implements ConnectionListener {
                                         .notifyAttemptToReconnectIn(remainingSeconds);
                             }
                             catch (InterruptedException e1) {
-                                log.warning("Sleeping thread interrupted");
+                                LOGGER.warning("Sleeping thread interrupted");
                                 // Notify the reconnection has failed
                                 ReconnectionManager.this.notifyReconnectionFailed(e1);
                             }

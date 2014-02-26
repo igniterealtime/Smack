@@ -35,7 +35,7 @@ import org.jivesoftware.smack.util.FileUtils;
  *
  */
 public abstract class UrlProviderFileInitializer implements SmackInitializer {
-    private static final Logger log = Logger.getLogger(UrlProviderFileInitializer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UrlProviderFileInitializer.class.getName());
 
     private List<Exception> exceptions = new LinkedList<Exception>();
 
@@ -47,18 +47,18 @@ public abstract class UrlProviderFileInitializer implements SmackInitializer {
             InputStream is = FileUtils.getStreamForUrl(filePath, getClassLoader());
             
             if (is != null) {
-                log.log(Level.INFO, "Loading providers for file [" + filePath + "]");
+                LOGGER.log(Level.INFO, "Loading providers for file [" + filePath + "]");
                 ProviderFileLoader pfl = new ProviderFileLoader(is);
                 ProviderManager.getInstance().addLoader(pfl);
                 exceptions.addAll(pfl.getLoadingExceptions());
             }
             else {
-                log.log(Level.WARNING, "No input stream created for " + filePath);
+                LOGGER.log(Level.WARNING, "No input stream created for " + filePath);
                 exceptions.add(new IOException("No input stream created for " + filePath));
             }
         }
         catch (Exception e) {
-            log.log(Level.SEVERE, "Error trying to load provider file " + filePath, e);
+            LOGGER.log(Level.SEVERE, "Error trying to load provider file " + filePath, e);
             exceptions.add(e);
         }
     }

@@ -60,7 +60,7 @@ import java.util.logging.Logger;
  * @author Matt Tucker
  */
 public class Time extends IQ {
-    private static Logger log = Logger.getLogger(Time.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Time.class.getName());
     
     private static SimpleDateFormat utcFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     private static DateFormat displayFormat = DateFormat.getDateTimeInstance();
@@ -109,7 +109,7 @@ public class Time extends IQ {
             date = cal.getTime();
         }
         catch (Exception e) {
-            log.log(Level.SEVERE, "Error getting local time", e);
+            LOGGER.log(Level.SEVERE, "Error getting local time", e);
         }
         return date;
     }

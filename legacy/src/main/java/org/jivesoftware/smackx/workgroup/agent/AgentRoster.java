@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * @see AgentSession#getAgentRoster()
  */
 public class AgentRoster {
-    private static Logger log = Logger.getLogger(AgentRoster.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AgentRoster.class.getName());
     private static final int EVENT_AGENT_ADDED = 0;
     private static final int EVENT_AGENT_REMOVED = 1;
     private static final int EVENT_PRESENCE_CHANGED = 2;
@@ -283,7 +283,7 @@ public class AgentRoster {
             String from = presence.getFrom();
             if (from == null) {
                 // TODO Check if we need to ignore these presences or this is a server bug?
-                log.warning("Presence with no FROM: " + presence.toXML());
+                LOGGER.warning("Presence with no FROM: " + presence.toXML());
                 return;
             }
             String key = getPresenceMapKey(from);

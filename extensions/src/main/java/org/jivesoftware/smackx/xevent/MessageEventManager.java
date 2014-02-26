@@ -40,7 +40,7 @@ import org.jivesoftware.smackx.xevent.packet.MessageEvent;
  * @author Gaston Dombiak
  */
 public class MessageEventManager {
-    private static Logger log = Logger.getLogger(MessageEventManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MessageEventManager.class.getName());
     
     private List<MessageEventNotificationListener> messageEventNotificationListeners = new ArrayList<MessageEventNotificationListener>();
     private List<MessageEventRequestListener> messageEventRequestListeners = new ArrayList<MessageEventRequestListener>();
@@ -157,7 +157,7 @@ public class MessageEventManager {
                 method.invoke(listeners[i], new Object[] { from, packetID, this });
             }
         } catch (Exception e) {
-            log.log(Level.SEVERE, "Error while invoking MessageEventRequestListener", e);
+            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventRequestListener", e);
         }
     }
 
@@ -184,7 +184,7 @@ public class MessageEventManager {
                 method.invoke(listeners[i], new Object[] { from, packetID });
             }
         } catch (Exception e) {
-            log.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener", e);
+            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener", e);
         }
     }
 

@@ -27,11 +27,11 @@ import java.util.logging.Logger;
  * 
  */
 public class ExceptionLoggingCallback extends ParsingExceptionCallback {
-    private static Logger log = Logger.getLogger(ExceptionLoggingCallback.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ExceptionLoggingCallback.class.getName());
     
     @Override
     public void handleUnparsablePacket(UnparsablePacket unparsed) throws Exception {
-        log.log(Level.SEVERE, "Smack message parsing exception: ", unparsed.getParsingException());
-        log.severe("Unparsed content: " + unparsed.getContent());
+        LOGGER.log(Level.SEVERE, "Smack message parsing exception: ", unparsed.getParsingException());
+        LOGGER.severe("Unparsed content: " + unparsed.getContent());
     }
 }

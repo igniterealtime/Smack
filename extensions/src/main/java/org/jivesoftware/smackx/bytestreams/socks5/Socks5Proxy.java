@@ -72,7 +72,7 @@ import org.jivesoftware.smack.XMPPException;
  * @author Henning Staib
  */
 public class Socks5Proxy {
-    private static Logger log = Logger.getLogger(Socks5Proxy.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Socks5Proxy.class.getName());
     
     /* SOCKS5 proxy singleton */
     private static Socks5Proxy socks5Server;
@@ -196,7 +196,7 @@ public class Socks5Proxy {
         }
         catch (IOException e) {
             // couldn't setup server
-            log.log(Level.SEVERE, "couldn't setup local SOCKS5 proxy on port " + getLocalSocks5ProxyPort(), e);
+            LOGGER.log(Level.SEVERE, "couldn't setup local SOCKS5 proxy on port " + getLocalSocks5ProxyPort(), e);
         }
     }
 

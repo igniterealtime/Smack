@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * @author Matt Tucker
  */
 public abstract class Packet {
-    private static Logger log = Logger.getLogger(Packet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Packet.class.getName());
     
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase();
@@ -411,7 +411,7 @@ public abstract class Packet {
                         buf.append(encodedVal).append("</value>");
                     }
                     catch (Exception e) {
-                        log.log(Level.SEVERE, "Error encoding java object", e);
+                        LOGGER.log(Level.SEVERE, "Error encoding java object", e);
                     }
                     finally {
                         if (out != null) {

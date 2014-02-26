@@ -81,7 +81,7 @@ import org.jivesoftware.smack.packet.Presence;
  * @author Guenther Niess
  */
 public abstract class Connection {
-    private static Logger log = Logger.getLogger(Connection.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Connection.class.getName());
     
     /** 
      * Counter to uniquely identify connections that are created.
@@ -793,7 +793,7 @@ public abstract class Connection {
                         debuggerClass = Class.forName(className);
                     }
                     catch (Exception e) {
-                        log.warning("Unabled to instantiate debugger class " + className);
+                        LOGGER.warning("Unabled to instantiate debugger class " + className);
                     }
                 }
                 if (debuggerClass == null) {
@@ -807,7 +807,7 @@ public abstract class Connection {
                                     Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
                         }
                         catch (Exception ex2) {
-                            log.warning("Unabled to instantiate either Smack debugger class");
+                            LOGGER.warning("Unabled to instantiate either Smack debugger class");
                         }
                     }
                 }

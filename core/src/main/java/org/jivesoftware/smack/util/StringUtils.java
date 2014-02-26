@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * A collection of utility methods for String objects.
  */
 public class StringUtils {
-    private static Logger log = Logger.getLogger(StringUtils.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StringUtils.class.getName());
     
 	/**
      * Date format as defined in XEP-0082 - XMPP Date and Time Profiles. The time zone is set to
@@ -661,7 +661,7 @@ public class StringUtils {
                 digest = MessageDigest.getInstance("SHA-1");
             }
             catch (NoSuchAlgorithmException nsae) {
-                log.log(Level.SEVERE, "Failed to load the SHA-1 MessageDigest. Smack will be unable to function normally.", nsae);
+                LOGGER.log(Level.SEVERE, "Failed to load the SHA-1 MessageDigest. Smack will be unable to function normally.", nsae);
             }
         }
         // Now, compute hash.
@@ -669,7 +669,7 @@ public class StringUtils {
             digest.update(data.getBytes("UTF-8"));
         }
         catch (UnsupportedEncodingException e) {
-            log.log(Level.SEVERE, "Error computing hash", e);
+            LOGGER.log(Level.SEVERE, "Error computing hash", e);
         }
         return encodeHex(digest.digest());
     }
