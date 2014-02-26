@@ -20,6 +20,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
@@ -101,7 +102,7 @@ public class ItemProvider implements PacketExtensionProvider
                     }
                     else if (parser.getEventType() == XmlPullParser.TEXT) 
                     {
-                        payloadText.append(parser.getText());
+                        payloadText.append(StringUtils.escapeForXML(parser.getText()));
                     }
                     tag = parser.next();
                 }
