@@ -58,7 +58,6 @@ public class ConnectionConfiguration implements Cloneable {
 
     private boolean compressionEnabled = false;
 
-    private boolean saslAuthenticationEnabled = true;
     /**
      * Used to get information from the user
      */
@@ -365,30 +364,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setCompressionEnabled(boolean compressionEnabled) {
         this.compressionEnabled = compressionEnabled;
-    }
-
-    /**
-     * Returns true if the client is going to use SASL authentication when logging into the
-     * server. If SASL authenticatin fails then the client will try to use non-sasl authentication.
-     * By default SASL is enabled.
-     *
-     * @return true if the client is going to use SASL authentication when logging into the
-     *         server.
-     */
-    public boolean isSASLAuthenticationEnabled() {
-        return saslAuthenticationEnabled;
-    }
-
-    /**
-     * Sets whether the client will use SASL authentication when logging into the
-     * server. If SASL authenticatin fails then the client will try to use non-sasl authentication.
-     * By default, SASL is enabled.
-     *
-     * @param saslAuthenticationEnabled if the client is going to use SASL authentication when
-     *        logging into the server.
-     */
-    public void setSASLAuthenticationEnabled(boolean saslAuthenticationEnabled) {
-        this.saslAuthenticationEnabled = saslAuthenticationEnabled;
     }
 
     /**

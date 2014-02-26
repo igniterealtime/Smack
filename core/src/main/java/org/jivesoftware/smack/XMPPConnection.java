@@ -130,7 +130,6 @@ public class XMPPConnection extends Connection {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
         config.setCompressionEnabled(false);
-        config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
         config.setCallbackHandler(callbackHandler);
     }
@@ -147,7 +146,6 @@ public class XMPPConnection extends Connection {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
         config.setCompressionEnabled(false);
-        config.setSASLAuthenticationEnabled(true);
         config.setDebuggerEnabled(DEBUG_ENABLED);
     }
 
@@ -232,8 +230,7 @@ public class XMPPConnection extends Connection {
         username = username.toLowerCase().trim();
 
         String response;
-        if (config.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasNonAnonymousAuthentication()) {
+        if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
                 response = saslAuthentication.authenticate(username, password, resource);
@@ -242,10 +239,8 @@ public class XMPPConnection extends Connection {
                 response = saslAuthentication
                         .authenticate(username, resource, config.getCallbackHandler());
             }
-        }
-        else {
-            // Authenticate using Non-SASL
-            response = new NonSASLAuthentication(this).authenticate(username, password, resource);
+        } else {
+            throw new XMPPException("No non-anonymous SASL authentication mechanism available");
         }
 
         // Set the user.
@@ -305,13 +300,11 @@ public class XMPPConnection extends Connection {
         }
 
         String response;
-        if (config.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasAnonymousAuthentication()) {
+        if (saslAuthentication.hasAnonymousAuthentication()) {
             response = saslAuthentication.authenticateAnonymously();
         }
         else {
-            // Authenticate using Non-SASL
-            response = new NonSASLAuthentication(this).authenticateAnonymously();
+            throw new XMPPException("No anonymous SASL authentication mechanism available");
         }
 
         // Set the user value.

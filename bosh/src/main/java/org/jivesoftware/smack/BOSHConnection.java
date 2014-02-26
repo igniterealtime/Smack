@@ -308,8 +308,7 @@ public class BOSHConnection extends Connection {
         username = username.toLowerCase().trim();
 
         String response;
-        if (config.isSASLAuthenticationEnabled()
-                && saslAuthentication.hasNonAnonymousAuthentication()) {
+        if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
                 response = saslAuthentication.authenticate(username, password, resource);
@@ -317,8 +316,7 @@ public class BOSHConnection extends Connection {
                 response = saslAuthentication.authenticate(username, resource, config.getCallbackHandler());
             }
         } else {
-            // Authenticate using Non-SASL
-            response = new NonSASLAuthentication(this).authenticate(username, password, resource);
+            throw new XMPPException("No non-anonymous SASL authentication mechanism available");
         }
 
         // Set the user.
@@ -370,13 +368,12 @@ public class BOSHConnection extends Connection {
         }
 
         String response;
-        if (config.isSASLAuthenticationEnabled() &&
-                saslAuthentication.hasAnonymousAuthentication()) {
+        if (saslAuthentication.hasAnonymousAuthentication()) {
             response = saslAuthentication.authenticateAnonymously();
         }
         else {
             // Authenticate using Non-SASL
-            response = new NonSASLAuthentication(this).authenticateAnonymously();
+            throw new XMPPException("No anonymous SASL authentication mechanism available");
         }
 
         // Set the user value.

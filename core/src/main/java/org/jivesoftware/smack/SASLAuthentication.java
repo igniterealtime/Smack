@@ -56,7 +56,7 @@ import java.util.*;
  * @author Gaston Dombiak
  * @author Jay Kline
  */
-public class SASLAuthentication implements UserAuthentication {
+public class SASLAuthentication {
 
     private static Map<String, Class<? extends SASLMechanism>> implementedMechanisms = new HashMap<String, Class<? extends SASLMechanism>>();
     private static List<String> mechanismsPreferences = new ArrayList<String>();
@@ -348,24 +348,21 @@ public class SASLAuthentication implements UserAuthentication {
                     return bindResourceAndEstablishSession(resource);
                 }
                 else {
-                    // SASL authentication failed so try a Non-SASL authentication
-                    return new NonSASLAuthentication(connection)
-                            .authenticate(username, password, resource);
+                    // SASL authentication failed
+                    throw new XMPPException("SASL authentication failed");
                 }
             }
             catch (XMPPException e) {
                 throw e;
             }
             catch (Exception e) {
-                e.printStackTrace();
-                // SASL authentication failed so try a Non-SASL authentication
-                return new NonSASLAuthentication(connection)
-                        .authenticate(username, password, resource);
+                // SASL authentication failed
+                throw new XMPPException("SASL authentication failed", e);
             }
         }
         else {
-            // No SASL method was found so try a Non-SASL authentication
-            return new NonSASLAuthentication(connection).authenticate(username, password, resource);
+            // No SASL method was found, throw an exception
+            throw new XMPPException("SASL authentication not supported by server");
         }
     }
 
@@ -413,10 +410,10 @@ public class SASLAuthentication implements UserAuthentication {
                 return bindResourceAndEstablishSession(null);
             }
             else {
-                return new NonSASLAuthentication(connection).authenticateAnonymously();
+                throw new XMPPException("SASL authentication failed");
             }
         } catch (IOException e) {
-            return new NonSASLAuthentication(connection).authenticateAnonymously();
+            throw new XMPPException("IOException while anonymous SASL authentication", e);
         }
     }
 
