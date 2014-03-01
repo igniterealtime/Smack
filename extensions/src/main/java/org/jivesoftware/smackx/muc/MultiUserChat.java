@@ -1473,7 +1473,7 @@ public class MultiUserChat {
      *         don't have enough privileges to get this information.
      */
     public Collection<Affiliate> getAdmins() throws XMPPException {
-        return getAffiliatesByOwner("admin");
+        return getAffiliatesByAdmin("admin");
     }
 
     /**
@@ -1496,33 +1496,6 @@ public class MultiUserChat {
      */
     public Collection<Affiliate> getOutcasts() throws XMPPException {
         return getAffiliatesByAdmin("outcast");
-    }
-
-    /**
-     * Returns a collection of <code>Affiliate</code> that have the specified room affiliation
-     * sending a request in the owner namespace.
-     *
-     * @param affiliation the affiliation of the users in the room.
-     * @return a collection of <code>Affiliate</code> that have the specified room affiliation.
-     * @throws XMPPException if an error occured while performing the request to the server or you
-     *         don't have enough privileges to get this information.
-     */
-    private Collection<Affiliate> getAffiliatesByOwner(String affiliation) throws XMPPException {
-        MUCOwner iq = new MUCOwner();
-        iq.setTo(room);
-        iq.setType(IQ.Type.GET);
-        // Set the specified affiliation. This may request the list of owners/admins/members/outcasts.
-        MUCOwner.Item item = new MUCOwner.Item(affiliation);
-        iq.addItem(item);
-
-        MUCOwner answer = (MUCOwner) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
-
-        // Get the list of affiliates from the server's answer
-        List<Affiliate> affiliates = new ArrayList<Affiliate>();
-        for (Iterator<MUCOwner.Item> it = answer.getItems(); it.hasNext();) {
-            affiliates.add(new Affiliate(it.next()));
-        }
-        return affiliates;
     }
 
     /**
