@@ -251,6 +251,27 @@ since Java7."""
 	}
 }
 
+project(':tcp') {
+	description = """\
+Smack for standard XMPP connections over TCP."""
+
+	dependencies {
+		compile project(':core')
+		testCompile project(':core').sourceSets.test.runtimeClasspath
+	}
+}
+
+project(':bosh') {
+	description = """\
+Smack BOSH API.
+This API is considered beta quality."""
+
+	dependencies {
+		compile project(':core')
+		compile 'org.igniterealtime.jbosh:jbosh:0.7.0'
+	}
+}
+
 // Now the "real" Smack sub-projects
 // Note that test dependencies (junit, …) are interfered from the sourceSet.test of the core sub-project
 
@@ -315,17 +336,6 @@ Warning: This API is beta, outdated and currenlty unmaintained."""
 		compile 'javax.media:jmf:2.1.1e'
 		compile files('libs/jspeex-0.9.7-jfcom.jar', 'libs/jstun.jar', 'libs/Speex.jar')
 		testCompile project(':core').sourceSets.test.runtimeClasspath
-	}
-}
-
-project(':bosh') {
-	description = """\
-Smack BOSH API.
-This API is considered beta quality."""
-
-	dependencies {
-		compile project(':core')
-		compile 'org.igniterealtime.jbosh:jbosh:0.7.0'
 	}
 }
 

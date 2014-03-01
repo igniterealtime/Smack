@@ -41,7 +41,7 @@ class PacketWriter {
     
     private Thread writerThread;
     private Writer writer;
-    private XMPPConnection connection;
+    private TCPConnection connection;
     private final BlockingQueue<Packet> queue;
     volatile boolean done;
 
@@ -50,7 +50,7 @@ class PacketWriter {
      *
      * @param connection the connection.
      */
-    protected PacketWriter(XMPPConnection connection) {
+    protected PacketWriter(TCPConnection connection) {
         this.queue = new ArrayBlockingQueue<Packet>(500, true);
         this.connection = connection;
         init();

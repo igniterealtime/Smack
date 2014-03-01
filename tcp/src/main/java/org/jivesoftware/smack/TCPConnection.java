@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
@@ -60,7 +59,7 @@ import java.util.List;
  * @see Connection
  * @author Matt Tucker
  */
-public class XMPPConnection extends Connection {
+public class TCPConnection extends Connection {
 
     /**
      * The socket which is used for this connection.
@@ -126,7 +125,7 @@ public class XMPPConnection extends Connection {
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
      * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
      */
-    public XMPPConnection(String serviceName, CallbackHandler callbackHandler) {
+    public TCPConnection(String serviceName, CallbackHandler callbackHandler) {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
         config.setCompressionEnabled(false);
@@ -142,7 +141,7 @@ public class XMPPConnection extends Connection {
      *
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
      */
-    public XMPPConnection(String serviceName) {
+    public TCPConnection(String serviceName) {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
         config.setCompressionEnabled(false);
@@ -158,7 +157,7 @@ public class XMPPConnection extends Connection {
      *
      * @param config the connection configuration.
      */
-    public XMPPConnection(ConnectionConfiguration config) {
+    public TCPConnection(ConnectionConfiguration config) {
         super(config);
     }
 
@@ -180,7 +179,7 @@ public class XMPPConnection extends Connection {
      * @param config the connection configuration.
      * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
      */
-    public XMPPConnection(ConnectionConfiguration config, CallbackHandler callbackHandler) {
+    public TCPConnection(ConnectionConfiguration config, CallbackHandler callbackHandler) {
         super(config);
         config.setCallbackHandler(callbackHandler);
     }
