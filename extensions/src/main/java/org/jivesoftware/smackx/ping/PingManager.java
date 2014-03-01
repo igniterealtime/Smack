@@ -215,13 +215,27 @@ public class PingManager {
      * @return true if a reply was received from the server, false otherwise.
      */
     public boolean pingMyServer() {
+        return pingMyServer(true);
+    }
+
+    /**
+     * Pings the server. This method will return true if the server is reachable.  It
+     * is the equivalent of calling <code>ping</code> with the XMPP domain.
+     * <p>
+     * Unlike the {@link #ping(String)} case, this method will return true even if
+     * {@link #isPingSupported(String)} is false.
+     *
+     * @param notifyListeners Notify the PingFailedListener in case of error if true
+     * @return
+     */
+    public boolean pingMyServer(boolean notifyListeners) {
         Connection connection = weakRefConnection.get();
         boolean res = ping(connection.getServiceName());
-        if (!res) {
+        if (res) {
+            pongReceived();
+        } else if (notifyListeners) {
             for (PingFailedListener l : pingFailedListeners)
                 l.pingFailed();
-        } else {
-            pongReceived();
         }
         return res;
     }
@@ -323,7 +337,7 @@ public class PingManager {
                             return;
                         }
                     }
-                    res = pingMyServer();
+                    res = pingMyServer(false);
                     // stop when we receive a pong back
                     if (res) {
                         lastSuccessfulAutomaticPing = System.currentTimeMillis();
