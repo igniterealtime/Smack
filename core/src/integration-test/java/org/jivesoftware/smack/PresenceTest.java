@@ -39,7 +39,7 @@ public class PresenceTest extends SmackTestCase {
      * Connection(1) has logged from two different places with different presence priorities.
      */
     public void testMessageToHighestPriority() {
-        XMPPConnection conn = null;
+        TCPConnection conn = null;
         try {
             // User_1 will log in again using another resource
             conn = createConnection();
@@ -142,7 +142,7 @@ public class PresenceTest extends SmackTestCase {
         getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
 
         // User_1 will log in again using another resource (that is going to be available)
-        XMPPConnection conn = createConnection();
+        TCPConnection conn = createConnection();
         conn.connect();
         conn.login(getUsername(1), getPassword(1), "OtherPlace");
 
@@ -169,7 +169,7 @@ public class PresenceTest extends SmackTestCase {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-        XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
+        TCPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(1), getPassword(1), "Home");
 
@@ -257,7 +257,7 @@ public class PresenceTest extends SmackTestCase {
         getConnection(0).disconnect();
 
         // See if conneciton 0 can get offline status.
-        XMPPConnection con0 = getConnection(0);
+        TCPConnection con0 = getConnection(0);
         con0.connect();
         con0.login(getUsername(0), getUsername(0));
 

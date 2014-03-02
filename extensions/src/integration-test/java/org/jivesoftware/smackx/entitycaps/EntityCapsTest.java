@@ -2,7 +2,7 @@ package org.jivesoftware.smackx.entitycaps;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -17,8 +17,8 @@ public class EntityCapsTest extends SmackTestCase {
 
     private static final String DISCOVER_TEST_FEATURE = "entityCapsTest";
 
-    XMPPConnection con0;
-    XMPPConnection con1;
+    TCPConnection con0;
+    TCPConnection con1;
     EntityCapsManager ecm0;
     EntityCapsManager ecm1;
     ServiceDiscoveryManager sdm0;

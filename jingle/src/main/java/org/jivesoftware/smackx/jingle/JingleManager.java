@@ -96,7 +96,7 @@ import org.jivesoftware.smackx.provider.JingleProvider;
  *                               try {
  * <p/>
  *                                           // Connect to a XMPP Server
- *                                           Connection x1 = new XMPPConnection("xmpp.com");
+ *                                           Connection x1 = new TCPConnection("xmpp.com");
  *                                           x1.connect();
  *                                           x1.login("juliet", "juliet");
  * <p/>
@@ -139,7 +139,7 @@ import org.jivesoftware.smackx.provider.JingleProvider;
  *                                     try {
  * <p/>
  *                                           // Connect to a XMPP Server
- *                                           Connection x0 = new XMPPConnection("xmpp.com");
+ *                                           Connection x0 = new TCPConnection("xmpp.com");
  *                                           x0.connect();
  *                                           x0.login("romeo", "romeo");
  * <p/>

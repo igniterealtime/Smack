@@ -35,7 +35,7 @@ public class RosterInitializedBeforeConnectTest extends RosterSmackTest {
 
         // initialize all rosters before login
         for (int i = 0; i < getMaxConnections(); i++) {
-            XMPPConnection connection = getConnection(i);
+            TCPConnection connection = getConnection(i);
             assertFalse(connection.isConnected());
 
             Roster roster = connection.getRoster();

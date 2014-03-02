@@ -194,7 +194,7 @@ public class MessageTest extends SmackTestCase {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-        XMPPConnection conn3 = new XMPPConnection(connectionConfiguration);
+        TCPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
         conn3.login(getUsername(0), getPassword(0), "Home");
         // Set this connection as highest priority
@@ -243,7 +243,7 @@ public class MessageTest extends SmackTestCase {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-        XMPPConnection conn3 = new XMPPConnection(connectionConfiguration);
+        TCPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
         conn3.login(getUsername(0), getPassword(0), "Home");
         // Set this connection as highest priority
@@ -292,7 +292,7 @@ public class MessageTest extends SmackTestCase {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-        XMPPConnection conn3 = new XMPPConnection(connectionConfiguration);
+        TCPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
         conn3.login(getUsername(0), getPassword(0), "Home");
         // Set this connection as highest priority
@@ -308,7 +308,7 @@ public class MessageTest extends SmackTestCase {
 
         connectionConfiguration =
                 new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-        XMPPConnection conn4 = new XMPPConnection(connectionConfiguration);
+        TCPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(0), getPassword(0), "Home2");
         presence = new Presence(Presence.Type.available);

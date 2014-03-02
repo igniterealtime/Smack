@@ -36,7 +36,7 @@ public class RosterListenerTest extends SmackTestCase {
     public void testAddingRosterListenerBeforeConnect() throws Exception {
         int inviterIndex = 0;
         int inviteeIndex = 1;
-        XMPPConnection inviterConnection = getConnection(inviterIndex);
+        TCPConnection inviterConnection = getConnection(inviterIndex);
         connectAndLogin(inviterIndex);
 
         assertTrue("Inviter is not online", inviterConnection.isConnected());
@@ -46,7 +46,7 @@ public class RosterListenerTest extends SmackTestCase {
         // add user1 to roster to create roster events stored at XMPP server
         inviterRoster.createEntry(getBareJID(inviteeIndex), getUsername(inviteeIndex), null);
 
-        XMPPConnection inviteeConnection = getConnection(inviteeIndex);
+        TCPConnection inviteeConnection = getConnection(inviteeIndex);
         assertFalse("Invitee is already online", inviteeConnection.isConnected());
 
         // collector for added entries
@@ -88,7 +88,7 @@ public class RosterListenerTest extends SmackTestCase {
     public void testAddingRosterListenerAfterConnect() throws Exception {
         int inviterIndex = 0;
         int inviteeIndex = 1;
-        XMPPConnection inviterConnection = getConnection(inviterIndex);
+        TCPConnection inviterConnection = getConnection(inviterIndex);
         connectAndLogin(inviterIndex);
         assertTrue("Inviter is not online", inviterConnection.isConnected());
 
@@ -99,7 +99,7 @@ public class RosterListenerTest extends SmackTestCase {
 
         Thread.sleep(500); // wait for XMPP server
 
-        XMPPConnection inviteeConnection = getConnection(inviteeIndex);
+        TCPConnection inviteeConnection = getConnection(inviteeIndex);
         connectAndLogin(inviteeIndex);
         assertTrue("Invitee is not online", inviteeConnection.isConnected());
 

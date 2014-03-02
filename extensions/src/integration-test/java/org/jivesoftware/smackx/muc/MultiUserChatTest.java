@@ -31,7 +31,7 @@ import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -224,7 +224,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // Anonymous user joins the new room
             ConnectionConfiguration connectionConfiguration =
                     new ConnectionConfiguration(getHost(), getPort(), getServiceName());
-            XMPPConnection anonConnection = new XMPPConnection(connectionConfiguration);
+            TCPConnection anonConnection = new XMPPConnection(connectionConfiguration);
             anonConnection.connect();
             anonConnection.loginAnonymously();
             MultiUserChat muc2 = new MultiUserChat(anonConnection, room);
@@ -1732,12 +1732,12 @@ public class MultiUserChatTest extends SmackTestCase {
 
     public void testManyResources() throws Exception {
             // Create 5 more connections for user2
-            XMPPConnection[] conns = new XMPPConnection[5];
+            TCPConnection[] conns = new XMPPConnection[5];
             for (int i = 0; i < conns.length; i++) {
                 ConnectionConfiguration connectionConfiguration =
                         new ConnectionConfiguration(getHost(), getPort(), getServiceName());
                 connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
-                conns[i] = new XMPPConnection(connectionConfiguration);
+                conns[i] = new TCPConnection(connectionConfiguration);
                 conns[i].connect();
                 conns[i].login(getUsername(1), getPassword(1), "resource-" + i);
                 Thread.sleep(20);
@@ -1843,7 +1843,7 @@ public class MultiUserChatTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        //XMPPConnection.DEBUG_ENABLED = false;
+        //TCPConnection.DEBUG_ENABLED = false;
         super.setUp();
         room = "fruta124@" + getMUCDomain();
         try {

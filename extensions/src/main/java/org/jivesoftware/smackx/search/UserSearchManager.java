@@ -34,7 +34,7 @@ import java.util.List;
  * searching (DataForms or No DataForms), but allows the user to simply use the DataForm model for both
  * types of support.
  * <pre>
- * Connection con = new XMPPConnection("jabber.org");
+ * Connection con = new TCPConnection("jabber.org");
  * con.login("john", "doe");
  * UserSearchManager search = new UserSearchManager(con, "users.jabber.org");
  * Form searchForm = search.getSearchForm();

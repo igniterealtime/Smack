@@ -70,7 +70,7 @@ public class TCPConnection extends Connection {
     private String user = null;
     private boolean connected = false;
     // socketClosed is used concurrent
-    // by XMPPConnection, PacketReader, PacketWriter
+    // by TCPConnection, PacketReader, PacketWriter
     private volatile boolean socketClosed = false;
 
     /**
@@ -113,9 +113,9 @@ public class TCPConnection extends Connection {
      * <p/>
      * This is the simplest constructor for connecting to an XMPP server. Alternatively,
      * you can get fine-grained control over connection settings using the
-     * {@link #XMPPConnection(ConnectionConfiguration)} constructor.<p>
+     * {@link #TCPConnection(ConnectionConfiguration)} constructor.<p>
      * <p/>
-     * Note that XMPPConnection constructors do not establish a connection to the server
+     * Note that TCPConnection constructors do not establish a connection to the server
      * and you must call {@link #connect()}.<p>
      * <p/>
      * The CallbackHandler will only be used if the connection requires the client provide
@@ -134,7 +134,7 @@ public class TCPConnection extends Connection {
     }
 
     /**
-     * Creates a new XMPP connection in the same way {@link #XMPPConnection(String,CallbackHandler)} does, but
+     * Creates a new XMPP connection in the same way {@link #TCPConnection(String,CallbackHandler)} does, but
      * with no callback handler for password prompting of the keystore.  This will work
      * in most cases, provided the client is not required to provide a certificate to 
      * the server.
@@ -149,7 +149,7 @@ public class TCPConnection extends Connection {
     }
 
     /**
-     * Creates a new XMPP connection in the same way {@link #XMPPConnection(ConnectionConfiguration,CallbackHandler)} does, but
+     * Creates a new XMPP connection in the same way {@link #TCPConnection(ConnectionConfiguration,CallbackHandler)} does, but
      * with no callback handler for password prompting of the keystore.  This will work
      * in most cases, provided the client is not required to provide a certificate to 
      * the server.
@@ -166,9 +166,9 @@ public class TCPConnection extends Connection {
      * <p/>
      * Manually specifying connection configuration information is suitable for
      * advanced users of the API. In many cases, using the
-     * {@link #XMPPConnection(String)} constructor is a better approach.<p>
+     * {@link #TCPConnection(String)} constructor is a better approach.<p>
      * <p/>
-     * Note that XMPPConnection constructors do not establish a connection to the server
+     * Note that TCPConnection constructors do not establish a connection to the server
      * and you must call {@link #connect()}.<p>
      * <p/>
      *

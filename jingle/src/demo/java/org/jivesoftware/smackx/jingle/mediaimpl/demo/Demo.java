@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.jingle.mediaimpl.demo;
 
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleSession;
@@ -66,7 +66,7 @@ public class Demo extends JFrame {
             jid = new JTextField("jeffw" + "@" + server + "/Smack");
         }
 
-        xmppConnection = new XMPPConnection(server);
+        xmppConnection = new TCPConnection(server);
         try {
             xmppConnection.connect();
             xmppConnection.login(user, pass);

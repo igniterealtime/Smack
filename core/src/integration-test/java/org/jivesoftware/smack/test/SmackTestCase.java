@@ -29,7 +29,7 @@ import javax.net.SocketFactory;
 import junit.framework.TestCase;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.ConnectionUtils;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -70,7 +70,7 @@ public abstract class SmackTestCase extends TestCase {
     private String chatDomain = "chat";
     private String mucDomain = "conference";
 
-    private XMPPConnection[] connections = null;
+    private TCPConnection[] connections = null;
 
     /**
      * Constructor for SmackTestCase.
@@ -120,7 +120,7 @@ public abstract class SmackTestCase extends TestCase {
     }
     
     /**
-     * Returns the XMPPConnection located at the requested position. Each test case holds a
+     * Returns the TCPConnection located at the requested position. Each test case holds a
      * pool of connections which is initialized while setting up the test case. The maximum
      * number of connections is controlled by the message {@link #getMaxConnections()} which
      * every subclass must implement.<p>   
@@ -129,9 +129,9 @@ public abstract class SmackTestCase extends TestCase {
      * IllegalArgumentException will be thrown. 
      * 
      * @param index the position in the pool of the connection to look for.
-     * @return the XMPPConnection located at the requested position.
+     * @return the TCPConnection located at the requested position.
      */
-    protected XMPPConnection getConnection(int index) {
+    protected TCPConnection getConnection(int index) {
         if (index > getMaxConnections()) {
             throw new IllegalArgumentException("Index out of bounds");
         }
@@ -139,12 +139,12 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Creates a new XMPPConnection using the connection preferences. This is useful when
+     * Creates a new TCPConnection using the connection preferences. This is useful when
      * not using a connection from the connection pool in a test case.
      *
      * @return a new XMPP connection.
      */
-    protected XMPPConnection createConnection() {
+    protected TCPConnection createConnection() {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port);
         config.setCompressionEnabled(compressionEnabled);
@@ -152,7 +152,7 @@ public abstract class SmackTestCase extends TestCase {
         if (getSocketFactory() == null) {
             config.setSocketFactory(getSocketFactory());
         }
-        return new XMPPConnection(config);
+        return new TCPConnection(config);
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class SmackTestCase extends TestCase {
         if (getMaxConnections() < 1) {
             return;
         }
-        connections = new XMPPConnection[getMaxConnections()];
+        connections = new TCPConnection[getMaxConnections()];
         usernames = new String[getMaxConnections()];
         passwords = new String[getMaxConnections()];
         
@@ -301,7 +301,7 @@ public abstract class SmackTestCase extends TestCase {
     	if (passwordPrefix != null)
     		password = (samePassword ? passwordPrefix : passwordPrefix + (connectionIndex + 1));
 
-    	XMPPConnection con = getConnection(connectionIndex);
+    	TCPConnection con = getConnection(connectionIndex);
     	
     	if (!con.isConnected())
     		con.connect();
@@ -340,7 +340,7 @@ public abstract class SmackTestCase extends TestCase {
                 try {
                     // If not connected, connect so that we can delete the account.
                     if (!getConnection(i).isConnected()) {
-                        XMPPConnection con = getConnection(i);
+                        TCPConnection con = getConnection(i);
                         con.connect();
                         con.login(getUsername(i), getUsername(i));
                     }
