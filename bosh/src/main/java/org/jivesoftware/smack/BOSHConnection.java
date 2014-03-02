@@ -313,7 +313,7 @@ public class BOSHConnection extends Connection {
             if (password != null) {
                 response = saslAuthentication.authenticate(username, password, resource);
             } else {
-                response = saslAuthentication.authenticate(username, resource, config.getCallbackHandler());
+                response = saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
             throw new XMPPException("No non-anonymous SASL authentication mechanism available");

@@ -59,7 +59,7 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
         props.put(Sasl.SERVER_AUTH,"TRUE");
-        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, cbh);
+        sc = Sasl.createSaslClient(mechanisms, null, "xmpp", host, props, cbh);
         authenticate();
     }
 
@@ -78,9 +78,8 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String, String>();
         props.put(Sasl.SERVER_AUTH,"TRUE");
-        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, this);
+        sc = Sasl.createSaslClient(mechanisms, null, "xmpp", host, props, this);
         authenticate();
     }
-
 
 }

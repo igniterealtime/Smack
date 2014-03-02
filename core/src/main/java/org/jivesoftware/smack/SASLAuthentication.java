@@ -202,13 +202,12 @@ public class SASLAuthentication {
      * The server may assign a full JID with a username or resource different than the requested
      * by this method.
      *
-     * @param username the username that is authenticating with the server.
      * @param resource the desired resource.
      * @param cbh the CallbackHandler used to get information from the user
      * @return the full JID provided by the server while binding a resource to the connection.
      * @throws XMPPException if an error occures while authenticating.
      */
-    public String authenticate(String username, String resource, CallbackHandler cbh) 
+    public String authenticate(String resource, CallbackHandler cbh)
             throws XMPPException {
         // Locate the SASLMechanism to use
         String selectedMechanism = null;
@@ -229,7 +228,7 @@ public class SASLAuthentication {
                 // Trigger SASL authentication with the selected mechanism. We use
                 // connection.getHost() since GSAPI requires the FQDN of the server, which
                 // may not match the XMPP domain.
-                currentMechanism.authenticate(username, connection.getHost(), cbh);
+                currentMechanism.authenticate(connection.getHost(), cbh);
 
                 // Wait until SASL negotiation finishes
                 synchronized (this) {

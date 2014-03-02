@@ -142,7 +142,7 @@ public abstract class SASLMechanism implements CallbackHandler {
 
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
-        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", serviceName, props, this);
+        sc = Sasl.createSaslClient(mechanisms, null, "xmpp", serviceName, props, this);
         authenticate();
     }
 
@@ -150,16 +150,15 @@ public abstract class SASLMechanism implements CallbackHandler {
      * Builds and sends the <tt>auth</tt> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
      *
-     * @param username the username of the user being authenticated.
      * @param host     the hostname where the user account resides.
      * @param cbh      the CallbackHandler to obtain user information.
      * @throws IOException If a network error occures while authenticating.
      * @throws XMPPException If a protocol error occurs or the user is not authenticated.
      */
-    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, XMPPException {
+    public void authenticate(String host, CallbackHandler cbh) throws IOException, XMPPException {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
-        sc = Sasl.createSaslClient(mechanisms, username, "xmpp", host, props, cbh);
+        sc = Sasl.createSaslClient(mechanisms, null, "xmpp", host, props, cbh);
         authenticate();
     }
 
