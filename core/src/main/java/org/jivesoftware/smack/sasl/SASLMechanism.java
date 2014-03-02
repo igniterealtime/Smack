@@ -40,7 +40,7 @@ import javax.security.sasl.SaslException;
  * <ul>
  *  <li>{@link #getName()} -- returns the common name of the SASL mechanism.</li>
  * </ul>
- * Subclasses will likely want to implement their own versions of these mthods:
+ * Subclasses will likely want to implement their own versions of these methods:
  *  <li>{@link #authenticate(String, String, String)} -- Initiate authentication stanza using the
  *  deprecated method.</li>
  *  <li>{@link #authenticate(String, String, CallbackHandler)} -- Initiate authentication stanza
@@ -68,9 +68,7 @@ import javax.security.sasl.SaslException;
  *    sample:
  *    <challenge xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>
  *        cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
- *    </challenge>       
- * 
-
+ *    </challenge>
  *
  * @author Jay Kline
  */
@@ -140,30 +138,14 @@ public abstract class SASLMechanism implements CallbackHandler {
         //Set the authenticationID as the username, since they must be the same in this case.
         this.authenticationId = username;
         this.password = password;
-        this.hostname = host;        
+        this.hostname = host;
 
         String[] mechanisms = { getName() };
-        Map<String,String> props = new HashMap<String,String>();        
+        Map<String,String> props = new HashMap<String,String>();
         sc = Sasl.createSaslClient(mechanisms, username, "xmpp", serviceName, props, this);
         authenticate();
     }
 
-    /**
-     * Same as {@link #authenticate(String, String, String, String)}, but with the hostname used as the serviceName.
-     * <p>
-     * Kept for backward compatibility only.
-     * 
-     * @param username the username of the user being authenticated.
-     * @param host the hostname where the user account resides.
-     * @param password the password for this account.
-     * @throws IOException If a network error occurs while authenticating.
-     * @throws XMPPException If a protocol error occurs or the user is not authenticated.
-     * @deprecated Please use {@link #authenticate(String, String, String, String)} instead.
-     */
-    public void authenticate(String username, String host, String password) throws IOException, XMPPException {
-        authenticate(username, host, host, password);
-    }
-    
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
@@ -195,7 +177,6 @@ public abstract class SASLMechanism implements CallbackHandler {
         // Send the authentication to the server
         getSASLAuthentication().send(new AuthMechanism(getName(), authenticationText));
     }
-
 
     /**
      * The server is challenging the SASL mechanism for the stanza he just sent. Send a
@@ -230,7 +211,6 @@ public abstract class SASLMechanism implements CallbackHandler {
      * @return the common name of the SASL mechanism.
      */
     protected abstract String getName();
-
 
     protected SASLAuthentication getSASLAuthentication() {
         return saslAuthentication;
@@ -268,7 +248,7 @@ public abstract class SASLMechanism implements CallbackHandler {
     /**
      * Initiating SASL authentication by select a mechanism.
      */
-    public class AuthMechanism extends Packet {
+    public static class AuthMechanism extends Packet {
         final private String name;
         final private String authenticationText;
 
@@ -318,7 +298,7 @@ public abstract class SASLMechanism implements CallbackHandler {
     /**
      * A SASL response stanza.
      */
-    public class Response extends Packet {
+    public static class Response extends Packet {
         final private String authenticationText;
 
         public Response() {
@@ -396,5 +376,5 @@ public abstract class SASLMechanism implements CallbackHandler {
             stanza.append("</failure>");
             return stanza.toString();
         }
-    }        
+    }
 }
