@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.packet;
+package org.jivesoftware.smackx.jingle.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;

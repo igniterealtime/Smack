@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.jivesoftware.smackx.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
 
 public class JingleProviderTest extends SmackTestCase {
 

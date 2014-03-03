@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
 
 /**
  *  Implement the Jingle Session state using the State Behavioral pattern.

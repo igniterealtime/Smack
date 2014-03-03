@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleError;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleError;
 
 /**
  *  @author Jeff Williams

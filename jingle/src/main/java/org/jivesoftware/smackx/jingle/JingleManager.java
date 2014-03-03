@@ -42,9 +42,9 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.BasicTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.provider.JingleProvider;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.provider.JingleProvider;
 
 /**
  * Jingle is a session establishment protocol defined in (XEP-0166).

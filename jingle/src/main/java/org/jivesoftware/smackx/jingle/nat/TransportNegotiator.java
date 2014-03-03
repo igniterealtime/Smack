@@ -33,10 +33,10 @@ import org.jivesoftware.smackx.jingle.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleTransportListener;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleContent;
-import org.jivesoftware.smackx.packet.JingleTransport;
-import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleContent;
+import org.jivesoftware.smackx.jingle.packet.JingleTransport;
+import org.jivesoftware.smackx.jingle.packet.JingleTransport.JingleTransportCandidate;
 
 /**
  * Transport negotiator.
@@ -718,7 +718,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param jin The input packet
      * @return a Jingle packet
      * @throws XMPPException an exception
-     * @see org.jivesoftware.smackx.jingle.JingleNegotiator.State#eventAccept(org.jivesoftware.smackx.packet.Jingle)
+     * @see org.jivesoftware.smackx.jingle.JingleNegotiator.State#eventAccept(org.jivesoftware.smackx.jingle.packet.Jingle)
      */
     private IQ receiveContentAcceptAction(Jingle jingle) throws XMPPException {
         IQ response = null;
@@ -812,9 +812,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         /**
          * Get a TransportNegotiator instance.
          */
-        public org.jivesoftware.smackx.packet.JingleTransport getJingleTransport(TransportCandidate bestRemote) {
-            org.jivesoftware.smackx.packet.JingleTransport.RawUdp jt = new org.jivesoftware.smackx.packet.JingleTransport.RawUdp();
-            jt.addCandidate(new org.jivesoftware.smackx.packet.JingleTransport.RawUdp.Candidate(bestRemote));
+        public org.jivesoftware.smackx.jingle.packet.JingleTransport getJingleTransport(TransportCandidate bestRemote) {
+            org.jivesoftware.smackx.jingle.packet.JingleTransport.RawUdp jt = new org.jivesoftware.smackx.jingle.packet.JingleTransport.RawUdp();
+            jt.addCandidate(new org.jivesoftware.smackx.jingle.packet.JingleTransport.RawUdp.Candidate(bestRemote));
             return jt;
         }
 
@@ -866,9 +866,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          *
          * @param candidate
          */
-        public org.jivesoftware.smackx.packet.JingleTransport getJingleTransport(TransportCandidate candidate) {
-            org.jivesoftware.smackx.packet.JingleTransport.Ice jt = new org.jivesoftware.smackx.packet.JingleTransport.Ice();
-            jt.addCandidate(new org.jivesoftware.smackx.packet.JingleTransport.Ice.Candidate(candidate));
+        public org.jivesoftware.smackx.jingle.packet.JingleTransport getJingleTransport(TransportCandidate candidate) {
+            org.jivesoftware.smackx.jingle.packet.JingleTransport.Ice jt = new org.jivesoftware.smackx.jingle.packet.JingleTransport.Ice();
+            jt.addCandidate(new org.jivesoftware.smackx.jingle.packet.JingleTransport.Ice.Candidate(candidate));
             return jt;
         }
 

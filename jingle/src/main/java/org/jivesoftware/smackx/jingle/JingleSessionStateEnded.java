@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.jingle;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleError;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleError;
 
 /**
  *  @author Jeff Williams

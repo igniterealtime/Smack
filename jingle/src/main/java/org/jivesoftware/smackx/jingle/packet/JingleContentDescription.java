@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.packet;
+package org.jivesoftware.smackx.jingle.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.jingle.media.PayloadType;

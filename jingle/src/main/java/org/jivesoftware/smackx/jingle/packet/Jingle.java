@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.packet;
+package org.jivesoftware.smackx.jingle.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.JingleActionEnum;

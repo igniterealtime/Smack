@@ -14,37 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
-import org.jivesoftware.smackx.packet.JingleDescription;
+import org.jivesoftware.smackx.jingle.packet.JingleContentDescription;
+import org.jivesoftware.smackx.jingle.packet.JingleContentDescription.JinglePayloadType;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Parser for a Jingle description
- * 
+ *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
-public abstract class JingleDescriptionProvider implements PacketExtensionProvider {
+public abstract class JingleContentDescriptionProvider implements PacketExtensionProvider {
 
     /**
      * Default constructor
      */
-    public JingleDescriptionProvider() {
+    public JingleContentDescriptionProvider() {
         super();
     }
 
     /**
      * Parse a iq/jingle/description/payload-type element.
-     * 
-     * @param parser
-     *            the input to parse
+     *
+     * @param parser the input to parse
      * @return a payload type element
      * @throws Exception
      */
-    protected PayloadType parsePayload(final XmlPullParser parser) throws Exception {
+    protected JinglePayloadType parsePayload(final XmlPullParser parser)
+            throws Exception {
         int ptId = 0;
         String ptName;
         int ptChannels = 0;
@@ -61,33 +62,32 @@ public abstract class JingleDescriptionProvider implements PacketExtensionProvid
         } catch (Exception e) {
         }
 
-        return new PayloadType(ptId, ptName, ptChannels);
+        return new JinglePayloadType(new PayloadType(ptId, ptName, ptChannels));
     }
 
     /**
      * Parse a iq/jingle/description element.
-     * 
-     * @param parser
-     *            the input to parse
+     *
+     * @param parser the input to parse
      * @return a description element
      * @throws Exception
      */
     public PacketExtension parseExtension(final XmlPullParser parser) throws Exception {
         boolean done = false;
-        JingleDescription desc = getInstance();
+        JingleContentDescription desc = getInstance();
 
         while (!done) {
             int eventType = parser.next();
             String name = parser.getName();
 
             if (eventType == XmlPullParser.START_TAG) {
-                if (name.equals(PayloadType.NODENAME)) {
-                    desc.addPayloadType(parsePayload(parser));
+                if (name.equals(JingleContentDescription.JinglePayloadType.NODENAME)) {
+                    desc.addJinglePayloadType(parsePayload(parser));
                 } else {
                     throw new Exception("Unknow element \"" + name + "\" in content.");
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (name.equals(JingleDescription.NODENAME)) {
+                if (name.equals(JingleContentDescription.NODENAME)) {
                     done = true;
                 }
             }
@@ -99,12 +99,12 @@ public abstract class JingleDescriptionProvider implements PacketExtensionProvid
      * Return a new instance of this class. Subclasses must overwrite this
      * method.
      */
-    protected abstract JingleDescription getInstance();
+    protected abstract JingleContentDescription getInstance();
 
     /**
      * Jingle audio
      */
-    public static class Audio extends JingleDescriptionProvider {
+    public static class Audio extends JingleContentDescriptionProvider {
 
         /**
          * Default constructor
@@ -116,9 +116,10 @@ public abstract class JingleDescriptionProvider implements PacketExtensionProvid
         /**
          * Parse an audio payload type.
          */
-        public PayloadType parsePayload(final XmlPullParser parser) throws Exception {
-            PayloadType pte = super.parsePayload(parser);
-            PayloadType.Audio pt = new PayloadType.Audio(pte);
+        public JinglePayloadType parsePayload(final XmlPullParser parser)
+                throws Exception {
+            JinglePayloadType pte = super.parsePayload(parser);
+            PayloadType.Audio pt = new PayloadType.Audio(pte.getPayloadType());
             int ptClockRate = 0;
 
             try {
@@ -127,14 +128,14 @@ public abstract class JingleDescriptionProvider implements PacketExtensionProvid
             }
             pt.setClockRate(ptClockRate);
 
-            return pt;
+            return new JinglePayloadType.Audio(pt);
         }
 
         /**
          * Get a new instance of this object.
          */
-        protected JingleDescription getInstance() {
-            return new JingleDescription.Audio();
-        }
-    }
+        protected JingleContentDescription getInstance() {
+            return new JingleContentDescription.Audio();
+		}
+	}
 }

@@ -30,8 +30,8 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportNegotiator;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleContent;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleContent;
 
 /**
  *  @author Jeff Williams

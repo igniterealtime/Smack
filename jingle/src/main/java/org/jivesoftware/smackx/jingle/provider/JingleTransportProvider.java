@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.jingle.nat.ICECandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.packet.JingleTransport;
-import org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate;
+import org.jivesoftware.smackx.jingle.packet.JingleTransport;
+import org.jivesoftware.smackx.jingle.packet.JingleTransport.JingleTransportCandidate;
 import org.xmlpull.v1.XmlPullParser;
 
 /**

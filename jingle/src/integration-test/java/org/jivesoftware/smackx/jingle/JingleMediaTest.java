@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.jingle.mediaimpl.sshare.ScreenShareMediaManager;
 import org.jivesoftware.smackx.jingle.nat.BridgedTransportManager;
 import org.jivesoftware.smackx.jingle.nat.ICETransportManager;
 import org.jivesoftware.smackx.jingle.nat.STUNTransportManager;
-import org.jivesoftware.smackx.packet.JingleError;
+import org.jivesoftware.smackx.jingle.packet.JingleError;
 
 import javax.media.MediaLocator;
 import javax.media.format.AudioFormat;

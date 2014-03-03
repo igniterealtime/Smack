@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.provider;
+package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.jingle.JingleActionEnum;
-import org.jivesoftware.smackx.packet.*;
+import org.jivesoftware.smackx.jingle.packet.*;
 import org.xmlpull.v1.XmlPullParser;
 
 /**

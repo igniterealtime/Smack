@@ -34,8 +34,8 @@ import org.jivesoftware.smackx.jingle.nat.FixedResolver;
 import org.jivesoftware.smackx.jingle.nat.FixedTransportManager;
 import org.jivesoftware.smackx.jingle.nat.RTPBridge;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.provider.JingleProvider;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.provider.JingleProvider;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

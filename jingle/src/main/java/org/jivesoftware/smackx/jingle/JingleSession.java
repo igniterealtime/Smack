@@ -45,8 +45,8 @@ import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportNegotiator;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleError;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleError;
 
 /**
  * An abstract Jingle session. <p/> This class contains some basic properties of

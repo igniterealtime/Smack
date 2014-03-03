@@ -24,11 +24,11 @@ import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportNegotiator;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleContent;
-import org.jivesoftware.smackx.packet.JingleDescription;
-import org.jivesoftware.smackx.packet.JingleError;
-import org.jivesoftware.smackx.packet.JingleTransport;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleContent;
+import org.jivesoftware.smackx.jingle.packet.JingleDescription;
+import org.jivesoftware.smackx.jingle.packet.JingleError;
+import org.jivesoftware.smackx.jingle.packet.JingleTransport;
 
 /**
  *  @author Jeff Williams

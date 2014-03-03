@@ -30,10 +30,10 @@ import org.jivesoftware.smackx.jingle.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleMediaListener;
-import org.jivesoftware.smackx.packet.Jingle;
-import org.jivesoftware.smackx.packet.JingleContent;
-import org.jivesoftware.smackx.packet.JingleDescription;
-import org.jivesoftware.smackx.packet.JingleError;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleContent;
+import org.jivesoftware.smackx.jingle.packet.JingleDescription;
+import org.jivesoftware.smackx.jingle.packet.JingleError;
 
 /**
  * Manager for jmf descriptor negotiation. <p/> <p/> This class is responsible

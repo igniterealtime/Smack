@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
 
 /**
  * A Jingle session request.

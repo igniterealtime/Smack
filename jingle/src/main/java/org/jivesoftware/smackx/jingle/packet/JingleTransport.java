@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.packet;
+package org.jivesoftware.smackx.jingle.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.jingle.nat.ICECandidate;
@@ -276,7 +276,7 @@ public class JingleTransport implements PacketExtension {
         /**
          * Add a transport candidate
          *
-         * @see org.jivesoftware.smackx.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate)
+         * @see org.jivesoftware.smackx.jingle.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.jingle.packet.JingleTransport.JingleTransportCandidate)
          */
         public void addCandidate(final JingleTransportCandidate candidate) {
             super.addCandidate(candidate);
@@ -286,7 +286,7 @@ public class JingleTransport implements PacketExtension {
          * Get the list of candidates. As a "raw-udp" transport can only contain
          * one candidate, we use the first in the list...
          *
-         * @see org.jivesoftware.smackx.packet.JingleTransport#getCandidates()
+         * @see org.jivesoftware.smackx.jingle.packet.JingleTransport#getCandidates()
          */
         public List<JingleTransportCandidate> getCandidatesList() {
             List<JingleTransportCandidate> copy = new ArrayList<JingleTransportCandidate>();
@@ -358,7 +358,7 @@ public class JingleTransport implements PacketExtension {
         /**
          * Add a transport candidate
          *
-         * @see org.jivesoftware.smackx.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.packet.JingleTransport.JingleTransportCandidate)
+         * @see org.jivesoftware.smackx.jingle.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.jingle.packet.JingleTransport.JingleTransportCandidate)
          */
         public void addCandidate(final JingleTransportCandidate candidate) {
             candidates.clear();
@@ -369,7 +369,7 @@ public class JingleTransport implements PacketExtension {
          * Get the list of candidates. As a "raw-udp" transport can only contain
          * one candidate, we use the first in the list...
          *
-         * @see org.jivesoftware.smackx.packet.JingleTransport#getCandidates()
+         * @see org.jivesoftware.smackx.jingle.packet.JingleTransport#getCandidates()
          */
         public List<JingleTransportCandidate> getCandidatesList() {
             List<JingleTransportCandidate> copy = new ArrayList<JingleTransportCandidate>();
