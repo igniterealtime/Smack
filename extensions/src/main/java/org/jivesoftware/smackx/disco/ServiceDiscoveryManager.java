@@ -646,6 +646,19 @@ public class ServiceDiscoveryManager {
     }
 
     /**
+     * Queries the remote jid for it's features and returns true if the given feature is found.
+     *
+     * @param jid
+     * @param feature
+     * @return
+     * @throws XMPPException
+     */
+    public boolean supportsFeature(String jid, String feature) throws XMPPException {
+        DiscoverInfo result = discoverInfo(jid);
+        return result.containsFeature(feature);
+    }
+
+    /**
      * Entity Capabilities
      */
 

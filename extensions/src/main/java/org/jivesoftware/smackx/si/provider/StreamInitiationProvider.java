@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.si.packet.StreamInitiation.File;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -98,7 +98,7 @@ public class StreamInitiationProvider implements IQProvider {
                     Date fileDate = new Date();
                     if (date != null) {
                         try {
-                            fileDate = StringUtils.parseDate(date);
+                            fileDate = XmppDateTime.parseDate(date);
                         } catch (ParseException e) {
                             // couldn't parse date, use current date-time
                         }

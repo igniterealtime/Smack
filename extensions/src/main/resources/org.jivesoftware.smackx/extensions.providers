@@ -1,19 +1,19 @@
 <?xml version="1.0"?> 
 <!-- Providers file for default Smack extensions -->
 <smackProviders> 
-    
+
     <!-- Private Data Storage -->
     <iqProvider> 
-        <elementName>query</elementName> 
-        <namespace>jabber:iq:private</namespace> 
-        <className>org.jivesoftware.smackx.iqprivate.PrivateDataManager$PrivateDataIQProvider</className> 
+        <elementName>query</elementName>
+        <namespace>jabber:iq:private</namespace>
+        <className>org.jivesoftware.smackx.iqprivate.PrivateDataManager$PrivateDataIQProvider</className>
     </iqProvider>
-    
+
     <!-- Time -->
     <iqProvider> 
-        <elementName>query</elementName> 
-        <namespace>jabber:iq:time</namespace> 
-        <className>org.jivesoftware.smackx.time.packet.Time</className> 
+        <elementName>time</elementName>
+        <namespace>urn:xmpp:time</namespace>
+        <className>org.jivesoftware.smackx.time.packet.Time</className>
     </iqProvider>
 
     <!-- Message Events -->
@@ -209,7 +209,7 @@
     	<namespace>http://jabber.org/protocol/ibb</namespace>
     	<className>org.jivesoftware.smackx.bytestreams.ibb.provider.CloseIQProvider</className>
     </iqProvider>
-    
+
     <extensionProvider>
         <elementName>data</elementName>
         <namespace>http://jabber.org/protocol/ibb</namespace>
@@ -258,7 +258,7 @@
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$SessionExpiredError</className>
     </extensionProvider>
-    
+
     <!-- SHIM -->
     <extensionProvider>
     	<elementName>headers</elementName>
@@ -345,14 +345,14 @@
         <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
-	
+
     <!-- XEP-0060 pubsub#event -->
     <extensionProvider>
     	<elementName>event</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.EventProvider</className>
     </extensionProvider>
-    
+
     <extensionProvider>
     	<elementName>configuration</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
@@ -364,31 +364,31 @@
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
     </extensionProvider>
-    
+
     <extensionProvider>
     	<elementName>options</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
-    
+
     <extensionProvider>
     	<elementName>items</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.ItemsProvider</className>
     </extensionProvider>
-    
+
     <extensionProvider>
     	<elementName>item</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.ItemProvider</className>
     </extensionProvider>
-    
+
     <extensionProvider>
     	<elementName>retract</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
         <className>org.jivesoftware.smackx.pubsub.provider.RetractEventProvider</className>
     </extensionProvider>
-    
+
     <extensionProvider>
     	<elementName>purge</elementName>
         <namespace>http://jabber.org/protocol/pubsub#event</namespace>
@@ -401,7 +401,7 @@
         <namespace>http://jabber.org/protocol/nick</namespace>
         <className>org.jivesoftware.smackx.nick.packet.Nick$Provider</className>
     </extensionProvider>
-	
+
     <!-- Attention -->
     <extensionProvider>
         <elementName>attention</elementName>

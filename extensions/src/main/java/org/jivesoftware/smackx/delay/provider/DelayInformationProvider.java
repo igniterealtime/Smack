@@ -21,7 +21,7 @@ import java.util.Date;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -38,7 +38,7 @@ public class DelayInformationProvider implements PacketExtensionProvider {
         Date stamp = null;
         
         try {
-            stamp = StringUtils.parseDate(stampString);
+            stamp = XmppDateTime.parseDate(stampString);
         }
         catch (ParseException parseExc) {
             /*

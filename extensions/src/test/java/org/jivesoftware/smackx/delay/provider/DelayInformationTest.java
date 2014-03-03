@@ -27,7 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.delay.packet.DelayInfo;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInfoProvider;
@@ -218,7 +218,7 @@ public class DelayInformationTest {
             .asString(outputProperties);
         
         delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
-        Date controlDate = StringUtils.parseXEP0082Date("2008-06-08T09:16:20.0Z");
+        Date controlDate = XmppDateTime.parseXEP0082Date("2008-06-08T09:16:20.0Z");
         
         assertEquals(controlDate, delayInfo.getStamp());
 

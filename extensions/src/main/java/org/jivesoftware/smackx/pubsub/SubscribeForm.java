@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.UnknownFormatConversionException;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -128,7 +128,7 @@ public class SubscribeForm extends Form
 		String dateTime = getFieldValue(SubscribeOptionFields.expire);
 		try
 		{
-			return StringUtils.parseDate(dateTime);
+			return XmppDateTime.parseDate(dateTime);
 		}
 		catch (ParseException e)
 		{
@@ -146,7 +146,7 @@ public class SubscribeForm extends Form
 	public void setExpiry(Date expire)
 	{
 		addField(SubscribeOptionFields.expire, FormField.TYPE_TEXT_SINGLE);
-		setAnswer(SubscribeOptionFields.expire.getFieldName(), StringUtils.formatXEP0082Date(expire));
+		setAnswer(SubscribeOptionFields.expire.getFieldName(), XmppDateTime.formatXEP0082Date(expire));
 	}
 	
 	/**

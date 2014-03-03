@@ -10,5 +10,6 @@
         <className>org.jivesoftware.smackx.commands.AdHocCommandManager</className>
         <className>org.jivesoftware.smackx.ping.PingManager</className>
         <className>org.jivesoftware.smackx.privacy.PrivacyListManager</className>
+        <className>org.jivesoftware.smackx.time.EntityTimeManager</className>
     </startupClasses>
 </smack>

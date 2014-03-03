@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.delay.packet;
 
 import java.util.Date;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppDateTime;
 
 /**
  * A decorator for the {@link DelayInformation} class to transparently support
@@ -92,7 +92,7 @@ public class DelayInfo extends DelayInformation
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
                 "\"");
         buf.append(" stamp=\"");
-        buf.append(StringUtils.formatXEP0082Date(getStamp()));
+        buf.append(XmppDateTime.formatXEP0082Date(getStamp()));
         buf.append("\"");
         if (getFrom() != null && getFrom().length() > 0) {
             buf.append(" from=\"").append(getFrom()).append("\"");

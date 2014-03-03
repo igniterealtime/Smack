@@ -21,6 +21,7 @@ import java.util.Date;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -345,7 +346,7 @@ public class StreamInitiation extends IQ {
             }
 
             if (getDate() != null) {
-                buffer.append("date=\"").append(StringUtils.formatXEP0082Date(date)).append("\" ");
+                buffer.append("date=\"").append(XmppDateTime.formatXEP0082Date(date)).append("\" ");
             }
 
             if (getHash() != null) {

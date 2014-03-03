@@ -341,9 +341,9 @@ public class PacketParserUtils {
         // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
             if (IQ.Type.GET == type || IQ.Type.SET == type ) {
-                // If the IQ stanza is of type "get" or "set" containing a child element
-                // qualified by a namespace it does not understand, then answer an IQ of
-                // type "error" with code 501 ("feature-not-implemented")
+                // If the IQ stanza is of type "get" or "set" containing a child element qualified
+                // by a namespace with no registered Smack provider, then answer an IQ of type
+                // "error" with code 501 ("feature-not-implemented")
                 iqPacket = new IQ() {
                     @Override
                     public String getChildElementXML() {
@@ -848,7 +848,7 @@ public class PacketParserUtils {
             }
         }
         return object;
-            }
+    }
 
     /**
      * Decodes a String into an object of the specified type. If the object

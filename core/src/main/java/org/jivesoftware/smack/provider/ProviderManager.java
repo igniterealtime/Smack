@@ -196,7 +196,7 @@ public final class ProviderManager {
                 IQ.class.isAssignableFrom((Class<?>)provider))))
         {
             throw new IllegalArgumentException("Provider must be an IQProvider " +
-                    "or a Class instance.");
+                    "or a Class instance sublcassing IQ.");
         }
         String key = getProviderKey(elementName, namespace);
         iqProviders.put(key, provider);
