@@ -22,6 +22,7 @@ import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
+import org.jivesoftware.smackx.xroster.RosterExchangeManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,7 +111,7 @@ public class RosterExchange implements PacketExtension {
     * @return the XML element name of the packet extension.
     */
     public String getElementName() {
-        return "x";
+        return RosterExchangeManager.ELEMENT;
     }
 
     /** 
@@ -121,7 +122,7 @@ public class RosterExchange implements PacketExtension {
      * @return the XML namespace of the packet extension.
      */
     public String getNamespace() {
-        return "jabber:x:roster";
+        return RosterExchangeManager.NAMESPACE;
     }
 
     /**

@@ -14,12 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.xroster;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
@@ -43,21 +46,46 @@ import org.jivesoftware.smackx.xroster.packet.RosterExchange;
  */
 public class RosterExchangeManager {
 
-    private List<RosterExchangeListener> rosterExchangeListeners = new ArrayList<RosterExchangeListener>();
+    public final static String NAMESPACE = "jabber:x:roster";
+    public final static String ELEMENT = "x";
 
-    private Connection con;
+    private final static Map<Connection, RosterExchangeManager> INSTANCES =
+                    Collections.synchronizedMap(new WeakHashMap<Connection, RosterExchangeManager>());
 
-    private PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:roster");
-    private PacketListener packetListener;
+    private final static PacketFilter PACKET_FILTER = new PacketExtensionFilter(ELEMENT, NAMESPACE);
+
+    private final Set<RosterExchangeListener> rosterExchangeListeners = Collections.synchronizedSet(new HashSet<RosterExchangeListener>());
+
+    private final WeakReference<Connection> weakRefConnection;
+    private final PacketListener packetListener;
+
+    public synchronized static RosterExchangeManager getInstanceFor(Connection connection) {
+        RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
+        if (rosterExchangeManager == null) {
+            rosterExchangeManager = new RosterExchangeManager(connection);
+        }
+        return rosterExchangeManager;
+    }
 
     /**
      * Creates a new roster exchange manager.
      *
      * @param con a Connection which is used to send and receive messages.
      */
-    public RosterExchangeManager(Connection con) {
-        this.con = con;
-        init();
+    public RosterExchangeManager(Connection connection) {
+        weakRefConnection = new WeakReference<Connection>(connection);
+        // Listens for all roster exchange packets and fire the roster exchange listeners.
+        packetListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Message message = (Message) packet;
+                RosterExchange rosterExchange =
+                    (RosterExchange) message.getExtension(ELEMENT, NAMESPACE);
+                // Fire event for roster exchange listeners
+                fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
+            };
+
+        };
+        connection.addPacketListener(packetListener, PACKET_FILTER);
     }
 
     /**
@@ -67,11 +95,7 @@ public class RosterExchangeManager {
      * @param rosterExchangeListener a roster exchange listener.
      */
     public void addRosterListener(RosterExchangeListener rosterExchangeListener) {
-        synchronized (rosterExchangeListeners) {
-            if (!rosterExchangeListeners.contains(rosterExchangeListener)) {
-                rosterExchangeListeners.add(rosterExchangeListener);
-            }
-        }
+        rosterExchangeListeners.add(rosterExchangeListener);
     }
 
     /**
@@ -81,9 +105,7 @@ public class RosterExchangeManager {
      * @param rosterExchangeListener a roster exchange listener..
      */
     public void removeRosterListener(RosterExchangeListener rosterExchangeListener) {
-        synchronized (rosterExchangeListeners) {
-            rosterExchangeListeners.remove(rosterExchangeListener);
-        }
+        rosterExchangeListeners.remove(rosterExchangeListener);
     }
 
     /**
@@ -100,8 +122,9 @@ public class RosterExchangeManager {
         RosterExchange rosterExchange = new RosterExchange(roster);
         msg.addExtension(rosterExchange);
 
+        Connection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        con.sendPacket(msg);
+        connection.sendPacket(msg);
     }
 
     /**
@@ -118,8 +141,9 @@ public class RosterExchangeManager {
         rosterExchange.addRosterEntry(rosterEntry);
         msg.addExtension(rosterExchange);
 
+        Connection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        con.sendPacket(msg);
+        connection.sendPacket(msg);
     }
 
     /**
@@ -139,8 +163,9 @@ public class RosterExchangeManager {
         }
         msg.addExtension(rosterExchange);
 
+        Connection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        con.sendPacket(msg);
+        connection.sendPacket(msg);
     }
 
     /**
@@ -155,30 +180,5 @@ public class RosterExchangeManager {
         for (int i = 0; i < listeners.length; i++) {
             listeners[i].entriesReceived(from, remoteRosterEntries);
         }
-    }
-
-    private void init() {
-        // Listens for all roster exchange packets and fire the roster exchange listeners.
-        packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Message message = (Message) packet;
-                RosterExchange rosterExchange =
-                    (RosterExchange) message.getExtension("x", "jabber:x:roster");
-                // Fire event for roster exchange listeners
-                fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
-            };
-
-        };
-        con.addPacketListener(packetListener, packetFilter);
-    }
-
-    public void destroy() {
-        if (con != null)
-            con.removePacketListener(packetListener);
-
-    }
-    protected void finalize() throws Throwable {
-        destroy();
-        super.finalize();
     }
 }
