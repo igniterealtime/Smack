@@ -13,5 +13,6 @@
         <className>org.jivesoftware.smackx.ExtensionsStartupClasses</className>
         <className>org.jivesoftware.smackx.ExperimentalProviderInitializer</className>
         <className>org.jivesoftware.smackx.WorkgroupProviderInitializer</className>
+        <className>org.jivesoftware.smackx.LegacyProviderInitializer</className>
     </optionalStartupClasses>
 </smack>

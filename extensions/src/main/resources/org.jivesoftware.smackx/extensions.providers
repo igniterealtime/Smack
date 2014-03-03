@@ -15,14 +15,7 @@
         <namespace>jabber:iq:time</namespace> 
         <className>org.jivesoftware.smackx.time.packet.Time</className> 
     </iqProvider>
-    
-    <!-- Roster Exchange -->
-    <extensionProvider>
-        <elementName>x</elementName>
-        <namespace>jabber:x:roster</namespace>
-        <className>org.jivesoftware.smackx.xroster.provider.RosterExchangeProvider</className>
-    </extensionProvider>
-    
+
     <!-- Message Events -->
     <extensionProvider>
         <elementName>x</elementName>
