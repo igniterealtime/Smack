@@ -115,7 +115,7 @@ public class Roster {
         presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
         PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
-        connection.addPacketListener(new RosterPacketListener(), rosterFilter);
+        connection.addPacketListener(new RosterPushListener(), rosterFilter);
         // Listen for any presence packets.
         PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
         presencePacketListener = new PresencePacketListener();
@@ -200,9 +200,9 @@ public class Roster {
         RosterPacket packet = new RosterPacket();
         if (rosterStore != null && connection.isRosterVersioningSupported()) {
             packet.setVersion(rosterStore.getRosterVersion());
-            PacketFilter filter = new IQReplyFilter(packet, connection);
-            connection.addPacketListener(new RosterResultListener(), filter);
         }
+        PacketFilter filter = new IQReplyFilter(packet, connection);
+        connection.addPacketListener(new RosterResultListener(), filter);
         connection.sendPacket(packet);
     }
 
@@ -728,6 +728,37 @@ public class Roster {
 
 
     /**
+     * Removes all the groups with no entries.
+     *
+     * This is used by {@link RosterPushListener} and {@link RosterResultListener} to
+     * cleanup groups after removing contacts.
+     */
+    private void removeEmptyGroups() {
+        // We have to do this because RosterGroup.removeEntry removes the entry immediately
+        // (locally) and the group could remain empty.
+        // TODO Check the performance/logic for rosters with large number of groups
+        for (RosterGroup group : getGroups()) {
+            if (group.getEntryCount() == 0) {
+                groups.remove(group.getName());
+            }
+        }
+    }
+
+    /**
+     * Ignore ItemTypes as of RFC 6121, 2.1.2.5.
+     *
+     * This is used by {@link RosterPushListener} and {@link RosterResultListener}.
+     * */
+    private boolean hasValidSubscriptionType(RosterPacket.Item item) {
+        return item.getItemType().equals(RosterPacket.ItemType.none)
+                || item.getItemType().equals(RosterPacket.ItemType.from)
+                || item.getItemType().equals(RosterPacket.ItemType.to)
+                || item.getItemType().equals(RosterPacket.ItemType.both);
+    }
+
+
+
+    /**
      * An enumeration for the subscription mode options.
      */
     public enum SubscriptionMode {
@@ -879,95 +910,122 @@ public class Roster {
         @Override
         public void processPacket(Packet packet) {
             connection.removePacketListener(this);
-            if (packet instanceof RosterPacket) {
-                // Non-empty roster results are processed by the RosterPacketListener class
-                return;
-            }
             if (!(packet instanceof IQ)) {
                 return;
             }
             IQ result = (IQ)packet;
-            if(result.getType().equals(IQ.Type.RESULT)){
-                Collection<String> addedEntries = new ArrayList<String>();
-                Collection<String> updatedEntries = new ArrayList<String>();
-                for(RosterPacket.Item item : rosterStore.getEntries()){
-                    RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
-                    addUpdateEntry(addedEntries,updatedEntries,item,entry);
-                }
-
-                synchronized (Roster.this) {
-                    rosterInitialized = true;
-                    Roster.this.notifyAll();
-                }
-                fireRosterChangedEvent(addedEntries,updatedEntries,
-                        Collections.<String>emptyList());
+            if (!result.getType().equals(IQ.Type.RESULT)) {
+                return;
             }
-        }
 
-    }
-
-    /**
-     * Listens for all roster packets and processes them.
-     */
-    private class RosterPacketListener implements PacketListener {
-
-        public void processPacket(Packet packet) {
-            RosterPacket rosterPacket = (RosterPacket) packet;
             Collection<String> addedEntries = new ArrayList<String>();
             Collection<String> updatedEntries = new ArrayList<String>();
             Collection<String> deletedEntries = new ArrayList<String>();
 
-            String version = rosterPacket.getVersion();
-
-            if (rosterPacket.getType().equals(IQ.Type.SET)) {
-                // Roster push (RFC 6121, 2.1.6)
-                // A roster push with a non-empty from not matching our address MUST be ignored
-                String jid = StringUtils.parseBareAddress(connection.getUser());
-                if (rosterPacket.getFrom() != null &&
-                        !rosterPacket.getFrom().equals(jid)) {
-                    return;
-                }
-
-                // A roster push must contain exactly one entry
-                Collection<Item> items = rosterPacket.getRosterItems();
-                if (items.size() != 1) {
-                    return;
-                }
-                Item item = items.iterator().next();
-                processPushItem(addedEntries, updatedEntries, deletedEntries, version, item);
-
-                connection.sendPacket(IQ.createResultIQ(rosterPacket));
-            }
-            else {
-                // Roster result (RFC 6121, 2.1.4)
-
-                // Ignore items without valid subscription type
-                ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
-                for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
-                    if (hasValidSubscriptionType(item)) {
-                        validItems.add(item);
-                    }
-                }
-
-                processResult(addedEntries, updatedEntries, deletedEntries, version, validItems);
+            if (packet instanceof RosterPacket) {
+                nonemptyResult((RosterPacket) packet, addedEntries, updatedEntries, deletedEntries);
+            } else {
+                emptyResult(addedEntries, updatedEntries);
             }
 
-            // Remove all the groups with no entries. We have to do this because
-            // RosterGroup.removeEntry removes the entry immediately (locally) and the
-            // group could remain empty.
-            // TODO Check the performance/logic for rosters with large number of groups
-            for (RosterGroup group : getGroups()) {
-                if (group.getEntryCount() == 0) {
-                    groups.remove(group.getName());
-                }
-            }
-
-            // Mark the roster as initialized.
             synchronized (Roster.this) {
                 rosterInitialized = true;
                 Roster.this.notifyAll();
             }
+            // Fire event for roster listeners.
+            fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
+        }
+
+        private void emptyResult(Collection<String> addedEntries, Collection<String> updatedEntries) {
+            for(RosterPacket.Item item : rosterStore.getEntries()){
+                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                addUpdateEntry(addedEntries,updatedEntries,item,entry);
+            }
+        }
+
+        private void addEntries(Collection<String> addedEntries, Collection<String> updatedEntries,
+                Collection<String> deletedEntries, String version, Collection<Item> items) {
+            for (RosterPacket.Item item : items) {
+                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                addUpdateEntry(addedEntries, updatedEntries, item, entry);
+            }
+            List<String> toDelete = new ArrayList<String>();
+
+            // Delete all entries which where not added or updated
+            for (RosterEntry entry : entries.values()) {
+                toDelete.add(entry.getUser());
+            }
+            toDelete.removeAll(addedEntries);
+            toDelete.removeAll(updatedEntries);
+            for (String user : toDelete) {
+                deleteEntry(deletedEntries, entries.get(user));
+            }
+
+            if (rosterStore != null) {
+                rosterStore.resetEntries(items, version);
+            }
+        }
+
+        private void nonemptyResult(RosterPacket packet, Collection<String> addedEntries, Collection<String> updatedEntries, Collection<String> deletedEntries) {
+            RosterPacket rosterPacket = (RosterPacket) packet;
+
+            String version = rosterPacket.getVersion();
+
+            // Ignore items without valid subscription type
+            ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
+            for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
+                if (hasValidSubscriptionType(item)) {
+                    validItems.add(item);
+                }
+            }
+
+            addEntries(addedEntries, updatedEntries, deletedEntries, version, validItems);
+
+            removeEmptyGroups();
+        }
+
+
+    }
+
+    /**
+     * Listens for all roster pushes and processes them.
+     */
+    private class RosterPushListener implements PacketListener {
+
+        public void processPacket(Packet packet) {
+            RosterPacket rosterPacket = (RosterPacket) packet;
+            if (!rosterPacket.getType().equals(IQ.Type.SET)) {
+                return;
+            }
+
+            String version = rosterPacket.getVersion();
+
+            // Roster push (RFC 6121, 2.1.6)
+            // A roster push with a non-empty from not matching our address MUST be ignored
+            String jid = StringUtils.parseBareAddress(connection.getUser());
+            if (rosterPacket.getFrom() != null &&
+                    !rosterPacket.getFrom().equals(jid)) {
+                return;
+            }
+
+            // A roster push must contain exactly one entry
+            Collection<Item> items = rosterPacket.getRosterItems();
+            if (items.size() != 1) {
+                return;
+            }
+
+            Collection<String> addedEntries = new ArrayList<String>();
+            Collection<String> updatedEntries = new ArrayList<String>();
+            Collection<String> deletedEntries = new ArrayList<String>();
+
+            Item item = items.iterator().next();
+            processPushItem(addedEntries, updatedEntries, deletedEntries, version, item);
+
+            connection.sendPacket(IQ.createResultIQ(rosterPacket));
+
+            removeEmptyGroups();
 
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
@@ -990,38 +1048,6 @@ public class Roster {
                     rosterStore.addEntry(item, version);
                 }
             }
-        }
-
-        private void processResult(Collection<String> addedEntries, Collection<String> updatedEntries,
-                Collection<String> deletedEntries, String version, Collection<Item> items) {
-            for (RosterPacket.Item item : items) {
-                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
-                addUpdateEntry(addedEntries, updatedEntries, item, entry);
-            }
-            List<String> toDelete = new ArrayList<String>();
-
-            // Delete all entries which where not added or updated
-            for (RosterEntry entry : entries.values()) {
-                toDelete.add(entry.getUser());
-            }
-            toDelete.removeAll(addedEntries);
-            toDelete.removeAll(updatedEntries);
-            for (String user : toDelete) {
-                deleteEntry(deletedEntries, entries.get(user));
-            }
-            
-            if (rosterStore != null) {
-                rosterStore.resetEntries(items, version);
-            }
-        }
-
-        /* Ignore ItemTypes as of RFC 6121, 2.1.2.5. */
-        private boolean hasValidSubscriptionType(RosterPacket.Item item) {
-            return item.getItemType().equals(RosterPacket.ItemType.none)
-                    || item.getItemType().equals(RosterPacket.ItemType.from)
-                    || item.getItemType().equals(RosterPacket.ItemType.to)
-                    || item.getItemType().equals(RosterPacket.ItemType.both);
         }
 
     }
