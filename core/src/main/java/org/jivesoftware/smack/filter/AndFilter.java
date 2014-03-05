@@ -51,11 +51,11 @@ public class AndFilter implements PacketFilter {
      */
     public AndFilter(PacketFilter... filters) {
         if (filters == null) {
-            throw new IllegalArgumentException("Parameter cannot be null.");
+            throw new IllegalArgumentException("Parameter must not be null.");
         }
         for(PacketFilter filter : filters) {
             if(filter == null) {
-                throw new IllegalArgumentException("Parameter cannot be null.");
+                throw new IllegalArgumentException("Parameter must not be null.");
             }
         }
         this.filters = new ArrayList<PacketFilter>(Arrays.asList(filters));
@@ -69,7 +69,7 @@ public class AndFilter implements PacketFilter {
      */
     public void addFilter(PacketFilter filter) {
         if (filter == null) {
-            throw new IllegalArgumentException("Parameter cannot be null.");
+            throw new IllegalArgumentException("Parameter must not be null.");
         }
         filters.add(filter);
     }

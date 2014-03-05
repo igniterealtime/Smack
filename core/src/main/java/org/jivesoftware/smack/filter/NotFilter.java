@@ -36,7 +36,7 @@ public class NotFilter implements PacketFilter {
      */
     public NotFilter(PacketFilter filter) {
         if (filter == null) {
-            throw new IllegalArgumentException("Parameter cannot be null.");
+            throw new IllegalArgumentException("Parameter must not be null.");
         }
         this.filter = filter;
     }

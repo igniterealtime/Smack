@@ -35,7 +35,7 @@ public class PacketIDFilter implements PacketFilter {
      */
     public PacketIDFilter(String packetID) {
         if (packetID == null) {
-            throw new IllegalArgumentException("Packet ID cannot be null.");
+            throw new IllegalArgumentException("Packet ID must not be null.");
         }
         this.packetID = packetID;
     }

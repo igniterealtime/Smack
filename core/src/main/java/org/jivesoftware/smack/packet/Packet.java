@@ -235,8 +235,8 @@ public abstract class Packet {
 
     /**
      * Returns the first packet extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null
-     * than only the provided namespace is attempted to be matched. Packet extensions are
+     * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null,
+     * only the namespace is matched. Packet extensions are
      * are arbitrary XML sub-documents in standard XMPP packets. By default, a 
      * DefaultPacketExtension instance will be returned for each extension. However, 
      * PacketExtensionProvider instances can be registered with the 
