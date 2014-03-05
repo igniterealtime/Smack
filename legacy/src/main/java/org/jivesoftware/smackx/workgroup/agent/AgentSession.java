@@ -107,11 +107,11 @@ public class AgentSession {
         queueUsersListeners = new ArrayList<QueueUsersListener>();
 
         // Create a filter to listen for packets we're interested in.
-        OrFilter filter = new OrFilter();
-        filter.addFilter(new PacketTypeFilter(OfferRequestProvider.OfferRequestPacket.class));
-        filter.addFilter(new PacketTypeFilter(OfferRevokeProvider.OfferRevokePacket.class));
-        filter.addFilter(new PacketTypeFilter(Presence.class));
-        filter.addFilter(new PacketTypeFilter(Message.class));
+        OrFilter filter = new OrFilter(
+                        new PacketTypeFilter(OfferRequestProvider.OfferRequestPacket.class),
+                        new PacketTypeFilter(OfferRevokeProvider.OfferRevokePacket.class),
+                        new PacketTypeFilter(Presence.class),
+                        new PacketTypeFilter(Message.class));
 
         packetListener = new PacketListener() {
             public void processPacket(Packet packet) {

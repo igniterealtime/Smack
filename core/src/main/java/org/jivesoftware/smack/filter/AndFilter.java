@@ -17,10 +17,11 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Packet;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.jivesoftware.smack.packet.Packet;
 
 /**
  * Implements the logical AND operation over two or more packet filters.
@@ -33,14 +34,14 @@ public class AndFilter implements PacketFilter {
     /**
      * The list of filters.
      */
-    private List<PacketFilter> filters = new ArrayList<PacketFilter>();
+    private final List<PacketFilter> filters;
 
     /**
      * Creates an empty AND filter. Filters should be added using the
      * {@link #addFilter(PacketFilter)} method.
      */
     public AndFilter() {
-
+        filters = new ArrayList<PacketFilter>();
     }
 
     /**
@@ -56,8 +57,8 @@ public class AndFilter implements PacketFilter {
             if(filter == null) {
                 throw new IllegalArgumentException("Parameter cannot be null.");
             }
-            this.filters.add(filter);
         }
+        this.filters = new ArrayList<PacketFilter>(Arrays.asList(filters));
     }
 
     /**

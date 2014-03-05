@@ -17,6 +17,10 @@
 
 package org.jivesoftware.smack.filter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.jivesoftware.smack.packet.Packet;
 
 /**
@@ -28,38 +32,33 @@ import org.jivesoftware.smack.packet.Packet;
 public class OrFilter implements PacketFilter {
 
     /**
-     * The current number of elements in the filter.
-     */
-    private int size;
-
-    /**
      * The list of filters.
      */
-    private PacketFilter [] filters;
+    private final List<PacketFilter> filters;
 
     /**
      * Creates an empty OR filter. Filters should be added using the
      * {@link #addFilter(PacketFilter)} method.
      */
     public OrFilter() {
-        size = 0;
-        filters = new PacketFilter[3];
+        filters = new ArrayList<PacketFilter>();
     }
 
     /**
-     * Creates an OR filter using the two specified filters.
+     * Creates an OR filter using the specified filters.
      *
-     * @param filter1 the first packet filter.
-     * @param filter2 the second packet filter.
+     * @param filters the filters to add.
      */
-    public OrFilter(PacketFilter filter1, PacketFilter filter2) {
-        if (filter1 == null || filter2 == null) {
-            throw new IllegalArgumentException("Parameters cannot be null.");
+    public OrFilter(PacketFilter... filters) {
+        if (filters == null) {
+            throw new IllegalArgumentException("Parameter cannot be null.");
         }
-        size = 2;
-        filters = new PacketFilter[2];
-        filters[0] = filter1;
-        filters[1] = filter2;
+        for(PacketFilter filter : filters) {
+            if(filter == null) {
+                throw new IllegalArgumentException("Parameter cannot be null.");
+            }
+        }
+        this.filters = new ArrayList<PacketFilter>(Arrays.asList(filters));
     }
 
     /**
@@ -72,22 +71,12 @@ public class OrFilter implements PacketFilter {
         if (filter == null) {
             throw new IllegalArgumentException("Parameter cannot be null.");
         }
-        // If there is no more room left in the filters array, expand it.
-        if (size == filters.length) {
-            PacketFilter [] newFilters = new PacketFilter[filters.length+2];
-            for (int i=0; i<filters.length; i++) {
-                newFilters[i] = filters[i];
-            }
-            filters = newFilters;
-        }
-        // Add the new filter to the array.
-        filters[size] = filter;
-        size++;
+        filters.add(filter);
     }
 
     public boolean accept(Packet packet) {
-        for (int i=0; i<size; i++) {
-            if (filters[i].accept(packet)) {
+        for (PacketFilter filter : filters) {
+            if (filter.accept(packet)) {
                 return true;
             }
         }
