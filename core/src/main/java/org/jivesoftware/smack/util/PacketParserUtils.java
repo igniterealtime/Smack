@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Connection;
-import org.jivesoftware.smack.packet.Authentication;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
@@ -301,9 +300,6 @@ public class PacketParserUtils {
                 if (elementName.equals("error")) {
                     error = PacketParserUtils.parseError(parser);
                 }
-                else if (elementName.equals("query") && namespace.equals("jabber:iq:auth")) {
-                    iqPacket = parseAuthentication(parser);
-                }
                 else if (elementName.equals("query") && namespace.equals("jabber:iq:roster")) {
                     iqPacket = parseRoster(parser);
                 }
@@ -381,34 +377,6 @@ public class PacketParserUtils {
         iqPacket.setError(error);
 
         return iqPacket;
-    }
-
-    private static Authentication parseAuthentication(XmlPullParser parser) throws Exception {
-        Authentication authentication = new Authentication();
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("username")) {
-                    authentication.setUsername(parser.nextText());
-                }
-                else if (parser.getName().equals("password")) {
-                    authentication.setPassword(parser.nextText());
-                }
-                else if (parser.getName().equals("digest")) {
-                    authentication.setDigest(parser.nextText());
-                }
-                else if (parser.getName().equals("resource")) {
-                    authentication.setResource(parser.nextText());
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("query")) {
-                    done = true;
-                }
-            }
-        }
-        return authentication;
     }
 
     private static RosterPacket parseRoster(XmlPullParser parser) throws Exception {
