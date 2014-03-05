@@ -26,12 +26,12 @@ import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FromContainsFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Message.Type;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.collections.ReferenceMap;
 
@@ -313,7 +313,7 @@ public class ChatManager {
 
     PacketCollector createPacketCollector(Chat chat) {
         return connection.createPacketCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
-                new FromContainsFilter(chat.getParticipant())));
+                new FromMatchesFilter(chat.getParticipant())));
     }
 
     /**

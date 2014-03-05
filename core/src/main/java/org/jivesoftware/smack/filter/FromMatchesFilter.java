@@ -53,17 +53,14 @@ public class FromMatchesFilter implements PacketFilter {
     }
 
     public boolean accept(Packet packet) {
-        if (packet.getFrom() == null) {
+        String from = packet.getFrom();
+        if (from == null) {
             return false;
         }
-        else if (matchBareJID) {
-            // Check if the bare JID of the sender of the packet matches the specified JID
-            return packet.getFrom().toLowerCase().startsWith(address);
+        if (matchBareJID) {
+            from = StringUtils.parseBareAddress(from);
         }
-        else {
-            // Check if the full JID of the sender of the packet matches the specified JID
-            return address.equals(packet.getFrom().toLowerCase());
-        }
+        return address.equals(from.toLowerCase());
     }
 
     public String toString() {

@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FromContainsFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -86,7 +86,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(streamID);
 
-        return new AndFilter(new FromContainsFilter(from), new IBBOpenSidFilter(streamID));
+        return new AndFilter(new FromMatchesFilter(from), new IBBOpenSidFilter(streamID));
     }
 
     public String[] getNamespaces() {

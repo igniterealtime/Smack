@@ -159,7 +159,7 @@ public class Workgroup {
         Presence directedPresence = new Presence(Presence.Type.available);
         directedPresence.setTo(workgroupJID);
         PacketFilter typeFilter = new PacketTypeFilter(Presence.class);
-        PacketFilter fromFilter = new FromContainsFilter(workgroupJID);
+        PacketFilter fromFilter = new FromMatchesFilter(workgroupJID);
         PacketCollector collector = connection.createPacketCollector(new AndFilter(fromFilter,
                 typeFilter));
 
