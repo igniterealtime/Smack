@@ -262,7 +262,7 @@ public class AgentSession {
             presence.addExtension(new DefaultPacketExtension(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
 
-            PacketCollector collector = this.connection.createPacketCollector(new AndFilter(new PacketTypeFilter(Presence.class), new FromMatchesFilter(workgroupJID)));
+            PacketCollector collector = this.connection.createPacketCollector(new AndFilter(new PacketTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)));
 
             connection.sendPacket(presence);
 
@@ -359,7 +359,7 @@ public class AgentSession {
         presence.addExtension(agentStatus);
         presence.addExtension(new MetaData(this.metaData));
 
-        PacketCollector collector = this.connection.createPacketCollector(new AndFilter(new PacketTypeFilter(Presence.class), new FromMatchesFilter(workgroupJID)));
+        PacketCollector collector = this.connection.createPacketCollector(new AndFilter(new PacketTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)));
 
         this.connection.sendPacket(presence);
 
@@ -402,7 +402,7 @@ public class AgentSession {
         presence.addExtension(new MetaData(this.metaData));
 
         PacketCollector collector = this.connection.createPacketCollector(new AndFilter(new PacketTypeFilter(Presence.class),
-                new FromMatchesFilter(workgroupJID)));
+                FromMatchesFilter.create(workgroupJID)));
 
         this.connection.sendPacket(presence);
 

@@ -313,7 +313,7 @@ public class ChatManager {
 
     PacketCollector createPacketCollector(Chat chat) {
         return connection.createPacketCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
-                new FromMatchesFilter(chat.getParticipant())));
+                        FromMatchesFilter.create(chat.getParticipant())));
     }
 
     /**

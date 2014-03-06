@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2014 Jive Software.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,6 @@ public class FromMatchesFilter implements PacketFilter {
      * Flag that indicates if the checking will be done against bare JID addresses or full JIDs.
      */
     private boolean matchBareJID = false;
-
-    /**
-     * @see FromMatchesFilter#create(String)
-     */
-    @Deprecated
-    public FromMatchesFilter(String address) {
-        this(address, "".equals(StringUtils.parseResource(address)));
-    }
 
     /**
      * Creates a filter matching on the "from" field. The from address must be the same as the
@@ -106,6 +98,7 @@ public class FromMatchesFilter implements PacketFilter {
     }
 
     public String toString() {
-        return "FromMatchesFilter: " + address;
+        String matchMode = matchBareJID ? "bare" : "full";
+        return "FromMatchesFilter (" +matchMode + "): " + address;
     }
 }

@@ -348,7 +348,7 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromMatchesFilter(room + "/" + nickname),
+                FromMatchesFilter.createFull(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send create & join packet.
@@ -477,7 +477,7 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
                 new AndFilter(
-                        new FromMatchesFilter(room + "/" + nickname),
+                        FromMatchesFilter.createFull(room + "/" + nickname),
                         new PacketTypeFilter(Presence.class));
         PacketCollector response = null;
 
@@ -918,7 +918,7 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromMatchesFilter(room + "/" + nickname),
+                FromMatchesFilter.createFull(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollector(responseFilter);
         // Send join packet.
@@ -1698,7 +1698,7 @@ public class MultiUserChat {
         // Wait for an error or confirmation message back from the server.
         PacketFilter responseFilter =
             new AndFilter(
-                new FromMatchesFilter(room),
+                FromMatchesFilter.create(room),
                 new PacketTypeFilter(Message.class));
         responseFilter = new AndFilter(responseFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -1860,7 +1860,7 @@ public class MultiUserChat {
         // Create filters
         messageFilter =
             new AndFilter(
-                new FromMatchesFilter(room),
+                FromMatchesFilter.create(room),
                 new MessageTypeFilter(Message.Type.groupchat));
         messageFilter = new AndFilter(messageFilter, new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -1869,7 +1869,7 @@ public class MultiUserChat {
             }
         });
         presenceFilter =
-            new AndFilter(new FromMatchesFilter(room), new PacketTypeFilter(Presence.class));
+            new AndFilter(FromMatchesFilter.create(room), new PacketTypeFilter(Presence.class));
 
         // Create a collector for incoming messages.
         messageCollector = new ConnectionDetachedPacketCollector();

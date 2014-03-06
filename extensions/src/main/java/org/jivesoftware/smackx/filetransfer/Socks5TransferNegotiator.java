@@ -89,7 +89,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(streamID);
 
-        return new AndFilter(new FromMatchesFilter(from), new BytestreamSIDFilter(streamID));
+        return new AndFilter(FromMatchesFilter.create(from), new BytestreamSIDFilter(streamID));
     }
 
     @Override

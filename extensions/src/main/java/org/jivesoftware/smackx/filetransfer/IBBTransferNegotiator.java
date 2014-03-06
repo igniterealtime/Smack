@@ -86,7 +86,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(streamID);
 
-        return new AndFilter(new FromMatchesFilter(from), new IBBOpenSidFilter(streamID));
+        return new AndFilter(FromMatchesFilter.create(from), new IBBOpenSidFilter(streamID));
     }
 
     public String[] getNamespaces() {
