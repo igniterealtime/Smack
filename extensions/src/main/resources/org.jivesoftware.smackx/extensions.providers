@@ -449,4 +449,11 @@
         <className>org.jivesoftware.smackx.privacy.provider.PrivacyProvider</className>
     </iqProvider>
 
+    <!-- XEP-0079 Advanced Message Processing -->
+    <extensionProvider>
+        <elementName>amp</elementName>
+        <namespace>http://jabber.org/protocol/amp</namespace>
+        <className>org.jivesoftware.smackx.amp.AMPExtensionProvider</className>
+    </extensionProvider>
+
 </smackProviders>
