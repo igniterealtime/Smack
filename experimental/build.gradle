@@ -1,0 +1,11 @@
+description = """\
+Smack experimental extensions.
+Classes and methods for XEPs that are in status 'experimental' or that should
+otherwise carefully considered for deployment. The API may change even
+between patch versions."""
+
+dependencies {
+	compile project(':core')
+	compile project(':extensions')
+	testCompile project(':core').sourceSets.test.runtimeClasspath
+}

@@ -1,0 +1,7 @@
+description = """\
+Smack for standard XMPP connections over TCP."""
+
+dependencies {
+	compile project(':core')
+	testCompile project(':core').sourceSets.test.runtimeClasspath
+}

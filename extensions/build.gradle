@@ -1,0 +1,11 @@
+description = """\
+Smack extensions.
+Classes and methods that implement support for the various XMPP XEPs
+(Multi-User Chat, PubSub, …) and other XMPP extensions."""
+
+// Note that the test dependencies (junit, …) are inferred from the
+// sourceSet.test of the core subproject
+dependencies {
+	compile project(':core')
+	testCompile project(':core').sourceSets.test.runtimeClasspath
+}

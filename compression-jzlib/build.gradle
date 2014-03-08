@@ -1,0 +1,8 @@
+description = """\
+Compression with jzlib
+Allow to compress the XMPP stream with help of jzlib."""
+
+dependencies {
+	compile project(path: ':core', configuration: 'compression')
+	compile 'com.jcraft:jzlib:1.1.3'
+}

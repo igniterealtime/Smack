@@ -1,0 +1,8 @@
+description = """\
+DNS SRV with Java7
+Use javax.naming for DNS SRV lookups. The javax.naming API is availabe in JavaSE
+since Java7."""
+
+dependencies {
+	compile project(path: ':core', configuration: 'dns')
+}

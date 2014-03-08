@@ -1,0 +1,55 @@
+description = """\
+Smack core components."""
+
+configurations {
+	compression
+	dns
+}
+dependencies {
+	compile 'xpp3:xpp3:1.1.4c'
+	testCompile 'junit:junit:4.+'
+	testCompile 'xmlunit:xmlunit:1.5'
+	testCompile 'org.powermock:powermock-module-junit4:1.5.+'
+	testCompile 'org.powermock:powermock-api-mockito:1.5.+'
+	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6+'
+}
+jar {
+	manifest {
+		attributes('Bundle-SymbolicName': project.group)
+		from sharedManifest
+	}
+}
+task compressionJar(type: Jar) {
+	appendix += '-compression'
+	dependsOn classes
+	from sourceSets.main.output
+	include('org/jivesoftware/smack/compression/**')
+}
+task dnsJar(type: Jar) {
+	appendix += '-dns'
+	dependsOn classes
+	from sourceSets.main.output
+	include('org/jivesoftware/smack/util/dns/**')
+	include('org/jivesoftware/smack/util/DNSUtil.class')
+}
+artifacts {
+	compression compressionJar
+	dns dnsJar
+}
+class CreateFileTask extends DefaultTask {
+	@Input
+	String fileContent
+
+	@OutputFile
+	File outputFile
+
+	@TaskAction
+	def createFile() {
+		outputFile.text = fileContent
+	}
+}
+task createVersionResource(type: CreateFileTask) {
+	fileContent = version
+	outputFile = new File(projectDir, 'src/main/resources/org.jivesoftware.smack/version')
+}
+compileJava.dependsOn(createVersionResource)

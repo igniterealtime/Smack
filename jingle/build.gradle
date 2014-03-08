@@ -1,0 +1,11 @@
+description = """\
+Smack Jingle API.
+Warning: This API is beta, outdated and currenlty unmaintained."""
+
+dependencies {
+	compile project(':core')
+	compile project(':extensions')
+	compile 'javax.media:jmf:2.1.1e'
+	compile files('libs/jspeex-0.9.7-jfcom.jar', 'libs/jstun.jar', 'libs/Speex.jar')
+	testCompile project(':core').sourceSets.test.runtimeClasspath
+}
