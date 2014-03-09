@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.ping;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,6 +28,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackError;
 import org.jivesoftware.smack.XMPPException;
@@ -39,7 +39,6 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.ping.packet.Ping;
 import org.jivesoftware.smackx.ping.packet.Pong;
 
@@ -52,7 +51,7 @@ import org.jivesoftware.smackx.ping.packet.Pong;
  * @author Florian Schmaus
  * @see <a href="http://www.xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP Ping</a>
  */
-public class PingManager {
+public class PingManager extends Manager {
     public static final String NAMESPACE = "urn:xmpp:ping";
 
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
@@ -118,10 +117,8 @@ public class PingManager {
      */
     private long lastSuccessfulManualPing = -1;
 
-    private WeakReference<Connection> weakRefConnection;
-
     private PingManager(Connection connection) {
-        weakRefConnection = new WeakReference<Connection>(connection);
+        super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(PingManager.NAMESPACE);
         INSTANCES.put(connection, this);
@@ -130,9 +127,8 @@ public class PingManager {
             // Send a Pong for every Ping
             @Override
             public void processPacket(Packet packet) {
-                Connection connection = weakRefConnection.get();
                 Pong pong = new Pong(packet);
-                connection.sendPacket(pong);
+                connection().sendPacket(pong);
             }
         }, PING_PACKET_FILTER);
         connection.addConnectionListener(new ConnectionListener() {
@@ -170,12 +166,11 @@ public class PingManager {
      */
     public boolean ping(String jid, long pingTimeout) {
         Ping ping = new Ping(jid);
-        Connection connection = weakRefConnection.get();
         try {
-            connection.createPacketCollectorAndSend(ping).nextResultOrThrow();
+            connection().createPacketCollectorAndSend(ping).nextResultOrThrow();
         }
         catch (XMPPException exc) {
-            return (jid.equals(connection.getServiceName()) && (exc.getSmackError() != SmackError.NO_RESPONSE_FROM_SERVER));
+            return (jid.equals(connection().getServiceName()) && (exc.getSmackError() != SmackError.NO_RESPONSE_FROM_SERVER));
         }
         return true;
     }
@@ -188,8 +183,7 @@ public class PingManager {
      * @return true if a reply was received from the entity, false otherwise.
      */
     public boolean ping(String jid) {
-        Connection connection = weakRefConnection.get();
-        return ping(jid, connection.getPacketReplyTimeout());
+        return ping(jid, connection().getPacketReplyTimeout());
     }
 
     /**
@@ -200,9 +194,7 @@ public class PingManager {
      * @throws XMPPException An XMPP related error occurred during the request 
      */
     public boolean isPingSupported(String jid) throws XMPPException {
-        Connection connection = weakRefConnection.get();
-        DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
-        return result.containsFeature(PingManager.NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, PingManager.NAMESPACE);
     }
 
     /**
@@ -229,8 +221,7 @@ public class PingManager {
      * @return
      */
     public boolean pingMyServer(boolean notifyListeners) {
-        Connection connection = weakRefConnection.get();
-        boolean res = ping(connection.getServiceName());
+        boolean res = ping(connection().getServiceName());
         if (res) {
             pongReceived();
         } else if (notifyListeners) {
@@ -296,8 +287,7 @@ public class PingManager {
         maybeStopPingServerTask();
         if (pingInterval > 0) {
             LOGGER.fine("Scheduling ServerPingTask in " + pingInterval + " seconds");
-            Connection connection = weakRefConnection.get();
-            nextAutomaticPing = connection.schedule(pingServerRunnable, pingInterval, TimeUnit.SECONDS);
+            nextAutomaticPing = connection().schedule(pingServerRunnable, pingInterval, TimeUnit.SECONDS);
         }
     }
 
@@ -318,7 +308,7 @@ public class PingManager {
 
         public void run() {
             LOGGER.fine("ServerPingTask run()");
-            Connection connection = weakRefConnection.get();
+            Connection connection = connection();
             if (connection == null) {
                 // connection has been collected by GC
                 // which means we can stop the thread by breaking the loop

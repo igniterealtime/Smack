@@ -17,7 +17,11 @@
 
 package org.jivesoftware.smackx.disco;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -30,8 +34,15 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @author Gaston Dombiak
  */
-public class ServiceDiscoveryManager {
+public class ServiceDiscoveryManager extends Manager {
 
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
@@ -61,7 +72,6 @@ public class ServiceDiscoveryManager {
     private static Map<Connection, ServiceDiscoveryManager> instances =
             Collections.synchronizedMap(new WeakHashMap<Connection, ServiceDiscoveryManager>());
 
-    private WeakReference<Connection> connection;
     private final Set<String> features = new HashSet<String>();
     private DataForm extendedInfo = null;
     private Map<String, NodeInformationProvider> nodeInformationProviders =
@@ -94,8 +104,7 @@ public class ServiceDiscoveryManager {
      * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
     private ServiceDiscoveryManager(Connection connection) {
-        this.connection = new WeakReference<Connection>(connection);
-
+        super(connection);
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
 
@@ -106,7 +115,7 @@ public class ServiceDiscoveryManager {
         PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
         PacketListener packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
-                Connection connection = ServiceDiscoveryManager.this.connection.get();
+                Connection connection = connection();
                 if (connection == null) return;
                 DiscoverItems discoverItems = (DiscoverItems) packet;
                 // Send back the items defined in the client if the request is of type GET
@@ -143,7 +152,7 @@ public class ServiceDiscoveryManager {
         packetFilter = new PacketTypeFilter(DiscoverInfo.class);
         packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
-                Connection connection = ServiceDiscoveryManager.this.connection.get();
+                Connection connection = connection();
                 if (connection == null) return;
                 DiscoverInfo discoverInfo = (DiscoverInfo) packet;
                 // Answer the client's supported features if the request is of the GET type
@@ -530,16 +539,13 @@ public class ServiceDiscoveryManager {
      * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverInfo discoverInfo(String entityID, String node) throws XMPPException {
-        Connection connection = ServiceDiscoveryManager.this.connection.get();
-        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
-
         // Discover the entity's info
         DiscoverInfo disco = new DiscoverInfo();
         disco.setType(IQ.Type.GET);
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Packet result = connection.createPacketCollectorAndSend(disco).nextResultOrThrow();
+        Packet result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
 
         return (DiscoverInfo) result;
     }
@@ -566,16 +572,13 @@ public class ServiceDiscoveryManager {
      * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverItems discoverItems(String entityID, String node) throws XMPPException {
-        Connection connection = ServiceDiscoveryManager.this.connection.get();
-        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
-
         // Discover the entity's items
         DiscoverItems disco = new DiscoverItems();
         disco.setType(IQ.Type.GET);
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Packet result = connection.createPacketCollectorAndSend(disco).nextResultOrThrow();
+        Packet result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
         return (DiscoverItems) result;
     }
 
@@ -635,14 +638,11 @@ public class ServiceDiscoveryManager {
      */
     public void publishItems(String entityID, String node, DiscoverItems discoverItems)
             throws XMPPException {
-        Connection connection = ServiceDiscoveryManager.this.connection.get();
-        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
-
         discoverItems.setType(IQ.Type.SET);
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);
 
-        connection.createPacketCollectorAndSend(discoverItems).nextResultOrThrow();
+        connection().createPacketCollectorAndSend(discoverItems).nextResultOrThrow();
     }
 
     /**

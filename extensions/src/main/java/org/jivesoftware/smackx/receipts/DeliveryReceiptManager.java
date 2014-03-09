@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.receipts;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,13 +24,13 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**
  * Manager for XEP-0184: Message Delivery Receipts. This class implements
@@ -40,7 +39,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
  *
  * @author Georg Lukas
  */
-public class DeliveryReceiptManager implements PacketListener {
+public class DeliveryReceiptManager extends Manager implements PacketListener {
 
     private static Map<Connection, DeliveryReceiptManager> instances =
             Collections.synchronizedMap(new WeakHashMap<Connection, DeliveryReceiptManager>());
@@ -53,15 +52,14 @@ public class DeliveryReceiptManager implements PacketListener {
         });
     }
 
-    private WeakReference<Connection> weakRefConnection;
     private boolean auto_receipts_enabled = false;
     private Set<ReceiptReceivedListener> receiptReceivedListeners = Collections
             .synchronizedSet(new HashSet<ReceiptReceivedListener>());
 
     private DeliveryReceiptManager(Connection connection) {
+        super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
-        weakRefConnection = new WeakReference<Connection>(connection);
         instances.put(connection, this);
 
         // register listener for delivery receipts and requests
@@ -92,11 +90,9 @@ public class DeliveryReceiptManager implements PacketListener {
      * @return true if supported
      */
     public boolean isSupported(String jid) {
-        Connection connection = weakRefConnection.get();
         try {
-            DiscoverInfo result =
-                ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
-            return result.containsFeature(DeliveryReceipt.NAMESPACE);
+            return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
+                            DeliveryReceipt.NAMESPACE);
         }
         catch (XMPPException e) {
             return false;
@@ -121,7 +117,7 @@ public class DeliveryReceiptManager implements PacketListener {
             DeliveryReceiptRequest drr = (DeliveryReceiptRequest)packet.getExtension(
                     DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
             if (drr != null) {
-                Connection connection = weakRefConnection.get();
+                Connection connection = connection();
                 Message ack = new Message(packet.getFrom(), Message.Type.normal);
                 ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
                 connection.sendPacket(ack);

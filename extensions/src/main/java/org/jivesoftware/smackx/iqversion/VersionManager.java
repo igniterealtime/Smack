@@ -17,12 +17,12 @@
 
 package org.jivesoftware.smackx.iqversion;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
@@ -48,15 +48,14 @@ import org.jivesoftware.smackx.iqversion.packet.Version;
  *
  * @author Georg Lukas
  */
-public class VersionManager {
+public class VersionManager extends Manager {
     private static final Map<Connection, VersionManager> instances =
             Collections.synchronizedMap(new WeakHashMap<Connection, VersionManager>());
 
     private Version own_version;
-    private WeakReference<Connection> weakRefConnection;
 
     private VersionManager(final Connection connection) {
-        this.weakRefConnection = new WeakReference<Connection>(connection);
+        super(connection);
         instances.put(connection, this);
 
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
@@ -73,7 +72,7 @@ public class VersionManager {
                 Version reply = new Version(own_version);
                 reply.setPacketID(packet.getPacketID());
                 reply.setTo(packet.getFrom());
-                weakRefConnection.get().sendPacket(reply);
+                connection().sendPacket(reply);
             }
         }
         , new AndFilter(new PacketTypeFilter(Version.class), new IQTypeFilter(Type.GET)));

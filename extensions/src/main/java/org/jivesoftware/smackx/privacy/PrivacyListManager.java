@@ -16,8 +16,16 @@
  */
 package org.jivesoftware.smackx.privacy;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.*;
@@ -25,9 +33,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
-
-import java.lang.ref.WeakReference;
-import java.util.*;
 
 /**
  * A PrivacyListManager is used by XMPP clients to block or allow communications from other
@@ -42,13 +47,12 @@ import java.util.*;
  * 
  * @author Francisco Vives
  */
-public class PrivacyListManager {
+public class PrivacyListManager extends Manager {
 
     // Keep the list of instances of this class.
     private static Map<Connection, PrivacyListManager> instances = Collections
             .synchronizedMap(new WeakHashMap<Connection, PrivacyListManager>());
 
-	private WeakReference<Connection> connection;
 	private final List<PrivacyListListener> listeners = new ArrayList<PrivacyListListener>();
 	PacketFilter packetFilter = new AndFilter(new IQTypeFilter(IQ.Type.SET),
     		new PacketExtensionFilter("query", "jabber:iq:privacy"));
@@ -71,7 +75,7 @@ public class PrivacyListManager {
      * @param connection the XMPP connection.
      */
 	private PrivacyListManager(final Connection connection) {
-        this.connection = new WeakReference<Connection>(connection);
+        super(connection);
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
 
@@ -121,7 +125,7 @@ public class PrivacyListManager {
 	 * @return the userJID that owns the privacy
 	 */
 	private String getUser() {
-		return connection.get().getUser();
+		return connection().getUser();
 	}
 
     /**
@@ -146,13 +150,11 @@ public class PrivacyListManager {
 	 * @exception XMPPException if the request or the answer failed, it raises an exception.
 	 */ 
 	private Privacy getRequest(Privacy requestPrivacy) throws XMPPException {
-        Connection connection = PrivacyListManager.this.connection.get();
-        if (connection == null) throw new XMPPException("Connection instance already gc'ed");
 		// The request is a get iq type
 		requestPrivacy.setType(Privacy.Type.GET);
 		requestPrivacy.setFrom(this.getUser());
 
-        Privacy privacyAnswer = (Privacy) connection.createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
+        Privacy privacyAnswer = (Privacy) connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
         return privacyAnswer;
 	}
 
@@ -166,14 +168,11 @@ public class PrivacyListManager {
      * @exception XMPPException if the request or the answer failed, it raises an exception.
      */
     private Packet setRequest(Privacy requestPrivacy) throws XMPPException {
-        Connection connection = PrivacyListManager.this.connection.get();
-        if (connection == null)
-            throw new XMPPException("Connection instance already gc'ed");
         // The request is a get iq type
         requestPrivacy.setType(Privacy.Type.SET);
         requestPrivacy.setFrom(this.getUser());
 
-        return connection.createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
+        return connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
     }
 
 	/**

@@ -35,7 +35,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.Form;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,10 +53,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @author Gabriel Guardincerri
  */
-public class AdHocCommandManager {
-    private static final String DISCO_NAMESPACE = "http://jabber.org/protocol/commands";
-
-    private static final String discoNode = DISCO_NAMESPACE;
+public class AdHocCommandManager extends Manager {
+    public static final String NAMESPACE = "http://jabber.org/protocol/commands";
 
     /**
      * The session time out in seconds.
@@ -98,11 +95,6 @@ public class AdHocCommandManager {
     }
 
     /**
-     * The Connection that this instances of AdHocCommandManager manages
-     */
-    private final WeakReference<Connection> connection;
-
-    /**
      * Map a command node with its AdHocCommandInfo. Note: Key=command node,
      * Value=command. Command node matches the node attribute sent by command
      * requesters.
@@ -125,7 +117,7 @@ public class AdHocCommandManager {
     private Thread sessionsSweeper;
 
     private AdHocCommandManager(Connection connection) {
-        this.connection = new WeakReference<Connection>(connection);
+        super(connection);
         this.serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         
         // Register the new instance and associate it with the connection
@@ -136,13 +128,13 @@ public class AdHocCommandManager {
         // This information will be used when another client tries to
         // discover whether this client supports AdHoc-Commands or not.
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(
-                DISCO_NAMESPACE);
+                NAMESPACE);
 
         // Set the NodeInformationProvider that will provide information about
         // which AdHoc-Commands are registered, whenever a disco request is
         // received
         ServiceDiscoveryManager.getInstanceFor(connection)
-                .setNodeInformationProvider(discoNode,
+                .setNodeInformationProvider(NAMESPACE,
                         new NodeInformationProvider() {
                             public List<DiscoverItems.Item> getNodeItems() {
 
@@ -221,7 +213,7 @@ public class AdHocCommandManager {
      * @param factory a factory to create new instances of the command.
      */
     public void registerCommand(String node, final String name, LocalCommandFactory factory) {
-        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection.get().getUser(), factory);
+        AdHocCommandInfo commandInfo = new AdHocCommandInfo(node, name, connection().getUser(), factory);
 
         commands.put(node, commandInfo);
         // Set the NodeInformationProvider that will provide information about
@@ -234,7 +226,7 @@ public class AdHocCommandManager {
 
                     public List<String> getNodeFeatures() {
                         List<String> answer = new ArrayList<String>();
-                        answer.add(DISCO_NAMESPACE);
+                        answer.add(NAMESPACE);
                         // TODO: check if this service is provided by the
                         // TODO: current connection.
                         answer.add("jabber:x:data");
@@ -266,7 +258,7 @@ public class AdHocCommandManager {
      * @throws XMPPException if the operation failed for some reason.
      */
     public DiscoverItems discoverCommands(String jid) throws XMPPException {
-        return serviceDiscoveryManager.discoverItems(jid, discoNode);
+        return serviceDiscoveryManager.discoverItems(jid, NAMESPACE);
     }
 
     /**
@@ -287,7 +279,7 @@ public class AdHocCommandManager {
             discoverItems.addItem(item);
         }
 
-        serviceDiscoveryManager.publishItems(jid, discoNode, discoverItems);
+        serviceDiscoveryManager.publishItems(jid, NAMESPACE, discoverItems);
     }
 
     /**
@@ -301,7 +293,7 @@ public class AdHocCommandManager {
      * @return a local instance equivalent to the remote command.
      */
     public RemoteCommand getRemoteCommand(String jid, String node) {
-        return new RemoteCommand(connection.get(), node, jid);
+        return new RemoteCommand(connection(), node, jid);
     }
 
     /**
@@ -449,7 +441,7 @@ public class AdHocCommandManager {
                 }
 
                 // Sends the response packet
-                connection.get().sendPacket(response);
+                connection().sendPacket(response);
 
             }
             catch (XMPPException e) {
@@ -564,7 +556,7 @@ public class AdHocCommandManager {
                         executingCommands.remove(sessionId);
                     }
 
-                    connection.get().sendPacket(response);
+                    connection().sendPacket(response);
                 }
                 catch (XMPPException e) {
                     // If there is an exception caused by the next, complete,
@@ -620,7 +612,7 @@ public class AdHocCommandManager {
     private void respondError(AdHocCommandData response, XMPPError error) {
         response.setType(IQ.Type.ERROR);
         response.setError(error);
-        connection.get().sendPacket(response);
+        connection().sendPacket(response);
     }
 
     /**

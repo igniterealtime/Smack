@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2013 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.caps;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
@@ -58,7 +59,6 @@ import java.util.TreeSet;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -67,7 +67,7 @@ import java.security.NoSuchAlgorithmException;
  * 
  * @author Florian Schmaus
  */
-public class EntityCapsManager {
+public class EntityCapsManager extends Manager {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/caps";
     public static final String ELEMENT = "c";
@@ -110,7 +110,6 @@ public class EntityCapsManager {
         }
     }
 
-    private WeakReference<Connection> weakRefConnection;
     private ServiceDiscoveryManager sdm;
     private boolean entityCapsEnabled;
     private String currentCapsVersion;
@@ -221,7 +220,7 @@ public class EntityCapsManager {
     }
 
     private EntityCapsManager(Connection connection) {
-        this.weakRefConnection = new WeakReference<Connection>(connection);
+        super(connection);
         this.sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         instances.put(connection, this);
 
@@ -384,16 +383,8 @@ public class EntityCapsManager {
      * @param jid
      * @return
      */
-    public boolean areEntityCapsSupported(String jid) {
-        if (jid == null)
-            return false;
-
-        try {
-            DiscoverInfo result = sdm.discoverInfo(jid);
-            return result.containsFeature(NAMESPACE);
-        } catch (XMPPException e) {
-            return false;
-        }
+    public boolean areEntityCapsSupported(String jid) throws XMPPException {
+        return sdm.supportsFeature(jid, NAMESPACE);
     }
 
     /**
@@ -401,8 +392,8 @@ public class EntityCapsManager {
      * 
      * @return
      */
-    public boolean areEntityCapsSupportedByServer() {
-        return areEntityCapsSupported(weakRefConnection.get().getServiceName());
+    public boolean areEntityCapsSupportedByServer() throws XMPPException {
+        return areEntityCapsSupported(connection().getServiceName());
     }
 
     /**
@@ -422,7 +413,7 @@ public class EntityCapsManager {
      *            the local users extended info
      */
     public void updateLocalEntityCaps() {
-        Connection connection = weakRefConnection.get();
+        Connection connection = connection();
 
         DiscoverInfo discoverInfo = new DiscoverInfo();
         discoverInfo.setType(IQ.Type.RESULT);

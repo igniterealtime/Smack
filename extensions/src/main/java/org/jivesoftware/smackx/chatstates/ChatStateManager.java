@@ -17,13 +17,13 @@
 
 package org.jivesoftware.smackx.chatstates;
 
-import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.XMPPException;
@@ -50,13 +50,13 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * @see org.jivesoftware.smackx.chatstates.ChatState
  * @see org.jivesoftware.smackx.chatstates.packet.ChatStateExtension
  */
-public class ChatStateManager {
+public class ChatStateManager extends Manager {
+    public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
-    private static final Map<Connection, WeakReference<ChatStateManager>> managers =
-            new WeakHashMap<Connection, WeakReference<ChatStateManager>>();
+    private static final Map<Connection, ChatStateManager> INSTANCES =
+            new WeakHashMap<Connection, ChatStateManager>();
 
-    private static final PacketFilter filter = new NotFilter(
-                new PacketExtensionFilter("http://jabber.org/protocol/chatstates"));
+    private static final PacketFilter filter = new NotFilter(new PacketExtensionFilter(NAMESPACE));
 
     /**
      * Returns the ChatStateManager related to the Connection and it will create one if it does
@@ -65,27 +65,13 @@ public class ChatStateManager {
      * @param connection the connection to return the ChatStateManager
      * @return the ChatStateManager related the the connection.
      */
-    public static ChatStateManager getInstance(final Connection connection) {
-        if(connection == null) {
-            return null;
-        }
-        synchronized (managers) {
-            ChatStateManager manager;
-            WeakReference<ChatStateManager> ref = managers.get(connection);
-            
-            if (ref == null) {
+    public static synchronized ChatStateManager getInstance(final Connection connection) {
+            ChatStateManager manager = INSTANCES.get(connection);
+            if (manager == null) {
                 manager = new ChatStateManager(connection);
-                manager.init();
-                managers.put(connection, new WeakReference<ChatStateManager>(manager));
             }
-            else
-            	manager = ref.get();
-
             return manager;
-        }
     }
-
-    private final Connection connection;
 
     private final OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
 
@@ -98,17 +84,14 @@ public class ChatStateManager {
             new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK, ReferenceMap.HARD);
 
     private ChatStateManager(Connection connection) {
-        this.connection = connection;
-    }
-
-    private void init() {
-        connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor,
-                filter);
+        super(connection);
+        connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor, filter);
         connection.getChatManager().addChatListener(incomingInterceptor);
 
-        ServiceDiscoveryManager.getInstanceFor(connection)
-                .addFeature("http://jabber.org/protocol/chatstates");
+        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
+        INSTANCES.put(connection, this);
     }
+
 
     /**
      * Sets the current state of the provided chat. This method will send an empty bodied Message
@@ -142,12 +125,12 @@ public class ChatStateManager {
 
         ChatStateManager that = (ChatStateManager) o;
 
-        return connection.equals(that.connection);
+        return connection().equals(that.connection());
 
     }
 
     public int hashCode() {
-        return connection.hashCode();
+        return connection().hashCode();
     }
 
     private boolean updateChatState(Chat chat, ChatState newState) {
@@ -171,7 +154,7 @@ public class ChatStateManager {
 
         public void interceptPacket(Packet packet) {
             Message message = (Message) packet;
-            Chat chat = connection.getChatManager().getThreadChat(message.getThread());
+            Chat chat = connection().getChatManager().getThreadChat(message.getThread());
             if (chat == null) {
                 return;
             }
@@ -188,8 +171,7 @@ public class ChatStateManager {
         }
 
         public void processMessage(Chat chat, Message message) {
-            PacketExtension extension
-                    = message.getExtension("http://jabber.org/protocol/chatstates");
+            PacketExtension extension = message.getExtension(NAMESPACE);
             if (extension == null) {
                 return;
             }

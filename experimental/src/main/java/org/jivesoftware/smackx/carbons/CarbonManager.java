@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.carbons;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -31,7 +31,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**
  * Packet extension for XEP-0280: Message Carbons. This class implements
@@ -43,7 +42,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
  *
  * @author Georg Lukas
  */
-public class CarbonManager {
+public class CarbonManager extends Manager {
 
     private static Map<Connection, CarbonManager> instances =
             Collections.synchronizedMap(new WeakHashMap<Connection, CarbonManager>());
@@ -56,13 +55,12 @@ public class CarbonManager {
         });
     }
     
-    private WeakReference<Connection> weakRefConnection;
     private volatile boolean enabled_state = false;
 
     private CarbonManager(Connection connection) {
+        super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(CarbonExtension.NAMESPACE);
-        weakRefConnection = new WeakReference<Connection>(connection);
         instances.put(connection, this);
     }
 
@@ -99,11 +97,9 @@ public class CarbonManager {
      * @return true if supported
      */
     public boolean isSupportedByServer() {
-        Connection connection = weakRefConnection.get();
         try {
-            DiscoverInfo result = ServiceDiscoveryManager
-                .getInstanceFor(connection).discoverInfo(connection.getServiceName());
-            return result.containsFeature(CarbonExtension.NAMESPACE);
+            return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
+                            connection().getServiceName(), CarbonExtension.NAMESPACE);
         }
         catch (XMPPException e) {
             return false;
@@ -119,20 +115,19 @@ public class CarbonManager {
      * @param new_state whether carbons should be enabled or disabled
      */
     public void sendCarbonsEnabled(final boolean new_state) {
-        final Connection connection = weakRefConnection.get();
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        connection.addPacketListener(new PacketListener() {
+        connection().addPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 IQ result = (IQ)packet;
                 if (result.getType() == IQ.Type.RESULT) {
                     enabled_state = new_state;
                 }
-                connection.removePacketListener(this);
+                connection().removePacketListener(this);
             }
-        }, new IQReplyFilter(setIQ, connection));
+        }, new IQReplyFilter(setIQ, connection()));
 
-        connection.sendPacket(setIQ);
+        connection().sendPacket(setIQ);
     }
 
     /**
@@ -150,10 +145,9 @@ public class CarbonManager {
     public void setCarbonsEnabled(final boolean new_state) throws XMPPException {
         if (enabled_state == new_state) return;
 
-        Connection connection = weakRefConnection.get();
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        connection.createPacketCollectorAndSend(setIQ).nextResultOrThrow();
+        connection().createPacketCollectorAndSend(setIQ).nextResultOrThrow();
         enabled_state = new_state;
     }
 
