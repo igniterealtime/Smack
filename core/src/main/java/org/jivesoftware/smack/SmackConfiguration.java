@@ -291,7 +291,13 @@ public final class SmackConfiguration {
                     try {
                         loadSmackClass(classToLoad, optional);
                     } catch (Exception e) {
-                        exceptions.add(e);
+                        // Don't throw the exception if an exceptions collection is given, instead
+                        // record it there. This is used for unit testing purposes.
+                        if (exceptions != null) {
+                            exceptions.add(e);
+                        } else {
+                            throw e;
+                        }
                     }
                 }
             }
