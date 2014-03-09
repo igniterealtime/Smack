@@ -80,7 +80,13 @@ public class IQReplyFilter implements PacketFilter {
      */
     public IQReplyFilter(IQ iqPacket, Connection conn) {
         to = iqPacket.getTo();
-        local = conn.getUser().toLowerCase();
+        if (conn.getUser() == null) {
+            // We have not yet been assigned a username, this can happen if the connection is
+            // in an early stage, i.e. when performing the SASL auth.
+            local = null;
+        } else {
+            local = conn.getUser().toLowerCase();
+        }
         server = conn.getServiceName().toLowerCase();
         packetId = iqPacket.getPacketID();
 
@@ -89,10 +95,11 @@ public class IQReplyFilter implements PacketFilter {
         OrFilter fromFilter = new OrFilter();
         fromFilter.addFilter(FromMatchesFilter.createFull(to));
         if (to == null) {
-            fromFilter.addFilter(FromMatchesFilter.createBare(local));
+            if (local != null)
+                fromFilter.addFilter(FromMatchesFilter.createBare(local));
             fromFilter.addFilter(FromMatchesFilter.createFull(server));
         }
-        else if (to.toLowerCase().equals(StringUtils.parseBareAddress(local))) {
+        else if (local != null && to.toLowerCase().equals(StringUtils.parseBareAddress(local))) {
             fromFilter.addFilter(FromMatchesFilter.createFull(null));
         }
         filter = new AndFilter(fromFilter, iqFilter, idFilter);
