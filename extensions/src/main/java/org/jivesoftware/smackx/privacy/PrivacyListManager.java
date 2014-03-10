@@ -28,9 +28,13 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
+import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
@@ -46,27 +50,29 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
  * subscription type or globally (@see PrivacyItem).
  * 
  * @author Francisco Vives
+ * @see <a href="http://xmpp.org/extensions/xep-0016.html">XEP-16: Privacy Lists</a>
  */
 public class PrivacyListManager extends Manager {
+    public static final String NAMESPACE = "jabber:iq:privacy";
+
+    private static final PacketFilter PACKET_FILTER = new AndFilter(new IQTypeFilter(IQ.Type.SET),
+                    new PacketExtensionFilter("query", "jabber:iq:privacy"));
 
     // Keep the list of instances of this class.
-    private static Map<XMPPConnection, PrivacyListManager> instances = Collections
+    private static final Map<XMPPConnection, PrivacyListManager> instances = Collections
             .synchronizedMap(new WeakHashMap<XMPPConnection, PrivacyListManager>());
 
 	private final List<PrivacyListListener> listeners = new ArrayList<PrivacyListListener>();
-	PacketFilter packetFilter = new AndFilter(new IQTypeFilter(IQ.Type.SET),
-    		new PacketExtensionFilter("query", "jabber:iq:privacy"));
 
     static {
-        // Create a new PrivacyListManager on every established connection. In the init()
-        // method of PrivacyListManager, we'll add a listener that will delete the
-        // instance when the connection is closed.
+        // Create a new PrivacyListManager on every established connection.
         XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
     }
+
     /**
      * Creates a new privacy manager to maintain the communication privacy. Note: no
      * information is sent to or received from the server until you attempt to 
@@ -80,14 +86,10 @@ public class PrivacyListManager extends Manager {
         instances.put(connection, this);
 
         connection.addPacketListener(new PacketListener() {
+            @Override
             public void processPacket(Packet packet) {
-
-                if (packet == null || packet.getError() != null) {
-                    return;
-                }
-                // The packet is correct.
                 Privacy privacy = (Privacy) packet;
-                
+
                 // Notifies the event to the listeners.
                 synchronized (listeners) {
                     for (PrivacyListListener listener : listeners) {
@@ -103,23 +105,13 @@ public class PrivacyListManager extends Manager {
                         }
                     }
                 }
-                
-                // Send a result package acknowledging the reception of a privacy package.
-                
-                // Prepare the IQ packet to send
-                IQ iq = new IQ() {
-                    public String getChildElementXML() {
-                        return "";
-                    }
-                };
-                iq.setType(IQ.Type.RESULT);
-                iq.setFrom(packet.getFrom());
-                iq.setPacketID(packet.getPacketID());
 
-                // Send create & join packet.
+                // Send a result package acknowledging the reception of a privacy package.
+                IQ iq = IQ.createResultIQ(privacy);
                 connection.sendPacket(iq);
             }
-        }, packetFilter);    }
+        }, PACKET_FILTER);
+    }
 
 	/** Answer the connection userJID that owns the privacy.
 	 * @return the userJID that owns the privacy
@@ -139,7 +131,7 @@ public class PrivacyListManager extends Manager {
         if (plm == null) plm = new PrivacyListManager(connection);
         return plm;
     }
-    
+
 	/**
 	 * Send the {@link Privacy} packet to the server in order to know some privacy content and then 
 	 * waits for the answer.
@@ -176,20 +168,19 @@ public class PrivacyListManager extends Manager {
     }
 
 	/**
-	 * Answer a privacy containing the list structre without {@link PrivacyItem}.
+	 * Answer a privacy containing the list structure without {@link PrivacyItem}.
 	 * 
 	 * @return a Privacy with the list names.
      * @throws XMPPException if an error occurs.
 	 */ 
 	private Privacy getPrivacyWithListNames() throws XMPPException {
-		
 		// The request of the list is an empty privacy message
 		Privacy request = new Privacy();
 		
 		// Send the package to the server and get the answer
 		return getRequest(request);
 	}
-	
+
     /**
      * Answer the active privacy list.
      * 
@@ -205,7 +196,7 @@ public class PrivacyListManager extends Manager {
                 privacyAnswer.getDefaultName());
         return new PrivacyList(true, isDefaultAndActive, listName, getPrivacyListItems(listName));
     }
-    
+
     /**
      * Answer the default privacy list.
      * 
@@ -221,7 +212,7 @@ public class PrivacyListManager extends Manager {
                 privacyAnswer.getDefaultName());
         return new PrivacyList(isDefaultAndActive, true, listName, getPrivacyListItems(listName));
     }
-    
+
     /**
      * Answer the privacy list items under listName with the allowed and blocked permissions.
      * 
@@ -230,7 +221,6 @@ public class PrivacyListManager extends Manager {
      * @throws XMPPException if an error occurs.
      */ 
     private List<PrivacyItem> getPrivacyListItems(String listName) throws XMPPException {
-        
         // The request of the list is an privacy message with an empty list
         Privacy request = new Privacy();
         request.setPrivacyList(listName, new ArrayList<PrivacyItem>());
@@ -240,7 +230,7 @@ public class PrivacyListManager extends Manager {
         
         return privacyAnswer.getPrivacyList(listName);
     }
-    
+
 	/**
 	 * Answer the privacy list items under listName with the allowed and blocked permissions.
 	 * 
@@ -249,10 +239,9 @@ public class PrivacyListManager extends Manager {
      * @throws XMPPException if an error occurs.
 	 */ 
 	public PrivacyList getPrivacyList(String listName) throws XMPPException {
-		
         return new PrivacyList(false, false, listName, getPrivacyListItems(listName));
 	}
-	
+
     /**
      * Answer every privacy list with the allowed and blocked permissions.
      * 
@@ -276,7 +265,6 @@ public class PrivacyListManager extends Manager {
         return lists;
     }
 
-    
 	/**
 	 * Set or change the active list to listName.
 	 * 
@@ -284,7 +272,6 @@ public class PrivacyListManager extends Manager {
 	 * @exception XMPPException if the request or the answer failed, it raises an exception.
 	 */ 
 	public void setActiveListName(String listName) throws XMPPException {
-		
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setActiveName(listName);
@@ -299,7 +286,6 @@ public class PrivacyListManager extends Manager {
      * @throws XMPPException if an error occurs.
 	 */ 
 	public void declineActiveList() throws XMPPException {
-		
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setDeclineActiveList(true);
@@ -315,7 +301,6 @@ public class PrivacyListManager extends Manager {
 	 * @exception XMPPException if the request or the answer failed, it raises an exception.
 	 */ 
 	public void setDefaultListName(String listName) throws XMPPException {
-		
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setDefaultName(listName);
@@ -323,14 +308,13 @@ public class PrivacyListManager extends Manager {
 		// Send the package to the server
 		setRequest(request);
 	}
-	
+
 	/**
 	 * Client declines the use of default lists.
      *
      * @throws XMPPException if an error occurs.
 	 */ 
 	public void declineDefaultList() throws XMPPException {
-		
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setDeclineDefaultList(true);
@@ -338,7 +322,7 @@ public class PrivacyListManager extends Manager {
 		// Send the package to the server
 		setRequest(request);
 	}
-	
+
 	/**
 	 * The client has created a new list. It send the new one to the server.
 	 * 
@@ -347,7 +331,6 @@ public class PrivacyListManager extends Manager {
      * @throws XMPPException if an error occurs.
 	 */ 
 	public void createPrivacyList(String listName, List<PrivacyItem> privacyItems) throws XMPPException {
-
 		this.updatePrivacyList(listName, privacyItems);
 	}
 
@@ -361,7 +344,6 @@ public class PrivacyListManager extends Manager {
      * @throws XMPPException if an error occurs.
      */ 
     public void updatePrivacyList(String listName, List<PrivacyItem> privacyItems) throws XMPPException {
-
         // Build the privacy package to add or update the new list
         Privacy request = new Privacy();
         request.setPrivacyList(listName, privacyItems);
@@ -369,7 +351,7 @@ public class PrivacyListManager extends Manager {
         // Send the package to the server
         setRequest(request);
     }
-    
+
 	/**
 	 * Remove a privacy list.
 	 * 
@@ -377,7 +359,6 @@ public class PrivacyListManager extends Manager {
      * @throws XMPPException if an error occurs.
 	 */ 
 	public void deletePrivacyList(String listName) throws XMPPException {
-		
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setPrivacyList(listName, new ArrayList<PrivacyItem>());
@@ -385,7 +366,7 @@ public class PrivacyListManager extends Manager {
 		// Send the package to the server
 		setRequest(request);
 	}
-	
+
     /**
      * Adds a packet listener that will be notified of any new update in the user
      * privacy communication.
@@ -398,5 +379,16 @@ public class PrivacyListManager extends Manager {
         synchronized (listeners) {
             listeners.add(listener);
         }
-    }    
+    }
+
+    /**
+     * Check if the user's server supports privacy lists.
+     * 
+     * @return true, if the server supports privacy lists, false otherwise.
+     * @throws XMPPException
+     */
+    public boolean isSupported() throws XMPPException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
+                        connection().getServiceName(), NAMESPACE);
+    }
 }

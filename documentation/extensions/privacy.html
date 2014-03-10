@@ -63,23 +63,20 @@ Now the client is able to show every <tt>PrivacyItem</tt> of the server and also
 	String groupName = <font color="green">"enemies"</font>;
 	ArrayList privacyItems = new ArrayList();
 
-	PrivacyItem item = new PrivacyItem(PrivacyRule.<font color="navy"><i>JID</i></font>, <font color="navy">true</font>, 1);
-	item.setValue(user);
+	PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid, user, <font color="navy">true</font>, 1);
 	privacyItems.add(item);
 
-	item = new PrivacyItem(PrivacyRule.<font color="navy"><i>SUBSCRIPTION</i></font>, <font color="navy">true</font>, 2);
-	item.setValue(PrivacyRule.<font color="navy"><i>SUBSCRIPTION_BOTH</i></font>);
+	item = new PrivacyItem(PrivacyItem.Type.subscription, PrivacyItem.SUBSCRIPTION_BOTH, <font color="navy">true</font>, 2);
 	privacyItems.add(item);
      	
-	item = new PrivacyItem(PrivacyRule.<font color="navy"><i>GROUP</i></font>, <font color="navy">false</font>, 3);
-	item.setValue(groupName);
+	item = new PrivacyItem(PrivacyItem.Type.group, groupName, <font color="navy">false</font>, 3);
 	item.setFilterMessage(<font color="navy">true</font>);
 	privacyItems.add(item);
 
 	<font color="gray"><i>// Get the privacy manager for the current connection.</i></font>
 	PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
 	<font color="gray"><i>// Create the new list.</i></font>
-	privacyManager.createPrivacyList(listName, Arrays.<i>asList</i>(privacyItems));
+	privacyManager.createPrivacyList(listName, privacyItems);
 </pre> 
 </div>
 

@@ -37,13 +37,13 @@ import java.util.List;
 public class PrivacyList {
 
     /** Holds if it is an active list or not **/
-    private boolean isActiveList;
+    private final boolean isActiveList;
     /** Holds if it is an default list or not **/
-    private boolean isDefaultList;
+    private final boolean isDefaultList;
     /** Holds the list name used to print **/
-    private String listName;
+    private final String listName;
     /** Holds the list of {@see PrivacyItem} **/
-    private List<PrivacyItem> items;
+    private final List<PrivacyItem> items;
     
     protected PrivacyList(boolean isActiveList, boolean isDefaultList,
             String listName, List<PrivacyItem> privacyItems) {
@@ -52,6 +52,10 @@ public class PrivacyList {
         this.isDefaultList = isDefaultList;
         this.listName = listName;
         this.items = privacyItems;
+    }
+
+    public String getName() {
+        return listName;
     }
 
     public boolean isActiveList() {
@@ -64,10 +68,6 @@ public class PrivacyList {
 
     public List<PrivacyItem> getItems() {
         return items;
-    }
-
-    public String toString() {
-        return listName;
     }
 
 }

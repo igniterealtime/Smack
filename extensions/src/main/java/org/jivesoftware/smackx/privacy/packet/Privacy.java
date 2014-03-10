@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.privacy.packet;
 import java.util.*;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.privacy.PrivacyListManager;
 
 /**
  * A Privacy IQ Packet, is used by the {@link org.jivesoftware.smackx.privacy.PrivacyListManager}
@@ -274,8 +275,8 @@ public class Privacy extends IQ {
 	
 	public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:privacy\">");
-        
+        buf.append("<query xmlns=\"" + PrivacyListManager.NAMESPACE + "\">");
+
         // Add the active tag
         if (this.isDeclineActiveList()) {
         	buf.append("<active/>");
