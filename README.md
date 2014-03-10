@@ -67,6 +67,8 @@ Resources
 
 - Bug Tracker: http://issues.igniterealtime.org/browse/SMACK
 - Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
+- Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
+- Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
 - User Forum: http://community.igniterealtime.org/community/support/smack_users
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
 - Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
