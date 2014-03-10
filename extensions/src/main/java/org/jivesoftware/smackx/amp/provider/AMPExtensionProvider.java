@@ -14,14 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.amp;
+package org.jivesoftware.smackx.amp.provider;
+
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smackx.amp.AMPDeliverCondition;
+import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
+import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
+import org.jivesoftware.smackx.amp.packet.AMPExtension;
 import org.xmlpull.v1.XmlPullParser;
 
 
 public class AMPExtensionProvider implements PacketExtensionProvider {
+    private static final Logger LOGGER = Logger.getLogger(AMPExtensionProvider.class.getName());
 
     /**
      * Creates a new AMPExtensionProvider.
@@ -46,7 +53,7 @@ public class AMPExtensionProvider implements PacketExtensionProvider {
             try {
                 status = AMPExtension.Status.valueOf(statusString);
             } catch (IllegalArgumentException ex) {
-                System.err.println("Found invalid amp status " + statusString);
+                LOGGER.severe("Found invalid amp status " + statusString);
             }
         }
 
@@ -73,12 +80,12 @@ public class AMPExtensionProvider implements PacketExtensionProvider {
                         try {
                             action = AMPExtension.Action.valueOf(actionString);
                         } catch (IllegalArgumentException ex) {
-                            System.err.println("Found invalid rule action value " + actionString);
+                            LOGGER.severe("Found invalid rule action value " + actionString);
                         }
                     }
 
                     if (action == null || condition == null) {
-                        System.err.println("Rule is skipped because either it's action or it's condition is invalid");
+                        LOGGER.severe("Rule is skipped because either it's action or it's condition is invalid");
                     } else {
                         AMPExtension.Rule rule = new AMPExtension.Rule(action, condition);
                         ampExtension.addRule(rule);
@@ -96,7 +103,7 @@ public class AMPExtensionProvider implements PacketExtensionProvider {
 
     private AMPExtension.Condition createCondition(String name, String value) {
         if (name == null || value == null) {
-            System.err.println("Can't create rule condition from null name and/or value");
+            LOGGER.severe("Can't create rule condition from null name and/or value");
             return null;
         }
 
@@ -105,7 +112,7 @@ public class AMPExtensionProvider implements PacketExtensionProvider {
             try {
                 return new AMPDeliverCondition(AMPDeliverCondition.Value.valueOf(value));
             } catch (IllegalArgumentException ex) {
-                System.err.println("Found invalid rule delivery condition value " + value);
+                LOGGER.severe("Found invalid rule delivery condition value " + value);
                 return null;
             }
         } else if (AMPExpireAtCondition.NAME.equals(name)) {
@@ -114,11 +121,11 @@ public class AMPExtensionProvider implements PacketExtensionProvider {
             try {
                 return new AMPMatchResourceCondition(AMPMatchResourceCondition.Value.valueOf(value));
             } catch (IllegalArgumentException ex) {
-                System.err.println("Found invalid rule match-resource condition value " + value);
+                LOGGER.severe("Found invalid rule match-resource condition value " + value);
                 return null;
             }
         } else {
-            System.err.println("Found unknown rule condition name " + name);
+            LOGGER.severe("Found unknown rule condition name " + name);
             return null;
         }
     }

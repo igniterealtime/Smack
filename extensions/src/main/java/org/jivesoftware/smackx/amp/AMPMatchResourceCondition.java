@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.amp;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.amp.packet.AMPExtension;
 
 public class AMPMatchResourceCondition implements AMPExtension.Condition {
 
@@ -26,8 +28,9 @@ public class AMPMatchResourceCondition implements AMPExtension.Condition {
      * Check if server supports match-resource condition
      * @param connection Smack connection instance
      * @return true if match-resource condition is supported.
+     * @throws XMPPException 
      */
-    public static boolean isSupported(XMPPConnection connection) {
+    public static boolean isSupported(XMPPConnection connection) throws XMPPException {
         return AMPManager.isConditionSupported(connection, NAME);
     }
 

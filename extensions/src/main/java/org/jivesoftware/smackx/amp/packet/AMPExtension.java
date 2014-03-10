@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.amp;
+package org.jivesoftware.smackx.amp.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.amp.AMPDeliverCondition;
+import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
+import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -259,7 +262,7 @@ public class AMPExtension implements PacketExtension {
          */
         notify;
 
-        static final String ATTRIBUTE_NAME="action";
+        public static final String ATTRIBUTE_NAME="action";
     }
 
     /**

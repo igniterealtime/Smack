@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.amp;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smackx.amp.packet.AMPExtension;
+import org.jivesoftware.smackx.amp.provider.AMPExtensionProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

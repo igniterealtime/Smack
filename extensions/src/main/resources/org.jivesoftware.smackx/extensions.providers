@@ -453,7 +453,7 @@
     <extensionProvider>
         <elementName>amp</elementName>
         <namespace>http://jabber.org/protocol/amp</namespace>
-        <className>org.jivesoftware.smackx.amp.AMPExtensionProvider</className>
+        <className>org.jivesoftware.smackx.amp.provider.AMPExtensionProvider</className>
     </extensionProvider>
 
 </smackProviders>
