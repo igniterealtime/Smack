@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012 Florian Schmaus
+ * Copyright 2012-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.ping.packet.Ping;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class PingTest {
+public class PingTest extends InitExtensions {
     private DummyConnection dummyCon;
     private ThreadedDummyConnection threadedCon;
     
@@ -42,7 +42,6 @@ public class PingTest {
         threadedCon = new ThreadedDummyConnection();
     }
 
-    @Ignore // gradle migration
     @Test
     public void checkProvider() throws Exception {
         // @formatter:off
@@ -181,7 +180,6 @@ public class PingTest {
         assertFalse(pingSuccess);
     }
 
-    @Ignore // gradle migration
     @Test
     public void checkSuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
@@ -204,7 +202,6 @@ public class PingTest {
         assertTrue(pingSupported);
     }
 
-    @Ignore // gradle migration
     @Test
     public void checkUnuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = new ThreadedDummyConnection();

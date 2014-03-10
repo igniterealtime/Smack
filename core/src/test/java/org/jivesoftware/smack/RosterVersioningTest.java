@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests that verify the correct behavior of the {@see Roster} implementation
+ * Tests that verify the correct behavior of the {@link Roster} implementation
  * with regard to roster versioning
  *
  * @see Roster

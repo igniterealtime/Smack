@@ -43,17 +43,17 @@ import org.jivesoftware.smack.util.collections.ReferenceMap;
  * @author Alexander Wenckus
  */
 public class ChatManager {
-    /*
+    /**
      * Sets the default behaviour for allowing 'normal' messages to be used in chats. As some clients don't set
      * the message type to chat, the type normal has to be accepted to allow chats with these clients.
      */
     private static boolean defaultIsNormalInclude = true;
-    
-    /*
+
+    /**
      * Sets the default behaviour for how to match chats when there is NO thread id in the incoming message.
      */
     private static MatchMode defaultMatchMode = MatchMode.BARE_JID;
-    
+
     /**
      * Defines the different modes under which a match will be attempted with an existing chat when
      * the incoming message does not have a thread id.
@@ -74,16 +74,16 @@ public class ChatManager {
         BARE_JID; 
     }
     
-    /*
+    /**
      * Determines whether incoming messages of type normal can create chats. 
      */
     private boolean normalIncluded = defaultIsNormalInclude;
-    
-    /*
+
+    /**
      * Determines how incoming message with no thread will be matched to existing chats.
      */
     private MatchMode matchMode = defaultMatchMode;
-    
+
     /**
      * Maps thread ID to chat.
      */

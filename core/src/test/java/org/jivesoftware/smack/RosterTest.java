@@ -39,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Tests that verifies the correct behavior of the {@see Roster} implementation.
+ * Tests that verifies the correct behavior of the {@link Roster} implementation.
  * 
  * @see Roster
  * @see <a href="http://xmpp.org/rfcs/rfc3921.html#roster">Roster Management</a>
@@ -489,7 +489,7 @@ public class RosterTest {
     }
 
     /**
-     * Remove all roster entries by iterating trough {@see Roster#getEntries()}
+     * Remove all roster entries by iterating trough {@link Roster#getEntries()}
      * and simulating receiving roster pushes from the server.
      * 
      * @param connection the dummy connection of which the provided roster belongs to.

@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.delay.provider;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,19 +27,21 @@ import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.TimeZone;
 
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.XmppDateTime;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.delay.packet.DelayInfo;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInfoProvider;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
 
-public class DelayInformationTest {
+public class DelayInformationTest extends InitExtensions {
 
     private static Properties outputProperties = new Properties();
     static {
@@ -62,8 +64,8 @@ public class DelayInformationTest {
             .a("stamp", "2002-09-10T23:08:25Z")
             .t("Offline Storage")
             .asString(outputProperties);
-        
-        parser = getParser(control, "x");
+
+        parser = TestUtils.getParser(control, "x");
         delayInfo = (DelayInformation) p.parseExtension(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -78,8 +80,8 @@ public class DelayInformationTest {
             .a("from", "capulet.com")
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
-        
-        parser = getParser(control, "x");
+
+        parser = TestUtils.getParser(control, "x");
         delayInfo = (DelayInformation) p.parseExtension(parser);
 
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -108,7 +110,7 @@ public class DelayInformationTest {
             .t("Offline Storage")
             .asString(outputProperties);
 
-        parser = getParser(control, "delay");
+        parser = TestUtils.getParser(control, "delay");
         delayInfo = (DelayInfo) p.parseExtension(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -124,7 +126,7 @@ public class DelayInformationTest {
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
         
-        parser = getParser(control, "delay");
+        parser = TestUtils.getParser(control, "delay");
         delayInfo = (DelayInfo) p.parseExtension(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -150,8 +152,8 @@ public class DelayInformationTest {
             .a("from", "capulet.com")
             .a("stamp", "2002-09-10T23:08:25.12Z")
             .asString(outputProperties);
-        
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
+
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
         
         GregorianCalendar cal = (GregorianCalendar) calendar.clone(); 
         cal.add(Calendar.MILLISECOND, 12);
@@ -163,9 +165,9 @@ public class DelayInformationTest {
             .a("from", "capulet.com")
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
-        
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
-        
+
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
         // XEP-0082 date format without milliseconds and leading 0 in month
@@ -175,7 +177,7 @@ public class DelayInformationTest {
             .a("stamp", "2002-9-10T23:08:25Z")
             .asString(outputProperties);
         
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -186,7 +188,7 @@ public class DelayInformationTest {
             .a("stamp", "20020910T23:08:25")
             .asString(outputProperties);
         
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -205,9 +207,9 @@ public class DelayInformationTest {
             .a("from", "capulet.com")
             .a("stamp", dateFormat.format(dateInPast.getTime()))
             .asString(outputProperties);
-        
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
-        
+
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+
         assertEquals(dateInPast.getTime(), delayInfo.getStamp());
 
         // XEP-0091 date format from SMACK-243
@@ -216,9 +218,9 @@ public class DelayInformationTest {
             .a("from", "capulet.com")
             .a("stamp", "200868T09:16:20")
             .asString(outputProperties);
-        
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
-        Date controlDate = XmppDateTime.parseXEP0082Date("2008-06-08T09:16:20.0Z");
+
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        Date controlDate = XmppDateTime.parseDate("2008-06-08T09:16:20.0Z");
         
         assertEquals(controlDate, delayInfo.getStamp());
 
@@ -229,25 +231,48 @@ public class DelayInformationTest {
             .a("stamp", "yesterday")
             .asString(outputProperties);
         
-        delayInfo = (DelayInfo) p.parseExtension(getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
         
         assertNotNull(delayInfo.getStamp());
 
     }
-    
-    private XmlPullParser getParser(String control, String startTag)
-                    throws XmlPullParserException, IOException {
-        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        parser.setInput(new StringReader(control));
 
-        while (true) {
-            if (parser.next() == XmlPullParser.START_TAG
-                            && parser.getName().equals(startTag)) {
-                break;
-            }
-        }
-        return parser;
+    @Test
+    public void validatePresenceWithDelayedDelivery() throws Exception {
+        String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
+                + "<delay xmlns='urn:xmpp:delay' stamp='2002-09-10T23:41:07Z'/></presence>";
+
+        Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
+        
+        DelayInformation delay = (DelayInformation) presence.getExtension("urn:xmpp:delay");
+        assertNotNull(delay);
+        Date date = XmppDateTime.parseDate("2002-09-10T23:41:07Z");
+        assertEquals(date, delay.getStamp());
     }
 
+    @Test
+    public void validatePresenceWithLegacyDelayed() throws Exception {
+        String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
+                        + "<x xmlns='jabber:x:delay' stamp='20020910T23:41:07'/></presence>";
+
+        Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
+
+        DelayInformation delay = (DelayInformation) presence.getExtension("jabber:x:delay");
+        assertNotNull(delay);
+        Date date = XmppDateTime.parseDate("20020910T23:41:07");
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+        cal.setTime(date);
+        assertEquals(cal.getTime(), delay.getStamp());
+    }
+
+    @Test
+    public void parsePresenceWithInvalidLegacyDelayed() throws Exception {
+        String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
+                        + "<x xmlns='jabber:x:delay'/></presence>";
+
+        Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
+        DelayInformation delay = (DelayInformation) presence.getExtension("urn:xmpp:delay");
+        assertNull((Object)delay);
+    }
 }

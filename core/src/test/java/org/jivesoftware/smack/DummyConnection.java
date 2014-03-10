@@ -46,7 +46,7 @@ import org.jivesoftware.smack.packet.Presence;
  * can be delivered using the {@linkplain #processPacket(Packet)} method.
  * It invokes the registered packet interceptors and listeners.
  * 
- * @see Connection
+ * @see XMPPConnection
  * @author Guenther Niess
  */
 public class DummyConnection extends XMPPConnection {

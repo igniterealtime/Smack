@@ -525,7 +525,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of the compression stanza.
      * @return a collection of Stings with the methods included in the compression stanza.
-     * @throws Exception if an exception occurs while parsing the stanza.
+     * @throws XmlPullParserException if an exception occurs while parsing the stanza.
      */
     public static Collection<String> parseCompressionMethods(XmlPullParser parser)
             throws IOException, XmlPullParserException {
@@ -662,7 +662,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @return an stream error packet.
-     * @throws Exception if an exception occurs while parsing the packet.
+     * @throws XmlPullParserException if an exception occurs while parsing the packet.
      */
     public static StreamError parseStreamError(XmlPullParser parser) throws IOException,
             XmlPullParserException {

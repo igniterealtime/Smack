@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -25,10 +25,10 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -37,8 +37,7 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Robin Collier
  *
  */
-public class ItemValidationTest
-{
+public class ItemValidationTest extends InitExtensions {
 	private ThreadedDummyConnection connection;
 
 	@Before
@@ -93,7 +92,6 @@ public class ItemValidationTest
 		assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML());
 	}
 
-    @Ignore // gradle migration
 	@Test
 	public void parseBasicItem() throws Exception
 	{
@@ -121,7 +119,6 @@ public class ItemValidationTest
         assertEquals("testid1", ((Item)itemExt).getId());
 	}
 
-    @Ignore // gradle migration
     @Test
     public void parseSimplePayloadItem() throws Exception
     {
@@ -155,7 +152,6 @@ public class ItemValidationTest
         assertXMLEqual(itemContent, payload.toXML());
     }
 
-    @Ignore // gradle migration
     @Test
     public void parseComplexItem() throws Exception
     {
@@ -203,7 +199,6 @@ public class ItemValidationTest
         assertXMLEqual(itemContent, payload.toXML());
     }
 
-    @Ignore // gradle migration
     @Test
     public void parseEmptyTag() throws Exception
     {

@@ -35,7 +35,6 @@ import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -53,14 +52,12 @@ public class EntityCapsManagerTest {
         assertEquals("q07IKJEyjvHSyhy//CH0CxmKi8w=", ver);
     }
 
-    @Ignore // gradle migration
     @Test
     public void testSimpleDirectoryCacheBase64() throws IOException {
         EntityCapsManager.persistentCache = null;
         testSimpleDirectoryCache(Base64FileUrlEncoder.getInstance());
     }
 
-    @Ignore // gradle migration
     @Test
     public void testSimpleDirectoryCacheBase32() throws IOException {
         EntityCapsManager.persistentCache = null;

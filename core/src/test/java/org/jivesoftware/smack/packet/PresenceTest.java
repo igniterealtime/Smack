@@ -17,10 +17,13 @@
 package org.jivesoftware.smack.packet;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.xml.sax.SAXException;
-import static junit.framework.Assert.assertEquals;
 
 import java.io.IOException;
 

@@ -27,7 +27,7 @@ import java.io.IOException;
  * 
  * @author Florian Schmaus
  * Based on code by Brian Wellington (bwelling@xbill.org)
- * @see <a href="http://en.wikipedia.org/wiki/Base32">Base32 Wikipedia entry<a>
+ * @see <a href="http://en.wikipedia.org/wiki/Base32">Base32 Wikipedia entry</a>
  *
  */
 public class Base32Encoder implements StringEncoder {

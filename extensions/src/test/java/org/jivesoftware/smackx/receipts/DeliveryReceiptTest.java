@@ -21,31 +21,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Properties;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
 
-public class DeliveryReceiptTest {
+public class DeliveryReceiptTest extends InitExtensions {
 
     private static Properties outputProperties = new Properties();
     static {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
 
-    @Ignore // gradle migration
     @Test
     public void receiptTest() throws Exception {
         XmlPullParser parser;
@@ -57,7 +53,7 @@ public class DeliveryReceiptTest {
                 .a("xmlns", "urn:xmpp:receipts")
             .asString(outputProperties);
         
-        parser = getParser(control, "message");
+        parser = TestUtils.getMessageParser(control);
         Packet p = PacketParserUtils.parseMessage(parser);
 
         DeliveryReceiptRequest drr = (DeliveryReceiptRequest)p.getExtension(
@@ -128,19 +124,5 @@ public class DeliveryReceiptTest {
         DeliveryReceipt r = (DeliveryReceipt)reply.getExtension("received", "urn:xmpp:receipts");
         assertEquals("romeo@montague.com", reply.getTo());
         assertEquals("test-receipt-request", r.getId());
-    }
-
-    private XmlPullParser getParser(String control, String startTag)
-                    throws XmlPullParserException, IOException {
-        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        parser.setInput(new StringReader(control));
-        while (true) {
-            if (parser.next() == XmlPullParser.START_TAG
-                            && parser.getName().equals(startTag)) {
-                break;
-            }
-        }
-        return parser;
     }
 }

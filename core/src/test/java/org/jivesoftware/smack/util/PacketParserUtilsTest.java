@@ -19,22 +19,21 @@ package org.jivesoftware.smack.util;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLNotEqual;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 import java.util.Properties;
 
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.util.TestUtils;
-//import org.jivesoftware.smackx.packet.DelayInformation;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -659,7 +658,6 @@ public class PacketParserUtilsTest {
     }
 
     @SuppressWarnings("deprecation")
-    @Ignore // gradle migration
     @Test
     public void invalidMessageBodyContainingTagTest() throws Exception {
         String control = XMLBuilder.create("message")
@@ -686,7 +684,7 @@ public class PacketParserUtilsTest {
             DetailedDiff diffs = new DetailedDiff(new Diff(control, message.toXML()));
             
             // body has no namespace URI, span is escaped 
-            assertEquals(4, diffs.getAllDifferences().size());
+            assertEquals(6, diffs.getAllDifferences().size());
         } catch(XmlPullParserException e) {
             fail("No parser exception should be thrown" + e.getMessage());
         }
@@ -735,7 +733,6 @@ public class PacketParserUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void multipleMessageBodiesParsingTest() throws Exception {
         String control = XMLBuilder.create("message")
@@ -757,9 +754,11 @@ public class PacketParserUtilsTest {
             .asString(outputProperties);
         
         Packet message = PacketParserUtils.parseMessage(TestUtils.getMessageParser(control));
-        assertXMLEqual(control, message.toXML());
+        Diff xmlDiff = new Diff(control, message.toXML());
+        xmlDiff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
+        assertTrue(xmlDiff.similar());
     }
-    
+
     @Test
     public void validateSimplePresence() throws Exception {
     	String stanza = "<presence from='juliet@example.com/balcony' to='romeo@example.net'/>";
@@ -797,59 +796,6 @@ public class PacketParserUtilsTest {
     	assertEquals("Wooing Juliet", presence.getStatus());
     	assertEquals(1, presence.getPriority());
     }
-
-//   @Ignore // gradle migration
-//  @Test
-//    public void validatePresenceWithDelayedDelivery() throws Exception {
-//    	String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
-//    			+ "<delay xmlns='urn:xmpp:delay' stamp='2002-09-10T23:41:07Z'/></presence>";
-//    	
-//    	Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
-//    	
-//    	DelayInformation delay = (DelayInformation) presence.getExtension("urn:xmpp:delay");
-//    	assertNotNull(delay);
-//    	Date date = StringUtils.parseDate("2002-09-10T23:41:07Z");
-//    	assertEquals(date, delay.getStamp());
-//    }
-
-//  @Ignore // gradle migration
-//  @Test
-//    public void validatePresenceWithLegacyDelayed() throws Exception {
-//    	String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
-//    			+ "<x xmlns='jabber:x:delay' stamp='20020910T23:41:07'/></presence>";
-//    	
-//    	Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
-//    	
-//    	DelayInformation delay = (DelayInformation) presence.getExtension("jabber:x:delay");
-//    	assertNotNull(delay);
-//    	Date date = StringUtils.parseDate("20020910T23:41:07");
-//    	Calendar cal = Calendar.getInstance();
-//    	cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-//    	cal.setTime(date);
-//    	assertEquals(cal.getTime(), delay.getStamp());
-//    }
-
-    @SuppressWarnings("deprecation")
-    @Ignore // gradle migration
-    @Test
-    public void parsePresenceWithInvalidDelayedDelivery() throws Exception {
-    	String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
-    			+ "<delay xmlns='urn:xmpp:delay'/></presence>";
-    	
-    	Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
-    	assertNull(presence.getExtension("urn:xmpp:delay"));
-    }
-
-//  @Ignore // gradle migration
-//  @Test
-//    public void parsePresenceWithInvalidLegacyDelayed() throws Exception {
-//    	String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
-//    			+ "<x xmlns='jabber:x:delay'/></presence>";
-//    	
-//    	Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
-//    	DelayInformation delay = (DelayInformation) presence.getExtension("urn:xmpp:delay");
-//    	assertNull(delay);
-//    }
 
     private String determineNonDefaultLanguage() {
         String otherLanguage = "jp";

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack;
 
 import static org.junit.Assert.assertFalse;
@@ -30,7 +29,6 @@ import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ChatConnectionTest {
@@ -66,7 +64,6 @@ public class ChatConnectionTest {
         assertEquals(MatchMode.BARE_JID, getConnection().getChatManager().getMatchMode());
     }
 
-    @Ignore
     @Test
     public void validateMessageTypeWithDefaults() {
         DummyConnection dc = getConnection();
@@ -108,9 +105,9 @@ public class ChatConnectionTest {
     
     @Test
     public void validateMessageTypeWithNoNormal() {
-        ChatManager.setDefaultIsNormalIncluded(false);
         DummyConnection dc = getConnection();
         ChatManager cm = dc.getChatManager();
+        cm.setNormalIncluded(false);
         TestChatManagerListener listener = new TestChatManagerListener(); 
         cm.addChatListener(listener);
         Message incomingChat = createChatPacket("134", true);
@@ -120,6 +117,7 @@ public class ChatConnectionTest {
 
         dc = getConnection();
         cm = dc.getChatManager();
+        cm.setNormalIncluded(false);
         listener = new TestChatManagerListener(); 
         cm.addChatListener(listener);
         incomingChat = createChatPacket("134", true);
