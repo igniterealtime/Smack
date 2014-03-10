@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package org.jivesoftware.smack.util.dns;
 
 /**
- * @see <a href="http://tools.ietf.org/html/rfc2782>RFC 2782: A DNS RR for specifying the location of services (DNS
- * SRV)<a>
+ * @see <a href="http://tools.ietf.org/html/rfc2782">RFC 2782: A DNS RR for specifying the location of services (DNS
+ * SRV)</a>
  * @author Florian Schmaus
  * 
  */

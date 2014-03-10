@@ -124,7 +124,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
-     * @return
+     * @return the JingleTransportManager
      */
     public JingleTransportManager getTransportManager() {
         return jingleTransportManager;
@@ -134,7 +134,7 @@ public class ContentNegotiator extends JingleNegotiator {
      * Called from above when starting a new session.
      */
     protected void doStart() {
-        JingleContent result = new JingleContent(creator, name);
+        // JingleContent result = new JingleContent(creator, name);
 
         //        result.setDescription(mediaNeg.start());
         //        result.addJingleTransport(transNeg.start());

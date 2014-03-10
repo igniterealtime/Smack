@@ -139,7 +139,6 @@ public class CarbonManager extends Manager {
      *
      * @param new_state whether carbons should be enabled or disabled
      *
-     * @return true if the operation was successful
      * @throws XMPPException 
      */
     public void setCarbonsEnabled(final boolean new_state) throws XMPPException {
@@ -154,7 +153,6 @@ public class CarbonManager extends Manager {
     /**
      * Helper method to enable carbons.
      *
-     * @return true if the operation was successful
      * @throws XMPPException 
      */
     public void enableCarbons() throws XMPPException {
@@ -164,7 +162,6 @@ public class CarbonManager extends Manager {
     /**
      * Helper method to disable carbons.
      *
-     * @return true if the operation was successful
      * @throws XMPPException 
      */
     public void disableCarbons() throws XMPPException {

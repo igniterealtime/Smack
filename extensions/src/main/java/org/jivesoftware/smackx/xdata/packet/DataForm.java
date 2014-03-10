@@ -197,7 +197,7 @@ public class DataForm implements PacketExtension {
      * Returns true if this DataForm has at least one FORM_TYPE field which is
      * hidden. This method is used for sanity checks.
      *
-     * @return
+     * @return true if there is at least one field which is hidden.
      */
     public boolean hasHiddenFormTypeField() {
         boolean found = false;

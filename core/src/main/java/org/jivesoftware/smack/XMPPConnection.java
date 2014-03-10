@@ -844,7 +844,7 @@ public abstract class XMPPConnection {
      * XMPPConnection holds this information in order to avoid a dependency to
      * smackx where EntityCapsManager lives from smack.
      * 
-     * @return
+     * @return the servers entity caps node
      */
     public String getServiceCapsNode() {
         return serviceCapsNode;

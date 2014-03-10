@@ -218,7 +218,7 @@ public class PingManager extends Manager {
      * {@link #isPingSupported(String)} is false.
      *
      * @param notifyListeners Notify the PingFailedListener in case of error if true
-     * @return
+     * @return true if the user's server could be pinged.
      */
     public boolean pingMyServer(boolean notifyListeners) {
         boolean res = ping(connection().getServiceName());
@@ -273,7 +273,7 @@ public class PingManager extends Manager {
      * users server. If there was no successful Ping (e.g. because this
      * feature is disabled) -1 will be returned.
      * 
-     * @return
+     * @return the timestamp of the last successful ping.
      */
     public long getLastSuccessfulPing() {
         return Math.max(lastSuccessfulAutomaticPing, lastSuccessfulManualPing);

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle.nat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
@@ -77,7 +78,7 @@ public class STUN extends IQ {
     /**
      * Get a list of STUN Servers recommended by the Server
      *
-     * @return
+     * @return the list of STUN servers
      */
     public List<StunServerAddress> getServers() {
         return servers;
@@ -86,7 +87,7 @@ public class STUN extends IQ {
     /**
      * Get Public Ip returned from the XMPP server
      *
-     * @return
+     * @return the public IP
      */
     public String getPublicIp() {
         return publicIp;
@@ -104,7 +105,7 @@ public class STUN extends IQ {
     /**
      * Get the Child Element XML of the Packet
      *
-     * @return
+     * @return the child element XML
      */
     public String getChildElementXML() {
         StringBuilder str = new StringBuilder();
@@ -130,7 +131,6 @@ public class STUN extends IQ {
 
             int eventType;
             String elementName;
-            String namespace;
 
             if (!parser.getNamespace().equals(NAMESPACE))
                 throw new Exception("Not a STUN packet");
@@ -141,7 +141,6 @@ public class STUN extends IQ {
             while (!done) {
                 eventType = parser.next();
                 elementName = parser.getName();
-                namespace = parser.getNamespace();
 
                 if (eventType == XmlPullParser.START_TAG) {
                     if (elementName.equals("server")) {
@@ -181,7 +180,7 @@ public class STUN extends IQ {
      * If a error occurs or the server don't support STUN Service, null is returned.
      *
      * @param connection
-     * @return
+     * @return the STUN server address
      */
     public static STUN getSTUNServer(XMPPConnection connection) {
 
@@ -205,8 +204,8 @@ public class STUN extends IQ {
     /**
      * Check if the server support STUN Service.
      *
-     * @param xmppConnection
-     * @return
+     * @param connection the connection
+     * @return true if the server support STUN
      */
     public static boolean serviceAvailable(XMPPConnection connection) {
 
@@ -239,7 +238,7 @@ public class STUN extends IQ {
             }
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "serviceAvailable", e);
         }
         return false;
     }
@@ -260,7 +259,7 @@ public class STUN extends IQ {
         /**
          * Get the Host Address
          *
-         * @return
+         * @return the host address
          */
         public String getServer() {
             return server;
@@ -269,7 +268,7 @@ public class STUN extends IQ {
         /**
          * Get the Server Port
          *
-         * @return
+         * @return the server port
          */
         public String getPort() {
             return port;

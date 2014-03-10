@@ -102,7 +102,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      *            the responder JID
      * @param sessionid
      *            the session ID
-     * @param jingleMediaManager
+     * @param jingleMediaManagers
      *            the jingleMediaManager
      */
     public JingleSession(XMPPConnection conn, String initiator, String responder, String sessionid,
@@ -136,7 +136,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      *            the initiator JID
      * @param responder
      *            the responder JID
-     * @param jingleMediaManager
+     * @param jingleMediaManagers
      *            the jingleMediaManager
      */
     public JingleSession(XMPPConnection conn, JingleSessionRequest request, String initiator, String responder,
@@ -171,7 +171,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     /**
      * Get the Media Manager of this Jingle Session
      * 
-     * @return
+     * @return the JingleMediaManagers
      */
     public List<JingleMediaManager> getMediaManagers() {
         return jingleMediaManagers;
@@ -180,7 +180,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     /**
      * Set the Media Manager of this Jingle Session
      * 
-     * @param jingleMediaManager
+     * @param jingleMediaManagers
      */
     public void setMediaManagers(List<JingleMediaManager> jingleMediaManagers) {
         this.jingleMediaManagers = jingleMediaManagers;
@@ -272,7 +272,6 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * 
      * @param iq
      *            the packet received
-     * @return the new Jingle packet to send.
      * @throws XMPPException
      */
     public synchronized void receivePacketAndRespond(IQ iq) throws XMPPException {
@@ -1055,8 +1054,8 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      *            From whom the packet is sent.
      * @param errCode
      *            The error code.
-     * @param errStr
-     *            The error string.
+     * @param error
+     *            The XMPPError string.
      * @return The created IQ packet.
      */
     public static IQ createError(String ID, String to, String from, int errCode, XMPPError error) {
@@ -1076,7 +1075,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * 
      * @param iq
      *            The Jingle packet we are responing to
-     * @param error
+     * @param jingleError
      *            the IQ packet we want to complete and send
      */
     public IQ createJingleError(IQ iq, JingleError jingleError) {

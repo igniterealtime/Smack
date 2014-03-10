@@ -136,7 +136,7 @@ public class EntityCapsManager extends Manager {
      * Get the Node version (node#ver) of a JID. Returns a String or null if
      * EntiyCapsManager does not have any information.
      * 
-     * @param user
+     * @param jid
      *            the user (Full JID)
      * @return the node version (node#ver) or null
      */
@@ -371,7 +371,7 @@ public class EntityCapsManager extends Manager {
      * "http://www.igniterealtime.org/projects/smack/#66/0NaeaBKkwk85efJTGmU47vXI=
      * )
      * 
-     * @return
+     * @return the local NodeVer
      */
     public String getLocalNodeVer() {
         return ENTITY_NODE + '#' + getCapsVersion();
@@ -381,7 +381,7 @@ public class EntityCapsManager extends Manager {
      * Returns true if Entity Caps are supported by a given JID
      * 
      * @param jid
-     * @return
+     * @return true if the entity supports Entity Capabilities.
      */
     public boolean areEntityCapsSupported(String jid) throws XMPPException {
         return sdm.supportsFeature(jid, NAMESPACE);
@@ -390,7 +390,7 @@ public class EntityCapsManager extends Manager {
     /**
      * Returns true if Entity Caps are supported by the local service/server
      * 
-     * @return
+     * @return true if the user's server supports Entity Capabilities.
      */
     public boolean areEntityCapsSupportedByServer() throws XMPPException {
         return areEntityCapsSupported(connection().getServiceName());
@@ -398,19 +398,10 @@ public class EntityCapsManager extends Manager {
 
     /**
      * Updates the local user Entity Caps information with the data provided
-     * 
+     *
      * If we are connected and there was already a presence send, another
      * presence is send to inform others about your new Entity Caps node string.
-     * 
-     * @param discoverInfo
-     *            the local users discover info (mostly the service discovery
-     *            features)
-     * @param identityType
-     *            the local users identity type
-     * @param identityName
-     *            the local users identity name
-     * @param extendedInfo
-     *            the local users extended info
+     *
      */
     public void updateLocalEntityCaps() {
         XMPPConnection connection = connection();
@@ -478,8 +469,8 @@ public class EntityCapsManager extends Manager {
      * @see <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0115
      *      5.4 Processing Method</a>
      * 
-     * @param capsNode
-     *            the caps node (i.e. node#ver)
+     * @param ver
+     * @param hash
      * @param info
      * @return true if it's valid and should be cache, false if not
      */

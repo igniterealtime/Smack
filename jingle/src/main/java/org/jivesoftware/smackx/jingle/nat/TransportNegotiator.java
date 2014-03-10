@@ -87,7 +87,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
     * Default constructor.
     *
-    * @param js            The Jingle session
+    * @param session            The Jingle session
     * @param transResolver The JingleTransportManager to use
     */
     public TransportNegotiator(JingleSession session, TransportResolver transResolver, ContentNegotiator parentNegotiator) {
@@ -503,10 +503,6 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         return result;
     }
 
-    private boolean isOfferStarted() {
-        return resolver.isResolving() || resolver.isResolved();
-    }
-
     /**
      * Send an offer for a transport candidate
      *
@@ -658,7 +654,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      *  @param jingle
      *  @param jingleTransport
-     *  @return
+     *  @return the iq
      */
     private IQ receiveSessionInitiateAction(Jingle jingle) throws XMPPException {
         IQ response = null;
@@ -682,7 +678,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      *  @param jingle
      *  @param jingleTransport
-     *  @return
+     *  @return the iq
      */
     private IQ receiveTransportInfoAction(Jingle jingle) throws XMPPException {
         IQ response = null;
@@ -744,7 +740,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     /**
      *  @param jingle
-     *  @return
+     *  @return the iq
      */
     private IQ receiveSessionAcceptAction(Jingle jingle) {
         IQ response = null;

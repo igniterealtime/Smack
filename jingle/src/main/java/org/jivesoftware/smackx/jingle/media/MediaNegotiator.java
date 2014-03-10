@@ -66,7 +66,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * but it does not start the negotiation. For starting the negotiation, call
      * startNegotiation.
      * 
-     * @param js
+     * @param session
      *            The jingle session.
      */
     public MediaNegotiator(JingleSession session, JingleMediaManager mediaManager, List<PayloadType> pts,
@@ -198,7 +198,7 @@ public class MediaNegotiator extends JingleNegotiator {
       *  will be the best payload type to use.
       *  
       *  @param jingle
-      *  @return
+      *  @return the iq
       */
     private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException {
         IQ response = null;
@@ -228,7 +228,7 @@ public class MediaNegotiator extends JingleNegotiator {
      *  Receive a session-initiate packet.
      *  @param jingle
      *  @param description
-     *  @return
+     *  @return the iq
      */
     private IQ receiveSessionInitiateAction(Jingle jingle, JingleDescription description) {
         IQ response = null;
@@ -416,27 +416,27 @@ public class MediaNegotiator extends JingleNegotiator {
         }
     }
 
-    /**
-    * Create an offer for the list of audio payload types.
-    * 
-    * @return a new Jingle packet with the list of audio Payload Types
-    */
-    private Jingle createAudioPayloadTypesOffer() {
-
-        JingleContent jingleContent = new JingleContent(parentNegotiator.getCreator(), parentNegotiator.getName());
-        JingleDescription audioDescr = new JingleDescription.Audio();
-
-        // Add the list of payloads for audio and create a
-        // JingleDescription
-        // where we announce our payloads...
-        audioDescr.addAudioPayloadTypes(localAudioPts);
-        jingleContent.setDescription(audioDescr);
-
-        Jingle jingle = new Jingle(JingleActionEnum.CONTENT_ACCEPT);
-        jingle.addContent(jingleContent);
-
-        return jingle;
-    }
+//    /**
+//    * Create an offer for the list of audio payload types.
+//    * 
+//    * @return a new Jingle packet with the list of audio Payload Types
+//    */
+//    private Jingle createAudioPayloadTypesOffer() {
+//
+//        JingleContent jingleContent = new JingleContent(parentNegotiator.getCreator(), parentNegotiator.getName());
+//        JingleDescription audioDescr = new JingleDescription.Audio();
+//
+//        // Add the list of payloads for audio and create a
+//        // JingleDescription
+//        // where we announce our payloads...
+//        audioDescr.addAudioPayloadTypes(localAudioPts);
+//        jingleContent.setDescription(audioDescr);
+//
+//        Jingle jingle = new Jingle(JingleActionEnum.CONTENT_ACCEPT);
+//        jingle.addContent(jingleContent);
+//
+//        return jingle;
+//    }
 
     // Predefined messages and Errors
 
@@ -502,7 +502,6 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      *  Called from above when starting a new session.
-     *  @return
      */
     protected void doStart() {
 

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
- * The default payload representation for {@link Item#getPayload()}.  It simply 
+ * The default payload representation for {@link PayloadItem#getPayload()}.  It simply 
  * stores the XML payload as a string.
  *  
  * @author Robin Collier

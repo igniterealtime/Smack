@@ -55,7 +55,7 @@ public class DNSUtil {
     /**
      * Returns the current DNS resolved used to perform DNS lookups.
      *
-     * @return
+     * @return the active DNSResolver
      */
     public static DNSResolver getDNSResolver() {
         return dnsResolver;
@@ -155,7 +155,7 @@ public class DNSUtil {
      * is calculated by random. The others are ore simply ordered by their priority.
      * 
      * @param records
-     * @return
+     * @return the list of resolved HostAddresses
      */
     protected static List<HostAddress> sortSRVRecords(List<SRVRecord> records) {
         // RFC 2782, Usage rules: "If there is precisely one SRV RR, and its Target is "."

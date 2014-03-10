@@ -24,7 +24,7 @@ public interface StringEncoder {
      * Encodes an string to another representation
      * 
      * @param string
-     * @return
+     * @return the encoded String
      */
     String encode(String string);
     
@@ -32,7 +32,7 @@ public interface StringEncoder {
      * Decodes an string back to it's initial representation
      * 
      * @param string
-     * @return
+     * @return the decoded String
      */
     String decode(String string);
 }

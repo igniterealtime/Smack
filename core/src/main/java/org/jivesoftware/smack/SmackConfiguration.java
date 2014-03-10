@@ -176,7 +176,7 @@ public final class SmackConfiguration {
      * Sets the default max size of a packet collector before it will delete 
      * the older packets.
      * 
-     * @param The number of packets to queue before deleting older packets.
+     * @param collectorSize the number of packets to queue before deleting older packets.
      */
     public static void setPacketCollectorSize(int collectorSize) {
         packetCollectorSize = collectorSize;

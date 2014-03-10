@@ -70,7 +70,7 @@ public class RosterExchangeManager {
     /**
      * Creates a new roster exchange manager.
      *
-     * @param con a XMPPConnection which is used to send and receive messages.
+     * @param connection a XMPPConnection which is used to send and receive messages.
      */
     public RosterExchangeManager(XMPPConnection connection) {
         weakRefConnection = new WeakReference<XMPPConnection>(connection);

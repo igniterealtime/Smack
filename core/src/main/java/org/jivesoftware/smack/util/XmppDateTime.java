@@ -208,7 +208,7 @@ public class XmppDateTime {
      * does not.
      * 
      * @param dateString
-     * @return
+     * @return the String with converted timezone
      */
     public static String convertXep82TimezoneToRfc822(String dateString) {
         if (dateString.charAt(dateString.length() - 1) == 'Z') {
@@ -235,7 +235,7 @@ public class XmppDateTime {
      * Converts a time zone to the String format as specified in XEP-0082
      *
      * @param timeZone
-     * @return
+     * @return the String representation of the TimeZone
      */
     public static String asString(TimeZone timeZone) {
         int rawOffset = timeZone.getRawOffset();

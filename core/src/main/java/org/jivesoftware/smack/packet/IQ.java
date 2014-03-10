@@ -124,7 +124,7 @@ public abstract class IQ extends Packet {
      *      <li>No child element of the IQ element.
      * </ul>
      *
-     * @param iq the {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET} IQ packet.
+     * @param request the {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET} IQ packet.
      * @throws IllegalArgumentException if the IQ packet does not have a type of
      *      {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET}.
      * @return a new {@link Type#RESULT IQ.Type.RESULT} IQ based on the originating IQ.
@@ -158,7 +158,7 @@ public abstract class IQ extends Packet {
      *      <li>The provided {@link XMPPError XMPPError}.
      * </ul>
      *
-     * @param iq the {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET} IQ packet.
+     * @param request the {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET} IQ packet.
      * @param error the error to associate with the created IQ packet.
      * @throws IllegalArgumentException if the IQ packet does not have a type of
      *      {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET}.

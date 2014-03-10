@@ -46,7 +46,6 @@ public class Forwarded implements PacketExtension {
     /**
      * Creates a new Forwarded packet extension.
      *
-     * @param delay an optional {@link DelayInfo} timestamp of the packet.
      * @param fwdPacket the packet that is forwarded (required).
      */
     public Forwarded(Packet fwdPacket) {

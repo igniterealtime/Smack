@@ -56,7 +56,7 @@ import java.util.List;
  * Creates a socket connection to a XMPP server. This is the default connection
  * to a Jabber server and is specified in the XMPP Core (RFC 3920).
  * 
- * @see Connection
+ * @see XMPPConnection
  * @author Matt Tucker
  */
 public class TCPConnection extends XMPPConnection {

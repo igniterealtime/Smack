@@ -65,7 +65,7 @@ public abstract class JingleNegotiator {
     /**
      * Default constructor with a Connection
      *
-     * @param connection the connection associated
+     * @param session the jingle session
      */
     public JingleNegotiator(JingleSession session) {
         this.session = session;
@@ -119,7 +119,7 @@ public abstract class JingleNegotiator {
     /**
      * Set the XMPP connection associated.
      *
-     * @param connection the connection to set
+     * @param session the jingle session
      */
     public void setSession(JingleSession session) {
         this.session = session;
@@ -140,7 +140,7 @@ public abstract class JingleNegotiator {
      * Check if the passed ID is the expected ID
      *
      * @param id
-     * @return
+     * @return true if is expected id
      */
     public boolean isExpectedId(String id) {
         if (id != null) {

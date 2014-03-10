@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 
 /**
  * A Time IQ packet, which is used by XMPP clients to exchange their respective local
- * times. Clients that wish to fully support the entitity time protocol should register
+ * times. Clients that wish to fully support the entity time protocol should register
  * a PacketListener for incoming time requests that then respond with the local time.
  *
- * @see http://www.xmpp.org/extensions/xep-0202.html
+ * @see <a href="http://www.xmpp.org/extensions/xep-0202.html">XEP-202</a>
  * @author Florian Schmaus
  */
 public class Time extends IQ {

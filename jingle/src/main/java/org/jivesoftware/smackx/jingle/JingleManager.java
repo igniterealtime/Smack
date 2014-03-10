@@ -204,7 +204,7 @@ public class JingleManager implements JingleSessionListener {
      * If a fully implemented JingleMediaSession is entered, JingleManager manage Jingle signalling and jmf
      *
      * @param connection             XMPP XMPPConnection to be used
-     * @param jingleMediaManager     an implemeted JingleMediaManager to be used.
+     * @param jingleMediaManagers     an implemeted JingleMediaManager to be used.
      */
     public JingleManager(XMPPConnection connection, List<JingleMediaManager> jingleMediaManagers) {
         this.connection = connection;
@@ -321,7 +321,7 @@ public class JingleManager implements JingleSessionListener {
     /**
      * Get the Media Managers of this Jingle Manager
      *
-     * @return
+     * @return the list of JingleMediaManagers
      */
     public List<JingleMediaManager> getMediaManagers() {
         return jingleMediaManagers;
@@ -330,7 +330,7 @@ public class JingleManager implements JingleSessionListener {
     /**
      * Set the Media Managers of this Jingle Manager
      *
-     * @param jingleMediaManager JingleMediaManager to be used for open, close, start and stop jmf streamings
+     * @param jingleMediaManagers JingleMediaManager to be used for open, close, start and stop jmf streamings
      */
     public void setMediaManagers(List<JingleMediaManager> jingleMediaManagers) {
         this.jingleMediaManagers = jingleMediaManagers;
@@ -516,7 +516,6 @@ public class JingleManager implements JingleSessionListener {
      *
      * @param responder    the fully qualified jabber ID with resource of the other
      *                     user.
-     * @param payloadTypes list of supported payload types
      * @return The session on which the negotiation can be run.
      */
     public JingleSession createOutgoingJingleSession(String responder) throws XMPPException {
@@ -549,7 +548,6 @@ public class JingleManager implements JingleSessionListener {
      * will create an JingleSession which allows the negotiation to procede.
      *
      * @param request      the remote request that is being accepted.
-     * @param payloadTypes the list of supported Payload types that can be accepted
      * @return the session which manages the rest of the negotiation.
      */
     public JingleSession createIncomingJingleSession(JingleSessionRequest request) throws XMPPException {
@@ -585,7 +583,7 @@ public class JingleManager implements JingleSessionListener {
      * Get a session with the informed JID. If no session is found, return null.
      *
      * @param jid
-     * @return
+     * @return the JingleSession
      */
     public JingleSession getSession(String jid) {
         for (JingleSession jingleSession : jingleSessions) {

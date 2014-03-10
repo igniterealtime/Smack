@@ -42,7 +42,7 @@ public class PrivacyList {
     private final boolean isDefaultList;
     /** Holds the list name used to print **/
     private final String listName;
-    /** Holds the list of {@see PrivacyItem} **/
+    /** Holds the list of {@link PrivacyItem} */
     private final List<PrivacyItem> items;
     
     protected PrivacyList(boolean isActiveList, boolean isDefaultList,

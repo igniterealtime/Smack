@@ -424,12 +424,13 @@ public class DiscoverInfo extends IQ {
         }
 
         /**
-         * Compares this identity with another one. The comparison order is:
-         * Category, Type, Lang. If all three are identical the other Identity is considered equal.
-         * Name is not used for comparision, as defined by XEP-0115
+         * Compares this identity with another one. The comparison order is: Category, Type, Lang.
+         * If all three are identical the other Identity is considered equal. Name is not used for
+         * comparison, as defined by XEP-0115
          * 
-         * @param obj
-         * @return
+         * @param other
+         * @return a negative integer, zero, or a positive integer as this object is less than,
+         *         equal to, or greater than the specified object.
          */
         public int compareTo(DiscoverInfo.Identity other) {
             String otherLang = other.lang == null ? "" : other.lang;

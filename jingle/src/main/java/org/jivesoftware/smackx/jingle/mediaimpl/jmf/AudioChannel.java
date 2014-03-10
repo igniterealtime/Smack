@@ -311,7 +311,7 @@ public class AudioChannel {
      *
      * @param codecFormat
      * @param milliseconds
-     * @return
+     * @return the best packet size
      * @throws IllegalArgumentException
      */
     private int getPacketSize(Format codecFormat, int milliseconds) throws IllegalArgumentException {

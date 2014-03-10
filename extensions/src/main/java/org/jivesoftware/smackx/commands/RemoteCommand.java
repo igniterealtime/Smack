@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.SmackConfiguration;
@@ -155,27 +154,5 @@ public class RemoteCommand extends AdHocCommand {
     @Override
     public String getOwnerJID() {
         return jid;
-    }
-
-    /**
-     * Returns the number of milliseconds to wait for a respone. The
-     * {@link SmackConfiguration#getPacketReplyTimeout default} value
-     * should be adjusted for commands that can take a long time to execute.
-     *
-     * @return the number of milliseconds to wait for responses.
-     */
-    public long getPacketReplyTimeout() {
-        return packetReplyTimeout;
-    }
-
-    /**
-     * Returns the number of milliseconds to wait for a respone. The
-     * {@link SmackConfiguration#getPacketReplyTimeout default} value
-     * should be adjusted for commands that can take a long time to execute.
-     *
-     * @param packetReplyTimeout the number of milliseconds to wait for responses.
-     */
-    public void setPacketReplyTimeout(long packetReplyTimeout) {
-        this.packetReplyTimeout = packetReplyTimeout;
     }
 }

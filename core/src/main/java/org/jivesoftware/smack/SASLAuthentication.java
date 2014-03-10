@@ -497,16 +497,6 @@ public class SASLAuthentication {
      * Notification message saying that SASL authentication has failed. The server may have
      * closed the connection depending on the number of possible retries.
      * 
-     * @deprecated replaced by {@see #authenticationFailed(String)}.
-     */
-    void authenticationFailed() {
-        authenticationFailed(null);
-    }
-
-    /**
-     * Notification message saying that SASL authentication has failed. The server may have
-     * closed the connection depending on the number of possible retries.
-     * 
      * @param condition the error condition provided by the server.
      */
     void authenticationFailed(String condition) {

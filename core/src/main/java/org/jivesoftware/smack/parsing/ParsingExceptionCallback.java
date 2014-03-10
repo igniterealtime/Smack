@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack.parsing;
 
 /**
@@ -25,7 +24,7 @@ package org.jivesoftware.smack.parsing;
  * 
  * Subclasses may or may not override certain methods of this class. Each of these methods will receive the exception
  * that caused the parsing error and an instance of an Unparsed Packet type. The latter can be used to inspect the
- * stanza that caused the parsing error by using the getContent() (for example {@link UnparsedIQ#getContent()})
+ * stanza that caused the parsing error by using the getContent() (for example {@link UnparsablePacket#getContent()})
  * method.
  * 
  * Smack provides 2 predefined ParsingExceptionCallback's: {@link ExceptionLoggingCallback} and {@link ExceptionThrowingCallback}.

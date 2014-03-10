@@ -148,7 +148,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the Session ID of the Packet (usually same as Jingle Session ID)
      *
-     * @return
+     * @return the session ID
      */
     public String getSid() {
         return sid;
@@ -166,7 +166,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the Host A IP Address
      *
-     * @return
+     * @return the Host A IP Address
      */
     public String getHostA() {
         return hostA;
@@ -184,7 +184,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the Host B IP Address
      *
-     * @return
+     * @return the Host B IP Address
      */
     public String getHostB() {
         return hostB;
@@ -202,7 +202,7 @@ public class RTPBridge extends IQ {
     /**
      * Get Side A receive port
      *
-     * @return
+     * @return the side A receive prot
      */
     public int getPortA() {
         return portA;
@@ -220,7 +220,7 @@ public class RTPBridge extends IQ {
     /**
      * Get Side B receive port
      *
-     * @return
+     * @return the side B receive port
      */
     public int getPortB() {
         return portB;
@@ -238,7 +238,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the RTP Bridge IP
      *
-     * @return
+     * @return the RTP Bridge IP
      */
     public String getIp() {
         return ip;
@@ -256,7 +256,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the RTP Agent Pass
      *
-     * @return
+     * @return the RTP Agent Pass
      */
     public String getPass() {
         return pass;
@@ -274,7 +274,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the name of the Candidate
      *
-     * @return
+     * @return the name of the Candidate
      */
     public String getName() {
         return name;
@@ -292,7 +292,7 @@ public class RTPBridge extends IQ {
     /**
      * Get the Child Element XML of the Packet
      *
-     * @return
+     * @return the Child Element XML of the Packet
      */
     public String getChildElementXML() {
         StringBuilder str = new StringBuilder();
@@ -327,7 +327,6 @@ public class RTPBridge extends IQ {
 
             int eventType;
             String elementName;
-            String namespace;
 
             if (!parser.getNamespace().equals(RTPBridge.NAMESPACE))
                 throw new Exception("Not a RTP Bridge packet");
@@ -343,7 +342,6 @@ public class RTPBridge extends IQ {
             while (!done) {
                 eventType = parser.next();
                 elementName = parser.getName();
-                namespace = parser.getNamespace();
 
                 if (eventType == XmlPullParser.START_TAG) {
                     if (elementName.equals("candidate")) {
@@ -361,8 +359,6 @@ public class RTPBridge extends IQ {
                         }
                     }
                     else if (elementName.equals("publicip")) {
-                        //String p = parser.getAttributeName(0);
-                        int x = parser.getAttributeCount();
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
                             if (parser.getAttributeName(i).equals("ip"))
                                 iq.setIp(parser.getAttributeValue(i));
@@ -385,7 +381,7 @@ public class RTPBridge extends IQ {
      *
      * @param connection
      * @param sessionID
-     * @return
+     * @return the new RTPBridge
      */
     public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) {
 
@@ -410,7 +406,7 @@ public class RTPBridge extends IQ {
      * Check if the server support RTPBridge Service.
      *
      * @param connection
-     * @return
+     * @return true if the server supports the RTPBridge service
      */
     public static boolean serviceAvailable(XMPPConnection connection) {
 
@@ -452,7 +448,7 @@ public class RTPBridge extends IQ {
      * Check if the server support RTPBridge Service.
      *
      * @param connection
-     * @return
+     * @return the RTPBridge
      */
     public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) {
 

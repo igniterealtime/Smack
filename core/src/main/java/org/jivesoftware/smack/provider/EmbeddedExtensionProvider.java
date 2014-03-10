@@ -56,8 +56,8 @@ import org.xmlpull.v1.XmlPullParser;
  * &lt;/message&gt;
  * 
  * I would have a classes
- * {@link ItemsProvider} extends {@link EmbeddedExtensionProvider}
- * {@link ItemProvider} extends {@link EmbeddedExtensionProvider}
+ * <tt>ItemsProvider</tt> extends {@link EmbeddedExtensionProvider}
+ * <tt>ItemProvider</tt> extends {@link EmbeddedExtensionProvider}
  * and
  * AtomProvider extends {@link PacketExtensionProvider}
  * 

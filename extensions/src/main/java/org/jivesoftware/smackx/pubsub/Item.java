@@ -37,7 +37,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * <li>Will require payload if the node configuration has {@link ConfigureForm#isDeliverPayloads()} set
  * to true. 
  * 
- * <p>To customise the payload object being returned from the {@link #getPayload()} method, you can
+ * <p>To customise the payload object being returned from the {@link PayloadItem#getPayload()} method, you can
  * add a custom parser as explained in {@link ItemProvider}.
  * 
  * @author Robin Collier

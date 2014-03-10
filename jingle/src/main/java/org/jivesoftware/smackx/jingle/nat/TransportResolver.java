@@ -140,7 +140,7 @@ public abstract class TransportResolver {
     /**
      * Chack if the Transport Resolver is initialized
      *
-     * @return
+     * @return true if initialized
      */
     public synchronized boolean isInitialized() {
         return initialized;

@@ -103,7 +103,7 @@ public abstract class TransportCandidate {
     /**
      * Get local IP to bind to this candidate
      *
-     * @return
+     * @return the local IP
      */
     public String getLocalIp() {
         return localIp == null ? ip : localIp;
@@ -119,9 +119,9 @@ public abstract class TransportCandidate {
     }
 
     /**
-     * Get the symetric candidate for this candidate if it exists.
+     * Get the symmetric candidate for this candidate if it exists.
      *
-     * @return
+     * @return the symmetric candidate
      */
     public TransportCandidate getSymmetric() {
         return symmetric;
@@ -157,7 +157,7 @@ public abstract class TransportCandidate {
     /**
      * Get the XMPPConnection use to send or receive this candidate
      *
-     * @return
+     * @return the connection
      */
     public XMPPConnection getConnection() {
         return connection;
@@ -175,7 +175,7 @@ public abstract class TransportCandidate {
     /**
      * Get the jingle's sessionId that is using this candidate
      *
-     * @return
+     * @return the session ID
      */
     public String getSessionId() {
         return sessionId;

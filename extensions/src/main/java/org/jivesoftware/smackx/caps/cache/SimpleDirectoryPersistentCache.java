@@ -138,7 +138,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * Tries to restore an DiscoverInfo packet from a file.
      * 
      * @param file
-     * @return
+     * @return the restored DiscoverInfo
      * @throws IOException
      */
     private static DiscoverInfo restoreInfoFromFile(File file) throws IOException {

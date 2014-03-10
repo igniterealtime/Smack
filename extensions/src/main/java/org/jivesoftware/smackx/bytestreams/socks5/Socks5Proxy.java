@@ -35,20 +35,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 
 /**
  * The Socks5Proxy class represents a local SOCKS5 proxy server. It can be enabled/disabled by
- * setting the <code>localSocks5ProxyEnabled</code> flag in the <code>smack-config.xml</code> or by
- * invoking {@link SmackConfiguration#setLocalSocks5ProxyEnabled(boolean)}. The proxy is enabled by
- * default.
+ * invoking {@link #setLocalSocks5ProxyEnabled(boolean)}. The proxy is enabled by default.
  * <p>
- * The port of the local SOCKS5 proxy can be configured by setting <code>localSocks5ProxyPort</code>
- * in the <code>smack-config.xml</code> or by invoking
- * {@link SmackConfiguration#setLocalSocks5ProxyPort(int)}. Default port is 7777. If you set the
- * port to a negative value Smack tries to the absolute value and all following until it finds an
- * open port.
+ * The port of the local SOCKS5 proxy can be configured by invoking
+ * {@link #setLocalSocks5ProxyPort(int)}. Default port is 7777. If you set the port to a negative
+ * value Smack tries to the absolute value and all following until it finds an open port.
  * <p>
  * If your application is running on a machine with multiple network interfaces or if you want to
  * provide your public address in case you are behind a NAT router, invoke

@@ -69,7 +69,7 @@ public abstract class JingleMediaSession {
     /**
      * Returns the PayloadType of the Media Session
      *
-     * @return
+     * @return the PayloadType
      */
     public PayloadType getPayloadType() {
         return payloadType;
@@ -78,7 +78,7 @@ public abstract class JingleMediaSession {
     /**
      * Returns the Media Session local Candidate
      *
-     * @return
+     * @return the TransportCandidate
      */
     public TransportCandidate getLocal() {
         return local;
@@ -87,7 +87,7 @@ public abstract class JingleMediaSession {
     /**
      * Returns the Media Session remote Candidate
      *
-     * @return
+     * @return the TransportCandidate
      */
     public TransportCandidate getRemote() {
         return remote;

@@ -82,7 +82,6 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * @param itemsType Type of representation
 	 * @param nodeId The node to which the items are being sent or deleted
 	 * @param items The list of {@link Item} or {@link RetractItem}
-	 * @param attributeValue The value of the <b>max_items</b>  
 	 */
 	public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends PacketExtension> items)
 	{
@@ -104,10 +103,8 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and 
 	 * attributeValue = <code>null</code> 
 	 * 
-	 * @param itemsType Type of representation
 	 * @param nodeId The node to which the items are being sent or deleted
 	 * @param items The list of {@link Item} or {@link RetractItem}
-	 * @param attributeValue The value of the <b>max_items</b>  
 	 */
 	public ItemsExtension(String nodeId, List<? extends PacketExtension> items, boolean notify)
 	{

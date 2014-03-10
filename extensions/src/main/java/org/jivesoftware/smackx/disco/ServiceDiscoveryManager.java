@@ -271,7 +271,7 @@ public class ServiceDiscoveryManager extends Manager {
     /**
      * Returns all identities of this client as unmodifiable Collection
      * 
-     * @return
+     * @return all identies as set
      */
     public Set<DiscoverInfo.Identity> getIdentities() {
         Set<Identity> res = new HashSet<Identity>(identities);
@@ -454,7 +454,7 @@ public class ServiceDiscoveryManager extends Manager {
      * Returns the data form that is set as extended information for this Service Discovery instance (XEP-0128)
      * 
      * @see <a href="http://xmpp.org/extensions/xep-0128.html">XEP-128: Service Discovery Extensions</a>
-     * @return
+     * @return the data form
      */
     public DataForm getExtendedInfo() {
         return extendedInfo;
@@ -464,7 +464,7 @@ public class ServiceDiscoveryManager extends Manager {
      * Returns the data form as List of PacketExtensions, or null if no data form is set.
      * This representation is needed by some classes (e.g. EntityCapsManager, NodeInformationProvider)
      * 
-     * @return
+     * @return the data form as List of PacketExtensions
      */
     public List<PacketExtension> getExtendedInfoAsList() {
         List<PacketExtension> res = null;
@@ -603,7 +603,7 @@ public class ServiceDiscoveryManager extends Manager {
       * be returned by the server whenever the server receives a disco request targeted to the bare
       * address of the client (i.e. user@host.com).
       * 
-      * @param DiscoverInfo the discover info packet to check.
+      * @param info the discover info packet to check.
       * @return true if the server supports publishing of items.
       */
      public static boolean canPublishItems(DiscoverInfo info) {
@@ -646,11 +646,11 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Queries the remote jid for it's features and returns true if the given feature is found.
+     * Queries the remote entity for it's features and returns true if the given feature is found.
      *
-     * @param jid
+     * @param jid the JID of the remote entity
      * @param feature
-     * @return
+     * @return true if the entity supports the feature, false otherwise
      * @throws XMPPException
      */
     public boolean supportsFeature(String jid, String feature) throws XMPPException {
@@ -663,8 +663,8 @@ public class ServiceDiscoveryManager extends Manager {
      */
 
     /**
-     * Loads the ServiceDiscoveryManager with an EntityCapsManger
-     * that speeds up certain lookups
+     * Loads the ServiceDiscoveryManager with an EntityCapsManger that speeds up certain lookups.
+     * 
      * @param manager
      */
     public void setEntityCapsManager(EntityCapsManager manager) {
@@ -672,8 +672,7 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Updates the Entity Capabilities Verification String
-     * if EntityCaps is enabled
+     * Updates the Entity Capabilities Verification String if EntityCaps is enabled.
      */
     private void renewEntityCapsVersion() {
         if (capsManager != null && capsManager.entityCapsEnabled())
