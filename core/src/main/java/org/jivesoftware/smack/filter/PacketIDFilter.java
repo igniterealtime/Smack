@@ -29,6 +29,15 @@ public class PacketIDFilter implements PacketFilter {
     private String packetID;
 
     /**
+     * Creates a new packet ID filter using the specified packet's ID.
+     *
+     * @param packet the packet which the ID is taken from.
+     */
+    public PacketIDFilter(Packet packet) {
+        this(packet.getPacketID());
+    }
+
+    /**
      * Creates a new packet ID filter using the specified packet ID.
      *
      * @param packetID the packet ID to filter for.

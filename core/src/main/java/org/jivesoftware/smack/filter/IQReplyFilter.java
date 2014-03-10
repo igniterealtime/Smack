@@ -50,7 +50,8 @@ import org.jivesoftware.smack.util.StringUtils;
 public class IQReplyFilter implements PacketFilter {
     private static final Logger LOGGER = Logger.getLogger(IQReplyFilter.class.getName());
 
-    private final PacketFilter filter;
+    private final PacketFilter iqAndIdFilter;
+    private final OrFilter fromFilter;
     private final String to;
     private final String local;
     private final String server;
@@ -91,8 +92,9 @@ public class IQReplyFilter implements PacketFilter {
         packetId = iqPacket.getPacketID();
 
         PacketFilter iqFilter = new OrFilter(new IQTypeFilter(IQ.Type.ERROR), new IQTypeFilter(IQ.Type.RESULT));
-        PacketFilter idFilter = new PacketIDFilter(iqPacket.getPacketID());
-        OrFilter fromFilter = new OrFilter();
+        PacketFilter idFilter = new PacketIDFilter(iqPacket);
+        iqAndIdFilter = new AndFilter(iqFilter, idFilter);
+        fromFilter = new OrFilter();
         fromFilter.addFilter(FromMatchesFilter.createFull(to));
         if (to == null) {
             if (local != null)
@@ -102,18 +104,22 @@ public class IQReplyFilter implements PacketFilter {
         else if (local != null && to.toLowerCase().equals(StringUtils.parseBareAddress(local))) {
             fromFilter.addFilter(FromMatchesFilter.createFull(null));
         }
-        filter = new AndFilter(fromFilter, iqFilter, idFilter);
     }
 
     @Override
     public boolean accept(Packet packet) {
-        if (filter.accept(packet)) {
+        // First filter out everything that is not an IQ stanza and does not have the correct ID set.
+        if (!iqAndIdFilter.accept(packet))
+            return false;
+
+        // Second, check if the from attributes are correct and log potential IQ spoofing attempts
+        if (fromFilter.accept(packet)) {
             return true;
         } else {
             String msg = String.format("Rejected potentially spoofed reply to IQ-packet. Filter settings: "
-                            + "packetId=%s, to=%s, local=%s, server=%s. Received packet with from=%d",
+                            + "packetId=%s, to=%s, local=%s, server=%s. Received packet with from=%s",
                             packetId, to, local, server, packet.getFrom());
-            LOGGER.log(Level.INFO, msg , packet);
+            LOGGER.log(Level.WARNING, msg , packet);
             return false;
         }
     }
