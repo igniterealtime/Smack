@@ -19,10 +19,8 @@ package org.jivesoftware.smack;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -97,8 +94,6 @@ public abstract class XMPPConnection {
     private final static Set<ConnectionCreationListener> connectionEstablishedListeners =
             new CopyOnWriteArraySet<ConnectionCreationListener>();
 
-    protected final static List<XMPPInputOutputStream> compressionHandlers = new ArrayList<XMPPInputOutputStream>(2);
-
     /**
      * Value that indicates whether debugging is enabled. When enabled, a debug
      * window will apear for each new connection that will contain the following
@@ -125,12 +120,6 @@ public abstract class XMPPConnection {
         }
         // Ensure the SmackConfiguration class is loaded by calling a method in it.
         SmackConfiguration.getVersion();
-        // Add the Java7 compression handler first, since it's preferred
-        compressionHandlers.add(new Java7ZlibInputOutputStream());
-        // If we don't have access to the Java7 API use the JZlib compression handler
-
-        // TODO gradle migration
-        //compressionHandlers.add(new JzlibInputOutputStream());
     }
 
     /**

@@ -827,10 +827,7 @@ public class TCPConnection extends XMPPConnection {
      */
     private XMPPInputOutputStream maybeGetCompressionHandler() {
         if (compressionMethods != null) {
-            for (XMPPInputOutputStream handler : compressionHandlers) {
-                if (!handler.isSupported())
-                    continue;
-
+            for (XMPPInputOutputStream handler : SmackConfiguration.getCompresionHandlers()) {
                 String method = handler.getCompressionMethod();
                 if (compressionMethods.contains(method))
                     return handler;

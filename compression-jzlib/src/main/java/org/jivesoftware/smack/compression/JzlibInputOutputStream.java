@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,28 @@
  */
 package org.jivesoftware.smack.compression;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+
+import org.jivesoftware.smack.SmackConfiguration;
+
+import com.jcraft.jzlib.JZlib;
+import com.jcraft.jzlib.ZInputStream;
+import com.jcraft.jzlib.ZOutputStream;
 
 /**
- * This class provides XMPP "zlib" compression with the help of JZLib. Note that jzlib-1.0.7 must be used (i.e. in the
- * classpath), newer versions won't work!
+ * This class provides XMPP "zlib" compression with the help of JZLib.
  * 
  * @author Florian Schmaus
  * @see <a href="http://www.jcraft.com/jzlib/">JZLib</a>
  * 
  */
+@SuppressWarnings("deprecation")
 public class JzlibInputOutputStream extends XMPPInputOutputStream {
 
-    private static Class<?> zoClass = null;
-    private static Class<?> ziClass = null;
-
     static {
-        try {
-            zoClass = Class.forName("com.jcraft.jzlib.ZOutputStream");
-            ziClass = Class.forName("com.jcraft.jzlib.ZInputStream");
-        } catch (ClassNotFoundException e) {
-        }
+        SmackConfiguration.addCompressionHandler(new JzlibInputOutputStream());
     }
 
     public JzlibInputOutputStream() {
@@ -49,28 +46,22 @@ public class JzlibInputOutputStream extends XMPPInputOutputStream {
 
     @Override
     public boolean isSupported() {
-        return (zoClass != null && ziClass != null);
+        return true;
     }
 
     @Override
-    public InputStream getInputStream(InputStream inputStream) throws SecurityException, NoSuchMethodException,
-            IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Constructor<?> constructor = ziClass.getConstructor(InputStream.class);
-        Object in = constructor.newInstance(inputStream);
+    public InputStream getInputStream(InputStream inputStream) throws IOException {
+        ZInputStream is = new ZInputStream(inputStream);
+        is.setFlushMode(JZlib.Z_SYNC_FLUSH);
 
-        Method method = ziClass.getMethod("setFlushMode", Integer.TYPE);
-        method.invoke(in, 2);
-        return (InputStream) in;
+        return is;
     }
 
     @Override
-    public OutputStream getOutputStream(OutputStream outputStream) throws SecurityException, NoSuchMethodException,
-            IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        Constructor<?> constructor = zoClass.getConstructor(OutputStream.class, Integer.TYPE);
-        Object out = constructor.newInstance(outputStream, 9);
+    public OutputStream getOutputStream(OutputStream outputStream) throws IOException {
+        ZOutputStream os = new ZOutputStream(outputStream);
+        os.setFlushMode(JZlib.Z_SYNC_FLUSH);
 
-        Method method = zoClass.getMethod("setFlushMode", Integer.TYPE);
-        method.invoke(out, 2);
-        return (OutputStream) out;
+        return os;
     }
 }

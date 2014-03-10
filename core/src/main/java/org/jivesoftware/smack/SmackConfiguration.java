@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -64,6 +66,15 @@ public final class SmackConfiguration {
 
     private static Set<String> disabledSmackClasses = new HashSet<String>();
 
+    private final static List<XMPPInputOutputStream> compressionHandlers = new ArrayList<XMPPInputOutputStream>(2);
+
+    /**
+     * Loads the configuration from the smack-config.xml file.<p>
+     *
+     * So far this means that:
+     * 1) a set of classes will be loaded in order to execute their static init block
+     * 2) retrieve and set the current Smack release
+     */
     static {
         String smackVersion;
         try {
@@ -104,6 +115,9 @@ public final class SmackConfiguration {
         catch (Exception e) {
             throw new IllegalStateException(e);
         }
+
+        // Add the Java7 compression handler first, since it's preferred
+        compressionHandlers.add(new Java7ZlibInputOutputStream());
     }
 
     /**
@@ -111,17 +125,6 @@ public final class SmackConfiguration {
      * throw an exception and therefore disconnect the active connection.
      */
     private static ParsingExceptionCallback defaultCallback = new ExceptionThrowingCallback();
-
-    private SmackConfiguration() {
-    }
-
-    /**
-     * Loads the configuration from the smack-config.xml file.<p>
-     * 
-     * So far this means that:
-     * 1) a set of classes will be loaded in order to execute their static init block
-     * 2) retrieve and set the current Smack release
-     */
 
     /**
      * Returns the Smack version information, eg "1.3.0".
@@ -248,6 +251,20 @@ public final class SmackConfiguration {
      */
     public static ParsingExceptionCallback getDefaultParsingExceptionCallback() {
         return defaultCallback;
+    }
+
+    public static void addCompressionHandler(XMPPInputOutputStream xmppInputOutputStream) {
+        compressionHandlers.add(xmppInputOutputStream);
+    }
+
+    public static List<XMPPInputOutputStream> getCompresionHandlers() {
+        List<XMPPInputOutputStream> res = new ArrayList<XMPPInputOutputStream>(compressionHandlers.size());
+        for (XMPPInputOutputStream ios : compressionHandlers) {
+            if (ios.isSupported()) {
+                res.add(ios);
+            }
+        }
+        return res;
     }
 
     public static void processConfigFile(InputStream cfgFileStream, Collection<Exception> exceptions) throws Exception {
