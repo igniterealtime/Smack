@@ -121,7 +121,7 @@ public class EnhancedDebuggerWindow {
         if (frame == null) {
             createDebug();
         }
-        debugger.tabbedPane.setName("Connection_" + tabbedPane.getComponentCount());
+        debugger.tabbedPane.setName("XMPPConnection_" + tabbedPane.getComponentCount());
         tabbedPane.add(debugger.tabbedPane, tabbedPane.getComponentCount() - 1);
         tabbedPane.setIconAt(tabbedPane.indexOfComponent(debugger.tabbedPane), connectionCreatedIcon);
         frame.setTitle(
@@ -168,7 +168,7 @@ public class EnhancedDebuggerWindow {
         int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
         getInstance().tabbedPane.setToolTipTextAt(
                 index,
-                "Connection closed due to the exception: " + e.getMessage());
+                "XMPPConnection closed due to the exception: " + e.getMessage());
         getInstance().tabbedPane.setIconAt(
                 index,
                 connectionClosedOnErrorIcon);

@@ -53,7 +53,7 @@ public class RosterTest {
     @Before
     public void setUp() throws Exception {
         // Uncomment this to enable debug output
-        //Connection.DEBUG_ENABLED = true;
+        //XMPPConnection.DEBUG_ENABLED = true;
 
         connection = new DummyConnection();
         connection.connect();
@@ -702,7 +702,7 @@ public class RosterTest {
 
         public synchronized void entriesAdded(Collection<String> addresses) {
             addressesAdded.addAll(addresses);
-            if (Connection.DEBUG_ENABLED) {
+            if (XMPPConnection.DEBUG_ENABLED) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " added.");
                 }
@@ -711,7 +711,7 @@ public class RosterTest {
 
         public synchronized void entriesDeleted(Collection<String> addresses) {
             addressesDeleted.addAll(addresses);
-            if (Connection.DEBUG_ENABLED) {
+            if (XMPPConnection.DEBUG_ENABLED) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " deleted.");
                 }
@@ -720,7 +720,7 @@ public class RosterTest {
 
         public synchronized void entriesUpdated(Collection<String> addresses) {
             addressesUpdated.addAll(addresses);
-            if (Connection.DEBUG_ENABLED) {
+            if (XMPPConnection.DEBUG_ENABLED) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " updated.");
                 }
@@ -728,7 +728,7 @@ public class RosterTest {
         }
 
         public void presenceChanged(Presence presence) {
-            if (Connection.DEBUG_ENABLED) {
+            if (XMPPConnection.DEBUG_ENABLED) {
                 System.out.println("Roster presence changed: " + presence.toXML());
             }
         }

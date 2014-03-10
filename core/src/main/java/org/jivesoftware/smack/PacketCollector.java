@@ -35,14 +35,14 @@ import org.jivesoftware.smack.packet.XMPPError;
  * older packets are automatically dropped.  The default number is retrieved by 
  * {@link SmackConfiguration#getPacketCollectorSize()}.
  *
- * @see Connection#createPacketCollector(PacketFilter)
+ * @see XMPPConnection#createPacketCollector(PacketFilter)
  * @author Matt Tucker
  */
 public class PacketCollector {
 
     private PacketFilter packetFilter;
     private ArrayBlockingQueue<Packet> resultQueue;
-    private Connection connection;
+    private XMPPConnection connection;
     private boolean cancelled = false;
 
     /**
@@ -52,7 +52,7 @@ public class PacketCollector {
      * @param connection the connection the collector is tied to.
      * @param packetFilter determines which packets will be returned by this collector.
      */
-    protected PacketCollector(Connection connection, PacketFilter packetFilter) {
+    protected PacketCollector(XMPPConnection connection, PacketFilter packetFilter) {
         this(connection, packetFilter, SmackConfiguration.getPacketCollectorSize());
     }
 
@@ -64,7 +64,7 @@ public class PacketCollector {
      * @param packetFilter determines which packets will be returned by this collector.
      * @param maxSize the maximum number of packets that will be stored in the collector.
      */
-    protected PacketCollector(Connection connection, PacketFilter packetFilter, int maxSize) {
+    protected PacketCollector(XMPPConnection connection, PacketFilter packetFilter, int maxSize) {
         this.connection = connection;
         this.packetFilter = packetFilter;
         this.resultQueue = new ArrayBlockingQueue<Packet>(maxSize);

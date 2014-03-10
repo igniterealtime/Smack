@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.disco;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
@@ -69,8 +69,8 @@ public class ServiceDiscoveryManager extends Manager {
 
     private EntityCapsManager capsManager;
 
-    private static Map<Connection, ServiceDiscoveryManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<Connection, ServiceDiscoveryManager>());
+    private static Map<XMPPConnection, ServiceDiscoveryManager> instances =
+            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, ServiceDiscoveryManager>());
 
     private final Set<String> features = new HashSet<String>();
     private DataForm extendedInfo = null;
@@ -79,8 +79,8 @@ public class ServiceDiscoveryManager extends Manager {
 
     // Create a new ServiceDiscoveryManager on every established connection
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
@@ -97,13 +97,13 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Creates a new ServiceDiscoveryManager for a given Connection. This means that the 
+     * Creates a new ServiceDiscoveryManager for a given XMPPConnection. This means that the 
      * service manager will respond to any service discovery request that the connection may
      * receive. 
      * 
      * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
-    private ServiceDiscoveryManager(Connection connection) {
+    private ServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
@@ -115,7 +115,7 @@ public class ServiceDiscoveryManager extends Manager {
         PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
         PacketListener packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
-                Connection connection = connection();
+                XMPPConnection connection = connection();
                 if (connection == null) return;
                 DiscoverItems discoverItems = (DiscoverItems) packet;
                 // Send back the items defined in the client if the request is of type GET
@@ -152,7 +152,7 @@ public class ServiceDiscoveryManager extends Manager {
         packetFilter = new PacketTypeFilter(DiscoverInfo.class);
         packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
-                Connection connection = connection();
+                XMPPConnection connection = connection();
                 if (connection == null) return;
                 DiscoverInfo discoverInfo = (DiscoverInfo) packet;
                 // Answer the client's supported features if the request is of the GET type
@@ -281,12 +281,12 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Returns the ServiceDiscoveryManager instance associated with a given Connection.
+     * Returns the ServiceDiscoveryManager instance associated with a given XMPPConnection.
      * 
      * @param connection the connection used to look for the proper ServiceDiscoveryManager.
-     * @return the ServiceDiscoveryManager associated with a given Connection.
+     * @return the ServiceDiscoveryManager associated with a given XMPPConnection.
      */
-    public static synchronized ServiceDiscoveryManager getInstanceFor(Connection connection) {
+    public static synchronized ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
         ServiceDiscoveryManager sdm = instances.get(connection);
         if (sdm == null) {
             sdm = new ServiceDiscoveryManager(connection);

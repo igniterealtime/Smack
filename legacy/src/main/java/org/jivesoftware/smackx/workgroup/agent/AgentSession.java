@@ -55,7 +55,7 @@ import java.util.logging.Logger;
 public class AgentSession {
     private static final Logger LOGGER = Logger.getLogger(AgentSession.class.getName());
     
-    private Connection connection;
+    private XMPPConnection connection;
 
     private String workgroupJID;
 
@@ -85,7 +85,7 @@ public class AgentSession {
      *                     authentication.
      * @param workgroupJID the fully qualified JID of the workgroup.
      */
-    public AgentSession(String workgroupJID, Connection connection) {
+    public AgentSession(String workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -966,12 +966,12 @@ public class AgentSession {
     /**
      * Returns the generic metadata of the workgroup the agent belongs to.
      *
-     * @param con   the Connection to use.
+     * @param con   the XMPPConnection to use.
      * @param query an optional query object used to tell the server what metadata to retrieve. This can be null.
      * @throws XMPPException if an error occurs while sending the request to the server.
      * @return the settings for the workgroup.
      */
-    public GenericSettings getGenericSettings(Connection con, String query) throws XMPPException {
+    public GenericSettings getGenericSettings(XMPPConnection con, String query) throws XMPPException {
         GenericSettings setting = new GenericSettings();
         setting.setType(IQ.Type.GET);
         setting.setTo(workgroupJID);
@@ -981,7 +981,7 @@ public class AgentSession {
         return response;
     }
 
-    public boolean hasMonitorPrivileges(Connection con) throws XMPPException {
+    public boolean hasMonitorPrivileges(XMPPConnection con) throws XMPPException {
         MonitorPacket request = new MonitorPacket();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -990,7 +990,7 @@ public class AgentSession {
         return response.isMonitor();
     }
 
-    public void makeRoomOwner(Connection con, String sessionID) throws XMPPException {
+    public void makeRoomOwner(XMPPConnection con, String sessionID) throws XMPPException {
         MonitorPacket request = new MonitorPacket();
         request.setType(IQ.Type.SET);
         request.setTo(workgroupJID);

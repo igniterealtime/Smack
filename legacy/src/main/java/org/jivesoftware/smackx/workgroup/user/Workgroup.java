@@ -56,7 +56,7 @@ import java.util.Map;
 public class Workgroup {
 
     private String workgroupJID;
-    private Connection connection;
+    private XMPPConnection connection;
     private boolean inQueue;
     private List<WorkgroupInvitationListener> invitationListeners;
     private List<QueueListener> queueListeners;
@@ -74,7 +74,7 @@ public class Workgroup {
      * @param connection   an XMPP connection which must have already undergone a
      *                     successful login.
      */
-    public Workgroup(String workgroupJID, Connection connection) {
+    public Workgroup(String workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -112,7 +112,7 @@ public class Workgroup {
          */
         MultiUserChat.addInvitationListener(connection,
                 new org.jivesoftware.smackx.muc.InvitationListener() {
-                    public void invitationReceived(Connection conn, String room, String inviter,
+                    public void invitationReceived(XMPPConnection conn, String room, String inviter,
                                                    String reason, String password, Message message) {
                         inQueue = false;
                         queuePosition = -1;

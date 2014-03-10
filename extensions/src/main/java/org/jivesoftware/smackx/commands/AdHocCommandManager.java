@@ -47,8 +47,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * An AdHocCommandManager is responsible for keeping the list of available
  * commands offered by a service and for processing commands requests.
  *
- * Pass in a Connection instance to
- * {@link #getAddHocCommandsManager(org.jivesoftware.smack.Connection)} in order to
+ * Pass in a XMPPConnection instance to
+ * {@link #getAddHocCommandsManager(org.jivesoftware.smack.XMPPConnection)} in order to
  * get an instance of this class. 
  * 
  * @author Gabriel Guardincerri
@@ -62,11 +62,11 @@ public class AdHocCommandManager extends Manager {
     private static final int SESSION_TIMEOUT = 2 * 60;
 
     /**
-     * Map a Connection with it AdHocCommandManager. This map have a key-value
+     * Map a XMPPConnection with it AdHocCommandManager. This map have a key-value
      * pair for every active connection.
      */
-    private static Map<Connection, AdHocCommandManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<Connection, AdHocCommandManager>());
+    private static Map<XMPPConnection, AdHocCommandManager> instances =
+            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, AdHocCommandManager>());
 
     /**
      * Register the listener for all the connection creations. When a new
@@ -74,8 +74,8 @@ public class AdHocCommandManager extends Manager {
      * related to that connection.
      */
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getAddHocCommandsManager(connection);
             }
         });
@@ -88,7 +88,7 @@ public class AdHocCommandManager extends Manager {
      * @param connection the XMPP connection.
      * @return the AdHocCommandManager associated with the connection.
      */
-    public static synchronized AdHocCommandManager getAddHocCommandsManager(Connection connection) {
+    public static synchronized AdHocCommandManager getAddHocCommandsManager(XMPPConnection connection) {
         AdHocCommandManager ahcm = instances.get(connection);
         if (ahcm == null) ahcm = new AdHocCommandManager(connection);
         return ahcm;
@@ -116,7 +116,7 @@ public class AdHocCommandManager extends Manager {
      */
     private Thread sessionsSweeper;
 
-    private AdHocCommandManager(Connection connection) {
+    private AdHocCommandManager(XMPPConnection connection) {
         super(connection);
         this.serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         

@@ -452,7 +452,7 @@ public class Socks5Proxy {
                 out.write(connectionRequest);
                 out.flush();
 
-                throw new XMPPException("Connection is not allowed");
+                throw new XMPPException("XMPPConnection is not allowed");
             }
 
             connectionRequest[1] = (byte) 0x00; // set return status to 0 (success)

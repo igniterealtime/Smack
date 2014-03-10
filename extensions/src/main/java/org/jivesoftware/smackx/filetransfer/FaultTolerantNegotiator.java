@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -40,11 +40,11 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
 
     private StreamNegotiator primaryNegotiator;
     private StreamNegotiator secondaryNegotiator;
-    private Connection connection;
+    private XMPPConnection connection;
     private PacketFilter primaryFilter;
     private PacketFilter secondaryFilter;
 
-    public FaultTolerantNegotiator(Connection connection, StreamNegotiator primary,
+    public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary,
             StreamNegotiator secondary) {
         this.primaryNegotiator = primary;
         this.secondaryNegotiator = secondary;
@@ -64,7 +64,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 "stream method.");
     }
 
-    final Packet initiateIncomingStream(Connection connection, StreamInitiation initiation) {
+    final Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) {
         throw new UnsupportedOperationException("Initiation handled by createIncomingStream " +
                 "method");
     }

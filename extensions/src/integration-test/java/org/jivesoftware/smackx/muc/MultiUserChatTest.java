@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -263,7 +263,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // User3 is listening to MUC invitations
             MultiUserChat.addInvitationListener(getConnection(2), new InvitationListener() {
                 public void invitationReceived(
-                    Connection conn,
+                    XMPPConnection conn,
                     String room,
                     String inviter,
                     String reason,
@@ -313,7 +313,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // User3 is listening to MUC invitations
             MultiUserChat.addInvitationListener(getConnection(2), new InvitationListener() {
                 public void invitationReceived(
-                    Connection conn,
+                    XMPPConnection conn,
                     String room,
                     String inviter,
                     String reason,

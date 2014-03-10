@@ -150,7 +150,7 @@
                         <td>&nbsp;</td>
                       </tr>
                       <tr> 
-                        <td class=text id=black height=16>Debug Connection:</td>
+                        <td class=text id=black height=16>Debug XMPPConnection:</td>
                         <td><select size="1" name="debug">
                             <option <%= ("No".equals(debug))?"selected":""%>>No</option>
                             <option <%= ("Yes".equals(debug))?"selected":""%>>Yes</option>

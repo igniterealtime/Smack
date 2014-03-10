@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
@@ -50,8 +50,8 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 public class PrivacyListManager extends Manager {
 
     // Keep the list of instances of this class.
-    private static Map<Connection, PrivacyListManager> instances = Collections
-            .synchronizedMap(new WeakHashMap<Connection, PrivacyListManager>());
+    private static Map<XMPPConnection, PrivacyListManager> instances = Collections
+            .synchronizedMap(new WeakHashMap<XMPPConnection, PrivacyListManager>());
 
 	private final List<PrivacyListListener> listeners = new ArrayList<PrivacyListListener>();
 	PacketFilter packetFilter = new AndFilter(new IQTypeFilter(IQ.Type.SET),
@@ -61,8 +61,8 @@ public class PrivacyListManager extends Manager {
         // Create a new PrivacyListManager on every established connection. In the init()
         // method of PrivacyListManager, we'll add a listener that will delete the
         // instance when the connection is closed.
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
@@ -74,7 +74,7 @@ public class PrivacyListManager extends Manager {
      *
      * @param connection the XMPP connection.
      */
-	private PrivacyListManager(final Connection connection) {
+	private PrivacyListManager(final XMPPConnection connection) {
         super(connection);
         // Register the new instance and associate it with the connection 
         instances.put(connection, this);
@@ -129,12 +129,12 @@ public class PrivacyListManager extends Manager {
 	}
 
     /**
-     * Returns the PrivacyListManager instance associated with a given Connection.
+     * Returns the PrivacyListManager instance associated with a given XMPPConnection.
      * 
      * @param connection the connection used to look for the proper PrivacyListManager.
-     * @return the PrivacyListManager associated with a given Connection.
+     * @return the PrivacyListManager associated with a given XMPPConnection.
      */
-    public static synchronized PrivacyListManager getInstanceFor(Connection connection) {
+    public static synchronized PrivacyListManager getInstanceFor(XMPPConnection connection) {
         PrivacyListManager plm = instances.get(connection);
         if (plm == null) plm = new PrivacyListManager(connection);
         return plm;

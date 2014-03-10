@@ -75,14 +75,14 @@ You can receive notification requests for the following events: delivered, displ
 The general idea is to create a new <i>DefaultMessageEventRequestListener</i> that will listen to the event notifications 
 requests and react with custom logic.  Then you will have to add the listener to the 
 <i>MessageEventManager</i> that works on 
-the desired <i>Connection</i>.
+the desired <i>XMPPConnection</i>.
 <p>Note that <i>DefaultMessageEventRequestListener</i> is a default implementation of the 
 <i>MessageEventRequestListener</i> interface.
 The class <i>DefaultMessageEventRequestListener</i> automatically sends a delivered notification to the sender of the message 
 if the sender has requested to be notified when the message is delivered. If you decide to create a new class that
 implements the <i>MessageEventRequestListener</i> interface, please remember to send the delivered notification.</p>
 <ul>
-  <li>To create a new <i>MessageEventManager</i> use the <i><b>MessageEventManager(Connection)</b></i> constructor. 
+  <li>To create a new <i>MessageEventManager</i> use the <i><b>MessageEventManager(XMPPConnection)</b></i> constructor. 
   </li>
   <li>To create an event notification requests listener create a subclass of <i><b>DefaultMessageEventRequestListener</b></i> or
   create a class that implements the <i><b>MessageEventRequestListener</b></i> interface.
@@ -178,9 +178,9 @@ will probably want to react to some or all of these events.</p>
 
 The general idea is to create a new <i>MessageEventNotificationListener</i> that will listen to the event notifications 
 and react with custom logic.  Then you will have to add the listener to the <i>MessageEventManager</i> that works on 
-the desired <i>Connection</i>.
+the desired <i>XMPPConnection</i>.
 <ul>
-  <li>To create a new <i>MessageEventManager</i> use the <i><b>MessageEventManager(Connection)</b></i> constructor. 
+  <li>To create a new <i>MessageEventManager</i> use the <i><b>MessageEventManager(XMPPConnection)</b></i> constructor. 
   </li>
   <li>To create an event notifications listener create a class that implements the <i><b>MessageEventNotificationListener</b></i> 
   interface.

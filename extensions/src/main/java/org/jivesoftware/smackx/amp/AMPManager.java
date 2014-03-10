@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.amp;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -38,8 +38,8 @@ public class AMPManager {
     // Enable the AMP support on every established connection
     // The ServiceDiscoveryManager class should have been already initialized
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 AMPManager.setServiceEnabled(connection, true);
             }
         });
@@ -54,7 +54,7 @@ public class AMPManager {
      * @param connection the connection where the service will be enabled or disabled
      * @param enabled indicates if the service will be enabled or disabled
      */
-    public synchronized static void setServiceEnabled(Connection connection, boolean enabled) {
+    public synchronized static void setServiceEnabled(XMPPConnection connection, boolean enabled) {
         if (isServiceEnabled(connection) == enabled)
             return;
 
@@ -72,7 +72,7 @@ public class AMPManager {
      * @param connection the connection to look for AMP support
      * @return a boolean indicating if the AMP support is enabled for the given connection
      */
-    public static boolean isServiceEnabled(Connection connection) {
+    public static boolean isServiceEnabled(XMPPConnection connection) {
         connection.getServiceName();
         return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(AMPExtension.NAMESPACE);
     }
@@ -83,7 +83,7 @@ public class AMPManager {
      * @param action action to check
      * @return true if this action is supported.
      */
-    public static boolean isActionSupported(Connection connection, AMPExtension.Action action) {
+    public static boolean isActionSupported(XMPPConnection connection, AMPExtension.Action action) {
         String featureName = AMPExtension.NAMESPACE + "?action=" + action.toString();
         return isFeatureSupportedByServer(connection, featureName, AMPExtension.NAMESPACE);
     }
@@ -97,12 +97,12 @@ public class AMPManager {
      * @see AMPExpireAtCondition
      * @see AMPMatchResourceCondition
      */
-    public static boolean isConditionSupported(Connection connection, String conditionName) {
+    public static boolean isConditionSupported(XMPPConnection connection, String conditionName) {
         String featureName = AMPExtension.NAMESPACE + "?condition=" + conditionName;
         return isFeatureSupportedByServer(connection, featureName, AMPExtension.NAMESPACE);
     }
 
-    private static boolean isFeatureSupportedByServer(Connection connection, String featureName, String node) {
+    private static boolean isFeatureSupportedByServer(XMPPConnection connection, String featureName, String node) {
         try {
             ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
             DiscoverInfo info = discoveryManager.discoverInfo(connection.getServiceName(), node);

@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.packet.TranscriptSearch;
 import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 
@@ -32,9 +32,9 @@ import org.jivesoftware.smack.packet.IQ;
  * @author Gaston Dombiak
  */
 public class TranscriptSearchManager {
-    private Connection connection;
+    private XMPPConnection connection;
 
-    public TranscriptSearchManager(Connection connection) {
+    public TranscriptSearchManager(XMPPConnection connection) {
         this.connection = connection;
     }
 

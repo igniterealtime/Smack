@@ -18,7 +18,7 @@ import java.io.OutputStream;
 import java.util.Random;
 import java.util.concurrent.SynchronousQueue;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -53,9 +53,9 @@ public class InBandBytestreamTest extends SmackTestCase {
      * @throws XMPPException should not happen
      */
     public void testRespondWithErrorOnInBandBytestreamRequest() throws XMPPException {
-        Connection targetConnection = getConnection(0);
+        XMPPConnection targetConnection = getConnection(0);
 
-        Connection initiatorConnection = getConnection(1);
+        XMPPConnection initiatorConnection = getConnection(1);
 
         Open open = new Open("sessionID", 1024);
         open.setFrom(initiatorConnection.getUser());
@@ -78,8 +78,8 @@ public class InBandBytestreamTest extends SmackTestCase {
      */
     public void testInBandBytestreamWithIQStanzas() throws Exception {
 
-        Connection initiatorConnection = getConnection(0);
-        Connection targetConnection = getConnection(1);
+        XMPPConnection initiatorConnection = getConnection(0);
+        XMPPConnection targetConnection = getConnection(1);
 
         // test data
         Random rand = new Random();
@@ -132,8 +132,8 @@ public class InBandBytestreamTest extends SmackTestCase {
      */
     public void testInBandBytestreamWithMessageStanzas() throws Exception {
 
-        Connection initiatorConnection = getConnection(0);
-        Connection targetConnection = getConnection(1);
+        XMPPConnection initiatorConnection = getConnection(0);
+        XMPPConnection targetConnection = getConnection(1);
 
         // test data
         Random rand = new Random();
@@ -188,9 +188,9 @@ public class InBandBytestreamTest extends SmackTestCase {
      */
     public void testBiDirectionalInBandBytestream() throws Exception {
 
-        Connection initiatorConnection = getConnection(0);
+        XMPPConnection initiatorConnection = getConnection(0);
 
-        Connection targetConnection = getConnection(1);
+        XMPPConnection targetConnection = getConnection(1);
 
         // test data
         Random rand = new Random();

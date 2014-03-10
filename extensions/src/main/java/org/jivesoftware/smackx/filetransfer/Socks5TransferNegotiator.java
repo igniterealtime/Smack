@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -44,11 +44,11 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
  */
 public class Socks5TransferNegotiator extends StreamNegotiator {
 
-    private Connection connection;
+    private XMPPConnection connection;
 
     private Socks5BytestreamManager manager;
 
-    Socks5TransferNegotiator(Connection connection) {
+    Socks5TransferNegotiator(XMPPConnection connection) {
         this.connection = connection;
         this.manager = Socks5BytestreamManager.getBytestreamManager(this.connection);
     }

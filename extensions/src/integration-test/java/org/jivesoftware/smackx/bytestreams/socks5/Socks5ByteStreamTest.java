@@ -21,7 +21,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
@@ -60,7 +60,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
      * @throws XMPPException should not happen
      */
     public void testInitializationSocks5FeaturesAndListenerOnStartup() throws XMPPException {
-        Connection connection = getConnection(0);
+        XMPPConnection connection = getConnection(0);
 
         assertTrue(ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(
                         Socks5BytestreamManager.NAMESPACE));
@@ -74,9 +74,9 @@ public class Socks5ByteStreamTest extends SmackTestCase {
      * @throws XMPPException should not happen
      */
     public void testRespondWithErrorOnSocks5BytestreamRequest() throws XMPPException {
-        Connection targetConnection = getConnection(0);
+        XMPPConnection targetConnection = getConnection(0);
 
-        Connection initiatorConnection = getConnection(1);
+        XMPPConnection initiatorConnection = getConnection(1);
 
         Bytestream bytestreamInitiation = Socks5PacketUtils.createBytestreamInitiation(
                         initiatorConnection.getUser(), targetConnection.getUser(), "session_id");
@@ -107,8 +107,8 @@ public class Socks5ByteStreamTest extends SmackTestCase {
 
         assertTrue(socks5Proxy.isRunning());
 
-        Connection initiatorConnection = getConnection(0);
-        Connection targetConnection = getConnection(1);
+        XMPPConnection initiatorConnection = getConnection(0);
+        XMPPConnection targetConnection = getConnection(1);
 
         // test data
         final byte[] data = new byte[] { 1, 2, 3 };
@@ -174,8 +174,8 @@ public class Socks5ByteStreamTest extends SmackTestCase {
 
         assertFalse(Socks5Proxy.getSocks5Proxy().isRunning());
 
-        Connection initiatorConnection = getConnection(0);
-        Connection targetConnection = getConnection(1);
+        XMPPConnection initiatorConnection = getConnection(0);
+        XMPPConnection targetConnection = getConnection(1);
 
         // test data
         final byte[] data = new byte[] { 1, 2, 3 };
@@ -243,7 +243,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
      */
     public void testBiDirectionalSocks5BytestreamWithRemoteSocks5Proxy() throws Exception {
 
-        Connection initiatorConnection = getConnection(0);
+        XMPPConnection initiatorConnection = getConnection(0);
 
         // disable local socks5 proxy
         SmackConfiguration.setLocalSocks5ProxyEnabled(false);
@@ -251,7 +251,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
 
         assertFalse(Socks5Proxy.getSocks5Proxy().isRunning());
 
-        Connection targetConnection = getConnection(1);
+        XMPPConnection targetConnection = getConnection(1);
 
         // test data
         final byte[] data = new byte[] { 1, 2, 3 };

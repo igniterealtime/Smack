@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -45,7 +45,7 @@ public class MessageEventManager {
     private List<MessageEventNotificationListener> messageEventNotificationListeners = new ArrayList<MessageEventNotificationListener>();
     private List<MessageEventRequestListener> messageEventRequestListeners = new ArrayList<MessageEventRequestListener>();
 
-    private Connection con;
+    private XMPPConnection con;
 
     private PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:event");
     private PacketListener packetListener;
@@ -53,9 +53,9 @@ public class MessageEventManager {
     /**
      * Creates a new message event manager.
      *
-     * @param con a Connection to a XMPP server.
+     * @param con a XMPPConnection to a XMPP server.
      */
-    public MessageEventManager(Connection con) {
+    public MessageEventManager(XMPPConnection con) {
         this.con = con;
         init();
     }

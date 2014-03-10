@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -66,7 +66,7 @@ public class Socks5ByteStreamManagerTest {
     Protocol protocol;
 
     // mocked XMPP connection
-    Connection connection;
+    XMPPConnection connection;
 
     /**
      * Initialize fields used in the tests.
@@ -84,15 +84,15 @@ public class Socks5ByteStreamManagerTest {
     }
 
     /**
-     * Test that {@link Socks5BytestreamManager#getBytestreamManager(Connection)} returns one
+     * Test that {@link Socks5BytestreamManager#getBytestreamManager(XMPPConnection)} returns one
      * bytestream manager for every connection
      */
     @Test
     public void shouldHaveOneManagerForEveryConnection() {
 
         // mock two connections
-        Connection connection1 = mock(Connection.class);
-        Connection connection2 = mock(Connection.class);
+        XMPPConnection connection1 = mock(XMPPConnection.class);
+        XMPPConnection connection2 = mock(XMPPConnection.class);
 
         /*
          * create service discovery managers for the connections because the

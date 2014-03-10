@@ -36,7 +36,7 @@ import org.jivesoftware.smack.util.StringUtils;
 public class RosterGroup {
 
     private String name;
-    private Connection connection;
+    private XMPPConnection connection;
     private final Set<RosterEntry> entries;
 
     /**
@@ -45,7 +45,7 @@ public class RosterGroup {
      * @param name the name of the group.
      * @param connection the connection the group belongs to.
      */
-    RosterGroup(String name, Connection connection) {
+    RosterGroup(String name, XMPPConnection connection) {
         this.name = name;
         this.connection = connection;
         entries = new LinkedHashSet<RosterEntry>();

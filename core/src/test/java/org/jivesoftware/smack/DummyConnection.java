@@ -23,7 +23,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -34,7 +34,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
- * A dummy implementation of {@link Connection}, intended to be used during
+ * A dummy implementation of {@link XMPPConnection}, intended to be used during
  * unit tests.
  * 
  * Instances store any packets that are delivered to be send using the
@@ -49,7 +49,7 @@ import org.jivesoftware.smack.packet.Presence;
  * @see Connection
  * @author Guenther Niess
  */
-public class DummyConnection extends Connection {
+public class DummyConnection extends XMPPConnection {
 
     private boolean authenticated = false;
     private boolean anonymous = false;

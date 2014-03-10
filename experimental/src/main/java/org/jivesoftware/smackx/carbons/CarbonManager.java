@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
@@ -44,12 +44,12 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  */
 public class CarbonManager extends Manager {
 
-    private static Map<Connection, CarbonManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<Connection, CarbonManager>());
+    private static Map<XMPPConnection, CarbonManager> instances =
+            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, CarbonManager>());
 
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
@@ -57,7 +57,7 @@ public class CarbonManager extends Manager {
     
     private volatile boolean enabled_state = false;
 
-    private CarbonManager(Connection connection) {
+    private CarbonManager(XMPPConnection connection) {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(CarbonExtension.NAMESPACE);
@@ -71,7 +71,7 @@ public class CarbonManager extends Manager {
      *
      * @return a CarbonManager instance
      */
-    public static synchronized CarbonManager getInstanceFor(Connection connection) {
+    public static synchronized CarbonManager getInstanceFor(XMPPConnection connection) {
         CarbonManager carbonManager = instances.get(connection);
 
         if (carbonManager == null) {

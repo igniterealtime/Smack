@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -60,7 +60,7 @@ public class Socks5ClientForInitiatorTest {
     Protocol protocol;
 
     // mocked XMPP connection
-    Connection connection;
+    XMPPConnection connection;
 
     /**
      * Initialize fields used in the tests.

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
@@ -47,7 +47,7 @@ public class InitiationListenerTest {
     String proxyAddress = "127.0.0.1";
     String sessionID = "session_id";
 
-    Connection connection;
+    XMPPConnection connection;
     Socks5BytestreamManager byteStreamManager;
     InitiationListener initiationListener;
     Bytestream initBytestream;
@@ -59,7 +59,7 @@ public class InitiationListenerTest {
     public void setup() {
 
         // mock connection
-        connection = mock(Connection.class);
+        connection = mock(XMPPConnection.class);
 
         // create service discovery manager for mocked connection
         ServiceDiscoveryManager.getInstanceFor(connection);

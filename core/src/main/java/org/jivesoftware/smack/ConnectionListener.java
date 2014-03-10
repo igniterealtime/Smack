@@ -19,10 +19,10 @@ package org.jivesoftware.smack;
 
 /**
  * Interface that allows for implementing classes to listen for connection closing
- * and reconnection events. Listeners are registered with Connection objects.
+ * and reconnection events. Listeners are registered with XMPPConnection objects.
  *
- * @see Connection#addConnectionListener
- * @see Connection#removeConnectionListener
+ * @see XMPPConnection#addConnectionListener
+ * @see XMPPConnection#removeConnectionListener
  * 
  * @author Matt Tucker
  */

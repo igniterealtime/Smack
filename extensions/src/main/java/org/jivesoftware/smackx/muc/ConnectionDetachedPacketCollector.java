@@ -25,7 +25,7 @@ import org.jivesoftware.smack.packet.Packet;
 
 /**
  * A variant of the {@link org.jivesoftware.smack.PacketCollector} class
- * that does not force attachment to a <code>Connection</code>
+ * that does not force attachment to a <code>XMPPConnection</code>
  * on creation and no filter is required. Used to collect message
  * packets targeted to a group chat room.
  *

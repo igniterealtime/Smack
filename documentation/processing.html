@@ -27,7 +27,7 @@ A packet listener is used for event style programming, while a packet collector 
 result queue of packets that you can do polling and blocking operations on. So, a packet 
 listener is useful when you want to take some action whenever a packet happens to come in, 
 while a packet collector is useful when you want to wait for a specific packet to 
-arrive. Packet collectors and listeners can be created using an <tt>Connection</tt> instance.<p>
+arrive. Packet collectors and listeners can be created using an <tt>XMPPConnection</tt> instance.<p>
 	
 The <tt>org.jivesoftware.smack.filter.PacketFilter</tt> interface determines which
 specific packets will be delivered to a <tt>PacketCollector</tt> or <tt>PacketListener</tt>.
@@ -42,7 +42,7 @@ listener:<p>
 <font color="gray"><i>// user. We use an AndFilter to combine two other filters.</i></font>
 PacketFilter filter = new AndFilter(new PacketTypeFilter(<b>Message.class</b>), 
         new FromContainsFilter(<font color="green">"mary@jivesoftware.com"</font>));
-<font color="gray"><i>// Assume we've created a Connection name "connection".</i></font>
+<font color="gray"><i>// Assume we've created a XMPPConnection name "connection".</i></font>
 
 <font color="gray"><i>// First, register a packet collector using the filter we created.</i></font>
 PacketCollector myCollector = connection.createPacketCollector(filter);

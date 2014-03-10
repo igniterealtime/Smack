@@ -94,10 +94,10 @@ conn2.connect();
 <p>Note that maximum security will be used when connecting to the server by default (and when possible),
     including use of TLS encryption. The ConnectionConfiguration class provides advanced control
     over the connection created, such as the ability to disable or require encryption. See
-    <a href="connections.html">Connection Management</a> for full details.</p>
+    <a href="connections.html">XMPPConnection Management</a> for full details.</p>
 
 <p>Once you've created a connection, you should login using a username and password
-with the <tt>Connection.login(String username, String password)</tt> method.
+with the <tt>XMPPConnection.login(String username, String password)</tt> method.
 Once you've logged in, you can being chatting with other users by creating
 new <tt>Chat</tt> or <tt>GroupChat</tt> objects.
 
@@ -108,7 +108,7 @@ The roster lets you keep track of the availability (presence) of other users. Us
 can be organized into groups such as "Friends" and "Co-workers", and then you
 discover whether each user is online or offline.<p> 
 
-Retrieve the roster using the <tt>Connection.getRoster()</tt> method. The roster
+Retrieve the roster using the <tt>XMPPConnection.getRoster()</tt> method. The roster
 class allows you to find all the roster entries, the groups they belong to, and the
 current presence status of each entry.
 
@@ -130,7 +130,7 @@ and "out fishing":<p>
 <font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
 Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus(<font color="green">"Gone fishing"</font>);
-<font color="gray"><i>// Send the packet (assume we have a Connection instance called "con").</i></font>
+<font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
 con.sendPacket(presence);
 </pre></div>
 <p>

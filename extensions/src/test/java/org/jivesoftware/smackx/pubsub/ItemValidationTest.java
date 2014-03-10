@@ -45,7 +45,7 @@ public class ItemValidationTest
 	public void setUp() throws Exception
 	{
 		// Uncomment this to enable debug output
-		// Connection.DEBUG_ENABLED = true;
+		// XMPPConnection.DEBUG_ENABLED = true;
 
 		connection = new ThreadedDummyConnection();
 		connection.connect();

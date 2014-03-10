@@ -31,13 +31,13 @@ import org.jivesoftware.smack.util.StringUtils;
 /**
  * Allows creation and management of accounts on an XMPP server.
  *
- * @see Connection#getAccountManager()
+ * @see XMPPConnection#getAccountManager()
  * @author Matt Tucker
  */
 public class AccountManager {
     private static final Logger LOGGER = Logger.getLogger(AccountManager.class.getName());
     
-    private Connection connection;
+    private XMPPConnection connection;
     private Registration info = null;
 
     /**
@@ -53,7 +53,7 @@ public class AccountManager {
      *
      * @param connection a connection to a XMPP server.
      */
-    public AccountManager(Connection connection) {
+    public AccountManager(XMPPConnection connection) {
         this.connection = connection;
     }
 

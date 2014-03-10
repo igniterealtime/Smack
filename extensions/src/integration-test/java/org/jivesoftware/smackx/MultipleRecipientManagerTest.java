@@ -60,7 +60,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         MultipleRecipientManager.send(getConnection(0), message, to, cc, bcc);
 
         Packet message1 = collector1.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 1 never received the message", message1);
+        assertNotNull("XMPPConnection 1 never received the message", message1);
         MultipleRecipientInfo info1 = MultipleRecipientManager.getMultipleRecipientInfo(message1);
         assertNotNull("Message 1 does not contain MultipleRecipientInfo", info1);
         assertFalse("Message 1 should be 'replyable'", info1.shouldNotReply());
@@ -74,7 +74,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         assertEquals("Incorrect CC address", getBareJID(2), address1);
 
         Packet message2 = collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 2 never received the message", message2);
+        assertNotNull("XMPPConnection 2 never received the message", message2);
         MultipleRecipientInfo info2 = MultipleRecipientManager.getMultipleRecipientInfo(message2);
         assertNotNull("Message 2 does not contain MultipleRecipientInfo", info2);
         assertFalse("Message 2 should be 'replyable'", info2.shouldNotReply());
@@ -88,7 +88,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         assertEquals("Incorrect CC address", getBareJID(2), address2);
 
         Packet message3 = collector3.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 3 never received the message", message3);
+        assertNotNull("XMPPConnection 3 never received the message", message3);
         MultipleRecipientInfo info3 = MultipleRecipientManager.getMultipleRecipientInfo(message3);
         assertNotNull("Message 3 does not contain MultipleRecipientInfo", info3);
         assertFalse("Message 3 should be 'replyable'", info3.shouldNotReply());
@@ -130,7 +130,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         // Get the message and ensure it's ok
         Message message1 =
                 (Message) collector1.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 1 never received the message", message1);
+        assertNotNull("XMPPConnection 1 never received the message", message1);
         MultipleRecipientInfo info = MultipleRecipientManager.getMultipleRecipientInfo(message1);
         assertNotNull("Message 1 does not contain MultipleRecipientInfo", info);
         assertFalse("Message 1 should be 'replyable'", info.shouldNotReply());
@@ -144,7 +144,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
 
         // Get the reply and ensure it's ok
         reply1 = (Message) collector0.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 0 never received the reply", reply1);
+        assertNotNull("XMPPConnection 0 never received the reply", reply1);
         info = MultipleRecipientManager.getMultipleRecipientInfo(reply1);
         assertNotNull("Replied message does not contain MultipleRecipientInfo", info);
         assertFalse("Replied message should be 'replyable'", info.shouldNotReply());
@@ -159,7 +159,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
 
         // Get the reply and ensure it's ok
         reply2 = (Message) collector1.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 1 never received the reply", reply2);
+        assertNotNull("XMPPConnection 1 never received the reply", reply2);
         info = MultipleRecipientManager.getMultipleRecipientInfo(reply2);
         assertNotNull("Replied message does not contain MultipleRecipientInfo", info);
         assertFalse("Replied message should be 'replyable'", info.shouldNotReply());
@@ -168,19 +168,19 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
 
         // Check that connection2 recevied 3 messages
         message1 = (Message) collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection2 didn't receive the 1 message", message1);
+        assertNotNull("XMPPConnection2 didn't receive the 1 message", message1);
         message1 = (Message) collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection2 didn't receive the 2 message", message1);
+        assertNotNull("XMPPConnection2 didn't receive the 2 message", message1);
         message1 = (Message) collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection2 didn't receive the 3 message", message1);
+        assertNotNull("XMPPConnection2 didn't receive the 3 message", message1);
         message1 = (Message) collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNull("Connection2 received 4 messages", message1);
+        assertNull("XMPPConnection2 received 4 messages", message1);
 
         // Check that connection3 recevied only 1 message (was BCC in the first message)
         message1 = (Message) collector3.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection3 didn't receive the 1 message", message1);
+        assertNotNull("XMPPConnection3 didn't receive the 1 message", message1);
         message1 = (Message) collector3.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNull("Connection2 received 2 messages", message1);
+        assertNull("XMPPConnection2 received 2 messages", message1);
 
         collector0.cancel();
         collector1.cancel();
@@ -210,7 +210,7 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
         // Get the message and ensure it's ok
         Message message1 =
                 (Message) collector1.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection 1 never received the message", message1);
+        assertNotNull("XMPPConnection 1 never received the message", message1);
         MultipleRecipientInfo info = MultipleRecipientManager.getMultipleRecipientInfo(message1);
         assertNotNull("Message 1 does not contain MultipleRecipientInfo", info);
         assertTrue("Message 1 should be not 'replyable'", info.shouldNotReply());
@@ -230,15 +230,15 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
 
         // Check that connection2 recevied 1 messages
         message1 = (Message) collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection2 didn't receive the 1 message", message1);
+        assertNotNull("XMPPConnection2 didn't receive the 1 message", message1);
         message1 = (Message) collector2.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNull("Connection2 received 2 messages", message1);
+        assertNull("XMPPConnection2 received 2 messages", message1);
 
         // Check that connection3 recevied only 1 message (was BCC in the first message)
         message1 = (Message) collector3.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNotNull("Connection3 didn't receive the 1 message", message1);
+        assertNotNull("XMPPConnection3 didn't receive the 1 message", message1);
         message1 = (Message) collector3.nextResult(SmackConfiguration.getPacketReplyTimeout());
-        assertNull("Connection2 received 2 messages", message1);
+        assertNull("XMPPConnection2 received 2 messages", message1);
 
         collector1.cancel();
         collector2.cancel();

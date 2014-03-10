@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.TimeoutException;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -37,7 +37,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 class Socks5ClientForInitiator extends Socks5Client {
 
     /* the XMPP connection used to communicate with the SOCKS5 proxy */
-    private Connection connection;
+    private XMPPConnection connection;
 
     /* the session ID used to activate SOCKS5 stream */
     private String sessionID;
@@ -54,7 +54,7 @@ class Socks5ClientForInitiator extends Socks5Client {
      * @param sessionID the session ID of the SOCKS5 Bytestream
      * @param target the target JID of the SOCKS5 Bytestream
      */
-    public Socks5ClientForInitiator(StreamHost streamHost, String digest, Connection connection,
+    public Socks5ClientForInitiator(StreamHost streamHost, String digest, XMPPConnection connection,
                     String sessionID, String target) {
         super(streamHost, digest);
         this.connection = connection;

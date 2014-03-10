@@ -31,7 +31,7 @@ public class FileTransferNegotiatorTest {
     @Before
     public void setUp() throws Exception {
         // Uncomment this to enable debug output
-        // Connection.DEBUG_ENABLED = true;
+        // XMPPConnection.DEBUG_ENABLED = true;
 
         connection = new DummyConnection();
         connection.connect();

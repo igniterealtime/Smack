@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.offline;
 
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
@@ -58,11 +58,11 @@ public class OfflineMessageManager {
 
     private final static String namespace = "http://jabber.org/protocol/offline";
 
-    private Connection connection;
+    private XMPPConnection connection;
 
     private PacketFilter packetFilter;
 
-    public OfflineMessageManager(Connection connection) {
+    public OfflineMessageManager(XMPPConnection connection) {
         this.connection = connection;
         packetFilter =
                 new AndFilter(new PacketExtensionFilter("offline", namespace),

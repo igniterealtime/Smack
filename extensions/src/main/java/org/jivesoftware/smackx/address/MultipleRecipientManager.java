@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.address;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -68,7 +68,7 @@ public class MultipleRecipientManager {
      * @throws XMPPException if server does not support JEP-33: Extended Stanza Addressing and
      *                       some JEP-33 specific features were requested.
      */
-    public static void send(Connection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc)
+    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc)
             throws XMPPException {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
@@ -96,7 +96,7 @@ public class MultipleRecipientManager {
      * @throws XMPPException if server does not support JEP-33: Extended Stanza Addressing and
      *                       some JEP-33 specific features were requested.
      */
-    public static void send(Connection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc,
+    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc,
             String replyTo, String replyRoom, boolean noReply) throws XMPPException {
         String serviceAddress = getMultipleRecipienServiceAddress(connection);
         if (serviceAddress != null) {
@@ -128,7 +128,7 @@ public class MultipleRecipientManager {
      * @throws XMPPException if the original message was not sent to multiple recipients, or the
      *                       original message cannot be replied or reply should be sent to a room.
      */
-    public static void reply(Connection connection, Message original, Message reply)
+    public static void reply(XMPPConnection connection, Message original, Message reply)
             throws XMPPException {
         MultipleRecipientInfo info = getMultipleRecipientInfo(original);
         if (info == null) {
@@ -202,7 +202,7 @@ public class MultipleRecipientManager {
         return extension == null ? null : new MultipleRecipientInfo(extension);
     }
 
-    private static void sendToIndividualRecipients(Connection connection, Packet packet,
+    private static void sendToIndividualRecipients(XMPPConnection connection, Packet packet,
             List<String> to, List<String> cc, List<String> bcc) {
         if (to != null) {
             for (Iterator<String> it = to.iterator(); it.hasNext();) {
@@ -227,7 +227,7 @@ public class MultipleRecipientManager {
         }
     }
 
-    private static void sendThroughService(Connection connection, Packet packet, List<String> to,
+    private static void sendThroughService(XMPPConnection connection, Packet packet, List<String> to,
             List<String> cc, List<String> bcc, String replyTo, String replyRoom, boolean noReply,
             String serviceAddress) {
         // Create multiple recipient extension
@@ -281,7 +281,7 @@ public class MultipleRecipientManager {
      *                   queried.
      * @return the address of the multiple recipients service or <tt>null</tt> if none was found.
      */
-    private static String getMultipleRecipienServiceAddress(Connection connection) {
+    private static String getMultipleRecipienServiceAddress(XMPPConnection connection) {
         String serviceName = connection.getServiceName();
         String serviceAddress = (String) services.get(serviceName);
         if (serviceAddress == null) {

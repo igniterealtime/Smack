@@ -40,7 +40,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -80,10 +80,10 @@ public class MultiUserChat {
     private final static String discoNamespace = "http://jabber.org/protocol/muc";
     private final static String discoNode = "http://jabber.org/protocol/muc#rooms";
 
-    private static Map<Connection, List<String>> joinedRooms =
-            new WeakHashMap<Connection, List<String>>();
+    private static Map<XMPPConnection, List<String>> joinedRooms =
+            new WeakHashMap<XMPPConnection, List<String>>();
 
-    private Connection connection;
+    private XMPPConnection connection;
     private String room;
     private String subject;
     private String nickname = null;
@@ -107,8 +107,8 @@ public class MultiUserChat {
     private List<PacketListener> connectionListeners = new ArrayList<PacketListener>();
 
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(final Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(final XMPPConnection connection) {
                 // Set on every established connection that this client supports the Multi-User
                 // Chat protocol. This information will be used when another client tries to
                 // discover whether this client supports MUC or not.
@@ -116,12 +116,12 @@ public class MultiUserChat {
 
                 // Set the NodeInformationProvider that will provide information about the
                 // joined rooms whenever a disco request is received
-                final WeakReference<Connection> weakRefConnection = new WeakReference<Connection>(connection);
+                final WeakReference<XMPPConnection> weakRefConnection = new WeakReference<XMPPConnection>(connection);
                 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
                     discoNode,
                     new NodeInformationProvider() {
                         public List<DiscoverItems.Item> getNodeItems() {
-                            Connection connection = weakRefConnection.get();
+                            XMPPConnection connection = weakRefConnection.get();
                             if (connection == null) return new LinkedList<DiscoverItems.Item>();
                             List<DiscoverItems.Item> answer = new ArrayList<DiscoverItems.Item>();
                             Iterator<String> rooms=MultiUserChat.getJoinedRooms(connection);
@@ -163,7 +163,7 @@ public class MultiUserChat {
      *      "service" is the hostname at which the multi-user chat
      *      service is running. Make sure to provide a valid JID.
      */
-    public MultiUserChat(Connection connection, String room) {
+    public MultiUserChat(XMPPConnection connection, String room) {
         this.connection = connection;
         this.room = room.toLowerCase();
         init();
@@ -176,7 +176,7 @@ public class MultiUserChat {
      * @param user the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com.
      * @return a boolean indicating whether the specified user supports the MUC protocol.
      */
-    public static boolean isServiceEnabled(Connection connection, String user) {
+    public static boolean isServiceEnabled(XMPPConnection connection, String user) {
         try {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(user);
@@ -196,7 +196,7 @@ public class MultiUserChat {
      * @param connection the connection used to join the rooms.
      * @return an Iterator on the rooms where the user has joined using a given connection.
      */
-    private static Iterator<String> getJoinedRooms(Connection connection) {
+    private static Iterator<String> getJoinedRooms(XMPPConnection connection) {
         List<String> rooms = joinedRooms.get(connection);
         if (rooms != null) {
             return rooms.iterator();
@@ -213,7 +213,7 @@ public class MultiUserChat {
      * @param user the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com.
      * @return an Iterator on the rooms where the requested user has joined.
      */
-    public static Iterator<String> getJoinedRooms(Connection connection, String user) {
+    public static Iterator<String> getJoinedRooms(XMPPConnection connection, String user) {
         try {
             ArrayList<String> answer = new ArrayList<String>();
             // Send the disco packet to the user
@@ -242,7 +242,7 @@ public class MultiUserChat {
      * @return the discovered information of a given room without actually having to join the room.
      * @throws XMPPException if an error occured while trying to discover information of a room.
      */
-    public static RoomInfo getRoomInfo(Connection connection, String room)
+    public static RoomInfo getRoomInfo(XMPPConnection connection, String room)
             throws XMPPException {
         DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(room);
         return new RoomInfo(info);
@@ -255,7 +255,7 @@ public class MultiUserChat {
      * @return a collection with the XMPP addresses of the Multi-User Chat services.
      * @throws XMPPException if an error occured while trying to discover MUC services.
      */
-    public static Collection<String> getServiceNames(Connection connection) throws XMPPException {
+    public static Collection<String> getServiceNames(XMPPConnection connection) throws XMPPException {
         final List<String> answer = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
         DiscoverItems items = discoManager.discoverItems(connection.getServiceName());
@@ -285,7 +285,7 @@ public class MultiUserChat {
      * @return a collection of HostedRooms.
      * @throws XMPPException if an error occured while trying to discover the information.
      */
-    public static Collection<HostedRoom> getHostedRooms(Connection connection, String serviceName)
+    public static Collection<HostedRoom> getHostedRooms(XMPPConnection connection, String serviceName)
             throws XMPPException {
         List<HostedRoom> answer = new ArrayList<HostedRoom>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
@@ -689,7 +689,7 @@ public class MultiUserChat {
      * @param inviter the inviter of the declined invitation.
      * @param reason the reason why the invitee is declining the invitation.
      */
-    public static void decline(Connection conn, String room, String inviter, String reason) {
+    public static void decline(XMPPConnection conn, String room, String inviter, String reason) {
         Message message = new Message(room);
 
         // Create the MUCUser packet that will include the rejection
@@ -711,7 +711,7 @@ public class MultiUserChat {
      * @param conn the connection where the listener will be applied.
      * @param listener an invitation listener.
      */
-    public static void addInvitationListener(Connection conn, InvitationListener listener) {
+    public static void addInvitationListener(XMPPConnection conn, InvitationListener listener) {
         InvitationsMonitor.getInvitationsMonitor(conn).addInvitationListener(listener);
     }
 
@@ -722,7 +722,7 @@ public class MultiUserChat {
      * @param conn the connection where the listener was applied.
      * @param listener an invitation listener.
      */
-    public static void removeInvitationListener(Connection conn, InvitationListener listener) {
+    public static void removeInvitationListener(XMPPConnection conn, InvitationListener listener) {
         InvitationsMonitor.getInvitationsMonitor(conn).removeInvitationListener(listener);
     }
 
@@ -1661,7 +1661,7 @@ public class MultiUserChat {
      * group chat. Only "group chat" messages addressed to this group chat will
      * be delivered to the listener. If you wish to listen for other packets
      * that may be associated with this group chat, you should register a
-     * PacketListener directly with the Connection with the appropriate
+     * PacketListener directly with the XMPPConnection with the appropriate
      * PacketListener.
      *
      * @param listener a packet listener.
@@ -2310,17 +2310,17 @@ public class MultiUserChat {
         // We use a WeakHashMap so that the GC can collect the monitor when the
         // connection is no longer referenced by any object.
         // Note that when the InvitationsMonitor is used, i.e. when there are InvitationListeners, it will add a
-        // PacketListener to the Connection and therefore a strong reference from the Connection to the
+        // PacketListener to the XMPPConnection and therefore a strong reference from the XMPPConnection to the
         // InvitationsMonior will exists, preventing it from beeing gc'ed. After the last InvitationListener is gone,
         // the PacketListener will get removed (cancel()) allowing the garbage collection of the InvitationsMonitor
         // instance.
-        private final static Map<Connection, WeakReference<InvitationsMonitor>> monitors =
-                new WeakHashMap<Connection, WeakReference<InvitationsMonitor>>();
+        private final static Map<XMPPConnection, WeakReference<InvitationsMonitor>> monitors =
+                new WeakHashMap<XMPPConnection, WeakReference<InvitationsMonitor>>();
 
         // We don't use a synchronized List here because it would break the semantic of (add|remove)InvitationListener
         private final List<InvitationListener> invitationsListeners =
                 new ArrayList<InvitationListener>();
-        private Connection connection;
+        private XMPPConnection connection;
         private PacketFilter invitationFilter;
         private PacketListener invitationPacketListener;
 
@@ -2330,7 +2330,7 @@ public class MultiUserChat {
          * @param conn the connection to monitor for room invitations.
          * @return a new or existing InvitationsMonitor for a given connection.
          */
-        public static InvitationsMonitor getInvitationsMonitor(Connection conn) {
+        public static InvitationsMonitor getInvitationsMonitor(XMPPConnection conn) {
             synchronized (monitors) {
                 if (!monitors.containsKey(conn) || monitors.get(conn).get() == null) {
                     // We need to use a WeakReference because the monitor references the
@@ -2351,7 +2351,7 @@ public class MultiUserChat {
          * 
          * @param connection the connection to monitor for possible room invitations
          */
-        private InvitationsMonitor(Connection connection) {
+        private InvitationsMonitor(XMPPConnection connection) {
             this.connection = connection;
         }
 

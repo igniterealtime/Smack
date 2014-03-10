@@ -33,7 +33,7 @@ import java.util.List;
  * See the following code sample for saving Bookmarks:
  * <p/>
  * <pre>
- * Connection con = new TCPConnection("jabber.org");
+ * XMPPConnection con = new TCPConnection("jabber.org");
  * con.login("john", "doe");
  * Bookmarks bookmarks = new Bookmarks();
  * <p/>

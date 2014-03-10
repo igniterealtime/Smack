@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.filetransfer;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -45,7 +45,7 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
  */
 public class IBBTransferNegotiator extends StreamNegotiator {
 
-    private Connection connection;
+    private XMPPConnection connection;
 
     private InBandBytestreamManager manager;
 
@@ -54,7 +54,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
      * 
      * @param connection The connection which this negotiator works on.
      */
-    protected IBBTransferNegotiator(Connection connection) {
+    protected IBBTransferNegotiator(XMPPConnection connection) {
         this.connection = connection;
         this.manager = InBandBytestreamManager.getByteStreamManager(connection);
     }

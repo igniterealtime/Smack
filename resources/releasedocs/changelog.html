@@ -182,10 +182,10 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-457'>SMACK-457</a>] - Remove unnecessary printStackTrace() in XMPPConnection</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-460'>SMACK-460</a>] - ServiceDiscoveryManager should not use the constructor in connectionCreated()</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-461'>SMACK-461</a>] - Remove incorrect deprecated marker for DiscoverInfo.Identity.setType()</li>
-	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-464'>SMACK-464</a>] - Make it clear that PacketListener&#39;s added with Connection.addPacketListener() are only for received packets</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-464'>SMACK-464</a>] - Make it clear that PacketListener&#39;s added with XMPPConnection.addPacketListener() are only for received packets</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-534'>SMACK-534</a>] - Convert all System.out and printStackTrace calls to use Java util logging.</li>
-	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-339'>SMACK-339</a>] - Allow ConnectionListeners to be added before Connection is connected.  Currently throws exception</li>
-	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-373'>SMACK-373</a>] - Don&#39;t remove listeners after a disconnect() , keep state of Connection between disconnect() and connect()/login()</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-339'>SMACK-339</a>] - Allow ConnectionListeners to be added before XMPPConnection is connected.  Currently throws exception</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-373'>SMACK-373</a>] - Don&#39;t remove listeners after a disconnect() , keep state of XMPPConnection between disconnect() and connect()/login()</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-434'>SMACK-434</a>] - Create a project to contain non production ready implementations of specifications</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-526'>SMACK-526</a>] - Deprecate all PEP related classes.</li>
 </ul>
@@ -346,7 +346,7 @@ hr {
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-269'>SMACK-269</a>] - Smack 3.1.0 creates a new chat for every incoming message</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-271'>SMACK-271</a>] - Deadlock in XMPPConnection while login and parsing stream features</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-275'>SMACK-275</a>] - Patch: Fix for broken SASL DIGEST-MD5 implementation</li>
-	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-280'>SMACK-280</a>] - The authentification should use the Connection#sendPacket method and work transparent with packets and packet listeners.</li>
+	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-280'>SMACK-280</a>] - The authentification should use the XMPPConnection#sendPacket method and work transparent with packets and packet listeners.</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-288'>SMACK-288</a>] - The parsing of the result for a LeafNode.getItems() call is incorrect.  It creates a DefaultPacketExtension instead of an Item for every other item in the result.</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-290'>SMACK-290</a>] - Deadlock while getting Roster before it&#39;s initialized</li>
 	<li>[<a href='http://issues.igniterealtime.org/browse/SMACK-291'>SMACK-291</a>] - RosterGroup modifications should depend on roster push</li>

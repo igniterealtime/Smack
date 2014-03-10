@@ -25,7 +25,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -56,29 +56,29 @@ public class PingManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
 
-    private static final Map<Connection, PingManager> INSTANCES = Collections
-            .synchronizedMap(new WeakHashMap<Connection, PingManager>());
+    private static final Map<XMPPConnection, PingManager> INSTANCES = Collections
+            .synchronizedMap(new WeakHashMap<XMPPConnection, PingManager>());
 
     private static final PacketFilter PING_PACKET_FILTER = new AndFilter(
                     new PacketTypeFilter(Ping.class), new IQTypeFilter(Type.GET));
 
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
     }
 
     /**
-     * Retrieves a {@link PingManager} for the specified {@link Connection}, creating one if it doesn't already
+     * Retrieves a {@link PingManager} for the specified {@link XMPPConnection}, creating one if it doesn't already
      * exist.
      * 
      * @param connection
      * The connection the manager is attached to.
      * @return The new or existing manager.
      */
-    public synchronized static PingManager getInstanceFor(Connection connection) {
+    public synchronized static PingManager getInstanceFor(XMPPConnection connection) {
         PingManager pingManager = INSTANCES.get(connection);
         if (pingManager == null) {
             pingManager = new PingManager(connection);
@@ -117,7 +117,7 @@ public class PingManager extends Manager {
      */
     private long lastSuccessfulManualPing = -1;
 
-    private PingManager(Connection connection) {
+    private PingManager(XMPPConnection connection) {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(PingManager.NAMESPACE);
@@ -308,7 +308,7 @@ public class PingManager extends Manager {
 
         public void run() {
             LOGGER.fine("ServerPingTask run()");
-            Connection connection = connection();
+            XMPPConnection connection = connection();
             if (connection == null) {
                 // connection has been collected by GC
                 // which means we can stop the thread by breaking the loop
@@ -344,7 +344,7 @@ public class PingManager extends Manager {
                     maybeSchedulePingServerTask();
                 }
             } else {
-                LOGGER.warning("ServerPingTask: Connection was not authenticated");
+                LOGGER.warning("ServerPingTask: XMPPConnection was not authenticated");
             }
         }
     };

@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.Connection.ListenerWrapper;
+import org.jivesoftware.smack.XMPPConnection.ListenerWrapper;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
@@ -38,8 +38,8 @@ import java.util.logging.Logger;
  * Listens for XML traffic from the XMPP server and parses it into packet objects.
  * The packet reader also invokes all packet listeners and collectors.<p>
  *
- * @see Connection#createPacketCollector
- * @see Connection#addPacketListener
+ * @see XMPPConnection#createPacketCollector
+ * @see XMPPConnection#addPacketListener
  * @author Matt Tucker
  */
 class PacketReader {
@@ -115,7 +115,7 @@ class PacketReader {
             // Ignore.
         }
         if (connectionID == null) {
-            throw new XMPPException("Connection failed. No response from server.");
+            throw new XMPPException("XMPPConnection failed. No response from server.");
         }
         else {
             connection.connectionID = connectionID;

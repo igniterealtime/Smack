@@ -60,7 +60,7 @@ import org.jivesoftware.smack.packet.Packet;
  *   // create protocol
  *   Protocol protocol = new Protocol();
  *   // create mocked connection
- *   Connection connection = ConnectionUtils.createMockedConnection(protocol, "user@xmpp-server", "xmpp-server");
+ *   XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, "user@xmpp-server", "xmpp-server");
  *   
  *   // add reply packet to protocol
  *   Packet reply = new Packet();

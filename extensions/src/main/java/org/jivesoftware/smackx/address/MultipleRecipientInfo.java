@@ -71,7 +71,7 @@ public class MultipleRecipientInfo {
 
     /**
      * Returns true if the received packet should not be replied. Use
-     * {@link MultipleRecipientManager#reply(org.jivesoftware.smack.Connection, org.jivesoftware.smack.packet.Message, org.jivesoftware.smack.packet.Message)}
+     * {@link MultipleRecipientManager#reply(org.jivesoftware.smack.XMPPConnection, org.jivesoftware.smack.packet.Message, org.jivesoftware.smack.packet.Message)}
      * to send replies. 
      *
      * @return true if the received packet should not be replied.

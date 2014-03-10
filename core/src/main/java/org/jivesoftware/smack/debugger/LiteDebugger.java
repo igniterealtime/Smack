@@ -39,7 +39,7 @@ public class LiteDebugger implements SmackDebugger {
     private static final String NEWLINE = "\n";
 
     private JFrame frame = null;
-    private Connection connection = null;
+    private XMPPConnection connection = null;
 
     private PacketListener listener = null;
 
@@ -48,7 +48,7 @@ public class LiteDebugger implements SmackDebugger {
     private ReaderListener readerListener;
     private WriterListener writerListener;
 
-    public LiteDebugger(Connection connection, Writer writer, Reader reader) {
+    public LiteDebugger(XMPPConnection connection, Writer writer, Reader reader) {
         this.connection = connection;
         this.writer = writer;
         this.reader = reader;

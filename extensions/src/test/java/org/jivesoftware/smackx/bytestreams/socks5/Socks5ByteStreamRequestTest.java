@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -55,7 +55,7 @@ public class Socks5ByteStreamRequestTest {
 
     Protocol protocol;
 
-    Connection connection;
+    XMPPConnection connection;
 
     /**
      * Initialize fields used in the tests.

@@ -108,9 +108,9 @@ public class ChatManager {
     private Map<PacketInterceptor, PacketFilter> interceptors
             = new WeakHashMap<PacketInterceptor, PacketFilter>();
 
-    private Connection connection;
+    private XMPPConnection connection;
 
-    ChatManager(Connection connection) {
+    ChatManager(XMPPConnection connection) {
         this.connection = connection;
 
         PacketFilter filter = new PacketFilter() {

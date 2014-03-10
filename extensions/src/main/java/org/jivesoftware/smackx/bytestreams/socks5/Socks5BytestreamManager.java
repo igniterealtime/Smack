@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
@@ -89,9 +89,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * connection
      */
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
 
-            public void connectionCreated(final Connection connection) {
+            public void connectionCreated(final XMPPConnection connection) {
                 // create the manager for this connection
                 Socks5BytestreamManager.getBytestreamManager(connection);
 
@@ -132,10 +132,10 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     private final static Random randomGenerator = new Random();
 
     /* stores one Socks5BytestreamManager for each XMPP connection */
-    private final static Map<Connection, Socks5BytestreamManager> managers = new HashMap<Connection, Socks5BytestreamManager>();
+    private final static Map<XMPPConnection, Socks5BytestreamManager> managers = new HashMap<XMPPConnection, Socks5BytestreamManager>();
 
     /* XMPP connection */
-    private final Connection connection;
+    private final XMPPConnection connection;
 
     /*
      * assigns a user to a listener that is informed if a bytestream request for this user is
@@ -175,7 +175,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
 
     /**
      * Returns the Socks5BytestreamManager to handle SOCKS5 Bytestreams for a given
-     * {@link Connection}.
+     * {@link XMPPConnection}.
      * <p>
      * If no manager exists a new is created and initialized.
      * 
@@ -183,7 +183,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      *        <code>null</code>
      * @return the Socks5BytestreamManager for the given XMPP connection
      */
-    public static synchronized Socks5BytestreamManager getBytestreamManager(Connection connection) {
+    public static synchronized Socks5BytestreamManager getBytestreamManager(XMPPConnection connection) {
         if (connection == null) {
             return null;
         }
@@ -201,7 +201,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * 
      * @param connection the XMPP connection
      */
-    private Socks5BytestreamManager(Connection connection) {
+    private Socks5BytestreamManager(XMPPConnection connection) {
         this.connection = connection;
         this.initiationListener = new InitiationListener(this);
     }
@@ -284,7 +284,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * service discovery, disabling the listener for SOCKS5 Bytestream initiation requests and
      * resetting its internal state, which includes removing this instance from the managers map.
      * <p>
-     * To re-enable the SOCKS5 Bytestream feature invoke {@link #getBytestreamManager(Connection)}.
+     * To re-enable the SOCKS5 Bytestream feature invoke {@link #getBytestreamManager(XMPPConnection)}.
      * Using the file transfer API will automatically re-enable the SOCKS5 Bytestream feature.
      */
     public synchronized void disableService() {
@@ -745,7 +745,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * 
      * @return the XMPP connection
      */
-    protected Connection getConnection() {
+    protected XMPPConnection getConnection() {
         return this.connection;
     }
 

@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
@@ -508,15 +508,15 @@ public class VCard extends IQ {
     }
 
     /**
-     * Save this vCard for the user connected by 'connection'. Connection should be authenticated
+     * Save this vCard for the user connected by 'connection'. XMPPConnection should be authenticated
      * and not anonymous.<p>
      * <p/>
      * NOTE: the method is asynchronous and does not wait for the returned value.
      *
-     * @param connection the Connection to use.
+     * @param connection the XMPPConnection to use.
      * @throws XMPPException thrown if there was an issue setting the VCard in the server.
      */
-    public void save(Connection connection) throws XMPPException {
+    public void save(XMPPConnection connection) throws XMPPException {
         checkAuthenticated(connection, true);
 
         setType(IQ.Type.SET);
@@ -525,10 +525,10 @@ public class VCard extends IQ {
     }
 
     /**
-     * Load VCard information for a connected user. Connection should be authenticated
+     * Load VCard information for a connected user. XMPPConnection should be authenticated
      * and not anonymous.
      */
-    public void load(Connection connection) throws XMPPException {
+    public void load(XMPPConnection connection) throws XMPPException {
         checkAuthenticated(connection, true);
 
         setFrom(connection.getUser());
@@ -536,16 +536,16 @@ public class VCard extends IQ {
     }
 
     /**
-     * Load VCard information for a given user. Connection should be authenticated and not anonymous.
+     * Load VCard information for a given user. XMPPConnection should be authenticated and not anonymous.
      */
-    public void load(Connection connection, String user) throws XMPPException {
+    public void load(XMPPConnection connection, String user) throws XMPPException {
         checkAuthenticated(connection, false);
 
         setTo(user);
         doLoad(connection, user);
     }
 
-    private void doLoad(Connection connection, String user) throws XMPPException {
+    private void doLoad(XMPPConnection connection, String user) throws XMPPException {
         setType(Type.GET);
         VCard result = (VCard) connection.createPacketCollectorAndSend(this).nextResultOrThrow();
         copyFieldsFrom(result);
@@ -573,15 +573,15 @@ public class VCard extends IQ {
         }
     }
 
-    private void checkAuthenticated(Connection connection, boolean checkForAnonymous) {
+    private void checkAuthenticated(XMPPConnection connection, boolean checkForAnonymous) {
         if (connection == null) {
             throw new IllegalArgumentException("No connection was provided");
         }
         if (!connection.isAuthenticated()) {
-            throw new IllegalArgumentException("Connection is not authenticated");
+            throw new IllegalArgumentException("XMPPConnection is not authenticated");
         }
         if (checkForAnonymous && connection.isAnonymous()) {
-            throw new IllegalArgumentException("Connection cannot be anonymous");
+            throw new IllegalArgumentException("XMPPConnection cannot be anonymous");
         }
     }
 

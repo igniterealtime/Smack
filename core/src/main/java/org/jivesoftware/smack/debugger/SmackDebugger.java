@@ -26,7 +26,7 @@ import org.jivesoftware.smack.*;
  * displays XML traffic.<p>
  * 
  * Every implementation of this interface <b>must</b> have a public constructor with the following 
- * arguments: Connection, Writer, Reader.
+ * arguments: XMPPConnection, Writer, Reader.
  * 
  * @author Gaston Dombiak
  */

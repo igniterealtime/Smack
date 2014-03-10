@@ -29,7 +29,7 @@ A chat creates a new thread of messages (using a thread ID) between two users. T
 following code snippet demonstrates how to create a new Chat with a user and then send
 them a text message:<p>
 
-<div class="code"><pre><font color="gray"><i>// Assume we've created a Connection name "connection".</i></font>
+<div class="code"><pre><font color="gray"><i>// Assume we've created a XMPPConnection name "connection".</i></font>
 ChatManager chatmanager = connection.getChatManager();
 Chat newChat = chatmanager.createChat(<font
         color="green">"jsmith@jivesoftware.com"</font>, new MessageListener() {
@@ -98,7 +98,7 @@ will create a new one that does match.  To get this new chat, you have to regist
 notified when it happens.  You can register a message listener to receive all future messages as
 part of this handler.<p>
 
-<div class="code"><pre><font color="gray"><i>// Assume we've created a Connection name "connection".</i></font>
+<div class="code"><pre><font color="gray"><i>// Assume we've created a XMPPConnection name "connection".</i></font>
 ChatManager chatmanager = connection.getChatManager().addChatListener(
     new ChatManagerListener() {
         @Override

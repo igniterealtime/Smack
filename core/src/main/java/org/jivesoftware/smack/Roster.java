@@ -52,7 +52,7 @@ import org.jivesoftware.smack.util.StringUtils;
  * </ul>
  *
  * @author Matt Tucker
- * @see Connection#getRoster()
+ * @see XMPPConnection#getRoster()
  */
 public class Roster {
 
@@ -62,7 +62,7 @@ public class Roster {
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
-    private final Connection connection;
+    private final XMPPConnection connection;
     private final RosterStore rosterStore;
     private final Map<String, RosterGroup> groups;
     private final Map<String,RosterEntry> entries;
@@ -105,7 +105,7 @@ public class Roster {
      *
      * @param connection an XMPP connection.
      */
-    Roster(final Connection connection) {
+    Roster(final XMPPConnection connection) {
         this.connection = connection;
         rosterStore = connection.getConfiguration().getRosterStore();
         groups = new ConcurrentHashMap<String, RosterGroup>();
@@ -138,9 +138,9 @@ public class Roster {
         
         // if not connected add listener after successful login
         if(!this.connection.isConnected()) {
-            Connection.addConnectionCreationListener(new ConnectionCreationListener() {
+            XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
                 
-                public void connectionCreated(Connection connection) {
+                public void connectionCreated(XMPPConnection connection) {
                     if(connection.equals(Roster.this.connection)) {
                         Roster.this.connection.addConnectionListener(connectionListener);
                     }

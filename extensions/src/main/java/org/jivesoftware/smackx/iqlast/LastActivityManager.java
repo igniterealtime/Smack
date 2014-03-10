@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.iqlast;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
@@ -54,7 +54,7 @@ import org.jivesoftware.smackx.iqlast.packet.LastActivity;
  * <p>
  * 
  * <pre>
- * Connection con = new TCPConnection(&quot;jabber.org&quot;);
+ * XMPPConnection con = new TCPConnection(&quot;jabber.org&quot;);
  * con.login(&quot;john&quot;, &quot;doe&quot;);
  * LastActivity activity = LastActivity.getLastActivity(con, &quot;xray@jabber.org/Smack&quot;);
  * </pre>
@@ -83,12 +83,12 @@ public class LastActivityManager {
 
     private long lastMessageSent;
 
-    private Connection connection;
+    private XMPPConnection connection;
 
     // Enable the LastActivity support on every established connection
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 new LastActivityManager(connection);
             }
         });
@@ -98,9 +98,9 @@ public class LastActivityManager {
      * Creates a last activity manager to response last activity requests.
      * 
      * @param connection
-     *            The Connection that the last activity requests will use.
+     *            The XMPPConnection that the last activity requests will use.
      */
-    private LastActivityManager(Connection connection) {
+    private LastActivityManager(XMPPConnection connection) {
         this.connection = connection;
 
         // Listen to all the sent messages to reset the idle time on each one
@@ -185,14 +185,14 @@ public class LastActivityManager {
      * 'host') the last activity is the uptime.
      * 
      * @param con
-     *            the current Connection.
+     *            the current XMPPConnection.
      * @param jid
      *            the JID of the user.
      * @return the LastActivity packet of the jid.
      * @throws XMPPException
      *             thrown if a server error has occured.
      */
-    public static LastActivity getLastActivity(Connection con, String jid) throws XMPPException {
+    public static LastActivity getLastActivity(XMPPConnection con, String jid) throws XMPPException {
         LastActivity activity = new LastActivity();
         activity.setTo(jid);
 
@@ -207,7 +207,7 @@ public class LastActivityManager {
      * @param jid a JID to be tested for Last Activity support
      * @return true if Last Activity is supported, otherwise false
      */
-    public static boolean isLastActivitySupported(Connection connection, String jid) {
+    public static boolean isLastActivitySupported(XMPPConnection connection, String jid) {
         try {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);

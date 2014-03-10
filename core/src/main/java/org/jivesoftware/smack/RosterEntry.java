@@ -35,7 +35,7 @@ public class RosterEntry {
     private RosterPacket.ItemType type;
     private RosterPacket.ItemStatus status;
     final private Roster roster;
-    final private Connection connection;
+    final private XMPPConnection connection;
 
     /**
      * Creates a new roster entry.
@@ -47,7 +47,7 @@ public class RosterEntry {
      * @param connection a connection to the XMPP server.
      */
     RosterEntry(String user, String name, RosterPacket.ItemType type,
-                RosterPacket.ItemStatus status, Roster roster, Connection connection) {
+                RosterPacket.ItemStatus status, Roster roster, XMPPConnection connection) {
         this.user = user;
         this.name = name;
         this.type = type;

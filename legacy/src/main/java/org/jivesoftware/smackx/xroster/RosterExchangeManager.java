@@ -28,7 +28,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -49,17 +49,17 @@ public class RosterExchangeManager {
     public final static String NAMESPACE = "jabber:x:roster";
     public final static String ELEMENT = "x";
 
-    private final static Map<Connection, RosterExchangeManager> INSTANCES =
-                    Collections.synchronizedMap(new WeakHashMap<Connection, RosterExchangeManager>());
+    private final static Map<XMPPConnection, RosterExchangeManager> INSTANCES =
+                    Collections.synchronizedMap(new WeakHashMap<XMPPConnection, RosterExchangeManager>());
 
     private final static PacketFilter PACKET_FILTER = new PacketExtensionFilter(ELEMENT, NAMESPACE);
 
     private final Set<RosterExchangeListener> rosterExchangeListeners = Collections.synchronizedSet(new HashSet<RosterExchangeListener>());
 
-    private final WeakReference<Connection> weakRefConnection;
+    private final WeakReference<XMPPConnection> weakRefConnection;
     private final PacketListener packetListener;
 
-    public synchronized static RosterExchangeManager getInstanceFor(Connection connection) {
+    public synchronized static RosterExchangeManager getInstanceFor(XMPPConnection connection) {
         RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
         if (rosterExchangeManager == null) {
             rosterExchangeManager = new RosterExchangeManager(connection);
@@ -70,10 +70,10 @@ public class RosterExchangeManager {
     /**
      * Creates a new roster exchange manager.
      *
-     * @param con a Connection which is used to send and receive messages.
+     * @param con a XMPPConnection which is used to send and receive messages.
      */
-    public RosterExchangeManager(Connection connection) {
-        weakRefConnection = new WeakReference<Connection>(connection);
+    public RosterExchangeManager(XMPPConnection connection) {
+        weakRefConnection = new WeakReference<XMPPConnection>(connection);
         // Listens for all roster exchange packets and fire the roster exchange listeners.
         packetListener = new PacketListener() {
             public void processPacket(Packet packet) {
@@ -122,7 +122,7 @@ public class RosterExchangeManager {
         RosterExchange rosterExchange = new RosterExchange(roster);
         msg.addExtension(rosterExchange);
 
-        Connection connection = weakRefConnection.get();
+        XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
         connection.sendPacket(msg);
     }
@@ -141,7 +141,7 @@ public class RosterExchangeManager {
         rosterExchange.addRosterEntry(rosterEntry);
         msg.addExtension(rosterExchange);
 
-        Connection connection = weakRefConnection.get();
+        XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
         connection.sendPacket(msg);
     }
@@ -163,7 +163,7 @@ public class RosterExchangeManager {
         }
         msg.addExtension(rosterExchange);
 
-        Connection connection = weakRefConnection.get();
+        XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
         connection.sendPacket(msg);
     }

@@ -22,7 +22,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketInterceptor;
@@ -38,11 +38,11 @@ import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 /**
- * Handles chat state for all chats on a particular Connection. This class manages both the
+ * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
  * packet extensions and the disco response neccesary for compliance with
  * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
- * NOTE: {@link org.jivesoftware.smackx.chatstates.ChatStateManager#getInstance(org.jivesoftware.smack.Connection)}
+ * NOTE: {@link org.jivesoftware.smackx.chatstates.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
  * needs to be called in order for the listeners to be registered appropriately with the connection.
  * If this does not occur you will not receive the update notifications.
  *
@@ -53,19 +53,19 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 public class ChatStateManager extends Manager {
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
-    private static final Map<Connection, ChatStateManager> INSTANCES =
-            new WeakHashMap<Connection, ChatStateManager>();
+    private static final Map<XMPPConnection, ChatStateManager> INSTANCES =
+            new WeakHashMap<XMPPConnection, ChatStateManager>();
 
     private static final PacketFilter filter = new NotFilter(new PacketExtensionFilter(NAMESPACE));
 
     /**
-     * Returns the ChatStateManager related to the Connection and it will create one if it does
+     * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
      * not yet exist.
      *
      * @param connection the connection to return the ChatStateManager
      * @return the ChatStateManager related the the connection.
      */
-    public static synchronized ChatStateManager getInstance(final Connection connection) {
+    public static synchronized ChatStateManager getInstance(final XMPPConnection connection) {
             ChatStateManager manager = INSTANCES.get(connection);
             if (manager == null) {
                 manager = new ChatStateManager(connection);
@@ -83,7 +83,7 @@ public class ChatStateManager extends Manager {
     private final Map<Chat, ChatState> chatStates =
             new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK, ReferenceMap.HARD);
 
-    private ChatStateManager(Connection connection) {
+    private ChatStateManager(XMPPConnection connection) {
         super(connection);
         connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor, filter);
         connection.getChatManager().addChatListener(incomingInterceptor);

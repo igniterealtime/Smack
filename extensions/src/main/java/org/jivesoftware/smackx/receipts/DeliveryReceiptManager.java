@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
@@ -41,12 +41,12 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  */
 public class DeliveryReceiptManager extends Manager implements PacketListener {
 
-    private static Map<Connection, DeliveryReceiptManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<Connection, DeliveryReceiptManager>());
+    private static Map<XMPPConnection, DeliveryReceiptManager> instances =
+            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, DeliveryReceiptManager>());
 
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
@@ -56,7 +56,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
     private Set<ReceiptReceivedListener> receiptReceivedListeners = Collections
             .synchronizedSet(new HashSet<ReceiptReceivedListener>());
 
-    private DeliveryReceiptManager(Connection connection) {
+    private DeliveryReceiptManager(XMPPConnection connection) {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
@@ -73,7 +73,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
      *
      * @return the DeliveryReceiptManager instance for the given connection
      */
-     public static synchronized DeliveryReceiptManager getInstanceFor(Connection connection) {
+     public static synchronized DeliveryReceiptManager getInstanceFor(XMPPConnection connection) {
         DeliveryReceiptManager receiptManager = instances.get(connection);
 
         if (receiptManager == null) {
@@ -117,7 +117,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
             DeliveryReceiptRequest drr = (DeliveryReceiptRequest)packet.getExtension(
                     DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
             if (drr != null) {
-                Connection connection = connection();
+                XMPPConnection connection = connection();
                 Message ack = new Message(packet.getFrom(), Message.Type.normal);
                 ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
                 connection.sendPacket(ack);

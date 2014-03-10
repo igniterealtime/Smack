@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
@@ -51,10 +51,10 @@ import org.igniterealtime.jbosh.ComposableBody;
  * Creates a connection to a XMPP server via HTTP binding.
  * This is specified in the XEP-0206: XMPP Over BOSH.
  * 
- * @see Connection
+ * @see XMPPConnection
  * @author Guenther Niess
  */
-public class BOSHConnection extends Connection {
+public class BOSHConnection extends XMPPConnection {
 
     /**
      * The XMPP Over Bosh namespace.

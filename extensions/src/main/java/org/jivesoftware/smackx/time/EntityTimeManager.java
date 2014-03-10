@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.time;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
@@ -35,7 +35,7 @@ import org.jivesoftware.smackx.time.packet.Time;
 
 public class EntityTimeManager extends Manager {
 
-    private static final Map<Connection, EntityTimeManager> INSTANCES = new WeakHashMap<Connection, EntityTimeManager>();
+    private static final Map<XMPPConnection, EntityTimeManager> INSTANCES = new WeakHashMap<XMPPConnection, EntityTimeManager>();
 
     private static final PacketFilter TIME_PACKET_FILTER = new AndFilter(new PacketTypeFilter(
                     Time.class), new IQTypeFilter(Type.GET));
@@ -43,8 +43,8 @@ public class EntityTimeManager extends Manager {
     private static boolean autoEnable = true;
 
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
@@ -54,7 +54,7 @@ public class EntityTimeManager extends Manager {
         EntityTimeManager.autoEnable = autoEnable;
     }
 
-    public synchronized static EntityTimeManager getInstanceFor(Connection connection) {
+    public synchronized static EntityTimeManager getInstanceFor(XMPPConnection connection) {
         EntityTimeManager entityTimeManager = INSTANCES.get(connection);
         if (entityTimeManager == null) {
             entityTimeManager = new EntityTimeManager(connection);
@@ -64,7 +64,7 @@ public class EntityTimeManager extends Manager {
 
     private boolean enabled = false;
 
-    private EntityTimeManager(Connection connection) {
+    private EntityTimeManager(XMPPConnection connection) {
         super(connection);
         INSTANCES.put(connection, this);
         if (autoEnable)

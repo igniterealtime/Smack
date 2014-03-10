@@ -18,9 +18,9 @@
 package org.jivesoftware.smack;
 
 /**
- * Implementors of this interface will be notified when a new {@link Connection}
+ * Implementors of this interface will be notified when a new {@link XMPPConnection}
  * has been created. The newly created connection will not be actually connected to
- * the server. Use {@link Connection#addConnectionCreationListener(ConnectionCreationListener)}
+ * the server. Use {@link XMPPConnection#addConnectionCreationListener(ConnectionCreationListener)}
  * to add new listeners.
  *
  * @author Gaston Dombiak
@@ -33,6 +33,6 @@ public interface ConnectionCreationListener {
      * 
      * @param connection the newly created connection.
      */
-    public void connectionCreated(Connection connection);
+    public void connectionCreated(XMPPConnection connection);
 
 }

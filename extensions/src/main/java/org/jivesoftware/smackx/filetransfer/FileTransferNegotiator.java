@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
@@ -58,8 +58,8 @@ public class FileTransferNegotiator {
             "http://jabber.org/protocol/si/profile/file-transfer",
             "http://jabber.org/protocol/si"};
 
-    private static final Map<Connection, FileTransferNegotiator> transferObject =
-            new ConcurrentHashMap<Connection, FileTransferNegotiator>();
+    private static final Map<XMPPConnection, FileTransferNegotiator> transferObject =
+            new ConcurrentHashMap<XMPPConnection, FileTransferNegotiator>();
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
@@ -83,9 +83,9 @@ public class FileTransferNegotiator {
      * @return The IMFileTransferManager
      */
     public static FileTransferNegotiator getInstanceFor(
-            final Connection connection) {
+            final XMPPConnection connection) {
         if (connection == null) {
-            throw new IllegalArgumentException("Connection cannot be null");
+            throw new IllegalArgumentException("XMPPConnection cannot be null");
         }
         if (!connection.isConnected()) {
             return null;
@@ -110,7 +110,7 @@ public class FileTransferNegotiator {
      * @param connection The connection on which to enable or disable the services.
      * @param isEnabled  True to enable, false to disable.
      */
-    public static void setServiceEnabled(final Connection connection,
+    public static void setServiceEnabled(final XMPPConnection connection,
             final boolean isEnabled) {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
@@ -141,7 +141,7 @@ public class FileTransferNegotiator {
      * @param connection The connection to check
      * @return True if all related services are enabled, false if they are not.
      */
-    public static boolean isServiceEnabled(final Connection connection) {
+    public static boolean isServiceEnabled(final XMPPConnection connection) {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
 
@@ -200,13 +200,13 @@ public class FileTransferNegotiator {
 
     // non-static
 
-    private final Connection connection;
+    private final XMPPConnection connection;
 
     private final StreamNegotiator byteStreamTransferManager;
 
     private final StreamNegotiator inbandTransferManager;
 
-    private FileTransferNegotiator(final Connection connection) {
+    private FileTransferNegotiator(final XMPPConnection connection) {
         configureConnection(connection);
 
         this.connection = connection;
@@ -214,7 +214,7 @@ public class FileTransferNegotiator {
         inbandTransferManager = new IBBTransferNegotiator(connection);
     }
 
-    private void configureConnection(final Connection connection) {
+    private void configureConnection(final XMPPConnection connection) {
         connection.addConnectionListener(new ConnectionListener() {
             public void connectionClosed() {
                 cleanup(connection);
@@ -238,7 +238,7 @@ public class FileTransferNegotiator {
         });
     }
 
-    private void cleanup(final Connection connection) {
+    private void cleanup(final XMPPConnection connection) {
         if (transferObject.remove(connection) != null) {
             inbandTransferManager.cleanup();
         }

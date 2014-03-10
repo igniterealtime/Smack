@@ -167,7 +167,7 @@ public class MessageTest extends SmackTestCase {
         // Send the first message
         getConnection(0).sendPacket(msg);
         // Check that the connection that sent the message is still connected
-        assertTrue("Connection was closed", getConnection(0).isConnected());
+        assertTrue("XMPPConnection was closed", getConnection(0).isConnected());
         // Check that the message was received
         Message rcv = (Message) collector.nextResult(1000);
         assertNotNull("No Message was received", rcv);
@@ -175,7 +175,7 @@ public class MessageTest extends SmackTestCase {
         // Send the second message
         getConnection(0).sendPacket(msg);
         // Check that the connection that sent the message is still connected
-        assertTrue("Connection was closed", getConnection(0).isConnected());
+        assertTrue("XMPPConnection was closed", getConnection(0).isConnected());
         // Check that the second message was received
         rcv = (Message) collector.nextResult(1000);
         assertNotNull("No Message was received", rcv);

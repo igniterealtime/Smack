@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public class RosterOfflineTest {
 
-    Connection connection;
+    XMPPConnection connection;
 
     Roster roster;
 

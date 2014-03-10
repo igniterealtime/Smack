@@ -35,8 +35,8 @@ public class PresenceTest extends SmackTestCase {
     }
 
     /**
-     * Connection(0) will send messages to the bareJID of Connection(1) where the user of
-     * Connection(1) has logged from two different places with different presence priorities.
+     * XMPPConnection(0) will send messages to the bareJID of XMPPConnection(1) where the user of
+     * XMPPConnection(1) has logged from two different places with different presence priorities.
      */
     public void testMessageToHighestPriority() {
         TCPConnection conn = null;

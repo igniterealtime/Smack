@@ -59,7 +59,7 @@ import java.util.List;
  * @see Connection
  * @author Matt Tucker
  */
-public class TCPConnection extends Connection {
+public class TCPConnection extends XMPPConnection {
 
     /**
      * The socket which is used for this connection.
@@ -793,13 +793,13 @@ public class TCPConnection extends Connection {
         // Proceed to do the handshake
         ((SSLSocket) socket).startHandshake();
         //if (((SSLSocket) socket).getWantClientAuth()) {
-        //    System.err.println("Connection wants client auth");
+        //    System.err.println("XMPPConnection wants client auth");
         //}
         //else if (((SSLSocket) socket).getNeedClientAuth()) {
-        //    System.err.println("Connection needs client auth");
+        //    System.err.println("XMPPConnection needs client auth");
         //}
         //else {
-        //    System.err.println("Connection does not require client auth");
+        //    System.err.println("XMPPConnection does not require client auth");
        // }
         // Set that TLS was successful
         usingTLS = true;

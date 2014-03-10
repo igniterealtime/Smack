@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -61,7 +61,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 	private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
 
 	// static
-    private static final HashMap<Connection, JingleSession> sessions = new HashMap<Connection, JingleSession>();
+    private static final HashMap<XMPPConnection, JingleSession> sessions = new HashMap<XMPPConnection, JingleSession>();
 
     private static final Random randomGenerator = new Random();
 
@@ -85,7 +85,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     private List<ContentNegotiator> contentNegotiators;
 
-    private Connection connection;
+    private XMPPConnection connection;
 
     private String sessionInitPacketID;
     
@@ -95,7 +95,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * Full featured JingleSession constructor
      * 
      * @param conn
-     *            the Connection which is used
+     *            the XMPPConnection which is used
      * @param initiator
      *            the initiator JID
      * @param responder
@@ -105,7 +105,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param jingleMediaManager
      *            the jingleMediaManager
      */
-    public JingleSession(Connection conn, String initiator, String responder, String sessionid,
+    public JingleSession(XMPPConnection conn, String initiator, String responder, String sessionid,
             List<JingleMediaManager> jingleMediaManagers) {
         super();
 
@@ -139,7 +139,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param jingleMediaManager
      *            the jingleMediaManager
      */
-    public JingleSession(Connection conn, JingleSessionRequest request, String initiator, String responder,
+    public JingleSession(XMPPConnection conn, JingleSessionRequest request, String initiator, String responder,
             List<JingleMediaManager> jingleMediaManagers) {
         this(conn, initiator, responder, generateSessionId(), jingleMediaManagers);
         //sessionRequest = request; // unused
@@ -154,7 +154,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         return initiator;
     }
 
-    public Connection getConnection() {
+    public XMPPConnection getConnection() {
         return connection;
     }
 
@@ -578,7 +578,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param connection
      *            The connection to clean up
      */
-    private void unregisterInstanceFor(Connection connection) {
+    private void unregisterInstanceFor(XMPPConnection connection) {
         synchronized (sessions) {
             sessions.remove(connection);
         }
@@ -600,9 +600,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      *            A XMPP connection
      * @return a Jingle session
      */
-    public static JingleSession getInstanceFor(Connection con) {
+    public static JingleSession getInstanceFor(XMPPConnection con) {
         if (con == null) {
-            throw new IllegalArgumentException("Connection cannot be null");
+            throw new IllegalArgumentException("XMPPConnection cannot be null");
         }
 
         JingleSession result = null;
@@ -621,7 +621,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param connection
      *            The connection to set up
      */
-    private void installConnectionListeners(final Connection connection) {
+    private void installConnectionListeners(final XMPPConnection connection) {
         if (connection != null) {
             connectionListener = new ConnectionListener() {
                 public void connectionClosed() {

@@ -279,7 +279,7 @@ public class Socks5ProxySocketFactory
       o  X'02' connection not allowed by ruleset
       o  X'03' Network unreachable
       o  X'04' Host unreachable
-      o  X'05' Connection refused
+      o  X'05' XMPPConnection refused
       o  X'06' TTL expired
       o  X'07' Command not supported
       o  X'08' Address type not supported

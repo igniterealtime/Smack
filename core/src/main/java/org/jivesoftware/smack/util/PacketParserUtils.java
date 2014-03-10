@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
@@ -281,7 +281,7 @@ public class PacketParserUtils {
      * @return an IQ object.
      * @throws Exception if an exception occurs while parsing the packet.
      */
-    public static IQ parseIQ(XmlPullParser parser, Connection connection) throws Exception {
+    public static IQ parseIQ(XmlPullParser parser, XMPPConnection connection) throws Exception {
         IQ iqPacket = null;
 
         String id = parser.getAttributeValue("", "id");

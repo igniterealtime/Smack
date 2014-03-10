@@ -25,7 +25,7 @@
 //import java.util.concurrent.CountDownLatch;
 //import java.util.concurrent.TimeUnit;
 //
-//import org.jivesoftware.smack.Connection;
+//import org.jivesoftware.smack.XMPPConnection;
 //import org.jivesoftware.smack.DummyConnection;
 //import org.jivesoftware.smack.PacketInterceptor;
 //import org.jivesoftware.smack.PacketListener;
@@ -157,7 +157,7 @@
 //        return con;
 //    }
 //
-//    private void addInterceptor(final Connection con, final CountDownLatch latch) {
+//    private void addInterceptor(final XMPPConnection con, final CountDownLatch latch) {
 //        con.addPacketInterceptor(new PacketInterceptor() {
 //            @Override
 //            public void interceptPacket(Packet packet) {

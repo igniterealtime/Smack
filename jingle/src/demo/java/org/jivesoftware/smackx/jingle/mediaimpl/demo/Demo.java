@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.demo;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleManager;
@@ -42,7 +42,7 @@ public class Demo extends JFrame {
 
 	private static final long serialVersionUID = -6584021277434403855L;
 	private JingleTransportManager transportManager = null;
-    private Connection xmppConnection = null;
+    private XMPPConnection xmppConnection = null;
 
     private String server = null;
     private String user = null;

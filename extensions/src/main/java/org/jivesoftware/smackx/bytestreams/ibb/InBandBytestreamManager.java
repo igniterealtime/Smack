@@ -25,7 +25,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
@@ -96,8 +96,8 @@ public class InBandBytestreamManager implements BytestreamManager {
      * connection
      */
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(final Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(final XMPPConnection connection) {
                 // create the manager for this connection
                 InBandBytestreamManager.getByteStreamManager(connection);
 
@@ -143,10 +143,10 @@ public class InBandBytestreamManager implements BytestreamManager {
     private final static Random randomGenerator = new Random();
 
     /* stores one InBandBytestreamManager for each XMPP connection */
-    private final static Map<Connection, InBandBytestreamManager> managers = new HashMap<Connection, InBandBytestreamManager>();
+    private final static Map<XMPPConnection, InBandBytestreamManager> managers = new HashMap<XMPPConnection, InBandBytestreamManager>();
 
     /* XMPP connection */
-    private final Connection connection;
+    private final XMPPConnection connection;
 
     /*
      * assigns a user to a listener that is informed if an In-Band Bytestream request for this user
@@ -189,12 +189,12 @@ public class InBandBytestreamManager implements BytestreamManager {
 
     /**
      * Returns the InBandBytestreamManager to handle In-Band Bytestreams for a given
-     * {@link Connection}.
+     * {@link XMPPConnection}.
      * 
      * @param connection the XMPP connection
      * @return the InBandBytestreamManager for the given XMPP connection
      */
-    public static synchronized InBandBytestreamManager getByteStreamManager(Connection connection) {
+    public static synchronized InBandBytestreamManager getByteStreamManager(XMPPConnection connection) {
         if (connection == null)
             return null;
         InBandBytestreamManager manager = managers.get(connection);
@@ -210,7 +210,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param connection the XMPP connection
      */
-    private InBandBytestreamManager(Connection connection) {
+    private InBandBytestreamManager(XMPPConnection connection) {
         this.connection = connection;
 
         // register bytestream open packet listener
@@ -489,7 +489,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @return the XMPP connection
      */
-    protected Connection getConnection() {
+    protected XMPPConnection getConnection() {
         return this.connection;
     }
 

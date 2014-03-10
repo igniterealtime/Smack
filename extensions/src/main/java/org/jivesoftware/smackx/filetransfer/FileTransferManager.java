@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -48,15 +48,15 @@ public class FileTransferManager {
 
 	private List<FileTransferListener> listeners;
 
-	private Connection connection;
+	private XMPPConnection connection;
 
 	/**
 	 * Creates a file transfer manager to initiate and receive file transfers.
 	 * 
 	 * @param connection
-	 *            The Connection that the file transfers will use.
+	 *            The XMPPConnection that the file transfers will use.
 	 */
-	public FileTransferManager(Connection connection) {
+	public FileTransferManager(XMPPConnection connection) {
 		this.connection = connection;
 		this.fileTransferNegotiator = FileTransferNegotiator
 				.getInstanceFor(connection);

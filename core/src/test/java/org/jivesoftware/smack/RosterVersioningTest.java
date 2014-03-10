@@ -57,7 +57,7 @@ public class RosterVersioningTest {
     @Before
     public void setUp() throws Exception {
         // Uncomment this to enable debug output
-        //Connection.DEBUG_ENABLED = true;
+        //XMPPConnection.DEBUG_ENABLED = true;
 
         DefaultRosterStore store = DefaultRosterStore.init(tmpFolder.newFolder("store"));
         populateStore(store);

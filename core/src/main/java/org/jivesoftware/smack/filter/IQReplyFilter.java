@@ -19,7 +19,7 @@ package org.jivesoftware.smack.filter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
@@ -78,7 +78,7 @@ public class IQReplyFilter implements PacketFilter {
      *
      * @param iqPacket An IQ request. Filter for replies to this packet.
      */
-    public IQReplyFilter(IQ iqPacket, Connection conn) {
+    public IQReplyFilter(IQ iqPacket, XMPPConnection conn) {
         to = iqPacket.getTo();
         if (conn.getUser() == null) {
             // We have not yet been assigned a username, this can happen if the connection is

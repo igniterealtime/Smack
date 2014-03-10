@@ -31,8 +31,8 @@ import java.util.logging.Logger;
  * interceptors can be registered to dynamically modify packets before they're actually
  * sent. Packet listeners can be registered to listen for all outgoing packets.
  *
- * @see Connection#addPacketInterceptor
- * @see Connection#addPacketSendingListener
+ * @see XMPPConnection#addPacketInterceptor
+ * @see XMPPConnection#addPacketSendingListener
  *
  * @author Matt Tucker
  */

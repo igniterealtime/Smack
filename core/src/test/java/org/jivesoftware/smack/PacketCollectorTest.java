@@ -187,7 +187,7 @@ public class PacketCollectorTest
 	
 	class TestPacketCollector extends PacketCollector 
 	{
-		protected TestPacketCollector(Connection conection, PacketFilter packetFilter, int size)
+		protected TestPacketCollector(XMPPConnection conection, PacketFilter packetFilter, int size)
 		{
 			super(conection, packetFilter, size);
 		}

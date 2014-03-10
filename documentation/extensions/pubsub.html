@@ -47,7 +47,7 @@ a fully configured node.</p><p>
 Create an instant node: <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Create the node</font>
@@ -58,7 +58,7 @@ Create an instant node: <br>
 Create a node with default configuration and then configure it: <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Create the node</font>
@@ -77,7 +77,7 @@ Create a node with default configuration and then configure it: <br>
 Create and configure a node: <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Create the node</font>
@@ -117,7 +117,7 @@ will be dependent on its configuration.
 In this example we publish an item to a node that does not take payload: <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -133,7 +133,7 @@ In this example we publish an item to a node that does not take payload: <br>
 In this example we publish an item to a node that does take payload: <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -174,7 +174,7 @@ In this example we can see how to create a listener and register it and then sub
 messages. <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -212,7 +212,7 @@ In this example we can see how to create a listener, register it and then subscr
 item deletion messages. <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -250,7 +250,7 @@ In this example we can see how to create a listener, register it and then subscr
 node configuration messages. <br>
 <blockquote>
 <pre>
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -315,7 +315,7 @@ of a <i><b>LeafNode</b></i> and call one of the retrieve methods.
 In this example we can see how to retrieve the existing items from a node: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -329,7 +329,7 @@ In this example we can see how to retrieve the existing items from a node: <br>
 In this example we can see how to retrieve the last N existing items: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -343,7 +343,7 @@ In this example we can see how to retrieve the specified existing items: <br>
 <blockquote>
 <pre>      
 
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the node</font>
@@ -375,7 +375,7 @@ or <i><b>Node</b></i> classes depending on what type of information is required.
 In this example we can see how to get pubsub capabilities: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the pubsub features that are supported</font>
@@ -386,7 +386,7 @@ In this example we can see how to get pubsub capabilities: <br>
 In this example we can see how to get pubsub subscriptions for all nodes: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get all the subscriptions in the pubsub service</font>
@@ -397,7 +397,7 @@ In this example we can see how to get pubsub subscriptions for all nodes: <br>
 In this example we can see how to get all affiliations for the users bare JID on the pubsub service: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
 
       <font color="#3f7f5f">// Get the affiliations for the users bare JID</font>
@@ -408,7 +408,7 @@ In this example we can see how to get all affiliations for the users bare JID on
 In this example we can see how to get information about the node: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
       Node node = mgr.getNode(<font color="#0000FF">"testNode"</font>);
       
@@ -420,7 +420,7 @@ In this example we can see how to get information about the node: <br>
 In this example we can see how to discover the node items: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
       Node node = mgr.getNode(<font color="#0000FF">"testNode"</font>);
       
@@ -432,7 +432,7 @@ In this example we can see how to discover the node items: <br>
 In this example we can see how to get node subscriptions: <br>
 <blockquote>
 <pre>      
-      <font color="#3f7f5f">// Create a pubsub manager using an existing Connection</font>
+      <font color="#3f7f5f">// Create a pubsub manager using an existing XMPPConnection</font>
       PubSubManager mgr = new PubSubManager(con);
       Node node = mgr.getNode(<font color="#0000FF">"testNode"</font>);
       

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack;
 
 import java.io.Reader;
@@ -47,7 +46,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
- * The abstract Connection class provides an interface for connections to a
+ * The abstract XMPPConnection class provides an interface for connections to a
  * XMPP server and implements shared methods which are used by the
  * different types of connections (e.g. TCPConnection or BoshConnection).
  * 
@@ -55,7 +54,7 @@ import org.jivesoftware.smack.packet.Presence;
  * look like the following:
  * <pre>
  * // Create a connection to the igniterealtime.org XMPP server.
- * Connection con = new TCPConnection("igniterealtime.org");
+ * XMPPConnection con = new TCPConnection("igniterealtime.org");
  * // Connect to the server
  * con.connect();
  * // Most servers require you to login before performing other tasks.
@@ -77,16 +76,15 @@ import org.jivesoftware.smack.packet.Presence;
  * may be connected, disconnected and then connected again. Listeners of the Connection
  * will be retained accross connections.<p>
  * <p/>
- * If a connected Connection gets disconnected abruptly then it will try to reconnect
+ * If a connected XMPPConnection gets disconnected abruptly then it will try to reconnect
  * again. To stop the reconnection process, use {@link #disconnect()}. Once stopped
  * you can use {@link #connect()} to manually connect to the server.
  * 
- * @see TCPConnection
  * @author Matt Tucker
  * @author Guenther Niess
  */
-public abstract class Connection {
-    private static final Logger LOGGER = Logger.getLogger(Connection.class.getName());
+public abstract class XMPPConnection {
+    private static final Logger LOGGER = Logger.getLogger(XMPPConnection.class.getName());
     
     /** 
      * Counter to uniquely identify connections that are created.
@@ -230,11 +228,11 @@ public abstract class Connection {
     private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
 
     /**
-     * Create a new Connection to a XMPP server.
+     * Create a new XMPPConnection to a XMPP server.
      * 
      * @param configuration The configuration which is used to establish the connection.
      */
-    protected Connection(ConnectionConfiguration configuration) {
+    protected XMPPConnection(ConnectionConfiguration configuration) {
         config = configuration;
     }
 
@@ -482,7 +480,7 @@ public abstract class Connection {
 
     /**
      * Closes the connection by setting presence to unavailable then closing the connection to
-     * the XMPP server. The Connection can still be used for connecting to the server
+     * the XMPP server. The XMPPConnection can still be used for connecting to the server
      * again.<p>
      * <p/>
      * This method cleans up all resources used by the connection. Therefore, the roster,
@@ -497,7 +495,7 @@ public abstract class Connection {
 
     /**
      * Closes the connection. A custom unavailable presence is sent to the server, followed
-     * by closing the stream. The Connection can still be used for connecting to the server
+     * by closing the stream. The XMPPConnection can still be used for connecting to the server
      * again. A custom unavilable presence is useful for communicating offline presence
      * information such as "On vacation". Typically, just the status text of the presence
      * packet is set with online information, but most XMPP servers will deliver the full
@@ -822,7 +820,7 @@ public abstract class Connection {
                 // option
                 try {
                     Constructor<?> constructor = debuggerClass
-                            .getConstructor(Connection.class, Writer.class, Reader.class);
+                            .getConstructor(XMPPConnection.class, Writer.class, Reader.class);
                     debugger = (SmackDebugger) constructor.newInstance(this, writer, reader);
                     reader = debugger.getReader();
                     writer = debugger.getWriter();
@@ -842,7 +840,7 @@ public abstract class Connection {
     /**
      * Set the servers Entity Caps node
      * 
-     * Connection holds this information in order to avoid a dependency to
+     * XMPPConnection holds this information in order to avoid a dependency to
      * smackx where EntityCapsManager lives from smack.
      * 
      * @param node
@@ -854,7 +852,7 @@ public abstract class Connection {
     /**
      * Retrieve the servers Entity Caps node
      * 
-     * Connection holds this information in order to avoid a dependency to
+     * XMPPConnection holds this information in order to avoid a dependency to
      * smackx where EntityCapsManager lives from smack.
      * 
      * @return

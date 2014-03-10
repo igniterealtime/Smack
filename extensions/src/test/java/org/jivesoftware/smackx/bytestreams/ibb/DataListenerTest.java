@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.ibb.DataListener;
@@ -50,7 +50,7 @@ public class DataListenerTest {
     public void shouldReplyErrorIfSessionIsUnknown() throws Exception {
 
         // mock connection
-        Connection connection = mock(Connection.class);
+        XMPPConnection connection = mock(XMPPConnection.class);
 
         // initialize InBandBytestreamManager to get the DataListener
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);

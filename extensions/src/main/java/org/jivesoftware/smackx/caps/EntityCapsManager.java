@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.caps;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -79,8 +79,8 @@ public class EntityCapsManager extends Manager {
 
     private static boolean autoEnableEntityCaps = true;
 
-    private static Map<Connection, EntityCapsManager> instances = Collections
-            .synchronizedMap(new WeakHashMap<Connection, EntityCapsManager>());
+    private static Map<XMPPConnection, EntityCapsManager> instances = Collections
+            .synchronizedMap(new WeakHashMap<XMPPConnection, EntityCapsManager>());
 
     /**
      * Map of (node + '#" + hash algorithm) to DiscoverInfo data
@@ -96,8 +96,8 @@ public class EntityCapsManager extends Manager {
     protected static Map<String, NodeVerHash> jidCaps = new Cache<String, NodeVerHash>(10000, -1);
 
     static {
-        Connection.addConnectionCreationListener(new ConnectionCreationListener() {
-            public void connectionCreated(Connection connection) {
+        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+            public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
         });
@@ -219,7 +219,7 @@ public class EntityCapsManager extends Manager {
         ((Cache) caps).setMaxCacheSize(maxCacheSize);
     }
 
-    private EntityCapsManager(Connection connection) {
+    private EntityCapsManager(XMPPConnection connection) {
         super(connection);
         this.sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         instances.put(connection, this);
@@ -317,7 +317,7 @@ public class EntityCapsManager extends Manager {
         sdm.setEntityCapsManager(this);
     }
 
-    public static synchronized EntityCapsManager getInstanceFor(Connection connection) {
+    public static synchronized EntityCapsManager getInstanceFor(XMPPConnection connection) {
         if (SUPPORTED_HASHES.size() <= 0)
             throw new IllegalStateException("No supported hashes for EntityCapsManager");
 
@@ -413,7 +413,7 @@ public class EntityCapsManager extends Manager {
      *            the local users extended info
      */
     public void updateLocalEntityCaps() {
-        Connection connection = connection();
+        XMPPConnection connection = connection();
 
         DiscoverInfo discoverInfo = new DiscoverInfo();
         discoverInfo.setType(IQ.Type.RESULT);

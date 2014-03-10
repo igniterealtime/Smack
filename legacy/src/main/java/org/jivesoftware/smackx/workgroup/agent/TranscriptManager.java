@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 
 import org.jivesoftware.smackx.workgroup.packet.Transcript;
 import org.jivesoftware.smackx.workgroup.packet.Transcripts;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 /**
@@ -30,9 +30,9 @@ import org.jivesoftware.smack.XMPPException;
  * @author Gaston Dombiak
  */
 public class TranscriptManager {
-    private Connection connection;
+    private XMPPConnection connection;
 
-    public TranscriptManager(Connection connection) {
+    public TranscriptManager(XMPPConnection connection) {
         this.connection = connection;
     }
 

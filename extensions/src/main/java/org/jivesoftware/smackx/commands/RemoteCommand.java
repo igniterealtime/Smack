@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
@@ -43,7 +43,7 @@ public class RemoteCommand extends AdHocCommand {
     /**
      * The connection that is used to execute this command
      */
-    private Connection connection;
+    private XMPPConnection connection;
 
     /**
      * The full JID of the command host
@@ -71,7 +71,7 @@ public class RemoteCommand extends AdHocCommand {
      * @param node the identifier of the command.
      * @param jid the JID of the host.
      */
-    protected RemoteCommand(Connection connection, String node, String jid) {
+    protected RemoteCommand(XMPPConnection connection, String node, String jid) {
         super();
         this.connection = connection;
         this.jid = jid;

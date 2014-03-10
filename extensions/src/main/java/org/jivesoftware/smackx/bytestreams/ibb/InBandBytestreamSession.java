@@ -24,7 +24,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -58,7 +58,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 public class InBandBytestreamSession implements BytestreamSession {
 
     /* XMPP connection */
-    private final Connection connection;
+    private final XMPPConnection connection;
 
     /* the In-Band Bytestream open request for this session */
     private final Open byteStreamRequest;
@@ -89,7 +89,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * @param byteStreamRequest the In-Band Bytestream open request for this session
      * @param remoteJID JID of the remote peer
      */
-    protected InBandBytestreamSession(Connection connection, Open byteStreamRequest,
+    protected InBandBytestreamSession(XMPPConnection connection, Open byteStreamRequest,
                     String remoteJID) {
         this.connection = connection;
         this.byteStreamRequest = byteStreamRequest;

@@ -61,7 +61,7 @@ public class SASLAuthentication {
     private static Map<String, Class<? extends SASLMechanism>> implementedMechanisms = new HashMap<String, Class<? extends SASLMechanism>>();
     private static List<String> mechanismsPreferences = new ArrayList<String>();
 
-    private Connection connection;
+    private XMPPConnection connection;
     private Collection<String> serverMechanisms = new ArrayList<String>();
     private SASLMechanism currentMechanism = null;
     /**
@@ -170,7 +170,7 @@ public class SASLAuthentication {
         return answer;
     }
 
-    SASLAuthentication(Connection connection) {
+    SASLAuthentication(XMPPConnection connection) {
         super();
         this.connection = connection;
         this.init();

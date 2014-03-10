@@ -20,13 +20,13 @@ import java.lang.ref.WeakReference;
 
 public abstract class Manager {
 
-    final WeakReference<Connection> weakConnection;
+    final WeakReference<XMPPConnection> weakConnection;
 
-    public Manager(Connection connection) {
-        weakConnection = new WeakReference<Connection>(connection);
+    public Manager(XMPPConnection connection) {
+        weakConnection = new WeakReference<XMPPConnection>(connection);
     }
 
-    protected final Connection connection() {
+    protected final XMPPConnection connection() {
         return weakConnection.get();
     }
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
@@ -43,7 +43,7 @@ public abstract class JingleNegotiator {
 
 	private static final Logger LOGGER = Logger.getLogger(JingleNegotiator.class.getName());
 
-	//private Connection connection; // The connection associated
+	//private XMPPConnection connection; // The connection associated
 
     protected JingleSession session;
 
@@ -99,7 +99,7 @@ public abstract class JingleNegotiator {
        this.state = stateIs;
     }
 
-    public Connection getConnection() {
+    public XMPPConnection getConnection() {
         if (session != null) {
             return session.getConnection();
         } else {

@@ -18,7 +18,7 @@ package org.jivesoftware.smack.debugger;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.*;
 
@@ -43,7 +43,7 @@ public class ConsoleDebugger implements SmackDebugger {
     public static boolean printInterpreted = false;
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
 
-    private Connection connection = null;
+    private XMPPConnection connection = null;
 
     private PacketListener listener = null;
     private ConnectionListener connListener = null;
@@ -53,7 +53,7 @@ public class ConsoleDebugger implements SmackDebugger {
     private ReaderListener readerListener;
     private WriterListener writerListener;
 
-    public ConsoleDebugger(Connection connection, Writer writer, Reader reader) {
+    public ConsoleDebugger(XMPPConnection connection, Writer writer, Reader reader) {
         this.connection = connection;
         this.writer = writer;
         this.reader = reader;
@@ -111,7 +111,7 @@ public class ConsoleDebugger implements SmackDebugger {
         connListener = new ConnectionListener() {
             public void connectionClosed() {
                 System.out.println(
-                        dateFormatter.format(new Date()) + " Connection closed (" +
+                        dateFormatter.format(new Date()) + " XMPPConnection closed (" +
                         connection.hashCode() +
                         ")");
             }
@@ -119,7 +119,7 @@ public class ConsoleDebugger implements SmackDebugger {
             public void connectionClosedOnError(Exception e) {
                 System.out.println(
                         dateFormatter.format(new Date()) +
-                        " Connection closed due to an exception (" +
+                        " XMPPConnection closed due to an exception (" +
                         connection.hashCode() +
                         ")");
                 e.printStackTrace();
@@ -134,13 +134,13 @@ public class ConsoleDebugger implements SmackDebugger {
             }
             public void reconnectionSuccessful() {
                 System.out.println(
-                        dateFormatter.format(new Date()) + " Connection reconnected (" +
+                        dateFormatter.format(new Date()) + " XMPPConnection reconnected (" +
                         connection.hashCode() +
                         ")");
             }
             public void reconnectingIn(int seconds) {
                 System.out.println(
-                        dateFormatter.format(new Date()) + " Connection (" +
+                        dateFormatter.format(new Date()) + " XMPPConnection (" +
                         connection.hashCode() +
                         ") will reconnect in " + seconds);
             }

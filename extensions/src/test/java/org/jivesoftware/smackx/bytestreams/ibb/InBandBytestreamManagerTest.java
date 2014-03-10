@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -50,7 +50,7 @@ public class InBandBytestreamManagerTest {
     Protocol protocol;
 
     // mocked XMPP connection
-    Connection connection;
+    XMPPConnection connection;
 
     /**
      * Initialize fields used in the tests.
@@ -70,15 +70,15 @@ public class InBandBytestreamManagerTest {
 
     /**
      * Test that
-     * {@link InBandBytestreamManager#getByteStreamManager(Connection)} returns
+     * {@link InBandBytestreamManager#getByteStreamManager(XMPPConnection)} returns
      * one bytestream manager for every connection
      */
     @Test
     public void shouldHaveOneManagerForEveryConnection() {
 
         // mock two connections
-        Connection connection1 = mock(Connection.class);
-        Connection connection2 = mock(Connection.class);
+        XMPPConnection connection1 = mock(XMPPConnection.class);
+        XMPPConnection connection2 = mock(XMPPConnection.class);
 
         // get bytestream manager for the first connection twice
         InBandBytestreamManager conn1ByteStreamManager1 = InBandBytestreamManager.getByteStreamManager(connection1);

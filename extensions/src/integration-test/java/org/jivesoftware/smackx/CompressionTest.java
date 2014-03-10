@@ -51,7 +51,7 @@ public class CompressionTest extends SmackTestCase {
         // Login with the test account
         connection.login("user0", "user0");
 
-        assertTrue("Connection is not using stream compression", connection.isUsingCompression());
+        assertTrue("XMPPConnection is not using stream compression", connection.isUsingCompression());
 
         // Request the version of the server
         Version version = new Version();
