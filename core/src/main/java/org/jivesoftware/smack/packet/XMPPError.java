@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack.packet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
@@ -351,10 +354,12 @@ public class XMPPError {
      * A class to represent the error specification used to infer common usage.
      */
     private static class ErrorSpecification {
-        private int code;
-        private Type type;
-        private Condition condition;
-        private static Map<Condition, ErrorSpecification> instances = errorSpecifications();
+        private static Map<Condition, ErrorSpecification> instances = new HashMap<Condition, ErrorSpecification>();
+
+        private final int code;
+        private final Type type;
+        @SuppressWarnings("unused")
+        private final Condition condition;
 
         private ErrorSpecification(Condition condition, Type type, int code) {
             this.code = code;
@@ -362,8 +367,7 @@ public class XMPPError {
             this.condition = condition;
         }
 
-        private static Map<Condition, ErrorSpecification> errorSpecifications() {
-            Map<Condition, ErrorSpecification> instances = new HashMap<Condition, ErrorSpecification>(22);
+        static {
             instances.put(Condition.interna_server_error, new ErrorSpecification(
                     Condition.interna_server_error, Type.WAIT, 500));
             instances.put(Condition.forbidden, new ErrorSpecification(Condition.forbidden,
@@ -412,21 +416,10 @@ public class XMPPError {
                     Condition.unexpected_request, Type.WAIT, 400));
             instances.put(Condition.request_timeout, new XMPPError.ErrorSpecification(
                     Condition.request_timeout, Type.CANCEL, 408));
-
-            return instances;
         }
 
         protected static ErrorSpecification specFor(Condition condition) {
             return instances.get(condition);
-        }
-
-        /**
-         * Returns the error condition.
-         *
-         * @return the error condition.
-         */
-        protected Condition getCondition() {
-            return condition;
         }
 
         /**
