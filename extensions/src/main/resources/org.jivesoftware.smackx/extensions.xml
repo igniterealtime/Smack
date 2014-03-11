@@ -11,5 +11,6 @@
         <className>org.jivesoftware.smackx.ping.PingManager</className>
         <className>org.jivesoftware.smackx.privacy.PrivacyListManager</className>
         <className>org.jivesoftware.smackx.time.EntityTimeManager</className>
+        <className>org.jivesoftware.smackx.vcardtemp.VCardManager</className>
     </startupClasses>
 </smack>

@@ -37,6 +37,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.vcardtemp.VCardManager;
 
 /**
  * A VCard class for use with the
@@ -692,7 +693,7 @@ public class VCard extends IQ {
         }
 
         public void write() {
-            appendTag("vCard", "xmlns", "vcard-temp", hasContent(), new ContentBuilder() {
+            appendTag(VCardManager.ELEMENT, "xmlns", VCardManager.NAMESPACE, hasContent(), new ContentBuilder() {
                 public void addTagContent() {
                     buildActualContent();
                 }
