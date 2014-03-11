@@ -167,17 +167,6 @@ public class XMPPException extends Exception {
         return streamError;
     }
 
-    /**
-     * Returns the Throwable asscociated with this exception, or <tt>null</tt> if there
-     * isn't one. @deprecated, use Exception.getCause() instead.
-     *
-     * @return the Throwable asscociated with this exception.
-     */
-    @Deprecated
-    public Throwable getWrappedThrowable() {
-        return getCause();
-    }
-
     public String getMessage() {
         String msg = super.getMessage();
         // If the message was not set, but there is an XMPPError, return the

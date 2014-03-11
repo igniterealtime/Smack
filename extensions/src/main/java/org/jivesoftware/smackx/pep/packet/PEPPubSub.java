@@ -27,7 +27,6 @@ import org.jivesoftware.smack.packet.IQ;
  *
  * @author Jeff Williams
  */
-@Deprecated
 public class PEPPubSub extends IQ {
     
     PEPItem item;

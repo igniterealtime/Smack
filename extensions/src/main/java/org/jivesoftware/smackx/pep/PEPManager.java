@@ -57,7 +57,6 @@ import org.jivesoftware.smackx.pep.packet.PEPPubSub;
  * 
  * @author Jeff Williams
  */
-@Deprecated
 public class PEPManager {
 
     private List<PEPListener> pepListeners = new ArrayList<PEPListener>();
