@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * <table border=1>
  *      <hr><td><b>Code</b></td><td><b>XMPP Error</b></td><td><b>Type</b></td></hr>
- *      <tr><td>500</td><td>interna-server-error</td><td>WAIT</td></tr>
+ *      <tr><td>500</td><td>internal-server-error</td><td>WAIT</td></tr>
  *      <tr><td>403</td><td>forbidden</td><td>AUTH</td></tr>
  *      <tr><td>400</td<td>bad-request</td><td>MODIFY</td>></tr>
  *      <tr><td>404</td><td>item-not-found</td><td>CANCEL</td></tr>
@@ -313,7 +313,7 @@ public class XMPPError {
      */
     public static class Condition {
 
-        public static final Condition interna_server_error = new Condition("internal-server-error");
+        public static final Condition internal_server_error = new Condition("internal-server-error");
         public static final Condition forbidden = new Condition("forbidden");
         public static final Condition bad_request = new Condition("bad-request");
         public static final Condition conflict = new Condition("conflict");
@@ -368,8 +368,8 @@ public class XMPPError {
         }
 
         static {
-            instances.put(Condition.interna_server_error, new ErrorSpecification(
-                    Condition.interna_server_error, Type.WAIT, 500));
+            instances.put(Condition.internal_server_error, new ErrorSpecification(
+                    Condition.internal_server_error, Type.WAIT, 500));
             instances.put(Condition.forbidden, new ErrorSpecification(Condition.forbidden,
                     Type.AUTH, 403));
             instances.put(Condition.bad_request, new XMPPError.ErrorSpecification(

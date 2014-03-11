@@ -193,7 +193,7 @@ public class Socks5ClientForInitiatorTest {
     public void shouldFailIfActivateSocks5ProxyFails() throws Exception {
 
         // build error response as reply to the stream activation
-        XMPPError xmppError = new XMPPError(XMPPError.Condition.interna_server_error);
+        XMPPError xmppError = new XMPPError(XMPPError.Condition.internal_server_error);
         IQ error = new IQ() {
 
             public String getChildElementXML() {

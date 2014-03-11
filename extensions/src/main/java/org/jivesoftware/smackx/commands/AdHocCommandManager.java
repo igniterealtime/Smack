@@ -636,11 +636,11 @@ public class AdHocCommandManager extends Manager {
         }
         catch (InstantiationException e) {
             throw new XMPPException(new XMPPError(
-                    XMPPError.Condition.interna_server_error));
+                    XMPPError.Condition.internal_server_error));
         }
         catch (IllegalAccessException e) {
             throw new XMPPException(new XMPPError(
-                    XMPPError.Condition.interna_server_error));
+                    XMPPError.Condition.internal_server_error));
         }
         return command;
     }
