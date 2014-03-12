@@ -25,9 +25,12 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
@@ -405,8 +408,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @return the session to send/receive data to/from the user
      * @throws XMPPException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
+     * @throws SmackException if there was no response from the server.
      */
-    public InBandBytestreamSession establishSession(String targetJID) throws XMPPException {
+    public InBandBytestreamSession establishSession(String targetJID) throws XMPPException, SmackException {
         String sessionID = getNextSessionID();
         return establishSession(targetJID, sessionID);
     }
@@ -418,11 +422,12 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @param targetJID the JID of the user an In-Band Bytestream should be established
      * @param sessionID the session ID for the In-Band Bytestream request
      * @return the session to send/receive data to/from the user
-     * @throws XMPPException if the user doesn't support or accept in-band bytestreams, or if the
+     * @throws XMPPErrorException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
+     * @throws NoResponseException if there was no response from the server.
      */
     public InBandBytestreamSession establishSession(String targetJID, String sessionID)
-                    throws XMPPException {
+                    throws NoResponseException, XMPPErrorException {
         Open byteStreamRequest = new Open(sessionID, this.defaultBlockSize, this.stanza);
         byteStreamRequest.setTo(targetJID);
 

@@ -20,11 +20,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -95,15 +98,12 @@ public class CarbonManager extends Manager {
      * Returns true if XMPP Carbons are supported by the server.
      * 
      * @return true if supported
+     * @throws SmackException if there was no response from the server.
+     * @throws XMPPException 
      */
-    public boolean isSupportedByServer() {
-        try {
-            return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
-                            connection().getServiceName(), CarbonExtension.NAMESPACE);
-        }
-        catch (XMPPException e) {
-            return false;
-        }
+    public boolean isSupportedByServer() throws XMPPException, SmackException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
+                        connection().getServiceName(), CarbonExtension.NAMESPACE);
     }
 
     /**
@@ -138,11 +138,14 @@ public class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      *
-     * @throws XMPPException 
      */
-    public void setCarbonsEnabled(final boolean new_state) throws XMPPException {
-        if (enabled_state == new_state) return;
+    public synchronized void setCarbonsEnabled(final boolean new_state) throws NoResponseException,
+                    XMPPErrorException {
+        if (enabled_state == new_state)
+            return;
 
         IQ setIQ = carbonsEnabledIQ(new_state);
 
@@ -154,8 +157,9 @@ public class CarbonManager extends Manager {
      * Helper method to enable carbons.
      *
      * @throws XMPPException 
+     * @throws SmackException if there was no response from the server.
      */
-    public void enableCarbons() throws XMPPException {
+    public void enableCarbons() throws XMPPException, SmackException {
         setCarbonsEnabled(true);
     }
 
@@ -163,8 +167,9 @@ public class CarbonManager extends Manager {
      * Helper method to disable carbons.
      *
      * @throws XMPPException 
+     * @throws SmackException if there was no response from the server.
      */
-    public void disableCarbons() throws XMPPException {
+    public void disableCarbons() throws XMPPException, SmackException {
         setCarbonsEnabled(false);
     }
 

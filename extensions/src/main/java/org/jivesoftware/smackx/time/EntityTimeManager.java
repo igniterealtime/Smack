@@ -19,11 +19,12 @@ package org.jivesoftware.smackx.time;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -96,11 +97,11 @@ public class EntityTimeManager extends Manager {
         enabled = false;
     }
 
-    public boolean isTimeSupported(String jid) throws XMPPException {
+    public boolean isTimeSupported(String jid) throws NoResponseException, XMPPErrorException  {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, Time.NAMESPACE);
     }
 
-    public Time getTime(String jid) throws XMPPException {
+    public Time getTime(String jid) throws NoResponseException, XMPPErrorException {
         if (!isTimeSupported(jid))
             return null;
 

@@ -17,11 +17,12 @@
 
 package org.jivesoftware.smackx.disco;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -493,9 +494,10 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @param entityID the address of the XMPP entity or null.
      * @return the discovered information.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public DiscoverInfo discoverInfo(String entityID) throws XMPPException {
+    public DiscoverInfo discoverInfo(String entityID) throws NoResponseException, XMPPErrorException {
         if (entityID == null)
             return discoverInfo(null, null);
 
@@ -536,9 +538,10 @@ public class ServiceDiscoveryManager extends Manager {
      * @param entityID the address of the XMPP entity.
      * @param node the optional attribute that supplements the 'jid' attribute.
      * @return the discovered information.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public DiscoverInfo discoverInfo(String entityID, String node) throws XMPPException {
+    public DiscoverInfo discoverInfo(String entityID, String node) throws NoResponseException, XMPPErrorException {
         // Discover the entity's info
         DiscoverInfo disco = new DiscoverInfo();
         disco.setType(IQ.Type.GET);
@@ -555,9 +558,10 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @param entityID the address of the XMPP entity.
      * @return the discovered information.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public DiscoverItems discoverItems(String entityID) throws XMPPException {
+    public DiscoverItems discoverItems(String entityID) throws NoResponseException, XMPPErrorException  {
         return discoverItems(entityID, null);
     }
 
@@ -569,9 +573,10 @@ public class ServiceDiscoveryManager extends Manager {
      * @param entityID the address of the XMPP entity.
      * @param node the optional attribute that supplements the 'jid' attribute.
      * @return the discovered items.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public DiscoverItems discoverItems(String entityID, String node) throws XMPPException {
+    public DiscoverItems discoverItems(String entityID, String node) throws NoResponseException, XMPPErrorException {
         // Discover the entity's items
         DiscoverItems disco = new DiscoverItems();
         disco.setType(IQ.Type.GET);
@@ -590,9 +595,10 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @param entityID the address of the XMPP entity.
      * @return true if the server supports publishing of items.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public boolean canPublishItems(String entityID) throws XMPPException {
+    public boolean canPublishItems(String entityID) throws NoResponseException, XMPPErrorException {
         DiscoverInfo info = discoverInfo(entityID);
         return canPublishItems(info);
      }
@@ -618,10 +624,10 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @param entityID the address of the XMPP entity.
      * @param discoverItems the DiscoveryItems to publish.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public void publishItems(String entityID, DiscoverItems discoverItems)
-            throws XMPPException {
+    public void publishItems(String entityID, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException {
         publishItems(entityID, null, discoverItems);
     }
 
@@ -634,10 +640,11 @@ public class ServiceDiscoveryManager extends Manager {
      * @param entityID the address of the XMPP entity.
      * @param node the attribute that supplements the 'jid' attribute.
      * @param discoverItems the DiscoveryItems to publish.
-     * @throws XMPPException if the operation failed for some reason.
+     * @throws XMPPErrorException if the operation failed for some reason.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void publishItems(String entityID, String node, DiscoverItems discoverItems)
-            throws XMPPException {
+    public void publishItems(String entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException
+            {
         discoverItems.setType(IQ.Type.SET);
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);
@@ -651,9 +658,10 @@ public class ServiceDiscoveryManager extends Manager {
      * @param jid the JID of the remote entity
      * @param feature
      * @return true if the entity supports the feature, false otherwise
-     * @throws XMPPException
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public boolean supportsFeature(String jid, String feature) throws XMPPException {
+    public boolean supportsFeature(String jid, String feature) throws NoResponseException, XMPPErrorException {
         DiscoverInfo result = discoverInfo(jid);
         return result.containsFeature(feature);
     }

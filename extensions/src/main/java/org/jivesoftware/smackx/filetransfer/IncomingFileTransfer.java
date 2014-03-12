@@ -16,7 +16,8 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import java.io.*;
 import java.util.concurrent.*;
@@ -58,10 +59,11 @@ public class IncomingFileTransfer extends FileTransfer {
      * the negotiated stream.
      *
      * @return The negotiated InputStream from which to read the data.
-     * @throws XMPPException If there is an error in the negotiation process an exception
+     * @throws SmackException 
+     * @throws XMPPErrorException If there is an error in the negotiation process an exception
      *                       is thrown.
      */
-    public InputStream recieveFile() throws XMPPException {
+    public InputStream recieveFile() throws SmackException, XMPPErrorException {
         if (inputStream != null) {
             throw new IllegalStateException("Transfer already negotiated!");
         }
@@ -69,7 +71,7 @@ public class IncomingFileTransfer extends FileTransfer {
         try {
             inputStream = negotiateStream();
         }
-        catch (XMPPException e) {
+        catch (XMPPErrorException e) {
             setException(e);
             throw e;
         }
@@ -78,32 +80,31 @@ public class IncomingFileTransfer extends FileTransfer {
     }
 
     /**
-     * This method negotitates the stream and then transfer's the file over the
-     * negotiated stream. The transfered file will be saved at the provided
-     * location.
+     * This method negotitates the stream and then transfer's the file over the negotiated stream.
+     * The transfered file will be saved at the provided location.
      * <p/>
-     * This method will return immedialtly, file transfer progress can be
-     * monitored through several methods:
+     * This method will return immedialtly, file transfer progress can be monitored through several
+     * methods:
      * <p/>
      * <UL>
      * <LI>{@link FileTransfer#getStatus()}
      * <LI>{@link FileTransfer#getProgress()}
      * <LI>{@link FileTransfer#isDone()}
      * </UL>
-     *
+     * 
      * @param file The location to save the file.
-     * @throws XMPPException            when the file transfer fails
+     * @throws SmackException when the file transfer fails
      * @throws IllegalArgumentException This exception is thrown when the the provided file is
-     *                                  either null, or cannot be written to.
+     *         either null, or cannot be written to.
      */
-    public void recieveFile(final File file) throws XMPPException {
+    public void recieveFile(final File file) throws SmackException {
         if (file != null) {
             if (!file.exists()) {
                 try {
                     file.createNewFile();
                 }
                 catch (IOException e) {
-                    throw new XMPPException(
+                    throw new SmackException(
                             "Could not create file to write too", e);
                 }
             }
@@ -120,8 +121,9 @@ public class IncomingFileTransfer extends FileTransfer {
                 try {
                     inputStream = negotiateStream();
                 }
-                catch (XMPPException e) {
-                    handleXMPPException(e);
+                catch (Exception e) {
+                    setStatus(FileTransfer.Status.error);
+                    setException(e);
                     return;
                 }
 
@@ -131,7 +133,7 @@ public class IncomingFileTransfer extends FileTransfer {
                     setStatus(Status.in_progress);
                     writeToStream(inputStream, outputStream);
                 }
-                catch (XMPPException e) {
+                catch (SmackException e) {
                     setStatus(Status.error);
                     setError(Error.stream);
                     setException(e);
@@ -166,12 +168,7 @@ public class IncomingFileTransfer extends FileTransfer {
         transferThread.start();
     }
 
-    private void handleXMPPException(XMPPException e) {
-        setStatus(FileTransfer.Status.error);
-        setException(e);
-    }
-
-    private InputStream negotiateStream() throws XMPPException {
+    private InputStream negotiateStream() throws SmackException, XMPPErrorException {
         setStatus(Status.negotiating_transfer);
         final StreamNegotiator streamNegotiator = negotiator
                 .selectStreamNegotiator(recieveRequest);
@@ -190,13 +187,13 @@ public class IncomingFileTransfer extends FileTransfer {
             inputStream = streamNegotiatorTask.get(15, TimeUnit.SECONDS);
         }
         catch (InterruptedException e) {
-            throw new XMPPException("Interruption while executing", e);
+            throw new SmackException("Interruption while executing", e);
         }
         catch (ExecutionException e) {
-            throw new XMPPException("Error in execution", e);
+            throw new SmackException("Error in execution", e);
         }
         catch (TimeoutException e) {
-            throw new XMPPException("Request timed out", e);
+            throw new SmackException("Request timed out", e);
         }
         finally {
             streamNegotiatorTask.cancel(true);

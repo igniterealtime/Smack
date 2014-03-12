@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.packet.Jingle;
 
@@ -105,8 +106,9 @@ public class JingleSessionRequest {
      *
      * @return Returns the <b><i>IncomingJingleSession</b></i> on which the
      *         negotiation can be carried out.
+     * @throws SmackException 
      */
-    public synchronized JingleSession accept() throws XMPPException {
+    public synchronized JingleSession accept() throws XMPPException, SmackException {
         JingleSession session = null;
         synchronized (manager) {
             session = manager.createIncomingJingleSession(this);

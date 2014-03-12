@@ -19,8 +19,9 @@ package org.jivesoftware.smackx.filetransfer;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -60,17 +61,17 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     }
 
     public OutputStream createOutgoingStream(String streamID, String initiator,
-                    String target) throws XMPPException {
+                    String target) throws NoResponseException, XMPPErrorException {
         InBandBytestreamSession session = this.manager.establishSession(target, streamID);
         session.setCloseBothStreamsEnabled(true);
         return session.getOutputStream();
     }
 
     public InputStream createIncomingStream(StreamInitiation initiation)
-                    throws XMPPException {
+                    throws NoResponseException, XMPPErrorException {
         /*
-         * In-Band Bytestream initiation listener must ignore next in-band
-         * bytestream request with given session ID
+         * In-Band Bytestream initiation listener must ignore next in-band bytestream request with
+         * given session ID
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
@@ -93,7 +94,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return new String[] { InBandBytestreamManager.NAMESPACE };
     }
 
-    InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException {
+    InputStream negotiateIncomingStream(Packet streamInitiation) {
         // build In-Band Bytestream request
         InBandBytestreamRequest request = new ByteStreamRequest(this.manager,
                         (Open) streamInitiation);

@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.packet.StreamError;
+
 import java.util.Random;
 import java.util.logging.Logger;
 /**
@@ -146,7 +148,7 @@ public class ReconnectionManager implements ConnectionListener {
                                 connection.connect();
                             }
                         }
-                        catch (XMPPException e) {
+                        catch (Exception e) {
                             // Fires the failed reconnection notification
                             ReconnectionManager.this.notifyReconnectionFailed(e);
                         }
@@ -191,17 +193,13 @@ public class ReconnectionManager implements ConnectionListener {
 
     public void connectionClosedOnError(Exception e) {
         done = false;
-        if (e instanceof XMPPException) {
-            XMPPException xmppEx = (XMPPException) e;
+        if (e instanceof StreamErrorException) {
+            StreamErrorException xmppEx = (StreamErrorException) e;
             StreamError error = xmppEx.getStreamError();
+            String reason = error.getCode();
 
-            // Make sure the error is not null
-            if (error != null) {
-                String reason = error.getCode();
-
-                if ("conflict".equals(reason)) {
-                    return;
-                }
+            if ("conflict".equals(reason)) {
+                return;
             }
         }
 

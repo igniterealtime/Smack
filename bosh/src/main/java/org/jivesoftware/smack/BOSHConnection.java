@@ -22,6 +22,11 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
 
+import javax.security.sasl.SaslException;
+
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
+import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -29,9 +34,7 @@ import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.igniterealtime.jbosh.BOSHClient;
 import org.igniterealtime.jbosh.BOSHClientConfig;
 import org.igniterealtime.jbosh.BOSHClientConnEvent;
@@ -134,7 +137,7 @@ public class BOSHConnection extends XMPPConnection {
         this.config = config;
     }
 
-    public void connect() throws XMPPException {
+    public void connect() throws SmackException {
         if (connected) {
             throw new IllegalStateException("Already connected to a server.");
         }
@@ -179,7 +182,7 @@ public class BOSHConnection extends XMPPConnection {
                     .setAttribute(BodyQName.createWithPrefix(XMPP_BOSH_NS, "version", "xmpp"), "1.0")
                     .build());
         } catch (Exception e) {
-            throw new XMPPException("Can't connect to " + getServiceName(), e);
+            throw new ConnectionException(e);
         }
 
         // Wait for the response from the server
@@ -197,9 +200,7 @@ public class BOSHConnection extends XMPPConnection {
             done = true;
             String errorMessage = "Timeout reached for the connection to " 
                     + getHost() + ":" + getPort() + ".";
-            throw new XMPPException(
-                    errorMessage,
-                    new XMPPError(XMPPError.Condition.remote_server_timeout, errorMessage));
+            throw new SmackException(errorMessage);
         }
     }
 
@@ -213,7 +214,7 @@ public class BOSHConnection extends XMPPConnection {
         }
     }
 
-    public Roster getRoster() {
+    public Roster getRoster() throws XMPPException, SmackException {
         if (roster == null) {
             return null;
         }
@@ -276,12 +277,12 @@ public class BOSHConnection extends XMPPConnection {
     }
 
     public void login(String username, String password, String resource)
-            throws XMPPException {
+            throws XMPPException, SmackException, IOException {
         if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
+            throw new NotConnectedException();
         }
         if (authenticated) {
-            throw new IllegalStateException("Already logged in to server.");
+            throw new AlreadyLoggedInException();
         }
         // Do partial version of nameprep on the username.
         username = username.toLowerCase().trim();
@@ -295,7 +296,7 @@ public class BOSHConnection extends XMPPConnection {
                 response = saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
-            throw new XMPPException("No non-anonymous SASL authentication mechanism available");
+            throw new SaslException("No non-anonymous SASL authentication mechanism available");
         }
 
         // Set the user.
@@ -338,12 +339,12 @@ public class BOSHConnection extends XMPPConnection {
         }
     }
 
-    public void loginAnonymously() throws XMPPException {
-    	if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
+    public void loginAnonymously() throws XMPPException, SmackException, IOException {
+        if (!isConnected()) {
+            throw new NotConnectedException();
         }
         if (authenticated) {
-            throw new IllegalStateException("Already logged in to server.");
+            throw new AlreadyLoggedInException();
         }
 
         String response;
@@ -352,7 +353,7 @@ public class BOSHConnection extends XMPPConnection {
         }
         else {
             // Authenticate using Non-SASL
-            throw new XMPPException("No anonymous SASL authentication mechanism available");
+            throw new SaslException("No anonymous SASL authentication mechanism available");
         }
 
         // Set the user value.
@@ -666,7 +667,7 @@ public class BOSHConnection extends XMPPConnection {
                                  listener.reconnectionSuccessful();
                             }
                         }
-                        catch (XMPPException e) {
+                        catch (Exception e) {
                             for (ConnectionListener listener : getConnectionListeners()) {
                                 listener.reconnectionFailed(e);
                            }

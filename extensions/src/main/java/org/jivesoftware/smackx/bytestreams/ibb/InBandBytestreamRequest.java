@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.bytestreams.ibb;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -67,9 +66,8 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * send/receive data.
      * 
      * @return the session to send/receive data
-     * @throws XMPPException if stream is invalid.
      */
-    public InBandBytestreamSession accept() throws XMPPException {
+    public InBandBytestreamSession accept() {
         XMPPConnection connection = this.manager.getConnection();
 
         // create In-Band Bytestream session and store it

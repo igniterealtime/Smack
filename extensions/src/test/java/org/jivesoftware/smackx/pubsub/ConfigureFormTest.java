@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.pubsub;
 import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -45,7 +47,7 @@ public class ConfigureFormTest
 	}
 	
 	@Test
-	public void getConfigFormWithInsufficientPriviliges() throws XMPPException
+	public void getConfigFormWithInsufficientPriviliges() throws XMPPException, SmackException
 	{
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
 		PubSubManager mgr = new PubSubManager(con);
@@ -65,14 +67,14 @@ public class ConfigureFormTest
 		{
 			node.getNodeConfiguration();
 		}
-		catch (XMPPException e)
+		catch (XMPPErrorException e)
 		{
 			Assert.assertEquals(XMPPError.Type.AUTH, e.getXMPPError().getType());
 		}
 	}
 
-	@Test (expected=XMPPException.class)
-	public void getConfigFormWithTimeout() throws XMPPException
+	@Test (expected=SmackException.class)
+	public void getConfigFormWithTimeout() throws XMPPException, SmackException
 	{
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
 		PubSubManager mgr = new PubSubManager(con);

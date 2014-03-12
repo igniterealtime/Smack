@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
@@ -232,7 +233,7 @@ public abstract class JingleNegotiator {
      * @return the new packet to send (either a Jingle or an IQ error).
      * @throws XMPPException
      */
-    public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException;
+    public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException;
 
     
     public void start() {

@@ -20,9 +20,10 @@ package org.jivesoftware.smack;
 import java.io.StringReader;
 
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
-import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
+import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.igniterealtime.jbosh.AbstractBody;
@@ -106,12 +107,12 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                             parseFeatures(parser);
                         } else if (parser.getName().equals("failure")) {
                             if ("urn:ietf:params:xml:ns:xmpp-sasl".equals(parser.getNamespace(null))) {
-                                final Failure failure = PacketParserUtils.parseSASLFailure(parser);
-                                connection.getSASLAuthentication().authenticationFailed(failure.getCondition());
+                                final SASLFailure failure = PacketParserUtils.parseSASLFailure(parser);
+                                connection.getSASLAuthentication().authenticationFailed(failure);
                                 connection.processPacket(failure);
                             }
                         } else if (parser.getName().equals("error")) {
-                            throw new XMPPException(PacketParserUtils.parseStreamError(parser));
+                            throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
                         }
                     }
                 } while (eventType != XmlPullParser.END_DOCUMENT);

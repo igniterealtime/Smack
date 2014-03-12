@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
@@ -51,7 +52,7 @@ public abstract class JingleTransportManager {
      *
      * @return the TransportResolver to be used
      */
-    public TransportResolver getResolver(JingleSession session) throws XMPPException {
+    public TransportResolver getResolver(JingleSession session) throws XMPPException, SmackException {
         TransportResolver resolver = createResolver(session);
         if (resolver == null) {
             resolver = new BasicResolver();
@@ -66,6 +67,6 @@ public abstract class JingleTransportManager {
      *
      * @return the TransportResolver
      */
-    protected abstract TransportResolver createResolver(JingleSession session);
+    protected abstract TransportResolver createResolver(JingleSession session) throws SmackException;
 
 }

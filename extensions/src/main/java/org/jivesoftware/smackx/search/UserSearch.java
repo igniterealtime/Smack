@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.search;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -58,10 +59,10 @@ public class UserSearch extends IQ {
      * @param con           the current XMPPConnection.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return the search form received by the server.
-     * @throws org.jivesoftware.smack.XMPPException
-     *          thrown if a server error has occurred.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public Form getSearchForm(XMPPConnection con, String searchService) throws XMPPException {
+    public Form getSearchForm(XMPPConnection con, String searchService) throws NoResponseException, XMPPErrorException {
         UserSearch search = new UserSearch();
         search.setType(IQ.Type.GET);
         search.setTo(searchService);
@@ -77,10 +78,10 @@ public class UserSearch extends IQ {
      * @param searchForm    the <code>Form</code> to send for querying.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return ReportedData the data found from the query.
-     * @throws org.jivesoftware.smack.XMPPException
-     *          thrown if a server error has occurred.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws XMPPException {
+    public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException {
         UserSearch search = new UserSearch();
         search.setType(IQ.Type.SET);
         search.setTo(searchService);
@@ -97,10 +98,10 @@ public class UserSearch extends IQ {
      * @param searchForm    the <code>Form</code> to send for querying.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return ReportedData the data found from the query.
-     * @throws org.jivesoftware.smack.XMPPException
-     *          thrown if a server error has occurred.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws XMPPException {
+    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException {
         SimpleUserSearch search = new SimpleUserSearch();
         search.setForm(searchForm);
         search.setType(IQ.Type.SET);

@@ -42,7 +42,7 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
+import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -636,7 +636,7 @@ public class PacketParserUtils {
      * @return a SASL Failure packet.
      * @throws Exception if an exception occurs while parsing the packet.
      */
-    public static Failure parseSASLFailure(XmlPullParser parser) throws Exception {
+    public static SASLFailure parseSASLFailure(XmlPullParser parser) throws Exception {
         String condition = null;
         boolean done = false;
         while (!done) {
@@ -653,7 +653,7 @@ public class PacketParserUtils {
                 }
             }
         }
-        return new Failure(condition);
+        return new SASLFailure(condition);
     }
 
     /**

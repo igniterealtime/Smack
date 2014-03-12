@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -88,15 +89,12 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
      * 
      * @param jid
      * @return true if supported
+     * @throws SmackException if there was no response from the server.
+     * @throws XMPPException 
      */
-    public boolean isSupported(String jid) {
-        try {
-            return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
-                            DeliveryReceipt.NAMESPACE);
-        }
-        catch (XMPPException e) {
-            return false;
-        }
+    public boolean isSupported(String jid) throws SmackException, XMPPException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
+                        DeliveryReceipt.NAMESPACE);
     }
 
     // handle incoming receipts and receipt requests

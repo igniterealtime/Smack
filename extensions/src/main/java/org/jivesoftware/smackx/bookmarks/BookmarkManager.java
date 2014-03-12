@@ -17,8 +17,11 @@
 
 package org.jivesoftware.smackx.bookmarks;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
 
 import java.util.*;
@@ -46,13 +49,15 @@ public class BookmarkManager {
      * @param connection the connection for which the manager is desired.
      * @return Returns the <i>BookmarkManager</i> for a connection, if it doesn't
      * exist it is created.
-     * @throws XMPPException Thrown if the connection is null or has not yet been authenticated.
+     * @throws XMPPException 
+     * @throws SmackException thrown has not been authenticated.
+     * @throws IllegalArgumentException when the connection is null.
      */
     public synchronized static BookmarkManager getBookmarkManager(XMPPConnection connection)
-            throws XMPPException
+                    throws XMPPException, SmackException
     {
         BookmarkManager manager = (BookmarkManager) bookmarkManagerMap.get(connection);
-        if(manager == null) {
+        if (manager == null) {
             manager = new BookmarkManager(connection);
             bookmarkManagerMap.put(connection, manager);
         }
@@ -68,11 +73,15 @@ public class BookmarkManager {
      * storage:bookmarks namespace.
      *
      * @param connection the connection for persisting and retrieving bookmarks.
-     * @throws XMPPException thrown when the connection is null or has not been authenticated.
+     * @throws SmackException thrown has not been authenticated.
+     * @throws IllegalArgumentException when the connection is null.
      */
-    private BookmarkManager(XMPPConnection connection) throws XMPPException {
-        if(connection == null || !connection.isAuthenticated()) {
-            throw new XMPPException("Invalid connection.");
+    private BookmarkManager(XMPPConnection connection) throws XMPPException, SmackException {
+        if (connection == null) {
+            throw new IllegalArgumentException("connection must not be null.");
+        }
+        if (!connection.isAuthenticated()) {
+            throw new SmackException("connection not authenticated.");
         }
         this.privateDataManager = new PrivateDataManager(connection);
     }
@@ -81,11 +90,11 @@ public class BookmarkManager {
      * Returns all currently bookmarked conferences.
      *
      * @return returns all currently bookmarked conferences
-     * @throws XMPPException thrown when there was an error retrieving the current bookmarks from
-     * the server.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      * @see BookmarkedConference
      */
-    public Collection<BookmarkedConference> getBookmarkedConferences() throws XMPPException {
+    public Collection<BookmarkedConference> getBookmarkedConferences() throws NoResponseException, XMPPErrorException {
         retrieveBookmarks();
         return Collections.unmodifiableCollection(bookmarks.getBookmarkedConferences());
     }
@@ -98,11 +107,12 @@ public class BookmarkManager {
      * @param isAutoJoin whether or not to join this conference automatically on login
      * @param nickname the nickname to use for the user when joining the conference
      * @param password the password to use for the user when joining the conference
-     * @throws XMPPException thrown when there is an issue retrieving the current bookmarks from
+     * @throws XMPPErrorException thrown when there is an issue retrieving the current bookmarks from
      * the server.
+     * @throws NoResponseException if there was no response from the server.
      */
     public void addBookmarkedConference(String name, String jid, boolean isAutoJoin,
-            String nickname, String password) throws XMPPException
+            String nickname, String password) throws NoResponseException, XMPPErrorException
     {
         retrieveBookmarks();
         BookmarkedConference bookmark
@@ -128,12 +138,13 @@ public class BookmarkManager {
      * Removes a conference from the bookmarks.
      *
      * @param jid the jid of the conference to be removed.
-     * @throws XMPPException thrown when there is a problem with the connection attempting to
+     * @throws XMPPErrorException thrown when there is a problem with the connection attempting to
      * retrieve the bookmarks or persist the bookmarks.
+     * @throws NoResponseException if there was no response from the server.
      * @throws IllegalArgumentException thrown when the conference being removed is a shared
      * conference
      */
-    public void removeBookmarkedConference(String jid) throws XMPPException {
+    public void removeBookmarkedConference(String jid) throws NoResponseException, XMPPErrorException {
         retrieveBookmarks();
         Iterator<BookmarkedConference> it = bookmarks.getBookmarkedConferences().iterator();
         while(it.hasNext()) {
@@ -153,9 +164,10 @@ public class BookmarkManager {
      * Returns an unmodifiable collection of all bookmarked urls.
      *
      * @return returns an unmodifiable collection of all bookmarked urls.
-     * @throws XMPPException thrown when there is a problem retriving bookmarks from the server.
+     * @throws XMPPErrorException thrown when there is a problem retriving bookmarks from the server.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public Collection<BookmarkedURL> getBookmarkedURLs() throws XMPPException {
+    public Collection<BookmarkedURL> getBookmarkedURLs() throws NoResponseException, XMPPErrorException {
         retrieveBookmarks();
         return Collections.unmodifiableCollection(bookmarks.getBookmarkedURLS());
     }
@@ -166,10 +178,11 @@ public class BookmarkManager {
      * @param URL the url of the bookmark
      * @param name the name of the bookmark
      * @param isRSS whether or not the url is an rss feed
-     * @throws XMPPException thrown when there is an error retriving or saving bookmarks from or to
+     * @throws XMPPErrorException thrown when there is an error retriving or saving bookmarks from or to
      * the server
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void addBookmarkedURL(String URL, String name, boolean isRSS) throws XMPPException {
+    public void addBookmarkedURL(String URL, String name, boolean isRSS) throws NoResponseException, XMPPErrorException {
         retrieveBookmarks();
         BookmarkedURL bookmark = new BookmarkedURL(URL, name, isRSS);
         List<BookmarkedURL> urls = bookmarks.getBookmarkedURLS();
@@ -191,10 +204,11 @@ public class BookmarkManager {
      *  Removes a url from the bookmarks.
      *
      * @param bookmarkURL the url of the bookmark to remove
-     * @throws XMPPException thrown if there is an error retriving or saving bookmarks from or to
+     * @throws XMPPErrorException thrown if there is an error retriving or saving bookmarks from or to
      * the server.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void removeBookmarkedURL(String bookmarkURL) throws XMPPException {
+    public void removeBookmarkedURL(String bookmarkURL) throws NoResponseException, XMPPErrorException {
         retrieveBookmarks();
         Iterator<BookmarkedURL> it = bookmarks.getBookmarkedURLS().iterator();
         while(it.hasNext()) {
@@ -210,7 +224,7 @@ public class BookmarkManager {
         }
     }
 
-    private Bookmarks retrieveBookmarks() throws XMPPException {
+    private Bookmarks retrieveBookmarks() throws NoResponseException, XMPPErrorException {
         synchronized(bookmarkLock) {
             if(bookmarks == null) {
                 bookmarks = (Bookmarks) privateDataManager.getPrivateData("storage",

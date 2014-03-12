@@ -19,11 +19,9 @@ package org.jivesoftware.smackx.iqlast.packet;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -98,9 +96,9 @@ public class LastActivity extends IQ {
             super();
         }
 
-        public IQ parseIQ(XmlPullParser parser) throws XMPPException, XmlPullParserException {
+        public IQ parseIQ(XmlPullParser parser) throws SmackException, XmlPullParserException {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new XMPPException("Parser not in proper position, or bad XML.");
+                throw new SmackException("Parser not in proper position, or bad XML.");
             }
 
             LastActivity lastActivity = new LastActivity();
@@ -124,23 +122,5 @@ public class LastActivity extends IQ {
             }
             return lastActivity;
         }
-    }
-
-    /**
-     * Retrieve the last activity of a particular jid.
-     * @param con the current XMPPConnection.
-     * @param jid the JID of the user.
-     * @return the LastActivity packet of the jid.
-     * @throws XMPPException thrown if a server error has occured.
-     * @deprecated This method only retreives the lapsed time since the last logout of a particular jid. 
-     * Replaced by {@link  org.jivesoftware.smackx.iqlast.LastActivityManager#getLastActivity(XMPPConnection, String)  getLastActivity}
-     */
-    public static LastActivity getLastActivity(XMPPConnection con, String jid) throws XMPPException {
-        LastActivity activity = new LastActivity();
-        jid = StringUtils.parseBareAddress(jid);
-        activity.setTo(jid);
-
-        LastActivity response = (LastActivity) con.createPacketCollectorAndSend(activity).nextResultOrThrow();
-        return response;
     }
 }

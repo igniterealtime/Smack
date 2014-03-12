@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
@@ -32,12 +33,12 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
         try {
             iceResolver.initializeAndWait();
         }
-        catch (XMPPException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected TransportResolver createResolver(JingleSession session) {
+    protected TransportResolver createResolver(JingleSession session) throws SmackException {
         try {
             iceResolver.resolve(session);
         }

@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -171,7 +172,12 @@ public class AdHocCommandManager extends Manager {
         PacketListener listener = new PacketListener() {
             public void processPacket(Packet packet) {
                 AdHocCommandData requestData = (AdHocCommandData) packet;
-                processAdHocCommand(requestData);
+                try {
+                    processAdHocCommand(requestData);
+                }
+                catch (SmackException e) {
+                    return;
+                }
             }
         };
 
@@ -256,8 +262,9 @@ public class AdHocCommandManager extends Manager {
      * @param jid the full JID to retrieve the commands for.
      * @return the discovered items.
      * @throws XMPPException if the operation failed for some reason.
+     * @throws SmackException if there was no response from the server.
      */
-    public DiscoverItems discoverCommands(String jid) throws XMPPException {
+    public DiscoverItems discoverCommands(String jid) throws XMPPException, SmackException {
         return serviceDiscoveryManager.discoverItems(jid, NAMESPACE);
     }
 
@@ -266,8 +273,9 @@ public class AdHocCommandManager extends Manager {
      *
      * @param jid the full JID to publish the commands to.
      * @throws XMPPException if the operation failed for some reason.
+     * @throws SmackException if there was no response from the server.
      */
-    public void publishCommands(String jid) throws XMPPException {
+    public void publishCommands(String jid) throws XMPPException, SmackException {
         // Collects the commands to publish as items
         DiscoverItems discoverItems = new DiscoverItems();
         Collection<AdHocCommandInfo> xCommandsList = getRegisteredCommands();
@@ -319,8 +327,9 @@ public class AdHocCommandManager extends Manager {
      *
      * @param requestData
      *            the packet to process.
+     * @throws SmackException if there was no response from the server.
      */
-    private void processAdHocCommand(AdHocCommandData requestData) {
+    private void processAdHocCommand(AdHocCommandData requestData) throws SmackException {
         // Only process requests of type SET
         if (requestData.getType() != IQ.Type.SET) {
             return;
@@ -444,7 +453,7 @@ public class AdHocCommandManager extends Manager {
                 connection().sendPacket(response);
 
             }
-            catch (XMPPException e) {
+            catch (XMPPErrorException e) {
                 // If there is an exception caused by the next, complete,
                 // prev or cancel method, then that error is returned to the
                 // requester.
@@ -558,7 +567,7 @@ public class AdHocCommandManager extends Manager {
 
                     connection().sendPacket(response);
                 }
-                catch (XMPPException e) {
+                catch (XMPPErrorException e) {
                     // If there is an exception caused by the next, complete,
                     // prev or cancel method, then that error is returned to the
                     // requester.
@@ -621,10 +630,9 @@ public class AdHocCommandManager extends Manager {
      * @param commandNode the command node that identifies it.
      * @param sessionID the session id of this execution.
      * @return the command instance to execute.
-     * @throws XMPPException if there is problem creating the new instance.
+     * @throws XMPPErrorException if there is problem creating the new instance.
      */
-    private LocalCommand newInstanceOfCmd(String commandNode, String sessionID)
-            throws XMPPException
+    private LocalCommand newInstanceOfCmd(String commandNode, String sessionID) throws XMPPErrorException
     {
         AdHocCommandInfo commandInfo = commands.get(commandNode);
         LocalCommand command;
@@ -635,11 +643,11 @@ public class AdHocCommandManager extends Manager {
             command.setNode(commandInfo.getNode());
         }
         catch (InstantiationException e) {
-            throw new XMPPException(new XMPPError(
+            throw new XMPPErrorException(new XMPPError(
                     XMPPError.Condition.internal_server_error));
         }
         catch (IllegalAccessException e) {
-            throw new XMPPException(new XMPPError(
+            throw new XMPPErrorException(new XMPPError(
                     XMPPError.Condition.internal_server_error));
         }
         return command;

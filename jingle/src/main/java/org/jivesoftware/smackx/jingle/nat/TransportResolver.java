@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
@@ -89,12 +90,12 @@ public abstract class TransportResolver {
     /**
      * Initialize the Resolver
      */
-    public abstract void initialize() throws XMPPException;
+    public abstract void initialize() throws XMPPException, SmackException;
 
     /**
      * Start a the resolution.
      */
-    public abstract void resolve(JingleSession session) throws XMPPException;
+    public abstract void resolve(JingleSession session) throws XMPPException, SmackException;
 
     /**
      * Clear the list of candidates and start a new resolution process.
@@ -352,8 +353,9 @@ public abstract class TransportResolver {
 
     /**
      * Initialize Transport Resolver and wait until it is complete unitialized.
+     * @throws SmackException 
      */
-    public void initializeAndWait() throws XMPPException {
+    public void initializeAndWait() throws XMPPException, SmackException {
         this.initialize();
         try {
             LOGGER.fine("Initializing transport resolver...");

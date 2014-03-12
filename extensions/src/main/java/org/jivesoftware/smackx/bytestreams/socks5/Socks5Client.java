@@ -29,7 +29,9 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
 /**
@@ -65,17 +67,19 @@ class Socks5Client {
      * @param timeout timeout to connect to SOCKS5 proxy in milliseconds
      * @return socket the initialized socket
      * @throws IOException if initializing the socket failed due to a network error
-     * @throws XMPPException if establishing connection to SOCKS5 proxy failed
+     * @throws XMPPErrorException if establishing connection to SOCKS5 proxy failed
      * @throws TimeoutException if connecting to SOCKS5 proxy timed out
      * @throws InterruptedException if the current thread was interrupted while waiting
+     * @throws SmackException if the connection to the SOC
+     * @throws XMPPException 
      */
-    public Socket getSocket(int timeout) throws IOException, XMPPException, InterruptedException,
-                    TimeoutException {
+    public Socket getSocket(int timeout) throws IOException, XMPPErrorException, InterruptedException,
+                    TimeoutException, SmackException, XMPPException {
 
         // wrap connecting in future for timeout
         FutureTask<Socket> futureTask = new FutureTask<Socket>(new Callable<Socket>() {
 
-            public Socket call() throws Exception {
+            public Socket call() throws IOException, SmackException {
 
                 // initialize socket
                 Socket socket = new Socket();
@@ -83,16 +87,23 @@ class Socks5Client {
                                 streamHost.getPort());
                 socket.connect(socketAddress);
 
+                boolean res;
                 // initialize connection to SOCKS5 proxy
-                if (!establish(socket)) {
-
-                    // initialization failed, close socket
+                try {
+                    res = establish(socket);
+                }
+                catch (SmackException e) {
                     socket.close();
-                    throw new XMPPException("establishing connection to SOCKS5 proxy failed");
-
+                    throw e;
                 }
 
-                return socket;
+                if (res) {
+                    return socket;
+                }
+                else {
+                    socket.close();
+                    throw new SmackException("SOCKS5 negotiation failed");
+                }
             }
 
         });
@@ -110,8 +121,8 @@ class Socks5Client {
                 if (cause instanceof IOException) {
                     throw (IOException) cause;
                 }
-                if (cause instanceof XMPPException) {
-                    throw (XMPPException) cause;
+                if (cause instanceof SmackException) {
+                    throw (SmackException) cause;
                 }
             }
 
@@ -132,49 +143,49 @@ class Socks5Client {
      * @param socket connected to a SOCKS5 proxy
      * @return <code>true</code> if if a stream could be established, otherwise <code>false</code>.
      *         If <code>false</code> is returned the given Socket should be closed.
-     * @throws IOException if a network error occurred
+     * @throws SmackException 
      */
-    protected boolean establish(Socket socket) throws IOException {
+    protected boolean establish(Socket socket) throws SmackException {
 
+        byte[] connectionRequest;
+        byte[] connectionResponse;
         /*
          * use DataInputStream/DataOutpuStream to assure read and write is completed in a single
          * statement
          */
-        DataInputStream in = new DataInputStream(socket.getInputStream());
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-        // authentication negotiation
-        byte[] cmd = new byte[3];
-
-        cmd[0] = (byte) 0x05; // protocol version 5
-        cmd[1] = (byte) 0x01; // number of authentication methods supported
-        cmd[2] = (byte) 0x00; // authentication method: no-authentication required
-
-        out.write(cmd);
-        out.flush();
-
-        byte[] response = new byte[2];
-        in.readFully(response);
-
-        // check if server responded with correct version and no-authentication method
-        if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
-            return false;
-        }
-
-        // request SOCKS5 connection with given address/digest
-        byte[] connectionRequest = createSocks5ConnectRequest();
-        out.write(connectionRequest);
-        out.flush();
-
-        // receive response
-        byte[] connectionResponse;
         try {
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+            // authentication negotiation
+            byte[] cmd = new byte[3];
+
+            cmd[0] = (byte) 0x05; // protocol version 5
+            cmd[1] = (byte) 0x01; // number of authentication methods supported
+            cmd[2] = (byte) 0x00; // authentication method: no-authentication required
+
+            out.write(cmd);
+            out.flush();
+
+            byte[] response = new byte[2];
+            in.readFully(response);
+
+            // check if server responded with correct version and no-authentication method
+            if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
+                return false;
+            }
+
+            // request SOCKS5 connection with given address/digest
+            connectionRequest = createSocks5ConnectRequest();
+            out.write(connectionRequest);
+            out.flush();
+
+            // receive response
             connectionResponse = Socks5Utils.receiveSocks5Message(in);
         }
-        catch (XMPPException e) {
-            return false; // server answered in an unsupported way
+        catch (IOException e) {
+            throw new SmackException(e);
         }
-
         // verify response
         connectionRequest[1] = (byte) 0x00; // set expected return status to 0
         return Arrays.equals(connectionRequest, connectionResponse);

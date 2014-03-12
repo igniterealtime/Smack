@@ -292,14 +292,25 @@ public class XMPPError {
         public static final Condition unexpected_request = new Condition("unexpected-request");
         public static final Condition request_timeout = new Condition("request-timeout");
 
-        private String value;
+        private final String value;
 
         public Condition(String value) {
             this.value = value;
         }
 
+        @Override 
         public String toString() {
             return value;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return toString().equals(other.toString());
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
         }
     }
 

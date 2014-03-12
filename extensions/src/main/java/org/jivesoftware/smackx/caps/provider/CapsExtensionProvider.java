@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2013 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.caps.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class CapsExtensionProvider implements PacketExtensionProvider {
 
     public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException,
-            XMPPException {
+            SmackException {
         String hash = null;
         String version = null;
         String node = null;
@@ -39,20 +39,20 @@ public class CapsExtensionProvider implements PacketExtensionProvider {
             version = parser.getAttributeValue(null, "ver");
             node = parser.getAttributeValue(null, "node");
         } else {
-            throw new XMPPException("Malformed Caps element");
+            throw new SmackException("Malformed Caps element");
         }
 
         parser.next();
 
         if (!(parser.getEventType() == XmlPullParser.END_TAG
                 && parser.getName().equalsIgnoreCase(EntityCapsManager.ELEMENT))) {
-            throw new XMPPException("Malformed nested Caps element");
+            throw new SmackException("Malformed nested Caps element");
         }
 
         if (hash != null && version != null && node != null) {
             return new CapsExtension(node, version, hash);
         } else {
-            throw new XMPPException("Caps elment with missing attributes");
+            throw new SmackException("Caps elment with missing attributes");
         }
     }
 }

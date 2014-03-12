@@ -20,8 +20,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.TimeoutException;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
@@ -62,8 +65,8 @@ class Socks5ClientForInitiator extends Socks5Client {
         this.target = target;
     }
 
-    public Socket getSocket(int timeout) throws IOException, XMPPException, InterruptedException,
-                    TimeoutException {
+    public Socket getSocket(int timeout) throws IOException, InterruptedException,
+                    TimeoutException, XMPPException, SmackException {
         Socket socket = null;
 
         // check if stream host is the local SOCKS5 proxy
@@ -71,7 +74,7 @@ class Socks5ClientForInitiator extends Socks5Client {
             Socks5Proxy socks5Server = Socks5Proxy.getSocks5Proxy();
             socket = socks5Server.getSocket(this.digest);
             if (socket == null) {
-                throw new XMPPException("target is not connected to SOCKS5 proxy");
+                throw new SmackException("target is not connected to SOCKS5 proxy");
             }
         }
         else {
@@ -80,9 +83,13 @@ class Socks5ClientForInitiator extends Socks5Client {
             try {
                 activate();
             }
-            catch (XMPPException e) {
+            catch (XMPPException e1) {
                 socket.close();
-                throw new XMPPException("activating SOCKS5 Bytestream failed", e);
+                throw e1;
+            }
+            catch (NoResponseException e2) {
+                socket.close();
+                throw e2;
             }
 
         }
@@ -93,8 +100,11 @@ class Socks5ClientForInitiator extends Socks5Client {
     /**
      * Activates the SOCKS5 Bytestream by sending a XMPP SOCKS5 Bytestream activation packet to the
      * SOCKS5 proxy.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
+     * @throws SmackException if there was no response from the server.
      */
-    private void activate() throws XMPPException {
+    private void activate() throws NoResponseException, XMPPErrorException {
         Bytestream activate = createStreamHostActivation();
         // if activation fails #nextResultOrThrow() throws an exception
         connection.createPacketCollectorAndSend(activate).nextResultOrThrow();

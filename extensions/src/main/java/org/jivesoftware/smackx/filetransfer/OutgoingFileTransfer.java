@@ -16,7 +16,10 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
 
 import java.io.*;
@@ -108,9 +111,10 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 * @throws XMPPException
 	 *             Thrown if an error occurs during the file transfer
 	 *             negotiation process.
+	 * @throws SmackException if there was no response from the server.
 	 */
 	public synchronized OutputStream sendFile(String fileName, long fileSize,
-			String description) throws XMPPException {
+			String description) throws XMPPException, SmackException {
 		if (isDone() || outputStream != null) {
 			throw new IllegalStateException(
 					"The negotation process has already"
@@ -119,7 +123,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 		try {
 			setFileInfo(fileName, fileSize);
 			this.outputStream = negotiateStream(fileName, fileSize, description);
-		} catch (XMPPException e) {
+		} catch (XMPPErrorException e) {
 			handleXMPPException(e);
 			throw e;
 		}
@@ -166,9 +170,12 @@ public class OutgoingFileTransfer extends FileTransfer {
 							fileName, fileSize, description);
                     progress.outputStreamEstablished(OutgoingFileTransfer.this.outputStream);
                 }
-                catch (XMPPException e) {
+                catch (XMPPErrorException e) {
 					handleXMPPException(e);
 				}
+                catch (Exception e) {
+                    setException(e);
+                }
 			}
 		}, "File Transfer Negotiation " + streamID);
 		transferThread.start();
@@ -194,12 +201,12 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 *
      * @param file the file to transfer to the remote entity.
      * @param description a description for the file to transfer.
-	 * @throws XMPPException
+	 * @throws SmackException
 	 *             If there is an error during the negotiation process or the
 	 *             sending of the file.
 	 */
 	public synchronized void sendFile(final File file, final String description)
-			throws XMPPException {
+			throws SmackException {
 		checkTransferThread();
 		if (file == null || !file.exists() || !file.canRead()) {
 			throw new IllegalArgumentException("Could not read file");
@@ -212,10 +219,13 @@ public class OutgoingFileTransfer extends FileTransfer {
 				try {
 					outputStream = negotiateStream(file.getName(), file
 							.length(), description);
-				} catch (XMPPException e) {
+				} catch (XMPPErrorException e) {
 					handleXMPPException(e);
 					return;
 				}
+                catch (Exception e) {
+                    setException(e);
+                }
 				if (outputStream == null) {
 					return;
 				}
@@ -232,7 +242,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 					setStatus(FileTransfer.Status.error);
 					setError(Error.bad_file);
 					setException(e);
-				} catch (XMPPException e) {
+				} catch (SmackException e) {
 					setStatus(FileTransfer.Status.error);
 					setException(e);
 				} finally {
@@ -279,10 +289,13 @@ public class OutgoingFileTransfer extends FileTransfer {
                 //Create packet filter
                 try {
 					outputStream = negotiateStream(fileName, fileSize, description);
-				} catch (XMPPException e) {
+				} catch (XMPPErrorException e) {
 					handleXMPPException(e);
 					return;
 				}
+                catch (Exception e) {
+                    setException(e);
+                }
 				if (outputStream == null) {
 					return;
 				}
@@ -292,7 +305,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 				}
 				try {
 					writeToStream(in, outputStream);
-				} catch (XMPPException e) {
+				} catch (SmackException e) {
 					setStatus(FileTransfer.Status.error);
 					setException(e);
 				} finally {
@@ -314,7 +327,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 		transferThread.start();
 	}
 
-	private void handleXMPPException(XMPPException e) {
+	private void handleXMPPException(XMPPErrorException e) {
 		XMPPError error = e.getXMPPError();
 		if (error != null) {
 			String condition = error.getCondition();
@@ -350,11 +363,11 @@ public class OutgoingFileTransfer extends FileTransfer {
 	}
 
 	private OutputStream negotiateStream(String fileName, long fileSize,
-			String description) throws XMPPException {
+			String description) throws SmackException, XMPPException {
 		// Negotiate the file transfer profile
 
         if (!updateStatus(Status.initial, Status.negotiating_transfer)) {
-            throw new XMPPException("Illegal state change");
+            throw new IllegalStateChangeException();
         }
 		StreamNegotiator streamNegotiator = negotiator.negotiateOutgoingTransfer(
 				getPeer(), streamID, fileName, fileSize, description,
@@ -368,13 +381,13 @@ public class OutgoingFileTransfer extends FileTransfer {
 
         // Negotiate the stream
         if (!updateStatus(Status.negotiating_transfer, Status.negotiating_stream)) {
-            throw new XMPPException("Illegal state change");
+            throw new IllegalStateChangeException();
         }
 		outputStream = streamNegotiator.createOutgoingStream(streamID,
                 initiator, getPeer());
 
         if (!updateStatus(Status.negotiating_stream, Status.negotiated)) {
-            throw new XMPPException("Illegal state change");
+            throw new IllegalStateChangeException();
 		}
 		return outputStream;
 	}

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -201,8 +201,8 @@ public abstract class FileTransfer {
         }
     }
 
-	protected void writeToStream(final InputStream in, final OutputStream out)
-			throws XMPPException
+    protected void writeToStream(final InputStream in, final OutputStream out)
+                    throws SmackException
     {
 		final byte[] b = new byte[BUFFER_SIZE];
 		int count = 0;
@@ -213,7 +213,7 @@ public abstract class FileTransfer {
 			try {
 				out.write(b, 0, count);
 			} catch (IOException e) {
-				throw new XMPPException("error writing to output stream", e);
+				throw new SmackException("error writing to output stream", e);
 			}
 
 			amountWritten += count;
@@ -222,7 +222,7 @@ public abstract class FileTransfer {
 			try {
 				count = in.read(b);
 			} catch (IOException e) {
-				throw new XMPPException("error reading from input stream", e);
+				throw new SmackException("error reading from input stream", e);
 			}
 		} while (count != -1 && !getStatus().equals(Status.cancelled));
 

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -53,14 +53,14 @@ class Socks5Utils {
      * @param in the DataInputStream to read the message from
      * @return the SOCKS5 message
      * @throws IOException if a network error occurred
-     * @throws XMPPException if the SOCKS5 message contains an unsupported address type
+     * @throws SmackException if the SOCKS5 message contains an unsupported address type
      */
-    public static byte[] receiveSocks5Message(DataInputStream in) throws IOException, XMPPException {
+    public static byte[] receiveSocks5Message(DataInputStream in) throws IOException, SmackException {
         byte[] header = new byte[5];
         in.readFully(header, 0, 5);
 
         if (header[3] != (byte) 0x03) {
-            throw new XMPPException("Unsupported SOCKS5 address type");
+            throw new SmackException("Unsupported SOCKS5 address type");
         }
 
         int addressLength = header[4];

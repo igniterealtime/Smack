@@ -23,7 +23,7 @@ import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Client;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Utils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
@@ -81,9 +81,9 @@ public class Socks5ClientTest {
 
                     fail("exception should be thrown");
                 }
-                catch (XMPPException e) {
+                catch (SmackException e) {
                     assertTrue(e.getMessage().contains(
-                                    "establishing connection to SOCKS5 proxy failed"));
+                                    "SOCKS5 negotiation failed"));
                 }
                 catch (Exception e) {
                     fail(e.getMessage());
@@ -138,9 +138,9 @@ public class Socks5ClientTest {
 
                     fail("exception should be thrown");
                 }
-                catch (XMPPException e) {
+                catch (SmackException e) {
                     assertTrue(e.getMessage().contains(
-                                    "establishing connection to SOCKS5 proxy failed"));
+                                    "Unsupported SOCKS5 address type"));
                 }
                 catch (Exception e) {
                     fail(e.getMessage());
@@ -201,9 +201,9 @@ public class Socks5ClientTest {
 
                     fail("exception should be thrown");
                 }
-                catch (XMPPException e) {
+                catch (SmackException e) {
                     assertTrue(e.getMessage().contains(
-                                    "establishing connection to SOCKS5 proxy failed"));
+                                    "SOCKS5 negotiation failed"));
                 }
                 catch (Exception e) {
                     fail(e.getMessage());

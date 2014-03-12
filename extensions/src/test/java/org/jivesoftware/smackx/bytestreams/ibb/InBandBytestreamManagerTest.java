@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
@@ -55,9 +57,10 @@ public class InBandBytestreamManagerTest {
     /**
      * Initialize fields used in the tests.
      * @throws XMPPException 
+     * @throws SmackException 
      */
     @Before
-    public void setup() throws XMPPException {
+    public void setup() throws XMPPException, SmackException {
 
         // build protocol verifier
         protocol = new Protocol();
@@ -97,9 +100,11 @@ public class InBandBytestreamManagerTest {
      * Invoking {@link InBandBytestreamManager#establishSession(String)} should
      * throw an exception if the given target does not support in-band
      * bytestream.
+     * @throws SmackException 
+     * @throws XMPPException 
      */
     @Test
-    public void shouldFailIfTargetDoesNotSupportIBB() {
+    public void shouldFailIfTargetDoesNotSupportIBB() throws SmackException, XMPPException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         try {
@@ -113,7 +118,7 @@ public class InBandBytestreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (XMPPErrorException e) {
             assertEquals(XMPPError.Condition.feature_not_implemented.toString(),
                             e.getXMPPError().getCondition());
         }
@@ -147,7 +152,7 @@ public class InBandBytestreamManagerTest {
     }
 
     @Test
-    public void shouldUseConfiguredStanzaType() {
+    public void shouldUseConfiguredStanzaType() throws SmackException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
         byteStreamManager.setStanza(StanzaType.MESSAGE);
 

@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -249,11 +249,11 @@ public class FileTransferNegotiator {
      *
      * @param request The related file transfer request.
      * @return The file transfer object that handles the transfer
-     * @throws XMPPException If there are either no stream methods contained in the packet, or
+     * @throws XMPPErrorException If there are either no stream methods contained in the packet, or
      *                       there is not an appropriate stream method.
      */
     public StreamNegotiator selectStreamNegotiator(
-            FileTransferRequest request) throws XMPPException {
+            FileTransferRequest request) throws XMPPErrorException {
         StreamInitiation si = request.getStreamInitiation();
         FormField streamMethodField = getStreamMethodField(si
                 .getFeatureNegotiationForm());
@@ -265,7 +265,7 @@ public class FileTransferNegotiator {
                     IQ.Type.ERROR);
             iqPacket.setError(error);
             connection.sendPacket(iqPacket);
-            throw new XMPPException(errorMessage, error);
+            throw new XMPPErrorException(errorMessage, error);
         }
 
         // select the appropriate protocol
@@ -274,7 +274,7 @@ public class FileTransferNegotiator {
         try {
             selectedStreamNegotiator = getNegotiator(streamMethodField);
         }
-        catch (XMPPException e) {
+        catch (XMPPErrorException e) {
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                     IQ.Type.ERROR);
             iqPacket.setError(e.getXMPPError());
@@ -300,7 +300,7 @@ public class FileTransferNegotiator {
     }
 
     private StreamNegotiator getNegotiator(final FormField field)
-            throws XMPPException {
+            throws XMPPErrorException {
         String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
@@ -317,7 +317,7 @@ public class FileTransferNegotiator {
         if (!isByteStream && !isIBB) {
             XMPPError error = new XMPPError(XMPPError.Condition.bad_request,
                     "No acceptable transfer mechanism");
-            throw new XMPPException(error.getMessage(), error);
+            throw new XMPPErrorException(error);
         }
 
        //if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
@@ -389,11 +389,11 @@ public class FileTransferNegotiator {
      * @param responseTimeout The amount of time, in milliseconds, to wait for the remote
      *                        user to respond. If they do not respond in time, this
      * @return Returns the stream negotiator selected by the peer.
-     * @throws XMPPException Thrown if there is an error negotiating the file transfer.
+     * @throws XMPPErrorException Thrown if there is an error negotiating the file transfer.
      */
     public StreamNegotiator negotiateOutgoingTransfer(final String userID,
             final String streamID, final String fileName, final long size,
-            final String desc, int responseTimeout) throws XMPPException {
+            final String desc, int responseTimeout) throws XMPPErrorException {
         StreamInitiation si = new StreamInitiation();
         si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));
@@ -420,11 +420,8 @@ public class FileTransferNegotiator {
                         .getFeatureNegotiationForm()));
 
             }
-            else if (iqResponse.getType().equals(IQ.Type.ERROR)) {
-                throw new XMPPException(iqResponse.getError());
-            }
             else {
-                throw new XMPPException("File transfer response unreadable");
+                throw new XMPPErrorException(iqResponse.getError());
             }
         }
         else {
@@ -433,7 +430,7 @@ public class FileTransferNegotiator {
     }
 
     private StreamNegotiator getOutgoingNegotiator(final FormField field)
-            throws XMPPException {
+            throws XMPPErrorException {
         String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
@@ -450,7 +447,7 @@ public class FileTransferNegotiator {
         if (!isByteStream && !isIBB) {
             XMPPError error = new XMPPError(XMPPError.Condition.bad_request,
                     "No acceptable transfer mechanism");
-            throw new XMPPException(error.getMessage(), error);
+            throw new XMPPErrorException(error);
         }
 
         if (isByteStream && isIBB) {

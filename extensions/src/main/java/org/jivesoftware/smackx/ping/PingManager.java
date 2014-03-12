@@ -23,15 +23,18 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.SmackError;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -163,14 +166,15 @@ public class PingManager extends Manager {
      * @param jid The id of the entity the ping is being sent to
      * @param pingTimeout The time to wait for a reply
      * @return true if a reply was received from the entity, false otherwise.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public boolean ping(String jid, long pingTimeout) {
+    public boolean ping(String jid, long pingTimeout) throws NoResponseException {
         Ping ping = new Ping(jid);
         try {
             connection().createPacketCollectorAndSend(ping).nextResultOrThrow();
         }
         catch (XMPPException exc) {
-            return (jid.equals(connection().getServiceName()) && (exc.getSmackError() != SmackError.NO_RESPONSE_FROM_SERVER));
+            return jid.equals(connection().getServiceName());
         }
         return true;
     }
@@ -181,8 +185,9 @@ public class PingManager extends Manager {
      * 
      * @param jid The id of the entity the ping is being sent to
      * @return true if a reply was received from the entity, false otherwise.
+     * @throws SmackException if there was no response from the server.
      */
-    public boolean ping(String jid) {
+    public boolean ping(String jid) throws SmackException {
         return ping(jid, connection().getPacketReplyTimeout());
     }
 
@@ -191,9 +196,10 @@ public class PingManager extends Manager {
      * 
      * @param jid The id of the entity the query is being sent to
      * @return true if it supports ping, false otherwise.
-     * @throws XMPPException An XMPP related error occurred during the request 
+     * @throws XMPPErrorException An XMPP related error occurred during the request 
+     * @throws NoResponseException if there was no response from the server.
      */
-    public boolean isPingSupported(String jid) throws XMPPException {
+    public boolean isPingSupported(String jid) throws NoResponseException, XMPPErrorException  {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, PingManager.NAMESPACE);
     }
 
@@ -205,8 +211,9 @@ public class PingManager extends Manager {
      * {@link #isPingSupported(String)} is false.
      * 
      * @return true if a reply was received from the server, false otherwise.
+     * @throws SmackException if there was no response from the server.
      */
-    public boolean pingMyServer() {
+    public boolean pingMyServer() throws SmackException {
         return pingMyServer(true);
     }
 
@@ -219,8 +226,9 @@ public class PingManager extends Manager {
      *
      * @param notifyListeners Notify the PingFailedListener in case of error if true
      * @return true if the user's server could be pinged.
+     * @throws SmackException if there was no response from the server.
      */
-    public boolean pingMyServer(boolean notifyListeners) {
+    public boolean pingMyServer(boolean notifyListeners) throws SmackException {
         boolean res = ping(connection().getServiceName());
         if (res) {
             pongReceived();
@@ -327,7 +335,13 @@ public class PingManager extends Manager {
                             return;
                         }
                     }
-                    res = pingMyServer(false);
+                    try {
+                        res = pingMyServer(false);
+                    }
+                    catch (SmackException e) {
+                        LOGGER.log(Level.WARNING, "SmackError while pinging server", e);
+                        res = false;
+                    }
                     // stop when we receive a pong back
                     if (res) {
                         lastSuccessfulAutomaticPing = System.currentTimeMillis();

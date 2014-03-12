@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.ContentNegotiator;
@@ -160,7 +161,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         try {
             sendTransportCandidatesOffer();
             setNegotiatorState(JingleNegotiatorState.PENDING);
-        } catch (XMPPException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -528,8 +529,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * Create a Jingle packet where we announce our transport candidates.
      *
      * @throws XMPPException
+     * @throws SmackException 
      */
-    private void sendTransportCandidatesOffer() throws XMPPException {
+    private void sendTransportCandidatesOffer() throws XMPPException, SmackException {
         List<TransportCandidate> notOffered = resolver.getCandidatesList();
 
         notOffered.removeAll(offeredCandidates);
@@ -572,8 +574,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param iq the packet received
      * @return the new Jingle packet to send.
      * @throws XMPPException
+     * @throws SmackException 
      */
-    public final List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException {
+    public final List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
 
@@ -641,8 +644,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @return an IQ packet
      * @throws XMPPException
+     * @throws SmackException 
      */
-    private Jingle receiveResult(IQ iq) throws XMPPException {
+    private Jingle receiveResult(IQ iq) throws XMPPException, SmackException {
         Jingle response = null;
 
         sendTransportCandidatesOffer();
@@ -655,8 +659,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *  @param jingle
      *  @param jingleTransport
      *  @return the iq
+     * @throws SmackException 
      */
-    private IQ receiveSessionInitiateAction(Jingle jingle) throws XMPPException {
+    private IQ receiveSessionInitiateAction(Jingle jingle) throws XMPPException, SmackException {
         IQ response = null;
 
         // Parse the Jingle and get any proposed transport candidates

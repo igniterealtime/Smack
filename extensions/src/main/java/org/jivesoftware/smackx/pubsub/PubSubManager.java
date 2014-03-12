@@ -20,8 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -78,10 +79,10 @@ final public class PubSubManager
 	 * Creates an instant node, if supported.
 	 * 
 	 * @return The node that was created
-	 * @exception XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public LeafNode createNode()
-		throws XMPPException
+	public LeafNode createNode() throws NoResponseException, XMPPErrorException
 	{
 		PubSub reply = (PubSub)sendPubsubPacket(Type.SET, new NodeExtension(PubSubElementType.CREATE));
 		NodeExtension elem = (NodeExtension)reply.getExtension("create", PubSubNamespace.BASIC.getXmlns());
@@ -99,10 +100,10 @@ final public class PubSubManager
 	 * @param id The id of the node, which must be unique within the 
 	 * pubsub service
 	 * @return The node that was created
-	 * @exception XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public LeafNode createNode(String id)
-		throws XMPPException
+	public LeafNode createNode(String id) throws NoResponseException, XMPPErrorException
 	{
 		return (LeafNode)createNode(id, null);
 	}
@@ -116,10 +117,10 @@ final public class PubSubManager
 	 * pubsub service
 	 * @param config The configuration for the node
 	 * @return The node that was created
-	 * @exception XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public Node createNode(String name, Form config)
-		throws XMPPException
+	public Node createNode(String name, Form config) throws NoResponseException, XMPPErrorException
 	{
 		PubSub request = createPubsubPacket(to, Type.SET, new NodeExtension(PubSubElementType.CREATE, name));
 		boolean isLeafNode = true;
@@ -149,11 +150,11 @@ final public class PubSubManager
 	 * 
 	 * @param id - The unique id of the node
 	 * @return the node
-	 * @throws XMPPException The node does not exist
+	 * @throws XMPPErrorException The node does not exist
+	 * @throws NoResponseException if there was no response from the server.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Node> T getNode(String id)
-		throws XMPPException
+	public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException
 	{
 		Node node = nodeMap.get(id);
 		
@@ -186,11 +187,10 @@ final public class PubSubManager
 	 * @param nodeId - The id of the collection node for which the child 
 	 * nodes will be returned.  
 	 * @return {@link DiscoverItems} representing the existing nodes
-	 * 
-	 * @throws XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException if there was no response from the server.
 	 */
-	public DiscoverItems discoverNodes(String nodeId)
-		throws XMPPException
+	public DiscoverItems discoverNodes(String nodeId) throws NoResponseException, XMPPErrorException
 	{
 		DiscoverItems items = new DiscoverItems();
 		
@@ -205,11 +205,10 @@ final public class PubSubManager
 	 * Gets the subscriptions on the root node.
 	 * 
 	 * @return List of exceptions
-	 * 
-	 * @throws XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public List<Subscription> getSubscriptions()
-		throws XMPPException
+	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException
 	{
 		Packet reply = sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.SUBSCRIPTIONS));
 		SubscriptionsExtension subElem = (SubscriptionsExtension)reply.getExtension(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
@@ -220,11 +219,11 @@ final public class PubSubManager
 	 * Gets the affiliations on the root node.
 	 * 
 	 * @return List of affiliations
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 * 
-	 * @throws XMPPException
 	 */
-	public List<Affiliation> getAffiliations()
-		throws XMPPException
+	public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException
 	{
 		PubSub reply = (PubSub)sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.AFFILIATIONS));
 		AffiliationsExtension listElem = (AffiliationsExtension)reply.getExtension(PubSubElementType.AFFILIATIONS);
@@ -235,10 +234,10 @@ final public class PubSubManager
 	 * Delete the specified node
 	 * 
 	 * @param nodeId
-	 * @throws XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public void deleteNode(String nodeId)
-		throws XMPPException
+	public void deleteNode(String nodeId) throws NoResponseException, XMPPErrorException
 	{
 		sendPubsubPacket(Type.SET, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
 		nodeMap.remove(nodeId);
@@ -248,9 +247,10 @@ final public class PubSubManager
 	 * Returns the default settings for Node configuration.
 	 * 
 	 * @return configuration form containing the default settings.
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public ConfigureForm getDefaultConfiguration()
-		throws XMPPException
+	public ConfigureForm getDefaultConfiguration() throws NoResponseException, XMPPErrorException
 	{
 		// Errors will cause exceptions in getReply, so it only returns
 		// on success.
@@ -263,24 +263,21 @@ final public class PubSubManager
 	 * as a standard {@link DiscoverInfo} instance.
 	 * 
 	 * @return The supported features
-	 * 
-	 * @throws XMPPException
+	 * @throws XMPPErrorException 
+	 * @throws NoResponseException 
 	 */
-	public DiscoverInfo getSupportedFeatures()
-		throws XMPPException
+	public DiscoverInfo getSupportedFeatures() throws NoResponseException, XMPPErrorException
 	{
 		ServiceDiscoveryManager mgr = ServiceDiscoveryManager.getInstanceFor(con);
 		return mgr.discoverInfo(to);
 	}
 	
-	private Packet sendPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns)
-		throws XMPPException
+	private Packet sendPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns) throws NoResponseException, XMPPErrorException
 	{
 		return sendPubsubPacket(con, to, type, ext, ns);
 	}
 
-	private Packet sendPubsubPacket(Type type, PacketExtension ext)
-		throws XMPPException
+	private Packet sendPubsubPacket(Type type, PacketExtension ext) throws NoResponseException, XMPPErrorException
 	{
 		return sendPubsubPacket(type, ext, null);
 	}
@@ -305,26 +302,22 @@ final public class PubSubManager
 		return request;
 	}
 
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext)
-		throws XMPPException
+	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext) throws NoResponseException, XMPPErrorException
 	{
 		return sendPubsubPacket(con, to, type, ext, null);
 	}
 	
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext, PubSubNamespace ns)
-		throws XMPPException
+	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext, PubSubNamespace ns) throws NoResponseException, XMPPErrorException
 	{
 		return con.createPacketCollectorAndSend(createPubsubPacket(to, type, ext, ns)).nextResultOrThrow();
 	}
 
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet)
-		throws XMPPException
+	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet) throws NoResponseException, XMPPErrorException
 	{
 		return sendPubsubPacket(con, to, type, packet, null);
 	}
 
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet, PubSubNamespace ns)
-		throws XMPPException
+	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet, PubSubNamespace ns) throws NoResponseException, XMPPErrorException
 	{
 		return con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}

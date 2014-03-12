@@ -16,7 +16,8 @@
  */
 package org.jivesoftware.smackx.commands;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
@@ -207,9 +208,9 @@ public abstract class AdHocCommand {
      * command. It is invoked on every command. If there is a problem executing
      * the command it throws an XMPPException.
      * 
-     * @throws XMPPException if there is an error executing the command.
+     * @throws XMPPErrorException if there is an error executing the command.
      */
-    public abstract void execute() throws XMPPException;
+    public abstract void execute() throws NoResponseException, XMPPErrorException;
 
     /**
      * Executes the next action of the command with the information provided in
@@ -219,9 +220,9 @@ public abstract class AdHocCommand {
      * XMPPException.
      * 
      * @param response the form answer of the previous stage.
-     * @throws XMPPException if there is a problem executing the command.
+     * @throws XMPPErrorException if there is a problem executing the command.
      */
-    public abstract void next(Form response) throws XMPPException;
+    public abstract void next(Form response) throws NoResponseException, XMPPErrorException;
 
     /**
      * Completes the command execution with the information provided in the
@@ -231,9 +232,9 @@ public abstract class AdHocCommand {
      * XMPPException.
      * 
      * @param response the form answer of the previous stage.
-     * @throws XMPPException if there is a problem executing the command.
+     * @throws XMPPErrorException if there is a problem executing the command.
      */
-    public abstract void complete(Form response) throws XMPPException;
+    public abstract void complete(Form response) throws NoResponseException, XMPPErrorException;
 
     /**
      * Goes to the previous stage. The requester is asking to re-send the
@@ -241,18 +242,18 @@ public abstract class AdHocCommand {
      * the previous one. If there is a problem executing the command it throws
      * an XMPPException.
      * 
-     * @throws XMPPException if there is a problem executing the command.
+     * @throws XMPPErrorException if there is a problem executing the command.
      */
-    public abstract void prev() throws XMPPException;
+    public abstract void prev() throws NoResponseException, XMPPErrorException;
 
     /**
      * Cancels the execution of the command. This can be invoked on any stage of
      * the execution. If there is a problem executing the command it throws an
      * XMPPException.
      * 
-     * @throws XMPPException if there is a problem executing the command.
+     * @throws XMPPErrorException if there is a problem executing the command.
      */
-    public abstract void cancel() throws XMPPException;
+    public abstract void cancel() throws NoResponseException, XMPPErrorException;
 
     /**
      * Returns a collection with the allowed actions based on the current stage.

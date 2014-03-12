@@ -17,10 +17,13 @@
 
 package org.jivesoftware.smackx.iqlast;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -189,10 +192,12 @@ public class LastActivityManager {
      * @param jid
      *            the JID of the user.
      * @return the LastActivity packet of the jid.
-     * @throws XMPPException
+     * @throws XMPPErrorException
      *             thrown if a server error has occured.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public static LastActivity getLastActivity(XMPPConnection con, String jid) throws XMPPException {
+    public static LastActivity getLastActivity(XMPPConnection con, String jid)
+                    throws NoResponseException, XMPPErrorException {
         LastActivity activity = new LastActivity();
         activity.setTo(jid);
 
@@ -206,8 +211,9 @@ public class LastActivityManager {
      * @param connection the connection to be used
      * @param jid a JID to be tested for Last Activity support
      * @return true if Last Activity is supported, otherwise false
+     * @throws SmackException if there was no response from the server.
      */
-    public static boolean isLastActivitySupported(XMPPConnection connection, String jid) {
+    public static boolean isLastActivitySupported(XMPPConnection connection, String jid) throws SmackException {
         try {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);

@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smack.sasl;
 
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
@@ -129,9 +128,9 @@ public abstract class SASLMechanism implements CallbackHandler {
      * serviceName format is: host [ "/" serv-name ] as per RFC-2831
      * @param password the password for this account.
      * @throws IOException If a network error occurs while authenticating.
-     * @throws XMPPException If a protocol error occurs or the user is not authenticated.
+     * @throws SaslException
      */
-    public void authenticate(String username, String host, String serviceName, String password) throws IOException, XMPPException {
+    public void authenticate(String username, String host, String serviceName, String password) throws IOException, SaslException {
         //Since we were not provided with a CallbackHandler, we will use our own with the given
         //information
 
@@ -153,24 +152,20 @@ public abstract class SASLMechanism implements CallbackHandler {
      * @param host     the hostname where the user account resides.
      * @param cbh      the CallbackHandler to obtain user information.
      * @throws IOException If a network error occures while authenticating.
-     * @throws XMPPException If a protocol error occurs or the user is not authenticated.
+     * @throws SaslException If a protocol error occurs or the user is not authenticated.
      */
-    public void authenticate(String host, CallbackHandler cbh) throws IOException, XMPPException {
+    public void authenticate(String host, CallbackHandler cbh) throws IOException, SaslException {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
         sc = Sasl.createSaslClient(mechanisms, null, "xmpp", host, props, cbh);
         authenticate();
     }
 
-    protected void authenticate() throws IOException, XMPPException {
+    protected void authenticate() throws IOException, SaslException {
         String authenticationText = null;
-        try {
-            if(sc.hasInitialResponse()) {
-                byte[] response = sc.evaluateChallenge(new byte[0]);
-                authenticationText = StringUtils.encodeBase64(response, false);
-            }
-        } catch (SaslException e) {
-            throw new XMPPException("SASL authentication failed", e);
+        if (sc.hasInitialResponse()) {
+            byte[] response = sc.evaluateChallenge(new byte[0]);
+            authenticationText = StringUtils.encodeBase64(response, false);
         }
 
         // Send the authentication to the server
@@ -349,11 +344,19 @@ public abstract class SASLMechanism implements CallbackHandler {
     /**
      * A SASL failure stanza.
      */
-    public static class Failure extends Packet {
-        final private String condition;
+    public static class SASLFailure extends Packet {
+        private final SASLError saslError;
+        private final String saslErrorString;
 
-        public Failure(String condition) {
-            this.condition = condition;
+        public SASLFailure(String saslError) {
+            SASLError error = SASLError.fromString(saslError);
+            if (error == null) {
+                // RFC6120 6.5 states that unknown condition must be treat as generic authentication failure.
+                this.saslError = SASLError.not_authorized;
+            } else {
+                this.saslError = error;
+            }
+            this.saslErrorString = saslError;
         }
 
         /**
@@ -361,17 +364,22 @@ public abstract class SASLMechanism implements CallbackHandler {
          * 
          * @return the SASL related error condition.
          */
-        public String getCondition() {
-            return condition;
+        public SASLError getSASLError() {
+            return saslError;
+        }
+
+        /**
+         * 
+         * @return the SASL error as String
+         */
+        public String getSASLErrorString() {
+            return saslErrorString;
         }
 
         public String toXML() {
             StringBuilder stanza = new StringBuilder();
             stanza.append("<failure xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">");
-            if (condition != null &&
-                    condition.trim().length() > 0) {
-                stanza.append("<").append(condition).append("/>");
-            }
+            stanza.append("<").append(saslErrorString).append("/>");
             stanza.append("</failure>");
             return stanza.toString();
         }

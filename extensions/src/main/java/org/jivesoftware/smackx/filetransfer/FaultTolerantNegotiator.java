@@ -17,8 +17,11 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -59,7 +62,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return new OrFilter(primaryFilter, secondaryFilter);
     }
 
-    InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException {
+    InputStream negotiateIncomingStream(Packet streamInitiation) {
         throw new UnsupportedOperationException("Negotiation only handled by create incoming " +
                 "stream method.");
     }
@@ -69,7 +72,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 "method");
     }
 
-    public InputStream createIncomingStream(StreamInitiation initiation) throws XMPPException {
+    public InputStream createIncomingStream(StreamInitiation initiation) throws SmackException {
         PacketCollector collector = connection.createPacketCollector(
                 getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()));
 
@@ -80,7 +83,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 = new ExecutorCompletionService<InputStream>(threadPoolExecutor);
         List<Future<InputStream>> futures = new ArrayList<Future<InputStream>>();
         InputStream stream = null;
-        XMPPException exception = null;
+        SmackException exception = null;
         try {
             futures.add(service.submit(new NegotiatorService(collector)));
             futures.add(service.submit(new NegotiatorService(collector)));
@@ -107,7 +110,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                     /* Do Nothing */
                 }
                 catch (ExecutionException e) {
-                    exception = new XMPPException(e.getCause());
+                    exception = new SmackException(e.getCause());
                 }
             }
         }
@@ -123,7 +126,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 throw exception;
             }
             else {
-                throw new XMPPException("File transfer negotiation failed.");
+                throw new SmackException("File transfer negotiation failed.");
             }
         }
 
@@ -135,12 +138,12 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     }
 
     public OutputStream createOutgoingStream(String streamID, String initiator, String target)
-            throws XMPPException {
+                    throws SmackException, XMPPException {
         OutputStream stream;
         try {
             stream = primaryNegotiator.createOutgoingStream(streamID, initiator, target);
         }
-        catch (XMPPException ex) {
+        catch (Exception ex) {
             stream = secondaryNegotiator.createOutgoingStream(streamID, initiator, target);
         }
 
@@ -169,10 +172,10 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
             this.collector = collector;
         }
 
-        public InputStream call() throws Exception {
+        public InputStream call() throws XMPPErrorException, InterruptedException, SmackException {
             Packet streamInitiation = collector.nextResult();
             if (streamInitiation == null) {
-                throw new XMPPException("No response from remote client");
+                throw new NoResponseException();
             }
             StreamNegotiator negotiator = determineNegotiator(streamInitiation);
             return negotiator.negotiateIncomingStream(streamInitiation);

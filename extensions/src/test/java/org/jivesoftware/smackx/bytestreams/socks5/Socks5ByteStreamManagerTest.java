@@ -24,8 +24,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.IQ.Type;
@@ -71,9 +73,10 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Initialize fields used in the tests.
      * @throws XMPPException 
+     * @throws SmackException 
      */
     @Before
-    public void setup() throws XMPPException {
+    public void setup() throws XMPPException, SmackException {
 
         // build protocol verifier
         protocol = new Protocol();
@@ -133,9 +136,10 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Invoking {@link Socks5BytestreamManager#establishSession(String)} should throw an exception
      * if the given target does not support SOCKS5 Bytestream.
+     * @throws XMPPException 
      */
     @Test
-    public void shouldFailIfTargetDoesNotSupportSocks5() {
+    public void shouldFailIfTargetDoesNotSupportSocks5() throws XMPPException {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
 
         try {
@@ -148,7 +152,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (SmackException e) {
             assertTrue(e.getMessage().contains("doesn't support SOCKS5 Bytestream"));
         }
         catch (IOException e) {
@@ -201,7 +205,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (SmackException e) {
             protocol.verifyAll();
             assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
         }
@@ -264,7 +268,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (SmackException e) {
             protocol.verifyAll();
             assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
         }
@@ -328,7 +332,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (SmackException e) {
             protocol.verifyAll();
             assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
         }
@@ -351,7 +355,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (SmackException e) {
             /*
              * #verifyAll() tests if the number of requests and responses corresponds and should
              * fail if the invalid proxy is queried again
@@ -446,7 +450,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (XMPPErrorException e) {
             protocol.verifyAll();
             assertEquals(xmppError, e.getXMPPError());
         }
@@ -528,7 +532,7 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (SmackException e) {
             protocol.verifyAll();
             assertTrue(e.getMessage().contains("Remote user responded with unknown host"));
         }
@@ -1024,7 +1028,6 @@ public class Socks5ByteStreamManagerTest {
         DiscoverInfo proxyInfo1 = Socks5PacketUtils.createDiscoverInfo("proxy2.xmpp-server",
                         initiatorJID);
         Identity identity1 = new Identity("proxy", "proxy2.xmpp-server", "bytestreams");
-        identity1.setType("bytestreams");
         proxyInfo1.addIdentity(identity1);
 
         // return the SOCKS5 bytestream proxy identity if proxy is queried

@@ -20,8 +20,9 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.packet.TranscriptSearch;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
@@ -45,9 +46,10 @@ public class TranscriptSearchManager {
      *
      * @param serviceJID the address of the workgroup service.
      * @return the Form to use for searching transcripts.
-     * @throws XMPPException if an error occurs while sending the request to the server.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public Form getSearchForm(String serviceJID) throws XMPPException {
+    public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException  {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.GET);
         search.setTo(serviceJID);
@@ -65,9 +67,10 @@ public class TranscriptSearchManager {
      * @param serviceJID    the address of the workgroup service.
      * @param completedForm the filled out search form.
      * @return the result of the transcript search.
-     * @throws XMPPException if an error occurs while submiting the search to the server.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public ReportedData submitSearch(String serviceJID, Form completedForm) throws XMPPException {
+    public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.GET);
         search.setTo(serviceJID);

@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.amp;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 
@@ -32,9 +33,10 @@ public class AMPExpireAtCondition implements AMPExtension.Condition {
      * Check if server supports expire-at condition
      * @param connection Smack connection instance
      * @return true if expire-at condition is supported.
-     * @throws XMPPException 
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public static boolean isSupported(XMPPConnection connection) throws XMPPException {
+    public static boolean isSupported(XMPPConnection connection) throws NoResponseException, XMPPErrorException  {
         return AMPManager.isConditionSupported(connection, NAME);
     }
 

@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -273,8 +274,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param iq
      *            the packet received
      * @throws XMPPException
+     * @throws SmackException 
      */
-    public synchronized void receivePacketAndRespond(IQ iq) throws XMPPException {
+    public synchronized void receivePacketAndRespond(IQ iq) throws XMPPException, SmackException {
         List<IQ> responses = new ArrayList<IQ>();
 
         String responseId = null;
@@ -340,8 +342,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      *            the packet received
      * @return the new Jingle packet to send.
      * @throws XMPPException
+     * @throws SmackException 
      */
-    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException {
+    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
 
@@ -676,7 +679,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             public void processPacket(Packet packet) {
                 try {
                     receivePacketAndRespond((IQ) packet);
-                } catch (XMPPException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -1110,8 +1113,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * This is the starting point for intitiating a new session.
      * 
      * @throws IllegalStateException
+     * @throws SmackException 
      */
-    public void startOutgoing() throws IllegalStateException {
+    public void startOutgoing() throws IllegalStateException, SmackException {
 
         updatePacketListener();
         setSessionState(JingleSessionStatePending.getInstance());

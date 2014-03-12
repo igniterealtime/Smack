@@ -17,8 +17,11 @@
 
 package org.jivesoftware.smackx.address;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.Cache;
@@ -31,8 +34,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A MultipleRecipientManager allows to send packets to multiple recipients by making use of
@@ -42,7 +43,6 @@ import java.util.logging.Logger;
  * @author Gaston Dombiak
  */
 public class MultipleRecipientManager {
-    private static final Logger LOGGER = Logger.getLogger(MultipleRecipientManager.class.getName());
     
     /**
      * Create a cache to hold the 100 most recently accessed elements for a period of
@@ -65,39 +65,42 @@ public class MultipleRecipientManager {
      *                   list exists.
      * @param bcc        the list of JIDs to include in the BCC list or <tt>null</tt> if no BCC
      *                   list exists.
-     * @throws XMPPException if server does not support JEP-33: Extended Stanza Addressing and
+     * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
+     *         server does not support them.
+     * @throws XMPPErrorException if server does not support JEP-33: Extended Stanza Addressing and
      *                       some JEP-33 specific features were requested.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc)
-            throws XMPPException {
+    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException
+   {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
 
     /**
-     * Sends the specified packet to the list of specified recipients using the
-     * specified connection. If the server has support for JEP-33 then only one
-     * packet is going to be sent to the server with the multiple recipient instructions.
-     * However, if JEP-33 is not supported by the server then the client is going to send
-     * the packet to each recipient.
-     *
+     * Sends the specified packet to the list of specified recipients using the specified
+     * connection. If the server has support for JEP-33 then only one packet is going to be sent to
+     * the server with the multiple recipient instructions. However, if JEP-33 is not supported by
+     * the server then the client is going to send the packet to each recipient.
+     * 
      * @param connection the connection to use to send the packet.
-     * @param packet     the packet to send to the list of recipients.
-     * @param to         the list of JIDs to include in the TO list or <tt>null</tt> if no TO
-     *                   list exists.
-     * @param cc         the list of JIDs to include in the CC list or <tt>null</tt> if no CC
-     *                   list exists.
-     * @param bcc        the list of JIDs to include in the BCC list or <tt>null</tt> if no BCC
-     *                   list exists.
-     * @param replyTo    address to which all replies are requested to be sent or <tt>null</tt>
-     *                   indicating that they can reply to any address.
-     * @param replyRoom  JID of a MUC room to which responses should be sent or <tt>null</tt>
-     *                   indicating that they can reply to any address.
-     * @param noReply    true means that receivers should not reply to the message.
-     * @throws XMPPException if server does not support JEP-33: Extended Stanza Addressing and
-     *                       some JEP-33 specific features were requested.
+     * @param packet the packet to send to the list of recipients.
+     * @param to the list of JIDs to include in the TO list or <tt>null</tt> if no TO list exists.
+     * @param cc the list of JIDs to include in the CC list or <tt>null</tt> if no CC list exists.
+     * @param bcc the list of JIDs to include in the BCC list or <tt>null</tt> if no BCC list
+     *        exists.
+     * @param replyTo address to which all replies are requested to be sent or <tt>null</tt>
+     *        indicating that they can reply to any address.
+     * @param replyRoom JID of a MUC room to which responses should be sent or <tt>null</tt>
+     *        indicating that they can reply to any address.
+     * @param noReply true means that receivers should not reply to the message.
+     * @throws XMPPErrorException if server does not support JEP-33: Extended Stanza Addressing and
+     *         some JEP-33 specific features were requested.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
+     *         server does not support them.
      */
     public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc,
-            String replyTo, String replyRoom, boolean noReply) throws XMPPException {
+            String replyTo, String replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException {
         String serviceAddress = getMultipleRecipienServiceAddress(connection);
         if (serviceAddress != null) {
             // Send packet to target users using multiple recipient service provided by the server
@@ -110,7 +113,7 @@ public class MultipleRecipientManager {
                     (replyRoom != null && replyRoom.trim().length() > 0)) {
                 // Some specified JEP-33 features were requested so throw an exception alerting
                 // the user that this features are not available
-                throw new XMPPException("Extended Stanza Addressing not supported by server");
+                throw new FeatureNotSupportedException("Extended Stanza Addressing not supported by server");
             }
             // Send the packet to each individual recipient
             sendToIndividualRecipients(connection, packet, to, cc, bcc);
@@ -125,20 +128,20 @@ public class MultipleRecipientManager {
      * @param connection the connection to use to send the reply.
      * @param original   the previously received packet that was sent to multiple recipients.
      * @param reply      the new message to send as a reply.
-     * @throws XMPPException if the original message was not sent to multiple recipients, or the
-     *                       original message cannot be replied or reply should be sent to a room.
+     * @throws SmackException 
+     * @throws XMPPErrorException 
      */
-    public static void reply(XMPPConnection connection, Message original, Message reply)
-            throws XMPPException {
+    public static void reply(XMPPConnection connection, Message original, Message reply) throws SmackException, XMPPErrorException
+         {
         MultipleRecipientInfo info = getMultipleRecipientInfo(original);
         if (info == null) {
-            throw new XMPPException("Original message does not contain multiple recipient info");
+            throw new SmackException("Original message does not contain multiple recipient info");
         }
         if (info.shouldNotReply()) {
-            throw new XMPPException("Original message should not be replied");
+            throw new SmackException("Original message should not be replied");
         }
         if (info.getReplyRoom() != null) {
-            throw new XMPPException("Reply should be sent through a room");
+            throw new SmackException("Reply should be sent through a room");
         }
         // Any <thread/> element from the initial message MUST be copied into the reply.
         if (original.getThread() != null) {
@@ -280,8 +283,10 @@ public class MultipleRecipientManager {
      * @param connection the connection to use for disco. The connected server is going to be
      *                   queried.
      * @return the address of the multiple recipients service or <tt>null</tt> if none was found.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws XMPPErrorException 
      */
-    private static String getMultipleRecipienServiceAddress(XMPPConnection connection) {
+    private static String getMultipleRecipienServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException {
         String serviceName = connection.getServiceName();
         String serviceAddress = (String) services.get(serviceName);
         if (serviceAddress == null) {
@@ -290,33 +295,28 @@ public class MultipleRecipientManager {
                 if (serviceAddress == null) {
 
                     // Send the disco packet to the server itself
-                    try {
-                        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection)
-                                .discoverInfo(serviceName);
-                        // Check if the server supports JEP-33
-                        if (info.containsFeature("http://jabber.org/protocol/address")) {
-                            serviceAddress = serviceName;
-                        }
-                        else {
-                            // Get the disco items and send the disco packet to each server item
-                            DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection)
-                                    .discoverItems(serviceName);
-                            for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
-                                DiscoverItems.Item item = it.next();
-                                info = ServiceDiscoveryManager.getInstanceFor(connection)
-                                        .discoverInfo(item.getEntityID(), item.getNode());
-                                if (info.containsFeature("http://jabber.org/protocol/address")) {
-                                    serviceAddress = serviceName;
-                                    break;
-                                }
+                    DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
+                                    serviceName);
+                    // Check if the server supports JEP-33
+                    if (info.containsFeature("http://jabber.org/protocol/address")) {
+                        serviceAddress = serviceName;
+                    }
+                    else {
+                        // Get the disco items and send the disco packet to each server item
+                        DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
+                                        serviceName);
+                        for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
+                            DiscoverItems.Item item = it.next();
+                            info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
+                                            item.getEntityID(), item.getNode());
+                            if (info.containsFeature("http://jabber.org/protocol/address")) {
+                                serviceAddress = serviceName;
+                                break;
                             }
                         }
-                        // Cache the discovered information
-                        services.put(serviceName, serviceAddress == null ? "" : serviceAddress);
                     }
-                    catch (XMPPException e) {
-                        LOGGER.log(Level.SEVERE, "Error occurred retrieving multiple recipients service", e);
-                    }
+                    // Cache the discovered information
+                    services.put(serviceName, serviceAddress == null ? "" : serviceAddress);
                 }
             }
         }

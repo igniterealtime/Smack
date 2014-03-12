@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
@@ -31,6 +33,7 @@ import javax.net.ssl.SSLSocket;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
+import javax.security.sasl.SaslException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,9 +44,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.security.Provider;
 import java.security.Security;
@@ -218,12 +221,12 @@ public class TCPConnection extends XMPPConnection {
     }
 
     @Override
-    public synchronized void login(String username, String password, String resource) throws XMPPException {
+    public synchronized void login(String username, String password, String resource) throws XMPPException, SmackException, SaslException, IOException {
         if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
+            throw new NotConnectedException();
         }
         if (authenticated) {
-            throw new IllegalStateException("Already logged in to server.");
+            throw new AlreadyLoggedInException();
         }
         // Do partial version of nameprep on the username.
         username = username.toLowerCase().trim();
@@ -238,7 +241,7 @@ public class TCPConnection extends XMPPConnection {
                 response = saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
-            throw new XMPPException("No non-anonymous SASL authentication mechanism available");
+            throw new SaslException("No non-anonymous SASL authentication mechanism available");
         }
 
         // Set the user.
@@ -289,12 +292,12 @@ public class TCPConnection extends XMPPConnection {
     }
 
     @Override
-    public synchronized void loginAnonymously() throws XMPPException {
+    public synchronized void loginAnonymously() throws XMPPException, SmackException, SaslException, IOException {
         if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
+            throw new NotConnectedException();
         }
         if (authenticated) {
-            throw new IllegalStateException("Already logged in to server.");
+            throw new AlreadyLoggedInException();
         }
 
         String response;
@@ -302,7 +305,7 @@ public class TCPConnection extends XMPPConnection {
             response = saslAuthentication.authenticateAnonymously();
         }
         else {
-            throw new XMPPException("No anonymous SASL authentication mechanism available");
+            throw new SaslException("No anonymous SASL authentication mechanism available");
         }
 
         // Set the user value.
@@ -331,7 +334,7 @@ public class TCPConnection extends XMPPConnection {
         }
     }
 
-    public Roster getRoster() {
+    public Roster getRoster() throws XMPPException, SmackException {
         // synchronize against login()
         synchronized(this) {
             // if connection is authenticated the roster is already set by login() 
@@ -475,11 +478,10 @@ public class TCPConnection extends XMPPConnection {
         packetWriter.sendPacket(packet);
     }
 
-    private void connectUsingConfiguration(ConnectionConfiguration config) throws XMPPException {
-        XMPPException exception = null;
+    private void connectUsingConfiguration(ConnectionConfiguration config) throws SmackException, IOException {
+        Exception exception = null;
         Iterator<HostAddress> it = config.getHostAddresses().iterator();
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
-        boolean xmppIOError = false;
         while (it.hasNext()) {
             exception = null;
             HostAddress hostAddress = it.next();
@@ -492,15 +494,8 @@ public class TCPConnection extends XMPPConnection {
                 else {
                     this.socket = config.getSocketFactory().createSocket(host, port);
                 }
-            } catch (UnknownHostException uhe) {
-                String errorMessage = "Could not connect to " + host + ":" + port + ".";
-                exception = new XMPPException(errorMessage, new XMPPError(XMPPError.Condition.remote_server_timeout,
-                        errorMessage), uhe);
-            } catch (IOException ioe) {
-                String errorMessage = "XMPPError connecting to " + host + ":" + port + ".";
-                exception = new XMPPException(errorMessage, new XMPPError(XMPPError.Condition.remote_server_error,
-                        errorMessage), ioe);
-                xmppIOError = true;
+            } catch (Exception e) {
+                exception = e;
             }
             if (exception == null) {
                 // We found a host to connect to, break here
@@ -513,19 +508,7 @@ public class TCPConnection extends XMPPConnection {
                 // There are no more host addresses to try
                 // throw an exception and report all tried
                 // HostAddresses in the exception
-                StringBuilder sb = new StringBuilder();
-                for (HostAddress fha : failedAddresses) {
-                    sb.append(fha.getErrorMessage());
-                    sb.append("; ");
-                }
-                XMPPError xmppError;
-                if (xmppIOError) {
-                    xmppError = new XMPPError(XMPPError.Condition.remote_server_error);
-                }
-                else {
-                    xmppError = new XMPPError(XMPPError.Condition.remote_server_timeout);
-                }
-                throw new XMPPException(sb.toString(), xmppError, exception);
+                throw new ConnectionException(failedAddresses);
             }
         }
         socketClosed = false;
@@ -537,8 +520,10 @@ public class TCPConnection extends XMPPConnection {
      * XMPP stream to the server.
      *
      * @throws XMPPException if establishing a connection to the server fails.
+     * @throws SmackException if the server failes to respond back or if there is anther error.
+     * @throws IOException 
      */
-    private void initConnection() throws XMPPException {
+    private void initConnection() throws SmackException, IOException {
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
         compressionHandler = null;
         serverAckdCompression = false;
@@ -582,7 +567,7 @@ public class TCPConnection extends XMPPConnection {
             }
 
         }
-        catch (XMPPException ex) {
+        catch (Exception ex) {
             // An exception occurred in setting up the connection. Make sure we shut down the
             // readers and writers and close the socket.
 
@@ -625,11 +610,11 @@ public class TCPConnection extends XMPPConnection {
             authenticated = false;
             connected = false;
 
-            throw ex;        // Everything stoppped. Now throw the exception.
+            throw new SmackException(ex);        // Everything stoppped. Now throw the exception.
         }
     }
 
-    private void initReaderAndWriter() throws XMPPException {
+    private void initReaderAndWriter() throws IOException {
         try {
             if (compressionHandler == null) {
                 reader =
@@ -655,12 +640,8 @@ public class TCPConnection extends XMPPConnection {
                 }
             }
         }
-        catch (IOException ioe) {
-            throw new XMPPException(
-                    "XMPPError establishing connection with server.",
-                    new XMPPError(XMPPError.Condition.remote_server_error,
-                            "XMPPError establishing connection with server."),
-                    ioe);
+        catch (UnsupportedEncodingException ioe) {
+            throw new IllegalStateException(ioe);
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.
@@ -932,12 +913,10 @@ public class TCPConnection extends XMPPConnection {
      * occurs after an abrupt termination.
      *
      * @throws XMPPException if an error occurs while trying to establish the connection.
-     *      Two possible errors can occur which will be wrapped by an XMPPException --
-     *      UnknownHostException (XMPP error code 504), and IOException (XMPP error code
-     *      502). The error codes and wrapped exceptions can be used to present more
-     *      appropriate error messages to end-users.
+     * @throws SmackException 
+     * @throws IOException 
      */
-    public void connect() throws XMPPException {
+    public void connect() throws SmackException, IOException, XMPPException {
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
         // Automatically makes the login if the user was previously connected successfully

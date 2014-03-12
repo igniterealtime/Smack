@@ -32,7 +32,7 @@ public class STUNTransportManager extends JingleTransportManager {
         };
         try {
             stunResolver.initializeAndWait();
-        } catch (XMPPException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

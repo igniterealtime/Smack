@@ -24,9 +24,10 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -407,8 +408,11 @@ public class RTPBridge extends IQ {
      *
      * @param connection
      * @return true if the server supports the RTPBridge service
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public static boolean serviceAvailable(XMPPConnection connection) {
+    public static boolean serviceAvailable(XMPPConnection connection) throws NoResponseException,
+                    XMPPErrorException {
 
         if (!connection.isConnected()) {
             return false;
@@ -418,7 +422,6 @@ public class RTPBridge extends IQ {
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(connection);
-        try {
 //            DiscoverItems items = disco.discoverItems(connection.getServiceName());
 //            Iterator iter = items.getItems();
 //            while (iter.hasNext()) {
@@ -428,17 +431,13 @@ public class RTPBridge extends IQ {
 //                }
 //            }
             
-            DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
-            Iterator<DiscoverInfo.Identity> iter = discoInfo.getIdentities();
-            while (iter.hasNext()) {
-                DiscoverInfo.Identity identity = iter.next();
-                if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
-					return true;
-				}
+        DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
+        Iterator<DiscoverInfo.Identity> iter = discoInfo.getIdentities();
+        while (iter.hasNext()) {
+            DiscoverInfo.Identity identity = iter.next();
+            if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
+                return true;
             }
-       }
-        catch (XMPPException e) {
-            e.printStackTrace();
         }
 
         return false;

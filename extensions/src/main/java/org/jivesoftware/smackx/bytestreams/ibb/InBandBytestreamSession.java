@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -211,8 +210,10 @@ public class InBandBytestreamSession implements BytestreamSession {
             try {
                 connection.createPacketCollectorAndSend(close).nextResultOrThrow();
             }
-            catch (XMPPException e) {
-                throw new IOException("Error while closing stream: " + e.getMessage());
+            catch (Exception e) {
+                // Sadly we are unable to wrap the exception within the IOException, because the
+                // IOException(String,Throwable) constructor is only support from Android API 9 on.
+                throw new IOException();
             }
 
             this.inputStream.cleanup();
@@ -764,11 +765,13 @@ public class InBandBytestreamSession implements BytestreamSession {
             try {
                 connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
             }
-            catch (XMPPException e) {
+            catch (Exception e) {
                 // close session unless it is already closed
                 if (!this.isClosed) {
                     InBandBytestreamSession.this.close();
-                    throw new IOException("Error while sending Data: " + e.getMessage());
+                    // Sadly we are unable to wrap the exception within the IOException, because the
+                    // IOException(String,Throwable) constructor is only support from Android API 9 on.
+                    throw new IOException();
                 }
             }
 

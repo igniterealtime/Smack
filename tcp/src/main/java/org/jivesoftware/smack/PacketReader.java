@@ -20,13 +20,16 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
-import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
+import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredException;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -82,11 +85,10 @@ class PacketReader {
      * Starts the packet reader thread and returns once a connection to the server
      * has been established. A connection will be attempted for a maximum of five
      * seconds. An XMPPException will be thrown if the connection fails.
-     *
-     * @throws XMPPException if the server fails to send an opening stream back
-     *      for more than five seconds.
+     * @throws NoResponseException if the server fails to send an opening stream back
+     *      within packetReplyTimeout*3.
      */
-    synchronized public void startup() throws XMPPException {
+    synchronized public void startup() throws NoResponseException {
         readerThread.start();
         // Wait for stream tag before returning. We'll wait a couple of seconds before
         // giving up and throwing an error.
@@ -95,14 +97,14 @@ class PacketReader {
             // (although this is a rare thing). Therefore, we continue waiting
             // until either a connectionID has been set (and hence a notify was
             // made) or the total wait time has elapsed.
-            int waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
+            long waitTime = connection.getPacketReplyTimeout();
             wait(3 * waitTime);
         }
         catch (InterruptedException ie) {
             // Ignore.
         }
         if (connectionID == null) {
-            throw new XMPPException("XMPPConnection failed. No response from server.");
+            throw new NoResponseException();
         }
         else {
             connection.connectionID = connectionID;
@@ -225,7 +227,7 @@ class PacketReader {
                         }
                     }
                     else if (parser.getName().equals("error")) {
-                        throw new XMPPException(PacketParserUtils.parseStreamError(parser));
+                        throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
                     }
                     else if (parser.getName().equals("features")) {
                         parseFeatures(parser);
@@ -252,9 +254,9 @@ class PacketReader {
                         else {
                             // SASL authentication has failed. The server may close the connection
                             // depending on the number of retries
-                            final Failure failure = PacketParserUtils.parseSASLFailure(parser);
+                            final SASLFailure failure = PacketParserUtils.parseSASLFailure(parser);
                             connection.processPacket(failure);
-                            connection.getSASLAuthentication().authenticationFailed(failure.getCondition());
+                            connection.getSASLAuthentication().authenticationFailed(failure);
                         }
                     }
                     else if (parser.getName().equals("challenge")) {
@@ -390,9 +392,7 @@ class PacketReader {
             if (!startTLSReceived && connection.getConfiguration().getSecurityMode() ==
                     ConnectionConfiguration.SecurityMode.required)
             {
-                throw new XMPPException("Server does not support security (TLS), " +
-                        "but security required by connection configuration.",
-                        new XMPPError(XMPPError.Condition.forbidden));
+                throw new SecurityRequiredException();
             }
         }
 

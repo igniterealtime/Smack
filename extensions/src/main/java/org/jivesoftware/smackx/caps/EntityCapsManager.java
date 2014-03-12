@@ -17,12 +17,13 @@
 package org.jivesoftware.smackx.caps;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -391,8 +392,10 @@ public class EntityCapsManager extends Manager {
      * 
      * @param jid
      * @return true if the entity supports Entity Capabilities.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public boolean areEntityCapsSupported(String jid) throws XMPPException {
+    public boolean areEntityCapsSupported(String jid) throws NoResponseException, XMPPErrorException {
         return sdm.supportsFeature(jid, NAMESPACE);
     }
 
@@ -400,8 +403,10 @@ public class EntityCapsManager extends Manager {
      * Returns true if Entity Caps are supported by the local service/server
      * 
      * @return true if the user's server supports Entity Capabilities.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public boolean areEntityCapsSupportedByServer() throws XMPPException {
+    public boolean areEntityCapsSupportedByServer() throws NoResponseException, XMPPErrorException  {
         return areEntityCapsSupported(connection().getServiceName());
     }
 

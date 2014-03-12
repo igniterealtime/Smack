@@ -348,7 +348,7 @@ public class ChatConnectionTest {
         try {
             con.connect();
             con.login("me", "secret");
-        } catch (XMPPException e) {
+        } catch (Exception e) {
             // No need for handling in a dummy connection.
         }
         return con;

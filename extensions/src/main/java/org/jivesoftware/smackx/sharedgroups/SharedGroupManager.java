@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.sharedgroups;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.sharedgroups.packet.SharedGroupsInfo;
 
@@ -39,8 +40,10 @@ public class SharedGroupManager {
      *
      * @param connection connection to use to get the user's shared groups.
      * @return collection with the shared groups' name of the logged user.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public static List<String> getSharedGroups(XMPPConnection connection) throws XMPPException {
+    public static List<String> getSharedGroups(XMPPConnection connection) throws NoResponseException, XMPPErrorException {
         // Discover the shared groups of the logged user
         SharedGroupsInfo info = new SharedGroupsInfo();
         info.setType(IQ.Type.GET);

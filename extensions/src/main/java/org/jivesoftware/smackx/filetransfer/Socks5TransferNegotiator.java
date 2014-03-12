@@ -21,8 +21,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -54,22 +57,22 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public OutputStream createOutgoingStream(String streamID, String initiator, String target)
-                    throws XMPPException {
+    public OutputStream createOutgoingStream(String streamID, String initiator, String target) throws NoResponseException, SmackException, XMPPException
+                    {
         try {
             return this.manager.establishSession(target, streamID).getOutputStream();
         }
         catch (IOException e) {
-            throw new XMPPException("error establishing SOCKS5 Bytestream", e);
+            throw new SmackException("error establishing SOCKS5 Bytestream", e);
         }
         catch (InterruptedException e) {
-            throw new XMPPException("error establishing SOCKS5 Bytestream", e);
+            throw new SmackException("error establishing SOCKS5 Bytestream", e);
         }
     }
 
     @Override
-    public InputStream createIncomingStream(StreamInitiation initiation) throws XMPPException,
-                    InterruptedException {
+    public InputStream createIncomingStream(StreamInitiation initiation) throws XMPPErrorException,
+                    InterruptedException, SmackException {
         /*
          * SOCKS5 initiation listener must ignore next SOCKS5 Bytestream request with given session
          * ID
@@ -98,8 +101,8 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPException,
-                    InterruptedException {
+    InputStream negotiateIncomingStream(Packet streamInitiation) throws InterruptedException,
+                    SmackException, XMPPErrorException {
         // build SOCKS5 Bytestream request
         Socks5BytestreamRequest request = new ByteStreamRequest(this.manager,
                         (Bytestream) streamInitiation);
@@ -115,7 +118,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             return stream;
         }
         catch (IOException e) {
-            throw new XMPPException("Error establishing input stream", e);
+            throw new SmackException("Error establishing input stream", e);
         }
     }
 

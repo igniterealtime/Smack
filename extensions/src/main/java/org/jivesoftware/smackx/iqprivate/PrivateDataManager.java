@@ -17,8 +17,9 @@
 
 package org.jivesoftware.smackx.iqprivate;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
@@ -167,10 +168,10 @@ public class PrivateDataManager {
      * @param elementName the element name.
      * @param namespace the namespace.
      * @return the private data.
-     * @throws XMPPException if an error occurs getting the private data.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public PrivateData getPrivateData(final String elementName, final String namespace)
-            throws XMPPException
+    public PrivateData getPrivateData(final String elementName, final String namespace) throws NoResponseException, XMPPErrorException
     {
         // Create an IQ packet to get the private data.
         IQ privateDataGet = new IQ() {
@@ -199,9 +200,10 @@ public class PrivateDataManager {
      * element name and namespace, then the new private data will overwrite the old value.
      *
      * @param privateData the private data.
-     * @throws XMPPException if setting the private data fails.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public void setPrivateData(final PrivateData privateData) throws XMPPException {
+    public void setPrivateData(final PrivateData privateData) throws NoResponseException, XMPPErrorException {
         // Create an IQ packet to set the private data.
         IQ privateDataSet = new IQ() {
             public String getChildElementXML() {

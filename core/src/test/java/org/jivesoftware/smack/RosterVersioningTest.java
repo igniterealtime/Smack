@@ -83,9 +83,11 @@ public class RosterVersioningTest {
     /**
      * Tests that receiving an empty roster result causes the roster to be populated
      * by all entries of the roster store.
+     * @throws SmackException 
+     * @throws XMPPException 
      */
     @Test(timeout = 5000)
-    public void testEqualVersionStored() throws InterruptedException, IOException {
+    public void testEqualVersionStored() throws InterruptedException, IOException, XMPPException, SmackException {
         connection.getRoster().reload();
         answerWithEmptyRosterResult();
 
@@ -116,9 +118,11 @@ public class RosterVersioningTest {
 
     /**
      * Tests that a non-empty roster result empties the store.
+     * @throws SmackException 
+     * @throws XMPPException 
      */
     @Test(timeout = 5000)
-    public void testOtherVersionStored() throws InterruptedException {
+    public void testOtherVersionStored() throws InterruptedException, XMPPException, SmackException {
         connection.getRoster().reload();
 
         Item vaglafItem = vaglafItem();

@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.amp;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 
 public class AMPDeliverCondition implements AMPExtension.Condition {
@@ -28,9 +29,10 @@ public class AMPDeliverCondition implements AMPExtension.Condition {
      * Check if server supports deliver condition
      * @param connection Smack connection instance
      * @return true if deliver condition is supported.
-     * @throws XMPPException 
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public static boolean isSupported(XMPPConnection connection) throws XMPPException {
+    public static boolean isSupported(XMPPConnection connection) throws NoResponseException, XMPPErrorException {
         return AMPManager.isConditionSupported(connection, NAME);
     }
 

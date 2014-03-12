@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.util.StringUtils;
@@ -35,8 +35,6 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Matt Tucker
  */
 public class AccountManager {
-    private static final Logger LOGGER = Logger.getLogger(AccountManager.class.getName());
-    
     private XMPPConnection connection;
     private Registration info = null;
 
@@ -74,8 +72,10 @@ public class AccountManager {
      * behavior is to only create new accounts before having logged in to a server.
      *
      * @return true if the server support creating new accounts.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public boolean supportsAccountCreation() {
+    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException {
         // Check if we already know that the server supports creating new accounts
         if (accountCreationSupported) {
             return true;
@@ -83,16 +83,11 @@ public class AccountManager {
         // No information is known yet (e.g. no stream feature was received from the server
         // indicating that it supports creating new accounts) so send an IQ packet as a way
         // to discover if this feature is supported
-        try {
-            if (info == null) {
-                getRegistrationInfo();
-                accountCreationSupported = info.getType() != IQ.Type.ERROR;
-            }
-            return accountCreationSupported;
+        if (info == null) {
+            getRegistrationInfo();
+            accountCreationSupported = info.getType() != IQ.Type.ERROR;
         }
-        catch (XMPPException xe) {
-            return false;
-        }
+        return accountCreationSupported;
     }
 
     /**
@@ -118,21 +113,19 @@ public class AccountManager {
      * the user's email address.
      *
      * @return the required account attributes.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public Collection<String> getAccountAttributes() {
-        try {
-            if (info == null) {
-                getRegistrationInfo();
-            }
-            Map<String, String> attributes = info.getAttributes();
-            if (attributes != null) {
-                return Collections.unmodifiableSet(attributes.keySet());
-            }
+    public Collection<String> getAccountAttributes() throws NoResponseException, XMPPErrorException  {
+        if (info == null) {
+            getRegistrationInfo();
         }
-        catch (XMPPException xe) {
-            LOGGER.log(Level.SEVERE, "Error retrieving account attributes from server", xe);
+        Map<String, String> attributes = info.getAttributes();
+        if (attributes != null) {
+            return Collections.unmodifiableSet(attributes.keySet());
+        } else {
+            return Collections.emptySet();
         }
-        return Collections.emptySet();
     }
 
     /**
@@ -142,18 +135,14 @@ public class AccountManager {
      * @param name the name of the account attribute to return its value.
      * @return the value of the account attribute or <tt>null</tt> if an account
      * attribute wasn't found for the requested name.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public String getAccountAttribute(String name) {
-        try {
-            if (info == null) {
-                getRegistrationInfo();
-            }
-            return info.getAttributes().get(name);
+    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException  {
+        if (info == null) {
+            getRegistrationInfo();
         }
-        catch (XMPPException xe) {
-            LOGGER.log(Level.SEVERE, "Error retrieving account attribute " + name + " info from server", xe);
-        }
-        return null;
+        return info.getAttributes().get(name);
     }
 
     /**
@@ -162,18 +151,14 @@ public class AccountManager {
      * that will complete the registration process.
      *
      * @return the account creation instructions, or <tt>null</tt> if there are none.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public String getAccountInstructions() {
-        try {
-            if (info == null) {
-                getRegistrationInfo();
-            }
-            return info.getInstructions();
+    public String getAccountInstructions() throws NoResponseException, XMPPErrorException  {
+        if (info == null) {
+            getRegistrationInfo();
         }
-        catch (XMPPException xe) {
-            LOGGER.log(Level.SEVERE, "Error retrieving account instructions from server", xe);
-            return null;
-        }
+        return info.getInstructions();
     }
 
     /**
@@ -186,12 +171,10 @@ public class AccountManager {
      *
      * @param username the username.
      * @param password the password.
-     * @throws XMPPException if an error occurs creating the account.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public void createAccount(String username, String password) throws XMPPException {
-        if (!supportsAccountCreation()) {
-            throw new XMPPException("Server does not support account creation.");
-        }
+    public void createAccount(String username, String password) throws NoResponseException, XMPPErrorException  {
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<String, String>();
         for (String attributeName : getAccountAttributes()) {
@@ -208,20 +191,17 @@ public class AccountManager {
      * @param username the username.
      * @param password the password.
      * @param attributes the account attributes.
-     * @throws XMPPException if an error occurs creating the account.
+     * @throws XMPPErrorException if an error occurs creating the account.
+     * @throws NoResponseException if there was no response from the server.
      * @see #getAccountAttributes()
      */
     public void createAccount(String username, String password, Map<String, String> attributes)
-            throws XMPPException
-    {
-        if (!supportsAccountCreation()) {
-            throw new XMPPException("Server does not support account creation.");
-        }
+                    throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getServiceName());
-        attributes.put("username",username);
-        attributes.put("password",password);
+        attributes.put("username", username);
+        attributes.put("password", password);
         reg.setAttributes(attributes);
         connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
@@ -232,9 +212,10 @@ public class AccountManager {
      * support changing passwords; an XMPPException will be thrown when that is the case.
      *
      * @throws IllegalStateException if not currently logged-in to the server.
-     * @throws XMPPException if an error occurs when changing the password.
+     * @throws XMPPErrorException if an error occurs when changing the password.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void changePassword(String newPassword) throws XMPPException {
+    public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getServiceName());
@@ -251,12 +232,10 @@ public class AccountManager {
      * support deleting accounts; an XMPPException will be thrown when that is the case.
      *
      * @throws IllegalStateException if not currently logged-in to the server.
-     * @throws XMPPException if an error occurs when deleting the account.
+     * @throws XMPPErrorException if an error occurs when deleting the account.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void deleteAccount() throws XMPPException {
-        if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Must be logged in to delete a account.");
-        }
+    public void deleteAccount() throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection.getServiceName());
@@ -269,10 +248,13 @@ public class AccountManager {
 
     /**
      * Gets the account registration info from the server.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      *
      * @throws XMPPException if an error occurs.
+     * @throws SmackException if there was no response from the server.
      */
-    private synchronized void getRegistrationInfo() throws XMPPException {
+    private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setTo(connection.getServiceName());
         info = (Registration) connection.createPacketCollectorAndSend(reg).nextResultOrThrow();

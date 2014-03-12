@@ -20,8 +20,9 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -57,10 +58,11 @@ public class ConnectionUtils {
      * @param initiatorJID the user associated to the XMPP connection
      * @param xmppServer the XMPP server associated to the XMPP connection
      * @return a mocked XMPP connection
-     * @throws XMPPException 
+     * @throws SmackException 
+     * @throws XMPPErrorException 
      */
     public static XMPPConnection createMockedConnection(final Protocol protocol,
-                    String initiatorJID, String xmppServer) throws XMPPException {
+                    String initiatorJID, String xmppServer) throws SmackException, XMPPErrorException {
 
         // mock XMPP connection
         XMPPConnection connection = mock(XMPPConnection.class);
@@ -105,7 +107,7 @@ public class ConnectionUtils {
                 Packet packet = protocol.getResponses().poll();
                 if (packet == null) return packet;
                 XMPPError xmppError = packet.getError();
-                if (xmppError != null) throw new XMPPException(xmppError);
+                if (xmppError != null) throw new XMPPErrorException(xmppError);
                 return packet;
             }
         };

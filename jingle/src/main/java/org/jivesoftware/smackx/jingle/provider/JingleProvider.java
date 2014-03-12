@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.jingle.provider;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.jingle.JingleActionEnum;
@@ -101,12 +101,12 @@ public class JingleProvider implements IQProvider {
                     } else if (namespace.equals(JingleTransport.Ice.NAMESPACE)) {
                         currentContent.addJingleTransport((JingleTransport) jtpIce.parseExtension(parser));
                     } else {
-                        throw new XMPPException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
+                        throw new SmackException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
                     }
                 } else if (namespace.equals(JingleContentInfo.Audio.NAMESPACE)) {
                     jingle.setContentInfo((JingleContentInfo) jmipAudio.parseExtension(parser));
                 } else {
-                    throw new XMPPException("Unknown combination of namespace \"" + namespace + "\" and element name \""
+                    throw new SmackException("Unknown combination of namespace \"" + namespace + "\" and element name \""
                             + elementName + "\" in Jingle packet.");
                 }
 

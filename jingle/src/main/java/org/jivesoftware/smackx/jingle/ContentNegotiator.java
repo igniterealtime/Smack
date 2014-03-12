@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
@@ -56,7 +57,7 @@ public class ContentNegotiator extends JingleNegotiator {
         transportNegotiators = new ArrayList<TransportNegotiator>();
     }
 
-    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException {
+    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException {
         List<IQ> responses = new ArrayList<IQ>();
 
         // First only process IQ packets that contain <content> stanzas that

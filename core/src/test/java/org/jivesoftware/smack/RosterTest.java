@@ -520,8 +520,9 @@ public class RosterTest {
      * 
      * @param connection the dummy connection of which the provided roster belongs to.
      * @param roster the roster (or buddy list) which should be initialized.
+     * @throws SmackException 
      */
-    public static void initRoster(DummyConnection connection, Roster roster) throws InterruptedException, XMPPException {
+    public static void initRoster(DummyConnection connection, Roster roster) throws InterruptedException, XMPPException, SmackException {
         roster.reload();
         while (true) {
             final Packet sentPacket = connection.getSentPacket();

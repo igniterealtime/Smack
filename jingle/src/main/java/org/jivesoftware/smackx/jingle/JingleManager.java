@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.RosterListener;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -44,7 +45,6 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
 import org.jivesoftware.smackx.jingle.packet.Jingle;
 import org.jivesoftware.smackx.jingle.provider.JingleProvider;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**
  * Jingle is a session establishment protocol defined in (XEP-0166).
@@ -205,8 +205,10 @@ public class JingleManager implements JingleSessionListener {
      *
      * @param connection             XMPP XMPPConnection to be used
      * @param jingleMediaManagers     an implemeted JingleMediaManager to be used.
+     * @throws SmackException 
+     * @throws XMPPException 
      */
-    public JingleManager(XMPPConnection connection, List<JingleMediaManager> jingleMediaManagers) {
+    public JingleManager(XMPPConnection connection, List<JingleMediaManager> jingleMediaManagers) throws XMPPException, SmackException {
         this.connection = connection;
         this.jingleMediaManagers = jingleMediaManagers;
 
@@ -307,15 +309,11 @@ public class JingleManager implements JingleSessionListener {
      *                   jdoe@example.com
      * @return a boolean indicating whether the specified user handles Jingle
      *         messages
+     * @throws SmackException if there was no response from the server.
+     * @throws XMPPException 
      */
-    public static boolean isServiceEnabled(XMPPConnection connection, String userID) {
-        try {
-            DiscoverInfo result = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(userID);
-            return result.containsFeature(Jingle.NAMESPACE);
-        } catch (XMPPException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public static boolean isServiceEnabled(XMPPConnection connection, String userID) throws XMPPException, SmackException {
+            return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, Jingle.NAMESPACE);
     }
 
     /**

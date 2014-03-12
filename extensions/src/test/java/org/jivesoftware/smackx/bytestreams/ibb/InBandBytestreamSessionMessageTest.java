@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
@@ -73,9 +74,10 @@ public class InBandBytestreamSessionMessageTest {
     /**
      * Initialize fields used in the tests.
      * @throws XMPPException 
+     * @throws SmackException 
      */
     @Before
-    public void setup() throws XMPPException {
+    public void setup() throws XMPPException, SmackException {
 
         // build protocol verifier
         protocol = new Protocol();

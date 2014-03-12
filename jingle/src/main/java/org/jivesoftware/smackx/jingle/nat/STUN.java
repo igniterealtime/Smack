@@ -19,9 +19,9 @@ package org.jivesoftware.smackx.jingle.nat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
@@ -206,8 +206,10 @@ public class STUN extends IQ {
      *
      * @param connection the connection
      * @return true if the server support STUN
+     * @throws SmackException 
+     * @throws XMPPException 
      */
-    public static boolean serviceAvailable(XMPPConnection connection) {
+    public static boolean serviceAvailable(XMPPConnection connection) throws XMPPException, SmackException {
 
         if (!connection.isConnected()) {
             return false;
@@ -215,31 +217,26 @@ public class STUN extends IQ {
 
         LOGGER.fine("Service listing");
 
-        ServiceDiscoveryManager disco = ServiceDiscoveryManager
-                .getInstanceFor(connection);
-        try {
-            DiscoverItems items = disco.discoverItems(connection.getServiceName());
+        ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection);
+        DiscoverItems items = disco.discoverItems(connection.getServiceName());
 
-            Iterator<DiscoverItems.Item> iter = items.getItems();
-            while (iter.hasNext()) {
-                DiscoverItems.Item item = iter.next();
-                DiscoverInfo info = disco.discoverInfo(item.getEntityID());
+        Iterator<DiscoverItems.Item> iter = items.getItems();
+        while (iter.hasNext()) {
+            DiscoverItems.Item item = iter.next();
+            DiscoverInfo info = disco.discoverInfo(item.getEntityID());
 
-                Iterator<DiscoverInfo.Identity> iter2 = info.getIdentities();
-                while (iter2.hasNext()) {
-                    DiscoverInfo.Identity identity = iter2.next();
-                    if (identity.getCategory().equals("proxy") && identity.getType().equals("stun"))
-                        if (info.containsFeature(NAMESPACE))
-                            return true;
-                }
-
-                LOGGER.fine(item.getName()+"-"+info.getType());
-
+            Iterator<DiscoverInfo.Identity> iter2 = info.getIdentities();
+            while (iter2.hasNext()) {
+                DiscoverInfo.Identity identity = iter2.next();
+                if (identity.getCategory().equals("proxy") && identity.getType().equals("stun"))
+                    if (info.containsFeature(NAMESPACE))
+                        return true;
             }
+
+            LOGGER.fine(item.getName() + "-" + info.getType());
+
         }
-        catch (XMPPException e) {
-            LOGGER.log(Level.SEVERE, "serviceAvailable", e);
-        }
+
         return false;
     }
 

@@ -19,8 +19,11 @@ package org.jivesoftware.smackx.ping;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -70,15 +73,18 @@ public class PingTest extends InitExtensions {
     }
 
     @Test
-    public void checkSendingPing() throws Exception {
+    public void checkSendingPing() throws InterruptedException {
         dummyCon = new DummyConnection();
         PingManager pinger = PingManager.getInstanceFor(dummyCon);
-        pinger.ping("test@myserver.com");
+        try {
+            pinger.ping("test@myserver.com");
+        }
+        catch (SmackException e) {
+            // Ignore the fact the server won't answer for this unit test.
+        }
 
         Packet sentPacket = dummyCon.getSentPacket();
-        
         assertTrue(sentPacket instanceof Ping);
-        
     }
 
     @Test
@@ -95,17 +101,20 @@ public class PingTest extends InitExtensions {
 
     /**
      * DummyConnection will not reply so it will timeout.
-     * @throws Exception
+     * @throws SmackException 
      */
     @Test
-    public void checkFailedPingOnTimeout() throws Exception {
+    public void checkFailedPingOnTimeout() throws SmackException {
         dummyCon = new DummyConnection();
         PingManager pinger = PingManager.getInstanceFor(dummyCon);
 
-        boolean pingSuccess = pinger.ping("test@myserver.com");
-        
-        assertFalse(pingSuccess);
-        
+        try {
+            pinger.ping("test@myserver.com");
+        }
+        catch (NoResponseException e) {
+            return;
+        }
+        fail();
     }
     
     /**
@@ -171,13 +180,18 @@ public class PingTest extends InitExtensions {
     }
     
     @Test
-    public void checkPingToServerTimeout() throws Exception {
+    public void checkPingToServerTimeout() throws SmackException {
         DummyConnection con = new DummyConnection();
         PingManager pinger = PingManager.getInstanceFor(con);
 
-        boolean pingSuccess = pinger.pingMyServer();
-        
-        assertFalse(pingSuccess);
+        try {
+            pinger.pingMyServer();
+        }
+        catch (NoResponseException e) {
+            return;
+        }
+
+        fail();
     }
 
     @Test

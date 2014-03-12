@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.util.StringUtils;
@@ -158,9 +160,10 @@ public class RosterGroup {
      * to receive the updated roster.
      *
      * @param entry a roster entry.
-     * @throws XMPPException if an error occured while trying to add the entry to the group.
+     * @throws XMPPErrorException if an error occured while trying to add the entry to the group.
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void addEntry(RosterEntry entry) throws XMPPException {
+    public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException {
         PacketCollector collector = null;
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
@@ -187,9 +190,10 @@ public class RosterGroup {
      * to receive the updated roster.
      *
      * @param entry a roster entry.
-     * @throws XMPPException if an error occurred while trying to remove the entry from the group. 
+     * @throws XMPPErrorException if an error occurred while trying to remove the entry from the group. 
+     * @throws NoResponseException if there was no response from the server.
      */
-    public void removeEntry(RosterEntry entry) throws XMPPException {
+    public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException {
         PacketCollector collector = null;
         // Only remove the entry if it's in the entry list.
         // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)

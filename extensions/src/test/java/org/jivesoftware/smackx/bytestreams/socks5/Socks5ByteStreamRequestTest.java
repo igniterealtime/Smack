@@ -23,8 +23,10 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -60,9 +62,10 @@ public class Socks5ByteStreamRequestTest {
     /**
      * Initialize fields used in the tests.
      * @throws XMPPException 
+     * @throws SmackException 
      */
     @Before
-    public void setup() throws XMPPException {
+    public void setup() throws XMPPException, SmackException {
 
         // build protocol verifier
         protocol = new Protocol();
@@ -99,7 +102,7 @@ public class Socks5ByteStreamRequestTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (XMPPErrorException e) {
             assertTrue(e.getMessage().contains("Could not establish socket with any provided host"));
         }
 
@@ -143,7 +146,7 @@ public class Socks5ByteStreamRequestTest {
 
             fail("exception should be thrown");
         }
-        catch (XMPPException e) {
+        catch (XMPPErrorException e) {
             assertTrue(e.getMessage().contains("Could not establish socket with any provided host"));
         }
 
@@ -190,7 +193,7 @@ public class Socks5ByteStreamRequestTest {
 
                 fail("exception should be thrown");
             }
-            catch (XMPPException e) {
+            catch (XMPPErrorException e) {
                 assertTrue(e.getMessage().contains(
                                 "Could not establish socket with any provided host"));
             }

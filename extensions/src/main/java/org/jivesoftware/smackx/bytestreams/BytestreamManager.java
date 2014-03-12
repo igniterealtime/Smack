@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.bytestreams;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
@@ -94,7 +95,7 @@ public interface BytestreamManager {
      *         operation
      */
     public BytestreamSession establishSession(String targetJID) throws XMPPException, IOException,
-                    InterruptedException;
+                    InterruptedException, SmackException;
 
     /**
      * Establishes a bytestream with the given user and returns the session to send/receive data
@@ -112,6 +113,6 @@ public interface BytestreamManager {
      *         operation
      */
     public BytestreamSession establishSession(String targetJID, String sessionID)
-                    throws XMPPException, IOException, InterruptedException;
+                    throws XMPPException, IOException, InterruptedException, SmackException;
 
 }

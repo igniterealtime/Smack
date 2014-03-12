@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
 import java.net.Inet6Address;
@@ -94,13 +96,13 @@ public class BridgedResolver extends TransportResolver {
         setResolveEnd();
     }
 
-    public void initialize() throws XMPPException {
+    public void initialize() throws SmackException, XMPPErrorException {
 
         clearCandidates();
 
         if (!RTPBridge.serviceAvailable(connection)) {
             setInitialized();
-            throw new XMPPException("No RTP Bridge service available");
+            throw new SmackException("No RTP Bridge service available");
         }
         setInitialized();
 

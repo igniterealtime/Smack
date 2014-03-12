@@ -19,7 +19,7 @@ package org.jivesoftware.smack.parsing;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -79,7 +79,7 @@ public class ParsingExceptionTest {
 
         @Override
         public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-            throw new XMPPException("Test Exception");
+            throw new SmackException("Test Exception");
         }
 
     }

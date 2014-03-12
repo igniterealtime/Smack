@@ -30,6 +30,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -186,16 +189,18 @@ public class Roster {
      * Reloads the entire roster from the server. This is an asynchronous operation,
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
-     * 
-     * @throws IllegalStateException if connection is not logged in or logged in anonymously
+     *
+     * @throws SmackException If not logged in.
+     * @throws IllegalStateException if logged in anonymously
      */
-    public void reload() {
+    public void reload() throws XMPPException, SmackException {
         if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Not logged in to server.");
+            throw new NotLoggedInException();
         }
         if (connection.isAnonymous()) {
             throw new IllegalStateException("Anonymous users can't have a roster.");
         }
+
 
         RosterPacket packet = new RosterPacket();
         if (rosterStore != null && connection.isRosterVersioningSupported()) {
@@ -235,18 +240,19 @@ public class Roster {
      * after a logout/login. This is due to the way that XMPP stores group information.
      *
      * @param name the name of the group.
-     * @return a new group.
-     * @throws IllegalStateException if connection is not logged in or logged in anonymously
+     * @return a new group, or null if the group already exists
+     * @throws NotLoggedInException If not logged in.
+     * @throws IllegalStateException if logged in anonymously
      */
-    public RosterGroup createGroup(String name) {
+    public RosterGroup createGroup(String name) throws NotLoggedInException {
         if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Not logged in to server.");
+            throw new NotLoggedInException();
         }
         if (connection.isAnonymous()) {
             throw new IllegalStateException("Anonymous users can't have a roster.");
         }
         if (groups.containsKey(name)) {
-            throw new IllegalArgumentException("Group with name " + name + " alread exists.");
+            return null;
         }
         
         RosterGroup group = new RosterGroup(name, connection);
@@ -262,12 +268,15 @@ public class Roster {
      * @param name   the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *               the roster entry won't belong to a group.
-     * @throws XMPPException if an XMPP exception occurs.
-     * @throws IllegalStateException if connection is not logged in or logged in anonymously
+     * @throws NotLoggedInException 
+     * @throws NoResponseException if there was no response from the server.
+     * @throws XMPPErrorException if an XMPP exception occurs.
+     * @throws NotLoggedInException If not logged in.
+     * @throws IllegalStateException if logged in anonymously
      */
-    public void createEntry(String user, String name, String[] groups) throws XMPPException {
+    public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException {
         if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Not logged in to server.");
+            throw new NotLoggedInException();
         }
         if (connection.isAnonymous()) {
             throw new IllegalStateException("Anonymous users can't have a roster.");
@@ -300,12 +309,14 @@ public class Roster {
      * to send an updated subscription status.
      *
      * @param entry a roster entry.
-     * @throws XMPPException if an XMPP error occurs.
+     * @throws XMPPErrorException if an XMPP error occurs.
+     * @throws NotLoggedInException if not logged in.
+     * @throws NoResponseException SmackException if there was no response from the server.
      * @throws IllegalStateException if connection is not logged in or logged in anonymously
      */
-    public void removeEntry(RosterEntry entry) throws XMPPException {
+    public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException {
         if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Not logged in to server.");
+            throw new NotLoggedInException();
         }
         if (connection.isAnonymous()) {
             throw new IllegalStateException("Anonymous users can't have a roster.");
@@ -654,7 +665,7 @@ public class Roster {
 
     private void addUpdateEntry(Collection<String> addedEntries,
             Collection<String> updatedEntries, RosterPacket.Item item,
-            RosterEntry entry) {
+            RosterEntry entry) throws SmackException {
         RosterEntry oldEntry = entries.put(item.getUser(), entry);
         if (oldEntry == null) {
             addedEntries.add(item.getUser());
@@ -922,10 +933,14 @@ public class Roster {
             Collection<String> updatedEntries = new ArrayList<String>();
             Collection<String> deletedEntries = new ArrayList<String>();
 
-            if (packet instanceof RosterPacket) {
-                nonemptyResult((RosterPacket) packet, addedEntries, updatedEntries, deletedEntries);
-            } else {
-                emptyResult(addedEntries, updatedEntries);
+            try {
+                if (packet instanceof RosterPacket) {
+                    nonemptyResult((RosterPacket) packet, addedEntries, updatedEntries, deletedEntries);
+                } else {
+                    emptyResult(addedEntries, updatedEntries);
+                }
+            } catch (SmackException e) {
+                return;
             }
 
             synchronized (Roster.this) {
@@ -936,7 +951,7 @@ public class Roster {
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
         }
 
-        private void emptyResult(Collection<String> addedEntries, Collection<String> updatedEntries) {
+        private void emptyResult(Collection<String> addedEntries, Collection<String> updatedEntries) throws SmackException {
             for(RosterPacket.Item item : rosterStore.getEntries()){
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), item.getItemStatus(), Roster.this, connection);
@@ -945,7 +960,7 @@ public class Roster {
         }
 
         private void addEntries(Collection<String> addedEntries, Collection<String> updatedEntries,
-                Collection<String> deletedEntries, String version, Collection<Item> items) {
+                Collection<String> deletedEntries, String version, Collection<Item> items) throws SmackException {
             for (RosterPacket.Item item : items) {
                 RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                         item.getItemType(), item.getItemStatus(), Roster.this, connection);
@@ -968,7 +983,9 @@ public class Roster {
             }
         }
 
-        private void nonemptyResult(RosterPacket packet, Collection<String> addedEntries, Collection<String> updatedEntries, Collection<String> deletedEntries) {
+        private void nonemptyResult(RosterPacket packet, Collection<String> addedEntries,
+                        Collection<String> updatedEntries, Collection<String> deletedEntries)
+                        throws SmackException {
             RosterPacket rosterPacket = (RosterPacket) packet;
 
             String version = rosterPacket.getVersion();
@@ -1021,7 +1038,12 @@ public class Roster {
             Collection<String> deletedEntries = new ArrayList<String>();
 
             Item item = items.iterator().next();
-            processPushItem(addedEntries, updatedEntries, deletedEntries, version, item);
+            try {
+                processPushItem(addedEntries, updatedEntries, deletedEntries, version, item);
+            }
+            catch (SmackException e) {
+                return;
+            }
 
             connection.sendPacket(IQ.createResultIQ(rosterPacket));
 
@@ -1032,7 +1054,7 @@ public class Roster {
         }
 
         private void processPushItem(Collection<String> addedEntries, Collection<String> updatedEntries,
-                Collection<String> deletedEntries, String version, Item item) {
+                Collection<String> deletedEntries, String version, Item item) throws SmackException {
             RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                     item.getItemType(), item.getItemStatus(), Roster.this, connection);
 
