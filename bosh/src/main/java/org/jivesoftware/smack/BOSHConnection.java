@@ -21,14 +21,10 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
@@ -83,11 +79,6 @@ public class BOSHConnection extends XMPPConnection {
     private boolean isFirstInitialization = true;
     private boolean wasAuthenticated = false;
     private boolean done = false;
-
-    /**
-     * The Thread environment for sending packet listeners.
-     */
-    private ExecutorService listenerExecutor;
 
     // The readerPipe and consumer thread are used for the debugger.
     private PipedWriter readerPipe;
@@ -166,18 +157,6 @@ public class BOSHConnection extends XMPPConnection {
             }
             client = BOSHClient.create(cfgBuilder.build());
 
-            // Create an executor to deliver incoming packets to listeners.
-            // We'll use a single thread with an unbounded queue.
-            listenerExecutor = Executors
-                    .newSingleThreadExecutor(new ThreadFactory() {
-                        public Thread newThread(Runnable runnable) {
-                            Thread thread = new Thread(runnable,
-                                    "Smack Listener Processor ("
-                                            + connectionCounterValue + ")");
-                            thread.setDaemon(true);
-                            return thread;
-                        }
-                    });
             client.addBOSHClientConnListener(new BOSHConnectionListener(this));
             client.addBOSHClientResponseListener(new BOSHPacketReader(this));
 
@@ -517,10 +496,6 @@ public class BOSHConnection extends XMPPConnection {
             writer = null;
         }
 
-        // Shut down the listener executor.
-        if (listenerExecutor != null) {
-            listenerExecutor.shutdown();
-        }
         readerConsumer = null;
     }
 
@@ -552,27 +527,6 @@ public class BOSHConnection extends XMPPConnection {
                     BodyQName.create(BOSH_URI, "sid"), sessionID).build();
         }
         client.send(body);
-    }
-
-    /**
-     * Processes a packet after it's been fully parsed by looping through the
-     * installed packet collectors and listeners and letting them examine the
-     * packet to see if they are a match with the filter.
-     * 
-     * @param packet the packet to process.
-     */
-    protected void processPacket(Packet packet) {
-        if (packet == null) {
-            return;
-        }
-
-        // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector : getPacketCollectors()) {
-            collector.processPacket(packet);
-        }
-
-        // Deliver the incoming packet to listeners.
-        listenerExecutor.submit(new ListenerNotification(packet));
     }
 
     /**
@@ -735,24 +689,6 @@ public class BOSHConnection extends XMPPConnection {
                 synchronized (connection) {
                     connection.notifyAll();
                 }
-            }
-        }
-    }
-
-    /**
-     * This class notifies all listeners that a packet was received.
-     */
-    private class ListenerNotification implements Runnable {
-
-        private Packet packet;
-
-        public ListenerNotification(Packet packet) {
-            this.packet = packet;
-        }
-
-        public void run() {
-            for (ListenerWrapper listenerWrapper : recvListeners.values()) {
-                listenerWrapper.notifyListener(packet);
             }
         }
     }

@@ -17,20 +17,20 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.XMPPConnection.ListenerWrapper;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
 import org.jivesoftware.smack.sasl.SASLMechanism.Failure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
-
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +47,6 @@ class PacketReader {
     private static final Logger LOGGER = Logger.getLogger(PacketReader.class.getName());
     
     private Thread readerThread;
-    private ExecutorService listenerExecutor;
 
     private TCPConnection connection;
     private XmlPullParser parser;
@@ -75,18 +74,6 @@ class PacketReader {
         };
         readerThread.setName("Smack Packet Reader (" + connection.connectionCounterValue + ")");
         readerThread.setDaemon(true);
-
-        // Create an executor to deliver incoming packets to listeners. We'll use a single
-        // thread with an unbounded queue.
-        listenerExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-
-            public Thread newThread(Runnable runnable) {
-                Thread thread = new Thread(runnable,
-                        "Smack Listener Processor (" + connection.connectionCounterValue + ")");
-                thread.setDaemon(true);
-                return thread;
-            }
-        });
 
         resetParser();
     }
@@ -140,9 +127,6 @@ class PacketReader {
             }
         }
         done = true;
-
-        // Shut down the listener executor.
-        listenerExecutor.shutdown();
     }
 
     /**
@@ -185,7 +169,7 @@ class PacketReader {
                             }
                             continue;
                         }
-                        processPacket(packet);
+                        connection.processPacket(packet);
                     }
                     else if (parser.getName().equals("iq")) {
                         IQ iq;
@@ -199,7 +183,7 @@ class PacketReader {
                             }
                             continue;
                         }
-                        processPacket(iq);
+                        connection.processPacket(iq);
                     }
                     else if (parser.getName().equals("presence")) {
                         Presence presence;
@@ -213,7 +197,7 @@ class PacketReader {
                             }
                             continue;
                         }
-                        processPacket(presence);
+                        connection.processPacket(presence);
                     }
                     // We found an opening stream. Record information about it, then notify
                     // the connectionID lock so that the packet reader startup can finish.
@@ -269,18 +253,18 @@ class PacketReader {
                             // SASL authentication has failed. The server may close the connection
                             // depending on the number of retries
                             final Failure failure = PacketParserUtils.parseSASLFailure(parser);
-                            processPacket(failure);
+                            connection.processPacket(failure);
                             connection.getSASLAuthentication().authenticationFailed(failure.getCondition());
                         }
                     }
                     else if (parser.getName().equals("challenge")) {
                         // The server is challenging the SASL authentication made by the client
                         String challengeData = parser.nextText();
-                        processPacket(new Challenge(challengeData));
+                        connection.processPacket(new Challenge(challengeData));
                         connection.getSASLAuthentication().challengeReceived(challengeData);
                     }
                     else if (parser.getName().equals("success")) {
-                        processPacket(new Success(parser.nextText()));
+                        connection.processPacket(new Success(parser.nextText()));
                         // We now need to bind a resource for the connection
                         // Open a new stream and wait for the response
                         connection.packetWriter.openStream();
@@ -331,27 +315,6 @@ class PacketReader {
      */
     synchronized private void releaseConnectionIDLock() {
         notify();
-    }
-
-    /**
-     * Processes a packet after it's been fully parsed by looping through the installed
-     * packet collectors and listeners and letting them examine the packet to see if
-     * they are a match with the filter.
-     *
-     * @param packet the packet to process.
-     */
-    private void processPacket(Packet packet) {
-        if (packet == null) {
-            return;
-        }
-
-        // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector: connection.getPacketCollectors()) {
-            collector.processPacket(packet);
-        }
-
-        // Deliver the incoming packet to listeners.
-        listenerExecutor.submit(new ListenerNotification(packet));
     }
 
     private void parseFeatures(XmlPullParser parser) throws Exception {
@@ -432,34 +395,12 @@ class PacketReader {
                         new XMPPError(XMPPError.Condition.forbidden));
             }
         }
-        
+
         // Release the lock after TLS has been negotiated or we are not insterested in TLS
         if (!startTLSReceived || connection.getConfiguration().getSecurityMode() ==
                 ConnectionConfiguration.SecurityMode.disabled)
         {
             releaseConnectionIDLock();
-        }
-    }
-
-    /**
-     * A runnable to notify all listeners of a packet.
-     */
-    private class ListenerNotification implements Runnable {
-
-        private Packet packet;
-
-        public ListenerNotification(Packet packet) {
-            this.packet = packet;
-        }
-
-        public void run() {
-            for (ListenerWrapper listenerWrapper : connection.recvListeners.values()) {
-                try {
-                    listenerWrapper.notifyListener(packet);
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
-                }
-            }
         }
     }
 }

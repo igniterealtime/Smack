@@ -27,11 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
@@ -215,6 +219,19 @@ public abstract class XMPPConnection {
     protected XMPPInputOutputStream compressionHandler;
 
     private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
+
+    /**
+     * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
+     */
+    private ExecutorService listenerExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
+
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable,
+                    "Smack Listener Processor (" + connectionCounterValue + ")");
+            thread.setDaemon(true);
+            return thread;
+        }
+    });
 
     /**
      * Create a new XMPPConnection to a XMPP server.
@@ -868,6 +885,49 @@ public abstract class XMPPConnection {
 
     public long getPacketReplyTimeout() {
         return packetReplyTimeout;
+    }
+
+    /**
+     * Processes a packet after it's been fully parsed by looping through the installed
+     * packet collectors and listeners and letting them examine the packet to see if
+     * they are a match with the filter.
+     *
+     * @param packet the packet to process.
+     */
+    protected void processPacket(Packet packet) {
+        if (packet == null) {
+            return;
+        }
+
+        // Loop through all collectors and notify the appropriate ones.
+        for (PacketCollector collector: getPacketCollectors()) {
+            collector.processPacket(packet);
+        }
+
+        // Deliver the incoming packet to listeners.
+        listenerExecutor.submit(new ListenerNotification(packet));
+    }
+
+    /**
+     * A runnable to notify all listeners of a packet.
+     */
+    private class ListenerNotification implements Runnable {
+
+        private Packet packet;
+
+        public ListenerNotification(Packet packet) {
+            this.packet = packet;
+        }
+
+        public void run() {
+            for (ListenerWrapper listenerWrapper : recvListeners.values()) {
+                try {
+                    listenerWrapper.notifyListener(packet);
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
+                }
+            }
+        }
     }
 
     /**
