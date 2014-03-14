@@ -29,6 +29,18 @@ package org.jivesoftware.smack;
 public interface ConnectionListener {
 
     /**
+     * TODO
+     * @param connection
+     */
+    public void connected(XMPPConnection connection);
+
+    /**
+     * TODO
+     * @param connection
+     */
+    public void authenticated(XMPPConnection connection);
+
+    /**
      * Notification that the connection was closed normally or that the reconnection
      * process has been aborted.
      */

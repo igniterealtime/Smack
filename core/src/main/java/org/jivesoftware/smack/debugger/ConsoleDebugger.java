@@ -109,6 +109,14 @@ public class ConsoleDebugger implements SmackDebugger {
         };
 
         connListener = new ConnectionListener() {
+            public void connected(XMPPConnection connection) {
+                System.out.println(dateFormatter.format(new Date()) + " XMPPConnection connected ("
+                                + connection.hashCode() + ")");
+            }
+            public void authenticated(XMPPConnection connection) {
+                System.out.println(dateFormatter.format(new Date())
+                                + " XMPPConnection authenticated (" + connection.hashCode() + ")");
+            }
             public void connectionClosed() {
                 System.out.println(
                         dateFormatter.format(new Date()) + " XMPPConnection closed (" +

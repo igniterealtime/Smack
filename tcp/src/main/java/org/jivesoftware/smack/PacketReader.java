@@ -117,16 +117,7 @@ class PacketReader {
     public void shutdown() {
         // Notify connection listeners of the connection closing if done hasn't already been set.
         if (!done) {
-            for (ConnectionListener listener : connection.getConnectionListeners()) {
-                try {
-                    listener.connectionClosed();
-                }
-                catch (Exception e) {
-                    // Catch and print any exception so we can recover
-                    // from a faulty listener and finish the shutdown process
-                    LOGGER.log(Level.SEVERE, "Error in listener while closing connection", e);
-                }
-            }
+            connection.callConnectionClosedListener();
         }
         done = true;
     }

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException;
@@ -625,22 +626,15 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      */
     private void installConnectionListeners(final XMPPConnection connection) {
         if (connection != null) {
-            connectionListener = new ConnectionListener() {
+            connectionListener = new AbstractConnectionListener() {
+                @Override
                 public void connectionClosed() {
                     unregisterInstanceFor(connection);
                 }
 
+                @Override
                 public void connectionClosedOnError(java.lang.Exception e) {
                     unregisterInstanceFor(connection);
-                }
-
-                public void reconnectingIn(int i) {
-                }
-
-                public void reconnectionSuccessful() {
-                }
-
-                public void reconnectionFailed(Exception exception) {
                 }
             };
             connection.addConnectionListener(connectionListener);

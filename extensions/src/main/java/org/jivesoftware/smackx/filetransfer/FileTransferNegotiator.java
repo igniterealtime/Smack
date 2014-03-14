@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -215,25 +215,15 @@ public class FileTransferNegotiator {
     }
 
     private void configureConnection(final XMPPConnection connection) {
-        connection.addConnectionListener(new ConnectionListener() {
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            @Override
             public void connectionClosed() {
                 cleanup(connection);
             }
 
+            @Override
             public void connectionClosedOnError(Exception e) {
                 cleanup(connection);
-            }
-
-            public void reconnectionFailed(Exception e) {
-                // ignore
-            }
-
-            public void reconnectionSuccessful() {
-                // ignore
-            }
-
-            public void reconnectingIn(int seconds) {
-                // ignore
             }
         });
     }

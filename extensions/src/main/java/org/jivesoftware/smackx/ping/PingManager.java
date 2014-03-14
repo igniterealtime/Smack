@@ -26,11 +26,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
@@ -134,7 +134,11 @@ public class PingManager extends Manager {
                 connection().sendPacket(pong);
             }
         }, PING_PACKET_FILTER);
-        connection.addConnectionListener(new ConnectionListener() {
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void authenticated(XMPPConnection connection) {
+                maybeSchedulePingServerTask();
+            }
             @Override
             public void connectionClosed() {
                 maybeStopPingServerTask();
@@ -143,14 +147,6 @@ public class PingManager extends Manager {
             public void connectionClosedOnError(Exception arg0) {
                 maybeStopPingServerTask();
             }
-            @Override
-            public void reconnectionSuccessful() {
-                maybeSchedulePingServerTask();
-            }
-            @Override
-            public void reconnectingIn(int seconds) {}
-            @Override
-            public void reconnectionFailed(Exception e) {}
         });
         maybeSchedulePingServerTask();
     }

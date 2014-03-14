@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Larry Kirschner
  */
-class RoomListenerMultiplexor implements ConnectionListener {
+class RoomListenerMultiplexor extends AbstractConnectionListener {
 
     // We use a WeakHashMap so that the GC can collect the monitor when the
     // connection is no longer referenced by any object.
@@ -98,24 +98,14 @@ class RoomListenerMultiplexor implements ConnectionListener {
         listener.addRoom(address, roomListener);
     }
 
+    @Override
     public void connectionClosed() {
         cancel();
     }
 
+    @Override
     public void connectionClosedOnError(Exception e) {
         cancel();
-    }
-
-    public void reconnectingIn(int seconds) {
-        // ignore
-    }
-
-    public void reconnectionSuccessful() {
-        // ignore
-    }
-
-    public void reconnectionFailed(Exception e) {
-        // ignore
     }
 
     /**

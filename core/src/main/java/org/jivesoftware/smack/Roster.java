@@ -29,6 +29,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -59,6 +61,7 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public class Roster {
 
+    private static final Logger LOGGER = Logger.getLogger(Roster.class.getName());
     /**
      * The default subscription processing mode to use when a Roster is created. By default
      * all subscription requests are automatically accepted.
@@ -123,9 +126,9 @@ public class Roster {
         PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
         presencePacketListener = new PresencePacketListener();
         connection.addPacketListener(presencePacketListener, presenceFilter);
-        
+
         // Listen for connection events
-        final ConnectionListener connectionListener = new AbstractConnectionListener() {
+        connection.addConnectionListener(new AbstractConnectionListener() {
             
             public void connectionClosed() {
                 // Changes the presence available contacts to unavailable
@@ -137,22 +140,34 @@ public class Roster {
                 setOfflinePresences();
             }
 
-        };
-        
-        // if not connected add listener after successful login
-        if(!this.connection.isConnected()) {
-            XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
-                
-                public void connectionCreated(XMPPConnection connection) {
-                    if(connection.equals(Roster.this.connection)) {
-                        Roster.this.connection.addConnectionListener(connectionListener);
-                    }
-                    
-                }
-            });
-        } else {
-            connection.addConnectionListener(connectionListener);
+        });
+        // If the connection is already established, call reload
+        if (connection.isAuthenticated()) {
+            try {
+                reload();
+            }
+            catch (NotLoggedInException e) {
+                LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
+            }
         }
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            public void authenticated(XMPPConnection connection) {
+                // Anonymous users can't have a roster, but it iss possible that a Roster instance is
+                // retrieved if getRoster() is called *before* connect(). So we have to check here
+                // again if it's an anonymous connection.
+                if (connection.isAnonymous())
+                    return;
+                if (!connection.getConfiguration().isRosterLoadedAtLogin())
+                    return;
+                try {
+                    Roster.this.reload();
+                }
+                catch (NotLoggedInException e) {
+                    LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
+                    return;
+                }
+            }
+        });
     }
 
     /**
@@ -189,11 +204,9 @@ public class Roster {
      * Reloads the entire roster from the server. This is an asynchronous operation,
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
-     *
-     * @throws SmackException If not logged in.
-     * @throws IllegalStateException if logged in anonymously
+     * @throws NotLoggedInException If not logged in.
      */
-    public void reload() throws XMPPException, SmackException {
+    public void reload() throws NotLoggedInException{
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }

@@ -224,6 +224,8 @@ public abstract class XMPPConnection {
 
     private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
 
+    private Roster roster;
+
     /**
      * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
      */
@@ -482,11 +484,53 @@ public abstract class XMPPConnection {
      * {@link RosterListener}s will throw an IllegalStateException.
      * 
      * @return the user's roster.
-     * @throws XMPPException if an error occurs on the XMPP protocol level.
-     * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
+     * @throws IllegalStateException if the connection is anonymous
      */
-    public abstract Roster getRoster() throws XMPPException, SmackException;
+    public Roster getRoster() {
+        if (isAnonymous()) {
+            throw new IllegalStateException("Anonymous users can't have a roster");
+        }
+        // synchronize against login()
+        synchronized(this) {
+            if (roster == null) {
+                roster = new Roster(this);
+            }
+            if (!isAuthenticated()) {
+                return roster;
+            }
+        }
 
+        // If this is the first time the user has asked for the roster after calling
+        // login, we want to wait for the server to send back the user's roster. This
+        // behavior shields API users from having to worry about the fact that roster
+        // operations are asynchronous, although they'll still have to listen for
+        // changes to the roster. Note: because of this waiting logic, internal
+        // Smack code should be wary about calling the getRoster method, and may need to
+        // access the roster object directly.
+        // Also only check for rosterInitalized is isRosterLoadedAtLogin is set, otherwise the user
+        // has to manually call Roster.reload() before he can expect a initialized roster.
+        if (!roster.rosterInitialized && config.isRosterLoadedAtLogin()) {
+            try {
+                synchronized (roster) {
+                    long waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
+                    long start = System.currentTimeMillis();
+                    while (!roster.rosterInitialized) {
+                        if (waitTime <= 0) {
+                            break;
+                        }
+                        roster.wait(waitTime);
+                        long now = System.currentTimeMillis();
+                        waitTime -= now - start;
+                        start = now;
+                    }
+                }
+            }
+            catch (InterruptedException ie) {
+                // Ignore.
+            }
+        }
+        return roster;
+    }
     /**
      * Returns the SASLAuthentication manager that is responsible for authenticating with
      * the server.
@@ -940,6 +984,44 @@ public abstract class XMPPConnection {
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
                 }
+            }
+        }
+    }
+
+    void callConnectionConnectedListener() {
+        for (ConnectionListener listener : getConnectionListeners()) {
+            listener.connected(this);
+        }
+    }
+
+    void callConnectionAuthenticatedListener() {
+        for (ConnectionListener listener : getConnectionListeners()) {
+            listener.connected(this);
+        }
+    }
+
+    void callConnectionClosedListener() {
+        for (ConnectionListener listener : getConnectionListeners()) {
+            try {
+                listener.connectionClosed();
+            }
+            catch (Exception e) {
+                // Catch and print any exception so we can recover
+                // from a faulty listener and finish the shutdown process
+                LOGGER.log(Level.SEVERE, "Error in listener while closing connection", e);
+            }
+        }
+    }
+
+    void callConnectionClosedOnErrorListener(Exception e) {
+        for (ConnectionListener listener : getConnectionListeners()) {
+            try {
+                listener.connectionClosedOnError(e);
+            }
+            catch (Exception e2) {
+                // Catch and print any exception so we can recover
+                // from a faulty listener
+                LOGGER.log(Level.SEVERE, "Error in listener while closing connection", e2);
             }
         }
     }

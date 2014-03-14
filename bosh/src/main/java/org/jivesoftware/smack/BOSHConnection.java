@@ -103,12 +103,6 @@ public class BOSHConnection extends XMPPConnection {
     private String user = null;
 
     /**
-     * The roster maybe also called buddy list holds the list of the users contacts.
-     */
-    private Roster roster = null;
-
-
-    /**
      * Create a HTTP Binding connection to a XMPP server.
      * 
      * @param https true if you want to use SSL
@@ -202,6 +196,7 @@ public class BOSHConnection extends XMPPConnection {
                     + getHost() + ":" + getPort() + ".";
             throw new SmackException(errorMessage);
         }
+        callConnectionConnectedListener();
     }
 
     public String getConnectionID() {
@@ -212,42 +207,6 @@ public class BOSHConnection extends XMPPConnection {
         } else {
             return sessionID;
         }
-    }
-
-    public Roster getRoster() throws XMPPException, SmackException {
-        if (roster == null) {
-            return null;
-        }
-        if (!config.isRosterLoadedAtLogin()) {
-            roster.reload();
-        }
-        // If this is the first time the user has asked for the roster after calling
-        // login, we want to wait for the server to send back the user's roster.
-        // This behavior shields API users from having to worry about the fact that
-        // roster operations are asynchronous, although they'll still have to listen
-        // for changes to the roster. Note: because of this waiting logic, internal
-        // Smack code should be wary about calling the getRoster method, and may
-        // need to access the roster object directly.
-        if (!roster.rosterInitialized) {
-            try {
-                synchronized (roster) {
-                    long waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
-                    long start = System.currentTimeMillis();
-                    while (!roster.rosterInitialized) {
-                        if (waitTime <= 0) {
-                            break;
-                        }
-                        roster.wait(waitTime);
-                        long now = System.currentTimeMillis();
-                        waitTime -= now - start;
-                        start = now;
-                    }
-                }
-            } catch (InterruptedException ie) {
-                // Ignore.
-            }
-        }
-        return roster;
     }
 
     public String getUser() {
@@ -311,14 +270,6 @@ public class BOSHConnection extends XMPPConnection {
             }
         }
 
-        // Create the roster if it is not a reconnection.
-        if (this.roster == null) {
-            this.roster = new Roster(this);
-        }
-        if (config.isRosterLoadedAtLogin()) {
-            this.roster.reload();
-        }
-
         // Set presence to online.
         if (config.isSendPresence()) {
             sendPacket(new Presence(Presence.Type.available));
@@ -337,6 +288,7 @@ public class BOSHConnection extends XMPPConnection {
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
+        callConnectionAuthenticatedListener();
     }
 
     public void loginAnonymously() throws XMPPException, SmackException, IOException {
@@ -361,9 +313,6 @@ public class BOSHConnection extends XMPPConnection {
         // Update the serviceName with the one returned by the server
         config.setServiceName(StringUtils.parseServer(response));
 
-        // Anonymous users can't have a roster.
-        roster = null;
-
         // Set presence to online.
         if (config.isSendPresence()) {
             sendPacket(new Presence(Presence.Type.available));
@@ -380,6 +329,7 @@ public class BOSHConnection extends XMPPConnection {
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
+        callConnectionAuthenticatedListener();
     }
 
     public void sendPacket(Packet packet) {
@@ -431,17 +381,7 @@ public class BOSHConnection extends XMPPConnection {
         wasAuthenticated = false;
         isFirstInitialization = true;
 
-        // Notify connection listeners of the connection closing if done hasn't already been set.
-        for (ConnectionListener listener : getConnectionListeners()) {
-            try {
-                listener.connectionClosed();
-            }
-            catch (Exception e) {
-                // Catch and print any exception so we can recover
-                // from a faulty listener and finish the shutdown process
-                e.printStackTrace();
-            }
-        }
+        callConnectionClosedListener();
     }
 
     /**
@@ -612,17 +552,7 @@ public class BOSHConnection extends XMPPConnection {
         shutdown(new Presence(Presence.Type.unavailable));
         // Print the stack trace to help catch the problem
         e.printStackTrace();
-        // Notify connection listeners of the error.
-        for (ConnectionListener listener : getConnectionListeners()) {
-            try {
-                listener.connectionClosedOnError(e);
-            }
-            catch (Exception e2) {
-                // Catch and print any exception so we can recover
-                // from a faulty listener
-                e2.printStackTrace();
-            }
-        }
+        callConnectionClosedOnErrorListener(e);
     }
 
 

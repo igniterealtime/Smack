@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.debugger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
@@ -199,7 +200,7 @@ public class EnhancedDebugger implements SmackDebugger {
         };
 
         // Create a thread that will listen for any connection closed event
-        connListener = new ConnectionListener() {
+        connListener = new AbstractConnectionListener() {
             public void connectionClosed() {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {

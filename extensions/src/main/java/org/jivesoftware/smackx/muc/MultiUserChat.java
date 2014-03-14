@@ -32,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketInterceptor;
@@ -2338,7 +2338,7 @@ public class MultiUserChat {
      *
      * @author Gaston Dombiak
      */
-    private static class InvitationsMonitor implements ConnectionListener {
+    private static class InvitationsMonitor extends AbstractConnectionListener {
         // We use a WeakHashMap so that the GC can collect the monitor when the
         // connection is no longer referenced by any object.
         // Note that when the InvitationsMonitor is used, i.e. when there are InvitationListeners, it will add a
@@ -2447,24 +2447,9 @@ public class MultiUserChat {
             }
         }
 
+        @Override
         public void connectionClosed() {
             cancel();
-        }
-
-        public void connectionClosedOnError(Exception e) {
-            // ignore              
-        }
-
-        public void reconnectingIn(int seconds) {
-            // ignore
-        }
-
-        public void reconnectionSuccessful() {
-            // ignore
-        }
-
-        public void reconnectionFailed(Exception e) {
-            // ignore
         }
 
         /**

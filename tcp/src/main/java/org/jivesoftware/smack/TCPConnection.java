@@ -93,8 +93,6 @@ public class TCPConnection extends XMPPConnection {
     PacketWriter packetWriter;
     PacketReader packetReader;
 
-    Roster roster = null;
-
     /**
      * Collection of available stream compression methods offered by the server.
      */
@@ -266,14 +264,6 @@ public class TCPConnection extends XMPPConnection {
         authenticated = true;
         anonymous = false;
 
-        // Create the roster if it is not a reconnection or roster already created by getRoster()
-        if (this.roster == null) {
-            this.roster = new Roster(this);
-        }
-        if (config.isRosterLoadedAtLogin()) {
-            this.roster.reload();
-        }
-
         // Set presence to online.
         if (config.isSendPresence()) {
             packetWriter.sendPacket(new Presence(Presence.Type.available));
@@ -289,6 +279,7 @@ public class TCPConnection extends XMPPConnection {
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
+        callConnectionAuthenticatedListener();
     }
 
     @Override
@@ -332,52 +323,7 @@ public class TCPConnection extends XMPPConnection {
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
-    }
-
-    public Roster getRoster() throws XMPPException, SmackException {
-        // synchronize against login()
-        synchronized(this) {
-            // if connection is authenticated the roster is already set by login() 
-            // or a previous call to getRoster()
-            if (!isAuthenticated() || isAnonymous()) {
-                if (roster == null) {
-                    roster = new Roster(this);
-                }
-                return roster;
-            }
-        }
-
-        if (!config.isRosterLoadedAtLogin()) {
-            roster.reload();
-        }
-        // If this is the first time the user has asked for the roster after calling
-        // login, we want to wait for the server to send back the user's roster. This
-        // behavior shields API users from having to worry about the fact that roster
-        // operations are asynchronous, although they'll still have to listen for
-        // changes to the roster. Note: because of this waiting logic, internal
-        // Smack code should be wary about calling the getRoster method, and may need to
-        // access the roster object directly.
-        if (!roster.rosterInitialized) {
-            try {
-                synchronized (roster) {
-                    long waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
-                    long start = System.currentTimeMillis();
-                    while (!roster.rosterInitialized) {
-                        if (waitTime <= 0) {
-                            break;
-                        }
-                        roster.wait(waitTime);
-                        long now = System.currentTimeMillis();
-                        waitTime -= now - start;
-                        start = now;
-                    }
-                }
-            }
-            catch (InterruptedException ie) {
-                // Ignore.
-            }
-        }
-        return roster;
+        callConnectionAuthenticatedListener();
     }
 
     public boolean isConnected() {
@@ -919,6 +865,11 @@ public class TCPConnection extends XMPPConnection {
     public void connect() throws SmackException, IOException, XMPPException {
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
+        // TODO is there a case where connectUsing.. does not throw an exception but connected is
+        // still false?
+        if (connected) {
+            callConnectionConnectedListener();
+        }
         // Automatically makes the login if the user was previously connected successfully
         // to the server and the connection was terminated abruptly
         if (connected && wasAuthenticated) {
@@ -963,16 +914,7 @@ public class TCPConnection extends XMPPConnection {
         // Closes the connection temporary. A reconnection is possible
         shutdown(new Presence(Presence.Type.unavailable));
         // Notify connection listeners of the error.
-        for (ConnectionListener listener : getConnectionListeners()) {
-            try {
-                listener.connectionClosedOnError(e);
-            }
-            catch (Exception e2) {
-                // Catch and print any exception so we can recover
-                // from a faulty listener
-                e2.printStackTrace();
-            }
-        }
+        callConnectionClosedOnErrorListener(e);
     }
 
     /**
