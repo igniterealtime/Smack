@@ -433,7 +433,7 @@ public class SASLAuthentication {
         Bind response = (Bind) connection.createPacketCollectorAndSend(bindResource).nextResultOrThrow();
         String userJID = response.getJid();
 
-        if (sessionSupported) {
+        if (sessionSupported && !connection.getConfiguration().isLegacySessionDisabled()) {
             Session session = new Session();
             connection.createPacketCollectorAndSend(session).nextResultOrThrow();
         }

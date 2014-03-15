@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.HostAddress;
@@ -77,6 +78,7 @@ public class ConnectionConfiguration implements Cloneable {
     private String resource;
     private boolean sendPresence = true;
     private boolean rosterLoadedAtLogin = true;
+    private boolean legacySessionDisabled = false;
     private SecurityMode securityMode = SecurityMode.enabled;
 
     /**
@@ -447,6 +449,28 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setRosterLoadedAtLogin(boolean rosterLoadedAtLogin) {
         this.rosterLoadedAtLogin = rosterLoadedAtLogin;
+    }
+
+    /**
+     * Returns true if a {@link Session} will be requested on login if the server
+     * supports it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't
+     * even mention this part of the protocol.
+     *
+     * @return true if a session has to be requested when logging in.
+     */
+    public boolean isLegacySessionDisabled() {
+        return legacySessionDisabled;
+    }
+
+    /**
+     * Sets if a {@link Session} will be requested on login if the server supports
+     * it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't even
+     * mention this part of the protocol.
+     *
+     * @param legacySessionDisabled if a session has to be requested when logging in.
+     */
+    public void setLegacySessionDisabled(boolean legacySessionDisabled) {
+        this.legacySessionDisabled = legacySessionDisabled;
     }
 
     /**
