@@ -1105,4 +1105,15 @@ public abstract class XMPPConnection {
     public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
         return executorService.schedule(command, delay, unit);
     }
+
+    /**
+     * Get the connection counter of this XMPPConnection instance. Those can be used as ID to
+     * identify the connection, but beware that the ID may not be unique if you create more then
+     * <tt>2*Integer.MAX_VALUE</tt> instances as the counter could wrap.
+     *
+     * @return the connection counter of this XMPPConnection
+     */
+    public int getConnectionCounter() {
+        return connectionCounterValue;
+    }
 }
