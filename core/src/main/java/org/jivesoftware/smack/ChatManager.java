@@ -227,6 +227,13 @@ public class ChatManager {
         return chat;
     }
 
+    void closeChat(Chat chat) {
+        threadChats.remove(chat.getThreadID());
+        String userJID = chat.getParticipant();
+        jidChats.remove(userJID);
+        baseJidChats.remove(StringUtils.parseBareAddress(userJID));
+    }
+
     private Chat createChat(Message message) {
         String threadID = message.getThread();
         if(threadID == null) {

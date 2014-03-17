@@ -129,6 +129,16 @@ public class Chat {
     }
 
     /**
+     * Closes the Chat and removes all references to it from the {@link ChatManager}. The chat will
+     * be unusable when this method returns, so it's recommend to drop all references to the
+     * instance right after calling {@link #close()}.
+     */
+    public void close() {
+        chatManager.closeChat(this);
+        listeners.clear();
+    }
+
+    /**
      * Returns an unmodifiable collection of all of the listeners registered with this chat.
      *
      * @return an unmodifiable collection of all of the listeners registered with this chat.
