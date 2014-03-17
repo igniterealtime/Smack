@@ -1,6 +1,23 @@
 <?xml version="1.0"?> 
 <!-- Providers for workgroup extensions -->
-<smackProviders> 
+<smackProviders>
+
+    <!-- XEP-0332 HTTP over XMPP transport -->
+    <iqProvider>
+        <elementName>req</elementName>
+        <namespace>urn:xmpp:http</namespace>
+        <className>org.jivesoftware.smackx.hoxt.provider.HttpOverXmppReqProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>resp</elementName>
+        <namespace>urn:xmpp:http</namespace>
+        <className>org.jivesoftware.smackx.hoxt.provider.HttpOverXmppRespProvider</className>
+    </iqProvider>
+    <extensionProvider>
+        <elementName>chunk</elementName>
+        <namespace>urn:xmpp:http</namespace>
+        <className>org.jivesoftware.smackx.hoxt.provider.Base64BinaryChunkProvider</className>
+    </extensionProvider>
 
     <!-- XEP-0280 Message Carbons -->
     <extensionProvider>
