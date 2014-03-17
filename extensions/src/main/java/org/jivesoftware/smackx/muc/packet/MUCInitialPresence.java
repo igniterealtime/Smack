@@ -26,14 +26,14 @@ import java.util.TimeZone;
 /**
  * Represents extended presence information whose sole purpose is to signal the ability of 
  * the occupant to speak the MUC protocol when joining a room. If the room requires a password 
- * then the MUCInitialPresence should include one.<p>
- * 
+ * then the MUCInitialPresence should include one.
+ * <p>
  * The amount of discussion history provided on entering a room (perhaps because the 
  * user is on a low-bandwidth connection or is using a small-footprint client) could be managed by
  * setting a configured History instance to the MUCInitialPresence instance. 
- * @see MUCInitialPresence#setHistory(MUCInitialPresence.History).
  *
  * @author Gaston Dombiak
+ * @see MUCInitialPresence#setHistory(MUCInitialPresence.History)
  */
 public class MUCInitialPresence implements PacketExtension {
 
