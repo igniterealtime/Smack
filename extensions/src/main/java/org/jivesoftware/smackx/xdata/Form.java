@@ -264,7 +264,7 @@ public class Form {
      * (i.e. #toString) will be the actual value of the field.<p>
      * 
      * If the value to set to the field is not a basic type (e.g. String, boolean, int, etc.) you
-     * will need to use {@link #setAnswer(String, String))} where the String value is the 
+     * will need to use {@link #setAnswer(String, String)} where the String value is the 
      * String representation of the object.<p> 
      * 
      * Before setting the new value to the field we will check if the form is of type submit. If 
