@@ -26,20 +26,18 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketInterceptor;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.collections.ReferenceMap;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
- * packet extensions and the disco response neccesary for compliance with
+ * packet extensions and the disco response necessary for compliance with
  * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
  * NOTE: {@link org.jivesoftware.smackx.chatstates.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
@@ -80,8 +78,7 @@ public class ChatStateManager extends Manager {
     /**
      * Maps chat to last chat state.
      */
-    private final Map<Chat, ChatState> chatStates =
-            new ReferenceMap<Chat, ChatState>(ReferenceMap.WEAK, ReferenceMap.HARD);
+    private final Map<Chat, ChatState> chatStates = new WeakHashMap<Chat, ChatState>();
 
     private ChatStateManager(XMPPConnection connection) {
         super(connection);
@@ -100,11 +97,8 @@ public class ChatStateManager extends Manager {
      *
      * @param newState the new state of the chat
      * @param chat the chat.
-     * @throws org.jivesoftware.smack.XMPPException
-     *          when there is an error sending the message
-     *          packet.
      */
-    public void setCurrentState(ChatState newState, Chat chat) throws XMPPException {
+    public void setCurrentState(ChatState newState, Chat chat) {
         if(chat == null || newState == null) {
             throw new IllegalArgumentException("Arguments cannot be null.");
         }
@@ -133,7 +127,7 @@ public class ChatStateManager extends Manager {
         return connection().hashCode();
     }
 
-    private boolean updateChatState(Chat chat, ChatState newState) {
+    private synchronized boolean updateChatState(Chat chat, ChatState newState) {
         ChatState lastChatState = chatStates.get(chat);
         if (lastChatState != newState) {
             chatStates.put(chat, newState);

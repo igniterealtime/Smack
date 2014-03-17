@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -33,7 +34,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.collections.ReferenceMap;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
@@ -87,20 +87,17 @@ public class ChatManager {
     /**
      * Maps thread ID to chat.
      */
-    private Map<String, Chat> threadChats = Collections.synchronizedMap(new ReferenceMap<String, Chat>(ReferenceMap.HARD,
-            ReferenceMap.WEAK));
+    private Map<String, Chat> threadChats = Collections.synchronizedMap(new HashMap<String, Chat>());
 
     /**
      * Maps jids to chats
      */
-    private Map<String, Chat> jidChats = Collections.synchronizedMap(new ReferenceMap<String, Chat>(ReferenceMap.HARD,
-            ReferenceMap.WEAK));
+    private Map<String, Chat> jidChats = Collections.synchronizedMap(new HashMap<String, Chat>());
 
     /**
      * Maps base jids to chats
      */
-    private Map<String, Chat> baseJidChats = Collections.synchronizedMap(new ReferenceMap<String, Chat>(ReferenceMap.HARD,
-	    ReferenceMap.WEAK));
+    private Map<String, Chat> baseJidChats = Collections.synchronizedMap(new HashMap<String, Chat>());
 
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();

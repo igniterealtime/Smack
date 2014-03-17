@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smack.util;
 
-import org.jivesoftware.smack.util.collections.AbstractMapEntry;
-
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -673,6 +671,69 @@ public class Cache<K, V> implements Map<K, V> {
          */
         public String toString() {
             return object.toString();
+        }
+    }
+
+    static class AbstractMapEntry<K, V> implements Map.Entry<K, V> {
+        final K key;
+        V value;
+
+        AbstractMapEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(V value) {
+            V answer = this.value;
+            this.value = value;
+            return answer;
+        }
+
+        /**
+         * Compares this Map Entry with another Map Entry.
+         * <p/>
+         * Implemented per API documentation of {@link java.util.Map.Entry#equals(Object)}
+         *
+         * @param obj the object to compare to
+         * @return true if equal key and value
+         */
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof Map.Entry == false) {
+                return false;
+            }
+            Map.Entry other = (Map.Entry) obj;
+            return (getKey() == null ? other.getKey() == null : getKey().equals(other.getKey()))
+                            && (getValue() == null ? other.getValue() == null : getValue().equals(
+                                            other.getValue()));
+        }
+
+        /**
+         * Gets a hashCode compatible with the equals method.
+         * <p/>
+         * Implemented per API documentation of {@link java.util.Map.Entry#hashCode()}
+         *
+         * @return a suitable hash code
+         */
+        @Override
+        public int hashCode() {
+            return (getKey() == null ? 0 : getKey().hashCode())
+                            ^ (getValue() == null ? 0 : getValue().hashCode());
         }
     }
 }

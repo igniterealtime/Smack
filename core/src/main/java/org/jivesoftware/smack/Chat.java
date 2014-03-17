@@ -99,9 +99,8 @@ public class Chat {
      * and message type of the message will automatically set to those of this chat.
      *
      * @param message the message to send.
-     * @throws XMPPException if an error occurs sending the message.
      */
-    public void sendMessage(Message message) throws XMPPException {
+    public void sendMessage(Message message) {
         // Force the recipient, message type, and thread ID since the user elected
         // to send the message through this chat object.
         message.setTo(participant);
