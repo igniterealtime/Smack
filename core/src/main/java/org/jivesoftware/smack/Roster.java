@@ -265,7 +265,7 @@ public class Roster {
             throw new IllegalStateException("Anonymous users can't have a roster.");
         }
         if (groups.containsKey(name)) {
-            return null;
+            return groups.get(name);
         }
         
         RosterGroup group = new RosterGroup(name, connection);
