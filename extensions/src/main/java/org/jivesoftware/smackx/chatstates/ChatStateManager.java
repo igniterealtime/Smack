@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
@@ -80,10 +81,13 @@ public class ChatStateManager extends Manager {
      */
     private final Map<Chat, ChatState> chatStates = new WeakHashMap<Chat, ChatState>();
 
+    private final ChatManager chatManager;
+
     private ChatStateManager(XMPPConnection connection) {
         super(connection);
-        connection.getChatManager().addOutgoingMessageInterceptor(outgoingInterceptor, filter);
-        connection.getChatManager().addChatListener(incomingInterceptor);
+        chatManager = ChatManager.getInstanceFor(connection);
+        chatManager.addOutgoingMessageInterceptor(outgoingInterceptor, filter);
+        chatManager.addChatListener(incomingInterceptor);
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
         INSTANCES.put(connection, this);
@@ -148,7 +152,7 @@ public class ChatStateManager extends Manager {
 
         public void interceptPacket(Packet packet) {
             Message message = (Message) packet;
-            Chat chat = connection().getChatManager().getThreadChat(message.getThread());
+            Chat chat = chatManager.getThreadChat(message.getThread());
             if (chat == null) {
                 return;
             }

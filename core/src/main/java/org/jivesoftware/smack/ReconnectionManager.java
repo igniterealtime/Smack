@@ -69,7 +69,7 @@ public class ReconnectionManager extends AbstractConnectionListener {
      */
     private boolean isReconnectionAllowed() {
         return !done && !connection.isConnected()
-                && connection.isReconnectionAllowed();
+                && connection.getConfiguration().isReconnectionAllowed();
     }
 
     /**

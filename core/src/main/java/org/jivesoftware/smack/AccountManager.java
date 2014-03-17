@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -31,11 +32,24 @@ import org.jivesoftware.smack.util.StringUtils;
 /**
  * Allows creation and management of accounts on an XMPP server.
  *
- * @see XMPPConnection#getAccountManager()
  * @author Matt Tucker
  */
-public class AccountManager {
-    private XMPPConnection connection;
+public class AccountManager extends Manager {
+    private static final Map<XMPPConnection, AccountManager> INSTANCES = new WeakHashMap<XMPPConnection, AccountManager>();
+
+    /**
+     * Returns the AccountManager instance associated with a given XMPPConnection.
+     *
+     * @param connection the connection used to look for the proper ServiceDiscoveryManager.
+     * @return the AccountManager associated with a given XMPPConnection.
+     */
+    public static synchronized AccountManager getInstance(XMPPConnection connection) {
+        AccountManager accountManager = INSTANCES.get(connection);
+        if (accountManager == null) 
+            accountManager = new AccountManager(connection);
+        return accountManager;
+    }
+
     private Registration info = null;
 
     /**
@@ -51,8 +65,9 @@ public class AccountManager {
      *
      * @param connection a connection to a XMPP server.
      */
-    public AccountManager(XMPPConnection connection) {
-        this.connection = connection;
+    private AccountManager(XMPPConnection connection) {
+        super(connection);
+        INSTANCES.put(connection, this);
     }
 
     /**
@@ -199,11 +214,11 @@ public class AccountManager {
                     throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
-        reg.setTo(connection.getServiceName());
+        reg.setTo(connection().getServiceName());
         attributes.put("username", username);
         attributes.put("password", password);
         reg.setAttributes(attributes);
-        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -218,12 +233,12 @@ public class AccountManager {
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
-        reg.setTo(connection.getServiceName());
+        reg.setTo(connection().getServiceName());
         Map<String, String> map = new HashMap<String, String>();
-        map.put("username",StringUtils.parseName(connection.getUser()));
+        map.put("username",StringUtils.parseName(connection().getUser()));
         map.put("password",newPassword);
         reg.setAttributes(map);
-        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -238,12 +253,12 @@ public class AccountManager {
     public void deleteAccount() throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
-        reg.setTo(connection.getServiceName());
+        reg.setTo(connection().getServiceName());
         Map<String, String> attributes = new HashMap<String, String>();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
         reg.setAttributes(attributes);
-        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -256,7 +271,7 @@ public class AccountManager {
      */
     private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException {
         Registration reg = new Registration();
-        reg.setTo(connection.getServiceName());
-        info = (Registration) connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        reg.setTo(connection().getServiceName());
+        info = (Registration) connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 }

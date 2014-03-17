@@ -164,16 +164,6 @@ public abstract class XMPPConnection {
             new ConcurrentHashMap<PacketInterceptor, InterceptorWrapper>();
 
     /**
-     * The AccountManager allows creation and management of accounts on an XMPP server.
-     */
-    private AccountManager accountManager = null;
-
-    /**
-     * The ChatManager keeps track of references to all current chats.
-     */
-    private ChatManager chatManager = null;
-
-    /**
      * 
      */
     private long packetReplyTimeout = SmackConfiguration.getDefaultPacketReplyTimeout();
@@ -338,16 +328,6 @@ public abstract class XMPPConnection {
     abstract void sendPacketInternal(Packet packet);
 
     /**
-     * Returns if the reconnection mechanism is allowed to be used. By default
-     * reconnection is allowed.
-     * 
-     * @return true if the reconnection mechanism is allowed to be used.
-     */
-    protected boolean isReconnectionAllowed() {
-        return config.isReconnectionAllowed();
-    }
-
-    /**
      * Returns true if network traffic is being compressed. When using stream compression network
      * traffic can be reduced up to 90%. Therefore, stream compression is ideal when using a slow
      * speed network connection. However, the server will need to use more CPU time in order to
@@ -463,31 +443,6 @@ public abstract class XMPPConnection {
         // Process packet writer listeners. Note that we're using the sending thread so it's
         // expected that listeners are fast.
         firePacketSendingListeners(packet);
-    }
-
-    /**
-     * Returns an account manager instance for this connection.
-     * 
-     * @return an account manager for this connection.
-     */
-    public AccountManager getAccountManager() {
-        if (accountManager == null) {
-            accountManager = new AccountManager(this);
-        }
-        return accountManager;
-    }
-
-    /**
-     * Returns a chat manager instance for this connection. The ChatManager manages all incoming and
-     * outgoing chats on the current connection.
-     * 
-     * @return a chat manager instance for this connection.
-     */
-    public synchronized ChatManager getChatManager() {
-        if (this.chatManager == null) {
-            this.chatManager = new ChatManager(this);
-        }
-        return this.chatManager;
     }
 
     /**

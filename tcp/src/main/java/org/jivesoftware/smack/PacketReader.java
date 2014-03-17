@@ -359,7 +359,7 @@ class PacketReader {
                     connection.setAvailableCompressionMethods(PacketParserUtils.parseCompressionMethods(parser));
                 }
                 else if (parser.getName().equals("register")) {
-                    connection.getAccountManager().setSupportsAccountCreation(true);
+                    AccountManager.getInstance(connection).setSupportsAccountCreation(true);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

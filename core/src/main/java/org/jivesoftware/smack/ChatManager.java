@@ -42,7 +42,9 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * @author Alexander Wenckus
  */
-public class ChatManager {
+public class ChatManager extends Manager{
+    private static final Map<XMPPConnection, ChatManager> INSTANCES = new WeakHashMap<XMPPConnection, ChatManager>();
+
     /**
      * Sets the default behaviour for allowing 'normal' messages to be used in chats. As some clients don't set
      * the message type to chat, the type normal has to be accepted to allow chats with these clients.
@@ -53,6 +55,19 @@ public class ChatManager {
      * Sets the default behaviour for how to match chats when there is NO thread id in the incoming message.
      */
     private static MatchMode defaultMatchMode = MatchMode.BARE_JID;
+
+    /**
+     * Returns the ChatManager instance associated with a given XMPPConnection.
+     *
+     * @param connection the connection used to look for the proper ServiceDiscoveryManager.
+     * @return the ChatManager associated with a given XMPPConnection.
+     */
+    public static synchronized ChatManager getInstanceFor(XMPPConnection connection) {
+        ChatManager manager = INSTANCES.get(connection);
+        if (manager == null)
+            manager = new ChatManager(connection);
+        return manager;
+    }
 
     /**
      * Defines the different modes under which a match will be attempted with an existing chat when
@@ -105,10 +120,8 @@ public class ChatManager {
     private Map<PacketInterceptor, PacketFilter> interceptors
             = new WeakHashMap<PacketInterceptor, PacketFilter>();
 
-    private XMPPConnection connection;
-
-    ChatManager(XMPPConnection connection) {
-        this.connection = connection;
+    private ChatManager(XMPPConnection connection) {
+        super(connection);
 
         PacketFilter filter = new PacketFilter() {
             public boolean accept(Packet packet) {
@@ -139,6 +152,7 @@ public class ChatManager {
                 deliverMessage(chat, message);
             }
         }, filter);
+        INSTANCES.put(connection, this);
     }
 
     /**
@@ -310,13 +324,13 @@ public class ChatManager {
         }
         // Ensure that messages being sent have a proper FROM value
         if (message.getFrom() == null) {
-            message.setFrom(connection.getUser());
+            message.setFrom(connection().getUser());
         }
-        connection.sendPacket(message);
+        connection().sendPacket(message);
     }
 
     PacketCollector createPacketCollector(Chat chat) {
-        return connection.createPacketCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
+        return connection().createPacketCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
                         FromMatchesFilter.create(chat.getParticipant())));
     }
 

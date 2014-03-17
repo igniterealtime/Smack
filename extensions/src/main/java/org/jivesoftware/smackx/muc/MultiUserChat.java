@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
@@ -1627,7 +1628,7 @@ public class MultiUserChat {
      * @return new Chat for sending private messages to a given room occupant.
      */
     public Chat createPrivateChat(String occupant, MessageListener listener) {
-        return connection.getChatManager().createChat(occupant, listener);
+        return ChatManager.getInstanceFor(connection).createChat(occupant, listener);
     }
 
     /**
