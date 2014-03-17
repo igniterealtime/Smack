@@ -414,13 +414,7 @@ public class TCPConnection extends XMPPConnection {
         wasAuthenticated = false;
     }
 
-    public void sendPacket(Packet packet) {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (packet == null) {
-            throw new NullPointerException("Packet is null.");
-        }
+    void sendPacketInternal(Packet packet) {
         packetWriter.sendPacket(packet);
     }
 

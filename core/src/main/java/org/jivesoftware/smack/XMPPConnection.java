@@ -335,6 +335,8 @@ public abstract class XMPPConnection {
      */
     public abstract boolean isSecureConnection();
 
+    abstract void sendPacketInternal(Packet packet);
+
     /**
      * Returns if the reconnection mechanism is allowed to be used. By default
      * reconnection is allowed.
@@ -447,7 +449,21 @@ public abstract class XMPPConnection {
      * 
      * @param packet the packet to send.
      */
-    public abstract void sendPacket(Packet packet);
+    public void sendPacket(Packet packet) {
+        if (!isConnected()) {
+            throw new IllegalStateException("Not connected to server.");
+        }
+        if (packet == null) {
+            throw new NullPointerException("Packet is null.");
+        }
+        // Invoke interceptors for the new packet that is about to be sent. Interceptors may modify
+        // the content of the packet.
+        firePacketInterceptors(packet);
+        sendPacketInternal(packet);
+        // Process packet writer listeners. Note that we're using the sending thread so it's
+        // expected that listeners are fast.
+        firePacketSendingListeners(packet);
+    }
 
     /**
      * Returns an account manager instance for this connection.
@@ -771,7 +787,7 @@ public abstract class XMPPConnection {
      * 
      * @param packet the packet to process.
      */
-    protected void firePacketSendingListeners(Packet packet) {
+    private void firePacketSendingListeners(Packet packet) {
         // Notify the listeners of the new sent packet
         for (ListenerWrapper listenerWrapper : sendListeners.values()) {
             listenerWrapper.notifyListener(packet);
@@ -824,7 +840,7 @@ public abstract class XMPPConnection {
      * 
      * @param packet the packet that is going to be sent to the server
      */
-    protected void firePacketInterceptors(Packet packet) {
+    private void firePacketInterceptors(Packet packet) {
         if (packet != null) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
                 interceptorWrapper.notifyListener(packet);

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.security.sasl.SaslException;
 
@@ -54,6 +56,7 @@ import org.igniterealtime.jbosh.ComposableBody;
  * @author Guenther Niess
  */
 public class BOSHConnection extends XMPPConnection {
+    private static final Logger LOGGER = Logger.getLogger(BOSHConnection.class.getName());
 
     /**
      * The XMPP Over Bosh namespace.
@@ -332,31 +335,14 @@ public class BOSHConnection extends XMPPConnection {
         callConnectionAuthenticatedListener();
     }
 
-    public void sendPacket(Packet packet) {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (packet == null) {
-            throw new NullPointerException("Packet is null.");
-        }
+    void sendPacketInternal(Packet packet) {
         if (!done) {
-            // Invoke interceptors for the new packet that is about to be sent.
-            // Interceptors
-            // may modify the content of the packet.
-            firePacketInterceptors(packet);
-
             try {
                 send(ComposableBody.builder().setPayloadXML(packet.toXML())
                         .build());
             } catch (BOSHException e) {
-                e.printStackTrace();
-                return;
+                LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);
             }
-
-            // Process packet writer listeners. Note that we're using the
-            // sending
-            // thread so it's expected that listeners are fast.
-            firePacketSendingListeners(packet);
         }
     }
 
@@ -550,8 +536,6 @@ public class BOSHConnection extends XMPPConnection {
     protected void notifyConnectionError(Exception e) {
         // Closes the connection temporary. A reconnection is possible
         shutdown(new Presence(Presence.Type.unavailable));
-        // Print the stack trace to help catch the problem
-        e.printStackTrace();
         callConnectionClosedOnErrorListener(e);
     }
 

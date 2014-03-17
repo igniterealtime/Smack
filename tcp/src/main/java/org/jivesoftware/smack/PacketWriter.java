@@ -80,10 +80,6 @@ class PacketWriter {
      */
     public void sendPacket(Packet packet) {
         if (!done) {
-            // Invoke interceptors for the new packet that is about to be sent. Interceptors
-            // may modify the content of the packet.
-            connection.firePacketInterceptors(packet);
-
             try {
                 queue.put(packet);
             }
@@ -94,10 +90,6 @@ class PacketWriter {
             synchronized (queue) {
                 queue.notifyAll();
             }
-
-            // Process packet writer listeners. Note that we're using the sending
-            // thread so it's expected that listeners are fast.
-            connection.firePacketSendingListeners(packet);
         }
     }
 

@@ -185,19 +185,11 @@ public class DummyConnection extends XMPPConnection {
     }
 
     @Override
-    public void sendPacket(Packet packet) {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (packet == null) {
-            throw new NullPointerException("Packet is null.");
-        }
-        firePacketInterceptors(packet);
+    void sendPacketInternal(Packet packet) {
         if (DEBUG_ENABLED) {
             System.out.println("[SEND]: " + packet.toXML());
         }
         queue.add(packet);
-        firePacketSendingListeners(packet);
     }
 
     /**
