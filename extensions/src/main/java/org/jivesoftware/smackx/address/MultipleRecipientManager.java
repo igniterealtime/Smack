@@ -113,7 +113,7 @@ public class MultipleRecipientManager {
                     (replyRoom != null && replyRoom.trim().length() > 0)) {
                 // Some specified JEP-33 features were requested so throw an exception alerting
                 // the user that this features are not available
-                throw new FeatureNotSupportedException("Extended Stanza Addressing not supported by server");
+                throw new FeatureNotSupportedException("Extended Stanza Addressing");
             }
             // Send the packet to each individual recipient
             sendToIndividualRecipients(connection, packet, to, cc, bcc);

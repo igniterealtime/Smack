@@ -152,8 +152,45 @@ public class SmackException extends Exception {
          */
         private static final long serialVersionUID = 4713404802621452016L;
 
-        public FeatureNotSupportedException(String message) {
-            super(message);
+        private final String feature;
+        private final String jid;
+
+        public FeatureNotSupportedException(String feature) {
+            this(feature, null);
         }
+
+        public FeatureNotSupportedException(String feature, String jid) {
+            super(feature + " not supported" + (jid == null ? "" : " by '" + jid + "'"));
+            this.jid = jid;
+            this.feature = feature;
+        }
+
+        /**
+         * Get the feature which is not supported.
+         *
+         * @return the feature which is not supported
+         */
+        public String getFeature() {
+            return feature;
+        }
+
+        /**
+         * Get JID which does not support the feature. The JID can be null in cases when there are
+         * multiple JIDs queried for this feature.
+         *
+         * @return the JID which does not support the feature, or null
+         */
+        public String getJid() {
+            return jid;
+        }
+    }
+
+    public static class ResourceBindingNotOfferedException extends SmackException {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 2346934138253437571L;
+
     }
 }

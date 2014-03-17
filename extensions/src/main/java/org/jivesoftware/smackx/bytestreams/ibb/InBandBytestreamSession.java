@@ -211,9 +211,11 @@ public class InBandBytestreamSession implements BytestreamSession {
                 connection.createPacketCollectorAndSend(close).nextResultOrThrow();
             }
             catch (Exception e) {
-                // Sadly we are unable to wrap the exception within the IOException, because the
-                // IOException(String,Throwable) constructor is only support from Android API 9 on.
-                throw new IOException();
+                // Sadly we are unable to use the IOException(Throwable) constructor because this
+                // constructor is only supported from Android API 9 on.
+                IOException ioException = new IOException();
+                ioException.initCause(e);
+                throw ioException;
             }
 
             this.inputStream.cleanup();
@@ -769,9 +771,11 @@ public class InBandBytestreamSession implements BytestreamSession {
                 // close session unless it is already closed
                 if (!this.isClosed) {
                     InBandBytestreamSession.this.close();
-                    // Sadly we are unable to wrap the exception within the IOException, because the
-                    // IOException(String,Throwable) constructor is only support from Android API 9 on.
-                    throw new IOException();
+                    // Sadly we are unable to use the IOException(Throwable) constructor because this
+                    // constructor is only supported from Android API 9 on.
+                    IOException ioException = new IOException();
+                    ioException.initCause(e);
+                    throw ioException;
                 }
             }
 

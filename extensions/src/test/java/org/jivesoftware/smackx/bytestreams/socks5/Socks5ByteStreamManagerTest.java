@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -152,13 +153,10 @@ public class Socks5ByteStreamManagerTest {
 
             fail("exception should be thrown");
         }
-        catch (SmackException e) {
-            assertTrue(e.getMessage().contains("doesn't support SOCKS5 Bytestream"));
-        }
-        catch (IOException e) {
-            fail(e.getMessage());
-        }
-        catch (InterruptedException e) {
+        catch (FeatureNotSupportedException e) {
+            assertTrue(e.getFeature().equals("SOCKS5 Bytestream"));
+            assertTrue(e.getJid().equals(targetJID));
+        } catch(Exception e) {
             fail(e.getMessage());
         }
 

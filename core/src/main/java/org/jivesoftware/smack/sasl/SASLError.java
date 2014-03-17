@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.sasl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public enum SASLError {
 
     aborted,
@@ -29,6 +32,7 @@ public enum SASLError {
     not_authorized,
     temporary_auth_failure;
 
+    private static final Logger LOGGER = Logger.getLogger(SASLError.class.getName());
     @Override
     public String toString() {
         return this.name().replace('_', '-');
@@ -36,10 +40,12 @@ public enum SASLError {
 
     public static SASLError fromString(String string) {
         string = string.replace('-', '_');
-        for (SASLError error : SASLError.values()) {
-            if (error.name().equals(string))
-                return error;
+        SASLError saslError = null;
+        try {
+            saslError = SASLError.valueOf(string);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Could not transform string '" + string + "' to SASLError", e);
         }
-        return null;
+        return saslError;
     }
 }

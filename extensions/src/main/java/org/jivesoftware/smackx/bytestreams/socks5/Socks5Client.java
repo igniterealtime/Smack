@@ -144,8 +144,9 @@ class Socks5Client {
      * @return <code>true</code> if if a stream could be established, otherwise <code>false</code>.
      *         If <code>false</code> is returned the given Socket should be closed.
      * @throws SmackException 
+     * @throws IOException 
      */
-    protected boolean establish(Socket socket) throws SmackException {
+    protected boolean establish(Socket socket) throws SmackException, IOException {
 
         byte[] connectionRequest;
         byte[] connectionResponse;
@@ -153,39 +154,35 @@ class Socks5Client {
          * use DataInputStream/DataOutpuStream to assure read and write is completed in a single
          * statement
          */
-        try {
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+        DataInputStream in = new DataInputStream(socket.getInputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
-            // authentication negotiation
-            byte[] cmd = new byte[3];
+        // authentication negotiation
+        byte[] cmd = new byte[3];
 
-            cmd[0] = (byte) 0x05; // protocol version 5
-            cmd[1] = (byte) 0x01; // number of authentication methods supported
-            cmd[2] = (byte) 0x00; // authentication method: no-authentication required
+        cmd[0] = (byte) 0x05; // protocol version 5
+        cmd[1] = (byte) 0x01; // number of authentication methods supported
+        cmd[2] = (byte) 0x00; // authentication method: no-authentication required
 
-            out.write(cmd);
-            out.flush();
+        out.write(cmd);
+        out.flush();
 
-            byte[] response = new byte[2];
-            in.readFully(response);
+        byte[] response = new byte[2];
+        in.readFully(response);
 
-            // check if server responded with correct version and no-authentication method
-            if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
-                return false;
-            }
-
-            // request SOCKS5 connection with given address/digest
-            connectionRequest = createSocks5ConnectRequest();
-            out.write(connectionRequest);
-            out.flush();
-
-            // receive response
-            connectionResponse = Socks5Utils.receiveSocks5Message(in);
+        // check if server responded with correct version and no-authentication method
+        if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
+            return false;
         }
-        catch (IOException e) {
-            throw new SmackException(e);
-        }
+
+        // request SOCKS5 connection with given address/digest
+        connectionRequest = createSocks5ConnectRequest();
+        out.write(connectionRequest);
+        out.flush();
+
+        // receive response
+        connectionResponse = Socks5Utils.receiveSocks5Message(in);
+
         // verify response
         connectionRequest[1] = (byte) 0x00; // set expected return status to 0
         return Arrays.equals(connectionRequest, connectionResponse);

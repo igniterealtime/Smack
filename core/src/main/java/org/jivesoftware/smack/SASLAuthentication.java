@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.Packet;
@@ -210,9 +211,10 @@ public class SASLAuthentication {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws SASLErrorException 
+     * @throws ResourceBindingNotOfferedException
      */
     public String authenticate(String resource, CallbackHandler cbh) throws IOException,
-                    NoResponseException, XMPPErrorException, SASLErrorException {
+                    NoResponseException, XMPPErrorException, SASLErrorException, ResourceBindingNotOfferedException {
         // Locate the SASLMechanism to use
         String selectedMechanism = null;
         for (String mechanism : mechanismsPreferences) {
@@ -265,8 +267,7 @@ public class SASLAuthentication {
                 return bindResourceAndEstablishSession(resource);
             }
             else {
-                // SASL authentication failed
-                throw new SaslException();
+                throw new NoResponseException();
             }
 
         }
@@ -352,8 +353,7 @@ public class SASLAuthentication {
                 return bindResourceAndEstablishSession(resource);
             }
             else {
-                // SASL authentication failed
-                throw new SaslException();
+                throw new NoResponseException();
             }
         }
         else {
@@ -404,11 +404,12 @@ public class SASLAuthentication {
                 return bindResourceAndEstablishSession(null);
             }
             else {
-                throw new SaslException();
+                throw new NoResponseException();
             }
     }
 
-    private String bindResourceAndEstablishSession(String resource) throws NoResponseException, XMPPErrorException {
+    private String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
+                    ResourceBindingNotOfferedException, NoResponseException {
         // Wait until server sends response containing the <bind> element
         synchronized (this) {
             if (!resourceBinded) {
@@ -424,7 +425,7 @@ public class SASLAuthentication {
         if (!resourceBinded) {
             // Server never offered resource binding, which is REQURIED in XMPP client and server
             // implementations as per RFC6120 7.2
-            throw new IllegalStateException("Resource binding not offered by server");
+            throw new ResourceBindingNotOfferedException();
         }
 
         Bind bindResource = new Bind();

@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
@@ -436,7 +437,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         XMPPErrorException discoveryException = null;
         // check if target supports SOCKS5 Bytestream
         if (!supportsSocks5(targetJID)) {
-            throw new SmackException(targetJID + " doesn't support SOCKS5 Bytestream");
+            throw new FeatureNotSupportedException("SOCKS5 Bytestream", targetJID);
         }
 
         List<String> proxies = new ArrayList<String>();

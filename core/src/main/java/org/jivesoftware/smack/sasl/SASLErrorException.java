@@ -34,12 +34,14 @@ public class SASLErrorException extends XMPPException {
     private final Map<String,String> texts;
 
     public SASLErrorException(String mechanism, SASLFailure saslFailure) {
+        super("SASLError using " + mechanism + ": " + saslFailure);
         this.mechanism = mechanism;
         this.saslFailure = saslFailure;
         this.texts = new HashMap<String, String>();
     }
     
     public SASLErrorException(String mechanism, SASLFailure saslFailure, Map<String,String> texts) {
+        super("SASLError using " + mechanism + ": " + saslFailure);
         this.mechanism = mechanism;
         this.saslFailure = saslFailure;
         this.texts = texts;
