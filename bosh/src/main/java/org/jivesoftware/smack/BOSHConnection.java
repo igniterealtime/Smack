@@ -590,12 +590,16 @@ public class BOSHConnection extends XMPPConnection {
                 }
                 else {
                     if (connEvent.isError()) {
-                        try {
-                            connEvent.getCause();
+                        // TODO Check why jbosh's getCause returns Throwable here. This is very
+                        // unusual and should be avoided if possible
+                        Throwable cause = connEvent.getCause();
+                        Exception e;
+                        if (cause instanceof Exception) {
+                            e = (Exception) cause;
+                        } else {
+                            e = new Exception(cause);
                         }
-                        catch (Exception e) {
-                            notifyConnectionError(e);
-                        }
+                        notifyConnectionError(e);
                     }
                     connected = false;
                 }
