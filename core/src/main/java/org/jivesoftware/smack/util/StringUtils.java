@@ -30,11 +30,11 @@ import java.util.logging.Logger;
 public class StringUtils {
     private static final Logger LOGGER = Logger.getLogger(StringUtils.class.getName());
 
-    private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
-    private static final char[] APOS_ENCODE = "&apos;".toCharArray();
-    private static final char[] AMP_ENCODE = "&amp;".toCharArray();
-    private static final char[] LT_ENCODE = "&lt;".toCharArray();
-    private static final char[] GT_ENCODE = "&gt;".toCharArray();
+    public static final String QUOTE_ENCODE = "&quot;";
+    public static final String APOS_ENCODE = "&apos;";
+    public static final String AMP_ENCODE = "&amp;";
+    public static final String LT_ENCODE = "&lt;";
+    public static final String GT_ENCODE = "&gt;";
 
     /**
      * Returns the name portion of a XMPP address. For example, for the
@@ -284,41 +284,13 @@ public class StringUtils {
     }
 
     /**
-     * Encodes a string for use in an XML attribute by escaping characters with
-     * a special meaning. In particular, white spaces are encoded as character
-     * references, such that they are not replaced by ' ' on parsing.
-     */
-    private static String xmlAttribEncodeBinary(String value) {
-        StringBuilder s = new StringBuilder();
-        char buf[] = value.toCharArray();
-        for (char c : buf) {
-            switch (c) {
-            case '<': s.append("&lt;"); break;
-            case '>': s.append("&gt;"); break;
-            case '&': s.append("&amp;"); break;
-            case '"': s.append("&quot;"); break;
-            case '\'': s.append("&apos;"); break;
-            default:
-                if (c <= 0x1f || (0x7f <= c && c <= 0x9f)) { // includes \t, \n, \r
-                    s.append("&#x");
-                    s.append(String.format("%X", (int)c));
-                    s.append(';');
-                } else  {
-                    s.append(c);
-                }
-            }
-        }
-        return s.toString();
-    }
-
-    /**
      * Returns a string representing a XML attribute. The value parameter is escaped as necessary. In particular,
      * white spaces are encoded as character references, such that they are not replaced by ' ' on parsing.
      * @param name name of the XML attribute
      * @param value value of the XML attribute
      */
     public static String xmlAttrib(String name, String value) {
-        return name + "=\"" + xmlAttribEncodeBinary(value) + "\"";
+        return name + "=\"" + escapeForXML(value, true) + "\"";
     }
 
 
@@ -326,69 +298,62 @@ public class StringUtils {
      * Escapes all necessary characters in the String so that it can be used
      * in an XML doc.
      *
-     * <strong>Warning:</strong> This method does not escape unicode character references
-     * (i.e. references of the from &#235;) 
-     *
      * @param string the string to escape.
      * @return the string with appropriate characters escaped.
      */
     public static String escapeForXML(String string) {
+        return escapeForXML(string, false);
+    }
+
+    public static String escapeForXML(final String string, final boolean escapeWhitespace) {
         if (string == null) {
             return null;
         }
+        final char[] input = string.toCharArray();
+        final int len = input.length;
+        final StringBuilder out = new StringBuilder((int)(len*1.3));
+        CharSequence toAppend;
         char ch;
-        int i=0;
-        int last=0;
-        char[] input = string.toCharArray();
-        int len = input.length;
-        StringBuilder out = new StringBuilder((int)(len*1.3));
-        for (; i < len; i++) {
+        int last = 0;
+        int i = 0;
+        while (i < len) {
+            toAppend = null;
             ch = input[i];
-            if (ch > '>') {
+            switch(ch) {
+            case '<':
+                toAppend = LT_ENCODE;
+                break;
+            case '>':
+                toAppend = GT_ENCODE;
+                break;
+            case '&':
+                toAppend = AMP_ENCODE;
+                break;
+            case '"':
+                toAppend = QUOTE_ENCODE;
+                break;
+            case '\'':
+                toAppend = APOS_ENCODE;
+                break;
+            default:
+                // includes \t, \n, \r
+                if (escapeWhitespace && (ch <= 0x1f || (0x7f <= ch && ch <= 0x9f))) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("&#x");
+                    sb.append(String.format("%X", (int) ch));
+                    sb.append(';');
+                    toAppend = sb;
+                }
+                break;
             }
-            else if (ch == '<') {
+            if (toAppend != null) {
                 if (i > last) {
                     out.append(input, last, i - last);
                 }
-                last = i + 1;
-                out.append(LT_ENCODE);
-            }
-            else if (ch == '>') {
-                if (i > last) {
-                    out.append(input, last, i - last);
-                }
-                last = i + 1;
-                out.append(GT_ENCODE);
-            }
-
-            else if (ch == '&') {
-                if (i > last) {
-                    out.append(input, last, i - last);
-                }
-                // Do nothing if the string is of the form &#235; (unicode value)
-                if (!(len > i + 5
-                    && input[i + 1] == '#'
-                    && Character.isDigit(input[i + 2])
-                    && Character.isDigit(input[i + 3])
-                    && Character.isDigit(input[i + 4])
-                    && input[i + 5] == ';')) {
-                        last = i + 1;
-                        out.append(AMP_ENCODE);
-                    }
-            }
-            else if (ch == '"') {
-                if (i > last) {
-                    out.append(input, last, i - last);
-                }
-                last = i + 1;
-                out.append(QUOTE_ENCODE);
-            }
-            else if (ch == '\'') {
-                if (i > last) {
-                    out.append(input, last, i - last);
-                }
-                last = i + 1;
-                out.append(APOS_ENCODE);
+                out.append(toAppend);
+                last = ++i;
+            } else {
+                i++;
             }
         }
         if (last == 0) {
