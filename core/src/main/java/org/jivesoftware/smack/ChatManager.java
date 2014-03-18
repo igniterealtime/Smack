@@ -149,6 +149,9 @@ public class ChatManager extends Manager{
                 if(chat == null) {
                     chat = createChat(message);
                 }
+                // The chat could not be created, abort here
+                if (chat == null)
+                    return;
                 deliverMessage(chat, message);
             }
         }, filter);
@@ -245,12 +248,24 @@ public class ChatManager extends Manager{
         baseJidChats.remove(StringUtils.parseBareAddress(userJID));
     }
 
+    /**
+     * Creates a new {@link Chat} based on the message. May returns null if no chat could be
+     * created, e.g. because the message comes without from.
+     *
+     * @param message
+     * @return a Chat or null if none can be created
+     */
     private Chat createChat(Message message) {
+        String userJID = message.getFrom();
+        // According to RFC6120 8.1.2.1 4. messages without a 'from' attribute are valid, but they
+        // are of no use in this case for ChatManager
+        if (userJID == null) {
+            return null;
+        }
         String threadID = message.getThread();
         if(threadID == null) {
             threadID = nextID();
         }
-        String userJID = message.getFrom();
 
         return createChat(userJID, threadID, false);
     }
@@ -268,7 +283,11 @@ public class ChatManager extends Manager{
         if (matchMode == MatchMode.NONE) {
             return null;
         }
-        
+        // According to RFC6120 8.1.2.1 4. messages without a 'from' attribute are valid, but they
+        // are of no use in this case for ChatManager
+        if (userJID == null) {
+            return null;
+        }
         Chat match = jidChats.get(userJID);
 	
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
