@@ -29,6 +29,6 @@ public interface DNSResolver {
      * @param name The symbolic name of the service.
      * @return The list of SRV records mapped to the service name.
      */
-    List<SRVRecord> lookupSRVRecords(String name);
+    List<SRVRecord> lookupSRVRecords(String name) throws Exception;
 
 }

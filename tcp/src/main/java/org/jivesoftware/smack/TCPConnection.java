@@ -420,6 +420,12 @@ public class TCPConnection extends XMPPConnection {
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws SmackException, IOException {
         Exception exception = null;
+        try {
+            config.maybeResolveDns();
+        }
+        catch (Exception e) {
+            throw new SmackException(e);
+        }
         Iterator<HostAddress> it = config.getHostAddresses().iterator();
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
         while (it.hasNext()) {

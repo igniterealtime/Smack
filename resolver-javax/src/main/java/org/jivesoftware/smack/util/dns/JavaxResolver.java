@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -68,32 +69,23 @@ public class JavaxResolver implements DNSResolver {
     }
 
     @Override
-    public List<SRVRecord> lookupSRVRecords(String name) {
+    public List<SRVRecord> lookupSRVRecords(String name) throws NamingException {
         List<SRVRecord> res = new ArrayList<SRVRecord>();
-        
-        try {
-            Attributes dnsLookup = dirContext.getAttributes(name, new String[]{"SRV"});
-            Attribute srvAttribute = dnsLookup.get("SRV");
-            @SuppressWarnings("unchecked")
-            NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
-            while (srvRecords.hasMore()) {
-                String srvRecordString = srvRecords.next();
-                String[] srvRecordEntries = srvRecordString.split(" ");
-                int priority = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 4]);
-                int port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 2]);
-                int weight = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 3]);
-                String host = srvRecordEntries[srvRecordEntries.length - 1];
 
-                SRVRecord srvRecord;
-                try {
-                    srvRecord = new SRVRecord(host, port, priority, weight);
-                } catch (Exception e) {
-                    continue;
-                }
-                res.add(srvRecord);
-            }
-        } catch (Exception e) {
-            
+        Attributes dnsLookup = dirContext.getAttributes(name, new String[] { "SRV" });
+        Attribute srvAttribute = dnsLookup.get("SRV");
+        @SuppressWarnings("unchecked")
+        NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
+        while (srvRecords.hasMore()) {
+            String srvRecordString = srvRecords.next();
+            String[] srvRecordEntries = srvRecordString.split(" ");
+            int priority = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 4]);
+            int port = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 2]);
+            int weight = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 3]);
+            String host = srvRecordEntries[srvRecordEntries.length - 1];
+
+            SRVRecord srvRecord = new SRVRecord(host, port, priority, weight);
+            res.add(srvRecord);
         }
         return res;
     }

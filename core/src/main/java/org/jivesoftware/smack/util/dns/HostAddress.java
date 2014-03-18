@@ -51,7 +51,7 @@ public class HostAddress {
         this(fqdn);
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
-                    "DNS SRV records weight must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
+                    "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
 
         this.port = port;
     }

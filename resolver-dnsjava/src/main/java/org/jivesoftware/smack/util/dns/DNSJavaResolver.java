@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 /**
@@ -39,35 +40,27 @@ public class DNSJavaResolver implements DNSResolver {
     }
 
     @Override
-    public List<SRVRecord> lookupSRVRecords(String name) {
+    public List<SRVRecord> lookupSRVRecords(String name) throws TextParseException {
         List<SRVRecord> res = new ArrayList<SRVRecord>();
 
-        try {
-            Lookup lookup = new Lookup(name, Type.SRV);
-            Record recs[] = lookup.run();
-            if (recs == null)
-                return res;
+        Lookup lookup = new Lookup(name, Type.SRV);
+        Record recs[] = lookup.run();
+        if (recs == null)
+            return res;
 
-            for (Record record : recs) {
-                org.xbill.DNS.SRVRecord srvRecord = (org.xbill.DNS.SRVRecord) record;
-                if (srvRecord != null && srvRecord.getTarget() != null) {
-                    String host = srvRecord.getTarget().toString();
-                    int port = srvRecord.getPort();
-                    int priority = srvRecord.getPriority();
-                    int weight = srvRecord.getWeight();
+        for (Record record : recs) {
+            org.xbill.DNS.SRVRecord srvRecord = (org.xbill.DNS.SRVRecord) record;
+            if (srvRecord != null && srvRecord.getTarget() != null) {
+                String host = srvRecord.getTarget().toString();
+                int port = srvRecord.getPort();
+                int priority = srvRecord.getPriority();
+                int weight = srvRecord.getWeight();
 
-                    SRVRecord r;
-                    try {
-                        r = new SRVRecord(host, port, priority, weight);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    res.add(r);
-                }
+                SRVRecord r = new SRVRecord(host, port, priority, weight);
+                res.add(r);
             }
-
-        } catch (Exception e) {
         }
+
         return res;
     }
 }
