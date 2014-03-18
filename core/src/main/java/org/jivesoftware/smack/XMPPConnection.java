@@ -217,6 +217,16 @@ public abstract class XMPPConnection {
     private Roster roster;
 
     /**
+     * The used host to establish the connection to
+     */
+    private String host;
+
+    /**
+     * The used port to establish the connection to
+     */
+    private int port;
+
+    /**
      * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
      */
     private ExecutorService listenerExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -262,20 +272,20 @@ public abstract class XMPPConnection {
      * Returns the host name of the server where the XMPP server is running. This would be the
      * IP address of the server or a name that may be resolved by a DNS server.
      * 
-     * @return the host name of the server where the XMPP server is running.
+     * @return the host name of the server where the XMPP server is running or null if not yet connected.
      */
     public String getHost() {
-        return config.getHost();
+        return host;
     }
 
     /**
      * Returns the port number of the XMPP server for this connection. The default port
-     * for normal connections is 5222. The default port for SSL connections is 5223.
+     * for normal connections is 5222.
      * 
-     * @return the port number of the XMPP server.
+     * @return the port number of the XMPP server or 0 if not yet connected.
      */
     public int getPort() {
-        return config.getPort();
+        return port;
     }
 
     /**

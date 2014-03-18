@@ -439,7 +439,8 @@ public class TCPConnection extends XMPPConnection {
             }
             if (exception == null) {
                 // We found a host to connect to, break here
-                config.setUsedHostAddress(hostAddress);
+                host = hostAddress.getFQDN();
+                port = hostAddress.getPort();
                 break;
             }
             hostAddress.setException(exception);

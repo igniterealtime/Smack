@@ -48,8 +48,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     private String serviceName;
 
-    private String host;
-    private int port;
     protected List<HostAddress> hostAddresses;
 
     private String keystorePath;
@@ -216,32 +214,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public String getServiceName() {
         return serviceName;
-    }
-
-    /**
-     * Returns the host to use when establishing the connection. The host and port to use
-     * might have been resolved by a DNS lookup as specified by the XMPP spec (and therefore
-     * may not match the {@link #getServiceName service name}.
-     *
-     * @return the host to use when establishing the connection.
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * Returns the port to use when establishing the connection. The host and port to use
-     * might have been resolved by a DNS lookup as specified by the XMPP spec.
-     *
-     * @return the port to use when establishing the connection.
-     */
-    public int getPort() {
-        return port;
-    }
-
-    public void setUsedHostAddress(HostAddress hostAddress) {
-        this.host = hostAddress.getFQDN();
-        this.port = hostAddress.getPort();
     }
 
     /**
