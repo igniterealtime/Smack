@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
@@ -425,9 +426,10 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @throws XMPPErrorException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
     public InBandBytestreamSession establishSession(String targetJID, String sessionID)
-                    throws NoResponseException, XMPPErrorException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
         Open byteStreamRequest = new Open(sessionID, this.defaultBlockSize, this.stanza);
         byteStreamRequest.setTo(targetJID);
 
@@ -446,8 +448,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * not accepted.
      * 
      * @param request IQ packet that should be answered with a not-acceptable error
+     * @throws NotConnectedException 
      */
-    protected void replyRejectPacket(IQ request) {
+    protected void replyRejectPacket(IQ request) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.no_acceptable);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);
@@ -458,8 +461,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * request is rejected because its block size is greater than the maximum allowed block size.
      * 
      * @param request IQ packet that should be answered with a resource-constraint error
+     * @throws NotConnectedException 
      */
-    protected void replyResourceConstraintPacket(IQ request) {
+    protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.resource_constraint);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);
@@ -470,8 +474,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * session could not be found.
      * 
      * @param request IQ packet that should be answered with a item-not-found error
+     * @throws NotConnectedException 
      */
-    protected void replyItemNotFoundPacket(IQ request) {
+    protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.item_not_found);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);

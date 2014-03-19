@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.disco;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -115,7 +116,7 @@ public class ServiceDiscoveryManager extends Manager {
         // Listen for disco#items requests and answer with an empty result        
         PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
         PacketListener packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Packet packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 if (connection == null) return;
                 DiscoverItems discoverItems = (DiscoverItems) packet;
@@ -152,7 +153,7 @@ public class ServiceDiscoveryManager extends Manager {
         // To add a new feature as supported use the #addFeature message        
         packetFilter = new PacketTypeFilter(DiscoverInfo.class);
         packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Packet packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 if (connection == null) return;
                 DiscoverInfo discoverInfo = (DiscoverInfo) packet;
@@ -496,8 +497,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @return the discovered information.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public DiscoverInfo discoverInfo(String entityID) throws NoResponseException, XMPPErrorException {
+    public DiscoverInfo discoverInfo(String entityID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         if (entityID == null)
             return discoverInfo(null, null);
 
@@ -540,8 +542,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public DiscoverInfo discoverInfo(String entityID, String node) throws NoResponseException, XMPPErrorException {
+    public DiscoverInfo discoverInfo(String entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // Discover the entity's info
         DiscoverInfo disco = new DiscoverInfo();
         disco.setType(IQ.Type.GET);
@@ -560,8 +563,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public DiscoverItems discoverItems(String entityID) throws NoResponseException, XMPPErrorException  {
+    public DiscoverItems discoverItems(String entityID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return discoverItems(entityID, null);
     }
 
@@ -575,8 +579,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @return the discovered items.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public DiscoverItems discoverItems(String entityID, String node) throws NoResponseException, XMPPErrorException {
+    public DiscoverItems discoverItems(String entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // Discover the entity's items
         DiscoverItems disco = new DiscoverItems();
         disco.setType(IQ.Type.GET);
@@ -597,8 +602,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @return true if the server supports publishing of items.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public boolean canPublishItems(String entityID) throws NoResponseException, XMPPErrorException {
+    public boolean canPublishItems(String entityID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         DiscoverInfo info = discoverInfo(entityID);
         return canPublishItems(info);
      }
@@ -626,8 +632,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @param discoverItems the DiscoveryItems to publish.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void publishItems(String entityID, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException {
+    public void publishItems(String entityID, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException {
         publishItems(entityID, null, discoverItems);
     }
 
@@ -642,8 +649,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @param discoverItems the DiscoveryItems to publish.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void publishItems(String entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException
+    public void publishItems(String entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
         discoverItems.setType(IQ.Type.SET);
         discoverItems.setTo(entityID);
@@ -660,8 +668,9 @@ public class ServiceDiscoveryManager extends Manager {
      * @return true if the entity supports the feature, false otherwise
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public boolean supportsFeature(String jid, String feature) throws NoResponseException, XMPPErrorException {
+    public boolean supportsFeature(String jid, String feature) throws NoResponseException, XMPPErrorException, NotConnectedException {
         DiscoverInfo result = discoverInfo(jid);
         return result.containsFeature(feature);
     }

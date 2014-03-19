@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+
 /**
  * Transport resolver Interface 
  */
@@ -33,8 +35,9 @@ public abstract interface TransportResolverListener {
          * A transport candidate has been added
          *
          * @param cand The transport candidate.
+         * @throws NotConnectedException 
          */
-        public void candidateAdded(TransportCandidate cand);
+        public void candidateAdded(TransportCandidate cand) throws NotConnectedException;
 
         /**
          * All the transport candidates have been obtained.

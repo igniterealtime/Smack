@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
@@ -66,8 +67,9 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * send/receive data.
      * 
      * @return the session to send/receive data
+     * @throws NotConnectedException 
      */
-    public InBandBytestreamSession accept() {
+    public InBandBytestreamSession accept() throws NotConnectedException {
         XMPPConnection connection = this.manager.getConnection();
 
         // create In-Band Bytestream session and store it
@@ -85,8 +87,9 @@ public class InBandBytestreamRequest implements BytestreamRequest {
     /**
      * Rejects the In-Band Bytestream request by sending a reject error to the
      * initiator.
+     * @throws NotConnectedException 
      */
-    public void reject() {
+    public void reject() throws NotConnectedException {
         this.manager.replyRejectPacket(this.byteStreamRequest);
     }
 

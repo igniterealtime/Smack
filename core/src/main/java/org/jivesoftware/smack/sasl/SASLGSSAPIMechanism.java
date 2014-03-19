@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.sasl;
 
 import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -55,8 +56,9 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
      * @param host     the hostname where the user account resides.
      * @param cbh      the CallbackHandler (not used with GSSAPI)
      * @throws IOException If a network error occures while authenticating.
+     * @throws NotConnectedException 
      */
-    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, SaslException {
+    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, SaslException, NotConnectedException {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
         props.put(Sasl.SERVER_AUTH,"TRUE");
@@ -74,8 +76,9 @@ public class SASLGSSAPIMechanism extends SASLMechanism {
      * @param host     the hostname where the user account resides.
      * @param password the password of the user (ignored for GSSAPI)
      * @throws IOException If a network error occures while authenticating.
+     * @throws NotConnectedException 
      */
-    public void authenticate(String username, String host, String password) throws IOException, SaslException {
+    public void authenticate(String username, String host, String password) throws IOException, SaslException, NotConnectedException {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String, String>();
         props.put(Sasl.SERVER_AUTH,"TRUE");

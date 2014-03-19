@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -105,8 +106,9 @@ public class PEPManager {
      * Publish an event.
      * 
      * @param item the item to publish.
+     * @throws NotConnectedException 
      */
-    public void publish(PEPItem item) {
+    public void publish(PEPItem item) throws NotConnectedException {
         // Create a new message to publish the event.
         PEPPubSub pubSub = new PEPPubSub(item);
         pubSub.setType(Type.SET);

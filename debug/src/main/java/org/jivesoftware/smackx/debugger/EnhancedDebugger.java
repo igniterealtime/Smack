@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.debugger;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.packet.IQ;
@@ -36,6 +37,7 @@ import javax.swing.text.BadLocationException;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -545,7 +547,12 @@ public class EnhancedDebugger implements SmackDebugger {
             public void actionPerformed(ActionEvent e) {
                 if (!"".equals(adhocMessages.getText())) {
                     AdHocPacket packetToSend = new AdHocPacket(adhocMessages.getText());
-                    connection.sendPacket(packetToSend);
+                    try {
+                        connection.sendPacket(packetToSend);
+                    }
+                    catch (NotConnectedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });

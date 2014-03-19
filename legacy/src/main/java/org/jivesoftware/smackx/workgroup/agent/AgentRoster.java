@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -62,8 +63,9 @@ public class AgentRoster {
      * Constructs a new AgentRoster.
      *
      * @param connection an XMPP connection.
+     * @throws NotConnectedException 
      */
-    AgentRoster(XMPPConnection connection, String workgroupJID) {
+    AgentRoster(XMPPConnection connection, String workgroupJID) throws NotConnectedException {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
         entries = new ArrayList<String>();
@@ -86,8 +88,9 @@ public class AgentRoster {
      * Reloads the entire roster from the server. This is an asynchronous operation,
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
+     * @throws NotConnectedException 
      */
-    public void reload() {
+    public void reload() throws NotConnectedException {
         AgentStatusRequest request = new AgentStatusRequest();
         request.setTo(workgroupJID);
         connection.sendPacket(request);

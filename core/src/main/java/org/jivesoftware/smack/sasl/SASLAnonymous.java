@@ -17,8 +17,10 @@
 package org.jivesoftware.smack.sasl;
 
 import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 
 import java.io.IOException;
+
 import javax.security.auth.callback.CallbackHandler;
 
 /**
@@ -36,20 +38,20 @@ public class SASLAnonymous extends SASLMechanism {
         return "ANONYMOUS";
     }
 
-    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException {
+    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, NotConnectedException {
         authenticate();
     }
 
-    public void authenticate(String username, String host, String password) throws IOException {
+    public void authenticate(String username, String host, String password) throws IOException, NotConnectedException {
         authenticate();
     }
 
-    protected void authenticate() throws IOException {
+    protected void authenticate() throws IOException, NotConnectedException {
         // Send the authentication to the server
         getSASLAuthentication().send(new AuthMechanism(getName(), null));
     }
 
-    public void challengeReceived(String challenge) throws IOException {
+    public void challengeReceived(String challenge) throws IOException, NotConnectedException {
         // Build the challenge response stanza encoding the response text
         // and send the authentication to the server
         getSASLAuthentication().send(new Response());

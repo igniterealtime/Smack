@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -55,7 +56,7 @@ class DataListener implements PacketListener {
         this.manager = manager;
     }
 
-    public void processPacket(Packet packet) {
+    public void processPacket(Packet packet) throws NotConnectedException {
         Data data = (Data) packet;
         InBandBytestreamSession ibbSession = this.manager.getSessions().get(
                         data.getDataPacketExtension().getSessionID());

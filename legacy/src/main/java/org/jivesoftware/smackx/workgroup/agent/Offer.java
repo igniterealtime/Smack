@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -79,8 +80,9 @@ public class Offer {
 
     /**
      * Accepts the offer.
+     * @throws NotConnectedException 
      */
-    public void accept() {
+    public void accept() throws NotConnectedException {
         Packet acceptPacket = new AcceptPacket(this.session.getWorkgroupJID());
         connection.sendPacket(acceptPacket);
         // TODO: listen for a reply.
@@ -89,8 +91,9 @@ public class Offer {
 
     /**
      * Rejects the offer.
+     * @throws NotConnectedException 
      */
-    public void reject() {
+    public void reject() throws NotConnectedException {
         RejectPacket rejectPacket = new RejectPacket(this.session.getWorkgroupJID());
         connection.sendPacket(rejectPacket);
         // TODO: listen for a reply.

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.xhtmlim;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
@@ -128,9 +129,10 @@ public class XHTMLManager {
      * @return a boolean indicating whether the specified user handles XHTML messages
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
     public static boolean isServiceEnabled(XMPPConnection connection, String userID)
-                    throws NoResponseException, XMPPErrorException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, namespace);
     }
 }

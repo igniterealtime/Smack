@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -58,8 +59,9 @@ public class BridgedResolver extends TransportResolver {
      * Resolve Bridged Candidate.
      * <p/>
      * The BridgedResolver takes the IP addresse and ports of a jmf proxy service.
+     * @throws NotConnectedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException {
 
         setResolveInit();
 

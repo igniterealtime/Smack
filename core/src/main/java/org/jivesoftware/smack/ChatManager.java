@@ -26,6 +26,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -334,7 +335,7 @@ public class ChatManager extends Manager{
         chat.deliver(message);
     }
 
-    void sendMessage(Chat chat, Message message) {
+    void sendMessage(Chat chat, Message message) throws NotConnectedException {
         for(Map.Entry<PacketInterceptor, PacketFilter> interceptor : interceptors.entrySet()) {
             PacketFilter filter = interceptor.getValue();
             if(filter != null && filter.accept(message)) {

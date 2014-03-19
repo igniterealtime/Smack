@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.jingle.listeners;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 
 /**
@@ -28,8 +29,9 @@ public interface JingleMediaListener extends JingleListener {
      * Notification that the jmf has been negotiated and established.
      *
      * @param pt The payload type agreed.
+     * @throws NotConnectedException 
      */
-    public void mediaEstablished(PayloadType pt);
+    public void mediaEstablished(PayloadType pt) throws NotConnectedException;
 
     /**
      * Notification that a payload type must be cancelled

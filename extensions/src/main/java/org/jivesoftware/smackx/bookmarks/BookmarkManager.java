@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.bookmarks;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -92,9 +93,10 @@ public class BookmarkManager {
      * @return returns all currently bookmarked conferences
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      * @see BookmarkedConference
      */
-    public Collection<BookmarkedConference> getBookmarkedConferences() throws NoResponseException, XMPPErrorException {
+    public Collection<BookmarkedConference> getBookmarkedConferences() throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
         return Collections.unmodifiableCollection(bookmarks.getBookmarkedConferences());
     }
@@ -110,9 +112,10 @@ public class BookmarkManager {
      * @throws XMPPErrorException thrown when there is an issue retrieving the current bookmarks from
      * the server.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
     public void addBookmarkedConference(String name, String jid, boolean isAutoJoin,
-            String nickname, String password) throws NoResponseException, XMPPErrorException
+            String nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException
     {
         retrieveBookmarks();
         BookmarkedConference bookmark
@@ -141,10 +144,11 @@ public class BookmarkManager {
      * @throws XMPPErrorException thrown when there is a problem with the connection attempting to
      * retrieve the bookmarks or persist the bookmarks.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      * @throws IllegalArgumentException thrown when the conference being removed is a shared
      * conference
      */
-    public void removeBookmarkedConference(String jid) throws NoResponseException, XMPPErrorException {
+    public void removeBookmarkedConference(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
         Iterator<BookmarkedConference> it = bookmarks.getBookmarkedConferences().iterator();
         while(it.hasNext()) {
@@ -166,8 +170,9 @@ public class BookmarkManager {
      * @return returns an unmodifiable collection of all bookmarked urls.
      * @throws XMPPErrorException thrown when there is a problem retriving bookmarks from the server.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public Collection<BookmarkedURL> getBookmarkedURLs() throws NoResponseException, XMPPErrorException {
+    public Collection<BookmarkedURL> getBookmarkedURLs() throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
         return Collections.unmodifiableCollection(bookmarks.getBookmarkedURLS());
     }
@@ -181,8 +186,9 @@ public class BookmarkManager {
      * @throws XMPPErrorException thrown when there is an error retriving or saving bookmarks from or to
      * the server
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void addBookmarkedURL(String URL, String name, boolean isRSS) throws NoResponseException, XMPPErrorException {
+    public void addBookmarkedURL(String URL, String name, boolean isRSS) throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
         BookmarkedURL bookmark = new BookmarkedURL(URL, name, isRSS);
         List<BookmarkedURL> urls = bookmarks.getBookmarkedURLS();
@@ -207,8 +213,9 @@ public class BookmarkManager {
      * @throws XMPPErrorException thrown if there is an error retriving or saving bookmarks from or to
      * the server.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void removeBookmarkedURL(String bookmarkURL) throws NoResponseException, XMPPErrorException {
+    public void removeBookmarkedURL(String bookmarkURL) throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
         Iterator<BookmarkedURL> it = bookmarks.getBookmarkedURLS().iterator();
         while(it.hasNext()) {
@@ -224,7 +231,7 @@ public class BookmarkManager {
         }
     }
 
-    private Bookmarks retrieveBookmarks() throws NoResponseException, XMPPErrorException {
+    private Bookmarks retrieveBookmarks() throws NoResponseException, XMPPErrorException, NotConnectedException {
         synchronized(bookmarkLock) {
             if(bookmarks == null) {
                 bookmarks = (Bookmarks) privateDataManager.getPrivateData("storage",

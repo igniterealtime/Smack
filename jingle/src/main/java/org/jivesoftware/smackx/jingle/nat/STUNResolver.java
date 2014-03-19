@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -262,8 +263,9 @@ public class STUNResolver extends TransportResolver {
 
     /**
      * Resolve the IP and obtain a valid transport method.
+     * @throws NotConnectedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException {
 
         setResolveInit();
 

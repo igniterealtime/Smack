@@ -22,6 +22,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -113,8 +114,9 @@ public class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
+     * @throws NotConnectedException 
      */
-    public void sendCarbonsEnabled(final boolean new_state) {
+    public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException {
         IQ setIQ = carbonsEnabledIQ(new_state);
 
         connection().addPacketListener(new PacketListener() {
@@ -140,10 +142,11 @@ public class CarbonManager extends Manager {
      * @param new_state whether carbons should be enabled or disabled
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      *
      */
     public synchronized void setCarbonsEnabled(final boolean new_state) throws NoResponseException,
-                    XMPPErrorException {
+                    XMPPErrorException, NotConnectedException {
         if (enabled_state == new_state)
             return;
 

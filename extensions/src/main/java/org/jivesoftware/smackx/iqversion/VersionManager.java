@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
@@ -64,8 +65,9 @@ public class VersionManager extends Manager {
         connection.addPacketListener(new PacketListener() {
             /**
              * Sends a Version reply on request
+             * @throws NotConnectedException 
              */
-            public void processPacket(Packet packet) {
+            public void processPacket(Packet packet) throws NotConnectedException {
                 if (own_version == null)
                     return;
 

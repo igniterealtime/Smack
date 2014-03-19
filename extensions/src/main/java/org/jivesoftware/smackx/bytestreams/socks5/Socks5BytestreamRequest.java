@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -264,8 +265,9 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Rejects the SOCKS5 Bytestream request by sending a reject error to the initiator.
+     * @throws NotConnectedException 
      */
-    public void reject() {
+    public void reject() throws NotConnectedException {
         this.manager.replyRejectPacket(this.bytestreamRequest);
     }
 
@@ -273,8 +275,9 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * Cancels the SOCKS5 Bytestream request by sending an error to the initiator and building a
      * XMPP exception.
      * @throws XMPPErrorException 
+     * @throws NotConnectedException 
      */
-    private void cancelRequest() throws XMPPErrorException {
+    private void cancelRequest() throws XMPPErrorException, NotConnectedException {
         String errorMessage = "Could not establish socket with any provided host";
         XMPPError error = new XMPPError(XMPPError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);

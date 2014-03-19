@@ -21,6 +21,7 @@ import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.packet.TranscriptSearch;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -48,8 +49,9 @@ public class TranscriptSearchManager {
      * @return the Form to use for searching transcripts.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException  {
+    public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.GET);
         search.setTo(serviceJID);
@@ -69,8 +71,9 @@ public class TranscriptSearchManager {
      * @return the result of the transcript search.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException {
+    public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.GET);
         search.setTo(serviceJID);

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
@@ -94,8 +95,9 @@ abstract public class Node
 	 * @return the configuration form
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 */
-	public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException
+	public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		Packet reply = sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.CONFIGURE_OWNER, getId()), PubSubNamespace.OWNER);
 		return NodeUtils.getFormFromPacket(reply, PubSubElementType.CONFIGURE_OWNER);
@@ -107,8 +109,9 @@ abstract public class Node
 	 * @param submitForm
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 */
-	public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException
+	public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub packet = createPubsubPacket(Type.SET, new FormNode(FormNodeType.CONFIGURE_OWNER, getId(), submitForm), PubSubNamespace.OWNER);
 		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
@@ -120,8 +123,9 @@ abstract public class Node
 	 * @return The discovery information about the node.
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException if there was no response from the server.
+	 * @throws NotConnectedException 
 	 */
-	public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException
+	public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		DiscoverInfo info = new DiscoverInfo();
 		info.setTo(to);
@@ -135,9 +139,10 @@ abstract public class Node
 	 * @return List of {@link Subscription}
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 * 
 	 */
-	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException
+	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub reply = (PubSub)sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.SUBSCRIPTIONS, getId()));
 		SubscriptionsExtension subElem = (SubscriptionsExtension)reply.getExtension(PubSubElementType.SUBSCRIPTIONS);
@@ -159,8 +164,9 @@ abstract public class Node
 	 * @return The subscription
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 */
-	public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException
+	public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub reply = (PubSub)sendPubsubPacket(Type.SET, new SubscribeExtension(jid, getId()));
 		return (Subscription)reply.getExtension(PubSubElementType.SUBSCRIPTION);
@@ -182,8 +188,9 @@ abstract public class Node
 	 * @return The subscription
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 */
-	public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException
+	public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.SET, new SubscribeExtension(jid, getId()));
 		request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
@@ -199,9 +206,10 @@ abstract public class Node
 	 * @param jid The JID used to subscribe to the node
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 * 
 	 */
-	public void unsubscribe(String jid) throws NoResponseException, XMPPErrorException
+	public void unsubscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		unsubscribe(jid, null);
 	}
@@ -213,8 +221,9 @@ abstract public class Node
 	 * @param subscriptionId The id of the subscription being removed
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 */
-	public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException
+	public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		sendPubsubPacket(Type.SET, new UnsubscribeExtension(jid, getId(), subscriptionId));
 	}
@@ -226,8 +235,9 @@ abstract public class Node
 	 * @return A subscription options form
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 */
-	public SubscribeForm getSubscriptionOptions(String jid) throws NoResponseException, XMPPErrorException
+	public SubscribeForm getSubscriptionOptions(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		return getSubscriptionOptions(jid, null);
 	}
@@ -242,9 +252,10 @@ abstract public class Node
 	 * @return The subscription option form
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
+	 * @throws NotConnectedException 
 	 * 
 	 */
-	public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException
+	public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub packet = (PubSub)sendPubsubPacket(Type.GET, new OptionsExtension(jid, getId(), subscriptionId));
 		FormNode ext = (FormNode)packet.getExtension(PubSubElementType.OPTIONS);
@@ -349,12 +360,12 @@ abstract public class Node
 		return PubSubManager.createPubsubPacket(to, type, ext, ns);
 	}
 
-	protected Packet sendPubsubPacket(Type type, NodeExtension ext) throws NoResponseException, XMPPErrorException
+	protected Packet sendPubsubPacket(Type type, NodeExtension ext) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		return PubSubManager.sendPubsubPacket(con, to, type, ext);
 	}
 
-	protected Packet sendPubsubPacket(Type type, NodeExtension ext, PubSubNamespace ns) throws NoResponseException, XMPPErrorException
+	protected Packet sendPubsubPacket(Type type, NodeExtension ext, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		return PubSubManager.sendPubsubPacket(con, to, type, ext, ns);
 	}

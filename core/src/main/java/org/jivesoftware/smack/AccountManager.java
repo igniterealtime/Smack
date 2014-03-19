@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Registration;
@@ -89,8 +90,9 @@ public class AccountManager extends Manager {
      * @return true if the server support creating new accounts.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException {
+    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException {
         // Check if we already know that the server supports creating new accounts
         if (accountCreationSupported) {
             return true;
@@ -130,8 +132,9 @@ public class AccountManager extends Manager {
      * @return the required account attributes.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public Collection<String> getAccountAttributes() throws NoResponseException, XMPPErrorException  {
+    public Collection<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         if (info == null) {
             getRegistrationInfo();
         }
@@ -152,8 +155,9 @@ public class AccountManager extends Manager {
      * attribute wasn't found for the requested name.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException  {
+    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         if (info == null) {
             getRegistrationInfo();
         }
@@ -168,8 +172,9 @@ public class AccountManager extends Manager {
      * @return the account creation instructions, or <tt>null</tt> if there are none.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public String getAccountInstructions() throws NoResponseException, XMPPErrorException  {
+    public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         if (info == null) {
             getRegistrationInfo();
         }
@@ -188,8 +193,9 @@ public class AccountManager extends Manager {
      * @param password the password.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void createAccount(String username, String password) throws NoResponseException, XMPPErrorException  {
+    public void createAccount(String username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<String, String>();
         for (String attributeName : getAccountAttributes()) {
@@ -208,10 +214,11 @@ public class AccountManager extends Manager {
      * @param attributes the account attributes.
      * @throws XMPPErrorException if an error occurs creating the account.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      * @see #getAccountAttributes()
      */
     public void createAccount(String username, String password, Map<String, String> attributes)
-                    throws NoResponseException, XMPPErrorException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection().getServiceName());
@@ -229,8 +236,9 @@ public class AccountManager extends Manager {
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when changing the password.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException {
+    public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection().getServiceName());
@@ -249,8 +257,9 @@ public class AccountManager extends Manager {
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when deleting the account.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void deleteAccount() throws NoResponseException, XMPPErrorException {
+    public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(connection().getServiceName());
@@ -265,11 +274,12 @@ public class AccountManager extends Manager {
      * Gets the account registration info from the server.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      *
      * @throws XMPPException if an error occurs.
      * @throws SmackException if there was no response from the server.
      */
-    private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException {
+    private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
         reg.setTo(connection().getServiceName());
         info = (Registration) connection().createPacketCollectorAndSend(reg).nextResultOrThrow();

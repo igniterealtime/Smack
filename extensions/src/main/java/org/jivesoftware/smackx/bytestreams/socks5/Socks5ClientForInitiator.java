@@ -22,6 +22,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -102,9 +103,10 @@ class Socks5ClientForInitiator extends Socks5Client {
      * SOCKS5 proxy.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      * @throws SmackException if there was no response from the server.
      */
-    private void activate() throws NoResponseException, XMPPErrorException {
+    private void activate() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Bytestream activate = createStreamHostActivation();
         // if activation fails #nextResultOrThrow() throws an exception
         connection.createPacketCollectorAndSend(activate).nextResultOrThrow();

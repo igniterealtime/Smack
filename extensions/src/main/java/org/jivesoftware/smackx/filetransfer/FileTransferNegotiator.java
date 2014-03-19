@@ -28,6 +28,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -241,9 +242,10 @@ public class FileTransferNegotiator {
      * @return The file transfer object that handles the transfer
      * @throws XMPPErrorException If there are either no stream methods contained in the packet, or
      *                       there is not an appropriate stream method.
+     * @throws NotConnectedException 
      */
     public StreamNegotiator selectStreamNegotiator(
-            FileTransferRequest request) throws XMPPErrorException {
+            FileTransferRequest request) throws XMPPErrorException, NotConnectedException {
         StreamInitiation si = request.getStreamInitiation();
         FormField streamMethodField = getStreamMethodField(si
                 .getFeatureNegotiationForm());
@@ -328,8 +330,9 @@ public class FileTransferNegotiator {
      * Reject a stream initiation request from a remote user.
      *
      * @param si The Stream Initiation request to reject.
+     * @throws NotConnectedException 
      */
-    public void rejectStream(final StreamInitiation si) {
+    public void rejectStream(final StreamInitiation si) throws NotConnectedException {
         XMPPError error = new XMPPError(XMPPError.Condition.forbidden, "Offer Declined");
         IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                 IQ.Type.ERROR);
@@ -380,10 +383,11 @@ public class FileTransferNegotiator {
      *                        user to respond. If they do not respond in time, this
      * @return Returns the stream negotiator selected by the peer.
      * @throws XMPPErrorException Thrown if there is an error negotiating the file transfer.
+     * @throws NotConnectedException 
      */
     public StreamNegotiator negotiateOutgoingTransfer(final String userID,
             final String streamID, final String fileName, final long size,
-            final String desc, int responseTimeout) throws XMPPErrorException {
+            final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException {
         StreamInitiation si = new StreamInitiation();
         si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));

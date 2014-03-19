@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -99,7 +100,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
 
     // handle incoming receipts and receipt requests
     @Override
-    public void processPacket(Packet packet) {
+    public void processPacket(Packet packet) throws NotConnectedException {
         DeliveryReceipt dr = (DeliveryReceipt)packet.getExtension(
                 DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE);
         if (dr != null) {

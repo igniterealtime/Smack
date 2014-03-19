@@ -24,6 +24,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -159,8 +160,9 @@ public class InBandBytestreamSession implements BytestreamSession {
      * This method is invoked if a request to close the In-Band Bytestream has been received.
      * 
      * @param closeRequest the close request from the remote peer
+     * @throws NotConnectedException 
      */
-    protected void closeByPeer(Close closeRequest) {
+    protected void closeByPeer(Close closeRequest) throws NotConnectedException {
 
         /*
          * close streams without flushing them, because stream is already considered closed on the
@@ -445,7 +447,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
                 private long lastSequence = -1;
 
-                public void processPacket(Packet packet) {
+                public void processPacket(Packet packet) throws NotConnectedException {
                     // get data packet extension
                     DataPacketExtension data = (DataPacketExtension) packet.getExtension(
                                     DataPacketExtension.ELEMENT_NAME,
@@ -607,8 +609,9 @@ public class InBandBytestreamSession implements BytestreamSession {
          * 
          * @param data the data packet
          * @throws IOException if an I/O error occurred while sending or if the stream is closed
+         * @throws NotConnectedException 
          */
-        protected abstract void writeToXML(DataPacketExtension data) throws IOException;
+        protected abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException;
 
         public synchronized void write(int b) throws IOException {
             if (this.isClosed) {
@@ -709,7 +712,14 @@ public class InBandBytestreamSession implements BytestreamSession {
                             this.seq, enc);
 
             // write to XMPP stream
-            writeToXML(data);
+            try {
+                writeToXML(data);
+            }
+            catch (NotConnectedException e) {
+                IOException ioException = new IOException();
+                ioException.initCause(e);
+                throw ioException;
+            }
 
             // reset buffer pointer
             bufferPointer = 0;
@@ -790,7 +800,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     private class MessageIBBOutputStream extends IBBOutputStream {
 
         @Override
-        protected synchronized void writeToXML(DataPacketExtension data) {
+        protected synchronized void writeToXML(DataPacketExtension data) throws NotConnectedException {
             // create message stanza containing data packet
             Message message = new Message(remoteJID);
             message.addExtension(data);

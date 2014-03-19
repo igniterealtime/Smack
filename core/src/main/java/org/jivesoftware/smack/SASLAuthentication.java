@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Bind;
@@ -212,9 +213,10 @@ public class SASLAuthentication {
      * @throws NoResponseException 
      * @throws SASLErrorException 
      * @throws ResourceBindingNotOfferedException
+     * @throws NotConnectedException 
      */
     public String authenticate(String resource, CallbackHandler cbh) throws IOException,
-                    NoResponseException, XMPPErrorException, SASLErrorException, ResourceBindingNotOfferedException {
+                    NoResponseException, XMPPErrorException, SASLErrorException, ResourceBindingNotOfferedException, NotConnectedException {
         // Locate the SASLMechanism to use
         String selectedMechanism = null;
         for (String mechanism : mechanismsPreferences) {
@@ -409,7 +411,7 @@ public class SASLAuthentication {
     }
 
     private String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
-                    ResourceBindingNotOfferedException, NoResponseException {
+                    ResourceBindingNotOfferedException, NoResponseException, NotConnectedException {
         // Wait until server sends response containing the <bind> element
         synchronized (this) {
             if (!resourceBinded) {
@@ -470,8 +472,9 @@ public class SASLAuthentication {
      *
      * @param challenge a base64 encoded string representing the challenge.
      * @throws IOException If a network error occures while authenticating.
+     * @throws NotConnectedException 
      */
-    void challengeReceived(String challenge) throws IOException {
+    void challengeReceived(String challenge) throws IOException, NotConnectedException {
         currentMechanism.challengeReceived(challenge);
     }
 
@@ -514,7 +517,7 @@ public class SASLAuthentication {
         }
     }
 
-    public void send(Packet stanza) {
+    public void send(Packet stanza) throws NotConnectedException {
         connection.sendPacket(stanza);
     }
 

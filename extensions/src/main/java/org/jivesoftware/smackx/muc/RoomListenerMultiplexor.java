@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -183,7 +184,7 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
         private Map<String, PacketMultiplexListener> roomListenersByAddress =
                 new ConcurrentHashMap<String, PacketMultiplexListener>();
 
-        public void processPacket(Packet p) {
+        public void processPacket(Packet p) throws NotConnectedException {
             String from = p.getFrom();
             if (from == null) {
                 return;

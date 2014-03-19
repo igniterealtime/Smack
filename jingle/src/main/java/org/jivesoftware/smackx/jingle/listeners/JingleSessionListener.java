@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.listeners;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
@@ -35,9 +36,10 @@ public interface JingleSessionListener extends JingleListener {
      *                      service.
      * @param localCandidate            the local candidate where we must listen for connections
      * @param jingleSession Session that called the method
+     * @throws NotConnectedException 
      */
     public void sessionEstablished(PayloadType pt, TransportCandidate remoteCandidate,
-                                   TransportCandidate localCandidate, JingleSession jingleSession);
+                                   TransportCandidate localCandidate, JingleSession jingleSession) throws NotConnectedException;
 
     /**
      * Notification that the session was declined.

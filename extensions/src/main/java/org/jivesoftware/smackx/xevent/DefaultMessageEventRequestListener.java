@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.xevent;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+
 /**
  *
  * Default implementation of the MessageEventRequestListener interface.<p>
@@ -29,7 +31,7 @@ package org.jivesoftware.smackx.xevent;
 public class DefaultMessageEventRequestListener implements MessageEventRequestListener {
 
     public void deliveredNotificationRequested(String from, String packetID,
-                MessageEventManager messageEventManager)
+                MessageEventManager messageEventManager) throws NotConnectedException
     {
         // Send to the message's sender that the message has been delivered
         messageEventManager.sendDeliveredNotification(from, packetID);

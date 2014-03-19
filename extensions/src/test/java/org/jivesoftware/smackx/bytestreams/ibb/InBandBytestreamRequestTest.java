@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -66,9 +67,10 @@ public class InBandBytestreamRequestTest {
 
     /**
      * Test reject() method.
+     * @throws NotConnectedException 
      */
     @Test
-    public void shouldReplyWithErrorIfRequestIsRejected() {
+    public void shouldReplyWithErrorIfRequestIsRejected() throws NotConnectedException {
         InBandBytestreamRequest ibbRequest = new InBandBytestreamRequest(
                         byteStreamManager, initBytestream);
 

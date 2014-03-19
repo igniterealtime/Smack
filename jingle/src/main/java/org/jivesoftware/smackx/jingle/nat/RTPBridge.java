@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -383,8 +384,9 @@ public class RTPBridge extends IQ {
      * @param connection
      * @param sessionID
      * @return the new RTPBridge
+     * @throws NotConnectedException 
      */
-    public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) {
+    public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException {
 
         if (!connection.isConnected()) {
             return null;
@@ -410,9 +412,10 @@ public class RTPBridge extends IQ {
      * @return true if the server supports the RTPBridge service
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
     public static boolean serviceAvailable(XMPPConnection connection) throws NoResponseException,
-                    XMPPErrorException {
+                    XMPPErrorException, NotConnectedException {
 
         if (!connection.isConnected()) {
             return false;
@@ -448,8 +451,9 @@ public class RTPBridge extends IQ {
      *
      * @param connection
      * @return the RTPBridge
+     * @throws NotConnectedException 
      */
-    public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) {
+    public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException {
 
         if (!connection.isConnected()) {
             return null;
@@ -482,8 +486,9 @@ public class RTPBridge extends IQ {
      *
      * @param xmppConnection
      * @return public IP String or null if not found
+     * @throws NotConnectedException 
      */
-    public static String getPublicIP(XMPPConnection xmppConnection) {
+    public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException {
 
         if (!xmppConnection.isConnected()) {
             return null;

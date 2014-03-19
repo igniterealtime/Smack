@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -132,12 +133,22 @@ public class Roster {
             
             public void connectionClosed() {
                 // Changes the presence available contacts to unavailable
-                setOfflinePresences();
+                try {
+                    setOfflinePresences();
+                }
+                catch (NotConnectedException e) {
+                    LOGGER.log(Level.SEVERE, "Not connected exception" ,e);
+                }
             }
 
             public void connectionClosedOnError(Exception e) {
                 // Changes the presence available contacts to unavailable
-                setOfflinePresences();
+                try {
+                    setOfflinePresences();
+                }
+                catch (NotConnectedException e1) {
+                    LOGGER.log(Level.SEVERE, "Not connected exception" ,e);
+                }
             }
 
         });
@@ -146,7 +157,7 @@ public class Roster {
             try {
                 reload();
             }
-            catch (NotLoggedInException e) {
+            catch (SmackException e) {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
             }
         }
@@ -162,7 +173,7 @@ public class Roster {
                 try {
                     Roster.this.reload();
                 }
-                catch (NotLoggedInException e) {
+                catch (SmackException e) {
                     LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
                     return;
                 }
@@ -205,8 +216,9 @@ public class Roster {
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
      * @throws NotLoggedInException If not logged in.
+     * @throws NotConnectedException 
      */
-    public void reload() throws NotLoggedInException{
+    public void reload() throws NotLoggedInException, NotConnectedException{
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
@@ -285,9 +297,10 @@ public class Roster {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
+     * @throws NotConnectedException 
      * @throws IllegalStateException if logged in anonymously
      */
-    public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException {
+    public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException {
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
@@ -325,9 +338,10 @@ public class Roster {
      * @throws XMPPErrorException if an XMPP error occurs.
      * @throws NotLoggedInException if not logged in.
      * @throws NoResponseException SmackException if there was no response from the server.
+     * @throws NotConnectedException 
      * @throws IllegalStateException if connection is not logged in or logged in anonymously
      */
-    public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException {
+    public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException {
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
@@ -626,8 +640,9 @@ public class Roster {
      * Changes the presence of available contacts offline by simulating an unavailable
      * presence sent from the server. After a disconnection, every Presence is set
      * to offline.
+     * @throws NotConnectedException 
      */
-    private void setOfflinePresences() {
+    private void setOfflinePresences() throws NotConnectedException {
         Presence packetUnavailable;
         for (String user : presenceMap.keySet()) {
             Map<String, Presence> resources = presenceMap.get(user);
@@ -813,7 +828,7 @@ public class Roster {
      */
     private class PresencePacketListener implements PacketListener {
 
-        public void processPacket(Packet packet) {
+        public void processPacket(Packet packet) throws NotConnectedException {
             Presence presence = (Presence) packet;
             String from = presence.getFrom();
             String key = getPresenceMapKey(from);
@@ -1024,7 +1039,7 @@ public class Roster {
      */
     private class RosterPushListener implements PacketListener {
 
-        public void processPacket(Packet packet) {
+        public void processPacket(Packet packet) throws NotConnectedException {
             RosterPacket rosterPacket = (RosterPacket) packet;
             if (!rosterPacket.getType().equals(IQ.Type.SET)) {
                 return;

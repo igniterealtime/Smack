@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.xevent;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+
 /**
  *
  * A listener that is fired anytime a message event request is received.
@@ -45,9 +47,10 @@ public interface MessageEventRequestListener {
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      * @param messageEventManager the messageEventManager that fired the listener.
+     * @throws NotConnectedException 
      */
     public void deliveredNotificationRequested(String from, String packetID,
-            MessageEventManager messageEventManager);
+            MessageEventManager messageEventManager) throws NotConnectedException;
 
     /**
      * Called when a request for message displayed notification is received.

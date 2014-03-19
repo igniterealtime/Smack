@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -80,17 +81,17 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     @Override
-    public void cancel() throws NoResponseException, XMPPErrorException {
+    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(Action.cancel, packetReplyTimeout);
     }
 
     @Override
-    public void complete(Form form) throws NoResponseException, XMPPErrorException {
+    public void complete(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(Action.complete, form, packetReplyTimeout);
     }
 
     @Override
-    public void execute() throws NoResponseException, XMPPErrorException {
+    public void execute() throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(Action.execute, packetReplyTimeout);
     }
 
@@ -102,22 +103,23 @@ public class RemoteCommand extends AdHocCommand {
      * @param form the form anwser of the previous stage.
      * @throws XMPPErrorException if an error occurs.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void execute(Form form) throws NoResponseException, XMPPErrorException {
+    public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(Action.execute, form, packetReplyTimeout);
     }
 
     @Override
-    public void next(Form form) throws NoResponseException, XMPPErrorException {
+    public void next(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(Action.next, form, packetReplyTimeout);
     }
 
     @Override
-    public void prev() throws NoResponseException, XMPPErrorException {
+    public void prev() throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(Action.prev, packetReplyTimeout);
     }
 
-    private void executeAction(Action action, long packetReplyTimeout) throws NoResponseException, XMPPErrorException {
+    private void executeAction(Action action, long packetReplyTimeout) throws NoResponseException, XMPPErrorException, NotConnectedException {
         executeAction(action, null, packetReplyTimeout);
     }
 
@@ -131,8 +133,9 @@ public class RemoteCommand extends AdHocCommand {
      * @param timeout the amount of time to wait for a reply.
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    private void executeAction(Action action, Form form, long timeout) throws NoResponseException, XMPPErrorException {
+    private void executeAction(Action action, Form form, long timeout) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // TODO: Check that all the required fields of the form were filled, if
         // TODO: not throw the corresponding exeption. This will make a faster response,
         // TODO: since the request is stoped before it's sent.

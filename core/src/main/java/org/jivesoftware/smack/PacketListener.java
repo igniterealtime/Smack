@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
@@ -40,6 +41,6 @@ public interface PacketListener {
      *
      * @param packet the packet to process.
      */
-    public void processPacket(Packet packet);
+    public void processPacket(Packet packet) throws NotConnectedException;
 
 }

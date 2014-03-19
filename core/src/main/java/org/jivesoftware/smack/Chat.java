@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 
 import java.util.Set;
@@ -86,8 +87,9 @@ public class Chat {
      *
      * @param text the text to send.
      * @throws XMPPException if sending the message fails.
+     * @throws NotConnectedException 
      */
-    public void sendMessage(String text) throws XMPPException {
+    public void sendMessage(String text) throws XMPPException, NotConnectedException {
         Message message = new Message(participant, Message.Type.chat);
         message.setThread(threadID);
         message.setBody(text);
@@ -99,8 +101,9 @@ public class Chat {
      * and message type of the message will automatically set to those of this chat.
      *
      * @param message the message to send.
+     * @throws NotConnectedException 
      */
-    public void sendMessage(Message message) {
+    public void sendMessage(Message message) throws NotConnectedException {
         // Force the recipient, message type, and thread ID since the user elected
         // to send the message through this chat object.
         message.setTo(participant);

@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.RosterPacket;
 
@@ -78,8 +79,9 @@ public class RosterEntry {
      * Sets the name associated with this entry.
      *
      * @param name the name.
+     * @throws NotConnectedException 
      */
-    public void setName(String name) {
+    public void setName(String name) throws NotConnectedException {
         // Do nothing if the name hasn't changed.
         if (name != null && name.equals(this.name)) {
             return;

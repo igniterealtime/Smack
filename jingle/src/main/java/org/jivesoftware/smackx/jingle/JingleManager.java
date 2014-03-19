@@ -235,7 +235,7 @@ public class JingleManager implements JingleSessionListener {
                     if (aux != null)
                         try {
                             aux.terminate();
-                        } catch (XMPPException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                 }
@@ -478,7 +478,7 @@ public class JingleManager implements JingleSessionListener {
         for (JingleSession jingleSession : sessions)
             try {
                 jingleSession.terminate();
-            } catch (XMPPException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

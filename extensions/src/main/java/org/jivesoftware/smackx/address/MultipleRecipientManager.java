@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.address;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
@@ -70,8 +71,9 @@ public class MultipleRecipientManager {
      * @throws XMPPErrorException if server does not support JEP-33: Extended Stanza Addressing and
      *                       some JEP-33 specific features were requested.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException
+    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException
    {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
@@ -98,9 +100,10 @@ public class MultipleRecipientManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
+     * @throws NotConnectedException 
      */
     public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc,
-            String replyTo, String replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException {
+            String replyTo, String replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException {
         String serviceAddress = getMultipleRecipienServiceAddress(connection);
         if (serviceAddress != null) {
             // Send packet to target users using multiple recipient service provided by the server
@@ -206,7 +209,7 @@ public class MultipleRecipientManager {
     }
 
     private static void sendToIndividualRecipients(XMPPConnection connection, Packet packet,
-            List<String> to, List<String> cc, List<String> bcc) {
+            List<String> to, List<String> cc, List<String> bcc) throws NotConnectedException {
         if (to != null) {
             for (Iterator<String> it = to.iterator(); it.hasNext();) {
                 String jid = it.next();
@@ -232,7 +235,7 @@ public class MultipleRecipientManager {
 
     private static void sendThroughService(XMPPConnection connection, Packet packet, List<String> to,
             List<String> cc, List<String> bcc, String replyTo, String replyRoom, boolean noReply,
-            String serviceAddress) {
+            String serviceAddress) throws NotConnectedException {
         // Create multiple recipient extension
         MultipleAddresses multipleAddresses = new MultipleAddresses();
         if (to != null) {
@@ -285,8 +288,9 @@ public class MultipleRecipientManager {
      * @return the address of the multiple recipients service or <tt>null</tt> if none was found.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException 
+     * @throws NotConnectedException 
      */
-    private static String getMultipleRecipienServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException {
+    private static String getMultipleRecipienServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
         String serviceName = connection.getServiceName();
         String serviceAddress = (String) services.get(serviceName);
         if (serviceAddress == null) {

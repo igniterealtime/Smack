@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
@@ -209,8 +210,9 @@ public abstract class AdHocCommand {
      * the command it throws an XMPPException.
      * 
      * @throws XMPPErrorException if there is an error executing the command.
+     * @throws NotConnectedException 
      */
-    public abstract void execute() throws NoResponseException, XMPPErrorException;
+    public abstract void execute() throws NoResponseException, XMPPErrorException, NotConnectedException;
 
     /**
      * Executes the next action of the command with the information provided in
@@ -221,8 +223,9 @@ public abstract class AdHocCommand {
      * 
      * @param response the form answer of the previous stage.
      * @throws XMPPErrorException if there is a problem executing the command.
+     * @throws NotConnectedException 
      */
-    public abstract void next(Form response) throws NoResponseException, XMPPErrorException;
+    public abstract void next(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException;
 
     /**
      * Completes the command execution with the information provided in the
@@ -233,8 +236,9 @@ public abstract class AdHocCommand {
      * 
      * @param response the form answer of the previous stage.
      * @throws XMPPErrorException if there is a problem executing the command.
+     * @throws NotConnectedException 
      */
-    public abstract void complete(Form response) throws NoResponseException, XMPPErrorException;
+    public abstract void complete(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException;
 
     /**
      * Goes to the previous stage. The requester is asking to re-send the
@@ -243,8 +247,9 @@ public abstract class AdHocCommand {
      * an XMPPException.
      * 
      * @throws XMPPErrorException if there is a problem executing the command.
+     * @throws NotConnectedException 
      */
-    public abstract void prev() throws NoResponseException, XMPPErrorException;
+    public abstract void prev() throws NoResponseException, XMPPErrorException, NotConnectedException;
 
     /**
      * Cancels the execution of the command. This can be invoked on any stage of
@@ -252,8 +257,9 @@ public abstract class AdHocCommand {
      * XMPPException.
      * 
      * @throws XMPPErrorException if there is a problem executing the command.
+     * @throws NotConnectedException 
      */
-    public abstract void cancel() throws NoResponseException, XMPPErrorException;
+    public abstract void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException;
 
     /**
      * Returns a collection with the allowed actions based on the current stage.

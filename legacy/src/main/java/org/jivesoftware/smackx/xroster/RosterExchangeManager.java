@@ -28,6 +28,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -114,8 +115,9 @@ public class RosterExchangeManager {
      * 
      * @param roster the roster to send
      * @param targetUserID the user that will receive the roster entries
+     * @throws NotConnectedException 
      */
-    public void send(Roster roster, String targetUserID) {
+    public void send(Roster roster, String targetUserID) throws NotConnectedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -132,8 +134,9 @@ public class RosterExchangeManager {
      * 
      * @param rosterEntry the roster entry to send
      * @param targetUserID the user that will receive the roster entries
+     * @throws NotConnectedException 
      */
-    public void send(RosterEntry rosterEntry, String targetUserID) {
+    public void send(RosterEntry rosterEntry, String targetUserID) throws NotConnectedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -152,8 +155,9 @@ public class RosterExchangeManager {
      * 
      * @param rosterGroup the roster group to send
      * @param targetUserID the user that will receive the roster entries
+     * @throws NotConnectedException 
      */
-    public void send(RosterGroup rosterGroup, String targetUserID) {
+    public void send(RosterGroup rosterGroup, String targetUserID) throws NotConnectedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message

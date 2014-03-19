@@ -203,7 +203,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
 
         try {
             session.terminate("Closed remotely");
-        } catch (XMPPException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

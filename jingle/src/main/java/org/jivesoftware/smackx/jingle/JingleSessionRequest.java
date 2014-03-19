@@ -134,8 +134,8 @@ public class JingleSessionRequest {
 				//session.sendAck(this.getJingle());
 				session.updatePacketListener();
 				session.terminate("Declined");
-			} catch (XMPPException e) {
-				LOGGER.log(Level.SEVERE, "XMPPexception in reject", e);
+			} catch (Exception e) {
+				LOGGER.log(Level.SEVERE, "Exception in reject", e);
 			}
         }
      }

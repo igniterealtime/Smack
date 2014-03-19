@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -73,7 +74,7 @@ public class EntityTimeManager extends Manager {
 
         connection.addPacketListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Packet packet) throws NotConnectedException {
                 if (!enabled)
                     return;
                 connection().sendPacket(Time.createResponse(packet));
@@ -97,11 +98,11 @@ public class EntityTimeManager extends Manager {
         enabled = false;
     }
 
-    public boolean isTimeSupported(String jid) throws NoResponseException, XMPPErrorException  {
+    public boolean isTimeSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, Time.NAMESPACE);
     }
 
-    public Time getTime(String jid) throws NoResponseException, XMPPErrorException {
+    public Time getTime(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
         if (!isTimeSupported(jid))
             return null;
 

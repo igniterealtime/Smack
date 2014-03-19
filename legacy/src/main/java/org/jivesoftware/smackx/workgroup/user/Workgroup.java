@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
@@ -157,8 +158,9 @@ public class Workgroup {
      * @return true if the workgroup is available for receiving new requests.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public boolean isAvailable() throws NoResponseException, XMPPErrorException {
+    public boolean isAvailable() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Presence directedPresence = new Presence(Presence.Type.available);
         directedPresence.setTo(workgroupJID);
         PacketFilter typeFilter = new PacketTypeFilter(Presence.class);
@@ -310,8 +312,9 @@ public class Workgroup {
      *                       that a connection failure occured or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void joinQueue(Form answerForm, String userID) throws NoResponseException, XMPPErrorException {
+    public void joinQueue(Form answerForm, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -393,8 +396,9 @@ public class Workgroup {
      * @throws XMPPErrorException if an error occured trying to send the depart queue
      *                       request to the server.
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void departQueue() throws NoResponseException, XMPPErrorException {
+    public void departQueue() throws NoResponseException, XMPPErrorException, NotConnectedException {
         // If not in the queue ignore the depart request.
         if (!inQueue) {
             return;
@@ -634,8 +638,9 @@ public class Workgroup {
      * @return key specify a key to retrieve only that settings. Otherwise for all settings, key should be null.
      * @throws NoResponseException 
      * @throws XMPPErrorException if an error occurs while getting information from the server.
+     * @throws NotConnectedException 
      */
-    private ChatSettings getChatSettings(String key, int type) throws NoResponseException, XMPPErrorException {
+    private ChatSettings getChatSettings(String key, int type) throws NoResponseException, XMPPErrorException, NotConnectedException {
         ChatSettings request = new ChatSettings();
         if (key != null) {
             request.setKey(key);
@@ -677,8 +682,9 @@ public class Workgroup {
      * @return offlineSettings the offline settings for this workgroup.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public OfflineSettings getOfflineSettings() throws NoResponseException, XMPPErrorException {
+    public OfflineSettings getOfflineSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
         OfflineSettings request = new OfflineSettings();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -694,8 +700,9 @@ public class Workgroup {
      * @return soundSettings the sound settings for the specified workgroup.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public SoundSettings getSoundSettings() throws NoResponseException, XMPPErrorException {
+    public SoundSettings getSoundSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
         SoundSettings request = new SoundSettings();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -710,8 +717,9 @@ public class Workgroup {
      * @return the WorkgroupProperties for the specified workgroup.
      * @throws XMPPErrorException
      * @throws NoResponseException
+     * @throws NotConnectedException 
      */
-    public WorkgroupProperties getWorkgroupProperties() throws NoResponseException, XMPPErrorException  {
+    public WorkgroupProperties getWorkgroupProperties() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         WorkgroupProperties request = new WorkgroupProperties();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -728,8 +736,9 @@ public class Workgroup {
      * @return the WorkgroupProperties for the specified workgroup.
      * @throws XMPPErrorException
      * @throws NoResponseException
+     * @throws NotConnectedException 
      */
-    public WorkgroupProperties getWorkgroupProperties(String jid) throws NoResponseException, XMPPErrorException {
+    public WorkgroupProperties getWorkgroupProperties(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
         WorkgroupProperties request = new WorkgroupProperties();
         request.setJid(jid);
         request.setType(IQ.Type.GET);
@@ -749,8 +758,9 @@ public class Workgroup {
      * @return the Form to use for searching transcripts.
      * @throws XMPPErrorException
      * @throws NoResponseException
+     * @throws NotConnectedException 
      */
-    public Form getWorkgroupForm() throws NoResponseException, XMPPErrorException {
+    public Form getWorkgroupForm() throws NoResponseException, XMPPErrorException, NotConnectedException {
         WorkgroupForm workgroupForm = new WorkgroupForm();
         workgroupForm.setType(IQ.Type.GET);
         workgroupForm.setTo(workgroupJID);

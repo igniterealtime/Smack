@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.listeners;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 
@@ -33,9 +34,10 @@ public interface JingleTransportListener extends JingleListener {
      *               in the local machine
      * @param remote The transport candidate that has been used for
      *               transmitting to the remote machine
+     * @throws NotConnectedException 
      */
     public void transportEstablished(TransportCandidate local,
-                                     TransportCandidate remote);
+                                     TransportCandidate remote) throws NotConnectedException;
 
     /**
      * Notification that a transport must be cancelled.

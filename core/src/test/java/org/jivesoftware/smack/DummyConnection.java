@@ -23,6 +23,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -249,7 +250,12 @@ public class DummyConnection extends XMPPConnection {
 
         // Deliver the incoming packet to listeners.
         for (ListenerWrapper listenerWrapper : recvListeners.values()) {
-            listenerWrapper.notifyListener(packet);
+            try {
+                listenerWrapper.notifyListener(packet);
+            }
+            catch (NotConnectedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

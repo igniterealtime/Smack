@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -129,7 +130,7 @@ public class PingManager extends Manager {
         connection.addPacketListener(new PacketListener() {
             // Send a Pong for every Ping
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Packet packet) throws NotConnectedException {
                 Pong pong = new Pong(packet);
                 connection().sendPacket(pong);
             }
@@ -163,8 +164,9 @@ public class PingManager extends Manager {
      * @param pingTimeout The time to wait for a reply
      * @return true if a reply was received from the entity, false otherwise.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public boolean ping(String jid, long pingTimeout) throws NoResponseException {
+    public boolean ping(String jid, long pingTimeout) throws NoResponseException, NotConnectedException {
         Ping ping = new Ping(jid);
         try {
             connection().createPacketCollectorAndSend(ping).nextResultOrThrow();
@@ -194,8 +196,9 @@ public class PingManager extends Manager {
      * @return true if it supports ping, false otherwise.
      * @throws XMPPErrorException An XMPP related error occurred during the request 
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public boolean isPingSupported(String jid) throws NoResponseException, XMPPErrorException  {
+    public boolean isPingSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, PingManager.NAMESPACE);
     }
 

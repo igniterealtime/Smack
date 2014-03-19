@@ -20,6 +20,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -37,7 +38,12 @@ public class ThreadedDummyConnection extends DummyConnection {
 
     @Override
     public void sendPacket(Packet packet) {
-        super.sendPacket(packet);
+        try {
+            super.sendPacket(packet);
+        }
+        catch (NotConnectedException e) {
+            e.printStackTrace();
+        }
 
         if (packet instanceof IQ && !timeout) {
             timeout = false;

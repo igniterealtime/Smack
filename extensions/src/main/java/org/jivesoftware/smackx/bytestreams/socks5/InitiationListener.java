@@ -18,8 +18,11 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -38,6 +41,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
  * @author Henning Staib
  */
 final class InitiationListener implements PacketListener {
+    private static final Logger LOGGER = Logger.getLogger(InitiationListener.class.getName());
 
     /* manager containing the listeners and the XMPP connection */
     private final Socks5BytestreamManager manager;
@@ -63,12 +67,17 @@ final class InitiationListener implements PacketListener {
         initiationListenerExecutor.execute(new Runnable() {
 
             public void run() {
-                processRequest(packet);
+                try {
+                    processRequest(packet);
+                }
+                catch (NotConnectedException e) {
+                    LOGGER.log(Level.WARNING, "process request", e);
+                }
             }
         });
     }
 
-    private void processRequest(Packet packet) {
+    private void processRequest(Packet packet) throws NotConnectedException {
         Bytestream byteStreamRequest = (Bytestream) packet;
 
         // ignore request if in ignore list

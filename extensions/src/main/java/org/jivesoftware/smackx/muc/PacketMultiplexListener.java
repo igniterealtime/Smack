@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -74,7 +75,7 @@ class PacketMultiplexListener implements PacketListener {
         this.declinesListener = declinesListener;
     }
 
-    public void processPacket(Packet p) {
+    public void processPacket(Packet p) throws NotConnectedException {
         if (PRESENCE_FILTER.accept(p)) {
             presenceListener.processPacket(p);
         }

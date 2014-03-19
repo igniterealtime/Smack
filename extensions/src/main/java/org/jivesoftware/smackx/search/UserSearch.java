@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.search;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -61,8 +62,9 @@ public class UserSearch extends IQ {
      * @return the search form received by the server.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public Form getSearchForm(XMPPConnection con, String searchService) throws NoResponseException, XMPPErrorException {
+    public Form getSearchForm(XMPPConnection con, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException {
         UserSearch search = new UserSearch();
         search.setType(IQ.Type.GET);
         search.setTo(searchService);
@@ -80,8 +82,9 @@ public class UserSearch extends IQ {
      * @return ReportedData the data found from the query.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException {
+    public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException {
         UserSearch search = new UserSearch();
         search.setType(IQ.Type.SET);
         search.setTo(searchService);
@@ -100,8 +103,9 @@ public class UserSearch extends IQ {
      * @return ReportedData the data found from the query.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException {
+    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException {
         SimpleUserSearch search = new SimpleUserSearch();
         search.setForm(searchForm);
         search.setType(IQ.Type.SET);

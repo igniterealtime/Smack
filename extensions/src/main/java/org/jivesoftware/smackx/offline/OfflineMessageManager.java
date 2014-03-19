@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.offline;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -78,8 +79,9 @@ public class OfflineMessageManager {
      * @return a boolean indicating if the server supports Flexible Offline Message Retrieval.
      * @throws XMPPErrorException If the user is not allowed to make this request.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public boolean supportsFlexibleRetrieval() throws NoResponseException, XMPPErrorException {
+    public boolean supportsFlexibleRetrieval() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(connection.getServiceName(), namespace);
     }
 
@@ -90,8 +92,9 @@ public class OfflineMessageManager {
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public int getMessageCount() throws NoResponseException, XMPPErrorException {
+    public int getMessageCount() throws NoResponseException, XMPPErrorException, NotConnectedException {
         DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(null,
                 namespace);
         Form extendedInfo = Form.getFormFrom(info);
@@ -112,8 +115,9 @@ public class OfflineMessageManager {
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public Iterator<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException {
+    public Iterator<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException, NotConnectedException {
         List<OfflineMessageHeader> answer = new ArrayList<OfflineMessageHeader>();
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                 null, namespace);
@@ -136,8 +140,9 @@ public class OfflineMessageManager {
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public Iterator<Message> getMessages(final List<String> nodes) throws NoResponseException, XMPPErrorException {
+    public Iterator<Message> getMessages(final List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException {
         List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         for (String node : nodes) {
@@ -177,8 +182,9 @@ public class OfflineMessageManager {
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public Iterator<Message> getMessages() throws NoResponseException, XMPPErrorException {
+    public Iterator<Message> getMessages() throws NoResponseException, XMPPErrorException, NotConnectedException {
         List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
@@ -206,8 +212,9 @@ public class OfflineMessageManager {
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void deleteMessages(List<String> nodes) throws NoResponseException, XMPPErrorException {
+    public void deleteMessages(List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException {
         OfflineMessageRequest request = new OfflineMessageRequest();
         for (String node : nodes) {
             OfflineMessageRequest.Item item = new OfflineMessageRequest.Item(node);
@@ -223,8 +230,9 @@ public class OfflineMessageManager {
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void deleteMessages() throws NoResponseException, XMPPErrorException {
+    public void deleteMessages() throws NoResponseException, XMPPErrorException, NotConnectedException {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setPurge(true);
         connection.createPacketCollectorAndSend(request).nextResultOrThrow();

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.caps;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -59,6 +60,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -70,6 +73,7 @@ import java.security.NoSuchAlgorithmException;
  * @see <a href="http://www.xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>
  */
 public class EntityCapsManager extends Manager {
+    private static final Logger LOGGER = Logger.getLogger(EntityCapsManager.class.getName());
 
     public static final String NAMESPACE = "http://jabber.org/protocol/caps";
     public static final String ELEMENT = "c";
@@ -351,7 +355,7 @@ public class EntityCapsManager extends Manager {
         return entityCapsEnabled;
     }
 
-    public void setEntityNode(String entityNode) {
+    public void setEntityNode(String entityNode) throws NotConnectedException {
         this.entityNode = entityNode;
         updateLocalEntityCaps();
     }
@@ -394,8 +398,9 @@ public class EntityCapsManager extends Manager {
      * @return true if the entity supports Entity Capabilities.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public boolean areEntityCapsSupported(String jid) throws NoResponseException, XMPPErrorException {
+    public boolean areEntityCapsSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
         return sdm.supportsFeature(jid, NAMESPACE);
     }
 
@@ -405,8 +410,9 @@ public class EntityCapsManager extends Manager {
      * @return true if the user's server supports Entity Capabilities.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public boolean areEntityCapsSupportedByServer() throws NoResponseException, XMPPErrorException  {
+    public boolean areEntityCapsSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return areEntityCapsSupported(connection().getServiceName());
     }
 
@@ -415,6 +421,7 @@ public class EntityCapsManager extends Manager {
      *
      * If we are connected and there was already a presence send, another
      * presence is send to inform others about your new Entity Caps node string.
+     * @throws NotConnectedException 
      *
      */
     public void updateLocalEntityCaps() {
@@ -472,7 +479,12 @@ public class EntityCapsManager extends Manager {
         // to respect ConnectionConfiguration.isSendPresence()
         if (connection != null && connection.isAuthenticated() && presenceSend) {
             Presence presence = new Presence(Presence.Type.available);
-            connection.sendPacket(presence);
+            try {
+                connection.sendPacket(presence);
+            }
+            catch (NotConnectedException e) {
+                LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);
+            }
         }
     }
 

@@ -33,6 +33,7 @@ import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
@@ -536,8 +537,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      *         otherwise <code>false</code>
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    private boolean supportsSocks5(String targetJID) throws NoResponseException, XMPPErrorException {
+    private boolean supportsSocks5(String targetJID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(targetJID, NAMESPACE);
     }
 
@@ -548,8 +550,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * @return list of JIDs of SOCKS5 proxies
      * @throws XMPPErrorException if there was an error querying the XMPP server for SOCKS5 proxies
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    private List<String> determineProxies() throws NoResponseException, XMPPErrorException {
+    private List<String> determineProxies() throws NoResponseException, XMPPErrorException, NotConnectedException {
         ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(this.connection);
 
         List<String> proxies = new ArrayList<String>();
@@ -708,8 +711,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * accepted.
      * 
      * @param packet Packet that should be answered with a not-acceptable error
+     * @throws NotConnectedException 
      */
-    protected void replyRejectPacket(IQ packet) {
+    protected void replyRejectPacket(IQ packet) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.no_acceptable);
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         this.connection.sendPacket(errorIQ);

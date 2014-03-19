@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 
 import javax.security.sasl.SaslException;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
@@ -438,10 +439,11 @@ public abstract class XMPPConnection {
      * Sends the specified packet to the server.
      * 
      * @param packet the packet to send.
+     * @throws NotConnectedException 
      */
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet packet) throws NotConnectedException {
         if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
+            throw new NotConnectedException();
         }
         if (packet == null) {
             throw new NullPointerException("Packet is null.");
@@ -627,8 +629,9 @@ public abstract class XMPPConnection {
      *
      * @param packet the packet to filter responses from
      * @return a new packet collector.
+     * @throws NotConnectedException 
      */
-    public PacketCollector createPacketCollectorAndSend(IQ packet) {
+    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException {
         PacketFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollector(packetFilter);
@@ -755,7 +758,13 @@ public abstract class XMPPConnection {
     private void firePacketSendingListeners(Packet packet) {
         // Notify the listeners of the new sent packet
         for (ListenerWrapper listenerWrapper : sendListeners.values()) {
-            listenerWrapper.notifyListener(packet);
+            try {
+                listenerWrapper.notifyListener(packet);
+            }
+            catch (NotConnectedException e) {
+                LOGGER.log(Level.WARNING, "Got not connected exception, aborting");
+                break;
+            }
         }
     }
 
@@ -962,6 +971,9 @@ public abstract class XMPPConnection {
             for (ListenerWrapper listenerWrapper : recvListeners.values()) {
                 try {
                     listenerWrapper.notifyListener(packet);
+                } catch(NotConnectedException e) {
+                    LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
+                    break;
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
                 }
@@ -1030,8 +1042,9 @@ public abstract class XMPPConnection {
          * Notify and process the packet listener if the filter matches the packet.
          * 
          * @param packet the packet which was sent or received.
+         * @throws NotConnectedException 
          */
-        public void notifyListener(Packet packet) {
+        public void notifyListener(Packet packet) throws NotConnectedException {
             if (packetFilter == null || packetFilter.accept(packet)) {
                 packetListener.processPacket(packet);
             }

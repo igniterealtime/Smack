@@ -18,8 +18,11 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -28,6 +31,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+
 
 /**
  * InitiationListener handles all incoming In-Band Bytestream open requests. If there are no
@@ -42,6 +46,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
  * @author Henning Staib
  */
 class InitiationListener implements PacketListener {
+    private static final Logger LOGGER = Logger.getLogger(InitiationListener.class.getName());
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;
@@ -67,12 +72,17 @@ class InitiationListener implements PacketListener {
         initiationListenerExecutor.execute(new Runnable() {
 
             public void run() {
-                processRequest(packet);
+                try {
+                    processRequest(packet);
+                }
+                catch (NotConnectedException e) {
+                    LOGGER.log(Level.WARNING, "proccessRequest", e);
+                }
             }
         });
     }
 
-    private void processRequest(Packet packet) {
+    private void processRequest(Packet packet) throws NotConnectedException {
         Open ibbRequest = (Open) packet;
 
         // validate that block size is within allowed range

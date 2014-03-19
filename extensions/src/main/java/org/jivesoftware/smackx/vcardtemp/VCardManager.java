@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.vcardtemp;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -43,8 +44,9 @@ public class VCardManager {
      * @return true if the given entity understands the vCard-XML format and exchange.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException  {
+    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(jid, NAMESPACE);
     }
 }

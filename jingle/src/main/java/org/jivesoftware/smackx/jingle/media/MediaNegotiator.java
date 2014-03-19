@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.ContentNegotiator;
@@ -101,8 +102,9 @@ public class MediaNegotiator extends JingleNegotiator {
      *            the packet received
      * @return the new Jingle packet to send.
      * @throws XMPPException
+     * @throws NotConnectedException 
      */
-    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException {
+    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
 
@@ -199,8 +201,9 @@ public class MediaNegotiator extends JingleNegotiator {
       *  
       *  @param jingle
       *  @return the iq
+     * @throws NotConnectedException 
       */
-    private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException {
+    private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException, NotConnectedException {
         IQ response = null;
         List<PayloadType> offeredPayloads = new ArrayList<PayloadType>();
 
@@ -473,8 +476,9 @@ public class MediaNegotiator extends JingleNegotiator {
      * 
      * @param bestPt
      *            payload type that has been agreed.
+     * @throws NotConnectedException 
      */
-    protected void triggerMediaEstablished(PayloadType bestPt) {
+    protected void triggerMediaEstablished(PayloadType bestPt) throws NotConnectedException {
         List<JingleListener> listeners = getListenersList();
         for (JingleListener li : listeners) {
             if (li instanceof JingleMediaListener) {

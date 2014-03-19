@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -52,7 +53,7 @@ class CloseListener implements PacketListener {
         this.manager = manager;
     }
 
-    public void processPacket(Packet packet) {
+    public void processPacket(Packet packet) throws NotConnectedException {
         Close closeRequest = (Close) packet;
         InBandBytestreamSession ibbSession = this.manager.getSessions().get(
                         closeRequest.getSessionID());

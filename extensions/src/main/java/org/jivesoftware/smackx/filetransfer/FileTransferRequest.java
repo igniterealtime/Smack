@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 /**
@@ -127,8 +128,9 @@ public class FileTransferRequest {
 
 	/**
 	 * Rejects the file transfer request.
+	 * @throws NotConnectedException 
 	 */
-	public void reject() {
+	public void reject() throws NotConnectedException {
 		manager.rejectIncomingFileTransfer(this);
 	}
 

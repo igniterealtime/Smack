@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -591,9 +592,10 @@ public class AdHocCommandManager extends Manager {
      * 
      * @param response the response to send.
      * @param condition the condition of the error.
+     * @throws NotConnectedException 
      */
     private void respondError(AdHocCommandData response,
-            XMPPError.Condition condition) {
+            XMPPError.Condition condition) throws NotConnectedException {
         respondError(response, new XMPPError(condition));
     }
 
@@ -603,9 +605,10 @@ public class AdHocCommandManager extends Manager {
      * @param response the response to send.
      * @param condition the condition of the error.
      * @param specificCondition the adhoc command error condition.
+     * @throws NotConnectedException 
      */
     private void respondError(AdHocCommandData response, XMPPError.Condition condition,
-            AdHocCommand.SpecificErrorCondition specificCondition)
+            AdHocCommand.SpecificErrorCondition specificCondition) throws NotConnectedException
     {
         XMPPError error = new XMPPError(condition);
         error.addExtension(new AdHocCommandData.SpecificError(specificCondition));
@@ -617,8 +620,9 @@ public class AdHocCommandManager extends Manager {
      * 
      * @param response the response to send.
      * @param error the error to send.
+     * @throws NotConnectedException 
      */
-    private void respondError(AdHocCommandData response, XMPPError error) {
+    private void respondError(AdHocCommandData response, XMPPError error) throws NotConnectedException {
         response.setType(IQ.Type.ERROR);
         response.setError(error);
         connection().sendPacket(response);

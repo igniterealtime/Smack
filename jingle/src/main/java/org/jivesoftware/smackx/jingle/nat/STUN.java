@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
@@ -181,8 +182,9 @@ public class STUN extends IQ {
      *
      * @param connection
      * @return the STUN server address
+     * @throws NotConnectedException 
      */
-    public static STUN getSTUNServer(XMPPConnection connection) {
+    public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException {
 
         if (!connection.isConnected()) {
             return null;

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.ContentNegotiator;
@@ -319,12 +320,22 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 jout.addContent(content);
 
                                 // Send the packet
-                                js.sendFormattedJingle(jin, jout);
+                                try {
+                                    js.sendFormattedJingle(jin, jout);
+                                }
+                                catch (NotConnectedException e) {
+                                    throw new IllegalStateException(e);
+                                }
                                 acceptedRemoteCandidates.add(bestRemote);
                             }
                             if ((isEstablished()) && (getNegotiatorState() == JingleNegotiatorState.PENDING)) {
                                 setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
-                                triggerTransportEstablished(getAcceptedLocalCandidate(), bestRemote);
+                                try {
+                                    triggerTransportEstablished(getAcceptedLocalCandidate(), bestRemote);
+                                }
+                                catch (NotConnectedException e) {
+                                    throw new IllegalStateException(e);
+                                }
                                 break;
                             }
                         }
@@ -400,7 +411,12 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 jout.addContent(content);
 
                                 // Send the packet
-                                js.sendFormattedJingle(jin, jout);
+                                try {
+                                    js.sendFormattedJingle(jin, jout);
+                                }
+                                catch (NotConnectedException e) {
+                                    throw new IllegalStateException(e);
+                                }
                                 acceptedRemoteCandidates.add(bestRemote);
                             }
                             if (isEstablished()) {
@@ -414,7 +430,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         try {
                             session
                                     .terminate("Unable to negotiate session. This may be caused by firewall configuration problems.");
-                        } catch (XMPPException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -508,8 +524,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * Send an offer for a transport candidate
      *
      * @param cand
+     * @throws NotConnectedException 
      */
-    private synchronized void sendTransportCandidateOffer(TransportCandidate cand) {
+    private synchronized void sendTransportCandidateOffer(TransportCandidate cand) throws NotConnectedException {
         if (!cand.isNull()) {
             // Offer our new candidate...
             addOfferedCandidate(cand);
@@ -545,7 +562,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (resolverListener == null) {
             // Add a listener that sends the offer when the resolver finishes...
             resolverListener = new TransportResolverListener.Resolver() {
-                public void candidateAdded(TransportCandidate cand) {
+                public void candidateAdded(TransportCandidate cand) throws NotConnectedException {
                     sendTransportCandidateOffer(cand);
                 }
 
@@ -763,8 +780,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @param local  TransportCandidate that has been agreed.
      * @param remote TransportCandidate that has been agreed.
+     * @throws NotConnectedException 
      */
-    private void triggerTransportEstablished(TransportCandidate local, TransportCandidate remote) {
+    private void triggerTransportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException {
         List<JingleListener> listeners = getListenersList();
         for (JingleListener li : listeners) {
             if (li instanceof JingleTransportListener) {

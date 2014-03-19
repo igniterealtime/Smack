@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.search;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -70,8 +71,9 @@ public class UserSearchManager {
      * @return the form to fill out to perform a search.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public Form getSearchForm(String searchService) throws NoResponseException, XMPPErrorException  {
+    public Form getSearchForm(String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return userSearch.getSearchForm(con, searchService);
     }
 
@@ -84,8 +86,9 @@ public class UserSearchManager {
      * @return the ReportedData returned by the server.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public ReportedData getSearchResults(Form searchForm, String searchService) throws NoResponseException, XMPPErrorException  {
+    public ReportedData getSearchResults(Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return userSearch.sendSearchForm(con, searchForm, searchService);
     }
 
@@ -96,8 +99,9 @@ public class UserSearchManager {
      * @return a Collection of search services found on the server.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public Collection<String> getSearchServices() throws NoResponseException, XMPPErrorException  {
+    public Collection<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         final List<String> searchServices = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         DiscoverItems items = discoManager.discoverItems(con.getServiceName());

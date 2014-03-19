@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
@@ -254,7 +255,7 @@ public class ContentNegotiator extends JingleNegotiator {
         return result;
     }
 
-    public void triggerContentEstablished() {
+    public void triggerContentEstablished() throws NotConnectedException {
 
         PayloadType bestCommonAudioPt = getMediaNegotiator().getBestCommonAudioPt();
         TransportCandidate bestRemoteCandidate = getTransportNegotiator().getBestRemoteCandidate();
@@ -266,8 +267,9 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Trigger a session established event.
+     * @throws NotConnectedException 
      */
-    private void triggerContentEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc) {
+    private void triggerContentEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc) throws NotConnectedException {
 
         // Let the session know that we've established a content/media segment.
         JingleSession session = getSession();

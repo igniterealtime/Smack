@@ -23,6 +23,7 @@ import java.util.WeakHashMap;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
@@ -101,8 +102,9 @@ public class ChatStateManager extends Manager {
      *
      * @param newState the new state of the chat
      * @param chat the chat.
+     * @throws NotConnectedException 
      */
-    public void setCurrentState(ChatState newState, Chat chat) {
+    public void setCurrentState(ChatState newState, Chat chat) throws NotConnectedException {
         if(chat == null || newState == null) {
             throw new IllegalArgumentException("Arguments cannot be null.");
         }

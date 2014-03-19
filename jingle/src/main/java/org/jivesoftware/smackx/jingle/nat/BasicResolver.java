@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.nat;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleSession;
 
@@ -43,8 +44,9 @@ public class BasicResolver extends TransportResolver {
      * <p/>
      * The BasicResolver takes the IP addresses of the interfaces and uses the
      * first non-loopback, non-linklocal and non-sitelocal address.
+     * @throws NotConnectedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException {
 
         setResolveInit();
 

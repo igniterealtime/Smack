@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.RosterPacket;
@@ -69,8 +70,9 @@ public class RosterGroup {
      * be invalid and will need to be updated to the new group specified by the new name.
      *
      * @param name the name of the group.
+     * @throws NotConnectedException 
      */
-    public void setName(String name) {
+    public void setName(String name) throws NotConnectedException {
         synchronized (entries) {
             for (RosterEntry entry : entries) {
                 RosterPacket packet = new RosterPacket();
@@ -162,8 +164,9 @@ public class RosterGroup {
      * @param entry a roster entry.
      * @throws XMPPErrorException if an error occured while trying to add the entry to the group.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException {
+    public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException {
         PacketCollector collector = null;
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
@@ -192,8 +195,9 @@ public class RosterGroup {
      * @param entry a roster entry.
      * @throws XMPPErrorException if an error occurred while trying to remove the entry from the group. 
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException {
+    public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException {
         PacketCollector collector = null;
         // Only remove the entry if it's in the entry list.
         // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)

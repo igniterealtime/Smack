@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -221,8 +222,9 @@ public class MessageEventManager {
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
+     * @throws NotConnectedException 
      */
-    public void sendDeliveredNotification(String to, String packetID) {
+    public void sendDeliveredNotification(String to, String packetID) throws NotConnectedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -239,8 +241,9 @@ public class MessageEventManager {
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
+     * @throws NotConnectedException 
      */
-    public void sendDisplayedNotification(String to, String packetID) {
+    public void sendDisplayedNotification(String to, String packetID) throws NotConnectedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -257,8 +260,9 @@ public class MessageEventManager {
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
+     * @throws NotConnectedException 
      */
-    public void sendComposingNotification(String to, String packetID) {
+    public void sendComposingNotification(String to, String packetID) throws NotConnectedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -275,8 +279,9 @@ public class MessageEventManager {
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
+     * @throws NotConnectedException 
      */
-    public void sendCancelledNotification(String to, String packetID) {
+    public void sendCancelledNotification(String to, String packetID) throws NotConnectedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message

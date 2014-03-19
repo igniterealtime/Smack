@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smackx.workgroup.packet.AgentInfo;
 import org.jivesoftware.smackx.workgroup.packet.AgentWorkgroups;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -35,7 +36,7 @@ public class Agent {
     private XMPPConnection connection;
     private String workgroupJID;
 
-    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException {
+    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
         request.setTo(serviceJID);
         AgentWorkgroups response = (AgentWorkgroups) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -65,8 +66,9 @@ public class Agent {
      * @return - the agents name.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public String getName() throws NoResponseException, XMPPErrorException {
+    public String getName() throws NoResponseException, XMPPErrorException, NotConnectedException {
         AgentInfo agentInfo = new AgentInfo();
         agentInfo.setType(IQ.Type.GET);
         agentInfo.setTo(workgroupJID);
@@ -84,8 +86,9 @@ public class Agent {
      * @param newName the new name of the agent.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void setName(String newName) throws NoResponseException, XMPPErrorException {
+    public void setName(String newName) throws NoResponseException, XMPPErrorException, NotConnectedException {
         AgentInfo agentInfo = new AgentInfo();
         agentInfo.setType(IQ.Type.SET);
         agentInfo.setTo(workgroupJID);

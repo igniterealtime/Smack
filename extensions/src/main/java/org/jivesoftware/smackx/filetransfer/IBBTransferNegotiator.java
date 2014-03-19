@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -61,14 +62,14 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     }
 
     public OutputStream createOutgoingStream(String streamID, String initiator,
-                    String target) throws NoResponseException, XMPPErrorException {
+                    String target) throws NoResponseException, XMPPErrorException, NotConnectedException {
         InBandBytestreamSession session = this.manager.establishSession(target, streamID);
         session.setCloseBothStreamsEnabled(true);
         return session.getOutputStream();
     }
 
     public InputStream createIncomingStream(StreamInitiation initiation)
-                    throws NoResponseException, XMPPErrorException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
         /*
          * In-Band Bytestream initiation listener must ignore next in-band bytestream request with
          * given session ID
@@ -94,7 +95,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return new String[] { InBandBytestreamManager.NAMESPACE };
     }
 
-    InputStream negotiateIncomingStream(Packet streamInitiation) {
+    InputStream negotiateIncomingStream(Packet streamInitiation) throws NotConnectedException {
         // build In-Band Bytestream request
         InBandBytestreamRequest request = new ByteStreamRequest(this.manager,
                         (Open) streamInitiation);

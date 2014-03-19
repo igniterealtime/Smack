@@ -35,6 +35,7 @@ import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
@@ -143,8 +144,9 @@ public class AgentSession {
      * Returns the agent roster for the workgroup, which contains
      *
      * @return the AgentRoster
+     * @throws NotConnectedException 
      */
-    public AgentRoster getAgentRoster() {
+    public AgentRoster getAgentRoster() throws NotConnectedException {
         if (agentRoster == null) {
             agentRoster = new AgentRoster(connection, workgroupJID);
         }
@@ -340,10 +342,11 @@ public class AgentSession {
      * @param status       sets the status message of the presence update.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      * @throws IllegalStateException if the agent is not online with the workgroup.
      */
     public void setStatus(Presence.Mode presenceMode, int maxChats, String status)
-                    throws NoResponseException, XMPPErrorException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
         if (!online) {
             throw new IllegalStateException("Cannot set status when the agent is not online.");
         }
@@ -392,9 +395,10 @@ public class AgentSession {
      * @param status       sets the status message of the presence update.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      * @throws IllegalStateException if the agent is not online with the workgroup.
      */
-    public void setStatus(Presence.Mode presenceMode, String status) throws NoResponseException, XMPPErrorException {
+    public void setStatus(Presence.Mode presenceMode, String status) throws NoResponseException, XMPPErrorException, NotConnectedException {
         if (!online) {
             throw new IllegalStateException("Cannot set status when the agent is not online.");
         }
@@ -429,8 +433,9 @@ public class AgentSession {
      *
      * @param userID the ID of the user to remove.
      * @throws XMPPException if an exception occurs.
+     * @throws NotConnectedException 
      */
-    public void dequeueUser(String userID) throws XMPPException {
+    public void dequeueUser(String userID) throws XMPPException, NotConnectedException {
         // todo: this method simply won't work right now.
         DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
 
@@ -500,8 +505,9 @@ public class AgentSession {
      * @return information about the occupants of the specified room.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public OccupantsInfo getOccupantsInfo(String roomID) throws NoResponseException, XMPPErrorException  {
+    public OccupantsInfo getOccupantsInfo(String roomID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         OccupantsInfo request = new OccupantsInfo(roomID);
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -658,7 +664,7 @@ public class AgentSession {
 
     // PacketListener Implementation.
 
-    private void handlePacket(Packet packet) {
+    private void handlePacket(Packet packet) throws NotConnectedException {
         if (packet instanceof OfferRequestProvider.OfferRequestPacket) {
             // Acknowledge the IQ set.
             IQ reply = new IQ() {
@@ -777,8 +783,9 @@ public class AgentSession {
      * @param note      the chat note to add.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void setNote(String sessionID, String note) throws NoResponseException, XMPPErrorException  {
+    public void setNote(String sessionID, String note) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         note = ChatNotes.replace(note, "\n", "\\n");
         note = StringUtils.escapeForXML(note);
 
@@ -797,8 +804,9 @@ public class AgentSession {
      * @return the <code>ChatNote</code> associated with a given chat session.
      * @throws XMPPErrorException if an error occurs while retrieving the ChatNote.
      * @throws NoResponseException
+     * @throws NotConnectedException 
      */
-    public ChatNotes getNote(String sessionID) throws NoResponseException, XMPPErrorException {
+    public ChatNotes getNote(String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         ChatNotes request = new ChatNotes();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -815,8 +823,9 @@ public class AgentSession {
      * @param maxSessions the max number of sessions to retrieve.
      * @return the chat history associated with a given jid.
      * @throws XMPPException if an error occurs while retrieving the AgentChatHistory.
+     * @throws NotConnectedException 
      */
-    public AgentChatHistory getAgentHistory(String jid, int maxSessions, Date startDate) throws XMPPException {
+    public AgentChatHistory getAgentHistory(String jid, int maxSessions, Date startDate) throws XMPPException, NotConnectedException {
         AgentChatHistory request;
         if (startDate != null) {
             request = new AgentChatHistory(jid, maxSessions, startDate);
@@ -840,8 +849,9 @@ public class AgentSession {
      * @return SearchSettings the search settings for this workgroup.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public SearchSettings getSearchSettings() throws NoResponseException, XMPPErrorException {
+    public SearchSettings getSearchSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
         SearchSettings request = new SearchSettings();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -857,8 +867,9 @@ public class AgentSession {
      * @return MacroGroup the root macro group.
      * @throws XMPPErrorException if an error occurs while getting information from the server.
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public MacroGroup getMacros(boolean global) throws NoResponseException, XMPPErrorException {
+    public MacroGroup getMacros(boolean global) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Macros request = new Macros();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -874,8 +885,9 @@ public class AgentSession {
      * @param group the macro group to save. 
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void saveMacros(MacroGroup group) throws NoResponseException, XMPPErrorException {
+    public void saveMacros(MacroGroup group) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Macros request = new Macros();
         request.setType(IQ.Type.SET);
         request.setTo(workgroupJID);
@@ -891,8 +903,9 @@ public class AgentSession {
      * @param sessionID the sessionID to query for.
      * @return Map a map of all metadata associated with the sessionID.
      * @throws XMPPException if an error occurs while getting information from the server.
+     * @throws NotConnectedException 
      */
-    public Map<String, List<String>> getChatMetadata(String sessionID) throws XMPPException {
+    public Map<String, List<String>> getChatMetadata(String sessionID) throws XMPPException, NotConnectedException {
         ChatMetadata request = new ChatMetadata();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -929,8 +942,9 @@ public class AgentSession {
      * @throws XMPPErrorException if the sender of the invitation is not an agent or the service failed to process
      *         the request.
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void sendRoomInvitation(RoomInvitation.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException
+    public void sendRoomInvitation(RoomInvitation.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
         final RoomInvitation invitation = new RoomInvitation(type, invitee, sessionID, reason);
         IQ iq = new IQ() {
@@ -970,8 +984,9 @@ public class AgentSession {
      * @throws XMPPErrorException if the sender of the invitation is not an agent or the service failed to process
      *         the request.
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void sendRoomTransfer(RoomTransfer.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException
+    public void sendRoomTransfer(RoomTransfer.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
         final RoomTransfer transfer = new RoomTransfer(type, invitee, sessionID, reason);
         IQ iq = new IQ() {
@@ -995,8 +1010,9 @@ public class AgentSession {
      * @return the settings for the workgroup.
      * @throws XMPPErrorException if an error occurs while sending the request to the server.
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public GenericSettings getGenericSettings(XMPPConnection con, String query) throws NoResponseException, XMPPErrorException {
+    public GenericSettings getGenericSettings(XMPPConnection con, String query) throws NoResponseException, XMPPErrorException, NotConnectedException {
         GenericSettings setting = new GenericSettings();
         setting.setType(IQ.Type.GET);
         setting.setTo(workgroupJID);
@@ -1006,7 +1022,7 @@ public class AgentSession {
         return response;
     }
 
-    public boolean hasMonitorPrivileges(XMPPConnection con) throws NoResponseException, XMPPErrorException  {
+    public boolean hasMonitorPrivileges(XMPPConnection con) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         MonitorPacket request = new MonitorPacket();
         request.setType(IQ.Type.GET);
         request.setTo(workgroupJID);
@@ -1015,7 +1031,7 @@ public class AgentSession {
         return response.isMonitor();
     }
 
-    public void makeRoomOwner(XMPPConnection con, String sessionID) throws NoResponseException, XMPPErrorException  {
+    public void makeRoomOwner(XMPPConnection con, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         MonitorPacket request = new MonitorPacket();
         request.setType(IQ.Type.SET);
         request.setTo(workgroupJID);

@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smackx.workgroup.packet.Transcript;
 import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
@@ -45,8 +46,9 @@ public class TranscriptManager {
      * @return the full conversation transcript of a given session.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public Transcript getTranscript(String workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException {
+    public Transcript getTranscript(String workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Transcript request = new Transcript(sessionID);
         request.setTo(workgroupJID);
         Transcript response = (Transcript) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -62,8 +64,9 @@ public class TranscriptManager {
      * @return the transcripts of a given user.
      * @throws XMPPErrorException 
      * @throws NoResponseException
+     * @throws NotConnectedException 
      */
-    public Transcripts getTranscripts(String workgroupJID, String userID) throws NoResponseException, XMPPErrorException {
+    public Transcripts getTranscripts(String workgroupJID, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Transcripts request = new Transcripts(userID);
         request.setTo(workgroupJID);
         Transcripts response = (Transcripts) connection.createPacketCollectorAndSend(request).nextResultOrThrow();

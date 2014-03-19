@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.iqlast;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
@@ -137,7 +138,7 @@ public class LastActivityManager {
         // Register a listener for a last activity query
         connection.addPacketListener(new PacketListener() {
 
-            public void processPacket(Packet packet) {
+            public void processPacket(Packet packet) throws NotConnectedException {
                 LastActivity message = new LastActivity();
                 message.setType(IQ.Type.RESULT);
                 message.setTo(packet.getFrom());
@@ -195,9 +196,10 @@ public class LastActivityManager {
      * @throws XMPPErrorException
      *             thrown if a server error has occured.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
     public static LastActivity getLastActivity(XMPPConnection con, String jid)
-                    throws NoResponseException, XMPPErrorException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
         LastActivity activity = new LastActivity();
         activity.setTo(jid);
 

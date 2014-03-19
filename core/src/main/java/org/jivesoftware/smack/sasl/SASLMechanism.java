@@ -17,12 +17,14 @@
 package org.jivesoftware.smack.sasl;
 
 import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.callback.Callback;
@@ -129,8 +131,9 @@ public abstract class SASLMechanism implements CallbackHandler {
      * @param password the password for this account.
      * @throws IOException If a network error occurs while authenticating.
      * @throws SaslException
+     * @throws NotConnectedException 
      */
-    public void authenticate(String username, String host, String serviceName, String password) throws IOException, SaslException {
+    public void authenticate(String username, String host, String serviceName, String password) throws IOException, SaslException, NotConnectedException {
         //Since we were not provided with a CallbackHandler, we will use our own with the given
         //information
 
@@ -153,15 +156,16 @@ public abstract class SASLMechanism implements CallbackHandler {
      * @param cbh      the CallbackHandler to obtain user information.
      * @throws IOException If a network error occures while authenticating.
      * @throws SaslException If a protocol error occurs or the user is not authenticated.
+     * @throws NotConnectedException 
      */
-    public void authenticate(String host, CallbackHandler cbh) throws IOException, SaslException {
+    public void authenticate(String host, CallbackHandler cbh) throws IOException, SaslException, NotConnectedException {
         String[] mechanisms = { getName() };
         Map<String,String> props = new HashMap<String,String>();
         sc = Sasl.createSaslClient(mechanisms, null, "xmpp", host, props, cbh);
         authenticate();
     }
 
-    protected void authenticate() throws IOException, SaslException {
+    protected void authenticate() throws IOException, SaslException, NotConnectedException {
         String authenticationText = null;
         if (sc.hasInitialResponse()) {
             byte[] response = sc.evaluateChallenge(new byte[0]);
@@ -178,8 +182,9 @@ public abstract class SASLMechanism implements CallbackHandler {
      *
      * @param challenge a base64 encoded string representing the challenge.
      * @throws IOException if an exception sending the response occurs.
+     * @throws NotConnectedException 
      */
-    public void challengeReceived(String challenge) throws IOException {
+    public void challengeReceived(String challenge) throws IOException, NotConnectedException {
         byte response[];
         if(challenge != null) {
             response = sc.evaluateChallenge(StringUtils.decodeBase64(challenge));

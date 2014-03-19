@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -518,8 +519,9 @@ public class VCard extends IQ {
      * @param connection the XMPPConnection to use.
      * @throws XMPPErrorException thrown if there was an issue setting the VCard in the server.
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void save(XMPPConnection connection) throws NoResponseException, XMPPErrorException {
+    public void save(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
         checkAuthenticated(connection, true);
 
         setType(IQ.Type.SET);
@@ -532,8 +534,9 @@ public class VCard extends IQ {
      * and not anonymous.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException 
      */
-    public void load(XMPPConnection connection) throws NoResponseException, XMPPErrorException  {
+    public void load(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         checkAuthenticated(connection, true);
 
         setFrom(connection.getUser());
@@ -544,15 +547,16 @@ public class VCard extends IQ {
      * Load VCard information for a given user. XMPPConnection should be authenticated and not anonymous.
      * @throws XMPPErrorException 
      * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
      */
-    public void load(XMPPConnection connection, String user) throws NoResponseException, XMPPErrorException {
+    public void load(XMPPConnection connection, String user) throws NoResponseException, XMPPErrorException, NotConnectedException {
         checkAuthenticated(connection, false);
 
         setTo(user);
         doLoad(connection, user);
     }
 
-    private void doLoad(XMPPConnection connection, String user) throws NoResponseException, XMPPErrorException {
+    private void doLoad(XMPPConnection connection, String user) throws NoResponseException, XMPPErrorException, NotConnectedException {
         setType(Type.GET);
         VCard result = (VCard) connection.createPacketCollectorAndSend(this).nextResultOrThrow();
         copyFieldsFrom(result);
