@@ -2,7 +2,13 @@ description = """\
 Smack BOSH API.
 This API is considered beta quality."""
 
+repositories {
+	maven {
+		url 'https://oss.sonatype.org/content/repositories/snapshots'
+	}
+}
+
 dependencies {
 	compile project(':core')
-	compile 'org.igniterealtime.jbosh:jbosh:0.7.0'
+	compile 'org.igniterealtime.jbosh:jbosh:0.8.0-SNAPSHOT'
 }
