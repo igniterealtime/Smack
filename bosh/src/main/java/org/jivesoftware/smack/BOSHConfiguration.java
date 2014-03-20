@@ -113,9 +113,16 @@ public class BOSHConfiguration extends ConnectionConfiguration {
         if (file.charAt(0) != '/') {
             file = '/' + file;
         }
-        HostAddress hostAddress = hostAddresses.get(0);
-        String host = hostAddress.getFQDN();
-        int port = hostAddress.getPort();
+        String host;
+        int port;
+        if (hostAddresses != null) {
+            HostAddress hostAddress = hostAddresses.get(0);
+            host = hostAddress.getFQDN();
+            port = hostAddress.getPort();
+        } else {
+            host = getServiceName();
+            port = 80;
+        }
         return new URI((ssl ? "https://" : "http://") + host + ":" + port + file);
     }
 }

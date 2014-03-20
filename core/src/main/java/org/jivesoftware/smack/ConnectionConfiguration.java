@@ -77,6 +77,7 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean sendPresence = true;
     private boolean rosterLoadedAtLogin = true;
     private boolean legacySessionDisabled = false;
+    private boolean useDnsSrvRr = true;
     private SecurityMode securityMode = SecurityMode.enabled;
 
     /**
@@ -86,13 +87,6 @@ public class ConnectionConfiguration implements Cloneable {
 
     // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
     protected ProxyInfo proxy;
-
-    /**
-     * Constructor used for subclassing ConnectionConfiguration
-     */
-    ConnectionConfiguration() {
-      /* Does nothing */
-    }
 
     /**
      * Creates a new ConnectionConfiguration for the specified service name.
@@ -566,9 +560,7 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     void maybeResolveDns() throws Exception {
-        // Abort if we did already resolve the hosts successfully
-        if (hostAddresses != null)
-            return;
+        if (!useDnsSrvRr) return;
         hostAddresses = DNSUtil.resolveXMPPDomain(serviceName);
     }
 
@@ -577,5 +569,6 @@ public class ConnectionConfiguration implements Cloneable {
         HostAddress hostAddress;
         hostAddress = new HostAddress(host, port);
         hostAddresses.add(hostAddress);
+        useDnsSrvRr = false;
     }
 }
