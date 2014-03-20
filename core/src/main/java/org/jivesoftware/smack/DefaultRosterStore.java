@@ -18,11 +18,7 @@ package org.jivesoftware.smack;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +27,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.Base32Encoder;
+import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
@@ -100,7 +97,7 @@ public class DefaultRosterStore implements RosterStore {
      */
     public static DefaultRosterStore open(final File baseDir) {
         DefaultRosterStore store = new DefaultRosterStore(baseDir);
-        String s = store.readFile(store.getVersionFile());
+        String s = FileUtils.readFile(store.getVersionFile());
         if (s != null && s.startsWith(STORE_ID + "\n")) {
             return store;
         }
@@ -137,7 +134,7 @@ public class DefaultRosterStore implements RosterStore {
 
     @Override
     public String getRosterVersion() {
-        String s = readFile(getVersionFile());
+        String s = FileUtils.readFile(getVersionFile());
         if (s == null) {
             return null;
         }
@@ -149,7 +146,7 @@ public class DefaultRosterStore implements RosterStore {
     }
 
     private boolean setRosterVersion(String version) {
-        return writeFile(getVersionFile(), STORE_ID + "\n" + version);
+        return FileUtils.writeFile(getVersionFile(), STORE_ID + "\n" + version);
     }
 
     @Override
@@ -187,7 +184,7 @@ public class DefaultRosterStore implements RosterStore {
     }
 
     private Item readEntry(File file) {
-        String s = readFile(file);
+        String s = FileUtils.readFile(file);
         if (s == null) {
             return null;
         }
@@ -297,54 +294,13 @@ public class DefaultRosterStore implements RosterStore {
             s.append(" />");
         }
         s.append("</item>");
-        return writeFile(getBareJidFile(item.getUser()), s.toString());
+        return FileUtils.writeFile(getBareJidFile(item.getUser()), s.toString());
     }
 
 
     private File getBareJidFile(String bareJid) {
         String encodedJid = Base32Encoder.getInstance().encode(bareJid);
         return new File(fileDir, ENTRY_PREFIX + encodedJid);
-    }
-
-    private String readFile(File file) {
-        try {
-            Reader reader = null;
-            try {
-                char buf[] = new char[8192];
-                int len;
-                StringBuilder s = new StringBuilder();
-                reader = new FileReader(file);
-                while ((len = reader.read(buf)) >= 0) {
-                    s.append(buf, 0, len);
-                }
-                return s.toString();
-            }
-            finally {
-                if (reader != null) {
-                    reader.close();
-                }
-            }
-        }
-        catch (FileNotFoundException e) {
-            return null;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private boolean writeFile(File file, String content) {
-        try {
-            FileWriter writer = new FileWriter(file, false);
-            writer.write(content);
-            writer.close();
-            return true;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     private void log(String error) {
