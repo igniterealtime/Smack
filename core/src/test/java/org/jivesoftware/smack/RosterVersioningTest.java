@@ -59,7 +59,7 @@ public class RosterVersioningTest {
         // Uncomment this to enable debug output
         //XMPPConnection.DEBUG_ENABLED = true;
 
-        DefaultRosterStore store = DefaultRosterStore.init(tmpFolder.newFolder("store"));
+        DirectoryRosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder("store"));
         populateStore(store);
 
         ConnectionConfiguration conf = new ConnectionConfiguration("dummy");
@@ -99,7 +99,7 @@ public class RosterVersioningTest {
         for (RosterEntry entry : entries) {
             items.add(RosterEntry.toRosterItem(entry));
         }
-        RosterStore store = DefaultRosterStore.init(tmpFolder.newFolder());
+        RosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder());
         populateStore(store);
         assertEquals("Elements of the roster", new HashSet<Item>(store.getEntries()), items);
 

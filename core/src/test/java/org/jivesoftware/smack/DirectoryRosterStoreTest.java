@@ -36,11 +36,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests the implementation of {@link DefaultRosterStore}.
+ * Tests the implementation of {@link DirectoryRosterStore}.
  *
  * @author Lars Noschinski
  */
-public class DefaultRosterStoreTest {
+public class DirectoryRosterStoreTest {
 
     @Rule
     public TemporaryFolder tmpFolder = new TemporaryFolder();
@@ -59,7 +59,7 @@ public class DefaultRosterStoreTest {
     @Test
     public void testStoreUninitialized() throws IOException {
         File storeDir = tmpFolder.newFolder();
-        assertNull(DefaultRosterStore.open(storeDir));
+        assertNull(DirectoryRosterStore.open(storeDir));
     }
 
     /**
@@ -68,7 +68,7 @@ public class DefaultRosterStoreTest {
     @Test
     public void testStoreInitializedEmpty() throws IOException {
         File storeDir = tmpFolder.newFolder();
-        DefaultRosterStore store = DefaultRosterStore.init(storeDir);
+        DirectoryRosterStore store = DirectoryRosterStore.init(storeDir);
         assertNotNull("Initialization returns store", store);
         assertEquals("Freshly initialized store must have empty version",
                 "", store.getRosterVersion());
@@ -82,7 +82,7 @@ public class DefaultRosterStoreTest {
     @Test
     public void testStoreAddRemove() throws IOException {
         File storeDir = tmpFolder.newFolder();
-        DefaultRosterStore store = DefaultRosterStore.init(storeDir);
+        DirectoryRosterStore store = DirectoryRosterStore.init(storeDir);
 
         assertEquals("Initial roster version", "", store.getRosterVersion());
 
@@ -193,7 +193,7 @@ public class DefaultRosterStoreTest {
     @Test
     public void testAddEvilChars() throws IOException {
         File storeDir = tmpFolder.newFolder();
-        DefaultRosterStore store = DefaultRosterStore.init(storeDir);
+        DirectoryRosterStore store = DirectoryRosterStore.init(storeDir);
 
         String user = "../_#;\"'\\&@example.com";
         String name = "\n../_#\0\t;\"'&@\\";

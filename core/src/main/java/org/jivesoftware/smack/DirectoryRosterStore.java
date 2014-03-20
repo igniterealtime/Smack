@@ -40,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Lars Noschinski
  * @author Fabian Schuetz
  */
-public class DefaultRosterStore implements RosterStore {
+public class DirectoryRosterStore implements RosterStore {
 
     private final File fileDir;
 
@@ -65,7 +65,7 @@ public class DefaultRosterStore implements RosterStore {
      *            There is also one special file '__version__' that contains the
      *            current version string.
      */
-    private DefaultRosterStore(final File baseDir) {
+    private DirectoryRosterStore(final File baseDir) {
         this.fileDir = baseDir;
     }
 
@@ -75,11 +75,11 @@ public class DefaultRosterStore implements RosterStore {
      * @param baseDir
      *            The directory to create the store in. The directory should
      *            be empty
-     * @return A {@link DefaultRosterStore} instance if successful,
+     * @return A {@link DirectoryRosterStore} instance if successful,
      *         <code>null</code> else.
      */
-    public static DefaultRosterStore init(final File baseDir) {
-        DefaultRosterStore store = new DefaultRosterStore(baseDir);
+    public static DirectoryRosterStore init(final File baseDir) {
+        DirectoryRosterStore store = new DirectoryRosterStore(baseDir);
         if (store.setRosterVersion("")) {
             return store;
         }
@@ -92,11 +92,11 @@ public class DefaultRosterStore implements RosterStore {
      * Opens a roster store
      * @param baseDir
      *            The directory containing the roster store.
-     * @return A {@link DefaultRosterStore} instance if successful,
+     * @return A {@link DirectoryRosterStore} instance if successful,
      *         <code>null</code> else.
      */
-    public static DefaultRosterStore open(final File baseDir) {
-        DefaultRosterStore store = new DefaultRosterStore(baseDir);
+    public static DirectoryRosterStore open(final File baseDir) {
+        DirectoryRosterStore store = new DirectoryRosterStore(baseDir);
         String s = FileUtils.readFile(store.getVersionFile());
         if (s != null && s.startsWith(STORE_ID + "\n")) {
             return store;
