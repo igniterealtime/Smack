@@ -284,28 +284,13 @@ public class StringUtils {
     }
 
     /**
-     * Returns a string representing a XML attribute. The value parameter is escaped as necessary. In particular,
-     * white spaces are encoded as character references, such that they are not replaced by ' ' on parsing.
-     * @param name name of the XML attribute
-     * @param value value of the XML attribute
-     */
-    public static String xmlAttrib(String name, String value) {
-        return name + "=\"" + escapeForXML(value, true) + "\"";
-    }
-
-
-    /**
      * Escapes all necessary characters in the String so that it can be used
      * in an XML doc.
      *
      * @param string the string to escape.
      * @return the string with appropriate characters escaped.
      */
-    public static String escapeForXML(String string) {
-        return escapeForXML(string, false);
-    }
-
-    public static String escapeForXML(final String string, final boolean escapeWhitespace) {
+    public static String escapeForXML(final String string) {
         if (string == null) {
             return null;
         }
@@ -336,14 +321,6 @@ public class StringUtils {
                 toAppend = APOS_ENCODE;
                 break;
             default:
-                // includes \t, \n, \r
-                if (escapeWhitespace && (ch <= 0x1f || (0x7f <= ch && ch <= 0x9f))) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("&#x");
-                    sb.append(String.format("%X", (int) ch));
-                    sb.append(';');
-                    toAppend = sb;
-                }
                 break;
             }
             if (toAppend != null) {

@@ -28,7 +28,7 @@ import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.FileUtils;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -189,6 +189,7 @@ public class DirectoryRosterStore implements RosterStore {
             return null;
         }
 
+        String parserName;
         String user = null;
         String name = null;
         String type = null;
@@ -203,15 +204,31 @@ public class DirectoryRosterStore implements RosterStore {
             boolean done = false;
             while (!done) {
                 int eventType = parser.next();
+                parserName = parser.getName();
                 if (eventType == XmlPullParser.START_TAG) {
-                    if (parser.getName().equals("item")) {
-                        user = parser.getAttributeValue(null, "user");
-                        name = parser.getAttributeValue(null, "name");
-                        type = parser.getAttributeValue(null, "type");
-                        status = parser.getAttributeValue(null, "status");
+                    if (parserName.equals("item")) {
+                        user = name = type = status = null;
                     }
-                    if (parser.getName().equals("group")) {
-                        String group = parser.getAttributeValue(null, "name");
+                    else if (parserName.equals("user")) {
+                        parser.next();
+                        user = parser.getText();
+                    }
+                    else if (parserName.equals("name")) {
+                        parser.next();
+                        name = parser.getText();
+                    }
+                    else if (parserName.equals("type")) {
+                        parser.next();
+                        type = parser.getText();
+                    }
+                    else if (parserName.equals("status")) {
+                        parser.next();
+                        status = parser.getText();
+                    }
+                    else if (parserName.equals("group")) {
+                        parser.next();
+                        parser.next();
+                        String group = parser.getText();
                         if (group != null) {
                             groupNames.add(group);
                         }
@@ -222,7 +239,7 @@ public class DirectoryRosterStore implements RosterStore {
                     }
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
-                    if (parser.getName().equals("item")) {
+                    if (parserName.equals("item")) {
                         done = true;
                     }
                 }
@@ -271,30 +288,20 @@ public class DirectoryRosterStore implements RosterStore {
 
 
     private boolean addEntryRaw (Item item) {
-        StringBuilder s = new StringBuilder();
-        s.append("<item ");
-        s.append(StringUtils.xmlAttrib("user", item.getUser()));
-        s.append(" ");
-        if (item.getName() != null) {
-            s.append(StringUtils.xmlAttrib("name", item.getName()));
-            s.append(" ");
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.openElement("item");
+        xml.element("user", item.getUser());
+        xml.element("name", item.getName());
+        xml.element("type", item.getItemType());
+        xml.element("status", item.getItemStatus());
+        for (String groupName : item.getGroupNames()) {
+            xml.openElement("group");
+            xml.element("groupName", groupName);
+            xml.closeElement("group");
         }
-        if (item.getItemType() != null) {
-            s.append(StringUtils.xmlAttrib("type", item.getItemType().name()));
-            s.append(" ");
-        }
-        if (item.getItemStatus() != null) {
-            s.append(StringUtils.xmlAttrib("status", item.getItemStatus().toString()));
-            s.append(" ");
-        }
-        s.append(">");
-        for (String group : item.getGroupNames()) {
-            s.append("<group ");
-            s.append(StringUtils.xmlAttrib("name", group));
-            s.append(" />");
-        }
-        s.append("</item>");
-        return FileUtils.writeFile(getBareJidFile(item.getUser()), s.toString());
+        xml.closeElement("item");
+
+        return FileUtils.writeFile(getBareJidFile(item.getUser()), xml.toString());
     }
 
 
