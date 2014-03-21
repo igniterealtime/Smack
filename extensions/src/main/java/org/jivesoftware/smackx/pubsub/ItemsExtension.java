@@ -151,7 +151,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	}
 	
 	@Override
-	public String toXML()
+	public CharSequence toXML()
 	{
 		if ((items == null) || (items.size() == 0))
 		{

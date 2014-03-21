@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.*;
 
@@ -404,59 +404,47 @@ public class Message extends Packet {
         
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<message");
-        if (getXmlns() != null) {
-            buf.append(" xmlns=\"").append(getXmlns()).append("\"");
-        }
-        if (language != null) {
-            buf.append(" xml:lang=\"").append(getLanguage()).append("\"");
-        }
-        if (getPacketID() != null) {
-            buf.append(" id=\"").append(getPacketID()).append("\"");
-        }
-        if (getTo() != null) {
-            buf.append(" to=\"").append(StringUtils.escapeForXML(getTo())).append("\"");
-        }
-        if (getFrom() != null) {
-            buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
-        }
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder buf = new XmlStringBuilder();
+        buf.halfOpenElement("message");
+        buf.xmlnsAttribute(getXmlns());
+        buf.xmllangAttribute(getLanguage());
+        addCommonAttributes(buf);
         if (type != Type.normal) {
-            buf.append(" type=\"").append(type).append("\"");
+            buf.attribute("type", type);
         }
-        buf.append(">");
+        buf.rightAngelBracket();
+
         // Add the subject in the default language
         Subject defaultSubject = getMessageSubject(null);
         if (defaultSubject != null) {
-            buf.append("<subject>").append(StringUtils.escapeForXML(defaultSubject.subject)).append("</subject>");
+            buf.element("subject", defaultSubject.subject);
         }
         // Add the subject in other languages
         for (Subject subject : getSubjects()) {
             // Skip the default language
             if(subject.equals(defaultSubject))
                 continue;
-            buf.append("<subject xml:lang=\"").append(subject.language).append("\">");
-            buf.append(StringUtils.escapeForXML(subject.subject));
-            buf.append("</subject>");
+            buf.halfOpenElement("subject").xmllangAttribute(subject.language).rightAngelBracket();
+            buf.escape(subject.subject);
+            buf.closeElement("subject");
         }
         // Add the body in the default language
         Body defaultBody = getMessageBody(null);
         if (defaultBody != null) {
-            buf.append("<body>").append(StringUtils.escapeForXML(defaultBody.message)).append("</body>");
+            buf.element("body", defaultBody.message);
         }
         // Add the bodies in other languages
         for (Body body : getBodies()) {
             // Skip the default language
             if(body.equals(defaultBody))
                 continue;
-            buf.append("<body xml:lang=\"").append(body.getLanguage()).append("\">");
-            buf.append(StringUtils.escapeForXML(body.getMessage()));
-            buf.append("</body>");
+            buf.halfOpenElement("body").xmllangAttribute(body.getLanguage()).rightAngelBracket();
+            buf.escape(body.getMessage());
+            buf.closeElement("body");
         }
-        if (thread != null) {
-            buf.append("<thread>").append(thread).append("</thread>");
-        }
+        buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
             XMPPError error = getError();
@@ -466,8 +454,8 @@ public class Message extends Packet {
         }
         // Add packet extensions, if any are defined.
         buf.append(getExtensionsXML());
-        buf.append("</message>");
-        return buf.toString();
+        buf.closeElement("message");
+        return buf;
     }
 
 

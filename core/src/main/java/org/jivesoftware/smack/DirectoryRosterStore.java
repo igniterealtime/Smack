@@ -291,9 +291,9 @@ public class DirectoryRosterStore implements RosterStore {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement("item");
         xml.element("user", item.getUser());
-        xml.element("name", item.getName());
-        xml.element("type", item.getItemType());
-        xml.element("status", item.getItemStatus());
+        xml.optElement("name", item.getName());
+        xml.optElement("type", item.getItemType());
+        xml.optElement("status", item.getItemStatus());
         for (String groupName : item.getGroupNames()) {
             xml.openElement("group");
             xml.element("groupName", groupName);

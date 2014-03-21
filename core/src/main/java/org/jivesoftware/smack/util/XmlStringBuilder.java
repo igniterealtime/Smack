@@ -16,12 +16,20 @@
  */
 package org.jivesoftware.smack.util;
 
-public class XmlStringBuilder implements Appendable, CharSequence {
+import org.jivesoftware.smack.packet.PacketExtension;
 
-    private final StringBuilder sb;
+public class XmlStringBuilder implements Appendable, CharSequence {
+    public static final String RIGHT_ANGEL_BRACKET = Character.toString('>');
+
+    private final LazyStringBuilder sb;
 
     public XmlStringBuilder() {
-        sb = new StringBuilder();
+        sb = new LazyStringBuilder();
+    }
+
+    public XmlStringBuilder(PacketExtension pe) {
+        this();
+        prelude(pe);
     }
 
     /**
@@ -29,11 +37,10 @@ public class XmlStringBuilder implements Appendable, CharSequence {
      *
      * @param name
      * @param content
-     * @return
+     * @return the XmlStringBuilder
      */
     public XmlStringBuilder element(String name, String content) {
-        if (content == null)
-            return this;
+        assert content != null;
         openElement(name);
         escape(content);
         closeElement(name);
@@ -41,8 +48,21 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder element(String name, Enum<?> content) {
+        assert content != null;
+        element(name, content.name());
+        return this;
+    }
+
+    public XmlStringBuilder optElement(String name, String content) {
         if (content != null) {
-            element(name, content.name());
+            element(name, content);
+        }
+        return this;
+    }
+
+    public XmlStringBuilder optElement(String name, Enum<?> content) {
+        if (content != null) {
+            element(name, content);
         }
         return this;
     }
@@ -53,17 +73,28 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder openElement(String name) {
-        halfOpenElement(name).append('>');
+        halfOpenElement(name).rightAngelBracket();
         return this;
     }
 
     public XmlStringBuilder closeElement(String name) {
-        sb.append("</").append(name).append('>');
+        sb.append("</").append(name);
+        rightAngelBracket();
         return this;
     }
 
-    public XmlStringBuilder emptyElementClose() {
+    public XmlStringBuilder closeElement(PacketExtension pe) {
+        closeElement(pe.getElementName());
+        return this;
+    }
+
+    public XmlStringBuilder closeEmptyElement() {
         sb.append("/>");
+        return this;
+    }
+
+    public XmlStringBuilder rightAngelBracket() {
+        sb.append(RIGHT_ANGEL_BRACKET);
         return this;
     }
 
@@ -72,35 +103,81 @@ public class XmlStringBuilder implements Appendable, CharSequence {
      *
      * @param name
      * @param value
-     * @return
+     * @return the XmlStringBuilder
      */
     public XmlStringBuilder attribute(String name, String value) {
-        if (value == null)
-            return this;
+        assert value != null;
         sb.append(' ').append(name).append("='");
         escape(value);
         sb.append('\'');
         return this;
     }
 
-    public XmlStringBuilder xmlnsAttribute(String value) {
-        attribute("xmlns", value);
+    public XmlStringBuilder attribute(String name, Enum<?> value) {
+        assert value != null;
+        attribute(name, value.name());
         return this;
     }
 
+    public XmlStringBuilder optAttribute(String name, String value) {
+        if (value != null) {
+            attribute(name, value);
+        }
+        return this;
+    }
+
+    public XmlStringBuilder optAttribute(String name, Enum<?> value) {
+        if (value != null) {
+            attribute(name, value.name());
+        }
+        return this;
+    }
+
+    public XmlStringBuilder xmlnsAttribute(String value) {
+        optAttribute("xmlns", value);
+        return this;
+    }
+
+    public XmlStringBuilder xmllangAttribute(String value) {
+        optAttribute("xml:lang", value);
+        return this;
+    }
+ 
     public XmlStringBuilder escape(String text) {
+        assert text != null;
         sb.append(StringUtils.escapeForXML(text));
+        return this;
+    }
+
+    public XmlStringBuilder prelude(PacketExtension pe) {
+        halfOpenElement(pe.getElementName());
+        xmlnsAttribute(pe.getNamespace());
+        return this;
+    }
+
+    public XmlStringBuilder optAppend(CharSequence csq) {
+        if (csq != null) {
+            append(csq);
+        }
+        return this;
+    }
+
+    public XmlStringBuilder append(XmlStringBuilder xsb) {
+        assert xsb != null;
+        sb.append(xsb.sb);
         return this;
     }
 
     @Override
     public XmlStringBuilder append(CharSequence csq) {
+        assert csq != null;
         sb.append(csq);
         return this;
     }
 
     @Override
     public XmlStringBuilder append(CharSequence csq, int start, int end) {
+        assert csq != null;
         sb.append(csq, start, end);
         return this;
     }

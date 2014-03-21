@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.xdata;
 
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -264,15 +265,13 @@ public class FormField {
     }
 
     public String toXML() {
-        StringBuilder buf = new StringBuilder();
+        XmlStringBuilder buf = new XmlStringBuilder();
         buf.append("<field");
         // Add attributes
         if (getLabel() != null) {
             buf.append(" label=\"").append(getLabel()).append("\"");
         }
-        if (getVariable() != null) {
-            buf.append(" var=\"").append(getVariable()).append("\"");
-        }
+        buf.attribute("var", getVariable());
         if (getType() != null) {
             buf.append(" type=\"").append(getType()).append("\"");
         }
@@ -286,7 +285,7 @@ public class FormField {
         }
         // Loop through all the values and append them to the string buffer
         for (Iterator<String> i = getValues(); i.hasNext();) {
-            buf.append("<value>").append(i.next()).append("</value>");
+            buf.element("value", i.next());
         }
         // Loop through all the values and append them to the string buffer
         for (Iterator<Option> i = getOptions(); i.hasNext();) {

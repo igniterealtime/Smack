@@ -78,7 +78,7 @@ public class CloseTest {
         close.setTo("juliet@capulet.lit/balcony");
         close.setPacketID("us71g45j");
         
-        assertXMLEqual(control, close.toXML());
+        assertXMLEqual(control, close.toXML().toString());
     }
 
 }

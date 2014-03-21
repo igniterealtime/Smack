@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.caps.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 
 public class CapsExtension implements PacketExtension {
@@ -56,10 +57,10 @@ public class CapsExtension implements PacketExtension {
      *  ver='QgayPKawpkPSDYmwT/WM94uAlu0='/>
      *
      */
-    public String toXML() {
-        return "<" + EntityCapsManager.ELEMENT + " xmlns=\"" + EntityCapsManager.NAMESPACE + "\" " +
-            "hash=\"" + hash + "\" " +
-            "node=\"" + node + "\" " +
-            "ver=\"" + ver + "\"/>";
+    public CharSequence toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.attribute("hash", hash).attribute("node", node).attribute("ver", ver);
+        xml.closeEmptyElement();
+        return xml;
     }
 }

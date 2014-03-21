@@ -290,7 +290,7 @@ public class StringUtils {
      * @param string the string to escape.
      * @return the string with appropriate characters escaped.
      */
-    public static String escapeForXML(final String string) {
+    public static CharSequence escapeForXML(final String string) {
         if (string == null) {
             return null;
         }
@@ -339,7 +339,7 @@ public class StringUtils {
         if (i > last) {
             out.append(input, last, i - last);
         }
-        return out.toString();
+        return out;
     }
 
     /**

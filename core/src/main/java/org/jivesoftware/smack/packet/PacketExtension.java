@@ -49,5 +49,5 @@ public interface PacketExtension {
      *
      * @return the packet extension as XML.
      */
-    public String toXML();
+    public CharSequence toXML();
 }

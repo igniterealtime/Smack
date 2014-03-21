@@ -50,6 +50,7 @@ public class FileTransferNegotiatorTest {
         FileTransferNegotiator fileNeg = FileTransferNegotiator.getInstanceFor(connection);
         fileNeg.negotiateOutgoingTransfer("me", "streamid", "file", 1024, null, 10);
         Packet packet = connection.getSentPacket();
-        assertTrue(packet.toXML().indexOf("\"stream-method\" type=\"list-single\"") != -1);
+        String xml = packet.toXML().toString();
+        assertTrue(xml.indexOf("var='stream-method' type=\"list-single\"") != -1);
     }
 }

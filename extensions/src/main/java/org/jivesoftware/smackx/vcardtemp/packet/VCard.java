@@ -844,11 +844,11 @@ public class VCard extends IQ {
             appendTag(tag, null, null, hasContent, builder);
         }
 
-        private void appendTag(String tag, final String tagText) {
+        private void appendTag(String tag, final CharSequence tagText) {
             if (tagText == null) return;
             final ContentBuilder contentBuilder = new ContentBuilder() {
                 public void addTagContent() {
-                    sb.append(tagText.trim());
+                    sb.append(tagText.toString().trim());
                 }
             };
             appendTag(tag, true, contentBuilder);

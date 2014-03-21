@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.util.XmlUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 
 /**
@@ -55,22 +55,15 @@ public class UnsubscribeExtension extends NodeExtension
 	{
 		return id;
 	}
-	
-	@Override
-	public String toXML()
-	{
-		StringBuilder builder = new StringBuilder("<");
-		builder.append(getElementName());
-		XmlUtils.appendAttribute(builder, "jid", jid);
-		
-		if (getNode() != null)
-			XmlUtils.appendAttribute(builder, "node", getNode());
-		
-		if (id != null)
-			XmlUtils.appendAttribute(builder, "subid", id);
-		
-		builder.append("/>");
-		return builder.toString();
-	}
 
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(getElementName());
+        xml.attribute("jid", jid);
+        xml.optAttribute("node", getNode());
+        xml.optAttribute("subid", id);
+        xml.closeEmptyElement();
+        return xml;
+    }
 }

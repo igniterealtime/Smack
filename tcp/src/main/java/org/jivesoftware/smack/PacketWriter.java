@@ -146,7 +146,7 @@ class PacketWriter {
             while (!done && (writerThread == thisThread)) {
                 Packet packet = nextPacket();
                 if (packet != null) {
-                    writer.write(packet.toXML());
+                    writer.write(packet.toXML().toString());
 
                     if (queue.isEmpty()) {
                         writer.flush();
@@ -159,7 +159,7 @@ class PacketWriter {
             try {
                 while (!queue.isEmpty()) {
                     Packet packet = queue.remove();
-                    writer.write(packet.toXML());
+                    writer.write(packet.toXML().toString());
                 }
                 writer.flush();
             }

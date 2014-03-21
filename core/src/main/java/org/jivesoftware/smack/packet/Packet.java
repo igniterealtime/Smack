@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -352,7 +353,7 @@ public abstract class Packet {
      *
      * @return the XML format of the packet as a String.
      */
-    public abstract String toXML();
+    public abstract CharSequence toXML();
 
     /**
      * Returns the extension sub-packets (including properties data) as an XML
@@ -361,40 +362,47 @@ public abstract class Packet {
      * @return the extension sub-packets as XML or the Empty String if there
      * are no packet extensions.
      */
-    protected synchronized String getExtensionsXML() {
-        StringBuilder buf = new StringBuilder();
+    protected synchronized CharSequence getExtensionsXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
         // Add in all standard extension sub-packets.
         for (PacketExtension extension : getExtensions()) {
-            buf.append(extension.toXML());
+            xml.append(extension.toXML());
         }
         // Add in packet properties.
         if (properties != null && !properties.isEmpty()) {
-            buf.append("<properties xmlns=\"http://www.jivesoftware.com/xmlns/xmpp/properties\">");
+            xml.halfOpenElement("properties").xmlnsAttribute("http://www.jivesoftware.com/xmlns/xmpp/properties");
             // Loop through all properties and write them out.
             for (String name : getPropertyNames()) {
                 Object value = getProperty(name);
-                buf.append("<property>");
-                buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
-                buf.append("<value type=\"");
+                xml.openElement("property");
+                xml.element("name", name);
+                xml.halfOpenElement("value");
+
+                String type;
+                String valueStr;
                 if (value instanceof Integer) {
-                    buf.append("integer\">").append(value).append("</value>");
+                    type = "integer";
+                    valueStr = Integer.toString((Integer)value);
                 }
                 else if (value instanceof Long) {
-                    buf.append("long\">").append(value).append("</value>");
+                    type = "long";
+                    valueStr = Long.toString((Long) value);
                 }
                 else if (value instanceof Float) {
-                    buf.append("float\">").append(value).append("</value>");
+                    type = "float";
+                    valueStr = Float.toString((Float) value);
                 }
                 else if (value instanceof Double) {
-                    buf.append("double\">").append(value).append("</value>");
+                    type = "double";
+                    valueStr = Double.toString((Double) value);
                 }
                 else if (value instanceof Boolean) {
-                    buf.append("boolean\">").append(value).append("</value>");
+                    type = "boolean";
+                    valueStr = Boolean.toString((Boolean) value);
                 }
                 else if (value instanceof String) {
-                    buf.append("string\">");
-                    buf.append(StringUtils.escapeForXML((String)value));
-                    buf.append("</value>");
+                    type = "string";
+                    valueStr = (String) value;
                 }
                 // Otherwise, it's a generic Serializable object. Serialized objects are in
                 // a binary format, which won't work well inside of XML. Therefore, we base-64
@@ -406,12 +414,13 @@ public abstract class Packet {
                         byteStream = new ByteArrayOutputStream();
                         out = new ObjectOutputStream(byteStream);
                         out.writeObject(value);
-                        buf.append("java-object\">");
-                        String encodedVal = StringUtils.encodeBase64(byteStream.toByteArray());
-                        buf.append(encodedVal).append("</value>");
+                        type ="java-object";
+                        valueStr = StringUtils.encodeBase64(byteStream.toByteArray());
                     }
                     catch (Exception e) {
                         LOGGER.log(Level.SEVERE, "Error encoding java object", e);
+                        type ="java-object";
+                        valueStr = "Serializing error: " + e.getMessage();
                     }
                     finally {
                         if (out != null) {
@@ -432,11 +441,15 @@ public abstract class Packet {
                         }
                     }
                 }
-                buf.append("</property>");
+                xml.attribute("type", type);
+                xml.rightAngelBracket();
+                xml.escape(valueStr);
+                xml.closeElement("value");
+                xml.closeElement("property");
             }
-            buf.append("</properties>");
+            xml.closeElement("properties");
         }
-        return buf.toString();
+        return xml;
     }
 
     public String getXmlns() {
@@ -485,9 +498,20 @@ public abstract class Packet {
         result = 31 * result + (error != null ? error.hashCode() : 0);
         return result;
     }
-    
+
     @Override
     public String toString() {
-        return toXML();
+        return toXML().toString();
+    }
+
+    /**
+     * Add to, from and id attributes
+     *
+     * @param xml
+     */
+    protected void addCommonAttributes(XmlStringBuilder xml) {
+        xml.optAttribute("id", getPacketID());
+        xml.optAttribute("to", getTo());
+        xml.optAttribute("from", getFrom());
     }
 }

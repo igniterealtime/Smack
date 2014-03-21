@@ -36,7 +36,8 @@ public class Session extends IQ {
         setType(IQ.Type.SET);
     }
 
-    public String getChildElementXML() {
+    @Override
+    public CharSequence getChildElementXML() {
         return "<session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/>";
     }
 }

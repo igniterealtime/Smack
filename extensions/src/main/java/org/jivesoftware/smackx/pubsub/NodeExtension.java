@@ -75,7 +75,7 @@ public class NodeExtension implements PacketExtension
 		return element.getNamespace().getXmlns();
 	}
 
-	public String toXML()
+	public CharSequence toXML()
 	{
 		return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";
 	}

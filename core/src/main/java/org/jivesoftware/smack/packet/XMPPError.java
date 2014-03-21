@@ -152,7 +152,7 @@ public class XMPPError {
      *
      * @return the error as XML.
      */
-    public String toXML() {
+    public CharSequence toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<error");
         if (type != null) {

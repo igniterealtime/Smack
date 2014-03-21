@@ -101,7 +101,7 @@ public class EntityCapsManagerTest {
 
         DiscoverInfo restored_di = EntityCapsManager.getDiscoveryInfoByNodeVer(nodeVer);
         assertNotNull(restored_di);
-        assertEquals(di.toXML(), restored_di.toXML());
+        assertEquals(di.toXML().toString(), restored_di.toXML().toString());
     }
 
     private static DiscoverInfo createComplexSamplePacket() {

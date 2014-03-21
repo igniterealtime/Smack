@@ -73,7 +73,7 @@ public class FormNode extends NodeExtension
 	}
 	
 	@Override
-	public String toXML()
+	public CharSequence toXML()
 	{
 		if (configForm == null)
 		{

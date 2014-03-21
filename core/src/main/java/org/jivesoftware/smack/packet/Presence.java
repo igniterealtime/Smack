@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents XMPP presence packets. Every presence packet has a type, which is one of
@@ -220,49 +220,35 @@ public class Presence extends Packet {
         this.language = language;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<presence");
-        if(getXmlns() != null) {
-            buf.append(" xmlns=\"").append(getXmlns()).append("\"");
-        }
-        if (language != null) {
-            buf.append(" xml:lang=\"").append(getLanguage()).append("\"");
-        }
-        if (getPacketID() != null) {
-            buf.append(" id=\"").append(getPacketID()).append("\"");
-        }
-        if (getTo() != null) {
-            buf.append(" to=\"").append(StringUtils.escapeForXML(getTo())).append("\"");
-        }
-        if (getFrom() != null) {
-            buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
-        }
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder buf = new XmlStringBuilder();
+        buf.halfOpenElement("presence");
+        buf.xmlnsAttribute(getXmlns());
+        buf.xmllangAttribute(getLanguage());
+        addCommonAttributes(buf);
         if (type != Type.available) {
-            buf.append(" type=\"").append(type).append("\"");
+            buf.attribute("type", type);
         }
-        buf.append(">");
-        if (status != null) {
-            buf.append("<status>").append(StringUtils.escapeForXML(status)).append("</status>");
-        }
+        buf.rightAngelBracket();
+
+        buf.optElement("status", status);
         if (priority != Integer.MIN_VALUE) {
-            buf.append("<priority>").append(priority).append("</priority>");
+            buf.element("priority", Integer.toString(priority));
         }
         if (mode != null && mode != Mode.available) {
-            buf.append("<show>").append(mode).append("</show>");
+            buf.element("show", mode);
         }
-
-        buf.append(this.getExtensionsXML());
+        buf.append(getExtensionsXML());
 
         // Add the error sub-packet, if there is one.
         XMPPError error = getError();
         if (error != null) {
             buf.append(error.toXML());
         }
+        buf.closeElement("presence");
 
-        buf.append("</presence>");
-        
-        return buf.toString();
+        return buf;
     }
 
     public String toString() {

@@ -374,13 +374,10 @@ public class Workgroup {
             String name = iter.next();
             String value = metadata.get(name).toString();
 
-            String escapedName = StringUtils.escapeForXML(name);
-            String escapedValue = StringUtils.escapeForXML(value);
-
-            FormField field = new FormField(escapedName);
+            FormField field = new FormField(name);
             field.setType(FormField.TYPE_TEXT_SINGLE);
             form.addField(field);
-            form.setAnswer(escapedName, escapedValue);
+            form.setAnswer(name, value);
         }
         joinQueue(form, userID);
     }

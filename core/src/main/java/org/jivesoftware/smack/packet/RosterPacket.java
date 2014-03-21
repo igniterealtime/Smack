@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -65,22 +66,20 @@ public class RosterPacket extends IQ {
         }
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:roster\"");
-        if (rosterVersion != null) {
-            buf.append(" ver=\"");
-            buf.append(rosterVersion);
-            buf.append('"');
-        }
-        buf.append(">");
+    public CharSequence getChildElementXML() {
+        XmlStringBuilder buf = new XmlStringBuilder();
+        buf.halfOpenElement("query");
+        buf.xmlnsAttribute("jabber:iq:roster");
+        buf.optAttribute("ver", rosterVersion);
+        buf.rightAngelBracket();
+
         synchronized (rosterItems) {
             for (Item entry : rosterItems) {
                 buf.append(entry.toXML());
             }
         }
-        buf.append("</query>");
-        return buf.toString();
+        buf.closeElement("query");
+        return buf;
     }
 
     public String getVersion() {

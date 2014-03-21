@@ -128,7 +128,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     private static void writeInfoToFile(File file, DiscoverInfo info) throws IOException {
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(file));
         try {
-            dos.writeUTF(info.toXML());
+            dos.writeUTF(info.toXML().toString());
         } finally {
             dos.close();
         }

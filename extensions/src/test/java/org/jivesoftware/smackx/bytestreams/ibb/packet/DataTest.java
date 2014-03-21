@@ -83,7 +83,7 @@ public class DataTest {
         data.setTo("juliet@capulet.lit/balcony");
         data.setPacketID("kr91n475");
         
-        assertXMLEqual(control, data.toXML());
+        assertXMLEqual(control, data.toXML().toString());
     }
 
 }

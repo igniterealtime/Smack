@@ -54,7 +54,7 @@ public class MessageTest {
         Message messageTypeInConstructor = new Message(null, Message.Type.chat);
         messageTypeInConstructor.setPacketID(Packet.ID_NOT_AVAILABLE);
         assertEquals(type, messageTypeInConstructor.getType());
-        assertXMLEqual(control, messageTypeInConstructor.toXML());
+        assertXMLEqual(control, messageTypeInConstructor.toXML().toString());
 
         controlBuilder = new StringBuilder();
         controlBuilder.append("<message")
@@ -67,7 +67,7 @@ public class MessageTest {
         Message messageTypeSet = getNewMessage();
         messageTypeSet.setType(type2);
         assertEquals(type2, messageTypeSet.getType());
-        assertXMLEqual(control, messageTypeSet.toXML());
+        assertXMLEqual(control, messageTypeSet.toXML().toString());
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -98,7 +98,7 @@ public class MessageTest {
         message.setSubject(messageSubject);
 
         assertEquals(messageSubject, message.getSubject());
-        assertXMLEqual(control, message.toXML());
+        assertXMLEqual(control, message.toXML().toString());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class MessageTest {
         message.setBody(messageBody);
 
         assertEquals(messageBody, message.getBody());
-        assertXMLEqual(control, message.toXML());
+        assertXMLEqual(control, message.toXML().toString());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class MessageTest {
         message.addBody(null, messageBody1);
         message.addBody(lang2, messageBody2);
         message.addBody(lang3, messageBody3);
-        Diff xmlDiff = new Diff(control, message.toXML());
+        Diff xmlDiff = new Diff(control, message.toXML().toString());
         xmlDiff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
         assertTrue(xmlDiff.similar());
 
@@ -196,7 +196,7 @@ public class MessageTest {
         message.setThread(messageThread);
 
         assertEquals(messageThread, message.getThread());
-        assertXMLEqual(control, message.toXML());
+        assertXMLEqual(control, message.toXML().toString());
     }
 
     @Test
@@ -214,7 +214,7 @@ public class MessageTest {
         Message message = getNewMessage();
         message.setLanguage(lang);
 
-        assertXMLEqual(control, message.toXML());
+        assertXMLEqual(control, message.toXML().toString());
     }
 
     @Test

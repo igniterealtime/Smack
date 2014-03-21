@@ -46,7 +46,7 @@ public class AffiliationsExtension extends NodeExtension
 	}
 
 	@Override
-	public String toXML()
+	public CharSequence toXML()
 	{
 		if ((items == null) || (items.size() == 0))
 		{

@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * IQ packet used by Smack to bind a resource and to obtain the jid assigned by the server.
  * There are two ways to bind a resource. One is simply sending an empty Bind packet where the
@@ -53,16 +55,16 @@ public class Bind extends IQ {
         this.jid = jid;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\">");
-        if (resource != null) {
-            buf.append("<resource>").append(resource).append("</resource>");
-        }
-        if (jid != null) {
-            buf.append("<jid>").append(jid).append("</jid>");
-        }
-        buf.append("</bind>");
-        return buf.toString();
+    @Override
+    public CharSequence getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement("bind");
+        xml.xmlnsAttribute("urn:ietf:params:xml:ns:xmpp-bind");
+        xml.rightAngelBracket();
+        xml.optElement("resource", resource);
+        xml.optElement("jid", jid);
+        xml.closeElement("bind");
+
+        return xml;
     }
 }

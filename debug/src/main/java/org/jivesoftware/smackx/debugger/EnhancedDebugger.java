@@ -801,7 +801,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[]{
-                                formatXML(packet.toXML()),
+                                formatXML(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetReceivedIcon,
                                 packetTypeIcon,
@@ -862,7 +862,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[]{
-                                formatXML(packet.toXML()),
+                                formatXML(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetSentIcon,
                                 packetTypeIcon,

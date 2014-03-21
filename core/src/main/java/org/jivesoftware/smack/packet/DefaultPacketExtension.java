@@ -19,6 +19,8 @@ package org.jivesoftware.smack.packet;
 
 import java.util.*;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Default implementation of the PacketExtension interface. Unless a PacketExtensionProvider
  * is registered with {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager},
@@ -76,17 +78,16 @@ public class DefaultPacketExtension implements PacketExtension {
         return namespace;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
+    @Override
+    public CharSequence toXML() {
+        XmlStringBuilder buf = new XmlStringBuilder();
+        buf.halfOpenElement(elementName).xmlnsAttribute(namespace).rightAngelBracket();
         for (String name : getNames()) {
             String value = getValue(name);
-            buf.append("<").append(name).append(">");
-            buf.append(value);
-            buf.append("</").append(name).append(">");
+            buf.element(name, value);
         }
-        buf.append("</").append(elementName).append(">");
-        return buf.toString();
+        buf.closeElement(elementName);
+        return buf;
     }
 
     /**

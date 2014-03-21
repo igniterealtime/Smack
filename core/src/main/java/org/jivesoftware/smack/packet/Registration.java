@@ -19,6 +19,8 @@ package org.jivesoftware.smack.packet;
 
 import java.util.Map;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents registration packets. An empty GET query will cause the server to return information
  * about it's registration support. SET queries can be used to create accounts or update
@@ -85,23 +87,22 @@ public class Registration extends IQ {
         this.attributes = attributes;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:register\">");
-        if (instructions != null) {
-            buf.append("<instructions>").append(instructions).append("</instructions>");
-        }
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement("query");
+        xml.xmlnsAttribute("jabber:iq:register");
+        xml.rightAngelBracket();
+        xml.optElement("instructions", instructions);
         if (attributes != null && attributes.size() > 0) {
             for (String name : attributes.keySet()) {
                 String value = attributes.get(name);
-                buf.append("<").append(name).append(">");
-                buf.append(value);
-                buf.append("</").append(name).append(">");
+                xml.element(name, value);
             }
         }
         // Add packet extensions, if any are defined.
-        buf.append(getExtensionsXML());
-        buf.append("</query>");
-        return buf.toString();
+        xml.append(getExtensionsXML());
+        xml.closeElement("query");
+        return xml;
     }
 }

@@ -336,7 +336,7 @@ public class MultipleRecipientManager {
      */
     private static class PacketCopy extends Packet {
 
-        private String text;
+        private CharSequence text;
 
         /**
          * Create a copy of a packet with the text to send. The passed text must be a valid text to
@@ -344,11 +344,12 @@ public class MultipleRecipientManager {
          *
          * @param text the whole text of the packet to send
          */
-        public PacketCopy(String text) {
+        public PacketCopy(CharSequence text) {
             this.text = text;
         }
 
-        public String toXML() {
+        @Override
+        public CharSequence toXML() {
             return text;
         }
 

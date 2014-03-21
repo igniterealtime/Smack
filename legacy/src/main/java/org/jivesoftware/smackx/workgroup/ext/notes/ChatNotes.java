@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.workgroup.ext.notes;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -57,13 +58,13 @@ public class ChatNotes extends IQ {
     }
 
     public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
+        XmlStringBuilder buf = new XmlStringBuilder();
 
         buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
         buf.append("<sessionID>").append(getSessionID()).append("</sessionID>");
 
         if (getNotes() != null) {
-            buf.append("<notes>").append(getNotes()).append("</notes>");
+            buf.element("notes", getNotes());
         }
         buf.append("</").append(ELEMENT_NAME).append("> ");
 

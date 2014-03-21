@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.disco.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -186,29 +186,27 @@ public class DiscoverInfo extends IQ {
         return false;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"" + NAMESPACE + "\"");
-        if (getNode() != null) {
-            buf.append(" node=\"");
-            buf.append(StringUtils.escapeForXML(getNode()));
-            buf.append("\"");
-        }
-        buf.append(">");
+    @Override
+    public CharSequence getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement("query");
+        xml.xmlnsAttribute(NAMESPACE);
+        xml.optAttribute("node", getNode());
+        xml.rightAngelBracket();
         synchronized (identities) {
             for (Identity identity : identities) {
-                buf.append(identity.toXML());
+                xml.append(identity.toXML());
             }
         }
         synchronized (features) {
             for (Feature feature : features) {
-                buf.append(feature.toXML());
+                xml.append(feature.toXML());
             }
         }
         // Add packet extensions, if any are defined.
-        buf.append(getExtensionsXML());
-        buf.append("</query>");
-        return buf.toString();
+        xml.append(getExtensionsXML());
+        xml.closeElement("query");
+        return xml;
     }
 
     /**
@@ -358,22 +356,15 @@ public class DiscoverInfo extends IQ {
             return lang;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<identity");
-            // Check if this packet has 'lang' set and maybe append it to the resulting string
-            if (lang != null)
-                buf.append(" xml:lang=\"").append(StringUtils.escapeForXML(lang)).append("\"");
-            // Category must always be set
-            buf.append(" category=\"").append(StringUtils.escapeForXML(category)).append("\"");
-            // Name must always be set
-            buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
-            // Check if this packet has 'type' set and maybe append it to the resulting string
-            if (type != null) {
-                buf.append(" type=\"").append(StringUtils.escapeForXML(type)).append("\"");
-            }
-            buf.append("/>");
-            return buf.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.halfOpenElement("identity");
+            xml.xmllangAttribute(lang);
+            xml.attribute("category", category);
+            xml.attribute("name", name);
+            xml.optAttribute("type", type);
+            xml.closeEmptyElement();
+            return xml;
         }
 
         /** 
@@ -488,10 +479,12 @@ public class DiscoverInfo extends IQ {
             return variable;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<feature var=\"").append(StringUtils.escapeForXML(variable)).append("\"/>");
-            return buf.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.halfOpenElement("feature");
+            xml.attribute("var", variable);
+            xml.closeEmptyElement();
+            return xml;
         }
 
         public boolean equals(Object obj) {

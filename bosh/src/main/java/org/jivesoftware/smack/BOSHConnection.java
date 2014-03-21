@@ -338,7 +338,7 @@ public class BOSHConnection extends XMPPConnection {
     void sendPacketInternal(Packet packet) {
         if (!done) {
             try {
-                send(ComposableBody.builder().setPayloadXML(packet.toXML())
+                send(ComposableBody.builder().setPayloadXML(packet.toXML().toString())
                         .build());
             } catch (BOSHException e) {
                 LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);
@@ -391,7 +391,7 @@ public class BOSHConnection extends XMPPConnection {
         try {
             client.disconnect(ComposableBody.builder()
                     .setNamespaceDefinition("xmpp", XMPP_BOSH_NS)
-                    .setPayloadXML(unavailablePresence.toXML())
+                    .setPayloadXML(unavailablePresence.toXML().toString())
                     .build());
             // Wait 150 ms for processes to clean-up, then shutdown.
             Thread.sleep(150);

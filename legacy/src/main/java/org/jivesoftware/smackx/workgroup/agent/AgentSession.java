@@ -786,9 +786,6 @@ public class AgentSession {
      * @throws NotConnectedException 
      */
     public void setNote(String sessionID, String note) throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        note = ChatNotes.replace(note, "\n", "\\n");
-        note = StringUtils.escapeForXML(note);
-
         ChatNotes notes = new ChatNotes();
         notes.setType(IQ.Type.SET);
         notes.setTo(workgroupJID);
