@@ -22,7 +22,7 @@ allprojects {
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 	}
 	group = 'org.igniterealtime.smack'
-	sourceCompatibility = 1.6
+	sourceCompatibility = 1.7
 	version = shortVersion
 	if (isSnapshot) {
 		version += '-SNAPSHOT'
