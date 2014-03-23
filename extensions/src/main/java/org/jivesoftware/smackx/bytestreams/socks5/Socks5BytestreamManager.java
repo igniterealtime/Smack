@@ -557,7 +557,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
 
         List<String> proxies = new ArrayList<String>();
 
-        // get all items form XMPP server
+        // get all items from XMPP server
         DiscoverItems discoverItems = serviceDiscoveryManager.discoverItems(this.connection.getServiceName());
         Iterator<Item> itemIterator = discoverItems.getItems();
 
@@ -570,32 +570,38 @@ public final class Socks5BytestreamManager implements BytestreamManager {
                 continue;
             }
 
+            DiscoverInfo proxyInfo;
             try {
-                DiscoverInfo proxyInfo;
                 proxyInfo = serviceDiscoveryManager.discoverInfo(item.getEntityID());
-                Iterator<Identity> identities = proxyInfo.getIdentities();
-
-                // item must have category "proxy" and type "bytestream"
-                while (identities.hasNext()) {
-                    Identity identity = identities.next();
-
-                    if ("proxy".equalsIgnoreCase(identity.getCategory())
-                                    && "bytestreams".equalsIgnoreCase(identity.getType())) {
-                        proxies.add(item.getEntityID());
-                        break;
-                    }
-
-                    /*
-                     * server is not a SOCKS5 proxy, blacklist server to skip next time a Socks5
-                     * bytestream should be established
-                     */
-                    this.proxyBlacklist.add(item.getEntityID());
-
-                }
             }
-            catch (XMPPException e) {
+            catch (NoResponseException e) {
                 // blacklist errornous server
+                proxyBlacklist.add(item.getEntityID());
+                continue;            }
+            catch (XMPPErrorException e) {
+                // blacklist errornous server
+                proxyBlacklist.add(item.getEntityID());
+                continue;
+            }
+
+            Iterator<Identity> identities = proxyInfo.getIdentities();
+
+            // item must have category "proxy" and type "bytestream"
+            while (identities.hasNext()) {
+                Identity identity = identities.next();
+
+                if ("proxy".equalsIgnoreCase(identity.getCategory())
+                                && "bytestreams".equalsIgnoreCase(identity.getType())) {
+                    proxies.add(item.getEntityID());
+                    break;
+                }
+
+                /*
+                 * server is not a SOCKS5 proxy, blacklist server to skip next time a Socks5
+                 * bytestream should be established
+                 */
                 this.proxyBlacklist.add(item.getEntityID());
+
             }
         }
 
