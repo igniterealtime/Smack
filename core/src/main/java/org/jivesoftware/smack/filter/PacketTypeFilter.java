@@ -17,7 +17,9 @@
 
 package org.jivesoftware.smack.filter;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 
 /**
  * Filters for packets of a particular type. The type is given as a Class object, so
@@ -31,6 +33,9 @@ import org.jivesoftware.smack.packet.Packet;
  * @author Matt Tucker
  */
 public class PacketTypeFilter implements PacketFilter {
+
+    public static final PacketTypeFilter PRESENCE = new PacketTypeFilter(Presence.class);
+    public static final PacketTypeFilter MESSAGE = new PacketTypeFilter(Message.class);
 
     Class<? extends Packet> packetType;
 

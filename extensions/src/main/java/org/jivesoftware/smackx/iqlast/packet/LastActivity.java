@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,6 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * to get the last activity of a user.
  *
  * @author Derek DeMoro
+ * @author Florian Schmaus
  */
 public class LastActivity extends IQ {
 
@@ -44,14 +46,23 @@ public class LastActivity extends IQ {
         setType(IQ.Type.GET);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"" + NAMESPACE + "\"");
+    public LastActivity(String to) {
+        this();
+        setTo(to);
+    }
+
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement("query");
+        xml.xmlnsAttribute(NAMESPACE);
         if (lastActivity != -1) {
-            buf.append(" seconds=\"").append(lastActivity).append("\"");
+            xml.attribute("seconds", Long.toString(lastActivity));
         }
-        buf.append("></query>");
-        return buf.toString();
+        // We don't support adding the optional message attribute, because it is usually only added
+        // by XMPP servers and not by client entities.
+        xml.closeEmptyElement();
+        return xml;
     }
 
 
@@ -103,22 +114,17 @@ public class LastActivity extends IQ {
 
             LastActivity lastActivity = new LastActivity();
             String seconds = parser.getAttributeValue("", "seconds");
-            String message = null;
-            try {
-                message = parser.nextText();
-            } catch (IOException e1) {
-                // Ignore
-            }
             if (seconds != null) {
                 try {
                     lastActivity.setLastActivity(Long.parseLong(seconds));
                 } catch (NumberFormatException e) {
-                    // Ignore
+                    throw new SmackException("Could not parse last activity number", e);
                 }
             }
-
-            if (message != null) {
-                lastActivity.setMessage(message);
+            try {
+                lastActivity.setMessage(parser.nextText());
+            } catch (IOException e) {
+                throw new SmackException(e);
             }
             return lastActivity;
         }

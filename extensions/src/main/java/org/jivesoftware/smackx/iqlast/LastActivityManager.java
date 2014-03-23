@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2006 Jive Software.
+ * Copyright 2003-2006 Jive Software, 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,25 @@
 
 package org.jivesoftware.smackx.iqlast;
 
-import org.jivesoftware.smack.SmackException;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
 
 /**
@@ -79,24 +81,45 @@ import org.jivesoftware.smackx.iqlast.packet.LastActivity;
  * </pre>
  * 
  * @author Gabriel Guardincerri
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0012.html">XEP-0012: Last
  *      Activity</a>
  */
 
-public class LastActivityManager {
+public class LastActivityManager extends Manager {
+    private static final Map<XMPPConnection, LastActivityManager> instances = new WeakHashMap<XMPPConnection, LastActivityManager>();
+    private static final PacketFilter IQ_GET_LAST_FILTER = new AndFilter(new IQTypeFilter(
+                    IQ.Type.GET), new PacketTypeFilter(LastActivity.class));
 
-    private long lastMessageSent;
+    private static boolean enabledPerDefault = true;
 
-    private XMPPConnection connection;
+    /**
+     * Enable or disable Last Activity for new XMPPConnections.
+     *
+     * @param enabledPerDefault
+     */
+    public static void setEnabledPerDefault(boolean enabledPerDefault) {
+        LastActivityManager.enabledPerDefault = enabledPerDefault;
+    }
 
     // Enable the LastActivity support on every established connection
     static {
         XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
-                new LastActivityManager(connection);
+                LastActivityManager.getInstanceFor(connection);
             }
         });
     }
+
+    public static synchronized LastActivityManager getInstanceFor(XMPPConnection connection) {
+        LastActivityManager lastActivityManager = instances.get(connection);
+        if (lastActivityManager == null)
+            lastActivityManager = new LastActivityManager(connection);
+        return lastActivityManager;
+    }
+
+    private long lastMessageSent;
+    private boolean enabled = false;
 
     /**
      * Creates a last activity manager to response last activity requests.
@@ -105,7 +128,7 @@ public class LastActivityManager {
      *            The XMPPConnection that the last activity requests will use.
      */
     private LastActivityManager(XMPPConnection connection) {
-        this.connection = connection;
+        super(connection);
 
         // Listen to all the sent messages to reset the idle time on each one
         connection.addPacketSendingListener(new PacketListener() {
@@ -123,9 +146,9 @@ public class LastActivityManager {
                     break;
                 }
             }
-        }, new PacketTypeFilter(Presence.class));
+        }, PacketTypeFilter.PRESENCE);
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addPacketSendingListener(new PacketListener() {
             @Override
             public void processPacket(Packet packet) {
                 Message message = (Message) packet;
@@ -133,12 +156,13 @@ public class LastActivityManager {
                 if (message.getType() == Message.Type.error) return;
                 resetIdleTime();
             }
-        }, new PacketTypeFilter(Message.class));
+        }, PacketTypeFilter.MESSAGE);
 
         // Register a listener for a last activity query
         connection.addPacketListener(new PacketListener() {
 
             public void processPacket(Packet packet) throws NotConnectedException {
+                if (!enabled) return;
                 LastActivity message = new LastActivity();
                 message.setType(IQ.Type.RESULT);
                 message.setTo(packet.getFrom());
@@ -146,12 +170,26 @@ public class LastActivityManager {
                 message.setPacketID(packet.getPacketID());
                 message.setLastActivity(getIdleTime());
 
-                LastActivityManager.this.connection.sendPacket(message);
+                connection().sendPacket(message);
             }
 
-        }, new AndFilter(new IQTypeFilter(IQ.Type.GET), new PacketTypeFilter(LastActivity.class)));
-        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(LastActivity.NAMESPACE);
+        }, IQ_GET_LAST_FILTER);
+
+        if (enabledPerDefault) {
+            enable();
+        }
         resetIdleTime();
+        instances.put(connection, this);
+    }
+
+    public synchronized void enable() {
+        ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(LastActivity.NAMESPACE);
+        enabled = true;
+    }
+
+    public synchronized void disable() {
+        ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(LastActivity.NAMESPACE);
+        enabled = false;
     }
 
     /**
@@ -188,8 +226,6 @@ public class LastActivityManager {
      * Moreover, when the jid is a server or component (e.g., a JID of the form
      * 'host') the last activity is the uptime.
      * 
-     * @param con
-     *            the current XMPPConnection.
      * @param jid
      *            the JID of the user.
      * @return the LastActivity packet of the jid.
@@ -198,31 +234,22 @@ public class LastActivityManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public static LastActivity getLastActivity(XMPPConnection con, String jid)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
-        LastActivity activity = new LastActivity();
-        activity.setTo(jid);
-
-        LastActivity response = (LastActivity) con.createPacketCollectorAndSend(activity).nextResultOrThrow();
-        return response;
+    public LastActivity getLastActivity(String jid) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException {
+        LastActivity activity = new LastActivity(jid);
+        return (LastActivity) connection().createPacketCollectorAndSend(activity).nextResultOrThrow();
     }
 
     /**
      * Returns true if Last Activity (XEP-0012) is supported by a given JID
      * 
-     * @param connection the connection to be used
      * @param jid a JID to be tested for Last Activity support
      * @return true if Last Activity is supported, otherwise false
-     * @throws SmackException if there was no response from the server.
+     * @throws NotConnectedException 
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public static boolean isLastActivitySupported(XMPPConnection connection, String jid) throws SmackException {
-        try {
-            DiscoverInfo result =
-                ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(jid);
-            return result.containsFeature(LastActivity.NAMESPACE);
-        }
-        catch (XMPPException e) {
-            return false;
-        }
+    public boolean isLastActivitySupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, LastActivity.NAMESPACE);
     }
 }
