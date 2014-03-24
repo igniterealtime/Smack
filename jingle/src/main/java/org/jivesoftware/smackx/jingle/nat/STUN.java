@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.jingle.nat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -222,14 +221,10 @@ public class STUN extends IQ {
         ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection);
         DiscoverItems items = disco.discoverItems(connection.getServiceName());
 
-        Iterator<DiscoverItems.Item> iter = items.getItems();
-        while (iter.hasNext()) {
-            DiscoverItems.Item item = iter.next();
+        for (DiscoverItems.Item item : items.getItems()) {
             DiscoverInfo info = disco.discoverInfo(item.getEntityID());
 
-            Iterator<DiscoverInfo.Identity> iter2 = info.getIdentities();
-            while (iter2.hasNext()) {
-                DiscoverInfo.Identity identity = iter2.next();
+            for (DiscoverInfo.Identity identity : info.getIdentities()) {
                 if (identity.getCategory().equals("proxy") && identity.getType().equals("stun"))
                     if (info.containsFeature(NAMESPACE))
                         return true;

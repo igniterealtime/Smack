@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.disco;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -221,6 +220,26 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
+     * Sets the default identity the client will report.
+     *
+     * @param identity
+     */
+    public void setIdentity(Identity identity) {
+        if (identity == null) throw new IllegalArgumentException("Identity can not be null");
+        this.identity = identity;
+        renewEntityCapsVersion();
+    }
+
+    /**
+     * Return the default identity of the client.
+     *
+     * @return the default identity.
+     */
+    public Identity getIdentity() {
+        return identity;
+    }
+
+    /**
      * Returns the type of client that will be returned when asked for the client identity in a 
      * disco request. The valid types are defined by the category client. Follow this link to learn 
      * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
@@ -233,21 +252,7 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Sets the type of client that will be returned when asked for the client identity in a 
-     * disco request. The valid types are defined by the category client. Follow this link to learn 
-     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
-     * 
-     * @param type the type of client that will be returned when asked for the client identity in a 
-     *          disco request.
-     */
-    @SuppressWarnings("deprecation")
-    public void setIdentityType(String type) {
-        identity.setType(type);
-        renewEntityCapsVersion();
-    }
-
-    /**
-     * Add an identity to the client.
+     * Add an further identity to the client.
      * 
      * @param identity
      */

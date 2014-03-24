@@ -21,7 +21,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -559,12 +558,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
 
         // get all items from XMPP server
         DiscoverItems discoverItems = serviceDiscoveryManager.discoverItems(this.connection.getServiceName());
-        Iterator<Item> itemIterator = discoverItems.getItems();
 
         // query all items if they are SOCKS5 proxies
-        while (itemIterator.hasNext()) {
-            Item item = itemIterator.next();
-
+        for (Item item : discoverItems.getItems()) {
             // skip blacklisted servers
             if (this.proxyBlacklist.contains(item.getEntityID())) {
                 continue;
@@ -580,12 +576,8 @@ public final class Socks5BytestreamManager implements BytestreamManager {
                 continue;
             }
 
-            Iterator<Identity> identities = proxyInfo.getIdentities();
-
             // item must have category "proxy" and type "bytestream"
-            while (identities.hasNext()) {
-                Identity identity = identities.next();
-
+            for (Identity identity : proxyInfo.getIdentities()) {
                 if ("proxy".equalsIgnoreCase(identity.getCategory())
                                 && "bytestreams".equalsIgnoreCase(identity.getType())) {
                     proxies.add(item.getEntityID());

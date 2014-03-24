@@ -309,8 +309,7 @@ public class MultipleRecipientManager {
                         // Get the disco items and send the disco packet to each server item
                         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                                         serviceName);
-                        for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
-                            DiscoverItems.Item item = it.next();
+                        for (DiscoverItems.Item item : items.getItems()) {
                             info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
                                             item.getEntityID(), item.getNode());
                             if (info.containsFeature("http://jabber.org/protocol/address")) {

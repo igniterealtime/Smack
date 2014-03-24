@@ -25,8 +25,6 @@ import org.jivesoftware.smackx.amp.packet.AMPExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
-import java.util.Iterator;
-
 /**
  * Manages AMP stanzas within messages. A AMPManager provides a high level access to
  * get and set AMP rules to messages.
@@ -114,9 +112,7 @@ public class AMPManager {
     private static boolean isFeatureSupportedByServer(XMPPConnection connection, String featureName, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
         ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         DiscoverInfo info = discoveryManager.discoverInfo(connection.getServiceName(), node);
-        Iterator<DiscoverInfo.Feature> it = info.getFeatures();
-        while (it.hasNext()) {
-            DiscoverInfo.Feature feature = it.next();
+        for (DiscoverInfo.Feature feature : info.getFeatures()){
             if (featureName.equals(feature.getVar())) {
                 return true;
             }

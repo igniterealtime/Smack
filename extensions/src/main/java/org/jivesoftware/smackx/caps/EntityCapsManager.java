@@ -578,8 +578,8 @@ public class EntityCapsManager extends Manager {
         // type MUST be included.
         SortedSet<DiscoverInfo.Identity> sortedIdentities = new TreeSet<DiscoverInfo.Identity>();
 
-        for (Iterator<DiscoverInfo.Identity> it = discoverInfo.getIdentities(); it.hasNext();)
-            sortedIdentities.add(it.next());
+        for (DiscoverInfo.Identity i : discoverInfo.getIdentities())
+            sortedIdentities.add(i);
 
         // 3. For each identity, append the 'category/type/lang/name' to S,
         // followed by the '<' character.
@@ -597,8 +597,8 @@ public class EntityCapsManager extends Manager {
 
         // 4. Sort the supported service discovery features.
         SortedSet<String> features = new TreeSet<String>();
-        for (Iterator<Feature> it = discoverInfo.getFeatures(); it.hasNext();)
-            features.add(it.next().getVar());
+        for (Feature f : discoverInfo.getFeatures())
+            features.add(f.getVar());
 
         // 5. For each feature, append the feature to S, followed by the '<'
         // character

@@ -171,7 +171,7 @@ final public class PubSubManager
 			
 			DiscoverInfo infoReply = (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
 			
-			if (infoReply.getIdentities().next().getType().equals(NodeType.leaf.toString()))
+			if (infoReply.getIdentities().get(0).getType().equals(NodeType.leaf.toString()))
 				node = new LeafNode(con, id);
 			else
 				node = new CollectionNode(con, id);

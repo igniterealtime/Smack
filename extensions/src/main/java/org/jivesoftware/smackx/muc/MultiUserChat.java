@@ -225,8 +225,8 @@ public class MultiUserChat {
         DiscoverItems result = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                         user, discoNode);
         // Collect the entityID for each returned item
-        for (Iterator<DiscoverItems.Item> items = result.getItems(); items.hasNext();) {
-            answer.add(items.next().getEntityID());
+        for (DiscoverItems.Item item : result.getItems()) {
+            answer.add(item.getEntityID());
         }
         return answer.iterator();
     }
@@ -262,8 +262,7 @@ public class MultiUserChat {
         final List<String> answer = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
         DiscoverItems items = discoManager.discoverItems(connection.getServiceName());
-        for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
-            DiscoverItems.Item item = it.next();
+        for (DiscoverItems.Item item : items.getItems()) {
             DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
             if (info.containsFeature(discoNamespace)) {
                 answer.add(item.getEntityID());
@@ -289,8 +288,8 @@ public class MultiUserChat {
         List<HostedRoom> answer = new ArrayList<HostedRoom>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
         DiscoverItems items = discoManager.discoverItems(serviceName);
-        for (Iterator<DiscoverItems.Item> it = items.getItems(); it.hasNext();) {
-            answer.add(new HostedRoom(it.next()));
+        for (DiscoverItems.Item item : items.getItems()) {
+            answer.add(new HostedRoom(item));
         }
         return answer;
     }
@@ -885,9 +884,7 @@ public class MultiUserChat {
                     room,
                     "x-roomuser-item");
             // Look for an Identity that holds the reserved nickname and return its name
-            for (Iterator<DiscoverInfo.Identity> identities = result.getIdentities();
-                 identities.hasNext();) {
-                DiscoverInfo.Identity identity = identities.next();
+            for (DiscoverInfo.Identity identity : result.getIdentities()) {
                 return identity.getName();
             }
         }

@@ -21,7 +21,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -435,9 +434,7 @@ public class RTPBridge extends IQ {
 //            }
             
         DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
-        Iterator<DiscoverInfo.Identity> iter = discoInfo.getIdentities();
-        while (iter.hasNext()) {
-            DiscoverInfo.Identity identity = iter.next();
+        for (DiscoverInfo.Identity identity : discoInfo.getIdentities()) {
             if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
                 return true;
             }
