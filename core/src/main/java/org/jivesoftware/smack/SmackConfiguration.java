@@ -322,14 +322,10 @@ public final class SmackConfiguration {
     }
 
     private static void loadSmackClass(String className, boolean optional) throws Exception {
-        // Attempt to load the class so that the class can get initialized
+        Class<?> initClass;
         try {
-            Class<?> initClass = Class.forName(className);
-            
-            if (SmackInitializer.class.isAssignableFrom(initClass)) {
-                SmackInitializer initializer = (SmackInitializer) initClass.newInstance();
-                initializer.initialize();
-            }
+            // Attempt to load the class so that the class can get initialized
+            initClass = Class.forName(className);
         }
         catch (ClassNotFoundException cnfe) {
             Level logLevel;
@@ -341,8 +337,18 @@ public final class SmackConfiguration {
             }
             LOGGER.log(logLevel, "A startup class [" + className
                             + "] specified in smack-config.xml could not be loaded: ");
-            if (!optional)
+            if (!optional) {
                 throw cnfe;
+            } else {
+                return;
+            }
+        }
+        if (SmackInitializer.class.isAssignableFrom(initClass)) {
+            SmackInitializer initializer = (SmackInitializer) initClass.newInstance();
+            initializer.initialize();
+            LOGGER.log(Level.FINE, "Loaded SmackInitializer " + className);
+        } else {
+            LOGGER.log(Level.FINE, "Loaded " + className);
         }
     }
 }
