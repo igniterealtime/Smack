@@ -32,7 +32,11 @@ import javax.security.sasl.SaslException;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>This class is responsible authenticating the user using SASL, binding the resource
@@ -482,12 +486,10 @@ public class SASLAuthentication {
      * Notification message saying that SASL authentication was successful. The next step
      * would be to bind the resource.
      */
-    void authenticated() {
-        synchronized (this) {
-            saslNegotiated = true;
-            // Wake up the thread that is waiting in the #authenticate method
-            notify();
-        }
+    synchronized void authenticated() {
+        saslNegotiated = true;
+        // Wake up the thread that is waiting in the #authenticate method
+        notify();
     }
 
     /**
@@ -497,24 +499,20 @@ public class SASLAuthentication {
      * @param saslFailure the SASL failure as reported by the server
      * @see <a href="https://tools.ietf.org/html/rfc6120#section-6.5">RFC6120 6.5</a>
      */
-    void authenticationFailed(SASLFailure saslFailure) {
-        synchronized (this) {
-            this.saslFailure = saslFailure;
-            // Wake up the thread that is waiting in the #authenticate method
-            notify();
-        }
+    synchronized void authenticationFailed(SASLFailure saslFailure) {
+        this.saslFailure = saslFailure;
+        // Wake up the thread that is waiting in the #authenticate method
+        notify();
     }
 
     /**
      * Notification message saying that the server requires the client to bind a
      * resource to the stream.
      */
-    void bindingRequired() {
-        synchronized (this) {
-            resourceBinded = true;
-            // Wake up the thread that is waiting in the #authenticate method
-            notify();
-        }
+    synchronized void bindingRequired() {
+        resourceBinded = true;
+        // Wake up the thread that is waiting in the #authenticate method
+        notify();
     }
 
     public void send(Packet stanza) throws NotConnectedException {
