@@ -335,8 +335,8 @@ public final class SmackConfiguration {
             else {
                 logLevel = Level.WARNING;
             }
-            LOGGER.log(logLevel, "A startup class [" + className
-                            + "] specified in smack-config.xml could not be loaded: ");
+            LOGGER.log(logLevel, "A startup class '" + className
+                            + "' specified in smack-config.xml could not be loaded.");
             if (!optional) {
                 throw cnfe;
             } else {
@@ -346,7 +346,14 @@ public final class SmackConfiguration {
         if (SmackInitializer.class.isAssignableFrom(initClass)) {
             SmackInitializer initializer = (SmackInitializer) initClass.newInstance();
             initializer.initialize();
-            LOGGER.log(Level.FINE, "Loaded SmackInitializer " + className);
+            List<Exception> exceptions = initializer.getExceptions();
+            if (exceptions.size() == 0) {
+                LOGGER.log(Level.FINE, "Loaded SmackInitializer " + className);
+            } else {
+                for (Exception e : exceptions) {
+                    LOGGER.log(Level.SEVERE, "Exception in loadSmackClass", e);
+                }
+            }
         } else {
             LOGGER.log(Level.FINE, "Loaded " + className);
         }
