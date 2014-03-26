@@ -122,8 +122,7 @@ public class DNSUtil {
         }
         List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
         List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
-        if (sortedRecords != null)
-            addresses.addAll(sortedRecords);
+        addresses.addAll(sortedRecords);
 
         // Step two: Add the hostname to the end of the list
         addresses.add(new HostAddress(domain));
@@ -139,11 +138,11 @@ public class DNSUtil {
      * @param records
      * @return the list of resolved HostAddresses
      */
-    protected static List<HostAddress> sortSRVRecords(List<SRVRecord> records) {
+    private static List<HostAddress> sortSRVRecords(List<SRVRecord> records) {
         // RFC 2782, Usage rules: "If there is precisely one SRV RR, and its Target is "."
         // (the root domain), abort."
         if (records.size() == 1 && records.get(0).getFQDN().equals("."))
-            return null;
+            return Collections.emptyList();
 
         // sorting the records improves the performance of the bisection later
         Collections.sort(records);
