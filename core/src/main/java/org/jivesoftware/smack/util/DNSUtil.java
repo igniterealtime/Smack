@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -34,12 +33,6 @@ import org.jivesoftware.smack.util.dns.SRVRecord;
  * @author Matt Tucker
  */
 public class DNSUtil {
-
-    /**
-     * Create a cache to hold the 100 most recently accessed DNS lookups for a period of
-     * 10 minutes.
-     */
-    private static Map<String, List<HostAddress>> cache = new Cache<String, List<HostAddress>>(100, 1000*60*10);
 
     private static DNSResolver dnsResolver = null;
 
@@ -116,16 +109,6 @@ public class DNSUtil {
     }
 
     private static List<HostAddress> resolveDomain(String domain, char keyPrefix) throws Exception {
-        // Prefix the key with 's' to distinguish him from the client domain lookups
-        String key = keyPrefix + domain;
-        // Return item from cache if it exists.
-        if (cache.containsKey(key)) {
-            List<HostAddress> addresses = cache.get(key);
-            if (addresses != null) {
-                return addresses;
-            }
-        }
-
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
@@ -144,9 +127,6 @@ public class DNSUtil {
 
         // Step two: Add the hostname to the end of the list
         addresses.add(new HostAddress(domain));
-
-        // Add item to cache.
-        cache.put(key, addresses);
 
         return addresses;
     }
