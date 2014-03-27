@@ -335,8 +335,7 @@ public final class SmackConfiguration {
             else {
                 logLevel = Level.WARNING;
             }
-            LOGGER.log(logLevel, "A startup class '" + className
-                            + "' specified in smack-config.xml could not be loaded.");
+            LOGGER.log(logLevel, "A startup class '" + className + "' could not be loaded.");
             if (!optional) {
                 throw cnfe;
             } else {
