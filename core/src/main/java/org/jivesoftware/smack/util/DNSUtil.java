@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
@@ -34,6 +36,7 @@ import org.jivesoftware.smack.util.dns.SRVRecord;
  */
 public class DNSUtil {
 
+    private static final Logger LOGGER = Logger.getLogger(DNSUtil.class.getName());
     private static DNSResolver dnsResolver = null;
 
     /**
@@ -121,6 +124,12 @@ public class DNSUtil {
             srvDomain = domain;
         }
         List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
+        if (LOGGER.isLoggable(Level.FINE)) {
+            String logMessage = "Resolved SRV RR for " + srvDomain + ":";
+            for (SRVRecord r : srvRecords)
+                logMessage += " " + r;
+            LOGGER.fine(logMessage);
+        }
         List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
         addresses.addAll(sortedRecords);
 
