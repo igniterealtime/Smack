@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -100,6 +101,24 @@ public final class SmackConfiguration {
             throw new IllegalStateException(e);
         }
 
+        try {
+            Class<?> c = Class.forName("org.jivesoftware.smack.CustomSmackConfiguration");
+            Field f = c.getField("DISABLED_SMACK_CLASSES");
+            String[] sa = (String[]) f.get(null);
+            if (sa != null)
+                for (String s : sa)
+                    disabledSmackClasses.add(s);
+        }
+        catch (ClassNotFoundException e1) {
+        }
+        catch (NoSuchFieldException e) {
+        }
+        catch (SecurityException e) {
+        }
+        catch (IllegalArgumentException e) {
+        }
+        catch (IllegalAccessException e) {
+        }
 
         InputStream configFileStream;
         try {
