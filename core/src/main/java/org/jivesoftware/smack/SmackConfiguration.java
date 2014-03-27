@@ -319,11 +319,11 @@ public final class SmackConfiguration {
             eventType = parser.next();
             name = parser.getName();
             if (eventType == XmlPullParser.START_TAG && "className".equals(name)) {
-                if (disabledSmackClasses.contains(name)) {
-                    LOGGER.info("Not loading disabled Smack class " + name);
+                String classToLoad = parser.nextText();
+                if (disabledSmackClasses.contains(classToLoad)) {
+                    LOGGER.info("Not loading disabled Smack class " + classToLoad);
                 }
                 else {
-                    String classToLoad = parser.nextText();
                     try {
                         loadSmackClass(classToLoad, optional);
                     } catch (Exception e) {
