@@ -94,7 +94,7 @@ public class FromMatchesFilter implements PacketFilter {
         if (matchBareJID) {
             from = StringUtils.parseBareAddress(from).toLowerCase();
         }
-        return address.equals(from);
+        return from.equals(address);
     }
 
     public String toString() {
