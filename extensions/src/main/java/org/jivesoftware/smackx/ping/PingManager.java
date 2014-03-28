@@ -183,9 +183,10 @@ public class PingManager extends Manager {
      * 
      * @param jid The id of the entity the ping is being sent to
      * @return true if a reply was received from the entity, false otherwise.
-     * @throws SmackException if there was no response from the server.
+     * @throws NotConnectedException
+     * @throws NoResponseException
      */
-    public boolean ping(String jid) throws SmackException {
+    public boolean ping(String jid) throws NoResponseException, NotConnectedException {
         return ping(jid, connection().getPacketReplyTimeout());
     }
 
@@ -210,9 +211,9 @@ public class PingManager extends Manager {
      * {@link #isPingSupported(String)} is false.
      * 
      * @return true if a reply was received from the server, false otherwise.
-     * @throws SmackException if there was no response from the server.
+     * @throws NotConnectedException
      */
-    public boolean pingMyServer() throws SmackException {
+    public boolean pingMyServer() throws NotConnectedException {
         return pingMyServer(true);
     }
 
@@ -225,13 +226,21 @@ public class PingManager extends Manager {
      *
      * @param notifyListeners Notify the PingFailedListener in case of error if true
      * @return true if the user's server could be pinged.
-     * @throws SmackException if there was no response from the server.
+     * @throws NotConnectedException
      */
-    public boolean pingMyServer(boolean notifyListeners) throws SmackException {
-        boolean res = ping(connection().getServiceName());
+    public boolean pingMyServer(boolean notifyListeners) throws NotConnectedException {
+        boolean res;
+        try {
+            res = ping(connection().getServiceName());
+        }
+        catch (NoResponseException e) {
+            res = false;
+        }
+
         if (res) {
             pongReceived();
-        } else if (notifyListeners) {
+        }
+        else if (notifyListeners) {
             for (PingFailedListener l : pingFailedListeners)
                 l.pingFailed();
         }

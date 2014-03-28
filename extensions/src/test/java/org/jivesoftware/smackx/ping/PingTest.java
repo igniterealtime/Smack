@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -180,18 +181,12 @@ public class PingTest extends InitExtensions {
     }
     
     @Test
-    public void checkPingToServerTimeout() throws SmackException {
+    public void checkPingToServerTimeout() throws NotConnectedException {
         DummyConnection con = new DummyConnection();
         PingManager pinger = PingManager.getInstanceFor(con);
 
-        try {
-            pinger.pingMyServer();
-        }
-        catch (NoResponseException e) {
-            return;
-        }
-
-        fail();
+        boolean res = pinger.pingMyServer();
+        assertFalse(res);
     }
 
     @Test
