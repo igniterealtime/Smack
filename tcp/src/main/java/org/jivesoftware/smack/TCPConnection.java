@@ -129,8 +129,6 @@ public class TCPConnection extends XMPPConnection {
     public TCPConnection(String serviceName, CallbackHandler callbackHandler) {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
-        config.setCompressionEnabled(false);
-        config.setDebuggerEnabled(DEBUG_ENABLED);
         config.setCallbackHandler(callbackHandler);
     }
 
@@ -145,8 +143,6 @@ public class TCPConnection extends XMPPConnection {
     public TCPConnection(String serviceName) {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
-        config.setCompressionEnabled(false);
-        config.setDebuggerEnabled(DEBUG_ENABLED);
     }
 
     /**
