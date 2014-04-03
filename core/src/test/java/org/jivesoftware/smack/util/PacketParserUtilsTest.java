@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smack.util;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.fail;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLNotEqual;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -49,7 +49,6 @@ public class PacketParserUtilsTest {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
         
-    @SuppressWarnings("deprecation")
     @Test
     public void singleMessageBodyTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -199,7 +198,6 @@ public class PacketParserUtilsTest {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void singleMessageSubjectTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -349,7 +347,6 @@ public class PacketParserUtilsTest {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void multipleMessageBodiesTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -503,7 +500,6 @@ public class PacketParserUtilsTest {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void multipleMessageSubjectsTest() throws Exception {
         String defaultLanguage = Packet.getDefaultLanguage();
@@ -657,7 +653,6 @@ public class PacketParserUtilsTest {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void invalidMessageBodyContainingTagTest() throws Exception {
         String control = XMLBuilder.create("message")
@@ -691,7 +686,6 @@ public class PacketParserUtilsTest {
         
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void invalidXMLInMessageBody() throws Exception {
         String validControl = XMLBuilder.create("message")
@@ -768,7 +762,6 @@ public class PacketParserUtilsTest {
     	assertXMLEqual(stanza, presence.toXML().toString());
     }
     
-    @SuppressWarnings("deprecation")
     @Test
     public void validatePresenceProbe() throws Exception {
     	String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
@@ -779,7 +772,6 @@ public class PacketParserUtilsTest {
     	assertEquals(Presence.Type.unsubscribed, presence.getType());
     }
     
-    @SuppressWarnings("deprecation")
     @Test
     public void validatePresenceOptionalElements() throws Exception {
     	String stanza = "<presence xml:lang='en' type='unsubscribed'>"

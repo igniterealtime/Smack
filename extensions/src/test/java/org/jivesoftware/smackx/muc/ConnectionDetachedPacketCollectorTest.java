@@ -86,7 +86,8 @@ public class ConnectionDetachedPacketCollectorTest
 						catch (InterruptedException e)
 						{
 						}
-						Packet packet = collector.nextResult();
+						@SuppressWarnings("unused")
+                        Packet packet = collector.nextResult();
 //						System.out.println(Thread.currentThread().getName() + "  packet: " + packet);
 					}
 				}

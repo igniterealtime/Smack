@@ -30,7 +30,6 @@ import java.io.IOException;
  *
  * @author Vyacheslav Blinov
  */
-@SuppressWarnings("PMD.CyclomaticComplexity")
 public class XHTMLExtensionProvider implements PacketExtensionProvider {
     public static final String BODY_ELEMENT = "body";
 

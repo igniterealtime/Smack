@@ -422,7 +422,6 @@ public class EntityCapsManager extends Manager {
      *
      * If we are connected and there was already a presence send, another
      * presence is send to inform others about your new Entity Caps node string.
-     * @throws NotConnectedException 
      *
      */
     public void updateLocalEntityCaps() {

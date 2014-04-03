@@ -192,6 +192,7 @@ public class Socks5ProxyTest {
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
+        @SuppressWarnings("resource")
         Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
@@ -222,6 +223,7 @@ public class Socks5ProxyTest {
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
+        @SuppressWarnings("resource")
         Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
@@ -252,6 +254,7 @@ public class Socks5ProxyTest {
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
         proxy.start();
 
+        @SuppressWarnings("resource")
         Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
@@ -300,6 +303,7 @@ public class Socks5ProxyTest {
         // add digest to allow connection
         proxy.addTransfer(digest);
 
+        @SuppressWarnings("resource")
         Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
 
         OutputStream out = socket.getOutputStream();

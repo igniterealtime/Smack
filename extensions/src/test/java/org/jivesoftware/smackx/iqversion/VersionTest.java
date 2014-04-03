@@ -20,25 +20,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.DummyConnection;
-import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.iqversion.packet.Version;
-import org.junit.Before;
 import org.junit.Test;
 
 public class VersionTest {
-    private DummyConnection dummyCon;
-    private ThreadedDummyConnection threadedCon;
-
-    @Before
-    public void setup() {
-        dummyCon = new DummyConnection();
-        threadedCon = new ThreadedDummyConnection();
-    }
-
     @Test
     public void checkProvider() throws Exception {
         // @formatter:off

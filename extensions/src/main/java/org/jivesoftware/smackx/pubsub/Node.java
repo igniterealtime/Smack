@@ -269,7 +269,8 @@ abstract public class Node
 	 * 
 	 * @param listener The handler for the event
 	 */
-	public void addItemEventListener(ItemEventListener listener)
+	@SuppressWarnings("unchecked")
+    public void addItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
 	{
 		PacketListener conListener = new ItemEventTranslator(listener); 
 		itemEventToListenerMap.put(listener, conListener);
@@ -281,7 +282,7 @@ abstract public class Node
 	 * 
 	 * @param listener The handler to unregister
 	 */
-	public void removeItemEventListener(ItemEventListener listener)
+	public void removeItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
 	{
 		PacketListener conListener = itemEventToListenerMap.remove(listener);
 		
@@ -396,14 +397,16 @@ abstract public class Node
 	 */
 	public class ItemEventTranslator implements PacketListener
 	{
-		private ItemEventListener listener;
+		@SuppressWarnings("rawtypes")
+        private ItemEventListener listener;
 
-		public ItemEventTranslator(ItemEventListener eventListener)
+		public ItemEventTranslator(@SuppressWarnings("rawtypes") ItemEventListener eventListener)
 		{
 			listener = eventListener;
 		}
 		
-		public void processPacket(Packet packet)
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+        public void processPacket(Packet packet)
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 			ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
@@ -414,7 +417,7 @@ abstract public class Node
 			{
 				delay = (DelayInformation)packet.getExtension("x", "jabber:x:delay");
 			}
-			ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), (List<Item>)itemsElem.getItems(), getSubscriptionIds(packet), (delay == null ? null : delay.getStamp()));
+            ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), (List<Item>)itemsElem.getItems(), getSubscriptionIds(packet), (delay == null ? null : delay.getStamp()));
 			listener.handlePublishedItems(eventItems);
 		}
 	}
@@ -448,7 +451,8 @@ abstract public class Node
 	        {
 				ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
 				Collection<? extends PacketExtension> pubItems = itemsElem.getItems();
-				Iterator<RetractItem> it = (Iterator<RetractItem>)pubItems.iterator();
+				@SuppressWarnings("unchecked")
+                Iterator<RetractItem> it = (Iterator<RetractItem>)pubItems.iterator();
 				List<String> items = new ArrayList<String>(pubItems.size());
 
 				while (it.hasNext())

@@ -24,7 +24,9 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
 import javax.net.SocketFactory;
+
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -78,6 +80,7 @@ class HTTPProxySocketFactory
     {
         String proxyhost = proxy.getProxyAddress();
         int proxyPort = proxy.getProxyPort();
+        @SuppressWarnings("resource")
         Socket socket = new Socket(proxyhost,proxyPort);
         String hostport = "CONNECT " + host + ":" + port;
         String proxyLine;

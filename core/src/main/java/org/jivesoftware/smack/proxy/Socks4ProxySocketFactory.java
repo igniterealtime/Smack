@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
 import javax.net.SocketFactory;
 
 /**
@@ -67,6 +68,7 @@ public class Socks4ProxySocketFactory
         
     }
     
+    @SuppressWarnings("resource")
     private Socket socks4ProxifiedSocket(String host, int port) 
         throws IOException
     {

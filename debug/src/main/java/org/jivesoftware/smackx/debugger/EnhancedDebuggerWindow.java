@@ -21,6 +21,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
@@ -184,7 +185,8 @@ public class EnhancedDebuggerWindow {
      * Creates the main debug window that provides information about Smack and also shows
      * a tab panel for each connection that is being debugged.
      */
-    private void createDebug() {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private void createDebug() {
 
         frame = new JFrame("Smack Debug Window");
 
