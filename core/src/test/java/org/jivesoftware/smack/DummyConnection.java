@@ -187,7 +187,7 @@ public class DummyConnection extends XMPPConnection {
 
     @Override
     void sendPacketInternal(Packet packet) {
-        if (DEBUG_ENABLED) {
+        if (SmackConfiguration.DEBUG_ENABLED) {
             System.out.println("[SEND]: " + packet.toXML());
         }
         queue.add(packet);
@@ -244,7 +244,7 @@ public class DummyConnection extends XMPPConnection {
             collector.processPacket(packet);
         }
 
-        if (DEBUG_ENABLED) {
+        if (SmackConfiguration.DEBUG_ENABLED) {
             System.out.println("[RECV]: " + packet.toXML());
         }
 

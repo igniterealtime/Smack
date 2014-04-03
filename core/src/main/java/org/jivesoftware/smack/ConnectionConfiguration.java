@@ -62,7 +62,7 @@ public class ConnectionConfiguration implements Cloneable {
      */
     private CallbackHandler callbackHandler;
 
-    private boolean debuggerEnabled = XMPPConnection.DEBUG_ENABLED;
+    private boolean debuggerEnabled = SmackConfiguration.DEBUG_ENABLED;
 
     // Flag that indicates if a reconnection should be attempted when abruptly disconnected
     private boolean reconnectionAllowed = true;
@@ -332,7 +332,7 @@ public class ConnectionConfiguration implements Cloneable {
 
     /**
      * Returns true if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link XMPPConnection#DEBUG_ENABLED} is used.
+     * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
      *
      * @return true if the new connection about to be establish is going to be debugged.
      */
@@ -342,7 +342,7 @@ public class ConnectionConfiguration implements Cloneable {
 
     /**
      * Sets if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link XMPPConnection#DEBUG_ENABLED} is used.
+     * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
      *
      * @param debuggerEnabled if the new connection about to be establish is going to be debugged.
      */

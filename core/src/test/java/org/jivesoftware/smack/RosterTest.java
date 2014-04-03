@@ -703,7 +703,7 @@ public class RosterTest {
 
         public synchronized void entriesAdded(Collection<String> addresses) {
             addressesAdded.addAll(addresses);
-            if (XMPPConnection.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG_ENABLED) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " added.");
                 }
@@ -712,7 +712,7 @@ public class RosterTest {
 
         public synchronized void entriesDeleted(Collection<String> addresses) {
             addressesDeleted.addAll(addresses);
-            if (XMPPConnection.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG_ENABLED) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " deleted.");
                 }
@@ -721,7 +721,7 @@ public class RosterTest {
 
         public synchronized void entriesUpdated(Collection<String> addresses) {
             addressesUpdated.addAll(addresses);
-            if (XMPPConnection.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG_ENABLED) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " updated.");
                 }
@@ -729,7 +729,7 @@ public class RosterTest {
         }
 
         public void presenceChanged(Presence presence) {
-            if (XMPPConnection.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG_ENABLED) {
                 System.out.println("Roster presence changed: " + presence.toXML());
             }
         }
