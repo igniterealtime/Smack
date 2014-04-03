@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.filter;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -46,7 +48,7 @@ public class FromMatchesFilter implements PacketFilter {
      * @param matchBare
      */
     public FromMatchesFilter(String address, boolean matchBare) {
-        this.address = (address == null) ? null : address.toLowerCase();
+        this.address = (address == null) ? null : address.toLowerCase(Locale.US);
         matchBareJID = matchBare;
     }
 
