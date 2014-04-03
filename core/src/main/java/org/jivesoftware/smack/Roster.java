@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -422,7 +423,7 @@ public class Roster {
         if (user == null) {
             return null;
         }
-        return entries.get(user.toLowerCase());
+        return entries.get(user.toLowerCase(Locale.US));
     }
 
     /**
@@ -633,7 +634,7 @@ public class Roster {
         if (!contains(user)) {
             key = StringUtils.parseBareAddress(user);
         }
-        return key.toLowerCase();
+        return key.toLowerCase(Locale.US);
     }
 
     /**

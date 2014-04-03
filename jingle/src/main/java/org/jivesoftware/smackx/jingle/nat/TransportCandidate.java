@@ -26,6 +26,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
@@ -468,7 +469,7 @@ public abstract class TransportCandidate {
             if (value == null) {
                 return UDP;
             }
-            value = value.toLowerCase();
+            value = value.toLowerCase(Locale.US);
             if (value.equals("udp")) {
                 return UDP;
             } else if (value.equals("tcp")) {
@@ -552,7 +553,7 @@ public abstract class TransportCandidate {
             if (value == null) {
                 return MYRTPVOICE;
             }
-            value = value.toLowerCase();
+            value = value.toLowerCase(Locale.US);
             if (value.equals("myrtpvoice")) {
                 return MYRTPVOICE;
             } else if (value.equals("tcp")) {

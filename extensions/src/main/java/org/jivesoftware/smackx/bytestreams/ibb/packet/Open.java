@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
@@ -120,7 +122,7 @@ public class Open extends IQ {
         buf.append(sessionID);
         buf.append("\" ");
         buf.append("stanza=\"");
-        buf.append(stanza.toString().toLowerCase());
+        buf.append(stanza.toString().toLowerCase(Locale.US));
         buf.append("\"");
         buf.append("/>");
         return buf.toString();

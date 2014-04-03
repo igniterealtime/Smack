@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub.packet;
 
+import java.util.Locale;
+
 /**
  * Defines all the valid namespaces that are used with the {@link PubSub} packet
  * as defined by the specification.
@@ -58,7 +60,7 @@ public enum PubSubNamespace
 		if (index != -1)
 		{
 			String suffix = ns.substring(ns.lastIndexOf('#')+1);
-			return valueOf(suffix.toUpperCase());
+			return valueOf(suffix.toUpperCase(Locale.US));
 		}
 		else
 			return BASIC;

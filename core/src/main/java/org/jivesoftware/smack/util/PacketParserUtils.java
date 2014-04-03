@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -744,11 +745,11 @@ public class PacketParserUtils {
         XMPPError.Type errorType = XMPPError.Type.CANCEL;
         try {
             if (type != null) {
-                errorType = XMPPError.Type.valueOf(type.toUpperCase());
+                errorType = XMPPError.Type.valueOf(type.toUpperCase(Locale.US));
             }
         }
         catch (IllegalArgumentException iae) {
-            LOGGER.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(), iae);
+            LOGGER.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(Locale.US), iae);
         }
         return new XMPPError(errorType, condition, message, extensions);
     }

@@ -26,6 +26,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -150,21 +151,21 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
             if (from == null) {
                 return false;
             }
-            return roomAddressTable.containsKey(StringUtils.parseBareAddress(from).toLowerCase());
+            return roomAddressTable.containsKey(StringUtils.parseBareAddress(from).toLowerCase(Locale.US));
         }
 
         public void addRoom(String address) {
             if (address == null) {
                 return;
             }
-            roomAddressTable.put(address.toLowerCase(), address);
+            roomAddressTable.put(address.toLowerCase(Locale.US), address);
         }
 
         public void removeRoom(String address) {
             if (address == null) {
                 return;
             }
-            roomAddressTable.remove(address.toLowerCase());
+            roomAddressTable.remove(address.toLowerCase(Locale.US));
         }
     }
 
@@ -191,7 +192,7 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
             }
 
             PacketMultiplexListener listener =
-                    roomListenersByAddress.get(StringUtils.parseBareAddress(from).toLowerCase());
+                    roomListenersByAddress.get(StringUtils.parseBareAddress(from).toLowerCase(Locale.US));
 
             if (listener != null) {
                 listener.processPacket(p);
@@ -202,14 +203,14 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
             if (address == null) {
                 return;
             }
-            roomListenersByAddress.put(address.toLowerCase(), listener);
+            roomListenersByAddress.put(address.toLowerCase(Locale.US), listener);
         }
 
         public void removeRoom(String address) {
             if (address == null) {
                 return;
             }
-            roomListenersByAddress.remove(address.toLowerCase());
+            roomListenersByAddress.remove(address.toLowerCase(Locale.US));
         }
     }
 }

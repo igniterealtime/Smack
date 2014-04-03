@@ -802,7 +802,7 @@ public class PacketParserUtilsTest {
         Locale[] availableLocales = Locale.getAvailableLocales();
         for (int i = 0; i < availableLocales.length; i++) {
             if (availableLocales[i] != Locale.getDefault()) {
-                otherLanguage = availableLocales[i].getLanguage().toLowerCase();
+                otherLanguage = availableLocales[i].getLanguage().toLowerCase(Locale.US);
                 break;
             }
         }

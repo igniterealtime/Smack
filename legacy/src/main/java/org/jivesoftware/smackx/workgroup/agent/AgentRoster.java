@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -180,7 +181,7 @@ public class AgentRoster {
         synchronized (entries) {
             for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                 String entry = i.next();
-                if (entry.toLowerCase().equals(jid.toLowerCase())) {
+                if (entry.toLowerCase(Locale.US).equals(jid.toLowerCase())) {
                     return true;
                 }
             }
@@ -248,7 +249,7 @@ public class AgentRoster {
     private String getPresenceMapKey(String user) {
         String key = user;
         if (!contains(user)) {
-            key = StringUtils.parseBareAddress(user).toLowerCase();
+            key = StringUtils.parseBareAddress(user).toLowerCase(Locale.US);
         }
         return key;
     }
@@ -322,7 +323,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = i.next();
-                        if (entry.toLowerCase().equals(StringUtils.parseBareAddress(key).toLowerCase())) {
+                        if (entry.toLowerCase(Locale.US).equals(StringUtils.parseBareAddress(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }
@@ -343,7 +344,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = (String)i.next();
-                        if (entry.toLowerCase().equals(StringUtils.parseBareAddress(key).toLowerCase())) {
+                        if (entry.toLowerCase(Locale.US).equals(StringUtils.parseBareAddress(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }

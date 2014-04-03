@@ -109,7 +109,7 @@ public class RosterPacket extends IQ {
          * @param name the user's name.
          */
         public Item(String user, String name) {
-            this.user = user.toLowerCase();
+            this.user = user.toLowerCase(Locale.US);
             this.name = name;
             itemType = null;
             itemStatus = null;

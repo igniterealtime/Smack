@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import java.util.Locale;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
@@ -48,6 +50,6 @@ public enum FormNodeType
 		{
 			return CONFIGURE_OWNER;
 		}
-		return valueOf(elem.toUpperCase());
+		return valueOf(elem.toUpperCase(Locale.US));
 	}
 }

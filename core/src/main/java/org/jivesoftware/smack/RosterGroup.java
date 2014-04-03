@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -122,7 +123,7 @@ public class RosterGroup {
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
         user = StringUtils.parseBareAddress(user);
-        String userLowerCase = user.toLowerCase();
+        String userLowerCase = user.toLowerCase(Locale.US);
         synchronized (entries) {
             for (RosterEntry entry : entries) {
                 if (entry.getUser().equals(userLowerCase)) {

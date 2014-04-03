@@ -54,6 +54,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Creates a socket connection to a XMPP server. This is the default connection
@@ -223,7 +224,7 @@ public class TCPConnection extends XMPPConnection {
             throw new AlreadyLoggedInException();
         }
         // Do partial version of nameprep on the username.
-        username = username.toLowerCase().trim();
+        username = username.toLowerCase(Locale.US).trim();
 
         String response;
         if (saslAuthentication.hasNonAnonymousAuthentication()) {

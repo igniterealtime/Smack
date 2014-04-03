@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
@@ -39,7 +41,7 @@ public class OpenIQProvider implements IQProvider {
             stanza = StanzaType.IQ;
         }
         else {
-            stanza = StanzaType.valueOf(stanzaValue.toUpperCase());
+            stanza = StanzaType.valueOf(stanzaValue.toUpperCase(Locale.US));
         }
 
         return new Open(sessionID, blockSize, stanza);

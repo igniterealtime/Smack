@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -169,7 +170,7 @@ public class MultiUserChat {
      */
     public MultiUserChat(XMPPConnection connection, String room) {
         this.connection = connection;
-        this.room = room.toLowerCase();
+        this.room = room.toLowerCase(Locale.US);
         init();
     }
 

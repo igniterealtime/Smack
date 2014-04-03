@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import java.util.Locale;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
@@ -75,9 +77,9 @@ public enum PubSubElementType
 		
 		if (fragment != null)
 		{
-			return valueOf((elemName + '_' + fragment).toUpperCase());
+			return valueOf((elemName + '_' + fragment).toUpperCase(Locale.US));
 		}
-		return valueOf(elemName.toUpperCase().replace('-', '_'));
+		return valueOf(elemName.toUpperCase(Locale.US).replace('-', '_'));
 	}
 
 }

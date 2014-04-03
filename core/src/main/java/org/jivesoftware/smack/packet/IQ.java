@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -202,7 +204,7 @@ public abstract class IQ extends Packet {
             if (type == null) {
                 return null;
             }
-            type = type.toLowerCase();
+            type = type.toLowerCase(Locale.US);
             if (GET.toString().equals(type)) {
                 return GET;
             }

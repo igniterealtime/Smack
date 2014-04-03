@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -157,7 +158,7 @@ public class XMPPError {
         buf.append("<error");
         if (type != null) {
             buf.append(" type=\"");
-            buf.append(type.name().toLowerCase());
+            buf.append(type.name().toLowerCase(Locale.US));
             buf.append("\"");
         }
         buf.append(">");

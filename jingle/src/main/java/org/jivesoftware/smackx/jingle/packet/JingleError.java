@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.jingle.packet;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.jingle.media.ContentInfo;
@@ -87,7 +89,7 @@ public class JingleError implements PacketExtension {
      */
     public static JingleError fromString(String value) {
         if (value != null) {
-            value = value.toLowerCase();
+            value = value.toLowerCase(Locale.US);
             if (value.equals("out-of-order")) {
                 return OUT_OF_ORDER;
             } else if (value.equals("unknown-session")) {

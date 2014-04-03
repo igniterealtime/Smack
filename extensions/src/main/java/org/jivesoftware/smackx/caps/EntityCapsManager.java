@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 import java.util.SortedSet;
@@ -278,7 +279,7 @@ public class EntityCapsManager extends Manager {
                 CapsExtension ext = (CapsExtension) packet.getExtension(EntityCapsManager.ELEMENT,
                         EntityCapsManager.NAMESPACE);
 
-                String hash = ext.getHash().toLowerCase();
+                String hash = ext.getHash().toLowerCase(Locale.US);
                 if (!SUPPORTED_HASHES.containsKey(hash))
                     return;
 
@@ -560,7 +561,7 @@ public class EntityCapsManager extends Manager {
      *         supported
      */
     protected static String generateVerificationString(DiscoverInfo discoverInfo, String hash) {
-        MessageDigest md = SUPPORTED_HASHES.get(hash.toLowerCase());
+        MessageDigest md = SUPPORTED_HASHES.get(hash.toLowerCase(Locale.US));
         if (md == null)
             return null;
 

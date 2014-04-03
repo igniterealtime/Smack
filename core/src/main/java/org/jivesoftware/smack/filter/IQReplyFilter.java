@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.filter;
 
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,9 +87,9 @@ public class IQReplyFilter implements PacketFilter {
             // in an early stage, i.e. when performing the SASL auth.
             local = null;
         } else {
-            local = conn.getUser().toLowerCase();
+            local = conn.getUser().toLowerCase(Locale.US);
         }
-        server = conn.getServiceName().toLowerCase();
+        server = conn.getServiceName().toLowerCase(Locale.US);
         packetId = iqPacket.getPacketID();
 
         PacketFilter iqFilter = new OrFilter(new IQTypeFilter(IQ.Type.ERROR), new IQTypeFilter(IQ.Type.RESULT));
@@ -101,7 +102,7 @@ public class IQReplyFilter implements PacketFilter {
                 fromFilter.addFilter(FromMatchesFilter.createBare(local));
             fromFilter.addFilter(FromMatchesFilter.createFull(server));
         }
-        else if (local != null && to.toLowerCase().equals(StringUtils.parseBareAddress(local))) {
+        else if (local != null && to.toLowerCase(Locale.US).equals(StringUtils.parseBareAddress(local))) {
             fromFilter.addFilter(FromMatchesFilter.createFull(null));
         }
     }

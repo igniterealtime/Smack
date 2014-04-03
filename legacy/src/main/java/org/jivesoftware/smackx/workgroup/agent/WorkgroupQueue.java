@@ -194,7 +194,7 @@ public class WorkgroupQueue {
             if (type == null) {
                 return null;
             }
-            type = type.toLowerCase();
+            type = type.toLowerCase(Locale.US);
             if (OPEN.toString().equals(type)) {
                 return OPEN;
             }

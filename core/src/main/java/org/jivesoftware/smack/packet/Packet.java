@@ -44,7 +44,7 @@ public abstract class Packet {
     private static final Logger LOGGER = Logger.getLogger(Packet.class.getName());
     
     protected static final String DEFAULT_LANGUAGE =
-            java.util.Locale.getDefault().getLanguage().toLowerCase();
+            java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
     private static String DEFAULT_XML_NS = null;
 

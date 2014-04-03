@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle.media;
 
+import java.util.Locale;
+
 /**
  * Content info. Content info messages are complementary messages that can be
  * transmitted for informing of events like "busy", "ringtone", etc.
@@ -55,7 +57,7 @@ public abstract class ContentInfo {
          * Returns the MediaInfo constant associated with the String value.
          */
         public static ContentInfo fromString(String value) {
-            value = value.toLowerCase();
+            value = value.toLowerCase(Locale.US);
             if (value.equals("busy")) {
                 return BUSY;
             } else if (value.equals("hold")) {

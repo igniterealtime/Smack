@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -247,7 +248,7 @@ public class BOSHConnection extends XMPPConnection {
             throw new AlreadyLoggedInException();
         }
         // Do partial version of nameprep on the username.
-        username = username.toLowerCase().trim();
+        username = username.toLowerCase(Locale.US).trim();
 
         String response;
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
