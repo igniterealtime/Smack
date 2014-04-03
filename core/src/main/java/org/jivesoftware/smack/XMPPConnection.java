@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 
 import javax.security.sasl.SaslException;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
@@ -931,8 +932,24 @@ public abstract class XMPPConnection {
         rosterVersioningSupported = true;
     }
 
+    /**
+     * Returns the current value of the reply timeout in milliseconds for request for this
+     * XMPPConnection instance.
+     *
+     * @return the packet reply timeout in milliseconds
+     */
     public long getPacketReplyTimeout() {
         return packetReplyTimeout;
+    }
+
+    /**
+     * Set the packet reply timeout in milliseconds. In most cases, Smack will throw a
+     * {@link NoResponseException} if no reply to a request was received within the timeout period.
+     *
+     * @param timeout the packet reply timeout in milliseconds
+     */
+    public void setPacketReplyTimeout(long timeout) {
+        packetReplyTimeout = timeout;
     }
 
     /**
