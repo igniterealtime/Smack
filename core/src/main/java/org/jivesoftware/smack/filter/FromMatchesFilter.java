@@ -93,8 +93,10 @@ public class FromMatchesFilter implements PacketFilter {
         if (from == null) {
             return address == null;
         }
+        // Simplest form of NAMEPREP/STRINGPREP
+        from = from.toLowerCase(Locale.US);
         if (matchBareJID) {
-            from = StringUtils.parseBareAddress(from).toLowerCase();
+            from = StringUtils.parseBareAddress(from);
         }
         return from.equals(address);
     }
