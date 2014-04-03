@@ -40,7 +40,6 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -377,7 +376,7 @@ public class MultiUserChat {
     /**
      * Joins the chat room using the specified nickname. If already joined
      * using another nickname, this method will first leave the room and then
-     * re-join using the new nickname. The default timeout of Smack for a reply
+     * re-join using the new nickname. The default connection timeout for a reply
      * from the group chat server that the join succeeded will be used. After
      * joining the room, the room will decide the amount of history to send.
      *
@@ -393,13 +392,13 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void join(String nickname) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        join(nickname, null, null, SmackConfiguration.getDefaultPacketReplyTimeout());
+        join(nickname, null, null, connection.getPacketReplyTimeout());
     }
 
     /**
      * Joins the chat room using the specified nickname and password. If already joined
      * using another nickname, this method will first leave the room and then
-     * re-join using the new nickname. The default timeout of Smack for a reply
+     * re-join using the new nickname. The default connection timeout for a reply
      * from the group chat server that the join succeeded will be used. After
      * joining the room, the room will decide the amount of history to send.<p>
      *
@@ -417,7 +416,7 @@ public class MultiUserChat {
      * @throws SmackException if there was no response from the server.
      */
     public void join(String nickname, String password) throws XMPPErrorException, SmackException {
-        join(nickname, password, null, SmackConfiguration.getDefaultPacketReplyTimeout());
+        join(nickname, password, null, connection.getPacketReplyTimeout());
     }
 
     /**
