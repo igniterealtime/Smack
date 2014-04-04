@@ -17,6 +17,13 @@
 
 package org.jivesoftware.smackx.bookmarks;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -25,7 +32,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
 
-import java.util.*;
 
 /**
  * Provides methods to manage bookmarks in accordance with JEP-0048. Methods for managing URLs and
@@ -38,7 +44,8 @@ import java.util.*;
  * @author Alexander Wenckus
  */
 public class BookmarkManager {
-    private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new HashMap<XMPPConnection, BookmarkManager>();
+    private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new WeakHashMap<XMPPConnection, BookmarkManager>();
+
     static {
         PrivateDataManager.addPrivateDataProvider("storage", "storage:bookmarks",
                 new Bookmarks.Provider());
@@ -60,7 +67,6 @@ public class BookmarkManager {
         BookmarkManager manager = (BookmarkManager) bookmarkManagerMap.get(connection);
         if (manager == null) {
             manager = new BookmarkManager(connection);
-            bookmarkManagerMap.put(connection, manager);
         }
         return manager;
     }
@@ -74,17 +80,10 @@ public class BookmarkManager {
      * storage:bookmarks namespace.
      *
      * @param connection the connection for persisting and retrieving bookmarks.
-     * @throws SmackException thrown has not been authenticated.
-     * @throws IllegalArgumentException when the connection is null.
      */
     private BookmarkManager(XMPPConnection connection) throws XMPPException, SmackException {
-        if (connection == null) {
-            throw new IllegalArgumentException("connection must not be null.");
-        }
-        if (!connection.isAuthenticated()) {
-            throw new SmackException("connection not authenticated.");
-        }
-        this.privateDataManager = new PrivateDataManager(connection);
+        privateDataManager = PrivateDataManager.getInstanceFor(connection);
+        bookmarkManagerMap.put(connection, this);
     }
 
     /**

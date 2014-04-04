@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.iqprivate;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -30,6 +31,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Manages private data, which is a mechanism to allow users to store arbitrary XML
@@ -53,7 +55,16 @@ import java.util.Map;
  *
  * @author Matt Tucker
  */
-public class PrivateDataManager {
+public class PrivateDataManager extends Manager {
+    private static final Map<XMPPConnection, PrivateDataManager> instances = new WeakHashMap<XMPPConnection, PrivateDataManager>();
+
+    public static synchronized PrivateDataManager getInstanceFor(XMPPConnection connection) {
+        PrivateDataManager privateDataManager = instances.get(connection);
+        if (connection == null) {
+            privateDataManager = new PrivateDataManager(connection);
+        }
+        return privateDataManager;
+    }
 
     /**
      * Map of provider instances.
@@ -113,49 +124,15 @@ public class PrivateDataManager {
         privateDataProviders.remove(key);
     }
 
-
-    private XMPPConnection connection;
-
     /**
-     * The user to get and set private data for. In most cases, this value should
-     * be <tt>null</tt>, as the typical use of private data is to get and set
-     * your own private data and not others.
-     */
-    private String user;
-
-    /**
-     * Creates a new private data manager. The connection must have
-     * undergone a successful login before being used to construct an instance of
-     * this class.
+     * Creates a new private data manager.
      *
      * @param connection an XMPP connection which must have already undergone a
      *      successful login.
      */
-    public PrivateDataManager(XMPPConnection connection) {
-        if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Must be logged in to XMPP server.");
-        }
-        this.connection = connection;
-    }
-
-    /**
-     * Creates a new private data manager for a specific user (special case). Most
-     * servers only support getting and setting private data for the user that
-     * authenticated via the connection. However, some servers support the ability
-     * to get and set private data for other users (for example, if you are the
-     * administrator). The connection must have undergone a successful login before
-     * being used to construct an instance of this class.
-     *
-     * @param connection an XMPP connection which must have already undergone a
-     *      successful login.
-     * @param user the XMPP address of the user to get and set private data for.
-     */
-    public PrivateDataManager(XMPPConnection connection, String user) {
-        if (!connection.isAuthenticated()) {
-            throw new IllegalStateException("Must be logged in to XMPP server.");
-        }
-        this.connection = connection;
-        this.user = user;
+    private PrivateDataManager(XMPPConnection connection) {
+        super(connection);
+        instances.put(connection, this);
     }
 
     /**
@@ -186,12 +163,8 @@ public class PrivateDataManager {
             }
         };
         privateDataGet.setType(IQ.Type.GET);
-        // Address the packet to the other account if user has been set.
-        if (user != null) {
-            privateDataGet.setTo(user);
-        }
 
-        PrivateDataResult response = (PrivateDataResult) connection.createPacketCollectorAndSend(
+        PrivateDataResult response = (PrivateDataResult) connection().createPacketCollectorAndSend(
                         privateDataGet).nextResultOrThrow();
         return response.getPrivateData();
     }
@@ -218,12 +191,8 @@ public class PrivateDataManager {
             }
         };
         privateDataSet.setType(IQ.Type.SET);
-        // Address the packet to the other account if user has been set.
-        if (user != null) {
-            privateDataSet.setTo(user);
-        }
 
-        connection.createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
+        connection().createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
     }
 
     /**
