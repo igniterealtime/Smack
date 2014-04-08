@@ -371,6 +371,7 @@ public abstract class Packet {
         // Add in packet properties.
         if (properties != null && !properties.isEmpty()) {
             xml.halfOpenElement("properties").xmlnsAttribute("http://www.jivesoftware.com/xmlns/xmpp/properties");
+            xml.rightAngelBracket();
             // Loop through all properties and write them out.
             for (String name : getPropertyNames()) {
                 Object value = getProperty(name);
