@@ -17,7 +17,7 @@ Key Advantages :
     XMPPConnection connection = new TCPConnection("jabber.org");
     connection.connect();
     connection.login("mtucker", "password");
-    Chat chat = connection.getChatManager()
+    Chat chat = ChatManager.getInstanceFor(connection)
         .createChat("jsmith@jivesoftware.com", new MessageListener() {
 
         public void processMessage(Chat chat, Message message) {
