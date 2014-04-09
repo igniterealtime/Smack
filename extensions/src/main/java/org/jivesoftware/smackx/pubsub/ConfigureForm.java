@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.pubsub;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smackx.xdata.Form;
@@ -123,9 +122,9 @@ public class ConfigureForm extends Form
 	/**
 	 * The id's of the child nodes associated with a collection node (both leaf and collection).
 	 * 
-	 * @return Iterator over the list of child nodes.
+	 * @return list of child nodes.
 	 */
-	public Iterator<String> getChildren()
+	public List<String> getChildren()
 	{
 		return getFieldValues(ConfigureNodeFields.children);
 	}
@@ -170,13 +169,13 @@ public class ConfigureForm extends Form
 	}
 	
 	/**
-	 * Iterator of JID's that are on the whitelist that determines who can associate child nodes 
+	 * List of JID's that are on the whitelist that determines who can associate child nodes 
 	 * with the collection node.  This is only relevant if {@link #getChildrenAssociationPolicy()} is set to
 	 * {@link ChildrenAssociationPolicy#whitelist}.
 	 * 
-	 * @return Iterator over whitelist
+	 * @return List of the whitelist
 	 */
-	public Iterator<String> getChildrenAssociationWhitelist()
+	public List<String> getChildrenAssociationWhitelist()
 	{
 		return getFieldValues(ConfigureNodeFields.children_association_whitelist);
 	}
@@ -512,11 +511,11 @@ public class ConfigureForm extends Form
 	}
 	
 	/**
-	 * Iterator over the multi user chat rooms that are specified as reply rooms.
+	 * List of the multi user chat rooms that are specified as reply rooms.
 	 * 
 	 * @return The reply room JID's
 	 */
-	public Iterator<String> getReplyRoom()
+	public List<String> getReplyRoom()
 	{
 		return getFieldValues(ConfigureNodeFields.replyroom);
 	}
@@ -537,7 +536,7 @@ public class ConfigureForm extends Form
 	 *  
 	 * @return The JID's
 	 */
-	public Iterator<String> getReplyTo()
+	public List<String> getReplyTo()
 	{
 		return getFieldValues(ConfigureNodeFields.replyto);
 	}
@@ -558,7 +557,7 @@ public class ConfigureForm extends Form
 	 *  
 	 * @return The roster groups
 	 */
-	public Iterator<String> getRosterGroupsAllowed()
+	public List<String> getRosterGroupsAllowed()
 	{
 		return getFieldValues(ConfigureNodeFields.roster_groups_allowed);
 	}
@@ -642,23 +641,18 @@ public class ConfigureForm extends Form
 	{
 		StringBuilder result = new StringBuilder(getClass().getName() + " Content [");
 		
-		Iterator<FormField> fields = getFields();
-		
-		while (fields.hasNext())
+		for (FormField formField : getFields())
 		{
-			FormField formField = fields.next();
 			result.append('(');
 			result.append(formField.getVariable());
 			result.append(':');
 			
-			Iterator<String> values = formField.getValues();
 			StringBuilder valuesBuilder = new StringBuilder();
 				
-			while (values.hasNext())
+			for (String value : formField.getValues())
 			{
 				if (valuesBuilder.length() > 0)
 					result.append(',');
-				String value = (String)values.next();
 				valuesBuilder.append(value);
 			}
 			
@@ -680,10 +674,10 @@ public class ConfigureForm extends Form
 	{
 		FormField formField = getField(field.getFieldName());
 		
-		return (formField.getValues().hasNext()) ? formField.getValues().next() : null;
+		return (formField.getValues().isEmpty()) ? null : formField.getValues().get(0);
 	}
 
-	private Iterator<String> getFieldValues(ConfigureNodeFields field)
+	private List<String> getFieldValues(ConfigureNodeFields field)
 	{
 		FormField formField = getField(field.getFieldName());
 		

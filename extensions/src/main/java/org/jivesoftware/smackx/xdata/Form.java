@@ -342,8 +342,8 @@ public class Form {
             // Clear the old values
             field.resetValues();
             // Set the default value
-            for (Iterator<String> it = field.getValues(); it.hasNext();) {
-                field.addValue(it.next());
+            for (String value : field.getValues()) {
+                field.addValue(value);
             }
         }
         else {
@@ -352,11 +352,11 @@ public class Form {
     }
 
     /**
-     * Returns an Iterator for the fields that are part of the form.
+     * Returns a List of the fields that are part of the form.
      *
-     * @return an Iterator for the fields that are part of the form.
+     * @return a List of the fields that are part of the form.
      */
-    public Iterator<FormField> getFields() {
+    public List<FormField> getFields() {
         return dataForm.getFields();
     }
 
@@ -373,9 +373,7 @@ public class Form {
             throw new IllegalArgumentException("Variable must not be null or blank.");
         }
         // Look for the field whose variable matches the requested variable
-        FormField field;
-        for (Iterator<FormField> it=getFields();it.hasNext();) {
-            field = it.next();
+        for (FormField field : getFields()) {
             if (variable.equals(field.getVariable())) {
                 return field;
             }
@@ -391,7 +389,7 @@ public class Form {
     public String getInstructions() {
         StringBuilder sb = new StringBuilder();
         // Join the list of instructions together separated by newlines
-        for (Iterator<String> it = dataForm.getInstructions(); it.hasNext();) {
+        for (Iterator<String> it = dataForm.getInstructions().iterator(); it.hasNext();) {
             sb.append(it.next());
             // If this is not the last instruction then append a newline
             if (it.hasNext()) {
@@ -472,9 +470,8 @@ public class Form {
         if (isSubmitType()) {
             // Create a new DataForm that contains only the answered fields 
             DataForm dataFormToSend = new DataForm(getType());
-            for(Iterator<FormField> it=getFields();it.hasNext();) {
-                FormField field = it.next();
-                if (field.getValues().hasNext()) {
+            for(FormField field : getFields()) {
+                if (!field.getValues().isEmpty()) {
                     dataFormToSend.addField(field);
                 }
             }
@@ -521,8 +518,7 @@ public class Form {
         }
         // Create a new Form
         Form form = new Form(TYPE_SUBMIT);
-        for (Iterator<FormField> fields=getFields(); fields.hasNext();) {
-            FormField field = fields.next();
+        for (FormField field : getFields()) {
             // Add to the new form any type of field that includes a variable.
             // Note: The fields of type FIXED are the only ones that don't specify a variable
             if (field.getVariable() != null) {
@@ -534,11 +530,11 @@ public class Form {
                     // Since a hidden field could have many values we need to collect them 
                     // in a list
                     List<String> values = new ArrayList<String>();
-                    for (Iterator<String> it=field.getValues();it.hasNext();) {
-                        values.add(it.next());
+                    for (String value : field.getValues()) {
+                        values.add(value);
                     }
                     form.setAnswer(field.getVariable(), values);
-                }                
+                }
             }
         }
         return form;

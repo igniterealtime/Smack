@@ -22,7 +22,6 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -65,9 +64,7 @@ class SimpleUserSearch extends IQ {
             return "";
         }
 
-        Iterator<FormField> fields = form.getFields();
-        while (fields.hasNext()) {
-            FormField field = fields.next();
+        for (FormField field : form.getFields()) {
             String name = field.getVariable();
             String value = getSingleValue(field);
             if (value.trim().length() > 0) {
@@ -79,11 +76,12 @@ class SimpleUserSearch extends IQ {
     }
 
     private static String getSingleValue(FormField formField) {
-        Iterator<String> values = formField.getValues();
-        while (values.hasNext()) {
-            return values.next();
+        List<String> values = formField.getValues();
+        if (values.isEmpty()) {
+            return "";
+        } else {
+            return values.get(0);
         }
-        return "";
     }
 
     protected void parseItems(XmlPullParser parser) throws Exception {
@@ -121,11 +119,10 @@ class SimpleUserSearch extends IQ {
                 fields.add(field);
 
                 boolean exists = false;
-                Iterator<ReportedData.Column> cols = data.getColumns();
-                while (cols.hasNext()) {
-                    ReportedData.Column column = cols.next();
+                for (ReportedData.Column column : data.getColumns()) {
                     if (column.getVariable().equals(name)) {
                         exists = true;
+                        break;
                     }
                 }
 

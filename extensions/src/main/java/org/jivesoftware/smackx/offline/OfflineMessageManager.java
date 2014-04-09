@@ -37,7 +37,6 @@ import org.jivesoftware.smackx.offline.packet.OfflineMessageRequest;
 import org.jivesoftware.smackx.xdata.Form;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -99,49 +98,49 @@ public class OfflineMessageManager {
                 namespace);
         Form extendedInfo = Form.getFormFrom(info);
         if (extendedInfo != null) {
-            String value = extendedInfo.getField("number_of_messages").getValues().next();
+            String value = extendedInfo.getField("number_of_messages").getValues().get(0);
             return Integer.parseInt(value);
         }
         return 0;
     }
 
     /**
-     * Returns an iterator on <tt>OfflineMessageHeader</tt> that keep information about the
+     * Returns a List of <tt>OfflineMessageHeader</tt> that keep information about the
      * offline message. The OfflineMessageHeader includes a stamp that could be used to retrieve
      * the complete message or delete the specific message.
      *
-     * @return an iterator on <tt>OfflineMessageHeader</tt> that keep information about the offline
+     * @return a List of <tt>OfflineMessageHeader</tt> that keep information about the offline
      *         message.
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Iterator<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException, NotConnectedException {
         List<OfflineMessageHeader> answer = new ArrayList<OfflineMessageHeader>();
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                 null, namespace);
         for (DiscoverItems.Item item : items.getItems()) {
             answer.add(new OfflineMessageHeader(item));
         }
-        return answer.iterator();
+        return answer;
     }
 
     /**
-     * Returns an Iterator with the offline <tt>Messages</tt> whose stamp matches the specified
+     * Returns a List of the offline <tt>Messages</tt> whose stamp matches the specified
      * request. The request will include the list of stamps that uniquely identifies
      * the offline messages to retrieve. The returned offline messages will not be deleted
      * from the server. Use {@link #deleteMessages(java.util.List)} to delete the messages.
      *
      * @param nodes the list of stamps that uniquely identifies offline message.
-     * @return an Iterator with the offline <tt>Messages</tt> that were received as part of
+     * @return a List with the offline <tt>Messages</tt> that were received as part of
      *         this request.
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Iterator<Message> getMessages(final List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Message> getMessages(final List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException {
         List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         for (String node : nodes) {
@@ -169,7 +168,7 @@ public class OfflineMessageManager {
         }
         // Stop queuing offline messages
         messageCollector.cancel();
-        return messages.iterator();
+        return messages;
     }
 
     /**
@@ -177,13 +176,13 @@ public class OfflineMessageManager {
      * messages will not be deleted from the server. Use {@link #deleteMessages(java.util.List)}
      * to delete the messages.
      *
-     * @return an Iterator with all the offline <tt>Messages</tt> of the user.
+     * @return a List with all the offline <tt>Messages</tt> of the user.
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Iterator<Message> getMessages() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Message> getMessages() throws NoResponseException, XMPPErrorException, NotConnectedException {
         List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
@@ -200,7 +199,7 @@ public class OfflineMessageManager {
         }
         // Stop queuing offline messages
         messageCollector.cancel();
-        return messages.iterator();
+        return messages;
     }
 
     /**

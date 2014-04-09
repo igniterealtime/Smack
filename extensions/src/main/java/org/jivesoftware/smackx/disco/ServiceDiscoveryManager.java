@@ -38,7 +38,6 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -314,8 +313,8 @@ public class ServiceDiscoveryManager extends Manager {
 
         // Add the registered features to the response
         synchronized (features) {
-            for (Iterator<String> it = getFeatures(); it.hasNext();) {
-                response.addFeature(it.next());
+            for (String feature : getFeatures()) {
+                response.addFeature(feature);
             }
             response.addExtension(extendedInfo);
         }
@@ -373,11 +372,11 @@ public class ServiceDiscoveryManager extends Manager {
     /**
      * Returns the supported features by this XMPP entity.
      * 
-     * @return an Iterator on the supported features by this XMPP entity.
+     * @return a List of the supported features by this XMPP entity.
      */
-    public Iterator<String> getFeatures() {
+    public List<String> getFeatures() {
         synchronized (features) {
-            return Collections.unmodifiableList(new ArrayList<String>(features)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(features));
         }
     }
 

@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.pubsub;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -450,14 +449,12 @@ abstract public class Node
 	        else
 	        {
 				ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
-				Collection<? extends PacketExtension> pubItems = itemsElem.getItems();
 				@SuppressWarnings("unchecked")
-                Iterator<RetractItem> it = (Iterator<RetractItem>)pubItems.iterator();
+                Collection<RetractItem> pubItems = (Collection<RetractItem>) itemsElem.getItems();
 				List<String> items = new ArrayList<String>(pubItems.size());
 
-				while (it.hasNext())
+				for (RetractItem item : pubItems)
 				{
-					RetractItem item = it.next();
 					items.add(item.getId());
 				}
 

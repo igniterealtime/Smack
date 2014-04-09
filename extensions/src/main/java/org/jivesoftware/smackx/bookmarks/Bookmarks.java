@@ -23,7 +23,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -167,9 +166,7 @@ public class Bookmarks implements PrivateData {
         StringBuilder buf = new StringBuilder();
         buf.append("<storage xmlns=\"storage:bookmarks\">");
 
-        final Iterator<BookmarkedURL> urls = getBookmarkedURLS().iterator();
-        while (urls.hasNext()) {
-            BookmarkedURL urlStorage = urls.next();
+        for (BookmarkedURL urlStorage : getBookmarkedURLS()) {
             if(urlStorage.isShared()) {
                 continue;
             }
@@ -182,9 +179,7 @@ public class Bookmarks implements PrivateData {
         }
 
         // Add Conference additions
-        final Iterator<BookmarkedConference> conferences = getBookmarkedConferences().iterator();
-        while (conferences.hasNext()) {
-            BookmarkedConference conference = conferences.next();
+        for (BookmarkedConference conference : getBookmarkedConferences()) {
             if(conference.isShared()) {
                 continue;
             }

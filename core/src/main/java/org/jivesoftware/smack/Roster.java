@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -583,17 +582,18 @@ public class Roster {
      * updates.
      *
      * @param user a XMPP ID, e.g. jdoe@example.com.
-     * @return an iterator (of Presence objects) for all the user's current presences,
+     * @return an Collection (of Presence objects) for all the user's current presences,
      *         or an unavailable presence if the user is offline or if no presence information
      *         is available.
      */
-    public Iterator<Presence> getPresences(String user) {
+    public Collection<Presence> getPresences(String user) {
+        Collection<Presence> res;
         String key = getPresenceMapKey(user);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(user);
-            return Arrays.asList(presence).iterator();
+            res = Arrays.asList(presence);
         }
         else {
             Collection<Presence> answer = new ArrayList<Presence>();
@@ -603,14 +603,15 @@ public class Roster {
                 }
             }
             if (!answer.isEmpty()) {
-                return answer.iterator();
+                res = answer;
             }
             else {
                 Presence presence = new Presence(Presence.Type.unavailable);
                 presence.setFrom(user);
-                return Arrays.asList(presence).iterator();    
+                res = Arrays.asList(presence);
             }
         }
+        return Collections.unmodifiableCollection(res);
     }
 
     /**

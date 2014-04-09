@@ -26,7 +26,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to 
@@ -55,7 +55,7 @@ public class XHTMLManager {
      * @param message an XHTML message
      * @return an Iterator for the bodies in the message or null if none.
      */
-    public static Iterator<String> getBodies(Message message) {
+    public static List<String> getBodies(Message message) {
         XHTMLExtension xhtmlExtension = (XHTMLExtension) message.getExtension("html", namespace);
         if (xhtmlExtension != null)
             return xhtmlExtension.getBodies();

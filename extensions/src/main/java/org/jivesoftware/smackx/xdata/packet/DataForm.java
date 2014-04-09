@@ -23,7 +23,6 @@ import org.jivesoftware.smackx.xdata.FormField;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -76,16 +75,16 @@ public class DataForm implements PacketExtension {
     }
 
     /**
-     * Returns an Iterator for the list of instructions that explain how to fill out the form and 
+     * Returns a List of the list of instructions that explain how to fill out the form and 
      * what the form is about. The dataform could include multiple instructions since each 
      * instruction could not contain newlines characters. Join the instructions together in order 
-     * to show them to the user.    
+     * to show them to the user.
      * 
-     * @return an Iterator for the list of instructions that explain how to fill out the form.
+     * @return a List of the list of instructions that explain how to fill out the form.
      */
-    public Iterator<String> getInstructions() {
+    public List<String> getInstructions() {
         synchronized (instructions) {
-            return Collections.unmodifiableList(new ArrayList<String>(instructions)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(instructions));
         }
     }
 
@@ -99,24 +98,24 @@ public class DataForm implements PacketExtension {
     }
 
     /**
-     * Returns an Iterator for the items returned from a search.
+     * Returns a List of the items returned from a search.
      *
-     * @return an Iterator for the items returned from a search.
+     * @return a List of the items returned from a search.
      */
-    public Iterator<Item> getItems() {
+    public List<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList<Item>(items)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(items));
         }
     }
 
     /**
-     * Returns an Iterator for the fields that are part of the form.
+     * Returns a List of the fields that are part of the form.
      *
-     * @return an Iterator for the fields that are part of the form.
+     * @return a List of the fields that are part of the form.
      */
-    public Iterator<FormField> getFields() {
+    public List<FormField> getFields() {
         synchronized (fields) {
-            return Collections.unmodifiableList(new ArrayList<FormField>(fields)).iterator();
+            return Collections.unmodifiableList(new ArrayList<FormField>(fields));
         }
     }
 
@@ -215,21 +214,19 @@ public class DataForm implements PacketExtension {
         if (getTitle() != null) {
             buf.append("<title>").append(getTitle()).append("</title>");
         }
-        for (Iterator<String> it=getInstructions(); it.hasNext();) {
-            buf.append("<instructions>").append(it.next()).append("</instructions>");
+        for (String instruction : getInstructions()) {
+            buf.append("<instructions>").append(instruction).append("</instructions>");
         }
         // Append the list of fields returned from a search
         if (getReportedData() != null) {
             buf.append(getReportedData().toXML());
         }
         // Loop through all the items returned from a search and append them to the string buffer
-        for (Iterator<Item> i = getItems(); i.hasNext();) {
-            Item item = i.next();
+        for (Item item : getItems()) {
             buf.append(item.toXML());
         }
         // Loop through all the form fields and append them to the string buffer
-        for (Iterator<FormField> i = getFields(); i.hasNext();) {
-            FormField field = i.next();
+        for (FormField field : getFields()) {
             buf.append(field.toXML());
         }
         buf.append("</").append(getElementName()).append(">");
@@ -249,22 +246,21 @@ public class DataForm implements PacketExtension {
         public ReportedData(List<FormField> fields) {
             this.fields = fields;
         }
-        
+
         /**
          * Returns the fields returned from a search.
          * 
          * @return the fields returned from a search.
          */
-        public Iterator<FormField> getFields() {
-            return Collections.unmodifiableList(new ArrayList<FormField>(fields)).iterator();
+        public List<FormField> getFields() {
+            return Collections.unmodifiableList(new ArrayList<FormField>(fields));
         }
-        
+
         public String toXML() {
             StringBuilder buf = new StringBuilder();
             buf.append("<reported>");
             // Loop through all the form items and append them to the string buffer
-            for (Iterator<FormField> i = getFields(); i.hasNext();) {
-                FormField field = i.next();
+            for (FormField field : getFields()) {
                 buf.append(field.toXML());
             }
             buf.append("</reported>");
@@ -290,16 +286,15 @@ public class DataForm implements PacketExtension {
          * 
          * @return the fields that define the data that goes with the item.
          */
-        public Iterator<FormField> getFields() {
-            return Collections.unmodifiableList(new ArrayList<FormField>(fields)).iterator();
+        public List<FormField> getFields() {
+            return Collections.unmodifiableList(new ArrayList<FormField>(fields));
         }
         
         public String toXML() {
             StringBuilder buf = new StringBuilder();
             buf.append("<item>");
             // Loop through all the form items and append them to the string buffer
-            for (Iterator<FormField> i = getFields(); i.hasNext();) {
-                FormField field = i.next();
+            for (FormField field : getFields()) {
                 buf.append(field.toXML());
             }
             buf.append("</item>");

@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -129,9 +128,8 @@ public class MultiUserChat {
                             XMPPConnection connection = weakRefConnection.get();
                             if (connection == null) return new LinkedList<DiscoverItems.Item>();
                             List<DiscoverItems.Item> answer = new ArrayList<DiscoverItems.Item>();
-                            Iterator<String> rooms=MultiUserChat.getJoinedRooms(connection);
-                            while (rooms.hasNext()) {
-                                answer.add(new DiscoverItems.Item(rooms.next()));
+                            for (String room : MultiUserChat.getJoinedRooms(connection)) {
+                                answer.add(new DiscoverItems.Item(room));
                             }
                             return answer;
                         }
@@ -191,34 +189,34 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns an Iterator on the rooms where the user has joined using a given connection.
+     * Returns a List of the rooms where the user has joined using a given connection.
      * The Iterator will contain Strings where each String represents a room
      * (e.g. room@muc.jabber.org).
      *
      * @param connection the connection used to join the rooms.
-     * @return an Iterator on the rooms where the user has joined using a given connection.
+     * @return a List of the rooms where the user has joined using a given connection.
      */
-    private static Iterator<String> getJoinedRooms(XMPPConnection connection) {
+    private static List<String> getJoinedRooms(XMPPConnection connection) {
         List<String> rooms = joinedRooms.get(connection);
         if (rooms != null) {
-            return rooms.iterator();
+            return rooms;
         }
-        // Return an iterator on an empty collection (i.e. the user never joined a room)
-        return new ArrayList<String>().iterator();
+        // Return an empty collection (i.e. the user never joined a room)
+        return Collections.emptyList();
     }
 
     /**
-     * Returns an Iterator on the rooms where the requested user has joined. The Iterator will
+     * Returns a List of the rooms where the requested user has joined. The Iterator will
      * contain Strings where each String represents a room (e.g. room@muc.jabber.org).
      *
      * @param connection the connection to use to perform the service discovery.
      * @param user the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com.
-     * @return an Iterator on the rooms where the requested user has joined.
+     * @return a List of the rooms where the requested user has joined.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
      */
-    public static Iterator<String> getJoinedRooms(XMPPConnection connection, String user)
+    public static List<String> getJoinedRooms(XMPPConnection connection, String user)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         ArrayList<String> answer = new ArrayList<String>();
         // Send the disco packet to the user
@@ -228,7 +226,7 @@ public class MultiUserChat {
         for (DiscoverItems.Item item : result.getItems()) {
             answer.add(item.getEntityID());
         }
-        return answer.iterator();
+        return answer;
     }
 
     /**
@@ -1463,11 +1461,10 @@ public class MultiUserChat {
      * Note: this value will only be accurate after joining the group chat, and may
      * fluctuate over time.
      *
-     * @return an Iterator for the occupants in the group chat.
+     * @return a List of the occupants in the group chat.
      */
-    public Iterator<String> getOccupants() {
-        return Collections.unmodifiableList(new ArrayList<String>(occupantsMap.keySet()))
-                .iterator();
+    public List<String> getOccupants() {
+        return Collections.unmodifiableList(new ArrayList<String>(occupantsMap.keySet()));
     }
 
     /**
@@ -1595,8 +1592,8 @@ public class MultiUserChat {
 
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
-        for (Iterator<MUCAdmin.Item> it = answer.getItems(); it.hasNext();) {
-            affiliates.add(new Affiliate(it.next()));
+        for (MUCAdmin.Item mucadminItem : answer.getItems()) {
+            affiliates.add(new Affiliate(mucadminItem));
         }
         return affiliates;
     }
@@ -1646,8 +1643,8 @@ public class MultiUserChat {
         MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
         // Get the list of participants from the server's answer
         List<Occupant> participants = new ArrayList<Occupant>();
-        for (Iterator<MUCAdmin.Item> it = answer.getItems(); it.hasNext();) {
-            participants.add(new Occupant(it.next()));
+        for (MUCAdmin.Item mucadminItem : answer.getItems()) {
+            participants.add(new Occupant(mucadminItem));
         }
         return participants;
     }

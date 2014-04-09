@@ -27,7 +27,6 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -754,9 +753,7 @@ public class VCard extends IQ {
         }
 
         private void appendPhones(Map<String, String> phones, final String code) {
-            Iterator<Map.Entry<String, String>> it = phones.entrySet().iterator();
-            while (it.hasNext()) {
-                final Map.Entry<String,String> entry = it.next();
+            for (final Map.Entry<String,String> entry : phones.entrySet()) {
                 appendTag("TEL", true, new ContentBuilder() {
                     public void addTagContent() {
                         appendEmptyTag(entry.getKey());
@@ -773,9 +770,7 @@ public class VCard extends IQ {
                     public void addTagContent() {
                         appendEmptyTag(code);
 
-                        Iterator<Map.Entry<String, String>> it = addr.entrySet().iterator();
-                        while (it.hasNext()) {
-                            final Entry<String, String> entry = it.next();
+                        for (final Entry<String, String> entry : addr.entrySet()) {
                             appendTag(entry.getKey(), StringUtils.escapeForXML(entry.getValue()));
                         }
                     }
@@ -788,16 +783,12 @@ public class VCard extends IQ {
         }
 
         private void appendGenericFields() {
-            Iterator<Map.Entry<String, String>> it = otherSimpleFields.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, String> entry = it.next();
+            for (Map.Entry<String, String> entry : otherSimpleFields.entrySet()) {
                 appendTag(entry.getKey().toString(),
                         StringUtils.escapeForXML(entry.getValue()));
             }
 
-            it = otherUnescapableFields.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, String> entry = it.next();
+            for (Map.Entry<String, String> entry : otherUnescapableFields.entrySet()) {
                 appendTag(entry.getKey().toString(),entry.getValue());
             }
         }

@@ -21,7 +21,6 @@ import org.jivesoftware.smack.packet.PacketExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -82,21 +81,21 @@ public class XHTMLExtension implements PacketExtension {
         buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         // Loop through all the bodies and append them to the string buffer
-        for (Iterator<String> i = getBodies(); i.hasNext();) {
-            buf.append(i.next());
+        for (String body : getBodies()) {
+            buf.append(body);
         }
         buf.append("</").append(getElementName()).append(">");
         return buf.toString();
     }
 
     /**
-     * Returns an Iterator for the bodies in the packet.
+     * Returns a List of the bodies in the packet.
      *
-     * @return an Iterator for the bodies in the packet.
+     * @return a List of the bodies in the packet.
      */
-    public Iterator<String> getBodies() {
+    public List<String> getBodies() {
         synchronized (bodies) {
-            return Collections.unmodifiableList(new ArrayList<String>(bodies)).iterator();
+            return Collections.unmodifiableList(new ArrayList<String>(bodies));
         }
     }
 

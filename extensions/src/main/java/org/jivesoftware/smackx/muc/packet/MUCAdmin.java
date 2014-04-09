@@ -17,8 +17,8 @@
 
 package org.jivesoftware.smackx.muc.packet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -36,15 +36,15 @@ public class MUCAdmin extends IQ {
     private List<Item> items = new ArrayList<Item>();
 
     /**
-     * Returns an Iterator for item childs that holds information about roles, affiliation, 
+     * Returns a Collection of item childs that holds information about roles, affiliation, 
      * jids and nicks.
      * 
-     * @return an Iterator for item childs that holds information about roles, affiliation,
+     * @return a Collection of item childs that holds information about roles, affiliation,
      *          jids and nicks.
      */
-    public Iterator<Item> getItems() {
+    public Collection<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList<Item>(items)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Item>(items));
         }
     }
 

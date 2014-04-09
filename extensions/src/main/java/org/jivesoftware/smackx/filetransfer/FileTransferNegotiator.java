@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -280,15 +279,12 @@ public class FileTransferNegotiator {
     }
 
     private FormField getStreamMethodField(DataForm form) {
-        FormField field = null;
-        for (Iterator<FormField> it = form.getFields(); it.hasNext();) {
-            field = it.next();
+        for (FormField field : form.getFields()) {
             if (field.getVariable().equals(STREAM_DATA_FIELD_NAME)) {
-                break;
+                return field;
             }
-            field = null;
         }
-        return field;
+        return null;
     }
 
     private StreamNegotiator getNegotiator(final FormField field)
@@ -296,8 +292,8 @@ public class FileTransferNegotiator {
         String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
-        for (Iterator<FormField.Option> it = field.getOptions(); it.hasNext();) {
-            variable = it.next().getValue();
+        for (FormField.Option option : field.getOptions()) {
+            variable = option.getValue();
             if (variable.equals(Socks5BytestreamManager.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }
@@ -425,11 +421,9 @@ public class FileTransferNegotiator {
 
     private StreamNegotiator getOutgoingNegotiator(final FormField field)
             throws XMPPErrorException {
-        String variable;
         boolean isByteStream = false;
         boolean isIBB = false;
-        for (Iterator<String> it = field.getValues(); it.hasNext();) {
-            variable = it.next();
+        for (String variable : field.getValues()) {
             if (variable.equals(Socks5BytestreamManager.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }

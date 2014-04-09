@@ -21,7 +21,6 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,8 +48,8 @@ public class SharedGroupsInfo extends IQ {
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<sharedgroup xmlns=\"http://www.jivesoftware.org/protocol/sharedgroup\">");
-        for (Iterator<String> it=groups.iterator(); it.hasNext();) {
-            buf.append("<group>").append(it.next()).append("</group>");
+        for (String group : groups) {
+            buf.append("<group>").append(group).append("</group>");
         }
         buf.append("</sharedgroup>");
         return buf.toString();

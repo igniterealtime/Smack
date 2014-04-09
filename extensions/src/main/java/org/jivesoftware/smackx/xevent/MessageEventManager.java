@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.xevent;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -198,18 +197,18 @@ public class MessageEventManager {
                     (MessageEvent) message.getExtension("x", "jabber:x:event");
                 if (messageEvent.isMessageEventRequest()) {
                     // Fire event for requests of message events
-                    for (Iterator<String> it = messageEvent.getEventTypes(); it.hasNext();)
+                    for (String eventType : messageEvent.getEventTypes())
                         fireMessageEventRequestListeners(
                             message.getFrom(),
                             message.getPacketID(),
-                            it.next().concat("NotificationRequested"));
+                            eventType.concat("NotificationRequested"));
                 } else
                     // Fire event for notifications of message events
-                    for (Iterator<String> it = messageEvent.getEventTypes(); it.hasNext();)
+                    for (String eventType : messageEvent.getEventTypes())
                         fireMessageEventNotificationListeners(
                             message.getFrom(),
                             messageEvent.getPacketID(),
-                            it.next().concat("Notification"));
+                            eventType.concat("Notification"));
 
             };
 

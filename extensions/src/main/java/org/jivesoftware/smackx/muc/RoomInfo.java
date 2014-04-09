@@ -85,14 +85,14 @@ public class RoomInfo {
         Form form = Form.getFormFrom(info);
         if (form != null) {
             FormField descField = form.getField("muc#roominfo_description");
-            this.description = ( descField == null || !(descField.getValues().hasNext()) )? "" : descField.getValues().next();
+            this.description = ( descField == null || descField.getValues().isEmpty() ) ? "" : descField.getValues().get(0);
 
             FormField subjField = form.getField("muc#roominfo_subject");
-            this.subject = ( subjField == null || !(subjField.getValues().hasNext()) ) ? "" : subjField.getValues().next();
+            this.subject = ( subjField == null || subjField.getValues().isEmpty() ) ? "" : subjField.getValues().get(0);
 
             FormField occCountField = form.getField("muc#roominfo_occupants");
             this.occupantsCount = occCountField == null ? -1 : Integer.parseInt(occCountField.getValues()
-                    .next());
+                    .get(0));
         }
     }
 

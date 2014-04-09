@@ -80,12 +80,12 @@ public class AMPExtension implements PacketExtension {
     }
 
     /**
-     * Returns an Iterator for the rules in the packet.
+     * Returns a Collection of the rules in the packet.
      *
-     * @return an Iterator for the rules in the packet.
+     * @return a Collection of the rules in the packet.
      */
-    public Iterator<Rule> getRules() {
-        return Collections.unmodifiableList(new ArrayList<Rule>(rules)).iterator();
+    public Collection<Rule> getRules() {
+        return Collections.unmodifiableList(new ArrayList<Rule>(rules));
     }
 
     /**
@@ -168,8 +168,8 @@ public class AMPExtension implements PacketExtension {
         buf.append(">");
 
         // Loop through all the rules and append them to the string buffer
-        for (Iterator<Rule> i = getRules(); i.hasNext();) {
-            buf.append(i.next().toXML());
+        for (Rule rule : getRules()) {
+            buf.append(rule.toXML());
         }
 
         buf.append("</").append(getElementName()).append(">");

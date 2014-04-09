@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.iqprivate.packet;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Default implementation of the PrivateData interface. Unless a PrivateDataProvider
@@ -82,8 +82,7 @@ public class DefaultPrivateData implements PrivateData {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
-        for (Iterator<String> i=getNames(); i.hasNext(); ) {
-            String name = i.next();
+        for (String name : getNames()) {
             String value = getValue(name);
             buf.append("<").append(name).append(">");
             buf.append(value);
@@ -94,16 +93,16 @@ public class DefaultPrivateData implements PrivateData {
     }
 
     /**
-     * Returns an Iterator for the names that can be used to get
+     * Returns a Set of the names that can be used to get
      * values of the private data.
      *
-     * @return an Iterator for the names.
+     * @return a Set of the names.
      */
-    public synchronized Iterator<String> getNames() {
+    public synchronized Set<String> getNames() {
         if (map == null) {
-            return Collections.<String>emptyList().iterator();
+            return Collections.<String>emptySet();
         }
-        return Collections.unmodifiableSet(map.keySet()).iterator();
+        return Collections.unmodifiableSet(map.keySet());
     }
 
     /**

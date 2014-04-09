@@ -24,7 +24,6 @@ import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -67,22 +66,18 @@ public class ReportedData {
      */
     private ReportedData(DataForm dataForm) {
         // Add the columns to the report based on the reported data fields
-        for (Iterator<FormField> fields = dataForm.getReportedData().getFields(); fields.hasNext();) {
-            FormField field = fields.next();
+        for (FormField field : dataForm.getReportedData().getFields()) {
             columns.add(new Column(field.getLabel(), field.getVariable(), field.getType()));
         }
 
         // Add the rows to the report based on the form's items
-        for (Iterator<Item> items = dataForm.getItems(); items.hasNext();) {
-            Item item = items.next();
+        for (Item item : dataForm.getItems()) {
             List<Field> fieldList = new ArrayList<Field>(columns.size());
-            FormField field;
-            for (Iterator<FormField> fields = item.getFields(); fields.hasNext();) {
-                field = fields.next();
+            for (FormField field : item.getFields()) {
                 // The field is created with all the values of the data form's field
                 List<String> values = new ArrayList<String>();
-                for (Iterator<String> it=field.getValues(); it.hasNext();) {
-                    values.add(it.next());
+                for (String value : field.getValues()) {
+                    values.add(value);
                 }
                 fieldList.add(new Field(field.getVariable(), values));
             }
@@ -116,21 +111,21 @@ public class ReportedData {
 
 
     /**
-     * Returns an Iterator for the rows returned from a search.
+     * Returns a List of the rows returned from a search.
      *
-     * @return an Iterator for the rows returned from a search.
+     * @return a List of the rows returned from a search.
      */
-    public Iterator<Row> getRows() {
-        return Collections.unmodifiableList(new ArrayList<Row>(rows)).iterator();
+    public List<Row> getRows() {
+        return Collections.unmodifiableList(new ArrayList<Row>(rows));
     }
 
     /**
-     * Returns an Iterator for the columns returned from a search.
+     * Returns a List of the columns returned from a search.
      *
-     * @return an Iterator for the columns returned from a search.
+     * @return a List of the columns returned from a search.
      */
-    public Iterator<Column> getColumns() {
-        return Collections.unmodifiableList(new ArrayList<Column>(columns)).iterator();
+    public List<Column> getColumns() {
+        return Collections.unmodifiableList(new ArrayList<Column>(columns));
     }
 
 
@@ -229,9 +224,8 @@ public class ReportedData {
          * @param variable the variable to match.
          * @return the values of the field whose variable matches the requested variable.
          */
-        public Iterator<String> getValues(String variable) {
-            for(Iterator<Field> it=getFields();it.hasNext();) {
-                Field field = it.next();
+        public List<String> getValues(String variable) {
+            for(Field field : getFields()) {
                 if (variable.equalsIgnoreCase(field.getVariable())) {
                     return field.getValues();
                 }
@@ -244,8 +238,8 @@ public class ReportedData {
          *
          * @return the fields that define the data that goes with the item.
          */
-        private Iterator<Field> getFields() {
-            return Collections.unmodifiableList(new ArrayList<Field>(fields)).iterator();
+        private List<Field> getFields() {
+            return Collections.unmodifiableList(new ArrayList<Field>(fields));
         }
     }
 
@@ -268,12 +262,12 @@ public class ReportedData {
         }
 
         /**
-         * Returns an iterator on the values reported as part of the search.
+         * Returns a List of the values reported as part of the search.
          * 
          * @return the returned values of the search.
          */
-        public Iterator<String> getValues() {
-            return Collections.unmodifiableList(values).iterator();
+        public List<String> getValues() {
+            return Collections.unmodifiableList(values);
         }
     }
 }

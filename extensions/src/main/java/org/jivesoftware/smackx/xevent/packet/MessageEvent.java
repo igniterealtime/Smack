@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.xevent.packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents message events relating to the delivery, display, composition and cancellation of 
@@ -162,9 +162,9 @@ public class MessageEvent implements PacketExtension {
      * Returns the types of events. The type of event could be:
      * "offline", "composing","delivered","displayed", "offline"
      *
-     * @return an iterator over all the types of events of the MessageEvent.
+     * @return a List of all the types of events of the MessageEvent.
      */
-    public Iterator<String> getEventTypes() {
+    public List<String> getEventTypes() {
         ArrayList<String> allEvents = new ArrayList<String>();
         if (isDelivered()) {
             allEvents.add(MessageEvent.DELIVERED);
@@ -181,7 +181,7 @@ public class MessageEvent implements PacketExtension {
         if (isOffline()) {
             allEvents.add(MessageEvent.OFFLINE);
         }
-        return allEvents.iterator();
+        return allEvents;
     }
 
     /**

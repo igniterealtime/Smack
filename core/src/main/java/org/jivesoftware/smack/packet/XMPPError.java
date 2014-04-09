@@ -190,11 +190,11 @@ public class XMPPError {
     }
 
     /**
-     * Returns an Iterator for the error extensions attached to the xmppError.
+     * Returns a List of the error extensions attached to the xmppError.
      * An application MAY provide application-specific error information by including a 
      * properly-namespaced child in the error element.
      *
-     * @return an Iterator for the error extensions.
+     * @return a List of the error extensions.
      */
     public synchronized List<PacketExtension> getExtensions() {
         if (applicationExtensions == null) {

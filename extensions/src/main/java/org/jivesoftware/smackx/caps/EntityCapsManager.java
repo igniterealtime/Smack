@@ -51,7 +51,6 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -528,12 +527,10 @@ public class EntityCapsManager extends Manager {
      */
     protected static boolean verifyPacketExtensions(DiscoverInfo info) {
         List<FormField> foundFormTypes = new LinkedList<FormField>();
-        for (Iterator<PacketExtension> i = info.getExtensions().iterator(); i.hasNext();) {
-            PacketExtension pe = i.next();
+        for (PacketExtension pe : info.getExtensions()) {
             if (pe.getNamespace().equals(Form.NAMESPACE)) {
                 DataForm df = (DataForm) pe;
-                for (Iterator<FormField> it = df.getFields(); it.hasNext();) {
-                    FormField f = it.next();
+                for (FormField f : df.getFields()) {
                     if (f.getVariable().equals("FORM_TYPE")) {
                         for (FormField fft : foundFormTypes) {
                             if (f.equals(fft))
@@ -583,8 +580,7 @@ public class EntityCapsManager extends Manager {
 
         // 3. For each identity, append the 'category/type/lang/name' to S,
         // followed by the '<' character.
-        for (Iterator<DiscoverInfo.Identity> it = sortedIdentities.iterator(); it.hasNext();) {
-            DiscoverInfo.Identity identity = it.next();
+        for (DiscoverInfo.Identity identity : sortedIdentities) {
             sb.append(identity.getCategory());
             sb.append("/");
             sb.append(identity.getType());
@@ -623,8 +619,7 @@ public class EntityCapsManager extends Manager {
 
                 FormField ft = null;
 
-                for (Iterator<FormField> i = extendedInfo.getFields(); i.hasNext();) {
-                    FormField f = i.next();
+                for (FormField f : extendedInfo.getFields()) {
                     if (!f.getVariable().equals("FORM_TYPE")) {
                         fs.add(f);
                     } else {
@@ -664,10 +659,10 @@ public class EntityCapsManager extends Manager {
         return Base64.encodeBytes(digest);
     }
 
-    private static void formFieldValuesToCaps(Iterator<String> i, StringBuilder sb) {
+    private static void formFieldValuesToCaps(List<String> i, StringBuilder sb) {
         SortedSet<String> fvs = new TreeSet<String>();
-        while (i.hasNext()) {
-            fvs.add(i.next());
+        for (String s : i) {
+            fvs.add(s);
         }
         for (String fv : fvs) {
             sb.append(fv);

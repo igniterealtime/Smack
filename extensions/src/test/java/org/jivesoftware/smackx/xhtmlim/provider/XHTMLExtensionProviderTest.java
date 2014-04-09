@@ -47,7 +47,7 @@ public class XHTMLExtensionProviderTest {
         assertThat(extension, is(instanceOf(XHTMLExtension.class)));
         XHTMLExtension attachmentsInfo = (XHTMLExtension) extension;
 
-        assertEquals(sampleXhtml(), attachmentsInfo.getBodies().next());
+        assertEquals(sampleXhtml(), attachmentsInfo.getBodies().get(0));
     }
 
     private String sampleXhtml() {

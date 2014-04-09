@@ -93,13 +93,13 @@ information concerning a node named "http://jabber.org/protocol/muc#rooms": <br>
       ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
           <font color="#0000FF">"http://jabber.org/protocol/muc#rooms"</font>,
           new NodeInformationProvider() {
-              public Iterator getNodeItems() {
+              public List getNodeItems() {
                   ArrayList answer = new ArrayList();
                   Iterator rooms = MultiUserChat.getJoinedRooms(connection);
                   while (rooms.hasNext()) {
                       answer.add(new DiscoverItems.Item((String)rooms.next()));
                   }
-                  return answer.iterator(); 
+                  return answer; 
               }
           });
 </pre>
