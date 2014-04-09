@@ -199,7 +199,9 @@ public class VCardProvider implements IQProvider {
                         code = nodeName;
                     }
                 }
-                if (code == null || value == null) continue;
+                if (value == null) continue;
+                if (code == null)
+                    code = "VOICE";
                 if ("HOME".equals(type)) {
                     vCard.setPhoneHome(code, value);
                 }
