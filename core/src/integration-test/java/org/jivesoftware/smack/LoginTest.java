@@ -37,7 +37,7 @@ public class LoginTest extends SmackTestCase {
      */
     public void testInvalidLogin() {
         try {
-            TCPConnection connection = createConnection();
+            XMPPTCPConnection connection = createConnection();
             connection.connect();
             try {
                 // Login with an invalid user
@@ -67,8 +67,8 @@ public class LoginTest extends SmackTestCase {
         if (!isTestAnonymousLogin()) return;
 
         try {
-            TCPConnection conn1 = createConnection();
-            TCPConnection conn2 = createConnection();
+            XMPPTCPConnection conn1 = createConnection();
+            XMPPTCPConnection conn2 = createConnection();
             conn1.connect();
             conn2.connect();
             try {
@@ -106,12 +106,12 @@ public class LoginTest extends SmackTestCase {
         try {
             ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
             config.setSASLAuthenticationEnabled(false);
-            TCPConnection conn1 = new XMPPConnection(config);
+            XMPPTCPConnection conn1 = new XMPPConnection(config);
             conn1.connect();
 
             config = new ConnectionConfiguration(getHost(), getPort());
             config.setSASLAuthenticationEnabled(false);
-            TCPConnection conn2 = new XMPPConnection(config);
+            XMPPTCPConnection conn2 = new XMPPConnection(config);
             conn2.connect();
             
             try {
@@ -143,7 +143,7 @@ public class LoginTest extends SmackTestCase {
      */
     public void testLoginWithNoResource() {
         try {
-            TCPConnection conn = createConnection();
+            XMPPTCPConnection conn = createConnection();
             conn.connect();
             try {
                 conn.getAccountManager().createAccount("user_1", "user_1", getAccountCreationParameters());

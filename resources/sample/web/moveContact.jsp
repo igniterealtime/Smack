@@ -54,7 +54,7 @@
 <%@ include file="global.jsp" %>
 <%
     // If we don't have a valid connection then proceed to login
-    TCPConnection conn = (XMPPConnection) session.getAttribute("connection");
+    XMPPTCPConnection conn = (XMPPConnection) session.getAttribute("connection");
     if (conn == null || !conn.isConnected()) {
         response.sendRedirect("login.jsp");
         return;

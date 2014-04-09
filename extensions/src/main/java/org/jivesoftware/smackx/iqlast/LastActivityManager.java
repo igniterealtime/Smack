@@ -60,7 +60,7 @@ import org.jivesoftware.smackx.iqlast.packet.LastActivity;
  * <p>
  * 
  * <pre>
- * XMPPConnection con = new TCPConnection(&quot;jabber.org&quot;);
+ * XMPPConnection con = new XMPPTCPConnection(&quot;jabber.org&quot;);
  * con.login(&quot;john&quot;, &quot;doe&quot;);
  * LastActivity activity = LastActivity.getLastActivity(con, &quot;xray@jabber.org/Smack&quot;);
  * </pre>

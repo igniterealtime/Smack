@@ -55,13 +55,13 @@ import org.jivesoftware.smack.packet.Presence;
 /**
  * The abstract XMPPConnection class provides an interface for connections to a
  * XMPP server and implements shared methods which are used by the
- * different types of connections (e.g. TCPConnection or BoshConnection).
+ * different types of connections (e.g. XMPPTCPConnection or XMPPBOSHConnection).
  * 
  * To create a connection to a XMPP server a simple usage of this API might
  * look like the following:
  * <pre>
  * // Create a connection to the igniterealtime.org XMPP server.
- * XMPPConnection con = new TCPConnection("igniterealtime.org");
+ * XMPPConnection con = new XMPPTCPConnection("igniterealtime.org");
  * // Connect to the server
  * con.connect();
  * // Most servers require you to login before performing other tasks.

@@ -51,13 +51,13 @@ class PacketReader {
     
     private Thread readerThread;
 
-    private TCPConnection connection;
+    private XMPPTCPConnection connection;
     private XmlPullParser parser;
     volatile boolean done;
 
     private String connectionID = null;
 
-    protected PacketReader(final TCPConnection connection) {
+    protected PacketReader(final XMPPTCPConnection connection) {
         this.connection = connection;
         this.init();
     }

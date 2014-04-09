@@ -17,8 +17,8 @@ public class EntityCapsTest extends SmackTestCase {
 
     private static final String DISCOVER_TEST_FEATURE = "entityCapsTest";
 
-    TCPConnection con0;
-    TCPConnection con1;
+    XMPPTCPConnection con0;
+    XMPPTCPConnection con1;
     EntityCapsManager ecm0;
     EntityCapsManager ecm1;
     ServiceDiscoveryManager sdm0;

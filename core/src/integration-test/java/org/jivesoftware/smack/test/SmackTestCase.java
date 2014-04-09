@@ -70,7 +70,7 @@ public abstract class SmackTestCase extends TestCase {
     private String chatDomain = "chat";
     private String mucDomain = "conference";
 
-    private TCPConnection[] connections = null;
+    private XMPPTCPConnection[] connections = null;
 
     /**
      * Constructor for SmackTestCase.
@@ -120,7 +120,7 @@ public abstract class SmackTestCase extends TestCase {
     }
     
     /**
-     * Returns the TCPConnection located at the requested position. Each test case holds a
+     * Returns the XMPPTCPConnection located at the requested position. Each test case holds a
      * pool of connections which is initialized while setting up the test case. The maximum
      * number of connections is controlled by the message {@link #getMaxConnections()} which
      * every subclass must implement.<p>   
@@ -129,9 +129,9 @@ public abstract class SmackTestCase extends TestCase {
      * IllegalArgumentException will be thrown. 
      * 
      * @param index the position in the pool of the connection to look for.
-     * @return the TCPConnection located at the requested position.
+     * @return the XMPPTCPConnection located at the requested position.
      */
-    protected TCPConnection getConnection(int index) {
+    protected XMPPTCPConnection getConnection(int index) {
         if (index > getMaxConnections()) {
             throw new IllegalArgumentException("Index out of bounds");
         }
@@ -139,12 +139,12 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Creates a new TCPConnection using the connection preferences. This is useful when
+     * Creates a new XMPPTCPConnection using the connection preferences. This is useful when
      * not using a connection from the connection pool in a test case.
      *
      * @return a new XMPP connection.
      */
-    protected TCPConnection createConnection() {
+    protected XMPPTCPConnection createConnection() {
         // Create the configuration for this new connection
         ConnectionConfiguration config = new ConnectionConfiguration(host, port);
         config.setCompressionEnabled(compressionEnabled);
@@ -152,7 +152,7 @@ public abstract class SmackTestCase extends TestCase {
         if (getSocketFactory() == null) {
             config.setSocketFactory(getSocketFactory());
         }
-        return new TCPConnection(config);
+        return new XMPPTCPConnection(config);
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class SmackTestCase extends TestCase {
         if (getMaxConnections() < 1) {
             return;
         }
-        connections = new TCPConnection[getMaxConnections()];
+        connections = new XMPPTCPConnection[getMaxConnections()];
         usernames = new String[getMaxConnections()];
         passwords = new String[getMaxConnections()];
         
@@ -340,7 +340,7 @@ public abstract class SmackTestCase extends TestCase {
                 try {
                     // If not connected, connect so that we can delete the account.
                     if (!getConnection(i).isConnected()) {
-                        TCPConnection con = getConnection(i);
+                        XMPPTCPConnection con = getConnection(i);
                         con.connect();
                         con.login(getUsername(i), getUsername(i));
                     }

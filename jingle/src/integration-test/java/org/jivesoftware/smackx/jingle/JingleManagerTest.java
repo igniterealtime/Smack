@@ -682,10 +682,10 @@ public class JingleManagerTest extends SmackTestCase {
 
         resetCounter();
         
-        TCPConnection x0 = getConnection(0);
-        TCPConnection x1 = getConnection(1);
+        XMPPTCPConnection x0 = getConnection(0);
+        XMPPTCPConnection x1 = getConnection(1);
 
-        TCPConnection.DEBUG_ENABLED = true;
+        XMPPTCPConnection.DEBUG_ENABLED = true;
 
         FixedResolver tr0 = new FixedResolver("127.0.0.1", 20080);
         FixedTransportManager ftm0 = new FixedTransportManager(tr0);
@@ -797,8 +797,8 @@ public class JingleManagerTest extends SmackTestCase {
 
         resetCounter();
         
-        TCPConnection x0 = getConnection(0);
-        TCPConnection x1 = getConnection(1);
+        XMPPTCPConnection x0 = getConnection(0);
+        XMPPTCPConnection x1 = getConnection(1);
 
         FixedResolver tr0 = new FixedResolver("127.0.0.1", 20004);
         FixedTransportManager ftm0 = new FixedTransportManager(tr0);

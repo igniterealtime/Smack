@@ -66,7 +66,7 @@ public class Demo extends JFrame {
             jid = new JTextField("jeffw" + "@" + server + "/Smack");
         }
 
-        xmppConnection = new TCPConnection(server);
+        xmppConnection = new XMPPTCPConnection(server);
         try {
             xmppConnection.connect();
             xmppConnection.login(user, pass);

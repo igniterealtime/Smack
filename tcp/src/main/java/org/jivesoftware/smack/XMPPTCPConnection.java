@@ -63,7 +63,7 @@ import java.util.Locale;
  * @see XMPPConnection
  * @author Matt Tucker
  */
-public class TCPConnection extends XMPPConnection {
+public class XMPPTCPConnection extends XMPPConnection {
 
     /**
      * The socket which is used for this connection.
@@ -74,7 +74,7 @@ public class TCPConnection extends XMPPConnection {
     private String user = null;
     private boolean connected = false;
     // socketClosed is used concurrent
-    // by TCPConnection, PacketReader, PacketWriter
+    // by XMPPTCPConnection, PacketReader, PacketWriter
     private volatile boolean socketClosed = false;
 
     /**
@@ -115,9 +115,9 @@ public class TCPConnection extends XMPPConnection {
      * <p/>
      * This is the simplest constructor for connecting to an XMPP server. Alternatively,
      * you can get fine-grained control over connection settings using the
-     * {@link #TCPConnection(ConnectionConfiguration)} constructor.<p>
+     * {@link #XMPPTCPConnection(ConnectionConfiguration)} constructor.<p>
      * <p/>
-     * Note that TCPConnection constructors do not establish a connection to the server
+     * Note that XMPPTCPConnection constructors do not establish a connection to the server
      * and you must call {@link #connect()}.<p>
      * <p/>
      * The CallbackHandler will only be used if the connection requires the client provide
@@ -127,27 +127,27 @@ public class TCPConnection extends XMPPConnection {
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
      * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
      */
-    public TCPConnection(String serviceName, CallbackHandler callbackHandler) {
+    public XMPPTCPConnection(String serviceName, CallbackHandler callbackHandler) {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
         config.setCallbackHandler(callbackHandler);
     }
 
     /**
-     * Creates a new XMPP connection in the same way {@link #TCPConnection(String,CallbackHandler)} does, but
+     * Creates a new XMPP connection in the same way {@link #XMPPTCPConnection(String,CallbackHandler)} does, but
      * with no callback handler for password prompting of the keystore.  This will work
      * in most cases, provided the client is not required to provide a certificate to 
      * the server.
      *
      * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
      */
-    public TCPConnection(String serviceName) {
+    public XMPPTCPConnection(String serviceName) {
         // Create the configuration for this new connection
         super(new ConnectionConfiguration(serviceName));
     }
 
     /**
-     * Creates a new XMPP connection in the same way {@link #TCPConnection(ConnectionConfiguration,CallbackHandler)} does, but
+     * Creates a new XMPP connection in the same way {@link #XMPPTCPConnection(ConnectionConfiguration,CallbackHandler)} does, but
      * with no callback handler for password prompting of the keystore.  This will work
      * in most cases, provided the client is not required to provide a certificate to 
      * the server.
@@ -155,7 +155,7 @@ public class TCPConnection extends XMPPConnection {
      *
      * @param config the connection configuration.
      */
-    public TCPConnection(ConnectionConfiguration config) {
+    public XMPPTCPConnection(ConnectionConfiguration config) {
         super(config);
     }
 
@@ -164,9 +164,9 @@ public class TCPConnection extends XMPPConnection {
      * <p/>
      * Manually specifying connection configuration information is suitable for
      * advanced users of the API. In many cases, using the
-     * {@link #TCPConnection(String)} constructor is a better approach.<p>
+     * {@link #XMPPTCPConnection(String)} constructor is a better approach.<p>
      * <p/>
-     * Note that TCPConnection constructors do not establish a connection to the server
+     * Note that XMPPTCPConnection constructors do not establish a connection to the server
      * and you must call {@link #connect()}.<p>
      * <p/>
      *
@@ -177,7 +177,7 @@ public class TCPConnection extends XMPPConnection {
      * @param config the connection configuration.
      * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
      */
-    public TCPConnection(ConnectionConfiguration config, CallbackHandler callbackHandler) {
+    public XMPPTCPConnection(ConnectionConfiguration config, CallbackHandler callbackHandler) {
         super(config);
         config.setCallbackHandler(callbackHandler);
     }

@@ -40,7 +40,7 @@ import org.igniterealtime.jbosh.ComposableBody;
  */
 public class BOSHPacketReader implements BOSHClientResponseListener {
 
-    private BOSHConnection connection;
+    private XMPPBOSHConnection connection;
 
     /**
      * Create a packet reader which listen on a BOSHConnection for received
@@ -48,7 +48,7 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
      * 
      * @param connection the corresponding connection for the received packets.
      */
-    public BOSHPacketReader(BOSHConnection connection) {
+    public BOSHPacketReader(XMPPBOSHConnection connection) {
         this.connection = connection;
     }
 
@@ -62,10 +62,10 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
         if (body != null) {
             try {
                 if (connection.sessionID == null) {
-                    connection.sessionID = body.getAttribute(BodyQName.create(BOSHConnection.BOSH_URI, "sid"));
+                    connection.sessionID = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "sid"));
                 }
                 if (connection.authID == null) {
-                    connection.authID = body.getAttribute(BodyQName.create(BOSHConnection.BOSH_URI, "authid"));
+                    connection.authID = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "authid"));
                 }
                 final XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
                 parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES,
@@ -93,12 +93,12 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                                     challengeData));
                         } else if (parser.getName().equals("success")) {
                             connection.send(ComposableBody.builder()
-                                    .setNamespaceDefinition("xmpp", BOSHConnection.XMPP_BOSH_NS)
+                                    .setNamespaceDefinition("xmpp", XMPPBOSHConnection.XMPP_BOSH_NS)
                                     .setAttribute(
-                                            BodyQName.createWithPrefix(BOSHConnection.XMPP_BOSH_NS, "restart", "xmpp"),
+                                            BodyQName.createWithPrefix(XMPPBOSHConnection.XMPP_BOSH_NS, "restart", "xmpp"),
                                             "true")
                                     .setAttribute(
-                                            BodyQName.create(BOSHConnection.BOSH_URI, "to"),
+                                            BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"),
                                             connection.getServiceName())
                                     .build());
                             connection.getSASLAuthentication().authenticated();

@@ -52,8 +52,8 @@ public class JingleMediaTest extends SmackTestCase {
 
     public void testCompleteJmf() {
 
-        TCPConnection x0 = getConnection(0);
-        TCPConnection x1 = getConnection(1);
+        XMPPTCPConnection x0 = getConnection(0);
+        XMPPTCPConnection x1 = getConnection(1);
 
         for (int i = 0; i < 1; i++)
             try {
@@ -131,8 +131,8 @@ public class JingleMediaTest extends SmackTestCase {
 
         try {
 
-            TCPConnection x0 = getConnection(0);
-            TCPConnection x1 = getConnection(1);
+            XMPPTCPConnection x0 = getConnection(0);
+            XMPPTCPConnection x1 = getConnection(1);
 
             ICETransportManager icetm0 = new ICETransportManager(x0, "jivesoftware.com", 3478);
             ICETransportManager icetm1 = new ICETransportManager(x1, "jivesoftware.com", 3478);
@@ -214,8 +214,8 @@ public class JingleMediaTest extends SmackTestCase {
 
             //TCPConnection.DEBUG_ENABLED = true;
 
-            TCPConnection x0 = getConnection(0);
-            TCPConnection x1 = getConnection(1);
+            XMPPTCPConnection x0 = getConnection(0);
+            XMPPTCPConnection x1 = getConnection(1);
 
             JingleMediaManager jingleMediaManager0 = new SpeexMediaManager(new STUNTransportManager());
             JingleMediaManager jingleMediaManager1 = new SpeexMediaManager(new STUNTransportManager());
@@ -266,8 +266,8 @@ public class JingleMediaTest extends SmackTestCase {
 
         try {
 
-            TCPConnection x0 = getConnection(0);
-            TCPConnection x1 = getConnection(1);
+            XMPPTCPConnection x0 = getConnection(0);
+            XMPPTCPConnection x1 = getConnection(1);
 
              ICETransportManager icetm0 = new ICETransportManager(x0, "stun.xten.net", 3478);
             ICETransportManager icetm1 = new ICETransportManager(x1, "stun.xten.net", 3478);
@@ -325,8 +325,8 @@ public class JingleMediaTest extends SmackTestCase {
                 public void run() {
                     try {
 
-                        TCPConnection x0 = getConnection(n);
-                        TCPConnection x1 = getConnection(n + 1);
+                        XMPPTCPConnection x0 = getConnection(n);
+                        XMPPTCPConnection x1 = getConnection(n + 1);
    
                         BridgedTransportManager btm0 = new BridgedTransportManager(x0);
                         BridgedTransportManager btm1 = new BridgedTransportManager(x1);
@@ -401,8 +401,8 @@ public class JingleMediaTest extends SmackTestCase {
 
             //TCPConnection.DEBUG_ENABLED = true;
 
-            TCPConnection x0 = getConnection(0);
-            TCPConnection x1 = getConnection(1);
+            XMPPTCPConnection x0 = getConnection(0);
+            XMPPTCPConnection x1 = getConnection(1);
 
             BridgedTransportManager btm0 = new BridgedTransportManager(x0);
             BridgedTransportManager btm1 = new BridgedTransportManager(x1);

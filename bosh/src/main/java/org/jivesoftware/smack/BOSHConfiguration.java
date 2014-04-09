@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.dns.HostAddress;
  * Configuration to use while establishing the connection to the XMPP server via
  * HTTP binding.
  * 
- * @see BOSHConnection
+ * @see XMPPBOSHConnection
  * @author Guenther Niess
  */
 public class BOSHConfiguration extends ConnectionConfiguration {

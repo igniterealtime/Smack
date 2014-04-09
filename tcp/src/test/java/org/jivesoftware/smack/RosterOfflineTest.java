@@ -34,7 +34,7 @@ public class RosterOfflineTest {
 
     @Before
     public void setup() throws XMPPException, SmackException {
-        this.connection = new TCPConnection("localhost");
+        this.connection = new XMPPTCPConnection("localhost");
         assertFalse(connection.isConnected());
 
         roster = connection.getRoster();

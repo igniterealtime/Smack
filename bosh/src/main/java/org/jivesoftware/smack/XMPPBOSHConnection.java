@@ -56,8 +56,8 @@ import org.igniterealtime.jbosh.ComposableBody;
  * @see XMPPConnection
  * @author Guenther Niess
  */
-public class BOSHConnection extends XMPPConnection {
-    private static final Logger LOGGER = Logger.getLogger(BOSHConnection.class.getName());
+public class XMPPBOSHConnection extends XMPPConnection {
+    private static final Logger LOGGER = Logger.getLogger(XMPPBOSHConnection.class.getName());
 
     /**
      * The XMPP Over Bosh namespace.
@@ -120,7 +120,7 @@ public class BOSHConnection extends XMPPConnection {
      * @param xmppDomain the XMPP service name
      *             (e.g. domain.lt for the user alice@domain.lt)
      */
-    public BOSHConnection(boolean https, String host, int port, String filePath, String xmppDomain) {
+    public XMPPBOSHConnection(boolean https, String host, int port, String filePath, String xmppDomain) {
         super(new BOSHConfiguration(https, host, port, filePath, xmppDomain));
         this.config = (BOSHConfiguration) getConfiguration();
     }
@@ -130,7 +130,7 @@ public class BOSHConnection extends XMPPConnection {
      * 
      * @param config The configuration which is used for this connection.
      */
-    public BOSHConnection(BOSHConfiguration config) {
+    public XMPPBOSHConnection(BOSHConfiguration config) {
         super(config);
         this.config = config;
     }
@@ -549,9 +549,9 @@ public class BOSHConnection extends XMPPConnection {
      */
     private class BOSHConnectionListener implements BOSHClientConnListener {
 
-        private final BOSHConnection connection;
+        private final XMPPBOSHConnection connection;
 
-        public BOSHConnectionListener(BOSHConnection connection) {
+        public BOSHConnectionListener(XMPPBOSHConnection connection) {
             this.connection = connection;
         }
 

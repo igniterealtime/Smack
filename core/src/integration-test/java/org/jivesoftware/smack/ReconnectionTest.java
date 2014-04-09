@@ -40,9 +40,9 @@ public class ReconnectionTest extends SmackTestCase {
      */
 
     public void testAutomaticReconnection() throws Exception {
-        TCPConnection connection = getConnection(0);
+        XMPPTCPConnection connection = getConnection(0);
         CountDownLatch latch = new CountDownLatch(1);
-        TCPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
+        XMPPTCPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
         connection.addConnectionListener(listener);
 
         // Simulates an error in the connection
@@ -63,7 +63,7 @@ public class ReconnectionTest extends SmackTestCase {
         config.setCompressionEnabled(true);
         config.setSASLAuthenticationEnabled(true);
 
-        TCPConnection connection = new XMPPConnection(config);
+        XMPPTCPConnection connection = new XMPPConnection(config);
         // Connect to the server
         connection.connect();
         // Log into the server
@@ -75,7 +75,7 @@ public class ReconnectionTest extends SmackTestCase {
         executeSomeServerInteraction(connection);
 
         CountDownLatch latch = new CountDownLatch(1);
-        TCPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
+        XMPPTCPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
         connection.addConnectionListener(listener);
 
         // Simulates an error in the connection
@@ -95,9 +95,9 @@ public class ReconnectionTest extends SmackTestCase {
      * Simulates a connection error, disables the reconnection mechanism and then reconnects.
      */
     public void testManualReconnectionWithCancelation() throws Exception {
-        TCPConnection connection = getConnection(0);
+        XMPPTCPConnection connection = getConnection(0);
         CountDownLatch latch = new CountDownLatch(1);
-        TCPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
+        XMPPTCPConnectionTestListener listener = new XMPPConnectionTestListener(latch);
         connection.addConnectionListener(listener);
 
         // Produces a connection error
@@ -126,10 +126,10 @@ public class ReconnectionTest extends SmackTestCase {
      * Closes the connection and then reconnects.
      */
     public void testCloseAndManualReconnection() throws Exception {
-        TCPConnection connection = getConnection(0);
+        XMPPTCPConnection connection = getConnection(0);
         String username = connection.getConfiguration().getUsername();
         String password = connection.getConfiguration().getPassword();
-        TCPConnectionTestListener listener = new XMPPConnectionTestListener();
+        XMPPTCPConnectionTestListener listener = new XMPPConnectionTestListener();
         connection.addConnectionListener(listener);
 
         // Produces a normal disconnection
@@ -154,9 +154,9 @@ public class ReconnectionTest extends SmackTestCase {
      * Closes the connection and then reconnects.
      */
     public void testAnonymousReconnection() throws Exception {
-        TCPConnection connection = createConnection();
+        XMPPTCPConnection connection = createConnection();
         connection.connect();
-        TCPConnectionTestListener listener = new XMPPConnectionTestListener();
+        XMPPTCPConnectionTestListener listener = new XMPPConnectionTestListener();
         connection.addConnectionListener(listener);
 
         // Makes the anounymous login
@@ -172,13 +172,13 @@ public class ReconnectionTest extends SmackTestCase {
         assertEquals("Failed the manual connection", true, connection.isAnonymous());
     }
 
-    private TCPConnection createXMPPConnection() throws Exception {
-        TCPConnection connection;
+    private XMPPTCPConnection createXMPPConnection() throws Exception {
+        XMPPTCPConnection connection;
         // Create the configuration
         ConnectionConfiguration config = new ConnectionConfiguration(getHost(), getPort());
         config.setCompressionEnabled(Boolean.getBoolean("test.compressionEnabled"));
         config.setSASLAuthenticationEnabled(true);
-        connection = new TCPConnection(config);
+        connection = new XMPPTCPConnection(config);
 
         return connection;
     }
@@ -195,7 +195,7 @@ public class ReconnectionTest extends SmackTestCase {
         return 1;
     }
 
-    private class TCPConnectionTestListener implements ConnectionListener {
+    private class XMPPTCPConnectionTestListener implements ConnectionListener {
 
         // Variables to support listener notifications verification
         private volatile boolean connectionClosed = false;
@@ -207,11 +207,11 @@ public class ReconnectionTest extends SmackTestCase {
         private volatile boolean reconnectionCanceled = false;
         private CountDownLatch countDownLatch;
 
-        private TCPConnectionTestListener(CountDownLatch latch) {
+        private XMPPTCPConnectionTestListener(CountDownLatch latch) {
             countDownLatch = latch; 
         }
 
-        private TCPConnectionTestListener() {
+        private XMPPTCPConnectionTestListener() {
         }
         /**
          * Methods to test the listener.
