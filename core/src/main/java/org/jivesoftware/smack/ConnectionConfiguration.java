@@ -522,7 +522,7 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return the username to use when trying to reconnect to the server.
      */
-    String getUsername() {
+    public String getUsername() {
         return this.username;
     }
 
@@ -531,7 +531,7 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return the password to use when trying to reconnect to the server.
      */
-    String getPassword() {
+    public String getPassword() {
         return this.password;
     }
 
@@ -540,7 +540,7 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return the resource to use when trying to reconnect to the server.
      */
-    String getResource() {
+    public String getResource() {
         return resource;
     }
 
@@ -549,7 +549,7 @@ public class ConnectionConfiguration implements Cloneable {
      *
      * @return true if an available presence should be sent when logging in while reconnecting
      */
-    boolean isSendPresence() {
+    public boolean isSendPresence() {
         return sendPresence;
     }
 
