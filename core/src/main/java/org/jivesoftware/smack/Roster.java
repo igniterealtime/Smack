@@ -576,18 +576,18 @@ public class Roster {
     }
 
     /**
-     * Returns an iterator (of Presence objects) for all of a user's current presences
+     * Returns a List of Presence objects for all of a user's current presences
      * or an unavailable presence if the user is unavailable (offline) or if no presence
      * information is available, such as when you are not subscribed to the user's presence
      * updates.
      *
      * @param user a XMPP ID, e.g. jdoe@example.com.
-     * @return an Collection (of Presence objects) for all the user's current presences,
+     * @return a List of Presence objects for all the user's current presences,
      *         or an unavailable presence if the user is offline or if no presence information
      *         is available.
      */
-    public Collection<Presence> getPresences(String user) {
-        Collection<Presence> res;
+    public List<Presence> getPresences(String user) {
+        List<Presence> res;
         String key = getPresenceMapKey(user);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
@@ -596,7 +596,7 @@ public class Roster {
             res = Arrays.asList(presence);
         }
         else {
-            Collection<Presence> answer = new ArrayList<Presence>();
+            List<Presence> answer = new ArrayList<Presence>();
             for (Presence presence : userPresences.values()) {
                 if (presence.isAvailable()) {
                     answer.add(presence);
@@ -611,7 +611,7 @@ public class Roster {
                 res = Arrays.asList(presence);
             }
         }
-        return Collections.unmodifiableCollection(res);
+        return Collections.unmodifiableList(res);
     }
 
     /**

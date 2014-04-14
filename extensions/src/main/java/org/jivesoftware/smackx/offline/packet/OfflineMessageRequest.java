@@ -22,7 +22,6 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,13 +38,13 @@ public class OfflineMessageRequest extends IQ {
     private boolean fetch = false;
 
     /**
-     * Returns a Collection of item childs that holds information about offline messages to
+     * Returns a List of item childs that holds information about offline messages to
      * view or delete.
      *
-     * @return a Collection of item childs that holds information about offline messages to
+     * @return a List of item childs that holds information about offline messages to
      *         view or delete.
      */
-    public Collection<Item> getItems() {
+    public List<Item> getItems() {
         synchronized (items) {
             return Collections.unmodifiableList(new ArrayList<Item>(items));
         }

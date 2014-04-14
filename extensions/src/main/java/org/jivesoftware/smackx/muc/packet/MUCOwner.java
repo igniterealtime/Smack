@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.muc.packet;
 import org.jivesoftware.smack.packet.IQ;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,13 +35,13 @@ public class MUCOwner extends IQ {
     private Destroy destroy;
 
     /**
-     * Returns a Collection of item childs that holds information about affiliation, 
+     * Returns a List of item childs that holds information about affiliation,
      * jids and nicks.
      * 
-     * @return a Collection of item childs that holds information about affiliation,
+     * @return a List of item childs that holds information about affiliation,
      *          jids and nicks.
      */
-    public Collection<Item> getItems() {
+    public List<Item> getItems() {
         synchronized (items) {
             return Collections.unmodifiableList(new ArrayList<Item>(items));
         }
