@@ -67,7 +67,6 @@ public class PingTest extends InitExtensions {
         assertTrue(pongPacket instanceof IQ);
 
         IQ pong = (IQ) pongPacket;
-        assertEquals("juliet@capulet.lit/balcony", pong.getFrom());
         assertEquals("capulet.lit", pong.getTo());
         assertEquals("s2c1", pong.getPacketID());
         assertEquals(IQ.Type.RESULT, pong.getType());

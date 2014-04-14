@@ -185,6 +185,11 @@ public abstract class XMPPConnection {
     private String serviceCapsNode;
 
     /**
+     * Defines how the from attribute of outgoing stanzas should be handled.
+     */
+    private FromMode fromMode = FromMode.OMITTED;
+
+    /**
      * Stores whether the server supports rosterVersioning
      */
     private boolean rosterVersioningSupported = false;
@@ -425,6 +430,17 @@ public abstract class XMPPConnection {
         }
         if (packet == null) {
             throw new NullPointerException("Packet is null.");
+        }
+        switch (fromMode) {
+        case OMITTED:
+            packet.setFrom(null);
+            break;
+        case USER:
+            packet.setFrom(getUser());
+            break;
+        case UNCHANGED:
+        default:
+            break;
         }
         // Invoke interceptors for the new packet that is about to be sent. Interceptors may modify
         // the content of the packet.
@@ -1103,5 +1119,41 @@ public abstract class XMPPConnection {
      */
     public int getConnectionCounter() {
         return connectionCounterValue;
+    }
+
+    public static enum FromMode {
+        /**
+         * Leave the 'from' attribute unchanged. This is the behavior of Smack < 4.0
+         */
+        UNCHANGED,
+        /**
+         * Omit the 'from' attribute. According to RFC 6120 8.1.2.1 1. XMPP servers "MUST (...)
+         * override the 'from' attribute specified by the client". It is therefore safe to specify
+         * FromMode.OMITTED here.
+         */
+        OMITTED,
+        /**
+         * Set the from to the clients full JID. This is usually not required.
+         */
+        USER
+    }
+
+    /**
+     * Set the FromMode for this connection instance. Defines how the 'from' attribute of outgoing
+     * stanzas should be populated by Smack.
+     * 
+     * @param fromMode
+     */
+    public void setFromMode(FromMode fromMode) {
+        this.fromMode = fromMode;
+    }
+
+    /**
+     * Get the currently active FromMode.
+     *
+     * @return the currently active {@link FromMode}
+     */
+    public FromMode getFromMode() {
+        return this.fromMode;
     }
 }
