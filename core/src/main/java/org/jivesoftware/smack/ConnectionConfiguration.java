@@ -353,22 +353,24 @@ public class ConnectionConfiguration implements Cloneable {
     /**
      * Sets if the reconnection mechanism is allowed to be used. By default
      * reconnection is allowed.
-     * 
-     * @param isAllowed if the reconnection mechanism is allowed to use.
+     *
+     * @param isAllowed if the reconnection mechanism should be enabled for this connection.
      */
     public void setReconnectionAllowed(boolean isAllowed) {
         this.reconnectionAllowed = isAllowed;
     }
+
     /**
-     * Returns if the reconnection mechanism is allowed to be used. By default
-     * reconnection is allowed.
+     * Returns if the reconnection mechanism is allowed to be used. By default reconnection is
+     * allowed. You can disable the reconnection mechanism with {@link
+     * #setReconnectionAllowed(boolean)}.
      *
-     * @return if the reconnection mechanism is allowed to be used.
+     * @return true, if the reconnection mechanism is enabled.
      */
     public boolean isReconnectionAllowed() {
         return this.reconnectionAllowed;
     }
-    
+
     /**
      * Sets the socket factory used to create new xmppConnection sockets.
      * This is useful when connecting through SOCKS5 proxies.

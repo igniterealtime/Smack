@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
- * the application explictly closing it, the manager automatically tries to reconnect to
+ * the application explicitly closing it, the manager automatically tries to reconnect to
  * the server.<p>
  *
  * The reconnection mechanism will try to reconnect periodically:
@@ -115,7 +115,7 @@ public class ReconnectionManager extends AbstractConnectionListener {
 
                 /**
                  * The process will try the reconnection until the connection succeed or the user
-                 * cancell it
+                 * cancel it
                  */
                 public void run() {
                     // The process will try to reconnect until the connection is established or

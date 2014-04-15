@@ -53,12 +53,12 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
- * The abstract XMPPConnection class provides an interface for connections to a
- * XMPP server and implements shared methods which are used by the
- * different types of connections (e.g. XMPPTCPConnection or XMPPBOSHConnection).
+ * The abstract XMPPConnection class provides an interface for connections to a XMPP server and
+ * implements shared methods which are used by the different types of connections (e.g.
+ * {@link XMPPTCPConnection} or {@link XMPPBOSHConnection}). To create a connection to a XMPP server
+ * a simple usage of this API might look like the following:
+ * <p>
  * 
- * To create a connection to a XMPP server a simple usage of this API might
- * look like the following:
  * <pre>
  * // Create a connection to the igniterealtime.org XMPP server.
  * XMPPConnection con = new XMPPTCPConnection("igniterealtime.org");
@@ -67,8 +67,7 @@ import org.jivesoftware.smack.packet.Presence;
  * // Most servers require you to login before performing other tasks.
  * con.login("jsmith", "mypass");
  * // Start a new conversation with John Doe and send him a message.
- * Chat chat = connection.getChatManager().createChat("jdoe@igniterealtime.org"</font>, new MessageListener() {
- * <p/>
+ * Chat chat = ChatManager.getInstanceFor(con).createChat(<font color="green">"jdoe@igniterealtime.org"</font>, new MessageListener() {
  *     public void processMessage(Chat chat, Message message) {
  *         // Print out any messages we get back to standard out.
  *         System.out.println(<font color="green">"Received message: "</font> + message);
@@ -78,14 +77,15 @@ import org.jivesoftware.smack.packet.Presence;
  * // Disconnect from the server
  * con.disconnect();
  * </pre>
- * <p/>
- * Connections can be reused between connections. This means that an Connection
- * may be connected, disconnected and then connected again. Listeners of the Connection
- * will be retained accross connections.<p>
- * <p/>
- * If a connected XMPPConnection gets disconnected abruptly then it will try to reconnect
- * again. To stop the reconnection process, use {@link #disconnect()}. Once stopped
- * you can use {@link #connect()} to manually connect to the server.
+ * <p>
+ * Connections can be reused between connections. This means that an Connection may be connected,
+ * disconnected and then connected again. Listeners of the Connection will be retained accross
+ * connections.
+ * <p>
+ * If a connected XMPPConnection gets disconnected abruptly and automatic reconnection is enabled (
+ * {@link ConnectionConfiguration#isReconnectionAllowed()}, the default), then it will try to
+ * reconnect again. To stop the reconnection process, use {@link #disconnect()}. Once stopped you
+ * can use {@link #connect()} to manually connect to the server.
  * 
  * @author Matt Tucker
  * @author Guenther Niess
