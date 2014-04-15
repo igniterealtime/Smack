@@ -58,6 +58,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -302,74 +303,130 @@ public class MultiUserChat {
     }
 
     /**
-     * Creates the room according to some default configuration, assign the requesting user
-     * as the room owner, and add the owner to the room but not allow anyone else to enter
-     * the room (effectively "locking" the room). The requesting user will join the room
-     * under the specified nickname as soon as the room has been created.<p>
+     * Enter a room, as described in XEP-45 7.2.
      *
-     * To create an "Instant Room", that means a room with some default configuration that is
-     * available for immediate access, the room's owner should send an empty form after creating
-     * the room. {@link #sendConfigurationForm(Form)}<p>
-     *
-     * To create a "Reserved Room", that means a room manually configured by the room creator
-     * before anyone is allowed to enter, the room's owner should complete and send a form after
-     * creating the room. Once the completed configutation form is sent to the server, the server
-     * will unlock the room. {@link #sendConfigurationForm(Form)}
-     *
-     * @param nickname the nickname to use.
-     * @throws XMPPErrorException if the room couldn't be created for some reason
-     *          (e.g. room already exists; user already joined to an existant room or
-     *          405 error if the user is not allowed to create the room)
-     * @throws NoResponseException if there was no response from the server.
-     * @throws SmackException If the creation failed because of a missing acknowledge from the server.
+     * @param nickname
+     * @param password
+     * @param history
+     * @param timeout
+     * @return the returned presence by the service after the client send the initial presence in order to enter the room.
+     * @throws NotConnectedException
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @see <a href="http://xmpp.org/extensions/xep-0045.html#enter">XEP-45 7.2 Entering a Room</a>
      */
-    public synchronized void create(String nickname) throws NoResponseException, XMPPErrorException, SmackException {
-        if (nickname == null || nickname.equals("")) {
+    private Presence enter(String nickname, String password, DiscussionHistory history,
+                    long timeout) throws NotConnectedException, NoResponseException,
+                    XMPPErrorException {
+        if (StringUtils.isNullOrEmpty(nickname)) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
-        // If we've already joined the room, leave it before joining under a new
-        // nickname.
-        if (joined) {
-            throw new IllegalStateException("Creation failed - User already joined the room.");
-        }
-        // We create a room by sending a presence packet to room@service/nick
-        // and signal support for MUC. The owner will be automatically logged into the room.
+        // We enter a room by sending a presence packet where the "to"
+        // field is in the form "roomName@service/nickname"
         Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setTo(room + "/" + nickname);
+
         // Indicate the the client supports MUC
-        joinPresence.addExtension(new MUCInitialPresence());
+        MUCInitialPresence mucInitialPresence = new MUCInitialPresence();
+        if (password != null) {
+            mucInitialPresence.setPassword(password);
+        }
+        if (history != null) {
+            mucInitialPresence.setHistory(history.getMUCHistory());
+        }
+        joinPresence.addExtension(mucInitialPresence);
         // Invoke presence interceptors so that extra information can be dynamically added
         for (PacketInterceptor packetInterceptor : presenceInterceptors) {
             packetInterceptor.interceptPacket(joinPresence);
         }
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter =
-            new AndFilter(
-                FromMatchesFilter.createFull(room + "/" + nickname),
-                new PacketTypeFilter(Presence.class));
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Send create & join packet.
+        PacketFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(room + "/"
+                        + nickname), new PacketTypeFilter(Presence.class));
+        PacketCollector response = null;
+
+        response = connection.createPacketCollector(responseFilter);
+        // Send join packet.
         connection.sendPacket(joinPresence);
         // Wait up to a certain number of seconds for a reply.
-        Presence presence = (Presence) response.nextResultOrThrow();
+        Presence presence = (Presence) response.nextResultOrThrow(timeout);
 
-        // Whether the room existed before or was created, the user has joined the room
         this.nickname = nickname;
         joined = true;
-        userHasJoined();
+        // Update the list of joined rooms through this connection
+        List<String> rooms = joinedRooms.get(connection);
+        if (rooms == null) {
+            rooms = new ArrayList<String>();
+            joinedRooms.put(connection, rooms);
+        }
+        rooms.add(room);
+        return presence;
+    }
+
+    /**
+     * Creates the room according to some default configuration, assign the requesting user as the
+     * room owner, and add the owner to the room but not allow anyone else to enter the room
+     * (effectively "locking" the room). The requesting user will join the room under the specified
+     * nickname as soon as the room has been created.
+     * <p>
+     * To create an "Instant Room", that means a room with some default configuration that is
+     * available for immediate access, the room's owner should send an empty form after creating the
+     * room. {@link #sendConfigurationForm(Form)}
+     * <p>
+     * To create a "Reserved Room", that means a room manually configured by the room creator before
+     * anyone is allowed to enter, the room's owner should complete and send a form after creating
+     * the room. Once the completed configuration form is sent to the server, the server will unlock
+     * the room. {@link #sendConfigurationForm(Form)}
+     * 
+     * @param nickname the nickname to use.
+     * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
+     *         the user is not allowed to create the room)
+     * @throws NoResponseException if there was no response from the server.
+     * @throws SmackException If the creation failed because of a missing acknowledge from the
+     *         server, e.g. because the room already existed.
+     */
+    public synchronized void create(String nickname) throws NoResponseException, XMPPErrorException, SmackException {
+        if (joined) {
+            throw new IllegalStateException("Creation failed - User already joined the room.");
+        }
+
+        if (createOrJoin(nickname)) {
+            // We successfully created a new room
+            return;
+        }
+        // We need to leave the room since it seems that the room already existed
+        leave();
+        throw new SmackException("Creation failed - Missing acknowledge of room creation.");
+    }
+
+    /**
+     * Like {@link #create(String)}, but will return true if the room creation was acknowledged by
+     * the service (with an 201 status code). It's up to the caller to decide, based on the return
+     * value, if he needs to continue sending the room configuration. If false is returned, the room
+     * already existed and the user is able to join right away, without sending a form.
+     *
+     * @param nickname the nickname to use.
+     * @return true if the room creation was acknowledged by the service, false otherwise.
+     * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
+     *         the user is not allowed to create the room)
+     * @throws NoResponseException if there was no response from the server.
+     */
+    public synchronized boolean createOrJoin(String nickname) throws NoResponseException, XMPPErrorException, SmackException {
+        if (joined) {
+            throw new IllegalStateException("Creation failed - User already joined the room.");
+        }
+
+        Presence presence = enter(nickname, null, null, connection.getPacketReplyTimeout());
 
         // Look for confirmation of room creation from the server
         MUCUser mucUser = getMUCUserExtension(presence);
         if (mucUser != null && mucUser.getStatus() != null) {
             if ("201".equals(mucUser.getStatus().getCode())) {
                 // Room was created and the user has joined the room
-                return;
+                return true;
             }
         }
-        // We need to leave the room since it seems that the room already existed
-        leave();
-        throw new SmackException("Creation failed - Missing acknowledge of room creation.");
+        return false;
     }
 
     /**
@@ -451,49 +508,12 @@ public class MultiUserChat {
         DiscussionHistory history,
         long timeout)
         throws XMPPErrorException, NoResponseException, NotConnectedException {
-        if (nickname == null || nickname.equals("")) {
-            throw new IllegalArgumentException("Nickname must not be null or blank.");
-        }
         // If we've already joined the room, leave it before joining under a new
         // nickname.
         if (joined) {
             leave();
         }
-        // We join a room by sending a presence packet where the "to"
-        // field is in the form "roomName@service/nickname"
-        Presence joinPresence = new Presence(Presence.Type.available);
-        joinPresence.setTo(room + "/" + nickname);
-
-        // Indicate the the client supports MUC
-        MUCInitialPresence mucInitialPresence = new MUCInitialPresence();
-        if (password != null) {
-            mucInitialPresence.setPassword(password);
-        }
-        if (history != null) {
-            mucInitialPresence.setHistory(history.getMUCHistory());
-        }
-        joinPresence.addExtension(mucInitialPresence);
-        // Invoke presence interceptors so that extra information can be dynamically added
-        for (PacketInterceptor packetInterceptor : presenceInterceptors) {
-            packetInterceptor.interceptPacket(joinPresence);
-        }
-
-        // Wait for a presence packet back from the server.
-        PacketFilter responseFilter =
-                new AndFilter(
-                        FromMatchesFilter.createFull(room + "/" + nickname),
-                        new PacketTypeFilter(Presence.class));
-        PacketCollector response = null;
-
-        response = connection.createPacketCollector(responseFilter);
-        // Send join packet.
-        connection.sendPacket(joinPresence);
-        // Wait up to a certain number of seconds for a reply.
-        response.nextResultOrThrow(timeout);
-
-        this.nickname = nickname;
-        joined = true;
-        userHasJoined();
+        enter(nickname, password, history, timeout);
     }
 
     /**
@@ -916,7 +936,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void changeNickname(String nickname) throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        if (nickname == null || nickname.equals("")) {
+        if (StringUtils.isNullOrEmpty(nickname)) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
         // Check that we already have joined the room before attempting to change the
@@ -959,7 +979,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void changeAvailabilityStatus(String status, Presence.Mode mode) throws NotConnectedException {
-        if (nickname == null || nickname.equals("")) {
+        if (StringUtils.isNullOrEmpty(nickname)) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
         // Check that we already have joined the room before attempting to change the
@@ -1792,19 +1812,6 @@ public class MultiUserChat {
         connection.sendPacket(message);
         // Wait up to a certain number of seconds for a reply.
         response.nextResultOrThrow();
-    }
-
-    /**
-     * Notification message that the user has joined the room.
-     */
-    private synchronized void userHasJoined() {
-        // Update the list of joined rooms through this connection
-        List<String> rooms = joinedRooms.get(connection);
-        if (rooms == null) {
-            rooms = new ArrayList<String>();
-            joinedRooms.put(connection, rooms);
-        }
-        rooms.add(room);
     }
 
     /**

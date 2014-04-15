@@ -513,17 +513,27 @@ public class StringUtils {
     }
 
     /**
-     * Returns true if string is not null and is not empty, false otherwise
+     * Returns true if CharSequence is not null and is not empty, false otherwise
      * Examples:
      *    isNotEmpty(null) - false
      *    isNotEmpty("") - false
      *    isNotEmpty(" ") - true
      *    isNotEmpty("empty") - true
      *
-     * @param string checked String
+     * @param cs checked CharSequence
      * @return true if string is not null and is not empty, false otherwise
      */
-    public static boolean isNotEmpty(CharSequence string) {
-        return string != null && string.length() != 0;
+    public static boolean isNotEmpty(CharSequence cs) {
+        return !isNullOrEmpty(cs);
+    }
+
+    /**
+     * Returns true if the given CharSequence is not null or empty.
+     *
+     * @param cs
+     * @return true if the given CharSequence is not null or empty
+     */
+    public static boolean isNullOrEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
     }
 }
