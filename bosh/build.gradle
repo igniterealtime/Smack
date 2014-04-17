@@ -10,5 +10,5 @@ repositories {
 
 dependencies {
 	compile project(':core')
-	compile 'org.igniterealtime.jbosh:jbosh:0.8.0-SNAPSHOT'
+	compile 'org.igniterealtime.jbosh:jbosh:0.8.0'
 }
