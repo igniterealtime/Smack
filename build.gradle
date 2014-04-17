@@ -34,17 +34,19 @@ allprojects {
 				   'Bundle-Version': version)
 	}
 
-	gradle.taskGraph.whenReady { taskGraph ->
-		if (signingRequired && taskGraph.allTasks.any { it instanceof Sign }) {
-			// Use Java 6's console to read from the console (no good for a CI environment)
-			Console console = System.console()
-			console.printf '\n\nWe have to sign some things in this build.\n\nPlease enter your signing details.\n\n'
-			def password = console.readPassword('GnuPG Private Key Password: ')
+}
 
-			allprojects { ext.'signing.password' = password }
+gradle.taskGraph.whenReady { taskGraph ->
+	if (signingRequired
+		&& taskGraph.allTasks.any { it instanceof Sign }) {
+		// Use Java 6's console to read from the console (no good for a CI environment)
+		Console console = System.console()
+		console.printf '\n\nWe have to sign some things in this build.\n\nPlease enter your signing details.\n\n'
+		def password = console.readPassword('GnuPG Private Key Password: ')
 
-			console.printf '\nThanks.\n\n'
-		}
+		allprojects { ext.'signing.password' = password }
+
+		console.printf '\nThanks.\n\n'
 	}
 }
 
