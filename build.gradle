@@ -97,6 +97,7 @@ subprojects {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
 	}
 	repositories {
+		mavenLocal()
 		mavenCentral()
 	}
 	tasks.withType(Jar) {
