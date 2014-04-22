@@ -711,8 +711,6 @@ public class XMPPTCPConnection extends XMPPConnection {
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
                 plain.getInetAddress().getHostAddress(), plain.getPort(), true);
-        socket.setSoTimeout(0);
-        socket.setKeepAlive(true);
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
         // Proceed to do the handshake
