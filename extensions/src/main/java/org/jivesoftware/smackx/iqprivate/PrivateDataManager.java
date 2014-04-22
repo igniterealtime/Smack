@@ -60,7 +60,7 @@ public class PrivateDataManager extends Manager {
 
     public static synchronized PrivateDataManager getInstanceFor(XMPPConnection connection) {
         PrivateDataManager privateDataManager = instances.get(connection);
-        if (connection == null) {
+        if (privateDataManager == null) {
             privateDataManager = new PrivateDataManager(connection);
         }
         return privateDataManager;
