@@ -636,7 +636,7 @@ public class XMPPTCPConnection extends XMPPConnection {
     /**
      * The server has indicated that TLS negotiation can start. We now need to secure the
      * existing plain connection and perform a handshake. This method won't return until the
-     * connection has finished the handshake or an error occured while securing the connection.
+     * connection has finished the handshake or an error occurred while securing the connection.
      *
      * @throws Exception if an exception occurs.
      */
@@ -702,7 +702,7 @@ public class XMPPTCPConnection extends XMPPConnection {
             }
         }
 
-        // Verify certificate presented by the server
+        // If the user didn't specify a SSLContext, use the default one
         if (context == null) {
             context = SSLContext.getInstance("TLS");
             context.init(kms, null, new java.security.SecureRandom());
