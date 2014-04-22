@@ -999,7 +999,7 @@ public abstract class XMPPConnection {
 
     void callConnectionAuthenticatedListener() {
         for (ConnectionListener listener : getConnectionListeners()) {
-            listener.connected(this);
+            listener.authenticated(this);
         }
     }
 
