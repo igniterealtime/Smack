@@ -163,7 +163,7 @@ public class Roster {
         }
         connection.addConnectionListener(new AbstractConnectionListener() {
             public void authenticated(XMPPConnection connection) {
-                // Anonymous users can't have a roster, but it iss possible that a Roster instance is
+                // Anonymous users can't have a roster, but it is possible that a Roster instance is
                 // retrieved if getRoster() is called *before* connect(). So we have to check here
                 // again if it's an anonymous connection.
                 if (connection.isAnonymous())
