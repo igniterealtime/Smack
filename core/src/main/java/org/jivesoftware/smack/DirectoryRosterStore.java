@@ -23,6 +23,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
@@ -47,6 +49,7 @@ public class DirectoryRosterStore implements RosterStore {
     private static final String ENTRY_PREFIX = "entry-";
     private static final String VERSION_FILE_NAME = "__version__";
     private static final String STORE_ID = "DEFAULT_ROSTER_STORE";
+    private static final Logger LOGGER = Logger.getLogger(DirectoryRosterStore.class.getName());
 
     private static final FileFilter rosterDirFilter = new FileFilter() {
 
@@ -235,13 +238,13 @@ public class DirectoryRosterStore implements RosterStore {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();;
+            LOGGER.log(Level.SEVERE, "readEntry()", e);
             return null;
         }
         catch (XmlPullParserException e) {
             log("Invalid group entry in store entry file "
                     + file);
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "readEntry()", e);
             return null;
         }
 

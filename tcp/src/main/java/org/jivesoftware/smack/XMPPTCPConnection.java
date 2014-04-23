@@ -55,6 +55,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Creates a socket connection to a XMPP server. This is the default connection
@@ -64,6 +66,8 @@ import java.util.Locale;
  * @author Matt Tucker
  */
 public class XMPPTCPConnection extends XMPPConnection {
+
+    private static final Logger LOGGER = Logger.getLogger(XMPPTCPConnection.class.getName());
 
     /**
      * The socket which is used for this connection.
@@ -384,7 +388,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         try {
                 socket.close();
         } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "shutdown", e);
         }
         // In most cases the close() should be successful, so set
         // connected to false here.
@@ -575,7 +579,7 @@ public class XMPPTCPConnection extends XMPPConnection {
                     reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "initReaderAndWriter()", e);
                     compressionHandler = null;
                     reader = new BufferedReader(
                             new InputStreamReader(socket.getInputStream(), "UTF-8"));
@@ -925,7 +929,7 @@ public class XMPPTCPConnection extends XMPPConnection {
             catch (Exception e) {
                 // Catch and print any exception so we can recover
                 // from a faulty listener
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "notifyReconnection()", e);
             }
         }
     }
