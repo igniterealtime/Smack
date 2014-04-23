@@ -118,7 +118,7 @@ public class LastActivityManager extends Manager {
         return lastActivityManager;
     }
 
-    private long lastMessageSent;
+    private volatile long lastMessageSent;
     private boolean enabled = false;
 
     /**
@@ -197,10 +197,7 @@ public class LastActivityManager extends Manager {
      * sent.
      */
     private void resetIdleTime() {
-        long now = System.currentTimeMillis();
-        synchronized (this) {
-            lastMessageSent = now;
-        }
+        lastMessageSent = System.currentTimeMillis();
     }
 
     /**
@@ -209,11 +206,8 @@ public class LastActivityManager extends Manager {
      * @return the lapsed time between the last message sent and now.
      */
     private long getIdleTime() {
-        long lms;
+        long lms = lastMessageSent;
         long now = System.currentTimeMillis();
-        synchronized (this) {
-            lms = lastMessageSent;
-        }
         return ((now - lms) / 1000);
     }
 
