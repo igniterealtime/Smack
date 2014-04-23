@@ -156,24 +156,13 @@ public class DirectoryRosterStore implements RosterStore {
 
     @Override
     public boolean removeEntry(String bareJid, String version) {
-        try {
-            return getBareJidFile(bareJid).delete() && setRosterVersion(version);
-        }
-        catch (SecurityException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getBareJidFile(bareJid).delete() && setRosterVersion(version);
     }
 
     @Override
     public boolean resetEntries(Collection<Item> items, String version) {
-        try {
-            for (File file : fileDir.listFiles(rosterDirFilter)) {
-                file.delete();
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-            return false;
+        for (File file : fileDir.listFiles(rosterDirFilter)) {
+            file.delete();
         }
         for (Item item : items) {
             if (!addEntryRaw(item)) {
