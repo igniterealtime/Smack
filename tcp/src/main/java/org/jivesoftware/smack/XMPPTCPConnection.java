@@ -844,10 +844,8 @@ public class XMPPTCPConnection extends XMPPConnection {
      * Notifies the XMPP connection that stream compression was denied so that
      * the connection process can proceed.
      */
-    void streamCompressionDenied() {
-        synchronized (this) {
-            this.notify();
-        }
+    synchronized void streamCompressionDenied() {
+        this.notify();
     }
 
     /**
