@@ -771,13 +771,13 @@ public class XMPPTCPConnection extends XMPPConnection {
      * Starts using stream compression that will compress network traffic. Traffic can be
      * reduced up to 90%. Therefore, stream compression is ideal when using a slow speed network
      * connection. However, the server and the client will need to use more CPU time in order to
-     * un/compress network data so under high load the server performance might be affected.<p>
-     * <p/>
+     * un/compress network data so under high load the server performance might be affected.
+     * <p>
+     * <p>
      * Stream compression has to have been previously offered by the server. Currently only the
      * zlib method is supported by the client. Stream compression negotiation has to be done
      * before authentication took place.<p>
-     * <p/>
-     * Note: to use stream compression the smackx.jar file has to be present in the classpath.
+     * <p>
      *
      * @return true if stream compression negotiation was successful.
      */
