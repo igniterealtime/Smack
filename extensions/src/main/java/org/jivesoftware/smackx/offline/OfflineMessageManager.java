@@ -18,7 +18,6 @@
 package org.jivesoftware.smackx.offline;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -162,9 +161,7 @@ public class OfflineMessageManager {
         Message message = (Message) messageCollector.nextResult();
         while (message != null) {
             messages.add(message);
-            message =
-                    (Message) messageCollector.nextResult(
-                            SmackConfiguration.getDefaultPacketReplyTimeout());
+            message = (Message) messageCollector.nextResult();
         }
         // Stop queuing offline messages
         messageCollector.cancel();
@@ -193,9 +190,7 @@ public class OfflineMessageManager {
         Message message = (Message) messageCollector.nextResult();
         while (message != null) {
             messages.add(message);
-            message =
-                    (Message) messageCollector.nextResult(
-                            SmackConfiguration.getDefaultPacketReplyTimeout());
+            message = (Message) messageCollector.nextResult();
         }
         // Stop queuing offline messages
         messageCollector.cancel();

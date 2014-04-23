@@ -489,7 +489,7 @@ public abstract class XMPPConnection {
         if (!roster.rosterInitialized && config.isRosterLoadedAtLogin()) {
             try {
                 synchronized (roster) {
-                    long waitTime = SmackConfiguration.getDefaultPacketReplyTimeout();
+                    long waitTime = getPacketReplyTimeout();
                     long start = System.currentTimeMillis();
                     while (!roster.rosterInitialized) {
                         if (waitTime <= 0) {

@@ -793,7 +793,7 @@ public class XMPPTCPConnection extends XMPPConnection {
             // Wait until compression is being used or a timeout happened
             synchronized (this) {
                 try {
-                    this.wait(SmackConfiguration.getDefaultPacketReplyTimeout() * 5);
+                    wait(getPacketReplyTimeout());
                 }
                 catch (InterruptedException e) {
                     // Ignore.

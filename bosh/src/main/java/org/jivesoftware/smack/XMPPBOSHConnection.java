@@ -187,7 +187,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
         synchronized (this) {
             if (!connected) {
                 try {
-                    wait(SmackConfiguration.getDefaultPacketReplyTimeout()*6);
+                    wait(getPacketReplyTimeout());
                 }
                 catch (InterruptedException e) {}
             }
