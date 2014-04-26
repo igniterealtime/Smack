@@ -1017,6 +1017,7 @@ public abstract class XMPPConnection {
     }
 
     void callConnectionClosedOnErrorListener(Exception e) {
+        LOGGER.log(Level.WARNING, "Connection closed with error", e);
         for (ConnectionListener listener : getConnectionListeners()) {
             try {
                 listener.connectionClosedOnError(e);
