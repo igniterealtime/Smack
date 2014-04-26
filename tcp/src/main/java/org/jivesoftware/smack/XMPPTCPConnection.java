@@ -615,8 +615,9 @@ public class XMPPTCPConnection extends XMPPConnection {
      * want to secure the connection.
      *
      * @param required true when the server indicates that TLS is required.
+     * @throws IOException if an exception occurs.
      */
-    void startTLSReceived(boolean required) {
+    void startTLSReceived(boolean required) throws IOException {
         if (required && config.getSecurityMode() ==
                 ConnectionConfiguration.SecurityMode.disabled) {
             notifyConnectionError(new IllegalStateException(
@@ -628,13 +629,8 @@ public class XMPPTCPConnection extends XMPPConnection {
             // Do not secure the connection using TLS since TLS was disabled
             return;
         }
-        try {
-            writer.write("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"/>");
-            writer.flush();
-        }
-        catch (IOException e) {
-            notifyConnectionError(e);
-        }
+        writer.write("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"/>");
+        writer.flush();
     }
 
     /**
