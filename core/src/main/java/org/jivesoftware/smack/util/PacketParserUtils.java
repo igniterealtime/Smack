@@ -16,9 +16,7 @@
  */
 package org.jivesoftware.smack.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -55,12 +53,6 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class PacketParserUtils {
     private static final Logger LOGGER = Logger.getLogger(PacketParserUtils.class.getName());
-    
-    /**
-     * Namespace used to store packet properties.
-     */
-    private static final String PROPERTIES_NAMESPACE =
-            "http://www.jivesoftware.com/xmlns/xmpp/properties";
 
     /**
      * Parses a message packet.
@@ -69,7 +61,7 @@ public class PacketParserUtils {
      * @return a Message packet.
      * @throws Exception if an exception occurs while parsing the packet.
      */
-    public static Packet parseMessage(XmlPullParser parser) throws Exception {
+    public static Message parseMessage(XmlPullParser parser) throws Exception {
         Message message = new Message();
         String id = parser.getAttributeValue("", "id");
         message.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
@@ -93,7 +85,6 @@ public class PacketParserUtils {
         // in arbitrary sub-elements.
         boolean done = false;
         String thread = null;
-        Map<String, Object> properties = null;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -131,11 +122,6 @@ public class PacketParserUtils {
                 else if (elementName.equals("error")) {
                     message.setError(parseError(parser));
                 }
-                else if (elementName.equals("properties") &&
-                        namespace.equals(PROPERTIES_NAMESPACE))
-                {
-                    properties = parseProperties(parser);
-                }
                 // Otherwise, it must be a packet extension.
                 else {
                     message.addExtension(
@@ -150,12 +136,6 @@ public class PacketParserUtils {
         }
 
         message.setThread(thread);
-        // Set packet properties.
-        if (properties != null) {
-            for (String name : properties.keySet()) {
-                message.setProperty(name, properties.get(name));
-            }
-        }
         return message;
     }
 
@@ -245,15 +225,6 @@ public class PacketParserUtils {
                 }
                 else if (elementName.equals("error")) {
                     presence.setError(parseError(parser));
-                }
-                else if (elementName.equals("properties") &&
-                        namespace.equals(PROPERTIES_NAMESPACE))
-                {
-                    Map<String,Object> properties = parseProperties(parser);
-                    // Set packet properties.
-                    for (String name : properties.keySet()) {
-                        presence.setProperty(name, properties.get(name));
-                    }
                 }
                 // Otherwise, it must be a packet extension.
                 else {
@@ -547,87 +518,6 @@ public class PacketParserUtils {
             }
         }
         return methods;
-    }
-
-    /**
-     * Parse a properties sub-packet. If any errors occur while de-serializing Java object
-     * properties, an exception will be printed and not thrown since a thrown
-     * exception will shut down the entire connection. ClassCastExceptions will occur
-     * when both the sender and receiver of the packet don't have identical versions
-     * of the same class.
-     *
-     * @param parser the XML parser, positioned at the start of a properties sub-packet.
-     * @return a map of the properties.
-     * @throws Exception if an error occurs while parsing the properties.
-     */
-    public static Map<String, Object> parseProperties(XmlPullParser parser) throws Exception {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
-                // Parse a property
-                boolean done = false;
-                String name = null;
-                String type = null;
-                String valueText = null;
-                Object value = null;
-                while (!done) {
-                    eventType = parser.next();
-                    if (eventType == XmlPullParser.START_TAG) {
-                        String elementName = parser.getName();
-                        if (elementName.equals("name")) {
-                            name = parser.nextText();
-                        }
-                        else if (elementName.equals("value")) {
-                            type = parser.getAttributeValue("", "type");
-                            valueText = parser.nextText();
-                        }
-                    }
-                    else if (eventType == XmlPullParser.END_TAG) {
-                        if (parser.getName().equals("property")) {
-                            if ("integer".equals(type)) {
-                                value = Integer.valueOf(valueText);
-                            }
-                            else if ("long".equals(type))  {
-                                value = Long.valueOf(valueText);
-                            }
-                            else if ("float".equals(type)) {
-                                value = Float.valueOf(valueText);
-                            }
-                            else if ("double".equals(type)) {
-                                value = Double.valueOf(valueText);
-                            }
-                            else if ("boolean".equals(type)) {
-                                value = Boolean.valueOf(valueText);
-                            }
-                            else if ("string".equals(type)) {
-                                value = valueText;
-                            }
-                            else if ("java-object".equals(type)) {
-                                try {
-                                    byte [] bytes = StringUtils.decodeBase64(valueText);
-                                    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-                                    value = in.readObject();
-                                }
-                                catch (Exception e) {
-                                    LOGGER.log(Level.SEVERE, "Error parsing java object", e);
-                                }
-                            }
-                            if (name != null && value != null) {
-                                properties.put(name, value);
-                            }
-                            done = true;
-                        }
-                    }
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("properties")) {
-                    break;
-                }
-            }
-        }
-        return properties;
     }
 
     /**

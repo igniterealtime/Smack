@@ -20,29 +20,21 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Base class for XMPP packets. Every packet has a unique ID (which is automatically
- * generated, but can be overriden). Optionally, the "to" and "from" fields can be set,
- * as well as an arbitrary number of properties.
- *
- * Properties provide an easy mechanism for clients to share data. Each property has a
- * String name, and a value that is a Java primitive (int, long, float, double, boolean)
- * or any Serializable object (a Java object is Serializable when it implements the
- * Serializable interface).
+ * generated, but can be overridden). Optionally, the "to" and "from" fields can be set.
  *
  * @author Matt Tucker
  */
 public abstract class Packet {
-    private static final Logger LOGGER = Logger.getLogger(Packet.class.getName());
-    
+
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
@@ -88,7 +80,6 @@ public abstract class Packet {
     private final List<PacketExtension> packetExtensions
             = new CopyOnWriteArrayList<PacketExtension>();
 
-    private final Map<String,Object> properties = new HashMap<String, Object>();
     private XMPPError error = null;
 
     public Packet() {
@@ -293,60 +284,6 @@ public abstract class Packet {
     }
 
     /**
-     * Returns the packet property with the specified name or <tt>null</tt> if the
-     * property doesn't exist. Property values that were originally primitives will
-     * be returned as their object equivalent. For example, an int property will be
-     * returned as an Integer, a double as a Double, etc.
-     *
-     * @param name the name of the property.
-     * @return the property, or <tt>null</tt> if the property doesn't exist.
-     */
-    public synchronized Object getProperty(String name) {
-        if (properties == null) {
-            return null;
-        }
-        return properties.get(name);
-    }
-
-    /**
-     * Sets a property with an Object as the value. The value must be Serializable
-     * or an IllegalArgumentException will be thrown.
-     *
-     * @param name the name of the property.
-     * @param value the value of the property.
-     */
-    public synchronized void setProperty(String name, Object value) {
-        if (!(value instanceof Serializable)) {
-            throw new IllegalArgumentException("Value must be serialiazble");
-        }
-        properties.put(name, value);
-    }
-
-    /**
-     * Deletes a property.
-     *
-     * @param name the name of the property to delete.
-     */
-    public synchronized void deleteProperty(String name) {
-        if (properties == null) {
-            return;
-        }
-        properties.remove(name);
-    }
-
-    /**
-     * Returns an unmodifiable collection of all the property names that are set.
-     *
-     * @return all property names.
-     */
-    public synchronized Collection<String> getPropertyNames() {
-        if (properties == null) {
-            return Collections.emptySet();
-        }
-        return Collections.unmodifiableSet(new HashSet<String>(properties.keySet()));
-    }
-
-    /**
      * Returns the packet as XML. Every concrete extension of Packet must implement
      * this method. In addition to writing out packet-specific data, every sub-class
      * should also write out the error and the extensions data if they are defined.
@@ -367,88 +304,6 @@ public abstract class Packet {
         // Add in all standard extension sub-packets.
         for (PacketExtension extension : getExtensions()) {
             xml.append(extension.toXML());
-        }
-        // Add in packet properties.
-        if (properties != null && !properties.isEmpty()) {
-            xml.halfOpenElement("properties").xmlnsAttribute("http://www.jivesoftware.com/xmlns/xmpp/properties");
-            xml.rightAngelBracket();
-            // Loop through all properties and write them out.
-            for (String name : getPropertyNames()) {
-                Object value = getProperty(name);
-                xml.openElement("property");
-                xml.element("name", name);
-                xml.halfOpenElement("value");
-
-                String type;
-                String valueStr;
-                if (value instanceof Integer) {
-                    type = "integer";
-                    valueStr = Integer.toString((Integer)value);
-                }
-                else if (value instanceof Long) {
-                    type = "long";
-                    valueStr = Long.toString((Long) value);
-                }
-                else if (value instanceof Float) {
-                    type = "float";
-                    valueStr = Float.toString((Float) value);
-                }
-                else if (value instanceof Double) {
-                    type = "double";
-                    valueStr = Double.toString((Double) value);
-                }
-                else if (value instanceof Boolean) {
-                    type = "boolean";
-                    valueStr = Boolean.toString((Boolean) value);
-                }
-                else if (value instanceof String) {
-                    type = "string";
-                    valueStr = (String) value;
-                }
-                // Otherwise, it's a generic Serializable object. Serialized objects are in
-                // a binary format, which won't work well inside of XML. Therefore, we base-64
-                // encode the binary data before adding it.
-                else {
-                    ByteArrayOutputStream byteStream = null;
-                    ObjectOutputStream out = null;
-                    try {
-                        byteStream = new ByteArrayOutputStream();
-                        out = new ObjectOutputStream(byteStream);
-                        out.writeObject(value);
-                        type ="java-object";
-                        valueStr = StringUtils.encodeBase64(byteStream.toByteArray());
-                    }
-                    catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "Error encoding java object", e);
-                        type ="java-object";
-                        valueStr = "Serializing error: " + e.getMessage();
-                    }
-                    finally {
-                        if (out != null) {
-                            try {
-                                out.close();
-                            }
-                            catch (Exception e) {
-                                // Ignore.
-                            }
-                        }
-                        if (byteStream != null) {
-                            try {
-                                byteStream.close();
-                            }
-                            catch (Exception e) {
-                                // Ignore.
-                            }
-                        }
-                    }
-                }
-                xml.attribute("type", type);
-                xml.rightAngelBracket();
-                xml.escape(valueStr);
-                xml.closeElement("value");
-                xml.closeElement("property");
-            }
-            xml.closeElement("properties");
         }
         return xml;
     }
@@ -479,10 +334,6 @@ public abstract class Packet {
         if (packetID != null ? !packetID.equals(packet.packetID) : packet.packetID != null) {
             return false;
         }
-        if (properties != null ? !properties.equals(packet.properties)
-                : packet.properties != null) {
-            return false;
-        }
         if (to != null ? !to.equals(packet.to) : packet.to != null)  { return false; }
         return !(xmlns != null ? !xmlns.equals(packet.xmlns) : packet.xmlns != null);
     }
@@ -495,7 +346,6 @@ public abstract class Packet {
         result = 31 * result + (to != null ? to.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
         result = 31 * result + packetExtensions.hashCode();
-        result = 31 * result + properties.hashCode();
         result = 31 * result + (error != null ? error.hashCode() : 0);
         return result;
     }

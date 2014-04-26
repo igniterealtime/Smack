@@ -10,10 +10,6 @@
 Packet Properties
 </div>
 
-<div class="nav">
-&laquo; <a href="index.html">Table of Contents</a>
-</div>
-
 <p>
 Smack provides an easy mechanism for attaching arbitrary properties to packets. Each property
 has a String name, and a value that is a Java primitive (int, long, float, double, boolean) or
@@ -32,10 +28,13 @@ demonstrates how to set properties:
 
 <div class="code"><pre>
 Message message = chat.createMessage();
+JivePropertiesExtension jpe = new JivePropertiesExtension();
 <font color="gray"><i>// Add a Color object as a property.</i></font>
-message.setProperty(<font color="blue">"favoriteColor"</font>, new Color(0, 0, 255));
+jpe.setProperty(<font color="blue">"favoriteColor"</font>, new Color(0, 0, 255));
 <font color="gray"><i>// Add an int as a property.</i></font>
-message.setProperty(<font color="blue">"favoriteNumber"</font>, 4);
+jpe.setProperty(<font color="blue">"favoriteNumber"</font>, 4);
+<font color="gray"><i>// Add the JivePropertiesExtension to the message packet</i></font>
+message.addPacketExtension(jpe);
 chat.sendMessage(message);
 </pre></div>
 
@@ -45,13 +44,22 @@ Getting those same properties would use the following code:
 
 <div class="code"><pre>
 Message message = chat.nextMessage();
+<font color="gray"><i>// Get the JivePropertiesExtension</i></font>
+JivePropertiesExtension jpe = message.getExtension(JivePropertiesExtension.NAMESPACE);
 <font color="gray"><i>// Get a Color object property.</i></font>
-Color favoriteColor = (Color)message.getProperty(<font color="blue">"favoriteColor"</font>);
+Color favoriteColor = (Color)jpe.getProperty(<font color="blue">"favoriteColor"</font>);
 <font color="gray"><i>// Get an int property. Note that properties are always returned as
 // Objects, so we must cast the value to an Integer, then convert
 // it to an int.</i></font>
-int favoriteNumber = ((Integer)message.getProperty(<font color="blue">"favoriteNumber"</font>)).intValue();
+int favoriteNumber = ((Integer)jpe.getProperty(<font color="blue">"favoriteNumber"</font>)).intValue();
 </pre></div>
+
+<p>
+For convenience <code>JivePropertiesManager</code> contains two helper
+methods namely <code>addProperty(Packet packet, String name, Object
+value)</code> and
+<code>getProperty(Packet packet, String name)</code>.
+</p>
 
 <p class="subheader">
 Objects as Properties
@@ -63,10 +71,6 @@ you should keep the following in mind:
 </p>
 
 <ul>
- 	<li>Packet extensions are the more standard way to add extra data to XMPP stanzas. Using
-		properties may be more convenient in some cases, however, since Smack will do the
-		work of handling the XML.
-
 	<li>When you send a Java object as a property, only clients running Java will be able to 
 		interpret the data. So, consider using a series of primitive values to transfer data 
 		instead.

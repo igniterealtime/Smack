@@ -456,4 +456,10 @@
         <className>org.jivesoftware.smackx.amp.provider.AMPExtensionProvider</className>
     </extensionProvider>
 
+    <!-- JiveProperties -->
+    <extensionProvider>
+        <elementName>properties</elementName>
+        <namespace>http://www.jivesoftware.com/xmlns/xmpp/properties</namespace>
+        <className>org.jivesoftware.smackx.jiveproperties.provider.JivePropertiesExtensionProvider</className>
+    </extensionProvider>
 </smackProviders>
