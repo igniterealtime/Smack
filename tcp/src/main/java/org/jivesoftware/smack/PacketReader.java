@@ -53,9 +53,16 @@ class PacketReader {
 
     private XMPPTCPConnection connection;
     private XmlPullParser parser;
-    volatile boolean done;
 
-    private String connectionID = null;
+    /**
+     * Set to true if the last features stanza from the server has been parsed. A XMPP connection
+     * handshake can invoke multiple features stanzas, e.g. when TLS is activated a second feature
+     * stanza is send by the server. This is set to true once the last feature stanza has been
+     * parsed.
+     */
+    private volatile boolean lastFeaturesParsed;
+
+    volatile boolean done;
 
     protected PacketReader(final XMPPTCPConnection connection) {
         this.connection = connection;
@@ -68,7 +75,7 @@ class PacketReader {
      */
     protected void init() {
         done = false;
-        connectionID = null;
+        lastFeaturesParsed = false;
 
         readerThread = new Thread() {
             public void run() {
@@ -83,10 +90,11 @@ class PacketReader {
 
     /**
      * Starts the packet reader thread and returns once a connection to the server
-     * has been established. A connection will be attempted for a maximum of five
-     * seconds. An XMPPException will be thrown if the connection fails.
+     * has been established or if the server's features could not be parsed within
+     * the connection's PacketReplyTimeout.
+     *
      * @throws NoResponseException if the server fails to send an opening stream back
-     *      within packetReplyTimeout*3.
+     *      within packetReplyTimeout.
      */
     synchronized public void startup() throws NoResponseException {
         readerThread.start();
@@ -95,19 +103,15 @@ class PacketReader {
         try {
             // A waiting thread may be woken up before the wait time or a notify
             // (although this is a rare thing). Therefore, we continue waiting
-            // until either a connectionID has been set (and hence a notify was
+            // until either the server's features have been parsed (and hence a notify was
             // made) or the total wait time has elapsed.
-            long waitTime = connection.getPacketReplyTimeout();
-            wait(3 * waitTime);
+            wait(connection.getPacketReplyTimeout());
         }
         catch (InterruptedException ie) {
             // Ignore.
         }
-        if (connectionID == null) {
+        if (!lastFeaturesParsed) {
             throw new NoResponseException();
-        }
-        else {
-            connection.connectionID = connectionID;
         }
     }
 
@@ -201,7 +205,7 @@ class PacketReader {
                             for (int i=0; i<parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals("id")) {
                                     // Save the connectionID
-                                    connectionID = parser.getAttributeValue(i);
+                                    connection.connectionID = parser.getAttributeValue(i);
                                 }
                                 else if (parser.getAttributeName(i).equals("from")) {
                                     // Use the server name that the server says that it is.
@@ -376,6 +380,7 @@ class PacketReader {
         if (!startTLSReceived || connection.getConfiguration().getSecurityMode() ==
                 ConnectionConfiguration.SecurityMode.disabled)
         {
+            lastFeaturesParsed = true;
             // This synchronized block prevents this thread from calling notify() before the other
             // thread had called wait() (it would cause an Exception if wait() hadn't been called)
             synchronized (this) {
