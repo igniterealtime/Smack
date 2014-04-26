@@ -202,13 +202,6 @@ class PacketReader {
                                 if (parser.getAttributeName(i).equals("id")) {
                                     // Save the connectionID
                                     connectionID = parser.getAttributeValue(i);
-                                    if (!"1.0".equals(parser.getAttributeValue("", "version"))) {
-                                        // Notify that a stream has been opened if the
-                                        // server is not XMPP 1.0 compliant otherwise make the
-                                        // notification after TLS has been negotiated or if TLS
-                                        // is not supported
-                                        releaseConnectionIDLock();
-                                    }
                                 }
                                 else if (parser.getAttributeName(i).equals("from")) {
                                     // Use the server name that the server says that it is.
@@ -297,19 +290,6 @@ class PacketReader {
         }
     }
 
-    /**
-     * Releases the connection ID lock so that the thread that was waiting can resume. The
-     * lock will be released when one of the following three conditions is met:<p>
-     *
-     * 1) An opening stream was sent from a non XMPP 1.0 compliant server
-     * 2) Stream features were received from an XMPP 1.0 compliant server that does not support TLS
-     * 3) TLS negotiation was successful
-     *
-     */
-    synchronized private void releaseConnectionIDLock() {
-        notify();
-    }
-
     private void parseFeatures(XmlPullParser parser) throws Exception {
         boolean startTLSReceived = false;
         boolean startTLSRequired = false;
@@ -387,11 +367,20 @@ class PacketReader {
             }
         }
 
-        // Release the lock after TLS has been negotiated or we are not insterested in TLS
+        // Release the lock after TLS has been negotiated or we are not interested in TLS. If the
+        // server announced TLS and we choose to use it, by sending 'starttls', which the server
+        // replied with 'proceed', the server is required to send a new stream features element that
+        // "MUST NOT include the STARTTLS feature" (RFC6120 5.4.3.3. 5.). We are therefore save to
+        // release the connection lock once either TLS is disabled or we received a features stanza
+        // without starttls.
         if (!startTLSReceived || connection.getConfiguration().getSecurityMode() ==
                 ConnectionConfiguration.SecurityMode.disabled)
         {
-            releaseConnectionIDLock();
+            // This synchronized block prevents this thread from calling notify() before the other
+            // thread had called wait() (it would cause an Exception if wait() hadn't been called)
+            synchronized (this) {
+                notify();
+            }
         }
     }
 }
