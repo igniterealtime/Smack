@@ -108,6 +108,10 @@ public class XMPPTCPConnection extends XMPPConnection {
      */
     private boolean serverAckdCompression = false;
 
+    /**
+     * Lock for the wait()/notify() pattern for the compression negotiation
+     */
+    private final Object compressionLock = new Object();
 
     /**
      * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
@@ -230,20 +234,26 @@ public class XMPPTCPConnection extends XMPPConnection {
         // Do partial version of nameprep on the username.
         username = username.toLowerCase(Locale.US).trim();
 
-        String response;
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
-                response = saslAuthentication.authenticate(username, password, resource);
+                saslAuthentication.authenticate(username, password, resource);
             }
             else {
-                response = saslAuthentication.authenticate(resource, config.getCallbackHandler());
+                saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
             throw new SaslException("No non-anonymous SASL authentication mechanism available");
         }
 
+        // If compression is enabled then request the server to use stream compression. XEP-170
+        // recommends to perform stream compression before resource binding.
+        if (config.isCompressionEnabled()) {
+            useCompression();
+        }
+
         // Set the user.
+        String response = bindResourceAndEstablishSession(resource);
         if (response != null) {
             this.user = response;
             // Update the serviceName with the one returned by the server
@@ -254,11 +264,6 @@ public class XMPPTCPConnection extends XMPPConnection {
             if (resource != null) {
                 this.user += "/" + resource;
             }
-        }
-
-        // If compression is enabled then request the server to use stream compression
-        if (config.isCompressionEnabled()) {
-            useCompression();
         }
 
         // Indicate that we're now authenticated.
@@ -292,14 +297,14 @@ public class XMPPTCPConnection extends XMPPConnection {
             throw new AlreadyLoggedInException();
         }
 
-        String response;
         if (saslAuthentication.hasAnonymousAuthentication()) {
-            response = saslAuthentication.authenticateAnonymously();
+            saslAuthentication.authenticateAnonymously();
         }
         else {
             throw new SaslException("No anonymous SASL authentication mechanism available");
         }
 
+        String response = bindResourceAndEstablishSession(null);
         // Set the user value.
         this.user = response;
         // Update the serviceName with the one returned by the server
@@ -396,8 +401,6 @@ public class XMPPTCPConnection extends XMPPConnection {
 
         reader = null;
         writer = null;
-
-        saslAuthentication.init();
     }
 
     public synchronized void disconnect(Presence unavailablePresence) {
@@ -786,11 +789,11 @@ public class XMPPTCPConnection extends XMPPConnection {
         }
 
         if ((compressionHandler = maybeGetCompressionHandler()) != null) {
-            synchronized (this) {
+            synchronized (compressionLock) {
                 requestStreamCompression(compressionHandler.getCompressionMethod());
                 // Wait until compression is being used or a timeout happened
                 try {
-                    wait(getPacketReplyTimeout());
+                    compressionLock.wait(getPacketReplyTimeout());
                 }
                 catch (InterruptedException e) {
                     // Ignore.
@@ -835,8 +838,10 @@ public class XMPPTCPConnection extends XMPPConnection {
      * Notifies the XMPP connection that stream compression negotiation is done so that the
      * connection process can proceed.
      */
-    synchronized void streamCompressionNegotiationDone() {
-        this.notify();
+    void streamCompressionNegotiationDone() {
+        synchronized (compressionLock) {
+            compressionLock.notify();
+        }
     }
 
     /**
@@ -851,7 +856,8 @@ public class XMPPTCPConnection extends XMPPConnection {
      * @throws SmackException 
      * @throws IOException 
      */
-    public void connect() throws SmackException, IOException, XMPPException {
+    @Override
+    void connectInternal() throws SmackException, IOException, XMPPException {
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
         // TODO is there a case where connectUsing.. does not throw an exception but connected is

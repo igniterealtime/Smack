@@ -135,7 +135,8 @@ public class XMPPBOSHConnection extends XMPPConnection {
         this.config = config;
     }
 
-    public void connect() throws SmackException {
+    @Override
+    void connectInternal() throws SmackException {
         if (connected) {
             throw new IllegalStateException("Already connected to a server.");
         }
@@ -146,7 +147,6 @@ public class XMPPBOSHConnection extends XMPPConnection {
                 client.close();
                 client = null;
             }
-            saslAuthentication.init();
             sessionID = null;
             authID = null;
 
@@ -250,18 +250,18 @@ public class XMPPBOSHConnection extends XMPPConnection {
         // Do partial version of nameprep on the username.
         username = username.toLowerCase(Locale.US).trim();
 
-        String response;
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
-                response = saslAuthentication.authenticate(username, password, resource);
+                 saslAuthentication.authenticate(username, password, resource);
             } else {
-                response = saslAuthentication.authenticate(resource, config.getCallbackHandler());
+                saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
             throw new SaslException("No non-anonymous SASL authentication mechanism available");
         }
 
+        String response = bindResourceAndEstablishSession(resource);
         // Set the user.
         if (response != null) {
             this.user = response;
@@ -303,15 +303,15 @@ public class XMPPBOSHConnection extends XMPPConnection {
             throw new AlreadyLoggedInException();
         }
 
-        String response;
         if (saslAuthentication.hasAnonymousAuthentication()) {
-            response = saslAuthentication.authenticateAnonymously();
+            saslAuthentication.authenticateAnonymously();
         }
         else {
             // Authenticate using Non-SASL
             throw new SaslException("No anonymous SASL authentication mechanism available");
         }
 
+        String response = bindResourceAndEstablishSession(null);
         // Set the user value.
         this.user = response;
         // Update the serviceName with the one returned by the server

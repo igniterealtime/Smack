@@ -308,7 +308,7 @@ class PacketReader {
                 }
                 else if (parser.getName().equals("bind")) {
                     // The server requires the client to bind a resource to the stream
-                    connection.getSASLAuthentication().bindingRequired();
+                    connection.serverRequiresBinding();
                 }
                 // Set the entity caps node for the server if one is send
                 // See http://xmpp.org/extensions/xep-0115.html#stream
@@ -325,7 +325,7 @@ class PacketReader {
                 }
                 else if (parser.getName().equals("session")) {
                     // The server supports sessions
-                    connection.getSASLAuthentication().sessionsSupported();
+                    connection.serverSupportsSession();
                 }
                 else if (parser.getName().equals("ver")) {
                     if (parser.getNamespace().equals("urn:xmpp:features:rosterver")) {

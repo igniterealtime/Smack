@@ -75,7 +75,7 @@ public class DummyConnection extends XMPPConnection {
     }
 
     @Override
-    public void connect() {
+    void connectInternal() {
         connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {

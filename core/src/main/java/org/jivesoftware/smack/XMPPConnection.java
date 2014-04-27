@@ -44,13 +44,17 @@ import javax.security.sasl.SaslException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Session;
 
 /**
  * The abstract XMPPConnection class provides an interface for connections to a XMPP server and
@@ -90,6 +94,7 @@ import org.jivesoftware.smack.packet.Presence;
  * @author Matt Tucker
  * @author Guenther Niess
  */
+@SuppressWarnings("javadoc")
 public abstract class XMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(XMPPConnection.class.getName());
     
@@ -209,6 +214,9 @@ public abstract class XMPPConnection {
      * The used port to establish the connection to
      */
     private int port;
+
+    private Boolean bindingRequired;
+    private boolean sessionSupported;
 
     /**
      * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
@@ -334,17 +342,37 @@ public abstract class XMPPConnection {
     /**
      * Establishes a connection to the XMPP server and performs an automatic login
      * only if the previous connection state was logged (authenticated). It basically
-     * creates and maintains a connection to the server.<p>
-     * <p/>
-     * Listeners will be preserved from a previous connection if the reconnection
-     * occurs after an abrupt termination.
+     * creates and maintains a connection to the server.
+     * <p>
+     * Listeners will be preserved from a previous connection.
      * 
      * @throws XMPPException if an error occurs on the XMPP protocol level.
-     * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
+     * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
      * @throws IOException 
      * @throws ConnectionException with detailed information about the failed connection.
      */
-    public abstract void connect() throws SmackException, IOException, XMPPException;
+    public void connect() throws SmackException, IOException, XMPPException {
+        saslAuthentication.init();
+        bindingRequired = false;
+        sessionSupported = false;
+        connectInternal();
+    }
+
+    /**
+     * Abstract method that concrete subclasses of XMPPConnection need to implement to perform their
+     * way of XMPP connection establishment. Implementations must guarantee that this method will
+     * block until the last features stanzas has been parsed and the features have been reported
+     * back to XMPPConnection (e.g. by calling @{link {@link XMPPConnection#serverRequiresBinding()}
+     * and such).
+     * <p>
+     * Also implementations are required to perform an automatic login if the previous connection
+     * state was logged (authenticated).
+     *
+     * @throws SmackException
+     * @throws IOException
+     * @throws XMPPException
+     */
+    abstract void connectInternal() throws SmackException, IOException, XMPPException;
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
@@ -417,6 +445,60 @@ public abstract class XMPPConnection {
      * @throws SaslException 
      */
     public abstract void loginAnonymously() throws XMPPException, SmackException, SaslException, IOException;
+
+    /**
+     * Notification message saying that the server requires the client to bind a
+     * resource to the stream.
+     */
+    void serverRequiresBinding() {
+        bindingRequired = true;
+        // Wake up the thread that is waiting
+        synchronized(bindingRequired) {
+            bindingRequired.notify();
+        }
+    }
+
+    /**
+     * Notification message saying that the server supports sessions. When a server supports
+     * sessions the client needs to send a Session packet after successfully binding a resource
+     * for the session.
+     */
+    void serverSupportsSession() {
+        sessionSupported = true;
+    }
+
+    String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
+                    ResourceBindingNotOfferedException, NoResponseException, NotConnectedException {
+        synchronized (bindingRequired) {
+            if (!bindingRequired) {
+                try {
+                    // Wait until server sends response containing the <bind> element
+                    bindingRequired.wait(getPacketReplyTimeout());
+                }
+                catch (InterruptedException e) {
+                    // Ignore
+                }
+            }
+        }
+
+        if (!bindingRequired) {
+            // Server never offered resource binding, which is REQURIED in XMPP client and server
+            // implementations as per RFC6120 7.2
+            throw new ResourceBindingNotOfferedException();
+        }
+
+        Bind bindResource = new Bind();
+        bindResource.setResource(resource);
+
+        Bind response = (Bind) createPacketCollectorAndSend(bindResource).nextResultOrThrow();
+        String userJID = response.getJid();
+
+        if (sessionSupported && !getConfiguration().isLegacySessionDisabled()) {
+            Session session = new Session();
+            createPacketCollectorAndSend(session).nextResultOrThrow();
+        }
+        return userJID;
+    }
 
     /**
      * Sends the specified packet to the server.
