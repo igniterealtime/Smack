@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,21 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 /**
- * This class provides XMPP "zlib" compression with the help of the Deflater class of the Java API. Note that the method
- * needed is available since Java7, so it will only work with Java7 or higher (hence it's name).
+ * This class provides XMPP "zlib" compression with the help of the Deflater class of the Java API.
+ * Note that the method needed for compression with synchronous flush support is available since
+ * Java7, so it will only work with Java7 or higher (hence it's name). On Android, the required
+ * <code>deflate()</code> method is available on API 19 or higher.
+ * <p>
+ * See also:
+ * <ul>
+ * <li><a href=
+ * "http://docs.oracle.com/javase/7/docs/api/java/util/zip/Deflater.html#deflate(byte[], int, int, int)"
+ * >The required deflate() method (Java7)</a>
+ * <li><a href=
+ * "http://developer.android.com/reference/java/util/zip/Deflater.html#deflate(byte[], int, int, int)"
+ * >The required deflate() method (Android)</a>
  * 
  * @author Florian Schmaus
- * @see <a
- * href="http://docs.oracle.com/javase/7/docs/api/java/util/zip/Deflater.html#deflate(byte[], int, int, int)">The
- * required deflate() method</a>
- * 
  */
 public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
     private final static Method method;
