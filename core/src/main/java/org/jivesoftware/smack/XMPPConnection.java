@@ -215,7 +215,7 @@ public abstract class XMPPConnection {
      */
     private int port;
 
-    private Boolean bindingRequired;
+    private boolean bindingRequired;
     private boolean sessionSupported;
 
     /**
@@ -452,10 +452,6 @@ public abstract class XMPPConnection {
      */
     void serverRequiresBinding() {
         bindingRequired = true;
-        // Wake up the thread that is waiting
-        synchronized(bindingRequired) {
-            bindingRequired.notify();
-        }
     }
 
     /**
@@ -469,17 +465,6 @@ public abstract class XMPPConnection {
 
     String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
                     ResourceBindingNotOfferedException, NoResponseException, NotConnectedException {
-        synchronized (bindingRequired) {
-            if (!bindingRequired) {
-                try {
-                    // Wait until server sends response containing the <bind> element
-                    bindingRequired.wait(getPacketReplyTimeout());
-                }
-                catch (InterruptedException e) {
-                    // Ignore
-                }
-            }
-        }
 
         if (!bindingRequired) {
             // Server never offered resource binding, which is REQURIED in XMPP client and server
