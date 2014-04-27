@@ -776,8 +776,9 @@ public class XMPPTCPConnection extends XMPPConnection {
      * <p>
      *
      * @return true if stream compression negotiation was successful.
+     * @throws IOException if the compress stanza could not be send
      */
-    private boolean useCompression() {
+    private boolean useCompression() throws IOException {
         // If stream compression was offered by the server and we want to use
         // compression then send compression request to the server
         if (authenticated) {
@@ -785,9 +786,9 @@ public class XMPPTCPConnection extends XMPPConnection {
         }
 
         if ((compressionHandler = maybeGetCompressionHandler()) != null) {
-            requestStreamCompression(compressionHandler.getCompressionMethod());
-            // Wait until compression is being used or a timeout happened
             synchronized (this) {
+                requestStreamCompression(compressionHandler.getCompressionMethod());
+                // Wait until compression is being used or a timeout happened
                 try {
                     wait(getPacketReplyTimeout());
                 }
@@ -804,24 +805,20 @@ public class XMPPTCPConnection extends XMPPConnection {
      * Request the server that we want to start using stream compression. When using TLS
      * then negotiation of stream compression can only happen after TLS was negotiated. If TLS
      * compression is being used the stream compression should not be used.
+     * @throws IOException if the compress stanza could not be send
      */
-    private void requestStreamCompression(String method) {
-        try {
-            writer.write("<compress xmlns='http://jabber.org/protocol/compress'>");
-            writer.write("<method>" + method + "</method></compress>");
-            writer.flush();
-        }
-        catch (IOException e) {
-            notifyConnectionError(e);
-        }
+    private void requestStreamCompression(String method) throws IOException {
+        writer.write("<compress xmlns='http://jabber.org/protocol/compress'>");
+        writer.write("<method>" + method + "</method></compress>");
+        writer.flush();
     }
 
     /**
      * Start using stream compression since the server has acknowledged stream compression.
      *
-     * @throws Exception if there is an exception starting stream compression.
+     * @throws IOException if there is an exception starting stream compression.
      */
-    void startStreamCompression() throws Exception {
+    void startStreamCompression() throws IOException {
         serverAckdCompression = true;
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
@@ -831,16 +828,14 @@ public class XMPPTCPConnection extends XMPPConnection {
         // Send a new opening stream to the server
         packetWriter.openStream();
         // Notify that compression is being used
-        synchronized (this) {
-            this.notify();
-        }
+        streamCompressionNegotiationDone();
     }
 
     /**
-     * Notifies the XMPP connection that stream compression was denied so that
-     * the connection process can proceed.
+     * Notifies the XMPP connection that stream compression negotiation is done so that the
+     * connection process can proceed.
      */
-    synchronized void streamCompressionDenied() {
+    synchronized void streamCompressionNegotiationDone() {
         this.notify();
     }
 

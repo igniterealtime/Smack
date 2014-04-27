@@ -231,7 +231,7 @@ class PacketReader {
                             // Stream compression has been denied. This is a recoverable
                             // situation. It is still possible to authenticate and
                             // use the connection but using an uncompressed connection
-                            connection.streamCompressionDenied();
+                            connection.streamCompressionNegotiationDone();
                         }
                         else {
                             // SASL authentication has failed. The server may close the connection
