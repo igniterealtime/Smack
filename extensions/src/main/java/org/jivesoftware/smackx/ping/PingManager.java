@@ -65,6 +65,8 @@ public class PingManager extends Manager {
 
     private static final PacketFilter PING_PACKET_FILTER = new AndFilter(
                     new PacketTypeFilter(Ping.class), new IQTypeFilter(Type.GET));
+    private static final PacketFilter PONG_PACKET_FILTER = new AndFilter(new PacketTypeFilter(
+                    Pong.class), new IQTypeFilter(Type.RESULT));
 
     static {
         XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -109,17 +111,12 @@ public class PingManager extends Manager {
      */
     private int pingInterval = defaultPingInterval;
 
-    /**
-     * The time in milliseconds the last successful ping was send to the users server.
-     */
-    private volatile long lastSuccessfulAutomaticPing = -1;
-
     private ScheduledFuture<?> nextAutomaticPing;
 
     /**
-     * The time in milliseconds the last manual ping as successful. 
+     * The time in milliseconds the last pong was received.
      */
-    private long lastSuccessfulManualPing = -1;
+    private long lastPongReceived = -1;
 
     private PingManager(XMPPConnection connection) {
         super(connection);
@@ -135,6 +132,12 @@ public class PingManager extends Manager {
                 connection().sendPacket(pong);
             }
         }, PING_PACKET_FILTER);
+        connection.addPacketListener(new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                lastPongReceived = System.currentTimeMillis();
+            }
+        }, PONG_PACKET_FILTER);
         connection.addConnectionListener(new AbstractConnectionListener() {
             @Override
             public void authenticated(XMPPConnection connection) {
@@ -163,10 +166,10 @@ public class PingManager extends Manager {
      * @param jid The id of the entity the ping is being sent to
      * @param pingTimeout The time to wait for a reply
      * @return true if a reply was received from the entity, false otherwise.
-     * @throws NoResponseException if there was no response from the server.
+     * @throws NoResponseException if there was no response from the jid.
      * @throws NotConnectedException 
      */
-    public boolean ping(String jid, long pingTimeout) throws NoResponseException, NotConnectedException {
+    public boolean ping(String jid, long pingTimeout) throws NotConnectedException, NoResponseException {
         Ping ping = new Ping(jid);
         try {
             connection().createPacketCollectorAndSend(ping).nextResultOrThrow();
@@ -184,9 +187,9 @@ public class PingManager extends Manager {
      * @param jid The id of the entity the ping is being sent to
      * @return true if a reply was received from the entity, false otherwise.
      * @throws NotConnectedException
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the jid.
      */
-    public boolean ping(String jid) throws NoResponseException, NotConnectedException {
+    public boolean ping(String jid) throws NotConnectedException, NoResponseException {
         return ping(jid, connection().getPacketReplyTimeout());
     }
 
@@ -196,7 +199,7 @@ public class PingManager extends Manager {
      * @param jid The id of the entity the query is being sent to
      * @return true if it supports ping, false otherwise.
      * @throws XMPPErrorException An XMPP related error occurred during the request 
-     * @throws NoResponseException if there was no response from the server.
+     * @throws NoResponseException if there was no response from the jid.
      * @throws NotConnectedException 
      */
     public boolean isPingSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException  {
@@ -236,11 +239,7 @@ public class PingManager extends Manager {
         catch (NoResponseException e) {
             res = false;
         }
-
-        if (res) {
-            pongReceived();
-        }
-        else if (notifyListeners) {
+        if (!res && notifyListeners) {
             for (PingFailedListener l : pingFailedListeners)
                 l.pingFailed();
         }
@@ -285,24 +284,30 @@ public class PingManager extends Manager {
     }
 
     /**
-     * Returns the time of the last successful Ping with the
-     * users server. If there was no successful Ping (e.g. because this
-     * feature is disabled) -1 will be returned.
+     * Returns the timestamp when the last XMPP Pong was received.
      * 
-     * @return the timestamp of the last successful ping.
+     * @return the timestamp of the last XMPP Pong
      */
-    public long getLastSuccessfulPing() {
-        return Math.max(lastSuccessfulAutomaticPing, lastSuccessfulManualPing);
+    public long getLastReceivedPong() {
+        return lastPongReceived;
+    }
+
+    private void maybeSchedulePingServerTask() {
+        maybeSchedulePingServerTask(0);
     }
 
     /**
      * Cancels any existing periodic ping task if there is one and schedules a new ping task if
      * pingInterval is greater then zero.
+     *
+     * @param delta the delta to the last received ping in seconds
      */
-    private synchronized void maybeSchedulePingServerTask() {
+    private synchronized void maybeSchedulePingServerTask(int delta) {
         maybeStopPingServerTask();
         if (pingInterval > 0) {
-            LOGGER.fine("Scheduling ServerPingTask in " + pingInterval + " seconds");
+            int nextPingIn = pingInterval - delta;
+            LOGGER.fine("Scheduling ServerPingTask in " + nextPingIn + " seconds (pingInterval="
+                            + pingInterval + ", delta=" + delta + ")");
             nextAutomaticPing = connection().schedule(pingServerRunnable, pingInterval, TimeUnit.SECONDS);
         }
     }
@@ -312,10 +317,6 @@ public class PingManager extends Manager {
             nextAutomaticPing.cancel(true);
             nextAutomaticPing = null;
         }
-    }
-
-    private void pongReceived() {
-        lastSuccessfulManualPing = System.currentTimeMillis();
     }
 
     private final Runnable pingServerRunnable = new Runnable() {
@@ -329,6 +330,21 @@ public class PingManager extends Manager {
                 // connection has been collected by GC
                 // which means we can stop the thread by breaking the loop
                 return;
+            }
+            if (pingInterval <= 0) {
+                // Ping has been disabled
+                return;
+            }
+            long lastReceivedPong = getLastReceivedPong();
+            if (lastReceivedPong > 0) {
+                long now = System.currentTimeMillis();
+                // Calculate the delta from now to the next ping time. If delta is positive, the
+                // last successful ping was not to long ago, so we can defer the current ping.
+                int delta = (int) (((pingInterval * 1000) - (now - lastReceivedPong)) / 1000);
+                if (delta > 0) {
+                    maybeSchedulePingServerTask(delta);
+                    return;
+                }
             }
             if (connection.isAuthenticated()) {
                 boolean res = false;
@@ -352,7 +368,6 @@ public class PingManager extends Manager {
                     }
                     // stop when we receive a pong back
                     if (res) {
-                        lastSuccessfulAutomaticPing = System.currentTimeMillis();
                         break;
                     }
                 }
