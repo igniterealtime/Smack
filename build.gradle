@@ -31,7 +31,12 @@ allprojects {
 	ext.sharedManifest = manifest {
 		attributes('Implementation-Version': version,
 				   'Implementation-GitRevision': ext.gitCommit,
-				   'Bundle-Version': version)
+				   // According to OSGi core 5.0 section 3.2.5 the qualifier (the fourth
+				   // version element) must begin with a dot. So we replace only the
+				   // first occurence of an dash with a dot.
+				   // For example 4.0.0-rc1 becomes 4.0.0.rc1, but
+				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
+				   'Bundle-Version': version.replaceFirst("-", "."))
 	}
 
 }
