@@ -97,13 +97,12 @@ class PacketReader {
      */
     synchronized public void startup() throws NoResponseException, IOException {
         readerThread.start();
-        // Wait for stream tag before returning. We'll wait a couple of seconds before
-        // giving up and throwing an error.
+
         try {
-            // A waiting thread may be woken up before the wait time or a notify
-            // (although this is a rare thing). Therefore, we continue waiting
-            // until either the server's features have been parsed (and hence a notify was
-            // made) or the total wait time has elapsed.
+            // Wait until either:
+            // - the servers last features stanza has been parsed
+            // - an exception is thrown while parsing
+            // - the timeout occurs
             wait(connection.getPacketReplyTimeout());
         }
         catch (InterruptedException ie) {
@@ -288,6 +287,9 @@ class PacketReader {
             // The exception can be ignored if the the connection is 'done'
             // or if the it was caused because the socket got closed
             if (!(done || connection.isSocketClosed())) {
+                synchronized(this) {
+                    this.notify();
+                }
                 // Close the connection and notify connection listeners of the
                 // error.
                 connection.notifyConnectionError(e);
