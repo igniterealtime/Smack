@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -26,7 +28,6 @@ import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
 import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
-
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
@@ -92,8 +93,9 @@ class PacketReader {
      *
      * @throws NoResponseException if the server fails to send an opening stream back
      *      within packetReplyTimeout.
+     * @throws IOException 
      */
-    synchronized public void startup() throws NoResponseException {
+    synchronized public void startup() throws NoResponseException, IOException {
         readerThread.start();
         // Wait for stream tag before returning. We'll wait a couple of seconds before
         // giving up and throwing an error.
@@ -108,7 +110,7 @@ class PacketReader {
             // Ignore.
         }
         if (!lastFeaturesParsed) {
-            throw new NoResponseException();
+            connection.throwConnectionExceptionOrNoResponse();
         }
     }
 

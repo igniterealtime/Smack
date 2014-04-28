@@ -716,8 +716,15 @@ public class XMPPTCPConnection extends XMPPConnection {
                 plain.getInetAddress().getHostAddress(), plain.getPort(), true);
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
-        // Proceed to do the handshake
-        ((SSLSocket) socket).startHandshake();
+
+        try {
+            // Proceed to do the handshake
+            ((SSLSocket) socket).startHandshake();
+        }
+        catch (IOException e) {
+            setConnectionException(e);
+            throw e;
+        }
         //if (((SSLSocket) socket).getWantClientAuth()) {
         //    System.err.println("XMPPConnection wants client auth");
         //}

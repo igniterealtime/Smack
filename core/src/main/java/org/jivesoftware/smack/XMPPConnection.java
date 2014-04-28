@@ -219,6 +219,11 @@ public abstract class XMPPConnection {
     private boolean sessionSupported;
 
     /**
+     * 
+     */
+    private IOException connectionException;
+
+    /**
      * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
      */
     private ExecutorService listenerExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -355,6 +360,7 @@ public abstract class XMPPConnection {
         saslAuthentication.init();
         bindingRequired = false;
         sessionSupported = false;
+        connectionException = null;
         connectInternal();
     }
 
@@ -483,6 +489,18 @@ public abstract class XMPPConnection {
             createPacketCollectorAndSend(session).nextResultOrThrow();
         }
         return userJID;
+    }
+
+    protected void setConnectionException(IOException exception) {
+        connectionException = exception;
+    }
+
+    protected void throwConnectionExceptionOrNoResponse() throws IOException, NoResponseException {
+        if (connectionException != null) {
+            throw connectionException;
+        } else {
+            throw new NoResponseException();
+        }
     }
 
     /**
