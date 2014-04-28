@@ -2,7 +2,6 @@ import org.gradle.plugins.signing.Sign
 
 allprojects {
 	apply plugin: 'java'
-	apply plugin: 'maven'
 	apply plugin: 'eclipse'
 
 	ext {
@@ -38,7 +37,6 @@ allprojects {
 				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
 				   'Bundle-Version': version.replaceFirst("-", "."))
 	}
-
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
@@ -94,6 +92,7 @@ Smack ${version}
 ${oneLineDesc}."""
 
 subprojects {
+	apply plugin: 'maven'
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
@@ -105,17 +104,11 @@ subprojects {
 		mavenLocal()
 		mavenCentral()
 	}
-	tasks.withType(Jar) {
-		baseName = 'smack'
-		appendix project.name
-	}
 	task sourcesJar(type: Jar, dependsOn: classes) {
-		appendix project.name
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
 	task javadocJar(type: Jar, dependsOn: javadoc) {
-		appendix project.name
 		classifier = 'javadoc'
 		from javadoc.destinationDir
 	}
@@ -196,7 +189,7 @@ subprojects {
 
 (subprojects - project(':core'))*.jar {
 	manifest {
-		attributes('Bundle-SymbolicName': project.group + '-' + appendix,
+		attributes('Bundle-SymbolicName': project.group + '-' + project.name,
 				   'Fragment-Host': project.group)
 		from sharedManifest
 	}
