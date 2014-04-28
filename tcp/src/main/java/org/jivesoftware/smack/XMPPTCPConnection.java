@@ -518,7 +518,7 @@ public class XMPPTCPConnection extends XMPPConnection {
             }
 
         }
-        catch (Exception ex) {
+        catch (SmackException ex) {
             // An exception occurred in setting up the connection. Make sure we shut down the
             // readers and writers and close the socket.
 
@@ -561,7 +561,7 @@ public class XMPPTCPConnection extends XMPPConnection {
             authenticated = false;
             connected = false;
 
-            throw new SmackException(ex);        // Everything stoppped. Now throw the exception.
+            throw ex;        // Everything stoppped. Now throw the exception.
         }
     }
 

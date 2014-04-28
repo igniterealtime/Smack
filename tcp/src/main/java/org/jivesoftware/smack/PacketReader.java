@@ -59,7 +59,7 @@ class PacketReader {
 
     volatile boolean done;
 
-    protected PacketReader(final XMPPTCPConnection connection) throws XmlPullParserException {
+    protected PacketReader(final XMPPTCPConnection connection) throws SmackException {
         this.connection = connection;
         this.init();
     }
@@ -68,9 +68,9 @@ class PacketReader {
      * Initializes the reader in order to be used. The reader is initialized during the
      * first connection and when reconnecting due to an abruptly disconnection.
      *
-     * @throws XmlPullParserException if the parser could not be reset.
+     * @throws SmackException if the parser could not be reset.
      */
-    protected void init() throws XmlPullParserException {
+    protected void init() throws SmackException {
         done = false;
         lastFeaturesParsed = false;
 
@@ -128,12 +128,17 @@ class PacketReader {
      * when the plain connection has been secured or when a new opening stream element is going
      * to be sent by the server.
      *
-     * @throws XmlPullParserException XmlPullParserException if the parser could not be reset.
+     * @throws SmackException if the parser could not be reset.
      */
-    private void resetParser() throws XmlPullParserException {
-        parser = XmlPullParserFactory.newInstance().newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        parser.setInput(connection.reader);
+    private void resetParser() throws SmackException {
+        try {
+            parser = XmlPullParserFactory.newInstance().newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+            parser.setInput(connection.reader);
+        }
+        catch (XmlPullParserException e) {
+            throw new SmackException(e);
+        }
     }
 
     /**
