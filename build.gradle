@@ -187,7 +187,7 @@ subprojects {
 	}
 }
 
-(subprojects - project(':core'))*.jar {
+(subprojects - project(':smack-core'))*.jar {
 	manifest {
 		attributes('Bundle-SymbolicName': project.group + '-' + project.name,
 				   'Fragment-Host': project.group,

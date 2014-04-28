@@ -6,6 +6,6 @@ Classes and methods that implement support for the various XMPP XEPs
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
-	compile project(':core')
-	testCompile project(':core').sourceSets.test.runtimeClasspath
+	compile project(':smack-core')
+	testCompile project(':smack-core').sourceSets.test.runtimeClasspath
 }

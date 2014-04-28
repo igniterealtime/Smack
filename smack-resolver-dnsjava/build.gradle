@@ -4,6 +4,6 @@ Use dnsjava for DNS SRV lookups. For platforms that don't provide the
 javax.naming API (e.g. Android)."""
 
 dependencies {
-	compile project(path: ':core', configuration: 'dns')
+	compile project(path: ':smack-core', configuration: 'dns')
 	compile 'dnsjava:dnsjava:2.1.+'
 }
