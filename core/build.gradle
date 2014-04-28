@@ -15,7 +15,8 @@ dependencies {
 }
 jar {
 	manifest {
-		attributes('Bundle-SymbolicName': project.group)
+		attributes('Bundle-SymbolicName': project.group,
+				   'Eclipse-ExtensibleAPI: true')
 		from sharedManifest
 	}
 }

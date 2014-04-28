@@ -190,7 +190,8 @@ subprojects {
 (subprojects - project(':core'))*.jar {
 	manifest {
 		attributes('Bundle-SymbolicName': project.group + '-' + project.name,
-				   'Fragment-Host': project.group)
+				   'Fragment-Host': project.group,
+				   'Eclipse-PatchFragment': 'true')
 		from sharedManifest
 	}
 }
