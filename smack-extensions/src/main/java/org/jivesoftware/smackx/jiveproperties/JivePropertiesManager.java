@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smackx.jiveproperties;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
@@ -73,5 +77,35 @@ public class JivePropertiesManager {
             res = jpe.getProperty(name);
         }
         return res;
+    }
+
+    /**
+     * Return a collection of the names of all properties of the given packet. If the packet
+     * contains no properties extension, then an empty collection will be returned.
+     * 
+     * @param packet
+     * @return a collection of the names of all properties.
+     */
+    public static Collection<String> getPropertiesNames(Packet packet) {
+        JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
+        if (jpe == null) {
+            return Collections.emptyList();
+        }
+        return jpe.getPropertyNames();
+    }
+
+    /**
+     * Return a map of all properties of the given packet. If the packet contains no properties
+     * extension, an empty map will be returned.
+     * 
+     * @param packet
+     * @return a map of all properties of the given packet.
+     */
+    public static Map<String, Object> getProperties(Packet packet) {
+        JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
+        if (jpe == null) {
+            return Collections.emptyMap();
+        }
+        return jpe.getProperties();
     }
 }

@@ -111,7 +111,19 @@ public class JivePropertiesExtension implements PacketExtension {
         }
         return Collections.unmodifiableSet(new HashSet<String>(properties.keySet()));
     }
- 
+
+    /**
+     * Returns an unmodifiable map of all properties.
+     *
+     * @return all properties.
+     */
+    public synchronized Map<String, Object> getProperties() {
+        if (properties == null) {
+            return Collections.emptyMap();
+        }
+        return Collections.unmodifiableMap(new HashMap<String, Object>(properties));
+    }
+
     @Override
     public String getElementName() {
         return ELEMENT;
