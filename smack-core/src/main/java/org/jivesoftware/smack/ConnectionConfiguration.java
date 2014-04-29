@@ -288,19 +288,23 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Gets the custom SSLContext for SSL sockets. This is null by default.
+     * Gets the custom SSLContext previously set with {@link #setCustomSSLContext(SSLContext)} for
+     * SSL sockets. This is null by default.
      *
-     * @return the SSLContext previously set with setCustomSSLContext() or null.
+     * @return the custom SSLContext or null.
      */
     public SSLContext getCustomSSLContext() {
         return this.customSSLContext;
     }
 
     /**
-     * Sets a custom SSLContext for creating SSL sockets. A custom Context causes all other
-     * SSL/TLS realted settings to be ignored.
+     * Sets a custom SSLContext for creating SSL sockets.
+     * <p>
+     * For more information on how to create a SSLContext see <a href=
+     * "http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager"
+     * >Java Secure Socket Extension (JSEE) Reference Guide: Creating Your Own X509TrustManager</a>
      *
-     * @param context the custom SSLContext for new sockets; null to reset default behavior.
+     * @param context the custom SSLContext for new sockets
      */
     public void setCustomSSLContext(SSLContext context) {
         this.customSSLContext = context;
