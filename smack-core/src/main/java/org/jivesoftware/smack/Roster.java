@@ -36,7 +36,9 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQReplyFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -63,6 +65,12 @@ import org.jivesoftware.smack.util.StringUtils;
 public class Roster {
 
     private static final Logger LOGGER = Logger.getLogger(Roster.class.getName());
+
+    private static final PacketFilter ROSTER_PUSH_FILTER = new AndFilter(new PacketTypeFilter(
+                    RosterPacket.class), new IQTypeFilter(IQ.Type.SET));
+
+    private static final PacketFilter PRESENCE_PACKET_FILTER = new PacketTypeFilter(Presence.class);
+
     /**
      * The default subscription processing mode to use when a Roster is created. By default
      * all subscription requests are automatically accepted.
@@ -116,11 +124,9 @@ public class Roster {
         this.connection = connection;
         rosterStore = connection.getConfiguration().getRosterStore();
         // Listen for any roster packets.
-        PacketFilter rosterFilter = new PacketTypeFilter(RosterPacket.class);
-        connection.addPacketListener(new RosterPushListener(), rosterFilter);
+        connection.addPacketListener(new RosterPushListener(), ROSTER_PUSH_FILTER);
         // Listen for any presence packets.
-        PacketFilter presenceFilter = new PacketTypeFilter(Presence.class);
-        connection.addPacketListener(presencePacketListener, presenceFilter);
+        connection.addPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
         // Listen for connection events
         connection.addConnectionListener(new AbstractConnectionListener() {
@@ -1029,9 +1035,6 @@ public class Roster {
 
         public void processPacket(Packet packet) throws NotConnectedException {
             RosterPacket rosterPacket = (RosterPacket) packet;
-            if (!rosterPacket.getType().equals(IQ.Type.SET)) {
-                return;
-            }
 
             String version = rosterPacket.getVersion();
 
