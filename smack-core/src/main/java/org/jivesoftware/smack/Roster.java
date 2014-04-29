@@ -702,9 +702,8 @@ public class Roster {
 
         // Mark the entry as unfiled if it does not belong to any groups.
         if (item.getGroupNames().isEmpty()) {
-            if (!unfiledEntries.contains(entry)) {
-                unfiledEntries.add(entry);
-            }
+            unfiledEntries.remove(entry);
+            unfiledEntries.add(entry);
         }
         else {
             unfiledEntries.remove(entry);
