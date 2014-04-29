@@ -1043,12 +1043,15 @@ public class Roster {
             String jid = StringUtils.parseBareAddress(connection.getUser());
             if (rosterPacket.getFrom() != null &&
                     !rosterPacket.getFrom().equals(jid)) {
+                LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid=" + jid
+                                + " from=" + rosterPacket.getFrom());
                 return;
             }
 
             // A roster push must contain exactly one entry
             Collection<Item> items = rosterPacket.getRosterItems();
             if (items.size() != 1) {
+                LOGGER.warning("Ignoring roster push with not exaclty one entry. size=" + items.size());
                 return;
             }
 
