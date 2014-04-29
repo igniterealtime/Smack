@@ -47,11 +47,6 @@ public class RosterOfflineTest {
     }
 
     @Test(expected = SmackException.class)
-    public void shouldThrowExceptionOnCreateGroup() throws Exception {
-        roster.createGroup("test");
-    }
-
-    @Test(expected = SmackException.class)
     public void shouldThrowExceptionOnReload() throws Exception {
         roster.reload();
     }
