@@ -18,11 +18,10 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,12 +36,16 @@ import java.util.logging.Logger;
  * @author Matt Tucker
  */
 class PacketWriter {
+    public static final int QUEUE_SIZE = 500;
+
     private static final Logger LOGGER = Logger.getLogger(PacketWriter.class.getName());
-    
+
+    private final XMPPTCPConnection connection;
+    private final ArrayBlockingQueueWithShutdown<Packet> queue = new ArrayBlockingQueueWithShutdown<Packet>(QUEUE_SIZE, true);
+
     private Thread writerThread;
     private Writer writer;
-    private XMPPTCPConnection connection;
-    private final BlockingQueue<Packet> queue;
+
     volatile boolean done;
 
     /**
@@ -51,7 +54,6 @@ class PacketWriter {
      * @param connection the connection.
      */
     protected PacketWriter(XMPPTCPConnection connection) {
-        this.queue = new ArrayBlockingQueue<Packet>(500, true);
         this.connection = connection;
         init();
     }
@@ -64,6 +66,7 @@ class PacketWriter {
         this.writer = connection.writer;
         done = false;
 
+        queue.start();
         writerThread = new Thread() {
             public void run() {
                 writePackets(this);
@@ -79,17 +82,17 @@ class PacketWriter {
      * @param packet the packet to send.
      */
     public void sendPacket(Packet packet) {
-        if (!done) {
-            try {
-                queue.put(packet);
-            }
-            catch (InterruptedException ie) {
-                LOGGER.log(Level.SEVERE, "Failed to queue packet to send to server: " + packet.toString(), ie);
-                return;
-            }
-            synchronized (queue) {
-                queue.notifyAll();
-            }
+        if (done) {
+            return;
+        }
+
+        try {
+            queue.put(packet);
+        }
+        catch (InterruptedException ie) {
+            LOGGER.log(Level.SEVERE,
+                            "Failed to queue packet to send to server: " + packet.toString(), ie);
+            return;
         }
     }
 
@@ -112,9 +115,7 @@ class PacketWriter {
      */
     public void shutdown() {
         done = true;
-        synchronized (queue) {
-            queue.notifyAll();
-        }
+        queue.shutdown();
     }
 
     /**
@@ -123,17 +124,16 @@ class PacketWriter {
      * @return the next packet for writing.
      */
     private Packet nextPacket() {
+        if (done) {
+            return null;
+        }
+
         Packet packet = null;
-        // Wait until there's a packet or we're done.
-        while (!done && (packet = queue.poll()) == null) {
-            try {
-                synchronized (queue) {
-                    queue.wait();
-                }
-            }
-            catch (InterruptedException ie) {
-                // Do nothing
-            }
+        try {
+            packet = queue.take();
+        }
+        catch (InterruptedException e) {
+            // Do nothing
         }
         return packet;
     }
@@ -191,12 +191,8 @@ class PacketWriter {
             // The exception can be ignored if the the connection is 'done'
             // or if the it was caused because the socket got closed
             if (!(done || connection.isSocketClosed())) {
-                done = true;
-                // packetReader could be set to null by an concurrent disconnect() call.
-                // Therefore Prevent NPE exceptions by checking packetReader.
-                if (connection.packetReader != null) {
-                        connection.notifyConnectionError(ioe);
-                }
+                shutdown();
+                connection.notifyConnectionError(ioe);
             }
         }
     }
