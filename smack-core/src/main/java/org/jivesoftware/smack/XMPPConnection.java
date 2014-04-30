@@ -35,6 +35,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -215,7 +216,15 @@ public abstract class XMPPConnection {
      */
     private int port;
 
-    private boolean bindingRequired;
+    /**
+     * Set to true if the server requires the connection to be binded in order to continue.
+     * <p>
+     * Note that we use AtomicBoolean here because it allows us to set the Boolean *object*, which
+     * we also use as synchronization object. A plain non-atomic Boolean object would be newly created
+     * for every change of the boolean value, which makes it useless as object for wait()/notify().
+     */
+    private AtomicBoolean bindingRequired = new AtomicBoolean(false);
+
     private boolean sessionSupported;
 
     /**
@@ -358,7 +367,7 @@ public abstract class XMPPConnection {
      */
     public void connect() throws SmackException, IOException, XMPPException {
         saslAuthentication.init();
-        bindingRequired = false;
+        bindingRequired.set(false);
         sessionSupported = false;
         connectionException = null;
         connectInternal();
@@ -457,7 +466,10 @@ public abstract class XMPPConnection {
      * resource to the stream.
      */
     void serverRequiresBinding() {
-        bindingRequired = true;
+        synchronized (bindingRequired) {
+            bindingRequired.set(true);
+            bindingRequired.notify();
+        }
     }
 
     /**
@@ -472,10 +484,21 @@ public abstract class XMPPConnection {
     String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
                     ResourceBindingNotOfferedException, NoResponseException, NotConnectedException {
 
-        if (!bindingRequired) {
-            // Server never offered resource binding, which is REQURIED in XMPP client and server
-            // implementations as per RFC6120 7.2
-            throw new ResourceBindingNotOfferedException();
+        synchronized (bindingRequired) {
+            if (!bindingRequired.get()) {
+                try {
+                    bindingRequired.wait(getPacketReplyTimeout());
+                }
+                catch (InterruptedException e) {
+                    // Ignore
+                }
+                if (!bindingRequired.get()) {
+                    // Server never offered resource binding, which is REQURIED in XMPP client and
+                    // server
+                    // implementations as per RFC6120 7.2
+                    throw new ResourceBindingNotOfferedException();
+                }
+            }
         }
 
         Bind bindResource = new Bind();
