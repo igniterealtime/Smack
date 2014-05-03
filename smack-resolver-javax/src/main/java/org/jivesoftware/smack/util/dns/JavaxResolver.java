@@ -74,6 +74,8 @@ public class JavaxResolver implements DNSResolver {
 
         Attributes dnsLookup = dirContext.getAttributes(name, new String[] { "SRV" });
         Attribute srvAttribute = dnsLookup.get("SRV");
+        if (srvAttribute == null)
+            return res;
         @SuppressWarnings("unchecked")
         NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
         while (srvRecords.hasMore()) {
