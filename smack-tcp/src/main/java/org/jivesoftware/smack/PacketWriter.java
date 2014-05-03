@@ -17,12 +17,12 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -80,19 +80,18 @@ class PacketWriter {
      * Sends the specified packet to the server.
      *
      * @param packet the packet to send.
+     * @throws NotConnectedException 
      */
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet packet) throws NotConnectedException {
         if (done) {
-            return;
+            throw new NotConnectedException();
         }
 
         try {
             queue.put(packet);
         }
         catch (InterruptedException ie) {
-            LOGGER.log(Level.SEVERE,
-                            "Failed to queue packet to send to server: " + packet.toString(), ie);
-            return;
+            throw new NotConnectedException();
         }
     }
 

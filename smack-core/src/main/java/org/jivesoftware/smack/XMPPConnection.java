@@ -341,7 +341,7 @@ public abstract class XMPPConnection {
      */
     public abstract boolean isSecureConnection();
 
-    abstract void sendPacketInternal(Packet packet);
+    abstract void sendPacketInternal(Packet packet) throws NotConnectedException;
 
     /**
      * Returns true if network traffic is being compressed. When using stream compression network
@@ -637,8 +637,9 @@ public abstract class XMPPConnection {
      * on this connection again. This is unlike the behavior during unexpected disconnects
      * (and subsequent connections). In that case, all state is preserved to allow for
      * more seamless error recovery.
+     * @throws NotConnectedException 
      */
-    public void disconnect() {
+    public void disconnect() throws NotConnectedException {
         disconnect(new Presence(Presence.Type.unavailable));
     }
 
@@ -657,8 +658,9 @@ public abstract class XMPPConnection {
      * more seamless error recovery.
      * 
      * @param unavailablePresence the presence packet to send during shutdown.
+     * @throws NotConnectedException 
      */
-    public abstract void disconnect(Presence unavailablePresence);
+    public abstract void disconnect(Presence unavailablePresence) throws NotConnectedException;
 
     /**
      * Adds a new listener that will be notified when new Connections are created. Note

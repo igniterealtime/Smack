@@ -272,7 +272,7 @@ public class XMPPTCPConnection extends XMPPConnection {
 
         // Set presence to online.
         if (config.isSendPresence()) {
-            packetWriter.sendPacket(new Presence(Presence.Type.available));
+            sendPacket(new Presence(Presence.Type.available));
         }
 
         // Stores the authentication for future reconnection
@@ -316,7 +316,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         }
 
         // Set presence to online.
-        packetWriter.sendPacket(new Presence(Presence.Type.available));
+        sendPacket(new Presence(Presence.Type.available));
 
         // Indicate that we're now authenticated.
         authenticated = true;
@@ -360,11 +360,12 @@ public class XMPPTCPConnection extends XMPPConnection {
      * connection's state is kept.
      *
      * @param unavailablePresence the presence packet to send during shutdown.
+     * @throws NotConnectedException 
      */
-    protected void shutdown(Presence unavailablePresence) {
+    protected void shutdown(Presence unavailablePresence) throws NotConnectedException {
         // Set presence to offline.
         if (packetWriter != null) {
-                packetWriter.sendPacket(unavailablePresence);
+                sendPacket(unavailablePresence);
         }
 
         this.setWasAuthenticated(authenticated);
@@ -403,7 +404,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         writer = null;
     }
 
-    public synchronized void disconnect(Presence unavailablePresence) {
+    public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
         // If not connected, ignore this request.
         if (packetReader == null || packetWriter == null) {
             return;
@@ -418,7 +419,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         wasAuthenticated = false;
     }
 
-    void sendPacketInternal(Packet packet) {
+    void sendPacketInternal(Packet packet) throws NotConnectedException {
         packetWriter.sendPacket(packet);
     }
 
@@ -914,7 +915,12 @@ public class XMPPTCPConnection extends XMPPConnection {
         if (packetWriter != null)
             packetWriter.done = true;
         // Closes the connection temporary. A reconnection is possible
-        shutdown(new Presence(Presence.Type.unavailable));
+        try {
+            shutdown(new Presence(Presence.Type.unavailable));
+        }
+        catch (NotConnectedException e1) {
+            // Ignore
+        }
         // Notify connection listeners of the error.
         callConnectionClosedOnErrorListener(e);
     }

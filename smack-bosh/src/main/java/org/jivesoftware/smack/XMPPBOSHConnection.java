@@ -336,14 +336,15 @@ public class XMPPBOSHConnection extends XMPPConnection {
         callConnectionAuthenticatedListener();
     }
 
-    void sendPacketInternal(Packet packet) {
-        if (!done) {
-            try {
-                send(ComposableBody.builder().setPayloadXML(packet.toXML().toString())
-                        .build());
-            } catch (BOSHException e) {
-                LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);
-            }
+    void sendPacketInternal(Packet packet) throws NotConnectedException {
+        if (done) {
+            throw new NotConnectedException();
+        }
+        try {
+            send(ComposableBody.builder().setPayloadXML(packet.toXML().toString()).build());
+        }
+        catch (BOSHException e) {
+            LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);
         }
     }
 

@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class PacketWriterTest {
      */
     @SuppressWarnings("javadoc")
     @Test
-    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException {
+    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException {
         XMPPTCPConnection connection = new XMPPTCPConnection("foobar.com");
         final PacketWriter pw = new PacketWriter(connection);
         pw.setWriter(new BlockingStringWriter());
@@ -59,13 +60,13 @@ public class PacketWriterTest {
             public void run() {
                 try {
                     barrier.await();
+                    pw.sendPacket(new Message());
+                    // should only return after the pw was interrupted
+                    if (!shutdown) {
+                        prematureUnblocked = true;
+                    }
                 }
-                catch (InterruptedException | BrokenBarrierException e1) {
-                }
-                pw.sendPacket(new Message());
-                // should only return after the pw was shutdown
-                if (!shutdown) {
-                    prematureUnblocked = true;
+                catch (Exception e) {
                 }
                 try {
                     barrier.await();
