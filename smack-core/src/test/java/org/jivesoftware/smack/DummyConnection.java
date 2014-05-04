@@ -32,7 +32,6 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Presence;
 
 /**
  * A dummy implementation of {@link XMPPConnection}, intended to be used during
@@ -86,7 +85,7 @@ public class DummyConnection extends XMPPConnection {
     }
 
     @Override
-    public void disconnect(Presence unavailablePresence) {
+    protected void shutdown() {
         user = null;
         connectionID = null;
         roster = null;

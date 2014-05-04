@@ -37,6 +37,7 @@ import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.util.StringUtils;
 import org.igniterealtime.jbosh.BOSHClient;
 import org.igniterealtime.jbosh.BOSHClientConfig;
@@ -348,30 +349,6 @@ public class XMPPBOSHConnection extends XMPPConnection {
         }
     }
 
-    public void disconnect(Presence unavailablePresence) {
-        if (!connected) {
-            return;
-        }
-        shutdown(unavailablePresence);
-
-        // Cleanup
-        // TODO still needed? Smack 4.0.0 BOSH
-//        if (roster != null) {
-//            roster.cleanup();
-//            roster = null;
-//        }
-        sendListeners.clear();
-        recvListeners.clear();
-        collectors.clear();
-        interceptors.clear();
-
-        // Reset the connection flags
-        wasAuthenticated = false;
-        isFirstInitialization = true;
-
-        callConnectionClosedListener();
-    }
-
     /**
      * Closes the connection by setting presence to unavailable and closing the 
      * HTTP client. The shutdown logic will be used during a planned disconnection or when
@@ -379,9 +356,9 @@ public class XMPPBOSHConnection extends XMPPConnection {
      * BOSH packet reader and {@link Roster} will not be removed; thus
      * connection's state is kept.
      *
-     * @param unavailablePresence the presence packet to send during shutdown.
      */
-    protected void shutdown(Presence unavailablePresence) {
+    @Override
+    protected void shutdown() {
         setWasAuthenticated(authenticated);
         authID = null;
         sessionID = null;
@@ -390,6 +367,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
         connected = false;
         isFirstInitialization = false;
 
+        Presence unavailablePresence = new Presence(Type.unavailable);
         try {
             client.disconnect(ComposableBody.builder()
                     .setNamespaceDefinition("xmpp", XMPP_BOSH_NS)
@@ -426,17 +404,6 @@ public class XMPPBOSHConnection extends XMPPConnection {
         }
 
         readerConsumer = null;
-    }
-
-    /**
-     * Sets whether the connection has already logged in the server.
-     *
-     * @param wasAuthenticated true if the connection has already been authenticated.
-     */
-    private void setWasAuthenticated(boolean wasAuthenticated) {
-        if (!this.wasAuthenticated) {
-            this.wasAuthenticated = wasAuthenticated;
-        }
     }
 
     /**
@@ -537,7 +504,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
      */
     protected void notifyConnectionError(Exception e) {
         // Closes the connection temporary. A reconnection is possible
-        shutdown(new Presence(Presence.Type.unavailable));
+        shutdown();
         callConnectionClosedOnErrorListener(e);
     }
 

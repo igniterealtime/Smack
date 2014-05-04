@@ -114,13 +114,9 @@ class PacketReader {
     }
 
     /**
-     * Shuts the packet reader down.
+     * Shuts the packet reader down. This method simply sets the 'done' flag to true.
      */
     public void shutdown() {
-        // Notify connection listeners of the connection closing if done hasn't already been set.
-        if (!done) {
-            connection.callConnectionClosedListener();
-        }
         done = true;
     }
 

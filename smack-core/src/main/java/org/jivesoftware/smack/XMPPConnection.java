@@ -233,6 +233,17 @@ public abstract class XMPPConnection {
     private IOException connectionException;
 
     /**
+     * Flag that indicates if the user is currently authenticated with the server.
+     */
+    protected boolean authenticated = false;
+
+    /**
+     * Flag that indicates if the user was authenticated with the server when the connection
+     * to the server was closed (abruptly or not).
+     */
+    protected boolean wasAuthenticated = false;
+
+    /**
      * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
      */
     private ExecutorService listenerExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -630,13 +641,8 @@ public abstract class XMPPConnection {
     /**
      * Closes the connection by setting presence to unavailable then closing the connection to
      * the XMPP server. The XMPPConnection can still be used for connecting to the server
-     * again.<p>
-     * <p/>
-     * This method cleans up all resources used by the connection. Therefore, the roster,
-     * listeners and other stateful objects cannot be re-used by simply calling connect()
-     * on this connection again. This is unlike the behavior during unexpected disconnects
-     * (and subsequent connections). In that case, all state is preserved to allow for
-     * more seamless error recovery.
+     * again.
+     *
      * @throws NotConnectedException 
      */
     public void disconnect() throws NotConnectedException {
@@ -646,21 +652,28 @@ public abstract class XMPPConnection {
     /**
      * Closes the connection. A custom unavailable presence is sent to the server, followed
      * by closing the stream. The XMPPConnection can still be used for connecting to the server
-     * again. A custom unavilable presence is useful for communicating offline presence
+     * again. A custom unavailable presence is useful for communicating offline presence
      * information such as "On vacation". Typically, just the status text of the presence
      * packet is set with online information, but most XMPP servers will deliver the full
-     * presence packet with whatever data is set.<p>
-     * <p/>
-     * This method cleans up all resources used by the connection. Therefore, the roster,
-     * listeners and other stateful objects cannot be re-used by simply calling connect()
-     * on this connection again. This is unlike the behavior during unexpected disconnects
-     * (and subsequent connections). In that case, all state is preserved to allow for
-     * more seamless error recovery.
+     * presence packet with whatever data is set.
      * 
      * @param unavailablePresence the presence packet to send during shutdown.
      * @throws NotConnectedException 
      */
-    public abstract void disconnect(Presence unavailablePresence) throws NotConnectedException;
+    public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
+        if (!isConnected()) {
+            return;
+        }
+
+        sendPacket(unavailablePresence);
+        shutdown();
+        callConnectionClosedListener();
+    };
+
+    /**
+     * Shuts the current connection down.
+     */
+    protected abstract void shutdown();
 
     /**
      * Adds a new listener that will be notified when new Connections are created. Note
@@ -1098,6 +1111,19 @@ public abstract class XMPPConnection {
                     LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
                 }
             }
+        }
+    }
+
+    /**
+     * Sets whether the connection has already logged in the server. This method assures that the
+     * {@link #wasAuthenticated} flag is never reset once it has ever been set.
+     * 
+     * @param authenticated true if the connection has already been authenticated.
+     */
+    protected void setWasAuthenticated(boolean authenticated) {
+        // Never reset the flag if the connection has ever been authenticated
+        if (!wasAuthenticated) {
+            wasAuthenticated = authenticated;
         }
     }
 

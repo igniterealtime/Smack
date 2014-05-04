@@ -81,15 +81,6 @@ public class XMPPTCPConnection extends XMPPConnection {
     // by XMPPTCPConnection, PacketReader, PacketWriter
     private volatile boolean socketClosed = false;
 
-    /**
-     * Flag that indicates if the user is currently authenticated with the server.
-     */
-    private boolean authenticated = false;
-    /**
-     * Flag that indicates if the user was authenticated with the server when the connection
-     * to the server was closed (abruptly or not).
-     */
-    private boolean wasAuthenticated = false;
     private boolean anonymous = false;
     private boolean usingTLS = false;
 
@@ -353,37 +344,16 @@ public class XMPPTCPConnection extends XMPPConnection {
     }
 
     /**
-     * Closes the connection by setting presence to unavailable then closing the stream to
-     * the XMPP server. The shutdown logic will be used during a planned disconnection or when
-     * dealing with an unexpected disconnection. Unlike {@link #disconnect()} the connection's
-     * packet reader, packet writer, and {@link Roster} will not be removed; thus
-     * connection's state is kept.
-     *
-     * @param unavailablePresence the presence packet to send during shutdown.
-     * @throws NotConnectedException 
+     * Shuts the current connection down. After this method returns, the connection must be ready
+     * for re-use by connect.
      */
-    protected void shutdown(Presence unavailablePresence) throws NotConnectedException {
-        // Set presence to offline.
-        if (packetWriter != null) {
-                sendPacket(unavailablePresence);
-        }
-
-        this.setWasAuthenticated(authenticated);
-        authenticated = false;
-
+    @Override
+    protected void shutdown() {
         if (packetReader != null) {
                 packetReader.shutdown();
         }
         if (packetWriter != null) {
                 packetWriter.shutdown();
-        }
-
-        // Wait 150 ms for processes to clean-up, then shutdown.
-        try {
-            Thread.sleep(150);
-        }
-        catch (Exception e) {
-            // Ignore.
         }
 
         // Set socketClosed to true. This will cause the PacketReader
@@ -396,27 +366,12 @@ public class XMPPTCPConnection extends XMPPConnection {
         } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "shutdown", e);
         }
-        // In most cases the close() should be successful, so set
-        // connected to false here.
-        connected = false;
 
+        setWasAuthenticated(authenticated);
+        authenticated = false;
+        connected = false;
         reader = null;
         writer = null;
-    }
-
-    public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
-        // If not connected, ignore this request.
-        if (packetReader == null || packetWriter == null) {
-            return;
-        }
-
-        if (!isConnected()) {
-            return;
-        }
-
-        shutdown(unavailablePresence);
-
-        wasAuthenticated = false;
     }
 
     void sendPacketInternal(Packet packet) throws NotConnectedException {
@@ -520,49 +475,10 @@ public class XMPPTCPConnection extends XMPPConnection {
 
         }
         catch (SmackException ex) {
-            // An exception occurred in setting up the connection. Make sure we shut down the
-            // readers and writers and close the socket.
-
-            if (packetWriter != null) {
-                try {
-                    packetWriter.shutdown();
-                }
-                catch (Throwable ignore) { /* ignore */ }
-                packetWriter = null;
-            }
-            if (packetReader != null) {
-                try {
-                    packetReader.shutdown();
-                }
-                catch (Throwable ignore) { /* ignore */ }
-                packetReader = null;
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                }
-                catch (Throwable ignore) { /* ignore */ }
-                reader = null;
-            }
-            if (writer != null) {
-                try {
-                    writer.close();
-                }
-                catch (Throwable ignore) {  /* ignore */}
-                writer = null;
-            }
-            if (socket != null) {
-                try {
-                    socket.close();
-                }
-                catch (Exception e) { /* ignore */ }
-                socket = null;
-            }
-            this.setWasAuthenticated(authenticated);
-            authenticated = false;
-            connected = false;
-
-            throw ex;        // Everything stoppped. Now throw the exception.
+            // An exception occurred in setting up the connection.
+            shutdown();
+            // Everything stoppped. Now throw the exception.
+            throw ex;
         }
     }
 
@@ -889,17 +805,6 @@ public class XMPPTCPConnection extends XMPPConnection {
     }
 
     /**
-     * Sets whether the connection has already logged in the server.
-     *
-     * @param wasAuthenticated true if the connection has already been authenticated.
-     */
-    private void setWasAuthenticated(boolean wasAuthenticated) {
-        if (!this.wasAuthenticated) {
-            this.wasAuthenticated = wasAuthenticated;
-        }
-    }
-
-    /**
      * Sends out a notification that there was an error with the connection
      * and closes the connection. Also prints the stack trace of the given exception
      *
@@ -910,17 +815,9 @@ public class XMPPTCPConnection extends XMPPConnection {
         if ((packetReader == null || packetReader.done) &&
                 (packetWriter == null || packetWriter.done)) return;
 
-        if (packetReader != null)
-            packetReader.done = true;
-        if (packetWriter != null)
-            packetWriter.done = true;
         // Closes the connection temporary. A reconnection is possible
-        try {
-            shutdown(new Presence(Presence.Type.unavailable));
-        }
-        catch (NotConnectedException e1) {
-            // Ignore
-        }
+        shutdown();
+
         // Notify connection listeners of the error.
         callConnectionClosedOnErrorListener(e);
     }
