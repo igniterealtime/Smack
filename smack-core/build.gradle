@@ -16,7 +16,7 @@ dependencies {
 }
 
 task compressionJar(type: Jar) {
-	appendix += '-compression'
+	appendix = 'compression'
 	dependsOn classes
 	from sourceSets.main.output
 	include('org/jivesoftware/smack/compression/**')
@@ -24,7 +24,7 @@ task compressionJar(type: Jar) {
 }
 
 task dnsJar(type: Jar) {
-	appendix += '-dns'
+	appendix = 'dns'
 	dependsOn classes
 	from sourceSets.main.output
 	include('org/jivesoftware/smack/util/dns/**')
