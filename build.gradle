@@ -187,15 +187,6 @@ subprojects {
 	}
 }
 
-(subprojects - project(':smack-core'))*.jar {
-	manifest {
-		attributes('Bundle-SymbolicName': project.group + '-' + project.name,
-				   'Fragment-Host': project.group,
-				   'Eclipse-PatchFragment': 'true')
-		from sharedManifest
-	}
-}
-
 // This is not really beautifully, but it's the only way I found to add
 // the sub-projects description as description element to the POM
 subprojects*.uploadArchives {

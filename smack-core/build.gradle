@@ -14,13 +14,7 @@ dependencies {
 	testCompile 'org.powermock:powermock-api-mockito:1.5.+'
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6+'
 }
-jar {
-	manifest {
-		attributes('Bundle-SymbolicName': project.group,
-				   'Eclipse-ExtensibleAPI: true')
-		from sharedManifest
-	}
-}
+
 task compressionJar(type: Jar) {
 	appendix += '-compression'
 	dependsOn classes
