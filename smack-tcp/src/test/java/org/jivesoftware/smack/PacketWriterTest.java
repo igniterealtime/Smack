@@ -83,6 +83,8 @@ public class PacketWriterTest {
         // Not really cool, but may increases the chances for 't' to block in sendPacket.
         Thread.sleep(250);
 
+        // Set to true for testing purposes, so that shutdown() won't wait packet writer
+        pw.shutdownDone.set(true);
         // Shutdown the packetwriter
         pw.shutdown();
         shutdown = true;
@@ -90,13 +92,16 @@ public class PacketWriterTest {
         if (prematureUnblocked) {
             fail("Should not unblock before the thread got shutdown");
         }
+        synchronized (t) {
+            t.notify();
+        }
     }
     
     public class BlockingStringWriter extends Writer {
         @Override
         public void write(char[] cbuf, int off, int len) throws IOException {
             try {
-                Thread.sleep(Integer.MAX_VALUE);
+                wait();
             }
             catch (InterruptedException e) {
             }

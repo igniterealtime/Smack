@@ -23,6 +23,8 @@ import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -48,6 +50,8 @@ class PacketWriter {
 
     volatile boolean done;
 
+    AtomicBoolean shutdownDone = new AtomicBoolean(false);
+
     /**
      * Creates a new packet writer with the specified connection.
      *
@@ -65,6 +69,7 @@ class PacketWriter {
     protected void init() {
         this.writer = connection.writer;
         done = false;
+        shutdownDone.set(false);
 
         queue.start();
         writerThread = new Thread() {
@@ -115,6 +120,16 @@ class PacketWriter {
     public void shutdown() {
         done = true;
         queue.shutdown();
+        synchronized(shutdownDone) {
+            if (!shutdownDone.get()) {
+                try {
+                    shutdownDone.wait(connection.getPacketReplyTimeout());
+                }
+                catch (InterruptedException e) {
+                    LOGGER.log(Level.WARNING, "shutdown", e);
+                }
+            }
+        }
     }
 
     /**
@@ -163,7 +178,7 @@ class PacketWriter {
                 writer.flush();
             }
             catch (Exception e) {
-                LOGGER.warning("Error flushing queue during shutdown, ignore and continue");
+                LOGGER.log(Level.WARNING, "Exception flushing queue during shutdown, ignore and continue", e);
             }
 
             // Delete the queue contents (hopefully nothing is left).
@@ -175,7 +190,8 @@ class PacketWriter {
                 writer.flush();
             }
             catch (Exception e) {
-                // Do nothing
+                LOGGER.log(Level.WARNING, "Exception writing closing stream element", e);
+
             }
             finally {
                 try {
@@ -184,6 +200,11 @@ class PacketWriter {
                 catch (Exception e) {
                     // Do nothing
                 }
+            }
+
+            shutdownDone.set(true);
+            synchronized(shutdownDone) {
+                shutdownDone.notify();
             }
         }
         catch (IOException ioe) {
@@ -213,4 +234,5 @@ class PacketWriter {
         writer.write(stream.toString());
         writer.flush();
     }
+
 }
