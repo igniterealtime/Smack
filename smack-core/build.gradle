@@ -5,6 +5,7 @@ configurations {
 	compression
 	dns
 }
+
 dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
 	testCompile 'junit:junit:4.+'
@@ -27,6 +28,7 @@ task compressionJar(type: Jar) {
 	include('org/jivesoftware/smack/compression/**')
 	include('org/jivesoftware/smack/SmackConfiguration.class')
 }
+
 task dnsJar(type: Jar) {
 	appendix += '-dns'
 	dependsOn classes
@@ -34,10 +36,12 @@ task dnsJar(type: Jar) {
 	include('org/jivesoftware/smack/util/dns/**')
 	include('org/jivesoftware/smack/util/DNSUtil.class')
 }
+
 artifacts {
 	compression compressionJar
 	dns dnsJar
 }
+
 class CreateFileTask extends DefaultTask {
 	@Input
 	String fileContent
@@ -50,8 +54,10 @@ class CreateFileTask extends DefaultTask {
 		outputFile.text = fileContent
 	}
 }
+
 task createVersionResource(type: CreateFileTask) {
 	fileContent = version
 	outputFile = new File(projectDir, 'src/main/resources/org.jivesoftware.smack/version')
 }
+
 compileJava.dependsOn(createVersionResource)
