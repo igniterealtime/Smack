@@ -327,7 +327,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
             xml.halfOpenElement("identity");
             xml.xmllangAttribute(lang);
             xml.attribute("category", category);
-            xml.attribute("name", name);
+            xml.optAttribute("name", name);
             xml.optAttribute("type", type);
             xml.closeEmptyElement();
             return xml;
