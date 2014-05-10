@@ -154,7 +154,7 @@ public class PacketParserUtils {
     }
 
     public static String parseContentDepth(XmlPullParser parser, int depth) throws XmlPullParserException, IOException {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
             content.append(parser.getText());
         }
