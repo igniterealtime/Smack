@@ -35,6 +35,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
@@ -787,6 +788,14 @@ public class PacketParserUtilsTest {
     	assertEquals("en", presence.getLanguage());
     	assertEquals("Wooing Juliet", presence.getStatus());
     	assertEquals(1, presence.getPriority());
+    }
+
+    @Test
+    public void parseContentDepthTest() throws Exception {
+        final String stanza = "<iq type='result' to='foo@bar.com' from='baz.com' id='42'/>";
+        XmlPullParser parser = TestUtils.getParser(stanza, "iq");
+        String content = PacketParserUtils.parseContentDepth(parser, 1);
+        assertEquals("", content);
     }
 
     private String determineNonDefaultLanguage() {
