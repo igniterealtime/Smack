@@ -91,6 +91,7 @@ description = """\
 Smack ${version}
 ${oneLineDesc}."""
 
+evaluationDependsOnChildren()
 subprojects {
 	apply plugin: 'maven'
 	apply plugin: 'osgi'
@@ -116,6 +117,7 @@ subprojects {
 		archives sourcesJar
 		archives javadocJar
 	}
+
 	uploadArchives {
 		repositories {
 			mavenDeployer {
@@ -132,12 +134,14 @@ subprojects {
 						authentication(userName: sonatypeUsername, password: sonatypePassword)
 					}
 				}
+
 				pom.project {
 					name 'Smack'
 					packaging 'jar'
 					inceptionYear '2003'
 					url 'http://www.igniterealtime.org/projects/smack/'
-					
+					description project.description
+
 					issueManagement {
 						system 'JIRA'
 						url 'http://issues.igniterealtime.org/browse/SMACK'
@@ -184,18 +188,6 @@ subprojects {
 	signing {
 		required { signingRequired }
 		sign configurations.archives
-	}
-}
-
-// This is not really beautifully, but it's the only way I found to add
-// the sub-projects description as description element to the POM
-subprojects*.uploadArchives {
-	repositories {
-		mavenDeployer {
-			pom.project {
-				description project.description
-			}
-		}
 	}
 }
 
