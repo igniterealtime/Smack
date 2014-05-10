@@ -370,6 +370,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         setWasAuthenticated(authenticated);
         authenticated = false;
         connected = false;
+        usingTLS = false;
         reader = null;
         writer = null;
     }
