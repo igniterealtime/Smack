@@ -254,12 +254,12 @@ public class PacketParserUtils {
      */
     public static IQ parseIQ(XmlPullParser parser, XMPPConnection connection) throws Exception {
         IQ iqPacket = null;
-
-        String id = parser.getAttributeValue("", "id");
-        String to = parser.getAttributeValue("", "to");
-        String from = parser.getAttributeValue("", "from");
-        IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
         XMPPError error = null;
+
+        final String id = parser.getAttributeValue("", "id");
+        final String to = parser.getAttributeValue("", "to");
+        final String from = parser.getAttributeValue("", "from");
+        final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
 
         boolean done = false;
         while (!done) {
