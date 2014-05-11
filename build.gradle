@@ -37,6 +37,12 @@ allprojects {
 				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
 				   'Bundle-Version': version.replaceFirst("-", "."))
 	}
+
+	eclipse {
+		classpath {
+			downloadJavadoc = true
+		}
+	}
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
