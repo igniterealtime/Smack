@@ -156,7 +156,11 @@ public class PacketParserUtils {
     public static String parseContentDepth(XmlPullParser parser, int depth) throws XmlPullParserException, IOException {
         StringBuilder content = new StringBuilder();
         while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
-            content.append(parser.getText());
+            String text = parser.getText();
+            if (text == null) {
+                throw new IllegalStateException("Parser should never return 'null' on getText() here");
+            }
+            content.append(text);
         }
         return content.toString();
     }
