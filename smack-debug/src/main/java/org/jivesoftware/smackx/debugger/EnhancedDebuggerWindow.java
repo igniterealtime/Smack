@@ -223,7 +223,7 @@ public class EnhancedDebuggerWindow {
         iqProvidersPanel.setLayout(new GridLayout(1, 1));
         iqProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed IQ Providers"));
         Vector<String> providers = new Vector<String>();
-        for (Object provider : ProviderManager.getInstance().getIQProviders()) {
+        for (Object provider : ProviderManager.getIQProviders()) {
             if (provider.getClass() == Class.class) {
                 providers.add(((Class<?>) provider).getName());
             }
@@ -242,7 +242,7 @@ public class EnhancedDebuggerWindow {
         extensionProvidersPanel.setLayout(new GridLayout(1, 1));
         extensionProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed Extension Providers"));
         providers = new Vector<String>();
-        for (Object provider : ProviderManager.getInstance().getExtensionProviders()) {
+        for (Object provider : ProviderManager.getExtensionProviders()) {
             if (provider.getClass() == Class.class) {
                 providers.add(((Class<?>) provider).getName());
             }

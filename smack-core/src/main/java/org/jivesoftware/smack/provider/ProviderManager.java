@@ -105,32 +105,10 @@ import org.jivesoftware.smack.packet.IQ;
  */
 public final class ProviderManager {
 
-    private static ProviderManager instance;
+    private static final Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
+    private static final Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
 
-    private Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
-    private Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
-
-    /**
-     * Returns the ProviderManager instance.
-     *
-     * @return the only ProviderManager valid instance.
-     */
-    public static synchronized ProviderManager getInstance() {
-        if (instance == null) {
-            instance = new ProviderManager();
-        }
-        return instance;
-    }
-
-    private ProviderManager() {
-        super();
-    }
-
-    public void addLoader(ProviderLoader loader) {
-        if (loader == null) {
-            throw new IllegalArgumentException("loader cannot be null");
-        }
-        
+    public static void addLoader(ProviderLoader loader) {
         if (loader.getIQProviderInfo() != null) {
             for (IQProviderInfo info : loader.getIQProviderInfo()) {
                 iqProviders.put(getProviderKey(info.getElementName(), info.getNamespace()), info.getProvider());
@@ -164,7 +142,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @return the IQ provider.
      */
-    public Object getIQProvider(String elementName, String namespace) {
+    public static Object getIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return iqProviders.get(key);
     }
@@ -176,7 +154,7 @@ public final class ProviderManager {
      *
      * @return all IQProvider instances.
      */
-    public Collection<Object> getIQProviders() {
+    public static Collection<Object> getIQProviders() {
         return Collections.unmodifiableCollection(iqProviders.values());
     }
 
@@ -189,7 +167,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the IQ provider.
      */
-    public void addIQProvider(String elementName, String namespace,
+    public static void addIQProvider(String elementName, String namespace,
             Object provider)
     {
         if (!(provider instanceof IQProvider || (provider instanceof Class &&
@@ -210,7 +188,7 @@ public final class ProviderManager {
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
      */
-    public void removeIQProvider(String elementName, String namespace) {
+    public static void removeIQProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         iqProviders.remove(key);
     }
@@ -234,7 +212,7 @@ public final class ProviderManager {
      * @param namespace namespace associated with extension provider.
      * @return the extenion provider.
      */
-    public Object getExtensionProvider(String elementName, String namespace) {
+    public static Object getExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         return extensionProviders.get(key);
     }
@@ -248,7 +226,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the extension provider.
      */
-    public void addExtensionProvider(String elementName, String namespace,
+    public static void addExtensionProvider(String elementName, String namespace,
             Object provider)
     {
         if (!(provider instanceof PacketExtensionProvider || provider instanceof Class)) {
@@ -267,7 +245,7 @@ public final class ProviderManager {
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
      */
-    public void removeExtensionProvider(String elementName, String namespace) {
+    public static void removeExtensionProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
         extensionProviders.remove(key);
     }
@@ -279,7 +257,7 @@ public final class ProviderManager {
      *
      * @return all PacketExtensionProvider instances.
      */
-    public Collection<Object> getExtensionProviders() {
+    public static Collection<Object> getExtensionProviders() {
         return Collections.unmodifiableCollection(extensionProviders.values());
     }
 
@@ -290,9 +268,7 @@ public final class ProviderManager {
      * @param namespace the namespace.
      * @return a unique key for the element name and namespace pair.
      */
-    private String getProviderKey(String elementName, String namespace) {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
-        return buf.toString();
+    private static String getProviderKey(String elementName, String namespace) {
+        return elementName + '#' + namespace;
     }
 }

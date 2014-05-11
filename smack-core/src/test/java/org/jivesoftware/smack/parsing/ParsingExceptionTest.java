@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 
 public class ParsingExceptionTest {
-    private final static ProviderManager PM = ProviderManager.getInstance();
 
     private final static String EXTENSION2 =
     "<extension2 xmlns='namespace'>" +
@@ -43,12 +42,12 @@ public class ParsingExceptionTest {
 
     @Before
     public void init() {
-        PM.addExtensionProvider(ThrowException.ELEMENT, ThrowException.NAMESPACE, new ThrowException());
+        ProviderManager.addExtensionProvider(ThrowException.ELEMENT, ThrowException.NAMESPACE, new ThrowException());
     }
 
     @After
     public void tini() {
-        PM.removeExtensionProvider(ThrowException.ELEMENT, ThrowException.NAMESPACE);
+        ProviderManager.removeExtensionProvider(ThrowException.ELEMENT, ThrowException.NAMESPACE);
     }
 
     @Test

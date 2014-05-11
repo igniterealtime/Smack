@@ -36,7 +36,7 @@ public class ProviderConfigTest {
 
     @Test
     public void addGenericLoaderProvider() {
-        ProviderManager.getInstance().addLoader(new ProviderLoader() {
+        ProviderManager.addLoader(new ProviderLoader() {
             
             @Override
             public Collection<IQProviderInfo> getIQProviderInfo() {
@@ -51,13 +51,13 @@ public class ProviderConfigTest {
             }
         });
 
-        Assert.assertNotNull(ProviderManager.getInstance().getIQProvider("provider", "test:provider"));
+        Assert.assertNotNull(ProviderManager.getIQProvider("provider", "test:provider"));
     }
 
     @Test
     public void addClasspathFileLoaderProvider() throws Exception{
-        ProviderManager.getInstance().addLoader(new ProviderFileLoader(FileUtils.getStreamForUrl("classpath:test.providers", null)));
-        Assert.assertNotNull(ProviderManager.getInstance().getIQProvider("provider", "test:file_provider"));
+        ProviderManager.addLoader(new ProviderFileLoader(FileUtils.getStreamForUrl("classpath:test.providers", null)));
+        Assert.assertNotNull(ProviderManager.getIQProvider("provider", "test:file_provider"));
     }
 
     public static class TestIQProvider implements IQProvider {

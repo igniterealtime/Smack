@@ -81,7 +81,7 @@ public class RTPBridge extends IQ {
     public static final String NAMESPACE = "http://www.jivesoftware.com/protocol/rtpbridge";
 
     static {
-        ProviderManager.getInstance().addIQProvider(NAME, NAMESPACE, new Provider());
+        ProviderManager.addIQProvider(NAME, NAMESPACE, new Provider());
     }
 
     /**

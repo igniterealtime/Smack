@@ -284,7 +284,7 @@ public class PacketParserUtils {
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 else {
-                    Object provider = ProviderManager.getInstance().getIQProvider(elementName, namespace);
+                    Object provider = ProviderManager.getIQProvider(elementName, namespace);
                     if (provider != null) {
                         if (provider instanceof IQProvider) {
                             iqPacket = ((IQProvider)provider).parseIQ(parser);
@@ -657,7 +657,7 @@ public class PacketParserUtils {
             throws Exception
     {
         // See if a provider is registered to handle the extension.
-        Object provider = ProviderManager.getInstance().getExtensionProvider(elementName, namespace);
+        Object provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
             if (provider instanceof PacketExtensionProvider) {
                 return ((PacketExtensionProvider)provider).parseExtension(parser);

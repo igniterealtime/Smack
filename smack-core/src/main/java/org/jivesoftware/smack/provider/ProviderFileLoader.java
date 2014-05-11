@@ -39,45 +39,14 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class ProviderFileLoader implements ProviderLoader {
     private static final Logger LOGGER = Logger.getLogger(ProviderFileLoader.class.getName());
-    
+
     private Collection<IQProviderInfo> iqProviders;
     private Collection<ExtensionProviderInfo> extProviders;
-    private InputStream providerStream;
-    private List<Exception> exceptions = new LinkedList<Exception>();
-    
-    public ProviderFileLoader(InputStream providerFileInputStream) {
-        setInputStream(providerFileInputStream);
-    }
-    
-    public ProviderFileLoader() {
-    }
-    
-    @Override
-    public Collection<IQProviderInfo> getIQProviderInfo() {
-        initialize();
-        return iqProviders;
-    }
 
-    @Override
-    public Collection<ExtensionProviderInfo> getExtensionProviderInfo() {
-        initialize();
-        return extProviders;
-    }
-    
-    public List<Exception> getLoadingExceptions() {
-    	return Collections.unmodifiableList(exceptions);
-    }
+    private List<Exception> exceptions = new LinkedList<Exception>();
 
     @SuppressWarnings("unchecked")
-    private synchronized void initialize() {
-        // Check to see if already initialized
-        if (iqProviders != null) {
-            return;
-        }
-        
-        if (providerStream == null) {
-            throw new IllegalArgumentException("No input stream set for loader");
-        }
+    public ProviderFileLoader(InputStream providerStream) {
         iqProviders = new ArrayList<IQProviderInfo>();
         extProviders = new ArrayList<ExtensionProviderInfo>();
         
@@ -151,6 +120,7 @@ public class ProviderFileLoader implements ProviderLoader {
         }
         catch (Exception e){
             LOGGER.log(Level.SEVERE, "Unknown error occurred while parsing provider file", e);
+            exceptions.add(e);
         }
         finally {
             try {
@@ -161,12 +131,18 @@ public class ProviderFileLoader implements ProviderLoader {
             }
         }
     }
-    
-    public void setInputStream(InputStream providerFileInput) {
-        if (providerFileInput == null) {
-            throw new IllegalArgumentException("InputStream cannot be null");
-        }
-        providerStream = providerFileInput;
-        initialize();
+
+    @Override
+    public Collection<IQProviderInfo> getIQProviderInfo() {
+        return iqProviders;
+    }
+
+    @Override
+    public Collection<ExtensionProviderInfo> getExtensionProviderInfo() {
+        return extProviders;
+    }
+
+    public List<Exception> getLoadingExceptions() {
+        return Collections.unmodifiableList(exceptions);
     }
 }

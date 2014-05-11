@@ -41,7 +41,7 @@ public class CarbonTest {
 
     @BeforeClass
     public static void setup() {
-        ProviderManager.getInstance().addExtensionProvider("forwarded", "urn:xmpp:forward:0", new ForwardedProvider());
+        ProviderManager.addExtensionProvider("forwarded", "urn:xmpp:forward:0", new ForwardedProvider());
     }
     
     @Test

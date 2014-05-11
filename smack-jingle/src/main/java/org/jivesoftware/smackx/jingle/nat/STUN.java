@@ -66,7 +66,7 @@ public class STUN extends IQ {
     public static final String NAMESPACE = "google:jingleinfo";
 
     static {
-        ProviderManager.getInstance().addIQProvider(ELEMENT_NAME, NAMESPACE, new STUN.Provider());
+        ProviderManager.addIQProvider(ELEMENT_NAME, NAMESPACE, new STUN.Provider());
     }
 
     /**

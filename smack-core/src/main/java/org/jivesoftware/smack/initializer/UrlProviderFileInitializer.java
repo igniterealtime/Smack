@@ -49,7 +49,7 @@ public abstract class UrlProviderFileInitializer implements SmackInitializer {
             if (is != null) {
                 LOGGER.log(Level.INFO, "Loading providers for file [" + filePath + "]");
                 ProviderFileLoader pfl = new ProviderFileLoader(is);
-                ProviderManager.getInstance().addLoader(pfl);
+                ProviderManager.addLoader(pfl);
                 exceptions.addAll(pfl.getLoadingExceptions());
             }
             else {

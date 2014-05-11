@@ -253,8 +253,7 @@ public class JingleManager implements JingleSessionListener {
      * method you just call it once and all new connections will report Jingle support.)
      */
     public static void setJingleServiceEnabled() {
-        ProviderManager providerManager = ProviderManager.getInstance();
-        providerManager.addIQProvider("jingle", "urn:xmpp:tmp:jingle", new JingleProvider());
+        ProviderManager.addIQProvider("jingle", "urn:xmpp:tmp:jingle", new JingleProvider());
 
         // Enable the Jingle support on every established connection
         // The ServiceDiscoveryManager class should have been already

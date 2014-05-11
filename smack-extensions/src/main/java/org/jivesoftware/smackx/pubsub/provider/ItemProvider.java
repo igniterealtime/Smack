@@ -54,7 +54,7 @@ public class ItemProvider implements PacketExtensionProvider
             String payloadElemName = parser.getName();
             String payloadNS = parser.getNamespace();
 
-            if (ProviderManager.getInstance().getExtensionProvider(payloadElemName, payloadNS) == null) 
+            if (ProviderManager.getExtensionProvider(payloadElemName, payloadNS) == null) 
             {
                 boolean done = false;
                 boolean isEmptyElement = false;
