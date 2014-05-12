@@ -46,8 +46,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *          {@link Mode#dnd dnd} (do not disturb).
  * </ul><p>
  *
- * Presence packets are used for two purposes. First, to notify the server of our
- * the clients current presence status. Second, they are used to subscribe and
+ * Presence packets are used for two purposes. First, to notify the server of
+ * the user's current presence status. Second, they are used to subscribe and
  * unsubscribe users from the roster.
  *
  * @see RosterPacket
@@ -264,8 +264,8 @@ public class Presence extends Packet {
     }
 
     /**
-     * A enum to represent the presecence type. Not that presence type is often confused
-     * with presence mode. Generally, if a user is signed into a server, they have a presence
+     * An enum to represent the presence type. Note that presence type is often confused
+     * with presence mode. Generally, if a user is signed in to a server, they have a presence
      * type of {@link #available available}, even if the mode is {@link Mode#away away},
      * {@link Mode#dnd dnd}, etc. The presence type is only {@link #unavailable unavailable} when
      * the user is signing out of the server.
