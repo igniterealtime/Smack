@@ -20,11 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.jcraft.jzlib.*;
 import org.jivesoftware.smack.SmackConfiguration;
-
-import com.jcraft.jzlib.JZlib;
-import com.jcraft.jzlib.ZInputStream;
-import com.jcraft.jzlib.ZOutputStream;
 
 /**
  * This class provides XMPP "zlib" compression with the help of JZLib.
@@ -33,7 +30,7 @@ import com.jcraft.jzlib.ZOutputStream;
  * @see <a href="http://www.jcraft.com/jzlib/">JZLib</a>
  * 
  */
-@SuppressWarnings("deprecation")
+//@SuppressWarnings("deprecation")
 public class JzlibInputOutputStream extends XMPPInputOutputStream {
 
     static {
@@ -51,17 +48,11 @@ public class JzlibInputOutputStream extends XMPPInputOutputStream {
 
     @Override
     public InputStream getInputStream(InputStream inputStream) throws IOException {
-        ZInputStream is = new ZInputStream(inputStream);
-        is.setFlushMode(JZlib.Z_SYNC_FLUSH);
-
-        return is;
+        return new InflaterInputStream(inputStream);
     }
 
     @Override
     public OutputStream getOutputStream(OutputStream outputStream) throws IOException {
-        ZOutputStream os = new ZOutputStream(outputStream);
-        os.setFlushMode(JZlib.Z_SYNC_FLUSH);
-
-        return os;
+        return new DeflaterOutputStream(outputStream);
     }
 }
