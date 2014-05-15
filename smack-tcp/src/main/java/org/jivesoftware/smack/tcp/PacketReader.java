@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.tcp;
 
 import java.io.IOException;
 
@@ -28,6 +28,8 @@ import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
 import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
@@ -80,7 +82,7 @@ class PacketReader {
                 parsePackets(this);
             }
         };
-        readerThread.setName("Smack Packet Reader (" + connection.connectionCounterValue + ")");
+        readerThread.setName("Smack Packet Reader (" + connection.getConnectionCounter() + ")");
         readerThread.setDaemon(true);
 
         resetParser();
@@ -131,7 +133,7 @@ class PacketReader {
         try {
             parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(connection.reader);
+            parser.setInput(connection.getReader());
         }
         catch (XmlPullParserException e) {
             throw new SmackException(e);
@@ -205,7 +207,7 @@ class PacketReader {
                                 }
                                 else if (parser.getAttributeName(i).equals("from")) {
                                     // Use the server name that the server says that it is.
-                                    connection.config.setServiceName(parser.getAttributeValue(i));
+                                    connection.setServiceName(parser.getAttributeValue(i));
                                 }
                             }
                         }
@@ -342,7 +344,7 @@ class PacketReader {
                     connection.setAvailableCompressionMethods(PacketParserUtils.parseCompressionMethods(parser));
                 }
                 else if (parser.getName().equals("register")) {
-                    AccountManager.getInstance(connection).setSupportsAccountCreation(true);
+                    connection.serverSupportsAccountCreation();
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

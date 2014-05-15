@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util.dns;
+package org.jivesoftware.smack.util.dns.javax;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -28,6 +28,8 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.dns.DNSResolver;
+import org.jivesoftware.smack.util.dns.SRVRecord;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.

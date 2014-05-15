@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.tcp;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Packet;
@@ -67,7 +67,7 @@ class PacketWriter {
     * is invoked if the connection is disconnected by an error.
     */ 
     protected void init() {
-        this.writer = connection.writer;
+        writer = connection.getWriter();
         done = false;
         shutdownDone.set(false);
 
@@ -77,7 +77,7 @@ class PacketWriter {
                 writePackets(this);
             }
         };
-        writerThread.setName("Smack Packet Writer (" + connection.connectionCounterValue + ")");
+        writerThread.setName("Smack Packet Writer (" + connection.getConnectionCounter() + ")");
         writerThread.setDaemon(true);
     }
 

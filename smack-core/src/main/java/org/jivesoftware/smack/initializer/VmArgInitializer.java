@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.initializer;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jivesoftware.smack.provider.ProviderManager;
 
 
@@ -26,16 +29,17 @@ import org.jivesoftware.smack.provider.ProviderManager;
  * @author Robin Collier
  *
  */
-public class VmArgInitializer extends UrlProviderFileInitializer {
+public class VmArgInitializer extends UrlInitializer {
 
     protected String getFilePath() {
         return System.getProperty("smack.provider.file");
     }
 
     @Override
-    public void initialize() {
+    public List<Exception> initialize() {
         if (getFilePath() != null) {
             super.initialize();
         }
+        return Collections.emptyList();
     }
 }

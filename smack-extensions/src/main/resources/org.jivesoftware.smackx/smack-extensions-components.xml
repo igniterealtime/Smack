@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0"
+	enabled="true" immediate="true" name="Smack Extensions API">
+	<implementation
+		class="org.jivesoftware.smack.initializer.extensions.ExtensionsInitializer" />
+</scr:component>

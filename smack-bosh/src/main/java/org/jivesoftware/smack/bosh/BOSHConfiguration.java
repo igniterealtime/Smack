@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.bosh;
 
 import java.net.URI;
 import java.net.URISyntaxException;

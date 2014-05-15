@@ -311,7 +311,13 @@ public final class SmackConfiguration {
         return res;
     }
 
-    public static void processConfigFile(InputStream cfgFileStream, Collection<Exception> exceptions) throws Exception {
+    public static void processConfigFile(InputStream cfgFileStream,
+                    Collection<Exception> exceptions) throws Exception {
+        processConfigFile(cfgFileStream, exceptions, SmackConfiguration.class.getClassLoader());
+    }
+
+    public static void processConfigFile(InputStream cfgFileStream,
+                    Collection<Exception> exceptions, ClassLoader classLoader) throws Exception {
         XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
         parser.setInput(cfgFileStream, "UTF-8");
@@ -319,10 +325,10 @@ public final class SmackConfiguration {
         do {
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("startupClasses")) {
-                    parseClassesToLoad(parser, false, exceptions);
+                    parseClassesToLoad(parser, false, exceptions, classLoader);
                 }
                 else if (parser.getName().equals("optionalStartupClasses")) {
-                    parseClassesToLoad(parser, true, exceptions);
+                    parseClassesToLoad(parser, true, exceptions, classLoader);
                 }
             }
             eventType = parser.next();
@@ -336,7 +342,9 @@ public final class SmackConfiguration {
         }
     }
 
-    private static void parseClassesToLoad(XmlPullParser parser, boolean optional, Collection<Exception> exceptions) throws XmlPullParserException, IOException, Exception {
+    private static void parseClassesToLoad(XmlPullParser parser, boolean optional,
+                    Collection<Exception> exceptions, ClassLoader classLoader)
+                    throws XmlPullParserException, IOException, Exception {
         final String startName = parser.getName();
         int eventType;
         String name;
@@ -350,26 +358,30 @@ public final class SmackConfiguration {
                 }
                 else {
                     try {
-                        loadSmackClass(classToLoad, optional);
-                    } catch (Exception e) {
+                        loadSmackClass(classToLoad, optional, classLoader);
+                    }
+                    catch (Exception e) {
                         // Don't throw the exception if an exceptions collection is given, instead
                         // record it there. This is used for unit testing purposes.
                         if (exceptions != null) {
                             exceptions.add(e);
-                        } else {
+                        }
+                        else {
                             throw e;
                         }
                     }
                 }
             }
-        } while (! (eventType == XmlPullParser.END_TAG && startName.equals(name)));
+        }
+        while (!(eventType == XmlPullParser.END_TAG && startName.equals(name)));
     }
 
-    private static void loadSmackClass(String className, boolean optional) throws Exception {
+    private static void loadSmackClass(String className, boolean optional, ClassLoader classLoader) throws Exception {
         Class<?> initClass;
         try {
-            // Attempt to load the class so that the class can get initialized
-            initClass = Class.forName(className);
+            // Attempt to load and initialize the class so that all static initializer blocks of
+            // class are executed
+            initClass = Class.forName(className, true, classLoader);
         }
         catch (ClassNotFoundException cnfe) {
             Level logLevel;
@@ -388,8 +400,7 @@ public final class SmackConfiguration {
         }
         if (SmackInitializer.class.isAssignableFrom(initClass)) {
             SmackInitializer initializer = (SmackInitializer) initClass.newInstance();
-            initializer.initialize();
-            List<Exception> exceptions = initializer.getExceptions();
+            List<Exception> exceptions = initializer.initialize();
             if (exceptions.size() == 0) {
                 LOGGER.log(Level.FINE, "Loaded SmackInitializer " + className);
             } else {

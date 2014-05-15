@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.compression;
+package org.jivesoftware.smack.compression.jzlib;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 
 import com.jcraft.jzlib.JZlib;
 import com.jcraft.jzlib.ZInputStream;

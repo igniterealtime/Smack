@@ -406,7 +406,7 @@ public class SASLAuthentication {
      * @param mechanisms collection of strings with the available SASL mechanism reported
      *                   by the server.
      */
-    void setAvailableSASLMethods(Collection<String> mechanisms) {
+    public void setAvailableSASLMethods(Collection<String> mechanisms) {
         this.serverMechanisms = mechanisms;
     }
 
@@ -429,7 +429,7 @@ public class SASLAuthentication {
      * @throws IOException If a network error occures while authenticating.
      * @throws NotConnectedException 
      */
-    void challengeReceived(String challenge) throws IOException, NotConnectedException {
+    public void challengeReceived(String challenge) throws IOException, NotConnectedException {
         currentMechanism.challengeReceived(challenge);
     }
 
@@ -437,7 +437,7 @@ public class SASLAuthentication {
      * Notification message saying that SASL authentication was successful. The next step
      * would be to bind the resource.
      */
-    void authenticated() {
+    public void authenticated() {
         saslNegotiated = true;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
@@ -452,7 +452,7 @@ public class SASLAuthentication {
      * @param saslFailure the SASL failure as reported by the server
      * @see <a href="https://tools.ietf.org/html/rfc6120#section-6.5">RFC6120 6.5</a>
      */
-    void authenticationFailed(SASLFailure saslFailure) {
+    public void authenticationFailed(SASLFailure saslFailure) {
         this.saslFailure = saslFailure;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {

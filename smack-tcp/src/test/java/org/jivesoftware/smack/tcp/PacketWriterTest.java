@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.tcp;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,7 +34,7 @@ public class PacketWriterTest {
     /**
      * Make sure that packet writer does block once the queue reaches
      * {@link PacketWriter#QUEUE_SIZE} and that
-     * {@link PacketWriter#sendPacket(org.jivesoftware.smack.packet.Packet)} does unblock after the
+     * {@link PacketWriter#sendPacket(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
      * interrupt.
      * 
      * @throws InterruptedException

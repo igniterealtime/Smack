@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.bosh;
 
 import java.io.IOException;
 import java.io.PipedReader;
@@ -27,9 +27,11 @@ import java.util.logging.Logger;
 
 import javax.security.sasl.SaslException;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -137,7 +139,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
     }
 
     @Override
-    void connectInternal() throws SmackException {
+    protected void connectInternal() throws SmackException {
         if (connected) {
             throw new IllegalStateException("Already connected to a server.");
         }
@@ -267,7 +269,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
         if (response != null) {
             this.user = response;
             // Update the serviceName with the one returned by the server
-            config.setServiceName(StringUtils.parseServer(response));
+            setServiceName(StringUtils.parseServer(response));
         } else {
             this.user = username + "@" + getServiceName();
             if (resource != null) {
@@ -285,7 +287,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
         anonymous = false;
 
         // Stores the autentication for future reconnection
-        config.setLoginInfo(username, password, resource);
+        setLoginInfo(username, password, resource);
 
         // If debugging is enabled, change the the debug window title to include
         // the
@@ -316,7 +318,7 @@ public class XMPPBOSHConnection extends XMPPConnection {
         // Set the user value.
         this.user = response;
         // Update the serviceName with the one returned by the server
-        config.setServiceName(StringUtils.parseServer(response));
+        setServiceName(StringUtils.parseServer(response));
 
         // Set presence to online.
         if (config.isSendPresence()) {
@@ -337,7 +339,8 @@ public class XMPPBOSHConnection extends XMPPConnection {
         callConnectionAuthenticatedListener();
     }
 
-    void sendPacketInternal(Packet packet) throws NotConnectedException {
+    @Override
+    protected void sendPacketInternal(Packet packet) throws NotConnectedException {
         if (done) {
             throw new NotConnectedException();
         }
@@ -508,6 +511,30 @@ public class XMPPBOSHConnection extends XMPPConnection {
         callConnectionClosedOnErrorListener(e);
     }
 
+    @Override
+    protected void processPacket(Packet packet) {
+        super.processPacket(packet);
+    }
+
+    @Override
+    protected SASLAuthentication getSASLAuthentication() {
+        return super.getSASLAuthentication();
+    }
+
+    @Override
+    protected void serverRequiresBinding() {
+        super.serverRequiresBinding();
+    }
+
+    @Override
+    protected void serverSupportsSession() {
+        super.serverSupportsSession();
+    }
+
+    @Override
+    protected void serverSupportsAccountCreation() {
+        super.serverSupportsAccountCreation();
+    }
 
     /**
      * A listener class which listen for a successfully established connection

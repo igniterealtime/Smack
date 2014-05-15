@@ -14,19 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.jivesoftware.smack.initializer.legacy;
 
-import static org.junit.Assert.assertTrue;
+import org.jivesoftware.smack.initializer.UrlInitializer;
 
-import org.junit.Test;
+public class LegacyInitializer extends UrlInitializer {
 
-public class ExtensionsStartupClassesTest {
-
-    @Test
-    public void testExtensiosnStartupClasses() {
-        ExtensionsStartupClasses esc = new ExtensionsStartupClasses();
-        esc.initialize();
-        assertTrue(esc.getExceptions().size() == 0);
+    @Override
+    protected String getProvidersUrl() {
+        return "classpath:org.jivesoftware.smackx/legacy.providers";
     }
-
 }

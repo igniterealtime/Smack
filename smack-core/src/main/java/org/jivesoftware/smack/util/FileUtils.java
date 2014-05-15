@@ -46,7 +46,10 @@ public final class FileUtils {
 
         if (fileUri.getScheme().equals("classpath")) {
             // Get an array of class loaders to try loading the providers files from.
-            ClassLoader[] classLoaders = getClassLoaders();
+            List<ClassLoader> classLoaders = getClassLoaders();
+            if (loader != null) {
+                classLoaders.add(0, loader);
+            }
             for (ClassLoader classLoader : classLoaders) {
                 InputStream is = classLoader.getResourceAsStream(fileUri.getSchemeSpecificPart());
 
@@ -64,21 +67,21 @@ public final class FileUtils {
     /**
      * Returns default classloaders.
      *
-     * @return an array of ClassLoader instances.
+     * @return a List of ClassLoader instances.
      */
-    public static ClassLoader[] getClassLoaders() {
+    public static List<ClassLoader> getClassLoaders() {
         ClassLoader[] classLoaders = new ClassLoader[2];
         classLoaders[0] = FileUtils.class.getClassLoader();
         classLoaders[1] = Thread.currentThread().getContextClassLoader();
-        // Clean up possible null values. Note that #getClassLoader may return a null value.
-        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
 
+        // Clean up possible null values. Note that #getClassLoader may return a null value.
+        List<ClassLoader> loaders = new ArrayList<ClassLoader>(classLoaders.length);
         for (ClassLoader classLoader : classLoaders) {
             if (classLoader != null) {
                 loaders.add(classLoader);
             }
         }
-        return loaders.toArray(new ClassLoader[loaders.size()]);
+        return loaders;
     }
 
     public static boolean addLines(String url, Set<String> set) throws MalformedURLException, IOException {

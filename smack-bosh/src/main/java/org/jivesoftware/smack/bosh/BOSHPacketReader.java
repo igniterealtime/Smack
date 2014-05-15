@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.bosh;
 
 import java.io.StringReader;
 
@@ -153,7 +153,7 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                     // The server supports sessions
                     connection.serverSupportsSession();
                 } else if (parser.getName().equals("register")) {
-                    AccountManager.getInstance(connection).setSupportsAccountCreation(true);
+                    connection.serverSupportsAccountCreation();
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("features")) {

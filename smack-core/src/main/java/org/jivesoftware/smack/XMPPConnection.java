@@ -352,7 +352,7 @@ public abstract class XMPPConnection {
      */
     public abstract boolean isSecureConnection();
 
-    abstract void sendPacketInternal(Packet packet) throws NotConnectedException;
+    protected abstract void sendPacketInternal(Packet packet) throws NotConnectedException;
 
     /**
      * Returns true if network traffic is being compressed. When using stream compression network
@@ -398,7 +398,7 @@ public abstract class XMPPConnection {
      * @throws IOException
      * @throws XMPPException
      */
-    abstract void connectInternal() throws SmackException, IOException, XMPPException;
+    protected abstract void connectInternal() throws SmackException, IOException, XMPPException;
 
     /**
      * Logs in to the server using the strongest authentication mode supported by
@@ -476,7 +476,7 @@ public abstract class XMPPConnection {
      * Notification message saying that the server requires the client to bind a
      * resource to the stream.
      */
-    void serverRequiresBinding() {
+    protected void serverRequiresBinding() {
         synchronized (bindingRequired) {
             bindingRequired.set(true);
             bindingRequired.notify();
@@ -488,11 +488,11 @@ public abstract class XMPPConnection {
      * sessions the client needs to send a Session packet after successfully binding a resource
      * for the session.
      */
-    void serverSupportsSession() {
+    protected void serverSupportsSession() {
         sessionSupported = true;
     }
 
-    String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
+    protected String bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
                     ResourceBindingNotOfferedException, NoResponseException, NotConnectedException {
 
         synchronized (bindingRequired) {
@@ -535,6 +535,30 @@ public abstract class XMPPConnection {
         } else {
             throw new NoResponseException();
         }
+    }
+
+    protected Reader getReader() {
+        return reader;
+    }
+
+    protected Writer getWriter() {
+        return writer;
+    }
+
+    protected void setServiceName(String serviceName) {
+        config.setServiceName(serviceName);
+    }
+    
+    protected void setLoginInfo(String username, String password, String resource) {
+        config.setLoginInfo(username, password, resource);
+    }
+    
+    protected void serverSupportsAccountCreation() {
+        AccountManager.getInstance(this).setSupportsAccountCreation(true);
+    }
+
+    protected void maybeResolveDns() throws Exception {
+        config.maybeResolveDns();
     }
 
     /**
@@ -627,6 +651,7 @@ public abstract class XMPPConnection {
         }
         return roster;
     }
+
     /**
      * Returns the SASLAuthentication manager that is responsible for authenticating with
      * the server.
@@ -634,7 +659,7 @@ public abstract class XMPPConnection {
      * @return the SASLAuthentication manager that is responsible for authenticating with
      *         the server.
      */
-    public SASLAuthentication getSASLAuthentication() {
+    protected SASLAuthentication getSASLAuthentication() {
         return saslAuthentication;
     }
 
@@ -1127,13 +1152,13 @@ public abstract class XMPPConnection {
         }
     }
 
-    void callConnectionConnectedListener() {
+    protected void callConnectionConnectedListener() {
         for (ConnectionListener listener : getConnectionListeners()) {
             listener.connected(this);
         }
     }
 
-    void callConnectionAuthenticatedListener() {
+    protected void callConnectionAuthenticatedListener() {
         for (ConnectionListener listener : getConnectionListeners()) {
             listener.authenticated(this);
         }
@@ -1152,7 +1177,7 @@ public abstract class XMPPConnection {
         }
     }
 
-    void callConnectionClosedOnErrorListener(Exception e) {
+    protected void callConnectionClosedOnErrorListener(Exception e) {
         LOGGER.log(Level.WARNING, "Connection closed with error", e);
         for (ConnectionListener listener : getConnectionListeners()) {
             try {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.jivesoftware.smack.initializer.experimental;
 
-import static org.junit.Assert.assertTrue;
+import org.jivesoftware.smack.initializer.UrlInitializer;
 
-import org.junit.Test;
+/**
+ * Initializes the providers in the experimental code stream.
+ * 
+ * @author Florian Schmaus
+ */
+public class ExperimentalInitializer extends UrlInitializer {
 
-public class WorkgroupProviderInitializerTest {
+    @Override
+    protected String getProvidersUrl() {
+        return "classpath:org.jivesoftware.smackx/experimental.providers";
+    }
 
-    @Test
-    public void testWorkgroupProviderInitializer() {
-        WorkgroupProviderInitializer wpi = new WorkgroupProviderInitializer();
-        wpi.initialize();
-        assertTrue(wpi.getExceptions().size() == 0);
+    @Override
+    protected String getConfigUrl() {
+        return "classpath:org.jivesoftware.smackx/extensions.xml";
     }
 }

@@ -14,11 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.tcp;
 
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -44,7 +53,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.security.KeyStore;
@@ -248,7 +259,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         if (response != null) {
             this.user = response;
             // Update the serviceName with the one returned by the server
-            config.setServiceName(StringUtils.parseServer(response));
+            setServiceName(StringUtils.parseServer(response));
         }
         else {
             this.user = username + "@" + getServiceName();
@@ -267,7 +278,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         }
 
         // Stores the authentication for future reconnection
-        config.setLoginInfo(username, password, resource);
+        setLoginInfo(username, password, resource);
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
@@ -299,7 +310,7 @@ public class XMPPTCPConnection extends XMPPConnection {
         // Set the user value.
         this.user = response;
         // Update the serviceName with the one returned by the server
-        config.setServiceName(StringUtils.parseServer(response));
+        setServiceName(StringUtils.parseServer(response));
 
         // If compression is enabled then request the server to use stream compression
         if (config.isCompressionEnabled()) {
@@ -375,14 +386,15 @@ public class XMPPTCPConnection extends XMPPConnection {
         writer = null;
     }
 
-    void sendPacketInternal(Packet packet) throws NotConnectedException {
+    @Override
+    protected void sendPacketInternal(Packet packet) throws NotConnectedException {
         packetWriter.sendPacket(packet);
     }
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws SmackException, IOException {
         Exception exception = null;
         try {
-            config.maybeResolveDns();
+            maybeResolveDns();
         }
         catch (Exception e) {
             throw new SmackException(e);
@@ -782,7 +794,7 @@ public class XMPPTCPConnection extends XMPPConnection {
      * @throws IOException 
      */
     @Override
-    void connectInternal() throws SmackException, IOException, XMPPException {
+    protected void connectInternal() throws SmackException, IOException, XMPPException {
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
         // TODO is there a case where connectUsing.. does not throw an exception but connected is
@@ -823,10 +835,70 @@ public class XMPPTCPConnection extends XMPPConnection {
         callConnectionClosedOnErrorListener(e);
     }
 
+    @Override
+    protected void processPacket(Packet packet) {
+        super.processPacket(packet);
+    }
+
+    @Override
+    protected Reader getReader() {
+        return super.getReader();
+    }
+
+    @Override
+    protected Writer getWriter() {
+        return super.getWriter();
+    }
+
+    @Override
+    protected void throwConnectionExceptionOrNoResponse() throws IOException, NoResponseException {
+        super.throwConnectionExceptionOrNoResponse();
+    }
+
+    @Override
+    protected void setServiceName(String serviceName) {
+        super.setServiceName(serviceName);
+    }
+
+    @Override
+    protected void serverRequiresBinding() {
+        super.serverRequiresBinding();
+    }
+
+    @Override
+    protected void setServiceCapsNode(String node) {
+        super.setServiceCapsNode(node);
+    }
+
+    @Override
+    protected void serverSupportsSession() {
+        super.serverSupportsSession();
+    }
+
+    @Override
+    protected void setRosterVersioningSupported() {
+        super.setRosterVersioningSupported();
+    }
+
+    @Override
+    protected void serverSupportsAccountCreation() {
+        super.serverSupportsAccountCreation();
+    }
+
+    @Override
+    protected SASLAuthentication getSASLAuthentication() {
+        return super.getSASLAuthentication();
+    }
+
+    @Override
+    protected ConnectionConfiguration getConfiguration() {
+        return super.getConfiguration();
+    }
+
     /**
      * Sends a notification indicating that the connection was reconnected successfully.
      */
-    protected void notifyReconnection() {
+    private void notifyReconnection() {
         // Notify connection listeners of the reconnection.
         for (ConnectionListener listener : getConnectionListeners()) {
             try {

@@ -197,6 +197,16 @@ subprojects {
 	}
 }
 
+['smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
+	project(":$name") {
+		jar {
+			manifest {
+				instruction 'Service-Component', "org.jivesoftware.smackx/$name-components.xml"
+			}
+		}
+	}
+}
+
 def getGitCommit() {
 	def dotGit = new File("$projectDir/.git")
 	if (!dotGit.isDirectory()) return 'non-git build'

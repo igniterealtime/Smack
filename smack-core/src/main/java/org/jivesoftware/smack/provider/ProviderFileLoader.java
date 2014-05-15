@@ -45,8 +45,12 @@ public class ProviderFileLoader implements ProviderLoader {
 
     private List<Exception> exceptions = new LinkedList<Exception>();
 
-    @SuppressWarnings("unchecked")
     public ProviderFileLoader(InputStream providerStream) {
+        this(providerStream, ProviderFileLoader.class.getClassLoader());
+    }
+
+    @SuppressWarnings("unchecked")
+    public ProviderFileLoader(InputStream providerStream, ClassLoader classLoader) {
         iqProviders = new ArrayList<IQProviderInfo>();
         extProviders = new ArrayList<ExtensionProviderInfo>();
         
@@ -73,13 +77,13 @@ public class ProviderFileLoader implements ProviderLoader {
                             String className = parser.nextText();
 
                             try {
+                                final Class<?> provider = classLoader.loadClass(className);
                                 // Attempt to load the provider class and then create
                                 // a new instance if it's an IQProvider. Otherwise, if it's
                                 // an IQ class, add the class object itself, then we'll use
                                 // reflection later to create instances of the class.
                                 if ("iqProvider".equals(typeName)) {
                                     // Add the provider to the map.
-                                    Class<?> provider = Class.forName(className);
                                     
                                     if (IQProvider.class.isAssignableFrom(provider)) {
                                         iqProviders.add(new IQProviderInfo(elementName, namespace, (IQProvider) provider.newInstance()));
@@ -94,7 +98,6 @@ public class ProviderFileLoader implements ProviderLoader {
                                     // a PacketExtension, add the class object itself and
                                     // then we'll use reflection later to create instances
                                     // of the class.
-                                    Class<?> provider = Class.forName(className);
                                     if (PacketExtensionProvider.class.isAssignableFrom(provider)) {
                                         extProviders.add(new ExtensionProviderInfo(elementName, namespace, (PacketExtensionProvider) provider.newInstance()));
                                     }

@@ -8,12 +8,9 @@
     </startupClasses>
 
     <optionalStartupClasses>
-        <className>org.jivesoftware.smack.util.dns.JavaxResolver</className>
-        <className>org.jivesoftware.smackx.ExtensionsProviderInitializer</className>
-        <className>org.jivesoftware.smackx.ExtensionsStartupClasses</className>
-        <className>org.jivesoftware.smackx.ExperimentalProviderInitializer</className>
-        <className>org.jivesoftware.smackx.ExperimentalStartupClasses</className>
-        <className>org.jivesoftware.smackx.WorkgroupProviderInitializer</className>
-        <className>org.jivesoftware.smackx.LegacyProviderInitializer</className>
+        <className>org.jivesoftware.smack.util.dns.javax.JavaxResolver</className>
+        <className>org.jivesoftware.smack.initializer.extensions.ExtensionsInitializer</className>
+        <className>org.jivesoftware.smack.initializer.experimental.ExperimentalInitializer</className>
+        <className>org.jivesoftware.smack.initializer.legacy.LegacyInitializer</className>
     </optionalStartupClasses>
 </smack>

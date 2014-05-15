@@ -74,7 +74,7 @@ public class DummyConnection extends XMPPConnection {
     }
 
     @Override
-    void connectInternal() {
+    protected void connectInternal() {
         connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {
@@ -185,7 +185,7 @@ public class DummyConnection extends XMPPConnection {
     }
 
     @Override
-    void sendPacketInternal(Packet packet) {
+    protected void sendPacketInternal(Packet packet) {
         if (SmackConfiguration.DEBUG_ENABLED) {
             System.out.println("[SEND]: " + packet.toXML());
         }
