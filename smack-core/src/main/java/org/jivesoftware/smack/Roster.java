@@ -686,9 +686,8 @@ public class Roster {
         }
     }
 
-    private void addUpdateEntry(Collection<String> addedEntries,
-            Collection<String> updatedEntries, RosterPacket.Item item,
-            RosterEntry entry){
+    private void addUpdateEntry(Collection<String> addedEntries, Collection<String> updatedEntries,
+                    Collection<String> unchangedEntries, RosterPacket.Item item, RosterEntry entry) {
         RosterEntry oldEntry = entries.put(item.getUser(), entry);
         if (oldEntry == null) {
             addedEntries.add(item.getUser());
@@ -697,6 +696,9 @@ public class Roster {
             RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
             if (!oldEntry.equalsDeep(entry) || !item.getGroupNames().equals(oldItem.getGroupNames())) {
                 updatedEntries.add(item.getUser());
+            } else {
+                // Record the entry as unchanged, so that it doesn't end up as deleted entry
+                unchangedEntries.add(item.getUser());
             }
         }
 
@@ -950,78 +952,71 @@ public class Roster {
 
             IQ result = (IQ)packet;
             if (!result.getType().equals(IQ.Type.RESULT)) {
-                LOGGER.severe("Roster result IQ not of type result");
+                LOGGER.severe("Roster result IQ not of type result. Packet: " + result.toXML());
                 return;
             }
 
             Collection<String> addedEntries = new ArrayList<String>();
             Collection<String> updatedEntries = new ArrayList<String>();
             Collection<String> deletedEntries = new ArrayList<String>();
+            Collection<String> unchangedEntries = new ArrayList<String>();
 
             if (packet instanceof RosterPacket) {
-                nonemptyResult((RosterPacket) packet, addedEntries, updatedEntries, deletedEntries);
+                // Non-empty roster result. This stanza contains all the roster elements.
+                RosterPacket rosterPacket = (RosterPacket) packet;
+
+                String version = rosterPacket.getVersion();
+
+                // Ignore items without valid subscription type
+                ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
+                for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
+                    if (hasValidSubscriptionType(item)) {
+                        validItems.add(item);
+                    }
+                }
+
+                for (RosterPacket.Item item : validItems) {
+                    RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                    addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
+                }
+
+                // Delete all entries which where not added or updated
+                Set<String> toDelete = new HashSet<String>();
+                for (RosterEntry entry : entries.values()) {
+                    toDelete.add(entry.getUser());
+                }
+                toDelete.removeAll(addedEntries);
+                toDelete.removeAll(updatedEntries);
+                toDelete.removeAll(unchangedEntries);
+                for (String user : toDelete) {
+                    deleteEntry(deletedEntries, entries.get(user));
+                }
+
+                if (rosterStore != null) {
+                    rosterStore.resetEntries(validItems, version);
+                }
+
+                removeEmptyGroups();
             }
             else {
-                emptyResult(addedEntries, updatedEntries);
+                // Empty roster result as defined in RFC6121 2.6.3. An empty roster result basically
+                // means that rosterver was used and the roster hasn't changed (much) since the
+                // version we presented the server. So we simply load the roster from the store and
+                // await possible further roster pushes.
+                for (RosterPacket.Item item : rosterStore.getEntries()) {
+                    RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                    addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
+                }
             }
 
+            rosterInitialized = true;
             synchronized (Roster.this) {
-                rosterInitialized = true;
                 Roster.this.notifyAll();
             }
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
-        }
-
-        private void emptyResult(Collection<String> addedEntries, Collection<String> updatedEntries) {
-            for(RosterPacket.Item item : rosterStore.getEntries()){
-                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
-                addUpdateEntry(addedEntries,updatedEntries,item,entry);
-            }
-        }
-
-        private void addEntries(Collection<String> addedEntries, Collection<String> updatedEntries,
-                Collection<String> deletedEntries, String version, Collection<Item> items) {
-            for (RosterPacket.Item item : items) {
-                RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                        item.getItemType(), item.getItemStatus(), Roster.this, connection);
-                addUpdateEntry(addedEntries, updatedEntries, item, entry);
-            }
-            List<String> toDelete = new ArrayList<String>();
-
-            // Delete all entries which where not added or updated
-            for (RosterEntry entry : entries.values()) {
-                toDelete.add(entry.getUser());
-            }
-            toDelete.removeAll(addedEntries);
-            toDelete.removeAll(updatedEntries);
-            for (String user : toDelete) {
-                deleteEntry(deletedEntries, entries.get(user));
-            }
-
-            if (rosterStore != null) {
-                rosterStore.resetEntries(items, version);
-            }
-        }
-
-        private void nonemptyResult(RosterPacket packet, Collection<String> addedEntries,
-                        Collection<String> updatedEntries, Collection<String> deletedEntries) {
-            RosterPacket rosterPacket = (RosterPacket) packet;
-
-            String version = rosterPacket.getVersion();
-
-            // Ignore items without valid subscription type
-            ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
-            for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
-                if (hasValidSubscriptionType(item)) {
-                    validItems.add(item);
-                }
-            }
-
-            addEntries(addedEntries, updatedEntries, deletedEntries, version, validItems);
-
-            removeEmptyGroups();
         }
     }
 
@@ -1055,22 +1050,13 @@ public class Roster {
             Collection<String> addedEntries = new ArrayList<String>();
             Collection<String> updatedEntries = new ArrayList<String>();
             Collection<String> deletedEntries = new ArrayList<String>();
+            Collection<String> unchangedEntries = new ArrayList<String>();
 
+            // We assured abouve that the size of items is exaclty 1, therefore we are able to
+            // safely retrieve this single item here.
             Item item = items.iterator().next();
-            processPushItem(addedEntries, updatedEntries, deletedEntries, version, item);
-
-            connection.sendPacket(IQ.createResultIQ(rosterPacket));
-
-            removeEmptyGroups();
-
-            // Fire event for roster listeners.
-            fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
-        }
-
-        private void processPushItem(Collection<String> addedEntries, Collection<String> updatedEntries,
-                Collection<String> deletedEntries, String version, Item item) {
             RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                    item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
 
             if (item.getItemType().equals(RosterPacket.ItemType.remove)) {
                 deleteEntry(deletedEntries, entry);
@@ -1079,11 +1065,17 @@ public class Roster {
                 }
             }
             else if (hasValidSubscriptionType(item)) {
-                addUpdateEntry(addedEntries, updatedEntries, item, entry);
+                addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 if (rosterStore != null) {
                     rosterStore.addEntry(item, version);
                 }
             }
+            connection.sendPacket(IQ.createResultIQ(rosterPacket));
+
+            removeEmptyGroups();
+
+            // Fire event for roster listeners.
+            fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
         }
     }
 }
