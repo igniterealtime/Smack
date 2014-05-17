@@ -782,14 +782,12 @@ public class Roster {
      *
      * This is used by {@link RosterPushListener} and {@link RosterResultListener}.
      * */
-    private boolean hasValidSubscriptionType(RosterPacket.Item item) {
+    private static boolean hasValidSubscriptionType(RosterPacket.Item item) {
         return item.getItemType().equals(RosterPacket.ItemType.none)
                 || item.getItemType().equals(RosterPacket.ItemType.from)
                 || item.getItemType().equals(RosterPacket.ItemType.to)
                 || item.getItemType().equals(RosterPacket.ItemType.both);
     }
-
-
 
     /**
      * An enumeration for the subscription mode options.
