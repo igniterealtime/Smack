@@ -610,59 +610,6 @@ public class InBandBytestreamSessionTest {
     }
 
     /**
-     * If the session is closed the input stream and output stream should be closed as well.
-     * 
-     * @throws Exception should not happen
-     */
-    @Test
-    public void shouldCloseBothStreamsIfSessionIsClosed() throws Exception {
-        // acknowledgment for data packet
-        IQ resultIQ = IBBPacketUtils.createResultIQ(initiatorJID, targetJID);
-        protocol.addResponse(resultIQ);
-
-        // acknowledgment for close request
-        protocol.addResponse(resultIQ, Verification.correspondingSenderReceiver,
-                        Verification.requestTypeSET);
-
-        // get IBB sessions data packet listener
-        InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
-                        initiatorJID);
-        InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
-
-        // build data packet
-        String base64Data = StringUtils.encodeBase64("Data");
-        DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
-        Data data = new Data(dpe);
-
-        // add data packets
-        listener.processPacket(data);
-
-        session.close();
-
-        protocol.verifyAll();
-
-        try {
-            while (inputStream.read() != -1) {
-            }
-            inputStream.read();
-            fail("should throw an exception");
-        }
-        catch (IOException e) {
-            assertTrue(e.getMessage().contains("closed"));
-        }
-
-        try {
-            session.getOutputStream().flush();
-            fail("should throw an exception");
-        }
-        catch (IOException e) {
-            assertTrue(e.getMessage().contains("closed"));
-        }
-
-    }
-
-    /**
      * If the input stream is closed concurrently there should be no deadlock.
      * 
      * @throws Exception should not happen

@@ -395,8 +395,9 @@ public class InBandBytestreamSession implements BytestreamSession {
          * @throws IOException if stream is closed and no data should be read anymore
          */
         private void checkClosed() throws IOException {
-            /* throw no exception if there is data available, but not if close method was invoked */
-            if ((isClosed && this.dataQueue.isEmpty()) || closeInvoked) {
+            // Throw an exception if, and only if, this stream has been already
+            // closed by the user using the close() method
+            if (closeInvoked) {
                 // clear data queue in case additional data was received after stream was closed
                 this.dataQueue.clear();
                 throw new IOException("Stream is closed");
@@ -408,7 +409,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         public void close() throws IOException {
-            if (isClosed) {
+            if (closeInvoked) {
                 return;
             }
 
