@@ -1275,7 +1275,7 @@ public abstract class XMPPConnection {
         }
     }
 
-    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+    protected ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
         return executorService.schedule(command, delay, unit);
     }
 
