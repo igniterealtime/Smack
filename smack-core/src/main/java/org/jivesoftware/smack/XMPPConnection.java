@@ -1318,4 +1318,19 @@ public abstract class XMPPConnection {
     public FromMode getFromMode() {
         return this.fromMode;
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            // It's usually not a good idea to rely on finalize. But this is the easiest way to
+            // avoid the "Smack Listener Processor" leaking. The thread(s) of the executor have a
+            // reference to their ExecutorService which prevents the ExecutorService from being
+            // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
+            // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
+            listenerExecutor.shutdownNow();
+        }
+        finally {
+            super.finalize();
+        }
+    }
 }
