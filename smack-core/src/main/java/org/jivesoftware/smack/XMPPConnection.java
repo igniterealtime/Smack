@@ -28,8 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -202,7 +200,29 @@ public abstract class XMPPConnection {
 
     protected XMPPInputOutputStream compressionHandler;
 
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
+    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2,
+                    new SmackExecutorThreadFactory(connectionCounterValue));
+
+    /**
+     * SmackExecutorThreadFactory is a *static* inner class of XMPPConnection. Note that we must not
+     * use anonymous classes in order to prevent threads from leaking.
+     */
+    private static final class SmackExecutorThreadFactory implements ThreadFactory {
+        private final int connectionCounterValue;
+        private int count = 0;
+
+        private SmackExecutorThreadFactory(int connectionCounterValue) {
+            this.connectionCounterValue = connectionCounterValue;
+        }
+
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable, "Smack Executor Service " + count++ + " ("
+                            + connectionCounterValue + ")");
+            thread.setDaemon(true);
+            return thread;
+        }
+    }
 
     private Roster roster;
 
@@ -242,19 +262,6 @@ public abstract class XMPPConnection {
      * to the server was closed (abruptly or not).
      */
     protected boolean wasAuthenticated = false;
-
-    /**
-     * Create an executor to deliver incoming packets to listeners. We'll use a single thread with an unbounded queue.
-     */
-    private ExecutorService listenerExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable,
-                    "Smack Listener Processor (" + connectionCounterValue + ")");
-            thread.setDaemon(true);
-            return thread;
-        }
-    });
 
     /**
      * Create a new XMPPConnection to a XMPP server.
@@ -1111,7 +1118,7 @@ public abstract class XMPPConnection {
         }
 
         // Deliver the incoming packet to listeners.
-        listenerExecutor.submit(new ListenerNotification(packet));
+        executorService.submit(new ListenerNotification(packet));
     }
 
     /**
@@ -1327,7 +1334,7 @@ public abstract class XMPPConnection {
             // reference to their ExecutorService which prevents the ExecutorService from being
             // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
             // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
-            listenerExecutor.shutdownNow();
+            executorService.shutdownNow();
         }
         finally {
             super.finalize();
