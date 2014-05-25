@@ -76,7 +76,7 @@ public class AdHocCommandManager extends Manager {
      * related to that connection.
      */
     static {
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
                 getAddHocCommandsManager(connection);
             }

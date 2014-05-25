@@ -24,6 +24,7 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -107,7 +108,7 @@ public class EntityCapsManager extends Manager {
     private static final Cache<String, NodeVerHash> JID_TO_NODEVER_CACHE = new Cache<String, NodeVerHash>(10000, -1);
 
     static {
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }

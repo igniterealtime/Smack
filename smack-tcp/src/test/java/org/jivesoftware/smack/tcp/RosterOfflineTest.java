@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,7 @@ import org.junit.Test;
  */
 public class RosterOfflineTest {
 
-    XMPPConnection connection;
+    XMPPTCPConnection connection;
 
     Roster roster;
 

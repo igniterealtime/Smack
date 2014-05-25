@@ -20,8 +20,8 @@
 
 <p>
     The <tt>org.jivesoftware.smack.XMPPConnection</tt> class manages your connection to an XMPP
-    server. The default implementation is the <tt>org.jivesoftware.smack.XMPPConnection</tt>
-    class.  Two constructors are mainly used. The first, <tt>XMPPConnection(String)</tt> takes
+    server. A default implementation is the <tt>org.jivesoftware.smack.XMPPTCPConnection</tt>
+    class.  Two constructors are mainly used. The first, <tt>XMPPTCPConnection(String)</tt> takes
     the server name you'd like to connect to as an argument. All default connection settings will
     be used:
     <ul>
@@ -33,7 +33,7 @@
         <li>The XMPP resource name "Smack" will be used for the connection.</li>
     </ul>
 
-    Alternatively, you can use the <tt>XMPPServer(ConnectionConfiguration)</tt> constructor to
+    Alternatively, you can use the <tt>XMPPTCPConnection(ConnectionConfiguration)</tt> constructor to
     specify advanced connection settings. Some of these settings include:
 
     <ul>
@@ -61,9 +61,8 @@
 <font color="gray"><i>// Create the configuration for this new connection</i></font>
 ConnectionConfiguration config = new ConnectionConfiguration(<font color="green">"jabber.org"</font>, 5222);
 config.setCompressionEnabled(true);
-config.setSASLAuthenticationEnabled(true);
 
-Connection connection = new XMPPConnection(config);
+AbstractXMPPConnection connection = new XMPPTCPConnection(config);
 <font color="gray"><i>// Connect to the server</i></font>
 connection.connect();
 <font color="gray"><i>// Log into the server</i></font>
@@ -80,7 +79,7 @@ manager will try to immediately reconnect to the server and increase the delay b
 successive reconnections keep failing.</i>
 <br>
 In case you want to force a reconnection while the reconnetion manager is waiting for the next
-reconnection, you can just use <i>XMPPConnection#connect()</i> and a new attempt will be made.
+reconnection, you can just use <i>AbstractXMPPConnection#connect()</i> and a new attempt will be made.
 If the manual attempt also failed then the reconnection manager will still continue the
 reconnection job.
 </p>

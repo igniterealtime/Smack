@@ -39,7 +39,7 @@ the second parameter is the id of the user that will receive the roster entries.
 In this example we can see how user1 sends his roster to user2. 
 <blockquote>
 <pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
-      conn1 = new XMPPConnection(host);
+      conn1 = new XMPPTCPConnection(host);
       conn1.login(server_user1, pass1);
     
       <font color="#3f7f5f">// Create a new roster exchange manager on conn1</font>
@@ -69,7 +69,7 @@ the second parameter is the id of the user that will receive the roster entries.
 In this example we can see how user1 sends his roster groups to user2. 
 <blockquote>
 <pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
-      conn1 = new XMPPConnection(host);
+      conn1 = new XMPPTCPConnection(host);
       conn1.login(server_user1, pass1);
     
       <font color="#3f7f5f">// Create a new roster exchange manager on conn1</font>
@@ -100,7 +100,7 @@ the second parameter is the id of the user that will receive the roster entries.
 In this example we can see how user1 sends a roster entry to user2. 
 <blockquote>
 <pre>      <font color="#3f7f5f">// Connect to the server and log in</font>
-      conn1 = new XMPPConnection(host);
+      conn1 = new XMPPTCPConnection(host);
       conn1.login(server_user1, pass1);
     
       <font color="#3f7f5f">// Create a new roster exchange manager on conn1</font>
@@ -135,9 +135,9 @@ In this example we can see how user1 sends a roster entry to user2 and user2 add
 entries to his roster. 
 <blockquote>
 <pre>      <font color="#3f7f5f">// Connect to the server and log in the users</font>
-      conn1 = new XMPPConnection(host);
+      conn1 = new XMPPTCPConnection(host);
       conn1.login(server_user1, pass1);
-      conn2 = new XMPPConnection(host);
+      conn2 = new XMPPTCPConnection(host);
       conn2.login(server_user2, pass2);
       final Roster user2_roster = conn2.getRoster();
     

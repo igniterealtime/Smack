@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.hoxt;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -37,7 +38,7 @@ public class HOXTManager {
     public static final String NAMESPACE = "urn:xmpp:http";
 
     static {
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {
                 ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);

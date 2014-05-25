@@ -26,6 +26,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -258,7 +259,7 @@ public class JingleManager implements JingleSessionListener {
         // Enable the Jingle support on every established connection
         // The ServiceDiscoveryManager class should have been already
         // initialized
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
                 JingleManager.setServiceEnabled(connection, true);
             }

@@ -76,18 +76,19 @@ list of initializers.
 Establishing a Connection
 </p>
 
-The <tt>XMPPConnection</tt> class is used to create a connection to an 
-XMPP server. Below are code examples for making a connection:<p>
+The classes subclassing <tt>AbstractXMPPConnection</tt> are used to
+create a connection to an XMPP server. Below are code examples for
+making a connection:<p>
 
 <div class="code">
 <pre>
 <font color="gray"><i>// Create a connection to the jabber.org server.</i></font>
-Connection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+AbstractXMPPConnection conn1 = <font color="navy"><b>new</b></font> XMPPTCPConnection(<font color="green">"jabber.org"</font>);
 conn1.connect();
 
 <font color="gray"><i>// Create a connection to the jabber.org server on a specific port.</i></font>
 ConnectionConfiguration config = new ConnectionConfiguration(<font color="green">"jabber.org"</font>, 5222);
-Connection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(config);
+AbstractXMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPTCPConnection(config);
 conn2.connect();
 </pre></div>
 
@@ -97,7 +98,7 @@ conn2.connect();
     <a href="connections.html">XMPPConnection Management</a> for full details.</p>
 
 <p>Once you've created a connection, you should login using a username and password
-with the <tt>XMPPConnection.login(String username, String password)</tt> method.
+with the <tt>AbstractXMPPConnection.login(String username, String password)</tt> method.
 Once you've logged in, you can being chatting with other users by creating
 new <tt>Chat</tt> or <tt>GroupChat</tt> objects.
 
@@ -130,7 +131,7 @@ and "out fishing":<p>
 <font color="gray"><i>// Create a new presence. Pass in false to indicate we're unavailable.</i></font>
 Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus(<font color="green">"Gone fishing"</font>);
-<font color="gray"><i>// Send the packet (assume we have a XMPPConnection instance called "con").</i></font>
+<font color="gray"><i>// Send the packet (assume we have a AbstractXMPPConnection instance called "con").</i></font>
 con.sendPacket(presence);
 </pre></div>
 <p>

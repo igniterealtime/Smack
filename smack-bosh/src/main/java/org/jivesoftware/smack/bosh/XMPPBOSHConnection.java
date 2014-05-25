@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import javax.security.sasl.SaslException;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
@@ -59,7 +60,7 @@ import org.igniterealtime.jbosh.ComposableBody;
  * @see XMPPConnection
  * @author Guenther Niess
  */
-public class XMPPBOSHConnection extends XMPPConnection {
+public class XMPPBOSHConnection extends AbstractXMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(XMPPBOSHConnection.class.getName());
 
     /**

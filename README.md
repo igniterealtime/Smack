@@ -14,7 +14,7 @@ Key Advantages :
   - Extremely simple to use, yet powerful API. Sending a text message to a user can be accomplished in only a few lines of code:
 
     ```java
-    XMPPConnection connection = new XMPPTCPConnection("jabber.org");
+    AbstractXMPPConnection connection = new XMPPTCPConnection("jabber.org");
     connection.connect();
     connection.login("mtucker", "password");
     Chat chat = ChatManager.getInstanceFor(connection)

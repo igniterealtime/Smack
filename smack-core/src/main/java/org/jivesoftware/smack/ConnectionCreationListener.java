@@ -20,7 +20,7 @@ package org.jivesoftware.smack;
 /**
  * Implementors of this interface will be notified when a new {@link XMPPConnection}
  * has been created. The newly created connection will not be actually connected to
- * the server. Use {@link XMPPConnection#addConnectionCreationListener(ConnectionCreationListener)}
+ * the server. Use {@link XMPPConnectionRegistry#addConnectionCreationListener(ConnectionCreationListener)}
  * to add new listeners.
  *
  * @author Gaston Dombiak

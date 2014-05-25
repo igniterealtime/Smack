@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.tcp;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -76,7 +77,7 @@ import java.util.logging.Logger;
  * @see XMPPConnection
  * @author Matt Tucker
  */
-public class XMPPTCPConnection extends XMPPConnection {
+public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     private static final Logger LOGGER = Logger.getLogger(XMPPTCPConnection.class.getName());
 
@@ -888,11 +889,6 @@ public class XMPPTCPConnection extends XMPPConnection {
     @Override
     protected SASLAuthentication getSASLAuthentication() {
         return super.getSASLAuthentication();
-    }
-
-    @Override
-    protected ConnectionConfiguration getConfiguration() {
-        return super.getConfiguration();
     }
 
     /**

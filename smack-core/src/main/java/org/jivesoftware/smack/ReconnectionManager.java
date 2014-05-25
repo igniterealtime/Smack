@@ -39,7 +39,7 @@ public class ReconnectionManager extends AbstractConnectionListener {
     private static final Logger LOGGER = Logger.getLogger(ReconnectionManager.class.getName());
     
     // Holds the connection to the server
-    private XMPPConnection connection;
+    private final AbstractXMPPConnection connection;
     private Thread reconnectionThread;
     private int randomBase = new Random().nextInt(11) + 5; // between 5 and 15 seconds
     
@@ -50,14 +50,16 @@ public class ReconnectionManager extends AbstractConnectionListener {
         // Create a new PrivacyListManager on every established connection. In the init()
         // method of PrivacyListManager, we'll add a listener that will delete the
         // instance when the connection is closed.
-        XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
-                connection.addConnectionListener(new ReconnectionManager(connection));
+                if (connection instanceof AbstractXMPPConnection) {
+                    connection.addConnectionListener(new ReconnectionManager((AbstractXMPPConnection) connection));
+                }
             }
         });
     }
 
-    private ReconnectionManager(XMPPConnection connection) {
+    private ReconnectionManager(AbstractXMPPConnection connection) {
         this.connection = connection;
     }
 

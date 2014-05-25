@@ -17,8 +17,6 @@
 package org.jivesoftware.smack;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public abstract class Manager {
 
@@ -30,9 +28,5 @@ public abstract class Manager {
 
     protected final XMPPConnection connection() {
         return weakConnection.get();
-    }
-
-    protected ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
-        return connection().schedule(command, delay, unit);
     }
 }

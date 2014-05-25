@@ -49,7 +49,7 @@ import org.jivesoftware.smack.packet.Packet;
  * @see XMPPConnection
  * @author Guenther Niess
  */
-public class DummyConnection extends XMPPConnection {
+public class DummyConnection extends AbstractXMPPConnection {
 
     private boolean authenticated = false;
     private boolean anonymous = false;
@@ -68,9 +68,9 @@ public class DummyConnection extends XMPPConnection {
     public DummyConnection(ConnectionConfiguration configuration) {
         super(configuration);
 
-	for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
-	    listener.connectionCreated(this);
-	}
+        for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
+            listener.connectionCreated(this);
+        }
     }
 
     @Override
