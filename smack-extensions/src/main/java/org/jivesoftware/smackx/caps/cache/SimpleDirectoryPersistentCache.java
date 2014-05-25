@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2011 Florian Schmaus
+ * Copyright © 2011-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.StringEncoder;
-import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.provider.DiscoverInfoProvider;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -87,9 +86,8 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     }
 
     @Override
-    public void addDiscoverInfoByNodePersistent(String node, DiscoverInfo info) {
-        String filename = filenameEncoder.encode(node);
-        File nodeFile = new File(cacheDir, filename);
+    public void addDiscoverInfoByNodePersistent(String nodeVer, DiscoverInfo info) {
+        File nodeFile = getFileFor(nodeVer);
         try {
             if (nodeFile.createNewFile())
                 writeInfoToFile(nodeFile, info);
@@ -99,18 +97,28 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     }
 
     @Override
-    public void replay() throws IOException {
-        File[] files = cacheDir.listFiles();
-        for (File f : files) {
-            String node = filenameEncoder.decode(f.getName());
-            DiscoverInfo info = restoreInfoFromFile(f);
-            if (info == null)
-                continue;
-
-            EntityCapsManager.addDiscoverInfoByNode(node, info);
+    public DiscoverInfo lookup(String nodeVer) {
+        File nodeFile = getFileFor(nodeVer);
+        if (!nodeFile.isFile()) {
+            return null;
         }
+        DiscoverInfo info = null;
+        try {
+            info = restoreInfoFromFile(nodeFile);
+        }
+        catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Coud not restore info from file", e);
+        }
+        return info;
     }
 
+    private File getFileFor(String nodeVer) {
+        String filename = filenameEncoder.encode(nodeVer);
+        File nodeFile = new File(cacheDir, filename);
+        return nodeFile;
+    }
+
+    @Override
     public void emptyCache() {
         File[] files = cacheDir.listFiles();
         for (File f : files) {

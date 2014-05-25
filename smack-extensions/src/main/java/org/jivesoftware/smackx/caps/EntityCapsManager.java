@@ -62,7 +62,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -97,7 +96,7 @@ public class EntityCapsManager extends Manager {
     /**
      * Map of (node + '#" + hash algorithm) to DiscoverInfo data
      */
-    protected static Map<String, DiscoverInfo> caps = new Cache<String, DiscoverInfo>(1000, -1);
+    private static final Cache<String, DiscoverInfo> CAPS_CACHE = new Cache<String, DiscoverInfo>(1000, -1);
 
     /**
      * Map of Full JID -&gt; DiscoverInfo/null. In case of c2s connection the
@@ -105,7 +104,7 @@ public class EntityCapsManager extends Manager {
      * link-local connection the key is formed as user@host (no resource) In
      * case of a server or component the key is formed as domain
      */
-    protected static Map<String, NodeVerHash> jidCaps = new Cache<String, NodeVerHash>(10000, -1);
+    private static final Cache<String, NodeVerHash> JID_TO_NODEVER_CACHE = new Cache<String, NodeVerHash>(10000, -1);
 
     static {
         XMPPConnection.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -141,7 +140,7 @@ public class EntityCapsManager extends Manager {
      *            DiscoverInfo for the specified node.
      */
     public static void addDiscoverInfoByNode(String nodeVer, DiscoverInfo info) {
-        caps.put(nodeVer, info);
+        CAPS_CACHE.put(nodeVer, info);
 
         if (persistentCache != null)
             persistentCache.addDiscoverInfoByNodePersistent(nodeVer, info);
@@ -156,7 +155,7 @@ public class EntityCapsManager extends Manager {
      * @return the node version (node#ver) or null
      */
     public static String getNodeVersionByJid(String jid) {
-        NodeVerHash nvh = jidCaps.get(jid);
+        NodeVerHash nvh = JID_TO_NODEVER_CACHE.get(jid);
         if (nvh != null) {
             return nvh.nodeVer;
         } else {
@@ -165,7 +164,7 @@ public class EntityCapsManager extends Manager {
     }
 
     public static NodeVerHash getNodeVerHashByJid(String jid) {
-        return jidCaps.get(jid);
+        return JID_TO_NODEVER_CACHE.get(jid);
     }
 
     /**
@@ -178,7 +177,7 @@ public class EntityCapsManager extends Manager {
      * @return the discovered info
      */
     public static DiscoverInfo getDiscoverInfoByUser(String user) {
-        NodeVerHash nvh = jidCaps.get(user);
+        NodeVerHash nvh = JID_TO_NODEVER_CACHE.get(user);
         if (nvh == null)
             return null;
 
@@ -194,7 +193,18 @@ public class EntityCapsManager extends Manager {
      * @return The corresponding DiscoverInfo or null if none is known.
      */
     public static DiscoverInfo getDiscoveryInfoByNodeVer(String nodeVer) {
-        DiscoverInfo info = caps.get(nodeVer);
+        DiscoverInfo info = CAPS_CACHE.get(nodeVer);
+
+        // If it was not in CAPS_CACHE, try to retrieve the information from persistentCache
+        if (info == null) {
+            info = persistentCache.lookup(nodeVer);
+            // Promote the information to CAPS_CACHE if one was found
+            if (info != null) {
+                CAPS_CACHE.put(nodeVer, info);
+            }
+        }
+
+        // If we were able to retrieve information from one of the caches, copy it before returning
         if (info != null)
             info = new DiscoverInfo(info);
 
@@ -205,40 +215,37 @@ public class EntityCapsManager extends Manager {
      * Set the persistent cache implementation
      * 
      * @param cache
-     * @throws IOException
      */
-    public static void setPersistentCache(EntityCapsPersistentCache cache) throws IOException {
-        if (persistentCache != null)
-            throw new IllegalStateException("Entity Caps Persistent Cache was already set");
+    public static void setPersistentCache(EntityCapsPersistentCache cache) {
         persistentCache = cache;
-        persistentCache.replay();
     }
 
     /**
-     * Sets the maximum Cache size for the JID to nodeVer Cache
-     * 
-     * @param maxCacheSize
+     * Sets the maximum cache sizes
+     *
+     * @param maxJidToNodeVerSize
+     * @param maxCapsCacheSize
      */
-    @SuppressWarnings("rawtypes")
-    public static void setJidCapsMaxCacheSize(int maxCacheSize) {
-        ((Cache) jidCaps).setMaxCacheSize(maxCacheSize);
+    public static void setMaxsCacheSizes(int maxJidToNodeVerSize, int maxCapsCacheSize) {
+        JID_TO_NODEVER_CACHE.setMaxCacheSize(maxJidToNodeVerSize);
+        CAPS_CACHE.setMaxCacheSize(maxCapsCacheSize);
     }
 
     /**
-     * Sets the maximum Cache size for the nodeVer to DiscoverInfo Cache
-     * 
-     * @param maxCacheSize
+     * Clears the memory cache.
      */
-    @SuppressWarnings("rawtypes")
-    public static void setCapsMaxCacheSize(int maxCacheSize) {
-        ((Cache) caps).setMaxCacheSize(maxCacheSize);
+    public static void clearMemoryCache() {
+        JID_TO_NODEVER_CACHE.clear();
+        CAPS_CACHE.clear();
     }
 
-    private ServiceDiscoveryManager sdm;
+    private final Queue<String> lastLocalCapsVersions = new ConcurrentLinkedQueue<String>();
+
+    private final ServiceDiscoveryManager sdm;
+
     private boolean entityCapsEnabled;
     private String currentCapsVersion;
     private boolean presenceSend = false;
-    private Queue<String> lastLocalCapsVersions = new ConcurrentLinkedQueue<String>();
 
     /**
      * The entity node String used by this EntityCapsManager instance.
@@ -286,7 +293,7 @@ public class EntityCapsManager extends Manager {
                 String node = ext.getNode();
                 String ver = ext.getVer();
 
-                jidCaps.put(from, new NodeVerHash(node, ver, hash));
+                JID_TO_NODEVER_CACHE.put(from, new NodeVerHash(node, ver, hash));
             }
 
         }, PRESENCES_WITH_CAPS);
@@ -297,7 +304,7 @@ public class EntityCapsManager extends Manager {
                 // always remove the JID from the map, even if entityCaps are
                 // disabled
                 String from = packet.getFrom();
-                jidCaps.remove(from);
+                JID_TO_NODEVER_CACHE.remove(from);
             }
         }, PRESENCES_WITHOUT_CAPS);
 
@@ -367,7 +374,7 @@ public class EntityCapsManager extends Manager {
      *            the user (Full JID)
      */
     public void removeUserCapsNode(String user) {
-        jidCaps.remove(user);
+        JID_TO_NODEVER_CACHE.remove(user);
     }
 
     /**
@@ -441,9 +448,9 @@ public class EntityCapsManager extends Manager {
         }
         lastLocalCapsVersions.add(currentCapsVersion);
 
-        caps.put(currentCapsVersion, discoverInfo);
+        CAPS_CACHE.put(currentCapsVersion, discoverInfo);
         if (connection != null)
-            jidCaps.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion, "sha-1"));
+            JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion, "sha-1"));
 
         final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(entityNode + '#' + currentCapsVersion, new NodeInformationProvider() {

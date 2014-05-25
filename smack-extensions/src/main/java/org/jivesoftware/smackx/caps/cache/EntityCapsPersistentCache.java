@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2011-2013 Florian Schmaus
+ * Copyright © 2011-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,21 @@
  */
 package org.jivesoftware.smackx.caps.cache;
 
-import java.io.IOException;
-
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 public interface EntityCapsPersistentCache {
     /**
      * Add an DiscoverInfo to the persistent Cache
      * 
-     * @param node
+     * @param nodeVer
      * @param info
      */
-    void addDiscoverInfoByNodePersistent(String node, DiscoverInfo info);
+    void addDiscoverInfoByNodePersistent(String nodeVer, DiscoverInfo info);
 
     /**
-     * Replay the Caches data into EntityCapsManager
+     * Lookup DiscoverInfo by a Node string
      */
-    void replay() throws IOException;
+    DiscoverInfo lookup(String nodeVer);
 
     /**
      * Empty the Cache

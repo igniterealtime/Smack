@@ -94,10 +94,7 @@ public class EntityCapsManagerTest {
         EntityCapsManager.addDiscoverInfoByNode(nodeVer, di);
 
         // Lose all the data
-        EntityCapsManager.caps.clear();
-
-        // Restore the data from the persistent Cache
-        cache.replay();
+        EntityCapsManager.clearMemoryCache();
 
         DiscoverInfo restored_di = EntityCapsManager.getDiscoveryInfoByNodeVer(nodeVer);
         assertNotNull(restored_di);
