@@ -71,7 +71,8 @@ Resources
 - Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
 - User Forum: http://community.igniterealtime.org/community/support/smack_users
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
-- Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
+- Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
+- Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
 
 Ignite Realtime
 ===============
