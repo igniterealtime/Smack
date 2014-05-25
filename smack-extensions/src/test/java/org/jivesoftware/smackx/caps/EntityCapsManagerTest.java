@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.Base64FileUrlEncoder;
 import org.jivesoftware.smack.util.StringEncoder;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
@@ -38,7 +39,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Test;
 
 
-public class EntityCapsManagerTest {
+public class EntityCapsManagerTest extends InitExtensions {
 
     /**
      * <a href="http://xmpp.org/extensions/xep-0115.html#ver-gen-complex">XEP-

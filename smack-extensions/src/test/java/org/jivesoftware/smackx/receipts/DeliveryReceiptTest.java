@@ -26,7 +26,6 @@ import java.util.Properties;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -53,7 +52,7 @@ public class DeliveryReceiptTest extends InitExtensions {
                 .a("xmlns", "urn:xmpp:receipts")
             .asString(outputProperties);
         
-        parser = TestUtils.getMessageParser(control);
+        parser = PacketParserUtils.getParserFor(control);
         Packet p = PacketParserUtils.parseMessage(parser);
 
         DeliveryReceiptRequest drr = (DeliveryReceiptRequest)p.getExtension(

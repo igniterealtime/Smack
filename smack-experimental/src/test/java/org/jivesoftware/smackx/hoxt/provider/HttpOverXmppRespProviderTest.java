@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.hoxt.provider;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
@@ -33,7 +33,7 @@ public class HttpOverXmppRespProviderTest {
     public void areAllRespAttributesCorrectlyParsed() throws Exception {
         String string = "<resp xmlns='urn:xmpp:http' version='1.1' statusCode='200' statusMessage='OK'/>";
         HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "resp");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
         IQ iq = provider.parseIQ(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
@@ -49,7 +49,7 @@ public class HttpOverXmppRespProviderTest {
     public void areRespAttributesWothoutMessageCorrectlyParsed() throws Exception {
         String string = "<resp xmlns='urn:xmpp:http' version='1.1' statusCode='200'/>";
         HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "resp");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
         IQ iq = provider.parseIQ(parser);
         assertTrue(iq instanceof HttpOverXmppResp);

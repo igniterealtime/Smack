@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
@@ -95,7 +94,7 @@ public class ItemValidationTest extends InitExtensions {
 	@Test
 	public void parseBasicItem() throws Exception
 	{
-        XmlPullParser parser = TestUtils.getMessageParser(
+        XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
                     "<items node='testNode'>" +
@@ -124,7 +123,7 @@ public class ItemValidationTest extends InitExtensions {
     {
         String itemContent = "<foo xmlns='smack:test'>Some text</foo>";
         
-        XmlPullParser parser = TestUtils.getMessageParser(
+        XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
                     "<items node='testNode'>" +
@@ -171,7 +170,7 @@ public class ItemValidationTest extends InitExtensions {
                     "<updated>2003-12-13T18:30:02Z</updated>" +
                 "</entry>";
         
-        XmlPullParser parser = TestUtils.getMessageParser(
+        XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
                     "<items node='testNode'>" +
@@ -204,7 +203,7 @@ public class ItemValidationTest extends InitExtensions {
     {
         String itemContent = "<foo xmlns='smack:test'><bar/></foo>";
         
-        XmlPullParser parser = TestUtils.getMessageParser(
+        XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
                     "<items node='testNode'>" +

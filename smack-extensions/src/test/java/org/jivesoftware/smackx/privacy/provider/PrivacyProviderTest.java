@@ -21,9 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
@@ -34,8 +32,6 @@ public class PrivacyProviderTest extends InitExtensions {
 
     @Test
     public void parsePrivacyList() throws Exception {
-        DummyConnection connection = new DummyConnection();
-
         // @formatter:off
         final String xmlPrivacyList =
         "<iq type='result' id='getlist2' to='romeo@example.net/orchard'>"
@@ -50,7 +46,7 @@ public class PrivacyProviderTest extends InitExtensions {
           + "</query>"
           + "</iq>";
         // @formatter:on
-        IQ iqPrivacyList = PacketParserUtils.parseIQ(TestUtils.getIQParser(xmlPrivacyList), connection);
+        IQ iqPrivacyList = (IQ) PacketParserUtils.parseStanza(xmlPrivacyList);
         assertTrue(iqPrivacyList instanceof Privacy);
         
         Privacy privacyList = (Privacy) iqPrivacyList;

@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.hoxt.provider;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
@@ -53,7 +53,7 @@ public class AbstractHttpOverXmppProviderTest {
         expectedHeaders.put("Content-Length", "0");
 
         AbstractHttpOverXmppProvider provider = new HttpOverXmppRespProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "resp");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
         IQ iq = provider.parseIQ(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
@@ -73,7 +73,7 @@ public class AbstractHttpOverXmppProviderTest {
         expectedHeaders.put("Host", "clayster.com");
 
         AbstractHttpOverXmppProvider provider = new HttpOverXmppReqProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "req");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
         IQ iq = provider.parseIQ(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
@@ -182,7 +182,7 @@ public class AbstractHttpOverXmppProviderTest {
 
     private AbstractHttpOverXmpp.AbstractBody parseAbstractBody(String string, String tag) throws Exception {
         AbstractHttpOverXmppProvider provider = new HttpOverXmppRespProvider();
-        XmlPullParser parser = TestUtils.getParser(string, tag);
+        XmlPullParser parser = PacketParserUtils.getParserFor(string, tag);
 
         IQ iq = provider.parseIQ(parser);
         assertTrue(iq instanceof HttpOverXmppResp);

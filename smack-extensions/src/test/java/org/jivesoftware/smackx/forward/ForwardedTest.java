@@ -19,11 +19,13 @@ package org.jivesoftware.smackx.forward;
 import static org.junit.Assert.*;
 
 import java.util.Properties;
-import org.jivesoftware.smack.test.util.TestUtils;
+
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.forward.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
+
 import com.jamesmurty.utils.XMLBuilder;
 
 public class ForwardedTest {
@@ -45,7 +47,7 @@ public class ForwardedTest {
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
         
-        parser = TestUtils.getParser(control, "forwarded");
+        parser = PacketParserUtils.getParserFor(control);
         fwd = (Forwarded) new ForwardedProvider().parseExtension(parser);
 
         // no delay in packet
@@ -69,7 +71,7 @@ public class ForwardedTest {
             .a("xmlns", "urn:xmpp:forwarded:0")
             .asString(outputProperties);
         
-        parser = TestUtils.getParser(control, "forwarded");
+        parser = PacketParserUtils.getParserFor(control);
         new ForwardedProvider().parseExtension(parser);
     }
 }

@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.XmppDateTime;
 import org.jivesoftware.smackx.InitExtensions;
@@ -65,7 +64,7 @@ public class DelayInformationTest extends InitExtensions {
             .t("Offline Storage")
             .asString(outputProperties);
 
-        parser = TestUtils.getParser(control, "x");
+        parser = PacketParserUtils.getParserFor(control);
         delayInfo = (DelayInformation) p.parseExtension(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -81,7 +80,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
 
-        parser = TestUtils.getParser(control, "x");
+        parser = PacketParserUtils.getParserFor(control);
         delayInfo = (DelayInformation) p.parseExtension(parser);
 
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -110,7 +109,7 @@ public class DelayInformationTest extends InitExtensions {
             .t("Offline Storage")
             .asString(outputProperties);
 
-        parser = TestUtils.getParser(control, "delay");
+        parser = PacketParserUtils.getParserFor(control);
         delayInfo = (DelayInfo) p.parseExtension(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -126,7 +125,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
         
-        parser = TestUtils.getParser(control, "delay");
+        parser = PacketParserUtils.getParserFor(control);
         delayInfo = (DelayInfo) p.parseExtension(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
@@ -153,7 +152,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-09-10T23:08:25.12Z")
             .asString(outputProperties);
 
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
         
         GregorianCalendar cal = (GregorianCalendar) calendar.clone(); 
         cal.add(Calendar.MILLISECOND, 12);
@@ -166,7 +165,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
 
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
 
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -177,7 +176,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-9-10T23:08:25Z")
             .asString(outputProperties);
         
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -188,7 +187,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "20020910T23:08:25")
             .asString(outputProperties);
         
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -208,7 +207,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", dateFormat.format(dateInPast.getTime()))
             .asString(outputProperties);
 
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
 
         assertEquals(dateInPast.getTime(), delayInfo.getStamp());
 
@@ -219,7 +218,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "200868T09:16:20")
             .asString(outputProperties);
 
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
         Date controlDate = XmppDateTime.parseDate("2008-06-08T09:16:20.0Z");
         
         assertEquals(controlDate, delayInfo.getStamp());
@@ -231,7 +230,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "yesterday")
             .asString(outputProperties);
         
-        delayInfo = (DelayInfo) p.parseExtension(TestUtils.getParser(control, "delay"));
+        delayInfo = (DelayInfo) p.parseExtension(PacketParserUtils.getParserFor(control));
         
         assertNotNull(delayInfo.getStamp());
 
@@ -242,7 +241,7 @@ public class DelayInformationTest extends InitExtensions {
         String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
                 + "<delay xmlns='urn:xmpp:delay' stamp='2002-09-10T23:41:07Z'/></presence>";
 
-        Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
+        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
         
         DelayInformation delay = (DelayInformation) presence.getExtension("urn:xmpp:delay");
         assertNotNull(delay);
@@ -255,7 +254,7 @@ public class DelayInformationTest extends InitExtensions {
         String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
                         + "<x xmlns='jabber:x:delay' stamp='20020910T23:41:07'/></presence>";
 
-        Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
+        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
         DelayInformation delay = (DelayInformation) presence.getExtension("jabber:x:delay");
         assertNotNull(delay);
@@ -271,7 +270,7 @@ public class DelayInformationTest extends InitExtensions {
         String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
                         + "<x xmlns='jabber:x:delay'/></presence>";
 
-        Presence presence = PacketParserUtils.parsePresence(TestUtils.getPresenceParser(stanza));
+        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
         DelayInformation delay = (DelayInformation) presence.getExtension("urn:xmpp:delay");
         assertNull((Object)delay);
     }

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Properties;
 
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider;
 import org.jivesoftware.smackx.forward.Forwarded;
@@ -58,7 +58,7 @@ public class CarbonTest {
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
         
-        parser = TestUtils.getParser(control, "sent");
+        parser = PacketParserUtils.getParserFor(control);
         cc = (CarbonExtension) new CarbonManagerProvider().parseExtension(parser);
         fwd = cc.getForwarded();
 
@@ -89,7 +89,7 @@ public class CarbonTest {
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
         
-        parser = TestUtils.getParser(control, "received");
+        parser = PacketParserUtils.getParserFor(control);
         cc = (CarbonExtension) new CarbonManagerProvider().parseExtension(parser);
 
         assertEquals(CarbonExtension.Direction.received, cc.getDirection());
@@ -108,7 +108,7 @@ public class CarbonTest {
             .a("xmlns", "urn:xmpp:forwarded:0")
             .asString(outputProperties);
         
-        parser = TestUtils.getParser(control, "sent");
+        parser = PacketParserUtils.getParserFor(control);
         new CarbonManagerProvider().parseExtension(parser);
     }
 }

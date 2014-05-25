@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.hoxt.provider;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class HttpOverXmppReqProviderTest {
 
     private HttpOverXmppReq.Req parseReq(String string) throws Exception {
         HttpOverXmppReqProvider provider = new HttpOverXmppReqProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "req");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
         IQ iq = provider.parseIQ(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
         HttpOverXmppReq castedIq = (HttpOverXmppReq) iq;

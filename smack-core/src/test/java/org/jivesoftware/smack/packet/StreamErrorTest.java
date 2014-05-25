@@ -19,7 +19,6 @@ package org.jivesoftware.smack.packet;
 import static org.junit.Assert.*;
 
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
@@ -38,7 +37,7 @@ public class StreamErrorTest {
                 "</stream:error>" +
                 "</stream:stream>";
         try {
-            XmlPullParser parser = TestUtils.getParser(xml, "error");
+            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
             error = PacketParserUtils.parseStreamError(parser);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -62,7 +61,7 @@ public class StreamErrorTest {
                 "</stream:error>" +
                 "</stream:stream>";
         try {
-            XmlPullParser parser = TestUtils.getParser(xml, "error");
+            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
             error = PacketParserUtils.parseStreamError(parser);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -90,7 +89,7 @@ public class StreamErrorTest {
                 "</stream:error>" +
                 "</stream:stream>";
         try {
-            XmlPullParser parser = TestUtils.getParser(xml, "error");
+            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
             error = PacketParserUtils.parseStreamError(parser);
         } catch (Exception e) {
             fail(e.getMessage());

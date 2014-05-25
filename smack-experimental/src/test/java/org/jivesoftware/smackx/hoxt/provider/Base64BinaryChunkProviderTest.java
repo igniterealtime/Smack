@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.hoxt.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
@@ -35,7 +35,7 @@ public class Base64BinaryChunkProviderTest {
         String string = "<chunk xmlns='urn:xmpp:http' streamId='Stream0001'>" + base64Text + "</chunk>";
 
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "chunk");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
         PacketExtension extension = provider.parseExtension(parser);
         assertTrue(extension instanceof Base64BinaryChunk);
@@ -52,7 +52,7 @@ public class Base64BinaryChunkProviderTest {
         String string = "<chunk xmlns='urn:xmpp:http' streamId='Stream0001' last='true'>" + base64Text + "</chunk>";
 
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
-        XmlPullParser parser = TestUtils.getParser(string, "chunk");
+        XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
         PacketExtension extension = provider.parseExtension(parser);
         assertTrue(extension instanceof Base64BinaryChunk);

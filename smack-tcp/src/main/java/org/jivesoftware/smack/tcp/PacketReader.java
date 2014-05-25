@@ -19,9 +19,7 @@ package org.jivesoftware.smack.tcp;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
@@ -151,52 +149,25 @@ class PacketReader {
             do {
                 if (eventType == XmlPullParser.START_TAG) {
                     int parserDepth = parser.getDepth();
+                    String name = parser.getName();
                     ParsingExceptionCallback callback = connection.getParsingExceptionCallback();
-                    if (parser.getName().equals("message")) {
-                        Packet packet;
-                        try {
-                            packet = PacketParserUtils.parseMessage(parser);
-                        } catch (Exception e) {
-                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
-                            UnparsablePacket message = new UnparsablePacket(content, e);
-                            if (callback != null) {
-                                callback.handleUnparsablePacket(message);
-                            }
-                            continue;
+                    Packet packet;
+                    try {
+                        packet = PacketParserUtils.parseStanza(parser, connection);
+                    } catch (Exception e) {
+                        String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+                        UnparsablePacket message = new UnparsablePacket(content, e);
+                        if (callback != null) {
+                            callback.handleUnparsablePacket(message);
                         }
+                        continue;
+                    }
+                    if (packet != null) {
                         connection.processPacket(packet);
-                    }
-                    else if (parser.getName().equals("iq")) {
-                        IQ iq;
-                        try {
-                            iq = PacketParserUtils.parseIQ(parser, connection);
-                        } catch (Exception e) {
-                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
-                            UnparsablePacket message = new UnparsablePacket(content, e);
-                            if (callback != null) {
-                                callback.handleUnparsablePacket(message);
-                            }
-                            continue;
-                        }
-                        connection.processPacket(iq);
-                    }
-                    else if (parser.getName().equals("presence")) {
-                        Presence presence;
-                        try {
-                            presence = PacketParserUtils.parsePresence(parser);
-                        } catch (Exception e) {
-                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
-                            UnparsablePacket message = new UnparsablePacket(content, e);
-                            if (callback != null) {
-                                callback.handleUnparsablePacket(message);
-                            }
-                            continue;
-                        }
-                        connection.processPacket(presence);
                     }
                     // We found an opening stream. Record information about it, then notify
                     // the connectionID lock so that the packet reader startup can finish.
-                    else if (parser.getName().equals("stream")) {
+                    else if (name.equals("stream")) {
                         // Ensure the correct jabber:client namespace is being used.
                         if ("jabber:client".equals(parser.getNamespace(null))) {
                             // Get the connection id.
@@ -212,20 +183,20 @@ class PacketReader {
                             }
                         }
                     }
-                    else if (parser.getName().equals("error")) {
+                    else if (name.equals("error")) {
                         throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
                     }
-                    else if (parser.getName().equals("features")) {
+                    else if (name.equals("features")) {
                         parseFeatures(parser);
                     }
-                    else if (parser.getName().equals("proceed")) {
+                    else if (name.equals("proceed")) {
                         // Secure the connection by negotiating TLS
                         connection.proceedTLSReceived();
                         // Reset the state of the parser since a new stream element is going
                         // to be sent by the server
                         resetParser();
                     }
-                    else if (parser.getName().equals("failure")) {
+                    else if (name.equals("failure")) {
                         String namespace = parser.getNamespace(null);
                         if ("urn:ietf:params:xml:ns:xmpp-tls".equals(namespace)) {
                             // TLS negotiation has failed. The server will close the connection
@@ -245,13 +216,13 @@ class PacketReader {
                             connection.getSASLAuthentication().authenticationFailed(failure);
                         }
                     }
-                    else if (parser.getName().equals("challenge")) {
+                    else if (name.equals("challenge")) {
                         // The server is challenging the SASL authentication made by the client
                         String challengeData = parser.nextText();
                         connection.processPacket(new Challenge(challengeData));
                         connection.getSASLAuthentication().challengeReceived(challengeData);
                     }
-                    else if (parser.getName().equals("success")) {
+                    else if (name.equals("success")) {
                         connection.processPacket(new Success(parser.nextText()));
                         // We now need to bind a resource for the connection
                         // Open a new stream and wait for the response
@@ -263,7 +234,7 @@ class PacketReader {
                         // will be to bind the resource
                         connection.getSASLAuthentication().authenticated();
                     }
-                    else if (parser.getName().equals("compressed")) {
+                    else if (name.equals("compressed")) {
                         // Server confirmed that it's possible to use stream compression. Start
                         // stream compression
                         connection.startStreamCompression();

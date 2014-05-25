@@ -23,9 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.junit.Test;
@@ -63,8 +61,6 @@ public class TimeTest extends InitExtensions {
 
     @Test
     public void parseTimeWithIntrospectionTest() throws Exception {
-        DummyConnection connection = new DummyConnection();
-
         // @formatter:off
         final String request =
         "<iq type='get'"
@@ -74,7 +70,7 @@ public class TimeTest extends InitExtensions {
           + "<time xmlns='urn:xmpp:time'/>"
           + "</iq>";
         // @formatter:on
-        IQ iqRequest = PacketParserUtils.parseIQ(TestUtils.getIQParser(request), connection);
+        IQ iqRequest = (IQ) PacketParserUtils.parseStanza(request);
         assertTrue(iqRequest instanceof Time);
 
         // @formatter:off
@@ -89,7 +85,7 @@ public class TimeTest extends InitExtensions {
           + "</time>"
           + "</iq>";
         // @formatter:on
-        IQ iqResponse = PacketParserUtils.parseIQ(TestUtils.getIQParser(response), connection);
+        IQ iqResponse = (IQ) PacketParserUtils.parseStanza(response);
         assertTrue(iqResponse instanceof Time);
         Time time = (Time) iqResponse;
         assertEquals("-06:00", time.getTzo());

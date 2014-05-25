@@ -28,7 +28,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -57,7 +56,7 @@ public class PingTest extends InitExtensions {
         
         // Enable ping for this connection
         PingManager.getInstanceFor(con);
-        IQ pingRequest = PacketParserUtils.parseIQ(TestUtils.getIQParser(control), con);
+        IQ pingRequest = (IQ) PacketParserUtils.parseStanza(control);
 
         assertTrue(pingRequest instanceof Ping);
 
@@ -133,7 +132,7 @@ public class PingTest extends InitExtensions {
                         "</error>" + 
                  "</iq>";
         //@formatter:on
-        IQ serviceUnavailable = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), threadedCon);
+        IQ serviceUnavailable = (IQ) PacketParserUtils.parseStanza(reply);
         threadedCon.addIQReply(serviceUnavailable);
 
         PingManager pinger = PingManager.getInstanceFor(threadedCon);
@@ -169,7 +168,7 @@ public class PingTest extends InitExtensions {
                         "</error>" + 
                  "</iq>";
         //@formatter:on
-        IQ serviceUnavailable = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), con);
+        IQ serviceUnavailable = (IQ) PacketParserUtils.parseStanza(reply);
         con.addIQReply(serviceUnavailable);
 
         PingManager pinger = PingManager.getInstanceFor(con);
@@ -201,7 +200,7 @@ public class PingTest extends InitExtensions {
                             "<feature var='urn:xmpp:ping'/>" +
                         "</query></iq>";
         //@formatter:on
-        IQ discoReply = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), con);
+        IQ discoReply = (IQ) PacketParserUtils.parseStanza(reply);
         con.addIQReply(discoReply);
 
         PingManager pinger = PingManager.getInstanceFor(con);
@@ -223,7 +222,7 @@ public class PingTest extends InitExtensions {
                             "<feature var='urn:xmpp:noping'/>" +
                         "</query></iq>";
         //@formatter:on
-        IQ discoReply = PacketParserUtils.parseIQ(TestUtils.getIQParser(reply), con);
+        IQ discoReply = (IQ) PacketParserUtils.parseStanza(reply);
         con.addIQReply(discoReply);
 
         PingManager pinger = PingManager.getInstanceFor(con);

@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
@@ -54,7 +53,7 @@ public class JivePropertiesExtensionTest extends InitExtensions {
                         + "</message>";
         // @formatter:on
 
-        Message message = PacketParserUtils.parseMessage(TestUtils.getMessageParser(properties));
+        Message message = (Message) PacketParserUtils.parseStanza(properties);
         JivePropertiesExtension jpe = (JivePropertiesExtension) message.getExtension(JivePropertiesExtension.NAMESPACE);
         assertNotNull(jpe);
 

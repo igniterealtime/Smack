@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.iqversion.packet.Version;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class VersionTest {
 
         // Enable version replys for this connection
         VersionManager.getInstanceFor(con).setVersion(new Version("Test", "0.23", "DummyOS"));
-        IQ versionRequest = PacketParserUtils.parseIQ(TestUtils.getIQParser(control), con);
+        IQ versionRequest = (IQ) PacketParserUtils.parseStanza(control);
 
         assertTrue(versionRequest instanceof Version);
 

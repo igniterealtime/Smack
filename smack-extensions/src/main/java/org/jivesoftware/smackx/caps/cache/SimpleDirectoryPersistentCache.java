@@ -22,20 +22,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.Base32Encoder;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.disco.provider.DiscoverInfoProvider;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Simple implementation of an EntityCapsPersistentCache that uses a directory
@@ -106,7 +99,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
         try {
             info = restoreInfoFromFile(nodeFile);
         }
-        catch (IOException e) {
+        catch (Exception e) {
             LOGGER.log(Level.WARNING, "Coud not restore info from file", e);
         }
         return info;
@@ -147,58 +140,21 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * 
      * @param file
      * @return the restored DiscoverInfo
-     * @throws IOException
+     * @throws Exception
      */
-    private static DiscoverInfo restoreInfoFromFile(File file) throws IOException {
+    private static DiscoverInfo restoreInfoFromFile(File file) throws Exception {
         DataInputStream dis = new DataInputStream(new FileInputStream(file));
         String fileContent = null;
-        String id;
-        String from;
-        String to;
-
         try {
             fileContent = dis.readUTF();
         } finally {
             dis.close();
         }
-        if (fileContent == null)
-            return null;
-
-        Reader reader = new StringReader(fileContent);
-        XmlPullParser parser;
-        try {
-            parser = XmlPullParserFactory.newInstance().newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(reader);
-        } catch (XmlPullParserException xppe) {
-            LOGGER.log(Level.SEVERE, "Exception initializing parser", xppe);
+        if (fileContent == null) {
             return null;
         }
+        DiscoverInfo info = (DiscoverInfo) PacketParserUtils.parseStanza(fileContent);
 
-        DiscoverInfo iqPacket;
-        IQProvider provider = new DiscoverInfoProvider();
-
-        // Parse the IQ, we only need the id
-        try {
-            parser.next();
-            id = parser.getAttributeValue("", "id");
-            from = parser.getAttributeValue("", "from");
-            to = parser.getAttributeValue("", "to");
-            parser.next();
-        } catch (XmlPullParserException e1) {
-            return null;
-        }
-
-        try {
-            iqPacket = (DiscoverInfo) provider.parseIQ(parser);
-        } catch (Exception e) {
-            return null;
-        }
-
-        iqPacket.setPacketID(id);
-        iqPacket.setFrom(from);
-        iqPacket.setTo(to);
-        iqPacket.setType(IQ.Type.RESULT);
-        return iqPacket;
+        return info;
     }
 }

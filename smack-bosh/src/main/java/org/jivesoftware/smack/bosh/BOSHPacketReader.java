@@ -19,6 +19,7 @@ package org.jivesoftware.smack.bosh;
 
 import java.io.StringReader;
 
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
 import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.jivesoftware.smack.sasl.SASLMechanism.Success;
@@ -75,14 +76,9 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                 do {
                     eventType = parser.next();
                     if (eventType == XmlPullParser.START_TAG) {
-                        if (parser.getName().equals("body")) {
-                            // ignore the container root element
-                        } else if (parser.getName().equals("message")) {
-                            connection.processPacket(PacketParserUtils.parseMessage(parser));
-                        } else if (parser.getName().equals("iq")) {
-                            connection.processPacket(PacketParserUtils.parseIQ(parser, connection));
-                        } else if (parser.getName().equals("presence")) {
-                            connection.processPacket(PacketParserUtils.parsePresence(parser));
+                        Packet packet = PacketParserUtils.parseStanza(parser, connection);
+                        if (packet != null) {
+                            connection.processPacket(packet);
                         } else if (parser.getName().equals("challenge")) {
                             // The server is challenging the SASL authentication
                             // made by the client

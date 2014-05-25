@@ -23,7 +23,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +51,7 @@ public class ParsingExceptionTest {
 
     @Test
     public void consumeUnparsedInput() throws Exception {
-        XmlPullParser parser = TestUtils.getMessageParser(
+        XmlPullParser parser = PacketParserUtils.getParserFor(
                 "<message from='user@server.example' to='francisco@denmark.lit' id='foo'>" +
                     "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
                        "<nothingInHere>" +

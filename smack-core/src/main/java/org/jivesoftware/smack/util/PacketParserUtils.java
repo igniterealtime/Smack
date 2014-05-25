@@ -17,6 +17,9 @@
 package org.jivesoftware.smack.util;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,6 +47,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
@@ -53,6 +57,82 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class PacketParserUtils {
     private static final Logger LOGGER = Logger.getLogger(PacketParserUtils.class.getName());
+
+    public static XmlPullParser getParserFor(String stanza) throws XmlPullParserException, IOException {
+        return getParserFor(new StringReader(stanza));
+    }
+
+    public static XmlPullParser getParserFor(Reader reader) throws XmlPullParserException, IOException {
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(reader);
+
+        // Wind the parser forward to the first start tag
+        int event = parser.getEventType();
+        while (event != XmlPullParser.START_TAG) {
+            if (event == XmlPullParser.END_DOCUMENT) {
+                throw new IllegalArgumentException("Document contains no start tag");
+            }
+            event = parser.next();
+        }
+        return parser;
+    }
+
+    public static XmlPullParser getParserFor(String stanza, String startTag)
+                    throws XmlPullParserException, IOException {
+        XmlPullParser parser = getParserFor(stanza);
+
+        while (true) {
+            int event = parser.getEventType();
+            String name = parser.getName();
+            if (event == XmlPullParser.START_TAG && name.equals(startTag)) {
+                break;
+            }
+            else if (event == XmlPullParser.END_DOCUMENT) {
+                throw new IllegalArgumentException("Could not find start tag '" + startTag
+                                + "' in stanza: " + stanza);
+            }
+            parser.next();
+        }
+
+        return parser;
+    }
+
+    public static Packet parseStanza(String stanza) throws Exception {
+        return parseStanza(getParserFor(stanza));
+    }
+
+    public static Packet parseStanza(XmlPullParser parser) throws Exception {
+        return parseStanza(parser, null);
+    }
+
+    /**
+     * Tries to parse and return either a Message, IQ or Presence stanza.
+     * 
+     * connection is optional and is used to return feature-not-implemented errors for unknown IQ stanzas.
+     *
+     * @param parser
+     * @param connection
+     * @return a packet which is either a Message, IQ or Presence.
+     * @throws Exception
+     */
+    public static Packet parseStanza(XmlPullParser parser, XMPPConnection connection) throws Exception {
+        final int eventType = parser.getEventType();
+        if (eventType != XmlPullParser.START_TAG) {
+            throw new IllegalArgumentException("Parser not at start tag");
+        }
+        final String name = parser.getName();
+        switch (name) {
+        case "message":
+            return parseMessage(parser);
+        case "iq":
+            return parseIQ(parser, connection);
+        case "presence":
+            return parsePresence(parser);
+        default:
+            return null;
+        }
+    }
 
     /**
      * Parses a message packet.
@@ -253,6 +333,7 @@ public class PacketParserUtils {
      * Parses an IQ packet.
      *
      * @param parser the XML parser, positioned at the start of an IQ packet.
+     * @param connection the optional XMPPConnection used to send feature-not-implemented replies.
      * @return an IQ object.
      * @throws Exception if an exception occurs while parsing the packet.
      */
@@ -315,7 +396,7 @@ public class PacketParserUtils {
         }
         // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
-            if (IQ.Type.GET == type || IQ.Type.SET == type ) {
+            if (connection != null && (IQ.Type.GET == type || IQ.Type.SET == type)) {
                 // If the IQ stanza is of type "get" or "set" containing a child element qualified
                 // by a namespace with no registered Smack provider, then answer an IQ of type
                 // "error" with code 501 ("feature-not-implemented")
@@ -655,11 +736,10 @@ public class PacketParserUtils {
      * @param namespace the XML namespace of the packet extension.
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
+     * @throws Exception 
      */
-    public static PacketExtension parsePacketExtension(String elementName, String namespace, XmlPullParser parser)
-            throws Exception
-    {
+    public static PacketExtension parsePacketExtension(String elementName, String namespace,
+                    XmlPullParser parser) throws Exception {
         // See if a provider is registered to handle the extension.
         Object provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
@@ -712,9 +792,11 @@ public class PacketParserUtils {
     	return null;
     }
 
-    public static Object parseWithIntrospection(String elementName,
-            Class<?> objectClass, XmlPullParser parser) throws Exception
-    {
+    public static Object parseWithIntrospection(String elementName, Class<?> objectClass,
+                    XmlPullParser parser) throws NoSuchMethodException, SecurityException,
+                    InstantiationException, IllegalAccessException, XmlPullParserException,
+                    IOException, IllegalArgumentException, InvocationTargetException,
+                    ClassNotFoundException {
         boolean done = false;
         Object object = objectClass.newInstance();
         while (!done) {
@@ -748,9 +830,9 @@ public class PacketParserUtils {
      * @param type the type of the property.
      * @param value the encode String value to decode.
      * @return the String value decoded into the specified type.
-     * @throws Exception If decoding failed due to an error.
+     * @throws ClassNotFoundException 
      */
-    private static Object decode(Class<?> type, String value) throws Exception {
+    private static Object decode(Class<?> type, String value) throws ClassNotFoundException {
         if (type.getName().equals("java.lang.String")) {
             return value;
         }
