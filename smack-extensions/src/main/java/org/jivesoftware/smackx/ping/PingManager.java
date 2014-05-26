@@ -21,7 +21,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,6 +110,24 @@ public class PingManager extends Manager {
     private final Set<PingFailedListener> pingFailedListeners = Collections
                     .synchronizedSet(new HashSet<PingFailedListener>());
 
+    private final ScheduledExecutorService executorService;
+
+    private static class PingExecutorThreadFactory implements ThreadFactory {
+        private final int connectionCounterValue;
+
+        public PingExecutorThreadFactory(int connectionCounterValue) {
+            this.connectionCounterValue = connectionCounterValue;
+        }
+
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable, "Smack Scheduled Ping Executor Service ("
+                            + connectionCounterValue + ")");
+            thread.setDaemon(true);
+            return thread;
+        }
+
+    }
     /**
      * The interval in seconds between pings are send to the users server.
      */
@@ -121,6 +142,8 @@ public class PingManager extends Manager {
 
     private PingManager(XMPPConnection connection) {
         super(connection);
+        executorService = new ScheduledThreadPoolExecutor(1,
+                        new PingExecutorThreadFactory(connection.getConnectionCounter()));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(PingManager.NAMESPACE);
         INSTANCES.put(connection, this);
@@ -309,7 +332,7 @@ public class PingManager extends Manager {
             int nextPingIn = pingInterval - delta;
             LOGGER.fine("Scheduling ServerPingTask in " + nextPingIn + " seconds (pingInterval="
                             + pingInterval + ", delta=" + delta + ")");
-            nextAutomaticPing = connection().schedule(pingServerRunnable, pingInterval, TimeUnit.SECONDS);
+            nextAutomaticPing = executorService.schedule(pingServerRunnable, pingInterval, TimeUnit.SECONDS);
         }
     }
 
@@ -386,4 +409,13 @@ public class PingManager extends Manager {
             }
         }
     };
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            executorService.shutdown();
+        } finally {
+            super.finalize();
+        }
+    }
 }

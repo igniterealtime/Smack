@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smack;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -352,18 +349,4 @@ public interface XMPPConnection {
      * @return the currently active {@link FromMode}
      */
     public FromMode getFromMode();
-
-    /**
-     * Schedule a Runnable related to this connection.
-     * <p>
-     * It is possible that the connection is blocked if the Runnable takes a considerably long
-     * amount to complete. So either make sure that it always finishes within a reasonably fast or
-     * use your own ScheduledExecutorService.
-     * 
-     * @param command
-     * @param delay
-     * @param unit
-     * @return the ScheduldedFuture
-     */
-    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit);
 }
