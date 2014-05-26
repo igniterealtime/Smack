@@ -1,8 +1,11 @@
 import org.gradle.plugins.signing.Sign
 
-allprojects {
+configure(allprojects.findAll {it.name != 'smack-android'}) {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+}
+
+allprojects {
 
 	ext {
 		shortVersion = '4.1.0-alpha1'
@@ -97,12 +100,29 @@ description = """\
 Smack ${version}
 ${oneLineDesc}."""
 
+buildscript {
+	repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+	dependencies {
+		classpath 'com.android.tools.build:gradle:0.9.+'
+		classpath 'com.github.dcendents:android-maven-plugin:1.0'
+	}
+}
+
 evaluationDependsOnChildren()
-subprojects {
+
+configure(subprojects.findAll {it.name != 'smack-android'}) {
 	apply plugin: 'maven'
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
+		
+	repositories {
+    	mavenCentral()
+    	mavenLocal()
+  	}
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
@@ -123,6 +143,9 @@ subprojects {
 		archives sourcesJar
 		archives javadocJar
 	}
+}
+
+subprojects {
 
 	uploadArchives {
 		repositories {
