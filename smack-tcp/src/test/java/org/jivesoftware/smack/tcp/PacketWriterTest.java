@@ -23,6 +23,7 @@ import java.util.concurrent.CyclicBarrier;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 import org.junit.Test;
 
 import static org.junit.Assert.fail;
@@ -44,11 +45,11 @@ public class PacketWriterTest {
     @Test
     public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException {
         XMPPTCPConnection connection = new XMPPTCPConnection("foobar.com");
-        final PacketWriter pw = new PacketWriter(connection);
+        final PacketWriter pw = connection.new PacketWriter();
         pw.setWriter(new BlockingStringWriter());
         pw.startup();
 
-        for (int i = 0; i < PacketWriter.QUEUE_SIZE; i++) {
+        for (int i = 0; i < XMPPTCPConnection.PacketWriter.QUEUE_SIZE; i++) {
             pw.sendPacket(new Message());
         }
         
