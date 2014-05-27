@@ -74,6 +74,8 @@ Resources
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
 
+[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)
+
 Ignite Realtime
 ===============
 
