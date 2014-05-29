@@ -92,7 +92,7 @@ public class IQReplyFilter implements PacketFilter {
         server = conn.getServiceName().toLowerCase(Locale.US);
         packetId = iqPacket.getPacketID();
 
-        PacketFilter iqFilter = new OrFilter(new IQTypeFilter(IQ.Type.ERROR), new IQTypeFilter(IQ.Type.RESULT));
+        PacketFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
         PacketFilter idFilter = new PacketIDFilter(iqPacket);
         iqAndIdFilter = new AndFilter(iqFilter, idFilter);
         fromFilter = new OrFilter();

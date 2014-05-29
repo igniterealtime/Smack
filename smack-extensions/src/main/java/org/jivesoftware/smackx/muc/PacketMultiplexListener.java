@@ -35,8 +35,6 @@ import org.jivesoftware.smack.packet.Presence;
  */
 class PacketMultiplexListener implements PacketListener {
 
-    private static final PacketFilter MESSAGE_FILTER =
-            new MessageTypeFilter(Message.Type.groupchat);
     private static final PacketFilter PRESENCE_FILTER = new PacketTypeFilter(Presence.class);
     private static final PacketFilter SUBJECT_FILTER = new PacketFilter() {
         public boolean accept(Packet packet) {
@@ -79,7 +77,7 @@ class PacketMultiplexListener implements PacketListener {
         if (PRESENCE_FILTER.accept(p)) {
             presenceListener.processPacket(p);
         }
-        else if (MESSAGE_FILTER.accept(p)) {
+        else if (MessageTypeFilter.GROUPCHAT.accept(p)) {
             messageCollector.processPacket(p);
 
             if (SUBJECT_FILTER.accept(p)) {

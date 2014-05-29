@@ -27,7 +27,6 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -53,7 +52,7 @@ class InitiationListener implements PacketListener {
 
     /* packet filter for all In-Band Bytestream requests */
     private final PacketFilter initFilter = new AndFilter(new PacketTypeFilter(Open.class),
-                    new IQTypeFilter(IQ.Type.SET));
+                    IQTypeFilter.SET);
 
     /* executor service to process incoming requests concurrently */
     private final ExecutorService initiationListenerExecutor;

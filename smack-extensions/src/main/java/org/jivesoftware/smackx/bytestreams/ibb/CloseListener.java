@@ -22,7 +22,6 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 
@@ -42,7 +41,7 @@ class CloseListener implements PacketListener {
 
     /* packet filter for all In-Band Bytestream close requests */
     private final PacketFilter closeFilter = new AndFilter(new PacketTypeFilter(
-                    Close.class), new IQTypeFilter(IQ.Type.SET));
+                    Close.class), IQTypeFilter.SET);
 
     /**
      * Constructor.

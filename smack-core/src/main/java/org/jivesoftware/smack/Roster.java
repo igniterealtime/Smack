@@ -67,7 +67,7 @@ public class Roster {
     private static final Logger LOGGER = Logger.getLogger(Roster.class.getName());
 
     private static final PacketFilter ROSTER_PUSH_FILTER = new AndFilter(new PacketTypeFilter(
-                    RosterPacket.class), new IQTypeFilter(IQ.Type.SET));
+                    RosterPacket.class), IQTypeFilter.SET);
 
     private static final PacketFilter PRESENCE_PACKET_FILTER = new PacketTypeFilter(Presence.class);
 

@@ -27,7 +27,6 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -48,7 +47,7 @@ final class InitiationListener implements PacketListener {
 
     /* packet filter for all SOCKS5 Bytestream requests */
     private final PacketFilter initFilter = new AndFilter(new PacketTypeFilter(Bytestream.class),
-                    new IQTypeFilter(IQ.Type.SET));
+                    IQTypeFilter.SET);
 
     /* executor service to process incoming requests concurrently */
     private final ExecutorService initiationListenerExecutor;

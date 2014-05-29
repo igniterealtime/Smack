@@ -45,7 +45,6 @@ import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
 import org.jivesoftware.smackx.ping.packet.Pong;
@@ -68,9 +67,9 @@ public class PingManager extends Manager {
             .synchronizedMap(new WeakHashMap<XMPPConnection, PingManager>());
 
     private static final PacketFilter PING_PACKET_FILTER = new AndFilter(
-                    new PacketTypeFilter(Ping.class), new IQTypeFilter(Type.GET));
+                    new PacketTypeFilter(Ping.class), IQTypeFilter.GET);
     private static final PacketFilter PONG_PACKET_FILTER = new AndFilter(new PacketTypeFilter(
-                    Pong.class), new IQTypeFilter(Type.RESULT));
+                    Pong.class), IQTypeFilter.RESULT);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {

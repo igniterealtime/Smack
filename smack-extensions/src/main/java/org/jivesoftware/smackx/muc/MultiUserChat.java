@@ -1947,18 +1947,8 @@ public class MultiUserChat {
 
     private void init() {
         // Create filters
-        messageFilter =
-            new AndFilter(
-                FromMatchesFilter.create(room),
-                new MessageTypeFilter(Message.Type.groupchat));
-        messageFilter = new AndFilter(messageFilter, new PacketFilter() {
-            public boolean accept(Packet packet) {
-                Message msg = (Message) packet;
-                return msg.getBody() != null;
-            }
-        });
-        presenceFilter =
-            new AndFilter(FromMatchesFilter.create(room), new PacketTypeFilter(Presence.class));
+        messageFilter = new AndFilter(FromMatchesFilter.create(room), MessageTypeFilter.GROUPCHAT);
+        presenceFilter = new AndFilter(FromMatchesFilter.create(room), PacketTypeFilter.PRESENCE);
 
         // Create a collector for incoming messages.
         messageCollector = new ConnectionDetachedPacketCollector();

@@ -27,8 +27,8 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqversion.packet.Version;
@@ -52,6 +52,8 @@ import org.jivesoftware.smackx.iqversion.packet.Version;
 public class VersionManager extends Manager {
     private static final Map<XMPPConnection, VersionManager> instances =
             Collections.synchronizedMap(new WeakHashMap<XMPPConnection, VersionManager>());
+
+    private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketTypeFilter(Version.class), IQTypeFilter.GET);
 
     private Version own_version;
 
@@ -77,7 +79,7 @@ public class VersionManager extends Manager {
                 connection().sendPacket(reply);
             }
         }
-        , new AndFilter(new PacketTypeFilter(Version.class), new IQTypeFilter(Type.GET)));
+        , PACKET_FILTER);
     }
 
     public static synchronized VersionManager getInstanceFor(XMPPConnection connection) {

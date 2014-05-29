@@ -58,8 +58,8 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 public class PrivacyListManager extends Manager {
     public static final String NAMESPACE = "jabber:iq:privacy";
 
-    private static final PacketFilter PACKET_FILTER = new AndFilter(new IQTypeFilter(IQ.Type.SET),
-                    new PacketExtensionFilter("query", "jabber:iq:privacy"));
+    private static final PacketFilter PACKET_FILTER = new AndFilter(IQTypeFilter.SET,
+                    new PacketExtensionFilter("query", NAMESPACE));
 
     // Keep the list of instances of this class.
     private static final Map<XMPPConnection, PrivacyListManager> instances = Collections

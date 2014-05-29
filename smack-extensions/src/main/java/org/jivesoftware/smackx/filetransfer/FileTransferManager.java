@@ -89,7 +89,7 @@ public class FileTransferManager {
 				fireNewRequest((StreamInitiation) packet);
 			}
 		}, new AndFilter(new PacketTypeFilter(StreamInitiation.class),
-				new IQTypeFilter(IQ.Type.SET)));
+				IQTypeFilter.SET));
 	}
 
 	protected void fireNewRequest(StreamInitiation initiation) {

@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.IQ.Type;
 
 /**
  * A filter for IQ packet types. Returns true only if the packet is an IQ packet
@@ -26,20 +26,22 @@ import org.jivesoftware.smack.packet.Packet;
  * @author Alexander Wenckus
  * 
  */
-public class IQTypeFilter implements PacketFilter {
+public class IQTypeFilter extends FlexiblePacketTypeFilter<IQ> {
+    
+    public static final PacketFilter GET = new IQTypeFilter(Type.GET);
+    public static final PacketFilter SET = new IQTypeFilter(Type.SET);
+    public static final PacketFilter RESULT = new IQTypeFilter(Type.RESULT);
+    public static final PacketFilter ERROR = new IQTypeFilter(Type.ERROR);
 
-	private IQ.Type type;
+	private final IQ.Type type;
 
-	public IQTypeFilter(IQ.Type type) {
+	private IQTypeFilter(IQ.Type type) {
+        super(IQ.class);
 		this.type = type;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jivesoftware.smack.filter.PacketFilter#accept(org.jivesoftware.smack.packet.Packet)
-	 */
-	public boolean accept(Packet packet) {
-		return (packet instanceof IQ && ((IQ) packet).getType().equals(type));
-	}
+    @Override
+    protected boolean acceptSpecific(IQ iq) {
+        return iq.getType().equals(type);
+    }
 }

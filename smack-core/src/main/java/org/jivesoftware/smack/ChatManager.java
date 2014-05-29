@@ -28,7 +28,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FlexiblePacketTypeFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -89,7 +92,16 @@ public class ChatManager extends Manager{
          */
         BARE_JID; 
     }
-    
+
+    private final PacketFilter packetFilter = new OrFilter(MessageTypeFilter.CHAT, new FlexiblePacketTypeFilter<Message>() {
+
+        @Override
+        protected boolean acceptSpecific(Message message) {
+            return normalIncluded ? message.getType() == Type.normal : false;
+        }
+
+    });
+
     /**
      * Determines whether incoming messages of type normal can create chats. 
      */
@@ -124,16 +136,6 @@ public class ChatManager extends Manager{
     private ChatManager(XMPPConnection connection) {
         super(connection);
 
-        PacketFilter filter = new PacketFilter() {
-            public boolean accept(Packet packet) {
-                if (!(packet instanceof Message)) {
-                    return false;
-                }
-                Message.Type messageType = ((Message) packet).getType();
-                return (messageType == Type.chat) || (normalIncluded ? messageType == Type.normal : false);
-            }
-        };
-        
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
         connection.addPacketListener(new PacketListener() {
@@ -155,7 +157,7 @@ public class ChatManager extends Manager{
                     return;
                 deliverMessage(chat, message);
             }
-        }, filter);
+        }, packetFilter);
         INSTANCES.put(connection, this);
     }
 

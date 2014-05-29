@@ -18,7 +18,8 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Message.Type;
+
 
 /**
  * Filters for packets of a specific type of Message (e.g. CHAT).
@@ -26,7 +27,13 @@ import org.jivesoftware.smack.packet.Packet;
  * @see org.jivesoftware.smack.packet.Message.Type
  * @author Ward Harold
  */
-public class MessageTypeFilter implements PacketFilter {
+public class MessageTypeFilter extends FlexiblePacketTypeFilter<Message> {
+
+    public static final PacketFilter NORMAL = new MessageTypeFilter(Type.normal);
+    public static final PacketFilter CHAT = new MessageTypeFilter(Type.chat);
+    public static final PacketFilter GROUPCHAT = new MessageTypeFilter(Type.groupchat);
+    public static final PacketFilter HEADLINE = new MessageTypeFilter(Type.headline);
+    public static final PacketFilter ERROR = new MessageTypeFilter(Type.headline);
 
     private final Message.Type type;
 
@@ -35,17 +42,14 @@ public class MessageTypeFilter implements PacketFilter {
      * 
      * @param type the message type.
      */
-    public MessageTypeFilter(Message.Type type) {
+    private MessageTypeFilter(Message.Type type) {
+        super(Message.class);
         this.type = type;
     }
 
-    public boolean accept(Packet packet) {
-        if (!(packet instanceof Message)) {
-            return false;
-        }
-        else {
-            return ((Message) packet).getType().equals(this.type);
-        }
+    @Override
+    protected boolean acceptSpecific(Message message) {
+        return message.getType().equals(this.type);
     }
 
 }

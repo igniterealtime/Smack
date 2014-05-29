@@ -31,7 +31,6 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.time.packet.Time;
@@ -41,7 +40,7 @@ public class EntityTimeManager extends Manager {
     private static final Map<XMPPConnection, EntityTimeManager> INSTANCES = new WeakHashMap<XMPPConnection, EntityTimeManager>();
 
     private static final PacketFilter TIME_PACKET_FILTER = new AndFilter(new PacketTypeFilter(
-                    Time.class), new IQTypeFilter(Type.GET));
+                    Time.class), IQTypeFilter.GET);
 
     private static boolean autoEnable = true;
 

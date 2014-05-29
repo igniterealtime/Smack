@@ -89,8 +89,8 @@ import org.jivesoftware.smackx.iqlast.packet.LastActivity;
 
 public class LastActivityManager extends Manager {
     private static final Map<XMPPConnection, LastActivityManager> instances = new WeakHashMap<XMPPConnection, LastActivityManager>();
-    private static final PacketFilter IQ_GET_LAST_FILTER = new AndFilter(new IQTypeFilter(
-                    IQ.Type.GET), new PacketTypeFilter(LastActivity.class));
+    private static final PacketFilter IQ_GET_LAST_FILTER = new AndFilter(IQTypeFilter.GET,
+                    new PacketTypeFilter(LastActivity.class));
 
     private static boolean enabledPerDefault = true;
 
