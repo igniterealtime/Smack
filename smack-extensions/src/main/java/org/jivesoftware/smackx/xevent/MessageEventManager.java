@@ -18,11 +18,15 @@
 package org.jivesoftware.smackx.xevent;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -33,31 +37,66 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
 
 /**
+ * 
  * Manages message events requests and notifications. A MessageEventManager provides a high
  * level access to request for notifications and send event notifications. It also provides 
  * an easy way to hook up custom logic when requests or notifications are received. 
  *
  * @author Gaston Dombiak
+ * @see <a href="http://xmpp.org/extensions/xep-0022.html">XEP-22: Message Events</a>
  */
-public class MessageEventManager {
+public class MessageEventManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(MessageEventManager.class.getName());
     
-    private List<MessageEventNotificationListener> messageEventNotificationListeners = new ArrayList<MessageEventNotificationListener>();
-    private List<MessageEventRequestListener> messageEventRequestListeners = new ArrayList<MessageEventRequestListener>();
+    private static final Map<XMPPConnection, MessageEventManager> INSTANCES = Collections
+                    .synchronizedMap(new WeakHashMap<XMPPConnection, MessageEventManager>());
 
-    private XMPPConnection con;
+    private static final PacketFilter PACKET_FILTER = new PacketExtensionFilter(
+                    MessageEvent.ELEMENT, MessageEvent.NAMESPACE);
 
-    private PacketFilter packetFilter = new PacketExtensionFilter("x", "jabber:x:event");
-    private PacketListener packetListener;
+    private List<MessageEventNotificationListener> messageEventNotificationListeners = new CopyOnWriteArrayList<MessageEventNotificationListener>();
+    private List<MessageEventRequestListener> messageEventRequestListeners = new CopyOnWriteArrayList<MessageEventRequestListener>();
+
+    public synchronized static MessageEventManager getInstanceFor(XMPPConnection connection) {
+        MessageEventManager messageEventManager = INSTANCES.get(connection);
+        if (messageEventManager == null) {
+            messageEventManager = new MessageEventManager(connection);
+        }
+        return messageEventManager;
+    }
 
     /**
      * Creates a new message event manager.
      *
      * @param con a XMPPConnection to a XMPP server.
      */
-    public MessageEventManager(XMPPConnection con) {
-        this.con = con;
-        init();
+    private MessageEventManager(XMPPConnection connection) {
+        super(connection);
+        // Listens for all message event packets and fire the proper message event listeners.
+        connection.addPacketListener(new PacketListener() {
+            public void processPacket(Packet packet) {
+                Message message = (Message) packet;
+                MessageEvent messageEvent =
+                    (MessageEvent) message.getExtension("x", "jabber:x:event");
+                if (messageEvent.isMessageEventRequest()) {
+                    // Fire event for requests of message events
+                    for (String eventType : messageEvent.getEventTypes())
+                        fireMessageEventRequestListeners(
+                            message.getFrom(),
+                            message.getPacketID(),
+                            eventType.concat("NotificationRequested"));
+                } else
+                    // Fire event for notifications of message events
+                    for (String eventType : messageEvent.getEventTypes())
+                        fireMessageEventNotificationListeners(
+                            message.getFrom(),
+                            messageEvent.getPacketID(),
+                            eventType.concat("Notification"));
+
+            };
+
+        }, PACKET_FILTER);
+        INSTANCES.put(connection, this);
     }
 
     /**
@@ -90,11 +129,8 @@ public class MessageEventManager {
      * @param messageEventRequestListener a message event request listener.
      */
     public void addMessageEventRequestListener(MessageEventRequestListener messageEventRequestListener) {
-        synchronized (messageEventRequestListeners) {
-            if (!messageEventRequestListeners.contains(messageEventRequestListener)) {
-                messageEventRequestListeners.add(messageEventRequestListener);
-            }
-        }
+        messageEventRequestListeners.add(messageEventRequestListener);
+
     }
 
     /**
@@ -104,9 +140,7 @@ public class MessageEventManager {
      * @param messageEventRequestListener a message event request listener.
      */
     public void removeMessageEventRequestListener(MessageEventRequestListener messageEventRequestListener) {
-        synchronized (messageEventRequestListeners) {
-            messageEventRequestListeners.remove(messageEventRequestListener);
-        }
+        messageEventRequestListeners.remove(messageEventRequestListener);
     }
 
     /**
@@ -116,11 +150,7 @@ public class MessageEventManager {
      * @param messageEventNotificationListener a message event notification listener.
      */
     public void addMessageEventNotificationListener(MessageEventNotificationListener messageEventNotificationListener) {
-        synchronized (messageEventNotificationListeners) {
-            if (!messageEventNotificationListeners.contains(messageEventNotificationListener)) {
-                messageEventNotificationListeners.add(messageEventNotificationListener);
-            }
-        }
+        messageEventNotificationListeners.add(messageEventNotificationListener);
     }
 
     /**
@@ -130,9 +160,7 @@ public class MessageEventManager {
      * @param messageEventNotificationListener a message event notification listener.
      */
     public void removeMessageEventNotificationListener(MessageEventNotificationListener messageEventNotificationListener) {
-        synchronized (messageEventNotificationListeners) {
-            messageEventNotificationListeners.remove(messageEventNotificationListener);
-        }
+        messageEventNotificationListeners.remove(messageEventNotificationListener);
     }
 
     /**
@@ -142,19 +170,13 @@ public class MessageEventManager {
         String from,
         String packetID,
         String methodName) {
-        MessageEventRequestListener[] listeners = null;
-        Method method;
-        synchronized (messageEventRequestListeners) {
-            listeners = new MessageEventRequestListener[messageEventRequestListeners.size()];
-            messageEventRequestListeners.toArray(listeners);
-        }
         try {
-            method =
+            Method method =
                 MessageEventRequestListener.class.getDeclaredMethod(
                     methodName,
                     new Class[] { String.class, String.class, MessageEventManager.class });
-            for (int i = 0; i < listeners.length; i++) {
-                method.invoke(listeners[i], new Object[] { from, packetID, this });
+            for (MessageEventRequestListener listener : messageEventRequestListeners) {
+                method.invoke(listener, new Object[] { from, packetID, this });
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while invoking MessageEventRequestListener", e);
@@ -168,52 +190,17 @@ public class MessageEventManager {
         String from,
         String packetID,
         String methodName) {
-        MessageEventNotificationListener[] listeners = null;
-        Method method;
-        synchronized (messageEventNotificationListeners) {
-            listeners =
-                new MessageEventNotificationListener[messageEventNotificationListeners.size()];
-            messageEventNotificationListeners.toArray(listeners);
-        }
         try {
-            method =
+            Method method =
                 MessageEventNotificationListener.class.getDeclaredMethod(
                     methodName,
                     new Class[] { String.class, String.class });
-            for (int i = 0; i < listeners.length; i++) {
-                method.invoke(listeners[i], new Object[] { from, packetID });
+            for (MessageEventNotificationListener listener : messageEventNotificationListeners) {
+                method.invoke(listener, new Object[] { from, packetID });
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener", e);
         }
-    }
-
-    private void init() {
-        // Listens for all message event packets and fire the proper message event listeners.
-        packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Message message = (Message) packet;
-                MessageEvent messageEvent =
-                    (MessageEvent) message.getExtension("x", "jabber:x:event");
-                if (messageEvent.isMessageEventRequest()) {
-                    // Fire event for requests of message events
-                    for (String eventType : messageEvent.getEventTypes())
-                        fireMessageEventRequestListeners(
-                            message.getFrom(),
-                            message.getPacketID(),
-                            eventType.concat("NotificationRequested"));
-                } else
-                    // Fire event for notifications of message events
-                    for (String eventType : messageEvent.getEventTypes())
-                        fireMessageEventNotificationListeners(
-                            message.getFrom(),
-                            messageEvent.getPacketID(),
-                            eventType.concat("Notification"));
-
-            };
-
-        };
-        con.addPacketListener(packetListener, packetFilter);
     }
 
     /**
@@ -232,7 +219,7 @@ public class MessageEventManager {
         messageEvent.setPacketID(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        con.sendPacket(msg);
+        connection().sendPacket(msg);
     }
 
     /**
@@ -251,7 +238,7 @@ public class MessageEventManager {
         messageEvent.setPacketID(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        con.sendPacket(msg);
+        connection().sendPacket(msg);
     }
 
     /**
@@ -270,7 +257,7 @@ public class MessageEventManager {
         messageEvent.setPacketID(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        con.sendPacket(msg);
+        connection().sendPacket(msg);
     }
 
     /**
@@ -289,17 +276,6 @@ public class MessageEventManager {
         messageEvent.setPacketID(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        con.sendPacket(msg);
-    }
-
-    public void destroy() {
-        if (con != null) {
-            con.removePacketListener(packetListener);
-        }
-    }
-
-    protected void finalize() throws Throwable {
-        destroy();
-        super.finalize();
+        connection().sendPacket(msg);
     }
 }

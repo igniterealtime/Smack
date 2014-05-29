@@ -55,6 +55,9 @@ import java.util.List;
  */
 public class MessageEvent implements PacketExtension {
 
+    public static final String NAMESPACE = "jabber:x:event";
+    public static final String ELEMENT = "x";
+
     public static final String OFFLINE = "offline";
     public static final String COMPOSING = "composing";
     public static final String DISPLAYED = "displayed";
@@ -76,7 +79,7 @@ public class MessageEvent implements PacketExtension {
     * @return the XML element name of the packet extension.
     */
     public String getElementName() {
-        return "x";
+        return ELEMENT;
     }
 
     /** 
@@ -86,7 +89,7 @@ public class MessageEvent implements PacketExtension {
      * @return the XML namespace of the packet extension.
      */
     public String getNamespace() {
-        return "jabber:x:event";
+        return NAMESPACE;
     }
 
     /**
