@@ -20,6 +20,7 @@ package org.jivesoftware.smack.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -535,5 +536,17 @@ public class StringUtils {
      */
     public static boolean isNullOrEmpty(CharSequence cs) {
         return cs == null || cs.length() == 0;
+    }
+
+    public static String collectionToString(Collection<String> collection) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : collection) {
+            sb.append(s);
+            sb.append(" ");
+        }
+        String res = sb.toString();
+        // Remove the trailing whitespace
+        res = res.substring(0, res.length() - 1);
+        return res;
     }
 }

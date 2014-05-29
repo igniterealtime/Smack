@@ -81,6 +81,16 @@ public class ConnectionConfiguration implements Cloneable {
     private SecurityMode securityMode = SecurityMode.enabled;
 
     /**
+     * 
+     */
+    private String[] enabledSSLProtocols;
+
+    /**
+     * 
+     */
+    private String[] enabledSSLCiphers;
+
+    /**
      * Permanent store for the Roster, needed for roster versioning
      */
     private RosterStore rosterStore;
@@ -308,6 +318,42 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setCustomSSLContext(SSLContext context) {
         this.customSSLContext = context;
+    }
+
+    /**
+     * Set the enabled SSL/TLS protocols.
+     *
+     * @param enabledSSLProtocols
+     */
+    public void setEnabledSSLProtocols(String[] enabledSSLProtocols) {
+        this.enabledSSLProtocols = enabledSSLProtocols;
+    }
+
+    /**
+     * Return the enabled SSL/TLS protocols.
+     *
+     * @return the enabled SSL/TLS protocols
+     */
+    public String[] getEnabledSSLProtocols() {
+        return enabledSSLProtocols;
+    }
+
+    /**
+     * Set the enabled SSL/TLS ciphers.
+     * 
+     * @param enabledSSLCiphers the enabled SSL/TLS ciphers 
+     */
+    public void setEnabledSSLCiphers(String[] enabledSSLCiphers) {
+        this.enabledSSLCiphers = enabledSSLCiphers;
+    }
+
+    /**
+     * Return the enabled SSL/TLS ciphers.
+     *
+     * @return the enabled SSL/TLS ciphers
+     */
+    public String[] getEnabledSSLCiphers() {
+        return enabledSSLCiphers;
     }
 
     /**

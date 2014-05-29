@@ -122,6 +122,18 @@ public class SmackException extends Exception {
         }
     }
 
+    public static class SecurityNotPossibleException extends SmackException {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -6836090872690331336L;
+
+        public SecurityNotPossibleException(String message) {
+            super(message);
+        }
+    }
+
     public static class ConnectionException extends SmackException {
 
         /**

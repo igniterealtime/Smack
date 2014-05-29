@@ -209,7 +209,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * 
      */
-    private IOException connectionException;
+    private Exception connectionException;
 
     /**
      * Flag that indicates if the user is currently authenticated with the server.
@@ -435,13 +435,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return userJID;
     }
 
-    protected void setConnectionException(IOException exception) {
-        connectionException = exception;
+    protected void setConnectionException(Exception e) {
+        connectionException = e;
     }
 
-    protected void throwConnectionExceptionOrNoResponse() throws IOException, NoResponseException {
+    protected void throwConnectionExceptionOrNoResponse() throws IOException, NoResponseException, SmackException {
         if (connectionException != null) {
-            throw connectionException;
+            if (connectionException instanceof IOException) {
+                throw (IOException) connectionException;
+            } else if (connectionException instanceof SmackException) {
+                throw (SmackException) connectionException;
+            } else {
+                throw new SmackException(connectionException);
+            }
         } else {
             throw new NoResponseException();
         }

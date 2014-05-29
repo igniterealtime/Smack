@@ -23,9 +23,9 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.SecurityNotPossibleException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -41,6 +41,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism.Success;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -68,9 +69,15 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.Socket;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -578,10 +585,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * The server has indicated that TLS negotiation can start. We now need to secure the
      * existing plain connection and perform a handshake. This method won't return until the
      * connection has finished the handshake or an error occurred while securing the connection.
+     * @throws IOException 
+     * @throws CertificateException 
+     * @throws NoSuchAlgorithmException 
+     * @throws NoSuchProviderException 
+     * @throws KeyStoreException 
+     * @throws UnrecoverableKeyException 
+     * @throws KeyManagementException 
+     * @throws SecurityNotPossibleException 
      *
      * @throws Exception if an exception occurs.
      */
-    private void proceedTLSReceived() throws Exception {
+    private void proceedTLSReceived() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException, UnrecoverableKeyException, KeyManagementException, SecurityNotPossibleException {
         SSLContext context = this.config.getCustomSSLContext();
         KeyStore ks = null;
         KeyManager[] kms = null;
@@ -655,14 +670,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
 
-        try {
-            // Proceed to do the handshake
-            ((SSLSocket) socket).startHandshake();
-        }
-        catch (IOException e) {
-            setConnectionException(e);
-            throw e;
-        }
+        final SSLSocket sslSocket = (SSLSocket) socket;
+        TLSUtils.setEnabledProtocolsAndCiphers(sslSocket, config.getEnabledSSLProtocols(), config.getEnabledSSLCiphers());
+
+        // Proceed to do the handshake
+        sslSocket.startHandshake();
+
         //if (((SSLSocket) socket).getWantClientAuth()) {
         //    System.err.println("XMPPConnection wants client auth");
         //}
@@ -907,11 +920,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * has been established or if the server's features could not be parsed within
          * the connection's PacketReplyTimeout.
          *
-         * @throws NoResponseException if the server fails to send an opening stream back
-         *      within packetReplyTimeout.
          * @throws IOException 
+         * @throws SmackException 
          */
-        synchronized void startup() throws NoResponseException, IOException {
+        synchronized void startup() throws IOException, SmackException {
             readerThread.start();
 
             try {
@@ -1006,11 +1018,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             parseFeatures(parser);
                         }
                         else if (name.equals("proceed")) {
-                            // Secure the connection by negotiating TLS
-                            proceedTLSReceived();
-                            // Reset the state of the parser since a new stream element is going
-                            // to be sent by the server
-                            resetParser();
+                            try {
+                                // Secure the connection by negotiating TLS
+                                proceedTLSReceived();
+                                // Reset the state of the parser since a new stream element is going
+                                // to be sent by the server
+                                resetParser();
+                            }
+                            catch (Exception e) {
+                                setConnectionException(e);
+                                throw e;
+                            }
                         }
                         else if (name.equals("failure")) {
                             String namespace = parser.getNamespace(null);
