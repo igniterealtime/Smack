@@ -1950,12 +1950,6 @@ public class MultiUserChat {
             new AndFilter(
                 FromMatchesFilter.create(room),
                 new MessageTypeFilter(Message.Type.groupchat));
-        messageFilter = new AndFilter(messageFilter, new PacketFilter() {
-            public boolean accept(Packet packet) {
-                Message msg = (Message) packet;
-                return msg.getBody() != null;
-            }
-        });
         presenceFilter =
             new AndFilter(FromMatchesFilter.create(room), new PacketTypeFilter(Presence.class));
 
