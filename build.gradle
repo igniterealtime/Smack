@@ -207,6 +207,12 @@ subprojects {
 	}
 }
 
+subprojects*.jar {
+   manifest {
+       from sharedManifest
+   }
+}
+
 def getGitCommit() {
 	def dotGit = new File("$projectDir/.git")
 	if (!dotGit.isDirectory()) return 'non-git build'
