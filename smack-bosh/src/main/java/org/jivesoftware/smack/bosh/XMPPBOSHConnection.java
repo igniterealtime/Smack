@@ -41,7 +41,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
-import org.jivesoftware.smack.util.StringUtils;
 import org.igniterealtime.jbosh.BOSHClient;
 import org.igniterealtime.jbosh.BOSHClientConfig;
 import org.igniterealtime.jbosh.BOSHClientConnEvent;
@@ -270,7 +269,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         if (response != null) {
             this.user = response;
             // Update the serviceName with the one returned by the server
-            setServiceName(StringUtils.parseServer(response));
+            setServiceName(response);
         } else {
             this.user = username + "@" + getServiceName();
             if (resource != null) {
@@ -319,7 +318,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         // Set the user value.
         this.user = response;
         // Update the serviceName with the one returned by the server
-        setServiceName(StringUtils.parseServer(response));
+        setServiceName(response);
 
         // Set presence to online.
         if (config.isSendPresence()) {

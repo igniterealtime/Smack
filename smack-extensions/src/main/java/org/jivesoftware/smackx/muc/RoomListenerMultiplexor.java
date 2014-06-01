@@ -23,7 +23,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -151,7 +151,7 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
             if (from == null) {
                 return false;
             }
-            return roomAddressTable.containsKey(StringUtils.parseBareAddress(from).toLowerCase(Locale.US));
+            return roomAddressTable.containsKey(XmppStringUtils.parseBareAddress(from).toLowerCase(Locale.US));
         }
 
         public void addRoom(String address) {
@@ -192,7 +192,7 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
             }
 
             PacketMultiplexListener listener =
-                    roomListenersByAddress.get(StringUtils.parseBareAddress(from).toLowerCase(Locale.US));
+                    roomListenersByAddress.get(XmppStringUtils.parseBareAddress(from).toLowerCase(Locale.US));
 
             if (listener != null) {
                 listener.processPacket(p);

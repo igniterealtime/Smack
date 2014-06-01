@@ -26,7 +26,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -249,7 +249,7 @@ public class AgentRoster {
     private String getPresenceMapKey(String user) {
         String key = user;
         if (!contains(user)) {
-            key = StringUtils.parseBareAddress(user).toLowerCase(Locale.US);
+            key = XmppStringUtils.parseBareAddress(user).toLowerCase(Locale.US);
         }
         return key;
     }
@@ -317,13 +317,13 @@ public class AgentRoster {
                 }
                 // Add the new presence, using the resources as a key.
                 synchronized (userPresences) {
-                    userPresences.put(StringUtils.parseResource(from), presence);
+                    userPresences.put(XmppStringUtils.parseResource(from), presence);
                 }
                 // Fire an event.
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = i.next();
-                        if (entry.toLowerCase(Locale.US).equals(StringUtils.parseBareAddress(key).toLowerCase())) {
+                        if (entry.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }
@@ -334,7 +334,7 @@ public class AgentRoster {
                 if (presenceMap.get(key) != null) {
                     Map<String,Presence> userPresences = presenceMap.get(key);
                     synchronized (userPresences) {
-                        userPresences.remove(StringUtils.parseResource(from));
+                        userPresences.remove(XmppStringUtils.parseResource(from));
                     }
                     if (userPresences.isEmpty()) {
                         presenceMap.remove(key);
@@ -344,7 +344,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = (String)i.next();
-                        if (entry.toLowerCase(Locale.US).equals(StringUtils.parseBareAddress(key).toLowerCase())) {
+                        if (entry.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }
@@ -368,8 +368,8 @@ public class AgentRoster {
 
                         // Removing the user from the roster, so remove any presence information
                         // about them.
-                        String key = StringUtils.parseName(StringUtils.parseName(agentJID) + "@" +
-                                StringUtils.parseServer(agentJID));
+                        String key = XmppStringUtils.parseLocalpart(XmppStringUtils.parseLocalpart(agentJID) + "@" +
+                                XmppStringUtils.parseDomain(agentJID));
                         presenceMap.remove(key);
                         // Fire event for roster listeners.
                         fireEvent(EVENT_AGENT_REMOVED, agentJID);

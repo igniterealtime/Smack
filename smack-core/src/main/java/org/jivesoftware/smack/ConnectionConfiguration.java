@@ -21,6 +21,7 @@ import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jxmpp.util.XmppStringUtils;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
@@ -204,6 +205,7 @@ public class ConnectionConfiguration implements Cloneable {
      * @param serviceName the XMPP domain of the target server.
      */
     void setServiceName(String serviceName) {
+        serviceName = XmppStringUtils.parseDomain(serviceName);
         this.serviceName = serviceName;
     }
 

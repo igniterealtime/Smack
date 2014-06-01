@@ -27,6 +27,7 @@ import javax.swing.*;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.*;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * The LiteDebugger is a very simple debugger that allows to debug sent, received and 
@@ -303,15 +304,15 @@ public class LiteDebugger implements SmackDebugger {
     }
 
     public void userHasLogged(String user) {
-        boolean isAnonymous = "".equals(StringUtils.parseName(user));
+        boolean isAnonymous = "".equals(XmppStringUtils.parseLocalpart(user));
         String title =
             "Smack Debug Window -- "
-                + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
+                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
                 + "@"
                 + connection.getServiceName()
                 + ":"
                 + connection.getPort();
-        title += "/" + StringUtils.parseResource(user);
+        title += "/" + XmppStringUtils.parseResource(user);
         frame.setTitle(title);
     }
 

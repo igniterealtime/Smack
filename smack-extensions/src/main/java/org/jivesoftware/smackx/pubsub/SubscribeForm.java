@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UnknownFormatConversionException;
 
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;

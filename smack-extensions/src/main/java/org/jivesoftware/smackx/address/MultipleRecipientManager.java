@@ -26,11 +26,11 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.Cache;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -175,7 +175,7 @@ public class MultipleRecipientManager {
             // Remove the sender from the TO/CC list (try with bare JID too)
             String from = connection.getUser();
             if (!to.remove(from) && !cc.remove(from)) {
-                String bareJID = StringUtils.parseBareAddress(from);
+                String bareJID = XmppStringUtils.parseBareAddress(from);
                 to.remove(bareJID);
                 cc.remove(bareJID);
             }

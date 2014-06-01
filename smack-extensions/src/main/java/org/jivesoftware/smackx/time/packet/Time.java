@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.time.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 
 import java.util.Calendar;
 import java.util.Date;

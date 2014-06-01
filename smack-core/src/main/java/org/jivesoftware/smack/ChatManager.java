@@ -37,7 +37,7 @@ import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
@@ -235,7 +235,7 @@ public class ChatManager extends Manager{
         Chat chat = new Chat(this, userJID, threadID);
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
-        baseJidChats.put(StringUtils.parseBareAddress(userJID), chat);
+        baseJidChats.put(XmppStringUtils.parseBareAddress(userJID), chat);
 
         for(ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
@@ -248,7 +248,7 @@ public class ChatManager extends Manager{
         threadChats.remove(chat.getThreadID());
         String userJID = chat.getParticipant();
         jidChats.remove(userJID);
-        baseJidChats.remove(StringUtils.parseBareAddress(userJID));
+        baseJidChats.remove(XmppStringUtils.parseBareAddress(userJID));
     }
 
     /**
@@ -294,7 +294,7 @@ public class ChatManager extends Manager{
         Chat match = jidChats.get(userJID);
 	
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
-            match = baseJidChats.get(StringUtils.parseBareAddress(userJID));
+            match = baseJidChats.get(XmppStringUtils.parseBareAddress(userJID));
         }
         return match;
     }

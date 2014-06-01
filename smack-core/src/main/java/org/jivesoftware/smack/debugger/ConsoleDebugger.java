@@ -21,6 +21,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.*;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -172,15 +173,15 @@ public class ConsoleDebugger implements SmackDebugger {
     }
 
     public void userHasLogged(String user) {
-        boolean isAnonymous = "".equals(StringUtils.parseName(user));
+        boolean isAnonymous = "".equals(XmppStringUtils.parseLocalpart(user));
         String title =
                 "User logged (" + connection.hashCode() + "): "
-                + (isAnonymous ? "" : StringUtils.parseBareAddress(user))
+                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
                 + "@"
                 + connection.getServiceName()
                 + ":"
                 + connection.getPort();
-        title += "/" + StringUtils.parseResource(user);
+        title += "/" + XmppStringUtils.parseResource(user);
         System.out.println(title);
         // Add the connection listener to the connection so that the debugger can be notified
         // whenever the connection is closed.

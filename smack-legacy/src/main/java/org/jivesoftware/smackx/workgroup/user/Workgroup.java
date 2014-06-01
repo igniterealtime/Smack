@@ -34,11 +34,11 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -664,7 +664,7 @@ public class Workgroup {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
         try {
-            String workgroupService = StringUtils.parseServer(workgroupJID);
+            String workgroupService = XmppStringUtils.parseDomain(workgroupJID);
             DiscoverInfo infoResult = discoManager.discoverInfo(workgroupService);
             return infoResult.containsFeature("jive:email:provider");
         }

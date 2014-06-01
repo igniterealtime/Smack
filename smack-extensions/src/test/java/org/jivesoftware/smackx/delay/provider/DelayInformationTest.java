@@ -29,7 +29,7 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.delay.packet.DelayInfo;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;

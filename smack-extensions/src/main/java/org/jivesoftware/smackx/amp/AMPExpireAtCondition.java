@@ -20,7 +20,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 
 import java.util.Date;

@@ -29,7 +29,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.RosterPacket;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * A group of roster entries.
@@ -122,7 +122,7 @@ public class RosterGroup {
         }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
-        user = StringUtils.parseBareAddress(user);
+        user = XmppStringUtils.parseBareAddress(user);
         String userLowerCase = user.toLowerCase(Locale.US);
         synchronized (entries) {
             for (RosterEntry entry : entries) {

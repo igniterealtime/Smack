@@ -33,7 +33,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingle.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingle.listeners.JingleListener;
@@ -46,6 +45,7 @@ import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingle.nat.TransportResolver;
 import org.jivesoftware.smackx.jingle.packet.Jingle;
 import org.jivesoftware.smackx.jingle.provider.JingleProvider;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Jingle is a session establishment protocol defined in (XEP-0166).
@@ -518,8 +518,7 @@ public class JingleManager implements JingleSessionListener {
      */
     public JingleSession createOutgoingJingleSession(String responder) throws XMPPException {
 
-        if (responder == null || StringUtils.parseName(responder).length() <= 0 || StringUtils.parseServer(responder).length() <= 0
-                || StringUtils.parseResource(responder).length() <= 0) {
+        if (XmppStringUtils.isFullJID(responder)) {
             throw new IllegalArgumentException("The provided user id was not fully qualified");
         }
 

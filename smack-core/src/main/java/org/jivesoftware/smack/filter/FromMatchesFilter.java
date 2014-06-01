@@ -20,7 +20,7 @@ package org.jivesoftware.smack.filter;
 import java.util.Locale;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Filter for packets where the "from" field exactly matches a specified JID. If the specified
@@ -61,7 +61,7 @@ public class FromMatchesFilter implements PacketFilter {
      *        have a from address.
      */
     public static FromMatchesFilter create(String address) {
-        return new FromMatchesFilter(address, "".equals(StringUtils.parseResource(address))) ;
+        return new FromMatchesFilter(address, "".equals(XmppStringUtils.parseResource(address))) ;
     }
 
     /**
@@ -72,7 +72,7 @@ public class FromMatchesFilter implements PacketFilter {
      *        have a from address.
      */
     public static FromMatchesFilter createBare(String address) {
-        address = (address == null) ? null : StringUtils.parseBareAddress(address);
+        address = (address == null) ? null : XmppStringUtils.parseBareAddress(address);
         return new FromMatchesFilter(address, true);
     }
 
@@ -96,7 +96,7 @@ public class FromMatchesFilter implements PacketFilter {
         // Simplest form of NAMEPREP/STRINGPREP
         from = from.toLowerCase(Locale.US);
         if (matchBareJID) {
-            from = StringUtils.parseBareAddress(from);
+            from = XmppStringUtils.parseBareAddress(from);
         }
         return from.equals(address);
     }

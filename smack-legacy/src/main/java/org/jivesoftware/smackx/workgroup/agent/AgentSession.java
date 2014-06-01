@@ -39,7 +39,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -478,7 +478,7 @@ public class AgentSession {
      * @throws SmackException 
      */
     public Form getTranscriptSearchForm() throws XMPPException, SmackException {
-        return transcriptSearchManager.getSearchForm(StringUtils.parseServer(workgroupJID));
+        return transcriptSearchManager.getSearchForm(XmppStringUtils.parseDomain(workgroupJID));
     }
 
     /**
@@ -492,7 +492,7 @@ public class AgentSession {
      * @throws XMPPException 
      */
     public ReportedData searchTranscripts(Form completedForm) throws XMPPException, SmackException {
-        return transcriptSearchManager.submitSearch(StringUtils.parseServer(workgroupJID),
+        return transcriptSearchManager.submitSearch(XmppStringUtils.parseDomain(workgroupJID),
                 completedForm);
     }
 
@@ -686,7 +686,7 @@ public class AgentSession {
             // check for different packet extensions to see what type of presence
             // packet it is.
 
-            String queueName = StringUtils.parseResource(presence.getFrom());
+            String queueName = XmppStringUtils.parseResource(presence.getFrom());
             WorkgroupQueue queue = queues.get(queueName);
             // If there isn't already an entry for the queue, create a new one.
             if (queue == null) {

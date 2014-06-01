@@ -43,6 +43,13 @@ allprojects {
 			downloadJavadoc = true
 		}
 	}
+
+	repositories {
+		// Add OSS Sonatype Snapshot repository
+		maven {
+			url 'https://oss.sonatype.org/content/repositories/snapshots'
+		}
+	}
 }
 
 gradle.taskGraph.whenReady { taskGraph ->

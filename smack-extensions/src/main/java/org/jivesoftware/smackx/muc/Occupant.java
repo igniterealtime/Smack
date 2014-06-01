@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Represents the information about an occupant in a given room. The information will always have
@@ -53,7 +53,7 @@ public class Occupant {
         this.affiliation = item.getAffiliation();
         this.role = item.getRole();
         // Get the nickname from the FROM attribute of the presence
-        this.nick = StringUtils.parseResource(presence.getFrom());
+        this.nick = XmppStringUtils.parseResource(presence.getFrom());
     }
 
     /**

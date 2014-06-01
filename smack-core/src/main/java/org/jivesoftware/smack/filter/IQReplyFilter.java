@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Filters for packets which are a valid reply to an IQ request.
@@ -102,7 +102,7 @@ public class IQReplyFilter implements PacketFilter {
                 fromFilter.addFilter(FromMatchesFilter.createBare(local));
             fromFilter.addFilter(FromMatchesFilter.createFull(server));
         }
-        else if (local != null && to.toLowerCase(Locale.US).equals(StringUtils.parseBareAddress(local))) {
+        else if (local != null && to.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(local))) {
             fromFilter.addFilter(FromMatchesFilter.createFull(null));
         }
     }

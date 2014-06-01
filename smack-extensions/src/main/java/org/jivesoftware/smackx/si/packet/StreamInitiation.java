@@ -21,7 +21,7 @@ import java.util.Date;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**

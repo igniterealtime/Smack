@@ -25,8 +25,8 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +136,7 @@ public class FileTransferManager {
         // We need to create outgoing file transfers with a full JID since this method will later
         // use XEP-0095 to negotiate the stream. This is done with IQ stanzas that need to be addressed to a full JID
         // in order to reach an client entity.
-        else if (!StringUtils.isFullJID(userID)) {
+        else if (!XmppStringUtils.isFullJID(userID)) {
             throw new IllegalArgumentException("The provided user id was not a full JID (i.e. with resource part)");
         }
 

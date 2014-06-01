@@ -46,7 +46,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
@@ -488,7 +488,7 @@ public class Roster {
      *         or if no presence information is available..
      */
     public Presence getPresence(String user) {
-        String key = getPresenceMapKey(StringUtils.parseBareAddress(user));
+        String key = getPresenceMapKey(XmppStringUtils.parseBareAddress(user));
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
@@ -548,7 +548,7 @@ public class Roster {
      */
     public Presence getPresenceResource(String userWithResource) {
         String key = getPresenceMapKey(userWithResource);
-        String resource = StringUtils.parseResource(userWithResource);
+        String resource = XmppStringUtils.parseResource(userWithResource);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
@@ -626,7 +626,7 @@ public class Roster {
         }
         String key = user;
         if (!contains(user)) {
-            key = StringUtils.parseBareAddress(user);
+            key = XmppStringUtils.parseBareAddress(user);
         }
         return key.toLowerCase(Locale.US);
     }
@@ -749,7 +749,7 @@ public class Roster {
         String user = entry.getUser();
         entries.remove(user);
         unfiledEntries.remove(entry);
-        presenceMap.remove(StringUtils.parseBareAddress(user));
+        presenceMap.remove(XmppStringUtils.parseBareAddress(user));
         deletedEntries.add(user);
 
         for (Entry<String,RosterGroup> e: groups.entrySet()) {
@@ -844,7 +844,7 @@ public class Roster {
                 // it since we now have an online presence.
                 userPresences.remove("");
                 // Add the new presence, using the resources as a key.
-                userPresences.put(StringUtils.parseResource(from), presence);
+                userPresences.put(XmppStringUtils.parseResource(from), presence);
                 // If the user is in the roster, fire an event.
                 RosterEntry entry = entries.get(key);
                 if (entry != null) {
@@ -855,7 +855,7 @@ public class Roster {
             else if (presence.getType() == Presence.Type.unavailable) {
                 // If no resource, this is likely an offline presence as part of
                 // a roster presence flood. In that case, we store it.
-                if ("".equals(StringUtils.parseResource(from))) {
+                if ("".equals(XmppStringUtils.parseResource(from))) {
                     Map<String, Presence> userPresences;
                     // Get the user presence map
                     if (presenceMap.get(key) == null) {
@@ -872,7 +872,7 @@ public class Roster {
                     Map<String, Presence> userPresences = presenceMap.get(key);
                     // Store the offline presence, as it may include extra information
                     // such as the user being on vacation.
-                    userPresences.put(StringUtils.parseResource(from), presence);
+                    userPresences.put(XmppStringUtils.parseResource(from), presence);
                 }
                 // If the user is in the roster, fire an event.
                 RosterEntry entry = entries.get(key);
@@ -915,7 +915,7 @@ public class Roster {
             // Error presence packets from a bare JID mean we invalidate all existing
             // presence info for the user.
             else if (presence.getType() == Presence.Type.error &&
-                    "".equals(StringUtils.parseResource(from)))
+                    "".equals(XmppStringUtils.parseResource(from)))
             {
                 Map<String, Presence> userPresences;
                 if (!presenceMap.containsKey(key)) {
@@ -1032,7 +1032,7 @@ public class Roster {
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
-            String jid = StringUtils.parseBareAddress(connection.getUser());
+            String jid = XmppStringUtils.parseBareAddress(connection.getUser());
             if (rosterPacket.getFrom() != null &&
                     !rosterPacket.getFrom().equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid=" + jid

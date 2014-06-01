@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.delay.packet;
 
 import java.util.Date;
 
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * A decorator for the {@link DelayInformation} class to transparently support

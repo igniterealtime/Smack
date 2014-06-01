@@ -21,7 +21,7 @@ import java.util.Date;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.util.XmppDateTime;
+import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.xmlpull.v1.XmlPullParser;
 
