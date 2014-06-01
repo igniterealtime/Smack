@@ -53,6 +53,15 @@ import org.jivesoftware.smack.packet.Session;
 public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(AbstractXMPPConnection.class.getName());
 
+    /**
+     * Possible default debugger implementations. The order of enumeration is the one in which we try
+     * to instantiate these.
+     */
+    private static final String[] DEBUGGERS = new String[] {
+                    "org.jivesoftware.smackx.debugger.EnhancedDebugger",
+                    "org.jivesoftware.smackx.debugger.android.AndroidDebugger",
+                    "org.jivesoftware.smack.debugger.LiteDebugger" };
+
     /** 
      * Counter to uniquely identify connections that are created.
      */
@@ -794,31 +803,39 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     }
                 }
                 if (debuggerClass == null) {
-                    try {
-                        debuggerClass =
-                                Class.forName("org.jivesoftware.smackx.debugger.EnhancedDebugger");
-                    }
-                    catch (Exception ex) {
+                    for (String debugger : DEBUGGERS) {
                         try {
-                            debuggerClass =
-                                    Class.forName("org.jivesoftware.smack.debugger.LiteDebugger");
+                            debuggerClass = Class.forName(debugger);
                         }
-                        catch (Exception ex2) {
+                        catch (ClassNotFoundException cnfe) {
+                            LOGGER.fine("Did not find debugger class '" + debugger + "'");
+                        }
+                        catch (Exception ex) {
                             LOGGER.warning("Unabled to instantiate either Smack debugger class");
                         }
+                        if (debuggerClass != null) {
+                            // We found a debugger, let's use it
+                            break;
+                        }
                     }
                 }
-                // Create a new debugger instance. If an exception occurs then disable the debugging
-                // option
-                try {
-                    Constructor<?> constructor = debuggerClass
-                            .getConstructor(XMPPConnection.class, Writer.class, Reader.class);
-                    debugger = (SmackDebugger) constructor.newInstance(this, writer, reader);
-                    reader = debugger.getReader();
-                    writer = debugger.getWriter();
-                }
-                catch (Exception e) {
-                    throw new IllegalArgumentException("Can't initialize the configured debugger!", e);
+                if (debuggerClass != null) {
+                    // Create a new debugger instance. If an exception occurs then disable the
+                    // debugging
+                    // option
+                    try {
+                        Constructor<?> constructor = debuggerClass.getConstructor(
+                                        XMPPConnection.class, Writer.class, Reader.class);
+                        debugger = (SmackDebugger) constructor.newInstance(this, writer, reader);
+                        reader = debugger.getReader();
+                        writer = debugger.getWriter();
+                    }
+                    catch (Exception e) {
+                        throw new IllegalArgumentException(
+                                        "Can't initialize the configured debugger!", e);
+                    }
+                } else {
+                    LOGGER.severe("Debugging enabled but could not find debugger class");
                 }
             }
             else {
