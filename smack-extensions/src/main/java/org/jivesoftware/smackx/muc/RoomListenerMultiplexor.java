@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -25,7 +25,6 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -40,16 +39,14 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Larry Kirschner
  */
-class RoomListenerMultiplexor extends AbstractConnectionListener {
+class RoomListenerMultiplexor extends Manager {
 
     // We use a WeakHashMap so that the GC can collect the monitor when the
     // connection is no longer referenced by any object.
-    private static final Map<XMPPConnection, WeakReference<RoomListenerMultiplexor>> monitors =
-            new WeakHashMap<XMPPConnection, WeakReference<RoomListenerMultiplexor>>();
+    private static final Map<XMPPConnection, RoomListenerMultiplexor> monitors = new WeakHashMap<XMPPConnection, RoomListenerMultiplexor>();
 
-    private XMPPConnection connection;
-    private RoomMultiplexFilter filter;
-    private RoomMultiplexListener listener;
+    private final RoomMultiplexFilter filter;
+    private final RoomMultiplexListener listener;
 
     /**
      * Returns a new or existing RoomListenerMultiplexor for a given connection.
@@ -57,22 +54,14 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
      * @param conn the connection to monitor for room invitations.
      * @return a new or existing RoomListenerMultiplexor for a given connection.
      */
-    public static RoomListenerMultiplexor getRoomMultiplexor(XMPPConnection conn) {
-        synchronized (monitors) {
-            if (!monitors.containsKey(conn) || monitors.get(conn).get() == null) {
-                RoomListenerMultiplexor rm = new RoomListenerMultiplexor(conn, new RoomMultiplexFilter(),
-                        new RoomMultiplexListener());
-
-                rm.init();
-
-                // We need to use a WeakReference because the monitor references the
-                // connection and this could prevent the GC from collecting the monitor
-                // when no other object references the monitor
-                monitors.put(conn, new WeakReference<RoomListenerMultiplexor>(rm));
-            }
-            // Return the InvitationsMonitor that monitors the connection
-            return monitors.get(conn).get();
+    public static synchronized RoomListenerMultiplexor getRoomMultiplexor(XMPPConnection conn) {
+        RoomListenerMultiplexor rlm = monitors.get(conn);
+        if (rlm == null) {
+            rlm = new RoomListenerMultiplexor(conn, new RoomMultiplexFilter(),
+                            new RoomMultiplexListener());
         }
+        // Return the InvitationsMonitor that monitors the connection
+        return rlm;
     }
 
     /**
@@ -81,18 +70,12 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
      */
     private RoomListenerMultiplexor(XMPPConnection connection, RoomMultiplexFilter filter,
             RoomMultiplexListener listener) {
-        if (connection == null) {
-            throw new IllegalArgumentException("XMPPConnection is null");
-        }
-        if (filter == null) {
-            throw new IllegalArgumentException("Filter is null");
-        }
-        if (listener == null) {
-            throw new IllegalArgumentException("Listener is null");
-        }
-        this.connection = connection;
+        super(connection);
+        connection.addPacketListener(listener, filter);
+
         this.filter = filter;
         this.listener = listener;
+        monitors.put(connection, this);
     }
 
     public void addRoom(String address, PacketMultiplexListener roomListener) {
@@ -100,38 +83,9 @@ class RoomListenerMultiplexor extends AbstractConnectionListener {
         listener.addRoom(address, roomListener);
     }
 
-    @Override
-    public void connectionClosed() {
-        cancel();
-    }
-
-    @Override
-    public void connectionClosedOnError(Exception e) {
-        cancel();
-    }
-
-    /**
-     * Initializes the listeners to detect received room invitations and to detect when the
-     * connection gets closed. As soon as a room invitation is received the invitations
-     * listeners will be fired. When the connection gets closed the monitor will remove
-     * his listeners on the connection.
-     */
-    public void init() {
-        connection.addConnectionListener(this);
-        connection.addPacketListener(listener, filter);
-    }
-
     public void removeRoom(String address) {
         filter.removeRoom(address);
         listener.removeRoom(address);
-    }
-
-    /**
-     * Cancels all the listeners that this InvitationsMonitor has added to the connection.
-     */
-    private void cancel() {
-        connection.removeConnectionListener(this);
-        connection.removePacketListener(listener);
     }
 
     /**
