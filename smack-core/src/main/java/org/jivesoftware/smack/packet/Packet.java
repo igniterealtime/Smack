@@ -130,13 +130,6 @@ public abstract class Packet {
      * the value is not set. The XMPP protocol often makes the "to"
      * attribute optional, so it does not always need to be set.<p>
      *
-     * The StringUtils class provides several useful methods for dealing with
-     * XMPP addresses such as parsing the
-     * {@link StringUtils#parseBareAddress(String) bare address},
-     * {@link StringUtils#parseName(String) user name},
-     * {@link StringUtils#parseServer(String) server}, and
-     * {@link StringUtils#parseResource(String) resource}.  
-     *
      * @return who the packet is being sent to, or <tt>null</tt> if the
      *      value has not been set.
      */
@@ -158,13 +151,6 @@ public abstract class Packet {
      * Returns who the packet is being sent "from" or <tt>null</tt> if
      * the value is not set. The XMPP protocol often makes the "from"
      * attribute optional, so it does not always need to be set.<p>
-     *
-     * The StringUtils class provides several useful methods for dealing with
-     * XMPP addresses such as parsing the
-     * {@link StringUtils#parseBareAddress(String) bare address},
-     * {@link StringUtils#parseName(String) user name},
-     * {@link StringUtils#parseServer(String) server}, and
-     * {@link StringUtils#parseResource(String) resource}.  
      *
      * @return who the packet is being sent from, or <tt>null</tt> if the
      *      value has not been set.
