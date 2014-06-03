@@ -14,11 +14,11 @@ dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
 	compile "org.igniterealtime.jxmpp:jxmpp-core:$jxmppVersion"
 	//	compile "org.igniterealtime.jxmpp:jxmpp-jid:$jxmppVersion"
-	testCompile 'junit:junit:4.+'
+	testCompile 'junit:junit:4.11'
 	testCompile 'xmlunit:xmlunit:1.5'
-	testCompile 'org.powermock:powermock-module-junit4:1.5.+'
-	testCompile 'org.powermock:powermock-api-mockito:1.5.+'
-	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6+'
+	testCompile 'org.powermock:powermock-module-junit4:1.5.5'
+	testCompile 'org.powermock:powermock-api-mockito:1.5.5'
+	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6'
 }
 
 task compressionJar(type: Jar) {
