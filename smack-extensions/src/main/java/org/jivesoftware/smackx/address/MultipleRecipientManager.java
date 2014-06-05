@@ -22,6 +22,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -310,8 +311,14 @@ public class MultipleRecipientManager {
                         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                                         serviceName);
                         for (DiscoverItems.Item item : items.getItems()) {
-                            info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
-                                            item.getEntityID(), item.getNode());
+                            try {
+                                info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
+                                                item.getEntityID(), item.getNode());
+                            }
+                            catch (XMPPErrorException|NoResponseException e) {
+                                // Don't throw this exceptions if one of the server's items fail
+                                continue;
+                            }
                             if (info.containsFeature("http://jabber.org/protocol/address")) {
                                 serviceAddress = serviceName;
                                 break;
