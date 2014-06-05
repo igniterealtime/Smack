@@ -240,8 +240,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         config = configuration;
     }
 
-    @Override
-    public ConnectionConfiguration getConfiguration() {
+    protected ConnectionConfiguration getConfiguration() {
         return config;
     }
 
@@ -1088,5 +1087,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         finally {
             super.finalize();
         }
+    }
+
+    @Override
+    public RosterStore getRosterStore() {
+        return config.getRosterStore();
+    }
+
+    @Override
+    public boolean isRosterLoadedAtLogin() {
+        return config.isRosterLoadedAtLogin();
     }
 }

@@ -122,7 +122,7 @@ public class Roster {
      */
     Roster(final XMPPConnection connection) {
         this.connection = connection;
-        rosterStore = connection.getConfiguration().getRosterStore();
+        rosterStore = connection.getRosterStore();
         // Listen for any roster packets.
         connection.addPacketListener(new RosterPushListener(), ROSTER_PUSH_FILTER);
         // Listen for any presence packets.
@@ -168,7 +168,7 @@ public class Roster {
                 // again if it's an anonymous connection.
                 if (connection.isAnonymous())
                     return;
-                if (!connection.getConfiguration().isRosterLoadedAtLogin())
+                if (!connection.isRosterLoadedAtLogin())
                     return;
                 try {
                     Roster.this.reload();

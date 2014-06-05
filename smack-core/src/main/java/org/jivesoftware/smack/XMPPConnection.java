@@ -142,13 +142,6 @@ public interface XMPPConnection {
     public boolean isUsingCompression();
 
     /**
-     * Returns the configuration used to connect to the server.
-     * 
-     * @return the configuration used to connect to the server.
-     */
-    public ConnectionConfiguration getConfiguration();
-
-    /**
      * Sends the specified packet to the server.
      * 
      * @param packet the packet to send.
@@ -349,4 +342,19 @@ public interface XMPPConnection {
      * @return the currently active {@link FromMode}
      */
     public FromMode getFromMode();
+
+    /**
+     * Get the permanent roster store.
+     * @return the permanent roster store or null
+     */
+    public RosterStore getRosterStore();
+
+    /**
+     * Returns true if the roster will be loaded from the server when logging in. This
+     * is the common behaviour for clients but sometimes clients may want to differ this
+     * or just never do it if not interested in rosters.
+     *
+     * @return true if the roster will be loaded from the server when logging in.
+     */
+    public boolean isRosterLoadedAtLogin();
 }
