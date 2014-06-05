@@ -29,6 +29,7 @@ public enum SASLError {
     invalid_authzid,
     invalid_mechanism,
     malformed_request,
+    mechanism_too_weak,
     not_authorized,
     temporary_auth_failure;
 
