@@ -30,6 +30,9 @@ import java.util.List;
  */
 public class MultipleAddresses implements PacketExtension {
 
+    public static final String NAMESPACE = "http://jabber.org/protocol/address";
+    public static final String ELEMENT = "addresses";
+
     public static final String BCC = "bcc";
     public static final String CC = "cc";
     public static final String NO_REPLY = "noreply";
@@ -94,17 +97,17 @@ public class MultipleAddresses implements PacketExtension {
     }
 
     public String getElementName() {
-        return "addresses";
+        return ELEMENT;
     }
 
     public String getNamespace() {
-        return "http://jabber.org/protocol/address";
+        return NAMESPACE;
     }
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<").append(getElementName());
-        buf.append(" xmlns=\"").append(getNamespace()).append("\">");
+        buf.append(" xmlns=\"").append(NAMESPACE).append("\">");
         // Loop through all the addresses and append them to the string buffer
         for (Iterator<Address> i = addresses.iterator(); i.hasNext();) {
             Address address = (Address) i.next();
