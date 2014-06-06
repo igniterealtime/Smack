@@ -43,7 +43,7 @@ public class Time extends IQ {
     private String tzo;
 
     public Time() {
-        setType(Type.GET);
+        setType(Type.get);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Time extends IQ {
 
     public static Time createResponse(Packet request) {
         Time time = new Time(Calendar.getInstance());
-        time.setType(Type.RESULT);
+        time.setType(Type.result);
         time.setTo(request.getFrom());
         return time;
     }

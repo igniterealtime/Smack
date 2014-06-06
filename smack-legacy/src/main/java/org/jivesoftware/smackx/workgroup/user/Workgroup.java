@@ -567,7 +567,7 @@ public class Workgroup {
             this.userID = userID;
 
             setTo(workgroup);
-            setType(IQ.Type.SET);
+            setType(IQ.Type.set);
 
             form = answerForm.getDataFormToSend();
             addExtension(form);
@@ -645,7 +645,7 @@ public class Workgroup {
         if (type != -1) {
             request.setType(type);
         }
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         ChatSettings response = (ChatSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -683,7 +683,7 @@ public class Workgroup {
      */
     public OfflineSettings getOfflineSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
         OfflineSettings request = new OfflineSettings();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         OfflineSettings response = (OfflineSettings) connection.createPacketCollectorAndSend(
@@ -701,7 +701,7 @@ public class Workgroup {
      */
     public SoundSettings getSoundSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
         SoundSettings request = new SoundSettings();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         SoundSettings response = (SoundSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -718,7 +718,7 @@ public class Workgroup {
      */
     public WorkgroupProperties getWorkgroupProperties() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         WorkgroupProperties request = new WorkgroupProperties();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         WorkgroupProperties response = (WorkgroupProperties) connection.createPacketCollectorAndSend(
@@ -738,7 +738,7 @@ public class Workgroup {
     public WorkgroupProperties getWorkgroupProperties(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
         WorkgroupProperties request = new WorkgroupProperties();
         request.setJid(jid);
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         WorkgroupProperties response = (WorkgroupProperties) connection.createPacketCollectorAndSend(
@@ -759,7 +759,7 @@ public class Workgroup {
      */
     public Form getWorkgroupForm() throws NoResponseException, XMPPErrorException, NotConnectedException {
         WorkgroupForm workgroupForm = new WorkgroupForm();
-        workgroupForm.setType(IQ.Type.GET);
+        workgroupForm.setType(IQ.Type.get);
         workgroupForm.setTo(workgroupJID);
 
         WorkgroupForm response = (WorkgroupForm) connection.createPacketCollectorAndSend(

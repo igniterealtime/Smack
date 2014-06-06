@@ -149,7 +149,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
 
                 // packet must by of type SET and contains the given session ID
                 return this.sessionID.equals(bytestream.getSessionID())
-                                && IQ.Type.SET.equals(bytestream.getType());
+                                && IQ.Type.set.equals(bytestream.getType());
             }
             return false;
         }

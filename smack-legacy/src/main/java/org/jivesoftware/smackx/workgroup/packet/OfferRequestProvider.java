@@ -100,7 +100,7 @@ public class OfferRequestProvider implements IQProvider {
 
         OfferRequestPacket offerRequest =
                 new OfferRequestPacket(userJID, userID, timeout, metaData, sessionID, content);
-        offerRequest.setType(IQ.Type.SET);
+        offerRequest.setType(IQ.Type.set);
 
         return offerRequest;
     }

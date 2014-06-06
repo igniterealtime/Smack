@@ -435,7 +435,7 @@ public class EntityCapsManager extends Manager {
         XMPPConnection connection = connection();
 
         DiscoverInfo discoverInfo = new DiscoverInfo();
-        discoverInfo.setType(IQ.Type.RESULT);
+        discoverInfo.setType(IQ.Type.result);
         discoverInfo.setNode(getLocalNodeVer());
         if (connection != null)
             discoverInfo.setFrom(connection.getUser());

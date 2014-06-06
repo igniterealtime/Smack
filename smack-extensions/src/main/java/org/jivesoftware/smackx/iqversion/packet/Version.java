@@ -29,7 +29,7 @@ import org.jivesoftware.smack.util.StringUtils;
  * <pre>
  * // Request the version from the server.
  * Version versionRequest = new Version();
- * timeRequest.setType(IQ.Type.GET);
+ * timeRequest.setType(IQ.Type.get);
  * timeRequest.setTo("example.com");
  *
  * // Create a packet collector to listen for a response.
@@ -40,7 +40,7 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * // Wait up to 5 seconds for a result.
  * IQ result = (IQ)collector.nextResult(5000);
- * if (result != null && result.getType() == IQ.Type.RESULT) {
+ * if (result != null && result.getType() == IQ.Type.result) {
  *     Version versionResult = (Version)result;
  *     // Do something with result...
  * }</pre><p>
@@ -62,7 +62,7 @@ public class Version extends IQ {
      * @param os The operating system of the queried entity. This element is OPTIONAL.
      */
     public Version(String name, String version, String os) {
-        this.setType(IQ.Type.RESULT);
+        this.setType(IQ.Type.result);
         this.name = name;
         this.version = version;
         this.os = os;

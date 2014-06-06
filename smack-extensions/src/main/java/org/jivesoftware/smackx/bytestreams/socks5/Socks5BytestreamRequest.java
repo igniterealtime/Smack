@@ -294,7 +294,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     private Bytestream createUsedHostResponse(StreamHost selectedHost) {
         Bytestream response = new Bytestream(this.bytestreamRequest.getSessionID());
         response.setTo(this.bytestreamRequest.getFrom());
-        response.setType(IQ.Type.RESULT);
+        response.setType(IQ.Type.result);
         response.setPacketID(this.bytestreamRequest.getPacketID());
         response.setUsedHost(selectedHost.getJID());
         return response;

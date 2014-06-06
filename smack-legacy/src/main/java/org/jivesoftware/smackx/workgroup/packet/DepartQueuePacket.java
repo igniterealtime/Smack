@@ -54,7 +54,7 @@ public class DepartQueuePacket extends IQ {
         this.user = user;
 
         setTo(workgroup);
-        setType(IQ.Type.SET);
+        setType(IQ.Type.set);
         setFrom(user);
     }
 

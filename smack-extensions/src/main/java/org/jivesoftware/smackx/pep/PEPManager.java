@@ -111,7 +111,7 @@ public class PEPManager {
     public void publish(PEPItem item) throws NotConnectedException {
         // Create a new message to publish the event.
         PEPPubSub pubSub = new PEPPubSub(item);
-        pubSub.setType(Type.SET);
+        pubSub.setType(Type.set);
         //pubSub.setFrom(connection.getUser());
  
         // Send the message that contains the roster

@@ -143,7 +143,7 @@ public class JingleManagerTest extends SmackTestCase {
                 if (pin instanceof IQ) {
                     System.out.println("packet: " + pin.toXML());
                     IQ iq = (IQ) pin;
-                    if (iq.getType().equals(IQ.Type.SET)) {
+                    if (iq.getType().equals(IQ.Type.set)) {
                         System.out.println("packet");
                         if (iq instanceof Jingle) {
                             Jingle jin = (Jingle) pin;
@@ -172,7 +172,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         iqSent.setTo(getFullJID(0));
         iqSent.setFrom(getFullJID(0));
-        iqSent.setType(IQ.Type.SET);
+        iqSent.setType(IQ.Type.set);
 
         System.out.println("Sending packet and waiting... ");
         getConnection(1).sendPacket(iqSent);

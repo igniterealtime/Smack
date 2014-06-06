@@ -303,7 +303,7 @@ public class Roster {
 
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
-        rosterPacket.setType(IQ.Type.SET);
+        rosterPacket.setType(IQ.Type.set);
         RosterPacket.Item item = new RosterPacket.Item(user, name);
         if (groups != null) {
             for (String group : groups) {
@@ -348,7 +348,7 @@ public class Roster {
             return;
         }
         RosterPacket packet = new RosterPacket();
-        packet.setType(IQ.Type.SET);
+        packet.setType(IQ.Type.set);
         RosterPacket.Item item = RosterEntry.toRosterItem(entry);
         // Set the item type as REMOVE so that the server will delete the entry
         item.setItemType(RosterPacket.ItemType.remove);
@@ -951,7 +951,7 @@ public class Roster {
             connection.removePacketListener(this);
 
             IQ result = (IQ)packet;
-            if (!result.getType().equals(IQ.Type.RESULT)) {
+            if (!result.getType().equals(IQ.Type.result)) {
                 LOGGER.severe("Roster result IQ not of type result. Packet: " + result.toXML());
                 return;
             }

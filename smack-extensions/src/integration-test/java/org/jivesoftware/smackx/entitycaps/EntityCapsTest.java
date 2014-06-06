@@ -90,7 +90,7 @@ public class EntityCapsTest extends SmackTestCase {
                 discoInfoSend = true;
             }
 
-        }, new AndFilter(new PacketTypeFilter(DiscoverInfo.class), new IQTypeFilter(IQ.Type.GET)));
+        }, new AndFilter(new PacketTypeFilter(DiscoverInfo.class), new IQTypeFilter(IQ.Type.get)));
 
         // add a bogus feature so that con1 ver won't match con0's
         sdm1.addFeature(DISCOVER_TEST_FEATURE);

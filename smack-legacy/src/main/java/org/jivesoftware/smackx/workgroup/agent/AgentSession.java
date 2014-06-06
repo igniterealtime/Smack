@@ -509,7 +509,7 @@ public class AgentSession {
      */
     public OccupantsInfo getOccupantsInfo(String roomID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         OccupantsInfo request = new OccupantsInfo(roomID);
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         OccupantsInfo response = (OccupantsInfo) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -674,7 +674,7 @@ public class AgentSession {
             };
             reply.setPacketID(packet.getPacketID());
             reply.setTo(packet.getFrom());
-            reply.setType(IQ.Type.RESULT);
+            reply.setType(IQ.Type.result);
             connection.sendPacket(reply);
 
             fireOfferRequestEvent((OfferRequestProvider.OfferRequestPacket)packet);
@@ -769,7 +769,7 @@ public class AgentSession {
                 }
             };
             reply.setPacketID(packet.getPacketID());
-            reply.setType(IQ.Type.RESULT);
+            reply.setType(IQ.Type.result);
             connection.sendPacket(reply);
 
             fireOfferRevokeEvent((OfferRevokeProvider.OfferRevokePacket)packet);
@@ -787,7 +787,7 @@ public class AgentSession {
      */
     public void setNote(String sessionID, String note) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         ChatNotes notes = new ChatNotes();
-        notes.setType(IQ.Type.SET);
+        notes.setType(IQ.Type.set);
         notes.setTo(workgroupJID);
         notes.setSessionID(sessionID);
         notes.setNotes(note);
@@ -805,7 +805,7 @@ public class AgentSession {
      */
     public ChatNotes getNote(String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         ChatNotes request = new ChatNotes();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
@@ -831,7 +831,7 @@ public class AgentSession {
             request = new AgentChatHistory(jid, maxSessions);
         }
 
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         AgentChatHistory response = (AgentChatHistory) connection.createPacketCollectorAndSend(
@@ -850,7 +850,7 @@ public class AgentSession {
      */
     public SearchSettings getSearchSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
         SearchSettings request = new SearchSettings();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         SearchSettings response = (SearchSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -868,7 +868,7 @@ public class AgentSession {
      */
     public MacroGroup getMacros(boolean global) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Macros request = new Macros();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
         request.setPersonal(!global);
 
@@ -886,7 +886,7 @@ public class AgentSession {
      */
     public void saveMacros(MacroGroup group) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Macros request = new Macros();
-        request.setType(IQ.Type.SET);
+        request.setType(IQ.Type.set);
         request.setTo(workgroupJID);
         request.setPersonal(true);
         request.setPersonalMacroGroup(group);
@@ -904,7 +904,7 @@ public class AgentSession {
      */
     public Map<String, List<String>> getChatMetadata(String sessionID) throws XMPPException, NotConnectedException {
         ChatMetadata request = new ChatMetadata();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
@@ -950,7 +950,7 @@ public class AgentSession {
                 return invitation.toXML();
             }
         };
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
@@ -992,7 +992,7 @@ public class AgentSession {
                 return transfer.toXML();
             }
         };
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
@@ -1011,7 +1011,7 @@ public class AgentSession {
      */
     public GenericSettings getGenericSettings(XMPPConnection con, String query) throws NoResponseException, XMPPErrorException, NotConnectedException {
         GenericSettings setting = new GenericSettings();
-        setting.setType(IQ.Type.GET);
+        setting.setType(IQ.Type.get);
         setting.setTo(workgroupJID);
 
         GenericSettings response = (GenericSettings) connection.createPacketCollectorAndSend(
@@ -1021,7 +1021,7 @@ public class AgentSession {
 
     public boolean hasMonitorPrivileges(XMPPConnection con) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         MonitorPacket request = new MonitorPacket();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
         MonitorPacket response = (MonitorPacket) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -1030,7 +1030,7 @@ public class AgentSession {
 
     public void makeRoomOwner(XMPPConnection con, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         MonitorPacket request = new MonitorPacket();
-        request.setType(IQ.Type.SET);
+        request.setType(IQ.Type.set);
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 

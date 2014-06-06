@@ -134,7 +134,7 @@ public class RosterVersioningTest {
             RosterPacket sentRP = (RosterPacket)sentPacket;
             RosterPacket answer = new RosterPacket();
             answer.setPacketID(sentRP.getPacketID());
-            answer.setType(Type.RESULT);
+            answer.setType(Type.result);
             answer.setTo(sentRP.getFrom());
 
             answer.setVersion("newVersion");
@@ -173,7 +173,7 @@ public class RosterVersioningTest {
         {
             RosterPacket rosterPush = new RosterPacket();
             rosterPush.setTo("rostertest@example.com/home");
-            rosterPush.setType(Type.SET);
+            rosterPush.setType(Type.set);
             rosterPush.setVersion("v97");
 
             Item pushedItem = vaglafItem();
@@ -197,7 +197,7 @@ public class RosterVersioningTest {
         {
             RosterPacket rosterPush = new RosterPacket();
             rosterPush.setTo("rostertest@example.com/home");
-            rosterPush.setType(Type.SET);
+            rosterPush.setType(Type.set);
             rosterPush.setVersion("v98");
 
             Item item = new Item("vaglaf@example.com", "vaglaf the only");

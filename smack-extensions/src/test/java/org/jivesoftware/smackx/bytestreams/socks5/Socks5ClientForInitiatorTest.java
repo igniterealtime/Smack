@@ -204,7 +204,7 @@ public class Socks5ClientForInitiatorTest {
             }
 
         };
-        error.setType(Type.ERROR);
+        error.setType(Type.error);
         error.setFrom(proxyJID);
         error.setTo(initiatorJID);
         error.setError(xmppError);
@@ -259,7 +259,7 @@ public class Socks5ClientForInitiatorTest {
         };
         activationResponse.setFrom(proxyJID);
         activationResponse.setTo(initiatorJID);
-        activationResponse.setType(IQ.Type.RESULT);
+        activationResponse.setType(IQ.Type.result);
 
         protocol.addResponse(activationResponse, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET, new Verification<Bytestream, IQ>() {

@@ -165,7 +165,7 @@ public class LastActivityManager extends Manager {
             public void processPacket(Packet packet) throws NotConnectedException {
                 if (!enabled) return;
                 LastActivity message = new LastActivity();
-                message.setType(IQ.Type.RESULT);
+                message.setType(IQ.Type.result);
                 message.setTo(packet.getFrom());
                 message.setFrom(packet.getTo());
                 message.setPacketID(packet.getPacketID());

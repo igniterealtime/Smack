@@ -41,7 +41,7 @@ public class VersionTest extends SmackTestCase {
      */
     public void testGetServerVersion() {
         Version version = new Version();
-        version.setType(IQ.Type.GET);
+        version.setType(IQ.Type.get);
         version.setTo(getServiceName());
 
         // Create a packet collector to listen for a response.
@@ -56,7 +56,7 @@ public class VersionTest extends SmackTestCase {
 
         assertNotNull("No result from the server", result);
 
-        assertEquals("Incorrect result type", IQ.Type.RESULT, result.getType());
+        assertEquals("Incorrect result type", IQ.Type.result, result.getType());
         assertNotNull("No name specified in the result", ((Version)result).getName());
         assertNotNull("No version specified in the result", ((Version)result).getVersion());
     }

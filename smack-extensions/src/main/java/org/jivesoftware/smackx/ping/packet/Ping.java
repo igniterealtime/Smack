@@ -28,7 +28,7 @@ public class Ping extends IQ {
     
     public Ping(String to) {
         setTo(to);
-        setType(IQ.Type.GET);
+        setType(IQ.Type.get);
     }
     
     @Override

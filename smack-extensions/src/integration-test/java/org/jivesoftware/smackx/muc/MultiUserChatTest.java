@@ -484,7 +484,7 @@ public class MultiUserChatTest extends SmackTestCase {
                     .discoverInfo(room + "/testbot", null);
 
             assertNotNull("No info was discovered from room occupant", info);
-            assertEquals("Wrong IQ type", IQ.Type.RESULT, info.getType());
+            assertEquals("Wrong IQ type", IQ.Type.result, info.getType());
             assertEquals("Wrong IQ sender", room + "/testbot", info.getFrom());
 
             // User2 leaves the room

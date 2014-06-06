@@ -445,7 +445,7 @@ public class JingleManager implements JingleSessionListener {
             public boolean accept(Packet pin) {
                 if (pin instanceof IQ) {
                     IQ iq = (IQ) pin;
-                    if (iq.getType().equals(IQ.Type.SET)) {
+                    if (iq.getType().equals(IQ.Type.set)) {
                         if (iq instanceof Jingle) {
                             Jingle jin = (Jingle) pin;
                             if (jin.getAction().equals(JingleActionEnum.SESSION_INITIATE)) {

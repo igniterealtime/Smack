@@ -134,7 +134,7 @@ public class StreamInitiation extends IQ {
       */
     public String getChildElementXML() {
         StringBuilder buf = new StringBuilder();
-        if (this.getType().equals(IQ.Type.SET)) {
+        if (this.getType().equals(IQ.Type.set)) {
             buf.append("<si xmlns=\"http://jabber.org/protocol/si\" ");
             if (getSessionID() != null) {
                 buf.append("id=\"").append(getSessionID()).append("\" ");
@@ -151,7 +151,7 @@ public class StreamInitiation extends IQ {
                 buf.append(fileXML);
             }
         }
-        else if (this.getType().equals(IQ.Type.RESULT)) {
+        else if (this.getType().equals(IQ.Type.result)) {
             buf.append("<si xmlns=\"http://jabber.org/protocol/si\">");
         }
         else {

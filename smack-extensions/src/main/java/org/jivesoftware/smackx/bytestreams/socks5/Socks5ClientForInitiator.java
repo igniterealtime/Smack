@@ -120,7 +120,7 @@ class Socks5ClientForInitiator extends Socks5Client {
     private Bytestream createStreamHostActivation() {
         Bytestream activate = new Bytestream(this.sessionID);
         activate.setMode(null);
-        activate.setType(IQ.Type.SET);
+        activate.setType(IQ.Type.set);
         activate.setTo(this.streamHost.getJID());
 
         activate.setToActivate(this.target);

@@ -49,7 +49,7 @@ public class IQResponseTest {
 
         final IQ result = IQ.createResultIQ(request);
 
-        assertEquals(IQ.Type.RESULT, result.getType());
+        assertEquals(IQ.Type.result, result.getType());
         assertNotNull(result.getPacketID());
         assertEquals(request.getPacketID(), result.getPacketID());
         assertEquals(request.getFrom(), result.getTo());
@@ -68,13 +68,13 @@ public class IQResponseTest {
                 return childElement;
             }
         };
-        request.setType(IQ.Type.SET);
+        request.setType(IQ.Type.set);
         request.setFrom("sender@test/Smack");
         request.setTo("receiver@test/Smack");
 
         final IQ result = IQ.createErrorResponse(request, error);
 
-        assertEquals(IQ.Type.ERROR, result.getType());
+        assertEquals(IQ.Type.error, result.getType());
         assertNotNull(result.getPacketID());
         assertEquals(request.getPacketID(), result.getPacketID());
         assertEquals(request.getFrom(), result.getTo());
@@ -93,7 +93,7 @@ public class IQResponseTest {
                 return childElement;
             }
         };
-        request.setType(IQ.Type.RESULT);
+        request.setType(IQ.Type.result);
         request.setFrom("sender@test/Smack");
         request.setTo("receiver@test/Smack");
 
@@ -119,7 +119,7 @@ public class IQResponseTest {
                 return childElement;
             }
         };
-        request.setType(IQ.Type.ERROR);
+        request.setType(IQ.Type.error);
         request.setFrom("sender@test/Smack");
         request.setTo("receiver@test/Smack");
         request.setError(error);

@@ -48,7 +48,7 @@ public class CloseTest {
     @Test
     public void shouldBeOfIQTypeSET() {
         Close close = new Close("sessionID");
-        assertEquals(IQ.Type.SET, close.getType());
+        assertEquals(IQ.Type.set, close.getType());
     }
 
     @Test

@@ -39,7 +39,7 @@ public class Close extends IQ {
             throw new IllegalArgumentException("Session ID must not be null or empty");
         }
         this.sessionID = sessionID;
-        setType(Type.SET);
+        setType(Type.set);
     }
 
     /**

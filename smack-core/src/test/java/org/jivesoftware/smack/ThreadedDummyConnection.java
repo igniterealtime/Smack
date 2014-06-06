@@ -59,7 +59,7 @@ public class ThreadedDummyConnection extends DummyConnection {
             replyPacket.setPacketID(packet.getPacketID());
             replyPacket.setFrom(packet.getTo());
             replyPacket.setTo(packet.getFrom());
-            replyPacket.setType(Type.RESULT);
+            replyPacket.setType(Type.result);
 
             new ProcessQueue(replyQ).start();
         }

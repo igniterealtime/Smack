@@ -86,7 +86,7 @@ final public class PubSubManager
 	 */
 	public LeafNode createNode() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub reply = (PubSub)sendPubsubPacket(Type.SET, new NodeExtension(PubSubElementType.CREATE));
+		PubSub reply = (PubSub)sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE));
 		NodeExtension elem = (NodeExtension)reply.getExtension("create", PubSubNamespace.BASIC.getXmlns());
 		
 		LeafNode newNode = new LeafNode(con, elem.getNode());
@@ -126,7 +126,7 @@ final public class PubSubManager
 	 */
 	public Node createNode(String name, Form config) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub request = createPubsubPacket(to, Type.SET, new NodeExtension(PubSubElementType.CREATE, name));
+		PubSub request = createPubsubPacket(to, Type.set, new NodeExtension(PubSubElementType.CREATE, name));
 		boolean isLeafNode = true;
 		
 		if (config != null)
@@ -140,7 +140,7 @@ final public class PubSubManager
 
 		// Errors will cause exceptions in getReply, so it only returns
 		// on success.
-		sendPubsubPacket(con, to, Type.SET, request);
+		sendPubsubPacket(con, to, Type.set, request);
 		Node newNode = isLeafNode ? new LeafNode(con, name) : new CollectionNode(con, name);
 		newNode.setTo(to);
 		nodeMap.put(newNode.getId(), newNode);
@@ -217,7 +217,7 @@ final public class PubSubManager
 	 */
 	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		Packet reply = sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.SUBSCRIPTIONS));
+		Packet reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS));
 		SubscriptionsExtension subElem = (SubscriptionsExtension)reply.getExtension(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
 		return subElem.getSubscriptions();
 	}
@@ -233,7 +233,7 @@ final public class PubSubManager
 	 */
 	public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub reply = (PubSub)sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.AFFILIATIONS));
+		PubSub reply = (PubSub)sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS));
 		AffiliationsExtension listElem = (AffiliationsExtension)reply.getExtension(PubSubElementType.AFFILIATIONS);
 		return listElem.getAffiliations();
 	}
@@ -248,7 +248,7 @@ final public class PubSubManager
 	 */
 	public void deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		sendPubsubPacket(Type.SET, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
+		sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
 		nodeMap.remove(nodeId);
 	}
 	
@@ -264,7 +264,7 @@ final public class PubSubManager
 	{
 		// Errors will cause exceptions in getReply, so it only returns
 		// on success.
-		PubSub reply = (PubSub)sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.DEFAULT), PubSubElementType.DEFAULT.getNamespace());
+		PubSub reply = (PubSub)sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.DEFAULT), PubSubElementType.DEFAULT.getNamespace());
 		return NodeUtils.getFormFromPacket(reply, PubSubElementType.DEFAULT);
 	}
 	

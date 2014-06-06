@@ -102,7 +102,7 @@ public class AccountManager extends Manager {
         // to discover if this feature is supported
         if (info == null) {
             getRegistrationInfo();
-            accountCreationSupported = info.getType() != IQ.Type.ERROR;
+            accountCreationSupported = info.getType() != IQ.Type.error;
         }
         return accountCreationSupported;
     }
@@ -220,7 +220,7 @@ public class AccountManager extends Manager {
     public void createAccount(String username, String password, Map<String, String> attributes)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
-        reg.setType(IQ.Type.SET);
+        reg.setType(IQ.Type.set);
         reg.setTo(connection().getServiceName());
         attributes.put("username", username);
         attributes.put("password", password);
@@ -240,7 +240,7 @@ public class AccountManager extends Manager {
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
-        reg.setType(IQ.Type.SET);
+        reg.setType(IQ.Type.set);
         reg.setTo(connection().getServiceName());
         Map<String, String> map = new HashMap<String, String>();
         map.put("username",XmppStringUtils.parseLocalpart(connection().getUser()));
@@ -261,7 +261,7 @@ public class AccountManager extends Manager {
      */
     public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
-        reg.setType(IQ.Type.SET);
+        reg.setType(IQ.Type.set);
         reg.setTo(connection().getServiceName());
         Map<String, String> attributes = new HashMap<String, String>();
         // To delete an account, we add a single attribute, "remove", that is blank.

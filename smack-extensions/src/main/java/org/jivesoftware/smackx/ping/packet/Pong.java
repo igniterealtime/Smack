@@ -28,7 +28,7 @@ public class Pong extends IQ {
      * @param ping
      */
     public Pong(Packet ping) {
-        setType(IQ.Type.RESULT);
+        setType(IQ.Type.result);
         setFrom(ping.getTo());
         setTo(ping.getFrom());
         setPacketID(ping.getPacketID());

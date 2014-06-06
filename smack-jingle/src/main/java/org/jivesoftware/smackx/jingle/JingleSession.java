@@ -325,7 +325,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         }
 
         //        // If the response is anything other than a RESULT then send it now.
-        //        if ((response != null) && (!response.getType().equals(IQ.Type.RESULT))) {
+        //        if ((response != null) && (!response.getType().equals(IQ.Type.result))) {
         //            getConnection().sendPacket(response);
         //        }
 
@@ -351,10 +351,10 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         IQ response = null;
 
         if (iq != null) {
-            if (iq.getType().equals(IQ.Type.ERROR)) {
+            if (iq.getType().equals(IQ.Type.error)) {
                 // Process errors
                 // TODO getState().eventError(iq);
-            } else if (iq.getType().equals(IQ.Type.RESULT)) {
+            } else if (iq.getType().equals(IQ.Type.result)) {
                 // Process ACKs
                 if (isExpectedId(iq.getPacketID())) {
 
@@ -504,8 +504,8 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         if (iq != null) {
             // Don't acknowledge ACKs, errors...
-            if (iq.getType().equals(IQ.Type.SET)) {
-                IQ ack = createIQ(iq.getPacketID(), iq.getFrom(), iq.getTo(), IQ.Type.RESULT);
+            if (iq.getType().equals(IQ.Type.set)) {
+                IQ ack = createIQ(iq.getPacketID(), iq.getFrom(), iq.getTo(), IQ.Type.result);
 
                 // No! Don't send it.  Let it flow to the normal way IQ results get processed and sent.
                 // getConnection().sendPacket(ack);
@@ -715,10 +715,10 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                         }
                     } else {
                         // We accept some non-Jingle IQ packets: ERRORs and ACKs
-                        if (iq.getType().equals(IQ.Type.SET)) {
+                        if (iq.getType().equals(IQ.Type.set)) {
                             LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
-                        } else if (iq.getType().equals(IQ.Type.GET)) {
+                        } else if (iq.getType().equals(IQ.Type.get)) {
                             LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
                         }
@@ -979,7 +979,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             return;
         LOGGER.fine("Terminate " + reason);
         Jingle jout = new Jingle(JingleActionEnum.SESSION_TERMINATE);
-        jout.setType(IQ.Type.SET);
+        jout.setType(IQ.Type.set);
         sendPacket(jout);
         triggerSessionClosed(reason);
     }
@@ -1062,7 +1062,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      */
     public static IQ createError(String ID, String to, String from, int errCode, XMPPError error) {
 
-        IQ iqError = createIQ(ID, to, from, IQ.Type.ERROR);
+        IQ iqError = createIQ(ID, to, from, IQ.Type.error);
         iqError.setError(error);
 
         LOGGER.fine("Created Error Packet:" + iqError.toXML());
@@ -1083,7 +1083,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public IQ createJingleError(IQ iq, JingleError jingleError) {
         IQ errorPacket = null;
         if (jingleError != null) {
-            errorPacket = createIQ(getSid(), iq.getFrom(), iq.getTo(), IQ.Type.ERROR);
+            errorPacket = createIQ(getSid(), iq.getFrom(), iq.getTo(), IQ.Type.error);
 
             List<PacketExtension> extList = new ArrayList<PacketExtension>();
             extList.add(jingleError);

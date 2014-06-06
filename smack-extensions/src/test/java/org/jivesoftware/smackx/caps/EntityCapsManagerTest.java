@@ -107,7 +107,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         di.setFrom("benvolio@capulet.lit/230193");
         di.setPacketID("disco1");
         di.setTo("juliet@capulet.lit/chamber");
-        di.setType(IQ.Type.RESULT);
+        di.setType(IQ.Type.result);
 
         Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
         DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "Psi 0.11", "pc");
@@ -160,7 +160,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         di.setFrom("benvolio@capulet.lit/230193");
         di.setPacketID("disco1");
         di.setTo(")juliet@capulet.lit/chamber");
-        di.setType(IQ.Type.RESULT);
+        di.setType(IQ.Type.result);
 
         Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
         DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "Psi 0.11", "pc");

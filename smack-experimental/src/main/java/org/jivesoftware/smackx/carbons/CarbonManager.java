@@ -92,7 +92,7 @@ public class CarbonManager extends Manager {
                 return "<" + (new_state? "enable" : "disable") + " xmlns='" + CarbonExtension.NAMESPACE + "'/>";
             }
         };
-        setIQ.setType(IQ.Type.SET);
+        setIQ.setType(IQ.Type.set);
         return setIQ;
     }
 
@@ -123,7 +123,7 @@ public class CarbonManager extends Manager {
         connection().addPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 IQ result = (IQ)packet;
-                if (result.getType() == IQ.Type.RESULT) {
+                if (result.getType() == IQ.Type.result) {
                     enabled_state = new_state;
                 }
                 connection().removePacketListener(this);

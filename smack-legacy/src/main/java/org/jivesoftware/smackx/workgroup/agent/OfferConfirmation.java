@@ -99,7 +99,7 @@ public class OfferConfirmation extends IQ {
 
         NotifyServicePacket(String workgroup, String roomName) {
             this.setTo(workgroup);
-            this.setType(IQ.Type.RESULT);
+            this.setType(IQ.Type.result);
 
             this.roomName = roomName;
         }

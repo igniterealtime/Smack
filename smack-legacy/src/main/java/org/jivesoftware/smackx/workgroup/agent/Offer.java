@@ -195,7 +195,7 @@ public class Offer {
 
         RejectPacket(String workgroup) {
             this.setTo(workgroup);
-            this.setType(IQ.Type.SET);
+            this.setType(IQ.Type.set);
         }
 
         public String getChildElementXML() {
@@ -211,7 +211,7 @@ public class Offer {
 
         AcceptPacket(String workgroup) {
             this.setTo(workgroup);
-            this.setType(IQ.Type.SET);
+            this.setType(IQ.Type.set);
         }
 
         public String getChildElementXML() {

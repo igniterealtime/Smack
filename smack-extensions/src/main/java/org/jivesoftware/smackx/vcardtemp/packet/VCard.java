@@ -523,7 +523,7 @@ public class VCard extends IQ {
     public void save(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
         checkAuthenticated(connection, true);
 
-        setType(IQ.Type.SET);
+        setType(IQ.Type.set);
         setFrom(connection.getUser());
         connection.createPacketCollectorAndSend(this).nextResultOrThrow();
     }
@@ -556,7 +556,7 @@ public class VCard extends IQ {
     }
 
     private void doLoad(XMPPConnection connection, String user) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        setType(Type.GET);
+        setType(Type.get);
         VCard result = (VCard) connection.createPacketCollectorAndSend(this).nextResultOrThrow();
         copyFieldsFrom(result);
     }

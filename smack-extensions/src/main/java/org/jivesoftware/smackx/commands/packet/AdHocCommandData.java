@@ -90,7 +90,7 @@ public class AdHocCommandData extends IQ {
         }
         buf.append(">");
 
-        if (getType() == Type.RESULT) {
+        if (getType() == Type.result) {
             buf.append("<actions");
 
             if (executeAction != null) {

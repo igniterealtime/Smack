@@ -458,7 +458,7 @@ public class RTPBridge extends IQ {
 
         RTPBridge rtpPacket = new RTPBridge(sessionID, RTPBridge.BridgeAction.change);
         rtpPacket.setTo(RTPBridge.NAME + "." + connection.getServiceName());
-        rtpPacket.setType(Type.SET);
+        rtpPacket.setType(Type.set);
 
         rtpPacket.setPass(pass);
         rtpPacket.setPortA(localCandidate.getPort());
@@ -493,7 +493,7 @@ public class RTPBridge extends IQ {
 
         RTPBridge rtpPacket = new RTPBridge(RTPBridge.BridgeAction.publicip);
         rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getServiceName());
-        rtpPacket.setType(Type.SET);
+        rtpPacket.setType(Type.set);
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 

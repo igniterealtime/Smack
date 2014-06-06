@@ -50,6 +50,6 @@ public class LastActivityTest extends InitExtensions {
         assertTrue(reply instanceof LastActivity);
         LastActivity l = (LastActivity) reply;
         assertEquals("last2", l.getPacketID());
-        assertEquals(IQ.Type.RESULT, l.getType());
+        assertEquals(IQ.Type.result, l.getType());
     }
 }

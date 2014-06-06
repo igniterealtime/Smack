@@ -66,7 +66,7 @@ public class UserSearch extends IQ {
      */
     public Form getSearchForm(XMPPConnection con, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException {
         UserSearch search = new UserSearch();
-        search.setType(IQ.Type.GET);
+        search.setType(IQ.Type.get);
         search.setTo(searchService);
 
         IQ response = (IQ) con.createPacketCollectorAndSend(search).nextResultOrThrow();
@@ -86,7 +86,7 @@ public class UserSearch extends IQ {
      */
     public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException {
         UserSearch search = new UserSearch();
-        search.setType(IQ.Type.SET);
+        search.setType(IQ.Type.set);
         search.setTo(searchService);
         search.addExtension(searchForm.getDataFormToSend());
 
@@ -108,7 +108,7 @@ public class UserSearch extends IQ {
     public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException {
         SimpleUserSearch search = new SimpleUserSearch();
         search.setForm(searchForm);
-        search.setType(IQ.Type.SET);
+        search.setType(IQ.Type.set);
         search.setTo(searchService);
 
         SimpleUserSearch response = (SimpleUserSearch) con.createPacketCollectorAndSend(search).nextResultOrThrow();

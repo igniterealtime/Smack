@@ -79,7 +79,7 @@ public class PacketReaderTest extends SmackTestCase {
             }
         };
         iqPacket.setTo(getFullJID(1));
-        iqPacket.setType(IQ.Type.GET);
+        iqPacket.setType(IQ.Type.get);
 
         // Send the IQ and wait for the answer
         PacketCollector collector = getConnection(0).createPacketCollector(
@@ -89,7 +89,7 @@ public class PacketReaderTest extends SmackTestCase {
         if (response == null) {
             fail("No response from the other user.");
         }
-        assertEquals("The received IQ is not of type ERROR", IQ.Type.ERROR, response.getType());
+        assertEquals("The received IQ is not of type ERROR", IQ.Type.error, response.getType());
         assertEquals("The error code is not 501", 501, response.getError().getCode());
         collector.cancel();
     }

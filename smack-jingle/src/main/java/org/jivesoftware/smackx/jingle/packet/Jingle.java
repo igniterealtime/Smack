@@ -97,7 +97,7 @@ public class Jingle extends IQ {
 
         // Some default values for the most common situation...
         action = JingleActionEnum.UNKNOWN;
-        this.setType(IQ.Type.SET);
+        this.setType(IQ.Type.set);
     }
 
      /**
@@ -116,7 +116,7 @@ public class Jingle extends IQ {
 
         // Some default values for the most common situation...
         action = JingleActionEnum.UNKNOWN;
-        this.setType(IQ.Type.SET);
+        this.setType(IQ.Type.set);
     }
 
     /**
@@ -129,7 +129,7 @@ public class Jingle extends IQ {
         this.action = action;
 
         // In general, a Jingle with an action is used in a SET packet...
-        this.setType(IQ.Type.SET);
+        this.setType(IQ.Type.set);
     }
 
     /**

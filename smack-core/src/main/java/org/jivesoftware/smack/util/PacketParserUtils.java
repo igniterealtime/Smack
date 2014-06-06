@@ -381,7 +381,7 @@ public class PacketParserUtils {
                     }
                     // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
                     // have to be answered with an IQ error response. See the code a few lines below
-                    else if (IQ.Type.RESULT == type){
+                    else if (IQ.Type.result == type){
                         // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
                         // so that the content of the IQ can be examined later on
                         iqPacket = new UnparsedResultIQ(parseContent(parser));
@@ -396,7 +396,7 @@ public class PacketParserUtils {
         }
         // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
-            if (connection != null && (IQ.Type.GET == type || IQ.Type.SET == type)) {
+            if (connection != null && (IQ.Type.get == type || IQ.Type.set == type)) {
                 // If the IQ stanza is of type "get" or "set" containing a child element qualified
                 // by a namespace with no registered Smack provider, then answer an IQ of type
                 // "error" with code 501 ("feature-not-implemented")
@@ -409,7 +409,7 @@ public class PacketParserUtils {
                 iqPacket.setPacketID(id);
                 iqPacket.setTo(from);
                 iqPacket.setFrom(to);
-                iqPacket.setType(IQ.Type.ERROR);
+                iqPacket.setType(IQ.Type.error);
                 iqPacket.setError(new XMPPError(XMPPError.Condition.feature_not_implemented));
                 connection.sendPacket(iqPacket);
                 return null;

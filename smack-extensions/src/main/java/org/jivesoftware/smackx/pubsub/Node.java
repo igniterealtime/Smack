@@ -98,7 +98,7 @@ abstract public class Node
 	 */
 	public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		Packet reply = sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.CONFIGURE_OWNER, getId()), PubSubNamespace.OWNER);
+		Packet reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.CONFIGURE_OWNER, getId()), PubSubNamespace.OWNER);
 		return NodeUtils.getFormFromPacket(reply, PubSubElementType.CONFIGURE_OWNER);
 	}
 	
@@ -112,7 +112,7 @@ abstract public class Node
 	 */
 	public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub packet = createPubsubPacket(Type.SET, new FormNode(FormNodeType.CONFIGURE_OWNER, getId(), submitForm), PubSubNamespace.OWNER);
+		PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER, getId(), submitForm), PubSubNamespace.OWNER);
 		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 	
@@ -143,7 +143,7 @@ abstract public class Node
 	 */
 	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub reply = (PubSub)sendPubsubPacket(Type.GET, new NodeExtension(PubSubElementType.SUBSCRIPTIONS, getId()));
+		PubSub reply = (PubSub)sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS, getId()));
 		SubscriptionsExtension subElem = (SubscriptionsExtension)reply.getExtension(PubSubElementType.SUBSCRIPTIONS);
 		return subElem.getSubscriptions();
 	}
@@ -167,7 +167,7 @@ abstract public class Node
 	 */
 	public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub reply = (PubSub)sendPubsubPacket(Type.SET, new SubscribeExtension(jid, getId()));
+		PubSub reply = (PubSub)sendPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
 		return (Subscription)reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
 	
@@ -191,9 +191,9 @@ abstract public class Node
 	 */
 	public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub request = createPubsubPacket(Type.SET, new SubscribeExtension(jid, getId()));
+		PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
 		request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
-		PubSub reply = (PubSub)PubSubManager.sendPubsubPacket(con, jid, Type.SET, request);
+		PubSub reply = (PubSub)PubSubManager.sendPubsubPacket(con, jid, Type.set, request);
 		return (Subscription)reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
 
@@ -224,7 +224,7 @@ abstract public class Node
 	 */
 	public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		sendPubsubPacket(Type.SET, new UnsubscribeExtension(jid, getId(), subscriptionId));
+		sendPubsubPacket(Type.set, new UnsubscribeExtension(jid, getId(), subscriptionId));
 	}
 
 	/**
@@ -256,7 +256,7 @@ abstract public class Node
 	 */
 	public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub packet = (PubSub)sendPubsubPacket(Type.GET, new OptionsExtension(jid, getId(), subscriptionId));
+		PubSub packet = (PubSub)sendPubsubPacket(Type.get, new OptionsExtension(jid, getId(), subscriptionId));
 		FormNode ext = (FormNode)packet.getExtension(PubSubElementType.OPTIONS);
 		return new SubscribeForm(ext.getForm());
 	}

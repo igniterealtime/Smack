@@ -36,7 +36,7 @@ public class Bind extends IQ {
     private String jid = null;
 
     public Bind() {
-        setType(IQ.Type.SET);
+        setType(IQ.Type.set);
     }
 
     public String getResource() {

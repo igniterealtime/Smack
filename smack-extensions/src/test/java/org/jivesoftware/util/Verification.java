@@ -51,7 +51,7 @@ public interface Verification<T extends Packet, S extends Packet> {
     public static Verification<IQ, Packet> requestTypeGET = new Verification<IQ, Packet>() {
 
         public void verify(IQ request, Packet response) {
-            assertEquals(IQ.Type.GET, request.getType());
+            assertEquals(IQ.Type.get, request.getType());
         }
 
     };
@@ -62,7 +62,7 @@ public interface Verification<T extends Packet, S extends Packet> {
     public static Verification<IQ, Packet> requestTypeSET = new Verification<IQ, Packet>() {
 
         public void verify(IQ request, Packet response) {
-            assertEquals(IQ.Type.SET, request.getType());
+            assertEquals(IQ.Type.set, request.getType());
         }
 
     };
@@ -73,7 +73,7 @@ public interface Verification<T extends Packet, S extends Packet> {
     public static Verification<IQ, Packet> requestTypeRESULT = new Verification<IQ, Packet>() {
 
         public void verify(IQ request, Packet response) {
-            assertEquals(IQ.Type.RESULT, request.getType());
+            assertEquals(IQ.Type.result, request.getType());
         }
 
     };
@@ -84,7 +84,7 @@ public interface Verification<T extends Packet, S extends Packet> {
     public static Verification<IQ, Packet> requestTypeERROR = new Verification<IQ, Packet>() {
 
         public void verify(IQ request, Packet response) {
-            assertEquals(IQ.Type.ERROR, request.getType());
+            assertEquals(IQ.Type.error, request.getType());
         }
 
     };

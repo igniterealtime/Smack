@@ -55,7 +55,7 @@ public class CompressionTest extends SmackTestCase {
 
         // Request the version of the server
         Version version = new Version();
-        version.setType(IQ.Type.GET);
+        version.setType(IQ.Type.get);
         version.setTo(getServiceName());
 
         // Create a packet collector to listen for a response.
@@ -69,7 +69,7 @@ public class CompressionTest extends SmackTestCase {
         collector.cancel();
 
         assertNotNull("No reply was received from the server", result);
-        assertEquals("Incorrect IQ type from server", IQ.Type.RESULT, result.getType());
+        assertEquals("Incorrect IQ type from server", IQ.Type.result, result.getType());
 
         // Close connection
         connection.disconnect();

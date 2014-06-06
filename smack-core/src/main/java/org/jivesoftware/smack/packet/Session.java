@@ -33,7 +33,7 @@ package org.jivesoftware.smack.packet;
 public class Session extends IQ {
 
     public Session() {
-        setType(IQ.Type.SET);
+        setType(IQ.Type.set);
     }
 
     @Override

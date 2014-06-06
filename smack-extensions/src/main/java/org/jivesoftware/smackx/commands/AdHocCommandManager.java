@@ -332,7 +332,7 @@ public class AdHocCommandManager extends Manager {
      */
     private void processAdHocCommand(AdHocCommandData requestData) throws SmackException {
         // Only process requests of type SET
-        if (requestData.getType() != IQ.Type.SET) {
+        if (requestData.getType() != IQ.Type.set) {
             return;
         }
 
@@ -364,7 +364,7 @@ public class AdHocCommandManager extends Manager {
                 // corresponding sessioid
                 LocalCommand command = newInstanceOfCmd(commandNode, sessionId);
 
-                response.setType(IQ.Type.RESULT);
+                response.setType(IQ.Type.result);
                 command.setData(response);
 
                 // Check that the requester has enough permission.
@@ -530,7 +530,7 @@ public class AdHocCommandManager extends Manager {
 
                     // Since all errors were passed, the response is now a
                     // result
-                    response.setType(IQ.Type.RESULT);
+                    response.setType(IQ.Type.result);
 
                     // Set the new data to the command.
                     command.setData(response);
@@ -623,7 +623,7 @@ public class AdHocCommandManager extends Manager {
      * @throws NotConnectedException 
      */
     private void respondError(AdHocCommandData response, XMPPError error) throws NotConnectedException {
-        response.setType(IQ.Type.ERROR);
+        response.setType(IQ.Type.error);
         response.setError(error);
         connection().sendPacket(response);
     }

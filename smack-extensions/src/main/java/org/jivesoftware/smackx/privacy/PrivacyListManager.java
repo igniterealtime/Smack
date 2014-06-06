@@ -148,7 +148,7 @@ public class PrivacyListManager extends Manager {
 	 */ 
 	private Privacy getRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException  {
 		// The request is a get iq type
-		requestPrivacy.setType(Privacy.Type.GET);
+		requestPrivacy.setType(Privacy.Type.get);
 		requestPrivacy.setFrom(this.getUser());
 
         Privacy privacyAnswer = (Privacy) connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
@@ -168,7 +168,7 @@ public class PrivacyListManager extends Manager {
      */
     private Packet setRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         // The request is a get iq type
-        requestPrivacy.setType(Privacy.Type.SET);
+        requestPrivacy.setType(Privacy.Type.set);
         requestPrivacy.setFrom(this.getUser());
 
         return connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();

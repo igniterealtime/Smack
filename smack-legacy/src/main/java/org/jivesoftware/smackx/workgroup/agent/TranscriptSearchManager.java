@@ -53,7 +53,7 @@ public class TranscriptSearchManager {
      */
     public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         TranscriptSearch search = new TranscriptSearch();
-        search.setType(IQ.Type.GET);
+        search.setType(IQ.Type.get);
         search.setTo(serviceJID);
 
         TranscriptSearch response = (TranscriptSearch) connection.createPacketCollectorAndSend(
@@ -75,7 +75,7 @@ public class TranscriptSearchManager {
      */
     public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException {
         TranscriptSearch search = new TranscriptSearch();
-        search.setType(IQ.Type.GET);
+        search.setType(IQ.Type.get);
         search.setTo(serviceJID);
         search.addExtension(completedForm.getDataFormToSend());
 

@@ -52,7 +52,7 @@ public class VersionTest {
         //assertEquals("juliet@capulet.lit/balcony", reply.getFrom());
         assertEquals("capulet.lit", reply.getTo());
         assertEquals("s2c1", reply.getPacketID());
-        assertEquals(IQ.Type.RESULT, reply.getType());
+        assertEquals(IQ.Type.result, reply.getType());
         assertEquals("Test", reply.getName());
         assertEquals("0.23", reply.getVersion());
         assertEquals("DummyOS", reply.getOs());

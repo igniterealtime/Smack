@@ -62,7 +62,7 @@ public class Open extends IQ {
         this.sessionID = sessionID;
         this.blockSize = blockSize;
         this.stanza = stanza;
-        setType(Type.SET);
+        setType(Type.set);
     }
 
     /**

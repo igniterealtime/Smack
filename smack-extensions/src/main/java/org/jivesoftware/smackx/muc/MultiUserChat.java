@@ -566,7 +566,7 @@ public class MultiUserChat {
     public Form getConfigurationForm() throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
-        iq.setType(IQ.Type.GET);
+        iq.setType(IQ.Type.get);
 
         IQ answer = (IQ) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
         return Form.getFormFrom(answer);
@@ -585,7 +585,7 @@ public class MultiUserChat {
     public void sendConfigurationForm(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         iq.addExtension(form.getDataFormToSend());
 
         connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
@@ -609,7 +609,7 @@ public class MultiUserChat {
      */
     public Form getRegistrationForm() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
-        reg.setType(IQ.Type.GET);
+        reg.setType(IQ.Type.get);
         reg.setTo(room);
 
         IQ result = (IQ) connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
@@ -634,7 +634,7 @@ public class MultiUserChat {
      */
     public void sendRegistrationForm(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
-        reg.setType(IQ.Type.SET);
+        reg.setType(IQ.Type.set);
         reg.setTo(room);
         reg.addExtension(form.getDataFormToSend());
 
@@ -658,7 +658,7 @@ public class MultiUserChat {
     public void destroy(String reason, String alternateJID) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
 
         // Create the reason for the room destruction
         MUCOwner.Destroy destroy = new MUCOwner.Destroy();
@@ -1369,7 +1369,7 @@ public class MultiUserChat {
                     throws XMPPErrorException, NoResponseException, NotConnectedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         // Set the new affiliation.
         MUCOwner.Item item = new MUCOwner.Item(affiliation);
         item.setJid(jid);
@@ -1382,7 +1382,7 @@ public class MultiUserChat {
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         for (String jid : jids) {
             // Set the new affiliation.
             MUCOwner.Item item = new MUCOwner.Item(affiliation);
@@ -1407,7 +1407,7 @@ public class MultiUserChat {
             {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         // Set the new affiliation.
         MUCAdmin.Item item = new MUCAdmin.Item(affiliation, null);
         item.setJid(jid);
@@ -1421,7 +1421,7 @@ public class MultiUserChat {
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         for (String jid : jids) {
             // Set the new affiliation.
             MUCAdmin.Item item = new MUCAdmin.Item(affiliation, null);
@@ -1435,7 +1435,7 @@ public class MultiUserChat {
     private void changeRole(String nickname, String role, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         // Set the new role.
         MUCAdmin.Item item = new MUCAdmin.Item(null, role);
         item.setNick(nickname);
@@ -1448,7 +1448,7 @@ public class MultiUserChat {
     private void changeRole(Collection<String> nicknames, String role) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
-        iq.setType(IQ.Type.SET);
+        iq.setType(IQ.Type.set);
         for (String nickname : nicknames) {
             // Set the new role.
             MUCAdmin.Item item = new MUCAdmin.Item(null, role);
@@ -1604,7 +1604,7 @@ public class MultiUserChat {
     private Collection<Affiliate> getAffiliatesByAdmin(String affiliation) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
-        iq.setType(IQ.Type.GET);
+        iq.setType(IQ.Type.get);
         // Set the specified affiliation. This may request the list of owners/admins/members/outcasts.
         MUCAdmin.Item item = new MUCAdmin.Item(affiliation, null);
         iq.addItem(item);
@@ -1656,7 +1656,7 @@ public class MultiUserChat {
     private Collection<Occupant> getOccupants(String role) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
-        iq.setType(IQ.Type.GET);
+        iq.setType(IQ.Type.get);
         // Set the specified role. This may request the list of moderators/participants.
         MUCAdmin.Item item = new MUCAdmin.Item(null, role);
         iq.addItem(item);

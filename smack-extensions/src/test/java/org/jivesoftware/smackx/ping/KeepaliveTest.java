@@ -104,7 +104,7 @@
 //            public void processPacket(Packet packet) {
 //                latch.countDown();
 //            }
-//        }, new IQTypeFilter(IQ.Type.RESULT));
+//        }, new IQTypeFilter(IQ.Type.result));
 //
 //        // Time based testing kind of sucks, but this should be reliable on a DummyConnection since there 
 //        // is no actual server involved.  This will provide enough time to ping and wait for the lack of response. 

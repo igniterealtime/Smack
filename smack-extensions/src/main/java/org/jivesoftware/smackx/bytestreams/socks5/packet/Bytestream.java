@@ -217,7 +217,7 @@ public class Bytestream extends IQ {
         StringBuilder buf = new StringBuilder();
 
         buf.append("<query xmlns=\"http://jabber.org/protocol/bytestreams\"");
-        if (this.getType().equals(IQ.Type.SET)) {
+        if (this.getType().equals(IQ.Type.set)) {
             if (getSessionID() != null) {
                 buf.append(" sid=\"").append(getSessionID()).append("\"");
             }
@@ -234,7 +234,7 @@ public class Bytestream extends IQ {
                 buf.append(getToActivate().toXML());
             }
         }
-        else if (this.getType().equals(IQ.Type.RESULT)) {
+        else if (this.getType().equals(IQ.Type.result)) {
             buf.append(">");
             if (getUsedHost() != null) {
                 buf.append(getUsedHost().toXML());
@@ -246,7 +246,7 @@ public class Bytestream extends IQ {
                 }
             }
         }
-        else if (this.getType().equals(IQ.Type.GET)) {
+        else if (this.getType().equals(IQ.Type.get)) {
             return buf.append("/>").toString();
         }
         else {

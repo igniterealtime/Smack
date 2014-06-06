@@ -18,6 +18,8 @@
 package org.jivesoftware.smack.packet;
 
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -39,8 +41,9 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Matt Tucker
  */
 public abstract class IQ extends Packet {
+    private static final Logger LOGGER = Logger.getLogger(IQ.class.getName());
 
-    private Type type = Type.GET;
+    private Type type = Type.get;
 
     public IQ() {
         super();
@@ -66,7 +69,7 @@ public abstract class IQ extends Packet {
      */
     public void setType(Type type) {
         if (type == null) {
-            this.type = Type.GET;
+            this.type = Type.get;
         }
         else {
             this.type = type;
@@ -107,23 +110,23 @@ public abstract class IQ extends Packet {
     public abstract CharSequence getChildElementXML();
 
     /**
-     * Convenience method to create a new empty {@link Type#RESULT IQ.Type.RESULT}
-     * IQ based on a {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET}
+     * Convenience method to create a new empty {@link Type#result IQ.Type.result}
+     * IQ based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
      * IQ. The new packet will be initialized with:<ul>
      *      <li>The sender set to the recipient of the originating IQ.
      *      <li>The recipient set to the sender of the originating IQ.
-     *      <li>The type set to {@link Type#RESULT IQ.Type.RESULT}.
+     *      <li>The type set to {@link Type#result IQ.Type.result}.
      *      <li>The id set to the id of the originating IQ.
      *      <li>No child element of the IQ element.
      * </ul>
      *
-     * @param request the {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET} IQ packet.
+     * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
      * @throws IllegalArgumentException if the IQ packet does not have a type of
-     *      {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET}.
-     * @return a new {@link Type#RESULT IQ.Type.RESULT} IQ based on the originating IQ.
+     *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
+     * @return a new {@link Type#result IQ.Type.result} IQ based on the originating IQ.
      */
     public static IQ createResultIQ(final IQ request) {
-        if (!(request.getType() == Type.GET || request.getType() == Type.SET)) {
+        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
@@ -132,7 +135,7 @@ public abstract class IQ extends Packet {
                 return null;
             }
         };
-        result.setType(Type.RESULT);
+        result.setType(Type.result);
         result.setPacketID(request.getPacketID());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
@@ -140,25 +143,25 @@ public abstract class IQ extends Packet {
     }
 
     /**
-     * Convenience method to create a new {@link Type#ERROR IQ.Type.ERROR} IQ
-     * based on a {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET}
+     * Convenience method to create a new {@link Type#error IQ.Type.error} IQ
+     * based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
      * IQ. The new packet will be initialized with:<ul>
      *      <li>The sender set to the recipient of the originating IQ.
      *      <li>The recipient set to the sender of the originating IQ.
-     *      <li>The type set to {@link Type#ERROR IQ.Type.ERROR}.
+     *      <li>The type set to {@link Type#error IQ.Type.error}.
      *      <li>The id set to the id of the originating IQ.
      *      <li>The child element contained in the associated originating IQ.
      *      <li>The provided {@link XMPPError XMPPError}.
      * </ul>
      *
-     * @param request the {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET} IQ packet.
+     * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
      * @param error the error to associate with the created IQ packet.
      * @throws IllegalArgumentException if the IQ packet does not have a type of
-     *      {@link Type#GET IQ.Type.GET} or {@link Type#SET IQ.Type.SET}.
-     * @return a new {@link Type#ERROR IQ.Type.ERROR} IQ based on the originating IQ.
+     *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
+     * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
     public static IQ createErrorResponse(final IQ request, final XMPPError error) {
-        if (!(request.getType() == Type.GET || request.getType() == Type.SET)) {
+        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
@@ -168,7 +171,7 @@ public abstract class IQ extends Packet {
                 return request.getChildElementXML();
             }
         };
-        result.setType(Type.ERROR);
+        result.setType(Type.error);
         result.setPacketID(request.getPacketID());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
@@ -177,59 +180,41 @@ public abstract class IQ extends Packet {
     }
 
     /**
-     * A class to represent the type of the IQ packet. The types are:
+     * A enum to represent the type of the IQ packet. The types are:
      *
      * <ul>
-     *      <li>IQ.Type.GET
-     *      <li>IQ.Type.SET
-     *      <li>IQ.Type.RESULT
-     *      <li>IQ.Type.ERROR
+     *      <li>IQ.Type.get
+     *      <li>IQ.Type.set
+     *      <li>IQ.Type.result
+     *      <li>IQ.Type.error
      * </ul>
      */
-    public static class Type {
+    public enum Type {
 
-        public static final Type GET = new Type("get");
-        public static final Type SET = new Type("set");
-        public static final Type RESULT = new Type("result");
-        public static final Type ERROR = new Type("error");
+        get,
+        set,
+        result,
+        error;
 
         /**
          * Converts a String into the corresponding types. Valid String values
          * that can be converted to types are: "get", "set", "result", and "error".
          *
-         * @param type the String value to covert.
+         * @param string the String value to covert.
          * @return the corresponding Type.
+         * @throws IllegalArgumentException when not able to parse the string parameter 
          */
-        public static Type fromString(String type) {
-            if (type == null) {
-                return null;
+        public static Type fromString(String string) {
+            Type type = null;
+            try {
+                type = Type.valueOf(string.toLowerCase(Locale.US));
             }
-            type = type.toLowerCase(Locale.US);
-            if (GET.toString().equals(type)) {
-                return GET;
+            catch (Exception e) {
+                final String msg = "Could not transform string '" + string + "' to IQ.Type";
+                LOGGER.log(Level.WARNING, msg, e);
+                throw new IllegalArgumentException(msg, e);
             }
-            else if (SET.toString().equals(type)) {
-                return SET;
-            }
-            else if (ERROR.toString().equals(type)) {
-                return ERROR;
-            }
-            else if (RESULT.toString().equals(type)) {
-                return RESULT;
-            }
-            else {
-                return null;
-            }
-        }
-
-        private String value;
-
-        private Type(String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
+            return type;
         }
     }
 }

@@ -62,7 +62,7 @@ public class IQTest extends SmackTestCase {
         if (result == null) {
             fail("No response from server");
         }
-        else if (result.getType() != IQ.Type.ERROR) {
+        else if (result.getType() != IQ.Type.error) {
             fail("The server didn't reply with an error packet");
         }
         else {
@@ -77,7 +77,7 @@ public class IQTest extends SmackTestCase {
     public void testFullJIDToOfflineUser() {
         // Request the version from the server.
         Version versionRequest = new Version();
-        versionRequest.setType(IQ.Type.GET);
+        versionRequest.setType(IQ.Type.get);
         versionRequest.setFrom(getFullJID(0));
         versionRequest.setTo(getBareJID(0) + "/Something");
 
@@ -92,7 +92,7 @@ public class IQTest extends SmackTestCase {
         // Stop queuing results
         collector.cancel();
         assertNotNull("No response from server", result);
-        assertEquals("The server didn't reply with an error packet", IQ.Type.ERROR, result.getType());
+        assertEquals("The server didn't reply with an error packet", IQ.Type.error, result.getType());
         assertEquals("Server answered an incorrect error code", 503, result.getError().getCode());
     }
 

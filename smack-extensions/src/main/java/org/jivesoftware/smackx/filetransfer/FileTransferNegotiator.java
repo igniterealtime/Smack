@@ -253,7 +253,7 @@ public class FileTransferNegotiator {
             String errorMessage = "No stream methods contained in packet.";
             XMPPError error = new XMPPError(XMPPError.Condition.bad_request, errorMessage);
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
-                    IQ.Type.ERROR);
+                    IQ.Type.error);
             iqPacket.setError(error);
             connection.sendPacket(iqPacket);
             throw new XMPPErrorException(errorMessage, error);
@@ -267,7 +267,7 @@ public class FileTransferNegotiator {
         }
         catch (XMPPErrorException e) {
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
-                    IQ.Type.ERROR);
+                    IQ.Type.error);
             iqPacket.setError(e.getXMPPError());
             connection.sendPacket(iqPacket);
             throw e;
@@ -331,7 +331,7 @@ public class FileTransferNegotiator {
     public void rejectStream(final StreamInitiation si) throws NotConnectedException {
         XMPPError error = new XMPPError(XMPPError.Condition.forbidden, "Offer Declined");
         IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
-                IQ.Type.ERROR);
+                IQ.Type.error);
         iqPacket.setError(error);
         connection.sendPacket(iqPacket);
     }
@@ -396,7 +396,7 @@ public class FileTransferNegotiator {
 
         si.setFrom(connection.getUser());
         si.setTo(userID);
-        si.setType(IQ.Type.SET);
+        si.setType(IQ.Type.set);
 
         PacketCollector collector = connection.createPacketCollectorAndSend(si);
         Packet siResponse = collector.nextResult(responseTimeout);
@@ -404,7 +404,7 @@ public class FileTransferNegotiator {
 
         if (siResponse instanceof IQ) {
             IQ iqResponse = (IQ) siResponse;
-            if (iqResponse.getType().equals(IQ.Type.RESULT)) {
+            if (iqResponse.getType().equals(IQ.Type.result)) {
                 StreamInitiation response = (StreamInitiation) siResponse;
                 return getOutgoingNegotiator(getStreamMethodField(response
                         .getFeatureNegotiationForm()));

@@ -70,7 +70,7 @@ public class Agent {
      */
     public String getName() throws NoResponseException, XMPPErrorException, NotConnectedException {
         AgentInfo agentInfo = new AgentInfo();
-        agentInfo.setType(IQ.Type.GET);
+        agentInfo.setType(IQ.Type.get);
         agentInfo.setTo(workgroupJID);
         agentInfo.setFrom(getUser());
         AgentInfo response = (AgentInfo) connection.createPacketCollectorAndSend(agentInfo).nextResultOrThrow();
@@ -90,7 +90,7 @@ public class Agent {
      */
     public void setName(String newName) throws NoResponseException, XMPPErrorException, NotConnectedException {
         AgentInfo agentInfo = new AgentInfo();
-        agentInfo.setType(IQ.Type.SET);
+        agentInfo.setType(IQ.Type.set);
         agentInfo.setTo(workgroupJID);
         agentInfo.setFrom(getUser());
         agentInfo.setName(newName);

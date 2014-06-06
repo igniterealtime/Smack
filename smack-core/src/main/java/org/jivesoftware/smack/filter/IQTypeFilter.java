@@ -28,10 +28,10 @@ import org.jivesoftware.smack.packet.IQ.Type;
  */
 public class IQTypeFilter extends FlexiblePacketTypeFilter<IQ> {
     
-    public static final PacketFilter GET = new IQTypeFilter(Type.GET);
-    public static final PacketFilter SET = new IQTypeFilter(Type.SET);
-    public static final PacketFilter RESULT = new IQTypeFilter(Type.RESULT);
-    public static final PacketFilter ERROR = new IQTypeFilter(Type.ERROR);
+    public static final PacketFilter GET = new IQTypeFilter(Type.get);
+    public static final PacketFilter SET = new IQTypeFilter(Type.set);
+    public static final PacketFilter RESULT = new IQTypeFilter(Type.result);
+    public static final PacketFilter ERROR = new IQTypeFilter(Type.error);
 
 	private final IQ.Type type;
 

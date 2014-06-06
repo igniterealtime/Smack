@@ -83,7 +83,7 @@ public class InBandBytestreamRequestTest {
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
-        assertEquals(IQ.Type.ERROR, argument.getValue().getType());
+        assertEquals(IQ.Type.error, argument.getValue().getType());
         assertEquals(XMPPError.Condition.no_acceptable.toString(),
                         argument.getValue().getError().getCondition());
 
@@ -108,7 +108,7 @@ public class InBandBytestreamRequestTest {
 
         // assert that reply is the correct acknowledgment packet
         assertEquals(initiatorJID, argument.getValue().getTo());
-        assertEquals(IQ.Type.RESULT, argument.getValue().getType());
+        assertEquals(IQ.Type.result, argument.getValue().getType());
 
         assertNotNull(session);
         assertNotNull(session.getInputStream());

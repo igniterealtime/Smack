@@ -47,7 +47,7 @@ public class DataTest {
     public void shouldBeOfIQTypeSET() {
         DataPacketExtension dpe = mock(DataPacketExtension.class);
         Data data = new Data(dpe);
-        assertEquals(IQ.Type.SET, data.getType());
+        assertEquals(IQ.Type.set, data.getType());
     }
 
     private static Properties outputProperties = new Properties();

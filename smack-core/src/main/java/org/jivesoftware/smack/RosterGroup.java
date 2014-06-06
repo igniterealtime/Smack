@@ -77,7 +77,7 @@ public class RosterGroup {
         synchronized (entries) {
             for (RosterEntry entry : entries) {
                 RosterPacket packet = new RosterPacket();
-                packet.setType(IQ.Type.SET);
+                packet.setType(IQ.Type.set);
                 RosterPacket.Item item = RosterEntry.toRosterItem(entry);
                 item.removeGroupName(this.name);
                 item.addGroupName(name);
@@ -173,7 +173,7 @@ public class RosterGroup {
         synchronized (entries) {
             if (!entries.contains(entry)) {
                 RosterPacket packet = new RosterPacket();
-                packet.setType(IQ.Type.SET);
+                packet.setType(IQ.Type.set);
                 RosterPacket.Item item = RosterEntry.toRosterItem(entry);
                 item.addGroupName(getName());
                 packet.addRosterItem(item);
@@ -207,7 +207,7 @@ public class RosterGroup {
         synchronized (entries) {
             if (entries.contains(entry)) {
                 RosterPacket packet = new RosterPacket();
-                packet.setType(IQ.Type.SET);
+                packet.setType(IQ.Type.set);
                 RosterPacket.Item item = RosterEntry.toRosterItem(entry);
                 item.removeGroupName(this.getName());
                 packet.addRosterItem(item);

@@ -360,7 +360,7 @@ public class RosterTest {
     @Test(timeout=5000)
     public void testIgnoreInvalidFrom() {
         RosterPacket packet = new RosterPacket();
-        packet.setType(Type.SET);
+        packet.setType(Type.set);
         packet.setTo(connection.getUser());
         packet.setFrom("mallory@example.com");
         packet.addRosterItem(new Item("spam@example.com", "Cool products!"));
@@ -500,7 +500,7 @@ public class RosterTest {
         for(RosterEntry entry : roster.getEntries()) {
             // prepare the roster push packet
             final RosterPacket rosterPush= new RosterPacket();
-            rosterPush.setType(Type.SET);
+            rosterPush.setType(Type.set);
             rosterPush.setTo(connection.getUser());
 
             // prepare the buddy's item entry which should be removed
@@ -526,7 +526,7 @@ public class RosterTest {
         roster.reload();
         while (true) {
             final Packet sentPacket = connection.getSentPacket();
-            if (sentPacket instanceof RosterPacket && ((IQ) sentPacket).getType() == Type.GET) {
+            if (sentPacket instanceof RosterPacket && ((IQ) sentPacket).getType() == Type.get) {
                 // setup the roster get request
                 final RosterPacket rosterRequest = (RosterPacket) sentPacket;
                 assertSame("The <query/> element MUST NOT contain any <item/> child elements!",
@@ -536,7 +536,7 @@ public class RosterTest {
                 // prepare the roster result
                 final RosterPacket rosterResult = new RosterPacket();
                 rosterResult.setTo(connection.getUser());
-                rosterResult.setType(Type.RESULT);
+                rosterResult.setType(Type.result);
                 rosterResult.setPacketID(rosterRequest.getPacketID());
 
                 // prepare romeo's roster entry
@@ -642,7 +642,7 @@ public class RosterTest {
             try {
                 while (true) {
                     final Packet packet = connection.getSentPacket();
-                    if (packet instanceof RosterPacket && ((IQ) packet).getType() == Type.SET) {
+                    if (packet instanceof RosterPacket && ((IQ) packet).getType() == Type.set) {
                         final RosterPacket rosterRequest = (RosterPacket) packet;
 
                         // Prepare and process the roster push
@@ -651,7 +651,7 @@ public class RosterTest {
                         if (item.getItemType() != ItemType.remove) {
                             item.setItemType(ItemType.none);
                         }
-                        rosterPush.setType(Type.SET);
+                        rosterPush.setType(Type.set);
                         rosterPush.setTo(connection.getUser());
                         rosterPush.addRosterItem(item);
                         connection.processPacket(rosterPush);
@@ -663,7 +663,7 @@ public class RosterTest {
                             }
                         };
                         response.setPacketID(rosterRequest.getPacketID());
-                        response.setType(Type.RESULT);
+                        response.setType(Type.result);
                         response.setTo(connection.getUser());
                         connection.processPacket(response);
 

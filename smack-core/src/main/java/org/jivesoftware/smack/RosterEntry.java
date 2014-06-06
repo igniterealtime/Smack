@@ -88,7 +88,7 @@ public class RosterEntry {
         }
         this.name = name;
         RosterPacket packet = new RosterPacket();
-        packet.setType(IQ.Type.SET);
+        packet.setType(IQ.Type.set);
         packet.addRosterItem(toRosterItem(this));
         connection.sendPacket(packet);
     }

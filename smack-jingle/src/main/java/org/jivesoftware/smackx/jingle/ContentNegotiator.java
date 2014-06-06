@@ -65,10 +65,10 @@ public class ContentNegotiator extends JingleNegotiator {
         // match this media manager.
 
         if (iq != null) {
-            if (iq.getType().equals(IQ.Type.ERROR)) {
+            if (iq.getType().equals(IQ.Type.error)) {
                 // Process errors
                 // TODO getState().eventError(iq);
-            } else if (iq.getType().equals(IQ.Type.RESULT)) {
+            } else if (iq.getType().equals(IQ.Type.result)) {
                 // Process ACKs
                 if (isExpectedId(iq.getPacketID())) {
                     removeExpectedId(iq.getPacketID());

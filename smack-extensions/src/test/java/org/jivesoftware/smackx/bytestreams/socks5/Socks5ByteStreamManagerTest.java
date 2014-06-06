@@ -432,7 +432,7 @@ public class Socks5ByteStreamManagerTest {
             }
 
         };
-        rejectPacket.setType(Type.ERROR);
+        rejectPacket.setType(Type.error);
         rejectPacket.setFrom(targetJID);
         rejectPacket.setTo(initiatorJID);
         rejectPacket.setError(xmppError);

@@ -43,7 +43,7 @@ public class LastActivity extends IQ {
     public String message;
 
     public LastActivity() {
-        setType(IQ.Type.GET);
+        setType(IQ.Type.get);
     }
 
     public LastActivity(String to) {

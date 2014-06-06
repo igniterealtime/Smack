@@ -120,9 +120,9 @@ public class ServiceDiscoveryManager extends Manager {
                 if (connection == null) return;
                 DiscoverItems discoverItems = (DiscoverItems) packet;
                 // Send back the items defined in the client if the request is of type GET
-                if (discoverItems != null && discoverItems.getType() == IQ.Type.GET) {
+                if (discoverItems != null && discoverItems.getType() == IQ.Type.get) {
                     DiscoverItems response = new DiscoverItems();
-                    response.setType(IQ.Type.RESULT);
+                    response.setType(IQ.Type.result);
                     response.setTo(discoverItems.getFrom());
                     response.setPacketID(discoverItems.getPacketID());
                     response.setNode(discoverItems.getNode());
@@ -139,7 +139,7 @@ public class ServiceDiscoveryManager extends Manager {
                     } else if(discoverItems.getNode() != null) {
                         // Return <item-not-found/> error since client doesn't contain
                         // the specified node
-                        response.setType(IQ.Type.ERROR);
+                        response.setType(IQ.Type.error);
                         response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                     }
                     connection.sendPacket(response);
@@ -157,9 +157,9 @@ public class ServiceDiscoveryManager extends Manager {
                 if (connection == null) return;
                 DiscoverInfo discoverInfo = (DiscoverInfo) packet;
                 // Answer the client's supported features if the request is of the GET type
-                if (discoverInfo != null && discoverInfo.getType() == IQ.Type.GET) {
+                if (discoverInfo != null && discoverInfo.getType() == IQ.Type.get) {
                     DiscoverInfo response = new DiscoverInfo();
-                    response.setType(IQ.Type.RESULT);
+                    response.setType(IQ.Type.result);
                     response.setTo(discoverInfo.getFrom());
                     response.setPacketID(discoverInfo.getPacketID());
                     response.setNode(discoverInfo.getNode());
@@ -185,7 +185,7 @@ public class ServiceDiscoveryManager extends Manager {
                         }
                         else {
                             // Return <item-not-found/> error since specified node was not found
-                            response.setType(IQ.Type.ERROR);
+                            response.setType(IQ.Type.error);
                             response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                         }
                     }
@@ -552,7 +552,7 @@ public class ServiceDiscoveryManager extends Manager {
     public DiscoverInfo discoverInfo(String entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // Discover the entity's info
         DiscoverInfo disco = new DiscoverInfo();
-        disco.setType(IQ.Type.GET);
+        disco.setType(IQ.Type.get);
         disco.setTo(entityID);
         disco.setNode(node);
 
@@ -589,7 +589,7 @@ public class ServiceDiscoveryManager extends Manager {
     public DiscoverItems discoverItems(String entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // Discover the entity's items
         DiscoverItems disco = new DiscoverItems();
-        disco.setType(IQ.Type.GET);
+        disco.setType(IQ.Type.get);
         disco.setTo(entityID);
         disco.setNode(node);
 
@@ -658,7 +658,7 @@ public class ServiceDiscoveryManager extends Manager {
      */
     public void publishItems(String entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
-        discoverItems.setType(IQ.Type.SET);
+        discoverItems.setType(IQ.Type.set);
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);
 

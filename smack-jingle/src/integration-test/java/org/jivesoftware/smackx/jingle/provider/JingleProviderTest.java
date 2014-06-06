@@ -66,7 +66,7 @@ public class JingleProviderTest extends SmackTestCase {
 
 		iqSent.setTo(getFullJID(0));
 		iqSent.setFrom(getFullJID(0));
-		iqSent.setType(IQ.Type.GET);
+		iqSent.setType(IQ.Type.get);
 
 		// Create a filter and a collector...
 		PacketFilter filter = new PacketTypeFilter(IQ.class);
@@ -86,7 +86,7 @@ public class JingleProviderTest extends SmackTestCase {
 		if (iqReceived == null) {
 			fail("No response from server");
 		}
-		else if (iqReceived.getType() == IQ.Type.ERROR) {
+		else if (iqReceived.getType() == IQ.Type.error) {
 			fail("The server did reply with an error packet: " + iqReceived.getError().getCode());
 		}
 		else {

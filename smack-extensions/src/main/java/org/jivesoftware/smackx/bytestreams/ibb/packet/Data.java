@@ -45,7 +45,7 @@ public class Data extends IQ {
          * retrieved from IQ stanza and message stanza in the same way
          */
         addExtension(data);
-        setType(IQ.Type.SET);
+        setType(IQ.Type.set);
     }
 
     /**

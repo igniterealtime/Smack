@@ -130,7 +130,7 @@ public class RemoteCommand extends AdHocCommand {
         // TODO: not throw the corresponding exeption. This will make a faster response,
         // TODO: since the request is stoped before it's sent.
         AdHocCommandData data = new AdHocCommandData();
-        data.setType(IQ.Type.SET);
+        data.setType(IQ.Type.set);
         data.setTo(getOwnerJID());
         data.setNode(getNode());
         data.setSessionID(sessionID);

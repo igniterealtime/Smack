@@ -640,7 +640,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      */
     private Bytestream createStreamHostRequest(String proxy) {
         Bytestream request = new Bytestream();
-        request.setType(IQ.Type.GET);
+        request.setType(IQ.Type.get);
         request.setTo(proxy);
         return request;
     }
@@ -695,7 +695,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
             initiation.addStreamHost(streamHost);
         }
 
-        initiation.setType(IQ.Type.SET);
+        initiation.setType(IQ.Type.set);
         initiation.setTo(targetJID);
 
         return initiation;

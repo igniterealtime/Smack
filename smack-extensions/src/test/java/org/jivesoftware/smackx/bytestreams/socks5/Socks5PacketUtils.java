@@ -43,7 +43,7 @@ public class Socks5PacketUtils {
         bytestream.setFrom(from);
         bytestream.setTo(to);
         bytestream.setSessionID(sessionID);
-        bytestream.setType(IQ.Type.SET);
+        bytestream.setType(IQ.Type.set);
         return bytestream;
     }
 
@@ -60,7 +60,7 @@ public class Socks5PacketUtils {
         streamHostInfo.getPacketID();
         streamHostInfo.setFrom(from);
         streamHostInfo.setTo(to);
-        streamHostInfo.setType(IQ.Type.RESULT);
+        streamHostInfo.setType(IQ.Type.result);
         return streamHostInfo;
     }
 
@@ -76,7 +76,7 @@ public class Socks5PacketUtils {
         discoverItems.getPacketID();
         discoverItems.setFrom(from);
         discoverItems.setTo(to);
-        discoverItems.setType(IQ.Type.RESULT);
+        discoverItems.setType(IQ.Type.result);
         return discoverItems;
     }
 
@@ -92,7 +92,7 @@ public class Socks5PacketUtils {
         discoverInfo.getPacketID();
         discoverInfo.setFrom(from);
         discoverInfo.setTo(to);
-        discoverInfo.setType(IQ.Type.RESULT);
+        discoverInfo.setType(IQ.Type.result);
         return discoverInfo;
     }
 
@@ -115,7 +115,7 @@ public class Socks5PacketUtils {
         response.getPacketID();
         response.setFrom(from);
         response.setTo(to);
-        response.setType(IQ.Type.RESULT);
+        response.setType(IQ.Type.result);
         return response;
     }
 

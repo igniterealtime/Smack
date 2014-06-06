@@ -42,7 +42,7 @@ public class IBBPacketUtils {
             }
 
         };
-        errorIQ.setType(IQ.Type.ERROR);
+        errorIQ.setType(IQ.Type.error);
         errorIQ.setFrom(from);
         errorIQ.setTo(to);
         errorIQ.setError(xmppError);
@@ -64,7 +64,7 @@ public class IBBPacketUtils {
             }
 
         };
-        result.setType(IQ.Type.RESULT);
+        result.setType(IQ.Type.result);
         result.setFrom(from);
         result.setTo(to);
         return result;

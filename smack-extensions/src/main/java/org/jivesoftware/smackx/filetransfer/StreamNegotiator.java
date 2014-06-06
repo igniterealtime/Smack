@@ -59,7 +59,7 @@ public abstract class StreamNegotiator {
         StreamInitiation response = new StreamInitiation();
         response.setTo(streamInitiationOffer.getFrom());
         response.setFrom(streamInitiationOffer.getTo());
-        response.setType(IQ.Type.RESULT);
+        response.setType(IQ.Type.result);
         response.setPacketID(streamInitiationOffer.getPacketID());
 
         DataForm form = new DataForm(Form.TYPE_SUBMIT);
@@ -76,7 +76,7 @@ public abstract class StreamNegotiator {
 
 
     public IQ createError(String from, String to, String packetID, XMPPError xmppError) {
-        IQ iq = FileTransferNegotiator.createIQ(packetID, to, from, IQ.Type.ERROR);
+        IQ iq = FileTransferNegotiator.createIQ(packetID, to, from, IQ.Type.error);
         iq.setError(xmppError);
         return iq;
     }

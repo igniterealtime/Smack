@@ -598,13 +598,13 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         IQ response = null;
 
         if (iq != null) {
-            if (iq.getType().equals(IQ.Type.ERROR)) {
+            if (iq.getType().equals(IQ.Type.error)) {
                 // Process errors
                 setNegotiatorState(JingleNegotiatorState.FAILED);
                 triggerTransportClosed(null);
                 // This next line seems wrong, and may subvert the normal closing process.
                 throw new JingleException(iq.getError().getMessage());
-            } else if (iq.getType().equals(IQ.Type.RESULT)) {
+            } else if (iq.getType().equals(IQ.Type.result)) {
                 // Process ACKs
                 if (isExpectedId(iq.getPacketID())) {
                     response = receiveResult(iq);

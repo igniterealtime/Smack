@@ -162,7 +162,7 @@ public class PrivateDataManager extends Manager {
                 return buf.toString();
             }
         };
-        privateDataGet.setType(IQ.Type.GET);
+        privateDataGet.setType(IQ.Type.get);
 
         PrivateDataResult response = (PrivateDataResult) connection().createPacketCollectorAndSend(
                         privateDataGet).nextResultOrThrow();
@@ -190,7 +190,7 @@ public class PrivateDataManager extends Manager {
                 return buf.toString();
             }
         };
-        privateDataSet.setType(IQ.Type.SET);
+        privateDataSet.setType(IQ.Type.set);
 
         connection().createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
     }

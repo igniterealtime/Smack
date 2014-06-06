@@ -108,13 +108,13 @@ public class MediaNegotiator extends JingleNegotiator {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
 
-        if (iq.getType().equals(IQ.Type.ERROR)) {
+        if (iq.getType().equals(IQ.Type.error)) {
             // Process errors
             setNegotiatorState(JingleNegotiatorState.FAILED);
             triggerMediaClosed(getBestCommonAudioPt());
             // This next line seems wrong, and may subvert the normal closing process.
             throw new JingleException(iq.getError().getMessage());
-        } else if (iq.getType().equals(IQ.Type.RESULT)) {
+        } else if (iq.getType().equals(IQ.Type.result)) {
             // Process ACKs
             if (isExpectedId(iq.getPacketID())) {
                 receiveResult(iq);
