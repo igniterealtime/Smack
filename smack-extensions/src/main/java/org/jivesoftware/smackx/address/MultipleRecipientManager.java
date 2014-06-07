@@ -35,6 +35,8 @@ import org.jxmpp.util.XmppStringUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A MultipleRecipientManager allows to send packets to multiple recipients by making use of
@@ -44,7 +46,9 @@ import java.util.List;
  * @author Gaston Dombiak
  */
 public class MultipleRecipientManager {
-    
+
+    private static final Logger LOGGER = Logger.getLogger(MultipleRecipientManager.class.getName());
+
     /**
      * Create a cache to hold the 100 most recently accessed elements for a period of
      * 24 hours.
@@ -204,7 +208,7 @@ public class MultipleRecipientManager {
      */
     public static MultipleRecipientInfo getMultipleRecipientInfo(Packet packet) {
         MultipleAddresses extension = (MultipleAddresses) packet
-                .getExtension("addresses", "http://jabber.org/protocol/address");
+                .getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
         return extension == null ? null : new MultipleRecipientInfo(extension);
     }
 
@@ -294,34 +298,37 @@ public class MultipleRecipientManager {
         String serviceName = connection.getServiceName();
         String serviceAddress = (String) services.get(serviceName);
         if (serviceAddress == null) {
-            synchronized (services) {
-                serviceAddress = (String) services.get(serviceName);
-                if (serviceAddress == null) {
-
-                    // Send the disco packet to the server itself
-                    DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
-                                    serviceName);
-                    // Check if the server supports JEP-33
-                    if (info.containsFeature("http://jabber.org/protocol/address")) {
+            ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+            // Send the disco packet to the server itself
+            DiscoverInfo info = sdm.discoverInfo(serviceName);
+            // Check if the server supports XEP-33
+            if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
+                serviceAddress = serviceName;
+            }
+            else {
+                // Get the disco items and send the disco packet to each server item
+                DiscoverItems items = sdm.discoverItems(serviceName);
+                for (DiscoverItems.Item item : items.getItems()) {
+                    try {
+                        info = sdm.discoverInfo(item.getEntityID(), item.getNode());
+                    }
+                    catch (XMPPErrorException|NoResponseException e) {
+                        // Don't throw this exceptions if one of the server's items fail
+                        LOGGER.log(Level.WARNING,
+                                        "Exception while discovering info of " + item.getEntityID()
+                                                        + " node: " + item.getNode(), e);
+                        continue;
+                    }
+                    if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
                         serviceAddress = serviceName;
+                        break;
                     }
-                    else {
-                        // Get the disco items and send the disco packet to each server item
-                        DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
-                                        serviceName);
-                        for (DiscoverItems.Item item : items.getItems()) {
-                            info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
-                                            item.getEntityID(), item.getNode());
-                            if (info.containsFeature("http://jabber.org/protocol/address")) {
-                                serviceAddress = serviceName;
-                                break;
-                            }
-                        }
-                    }
-                    // Cache the discovered information
-                    services.put(serviceName, serviceAddress == null ? "" : serviceAddress);
                 }
             }
+            // Use the empty string to indicate that no service is known for this connection
+            serviceAddress = serviceAddress == null ? "" : serviceAddress;
+            // Cache the discovered information
+            services.put(serviceName, serviceAddress);
         }
 
         return "".equals(serviceAddress) ? null : serviceAddress;
