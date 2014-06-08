@@ -216,6 +216,18 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         }
     }
 
+    public String getSID() {
+        return sessionID;
+    }
+
+    public String getRID() {
+         return Long.toString(this.client.getRID());
+    }
+
+    public String getNextRID() {
+        return Long.toString(this.client.getNextRID());
+    }
+
     public String getUser() {
         return user;
     }
