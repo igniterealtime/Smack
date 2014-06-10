@@ -30,6 +30,9 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -51,8 +54,8 @@ public class MessageEventManager extends Manager {
     private static final Map<XMPPConnection, MessageEventManager> INSTANCES = Collections
                     .synchronizedMap(new WeakHashMap<XMPPConnection, MessageEventManager>());
 
-    private static final PacketFilter PACKET_FILTER = new PacketExtensionFilter(
-                    MessageEvent.ELEMENT, MessageEvent.NAMESPACE);
+    private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketExtensionFilter(
+                    new MessageEvent()), new NotFilter(MessageTypeFilter.ERROR));
 
     private List<MessageEventNotificationListener> messageEventNotificationListeners = new CopyOnWriteArrayList<MessageEventNotificationListener>();
     private List<MessageEventRequestListener> messageEventRequestListeners = new CopyOnWriteArrayList<MessageEventRequestListener>();
