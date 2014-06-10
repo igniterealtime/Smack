@@ -259,12 +259,7 @@ public class PacketParserUtils {
         Presence.Type type = Presence.Type.available;
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null && !typeString.equals("")) {
-            try {
-                type = Presence.Type.fromString(typeString);
-            }
-            catch (IllegalArgumentException iae) {
-                LOGGER.warning("Found invalid presence type " + typeString);
-            }
+            type = Presence.Type.fromString(typeString);
         }
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
@@ -289,32 +284,20 @@ public class PacketParserUtils {
                     presence.setStatus(parser.nextText());
                 }
                 else if (elementName.equals("priority")) {
-                    try {
-                        int priority = Integer.parseInt(parser.nextText());
-                        presence.setPriority(priority);
-                    }
-                    catch (NumberFormatException nfe) {
-                        // Ignore.
-                    }
-                    catch (IllegalArgumentException iae) {
-                        // Presence priority is out of range so assume priority to be zero
-                        presence.setPriority(0);
-                    }
+                    int priority = Integer.parseInt(parser.nextText());
+                    presence.setPriority(priority);
                 }
                 else if (elementName.equals("show")) {
                     String modeText = parser.nextText();
-                    try {
-                        presence.setMode(Presence.Mode.fromString(modeText));
-                    }
-                    catch (IllegalArgumentException iae) {
-                        LOGGER.warning("Found invalid presence mode " + modeText);
-                    }
+                    presence.setMode(Presence.Mode.fromString(modeText));
                 }
                 else if (elementName.equals("error")) {
                     presence.setError(parseError(parser));
                 }
                 // Otherwise, it must be a packet extension.
                 else {
+                    // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
+                    // failing completely here. See SMACK-390 for more information.
                 	try {
                         presence.addExtension(PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
                 	}
