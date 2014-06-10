@@ -18,8 +18,6 @@
 package org.jivesoftware.smack.packet;
 
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -41,7 +39,6 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Matt Tucker
  */
 public abstract class IQ extends Packet {
-    private static final Logger LOGGER = Logger.getLogger(IQ.class.getName());
 
     private Type type = Type.get;
 
@@ -202,19 +199,11 @@ public abstract class IQ extends Packet {
          *
          * @param string the String value to covert.
          * @return the corresponding Type.
-         * @throws IllegalArgumentException when not able to parse the string parameter 
+         * @throws IllegalArgumentException when not able to parse the string parameter
+         * @throws NullPointerException if the string is null
          */
         public static Type fromString(String string) {
-            Type type = null;
-            try {
-                type = Type.valueOf(string.toLowerCase(Locale.US));
-            }
-            catch (Exception e) {
-                final String msg = "Could not transform string '" + string + "' to IQ.Type";
-                LOGGER.log(Level.WARNING, msg, e);
-                throw new IllegalArgumentException(msg, e);
-            }
-            return type;
+            return Type.valueOf(string.toLowerCase(Locale.US));
         }
     }
 }

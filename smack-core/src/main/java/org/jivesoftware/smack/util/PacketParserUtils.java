@@ -147,7 +147,10 @@ public class PacketParserUtils {
         message.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
         message.setTo(parser.getAttributeValue("", "to"));
         message.setFrom(parser.getAttributeValue("", "from"));
-        message.setType(Message.Type.fromString(parser.getAttributeValue("", "type")));
+        String typeString = parser.getAttributeValue("", "type");
+        if (typeString != null) {
+            message.setType(Message.Type.fromString(typeString));
+        }
         String language = getLanguageAttribute(parser);
         
         // determine message's default language
@@ -257,7 +260,7 @@ public class PacketParserUtils {
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null && !typeString.equals("")) {
             try {
-                type = Presence.Type.valueOf(typeString);
+                type = Presence.Type.fromString(typeString);
             }
             catch (IllegalArgumentException iae) {
                 LOGGER.warning("Found invalid presence type " + typeString);
@@ -301,7 +304,7 @@ public class PacketParserUtils {
                 else if (elementName.equals("show")) {
                     String modeText = parser.nextText();
                     try {
-                        presence.setMode(Presence.Mode.valueOf(modeText));
+                        presence.setMode(Presence.Mode.fromString(modeText));
                     }
                     catch (IllegalArgumentException iae) {
                         LOGGER.warning("Found invalid presence mode " + modeText);

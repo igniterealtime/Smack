@@ -647,13 +647,17 @@ public class Message extends Packet {
          */
         error;
 
-        public static Type fromString(String name) {
-            try {
-                return Type.valueOf(name);
-            }
-            catch (Exception e) {
-                return normal;
-            }
+        /**
+         * Converts a String into the corresponding types. Valid String values that can be converted
+         * to types are: "normal", "chat", "groupchat", "headline" and "error".
+         * 
+         * @param string the String value to covert.
+         * @return the corresponding Type.
+         * @throws IllegalArgumentException when not able to parse the string parameter
+         * @throws NullPointerException if the string is null
+         */
+        public static Type fromString(String string) {
+            return Type.valueOf(string.toLowerCase(Locale.US));
         }
 
     }

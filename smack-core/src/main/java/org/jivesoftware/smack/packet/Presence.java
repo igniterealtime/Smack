@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -305,7 +307,21 @@ public class Presence extends Packet {
         /**
          * The presence packet contains an error message.
          */
-        error
+        error;
+
+        /**
+         * Converts a String into the corresponding types. Valid String values that can be converted
+         * to types are: "available", "unavailable", "subscribe", "subscribed", "unsubscribe",
+         * "unsubscribed" and "error".
+         * 
+         * @param string the String value to covert.
+         * @return the corresponding Type.
+         * @throws IllegalArgumentException when not able to parse the string parameter
+         * @throws NullPointerException if the string is null
+         */
+        public static Type fromString(String string) {
+            return Type.valueOf(string.toLowerCase(Locale.US));
+        }
     }
 
     /**
@@ -336,6 +352,19 @@ public class Presence extends Packet {
         /**
          * Do not disturb.
          */
-        dnd
+        dnd;
+
+        /**
+         * Converts a String into the corresponding types. Valid String values that can be converted
+         * to types are: "chat", "available", "away", "xa", and "dnd".
+         * 
+         * @param string the String value to covert.
+         * @return the corresponding Type.
+         * @throws IllegalArgumentException when not able to parse the string parameter
+         * @throws NullPointerException if the string is null
+         */
+        public static Mode fromString(String string) {
+            return Mode.valueOf(string.toLowerCase(Locale.US));
+        }
     }
 }
