@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
  * Filters for packets with a particular type of packet extension.
@@ -26,8 +27,8 @@ import org.jivesoftware.smack.packet.Packet;
  */
 public class PacketExtensionFilter implements PacketFilter {
 
-    private String elementName;
-    private String namespace;
+    private final String elementName;
+    private final String namespace;
 
     /**
      * Creates a new packet extension filter. Packets will pass the filter if
@@ -50,6 +51,14 @@ public class PacketExtensionFilter implements PacketFilter {
      */
     public PacketExtensionFilter(String namespace) {
         this(null, namespace);
+    }
+
+    public PacketExtensionFilter(PacketExtension packetExtension) {
+        this(packetExtension.getElementName(), packetExtension.getNamespace());
+    }
+
+    public PacketExtensionFilter(Class<? extends PacketExtension> packetExtensionClass) throws InstantiationException, IllegalAccessException {
+        this(packetExtensionClass.newInstance());
     }
 
     public boolean accept(Packet packet) {
