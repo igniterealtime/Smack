@@ -58,15 +58,13 @@ public class OfflineMessageManager {
 
     private final static String namespace = "http://jabber.org/protocol/offline";
 
-    private XMPPConnection connection;
+    private final XMPPConnection connection;
 
-    private PacketFilter packetFilter;
+    private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketExtensionFilter(
+                    new OfflineMessageInfo()), new PacketTypeFilter(Message.class));;
 
     public OfflineMessageManager(XMPPConnection connection) {
         this.connection = connection;
-        packetFilter =
-                new AndFilter(new PacketExtensionFilter("offline", namespace),
-                        new PacketTypeFilter(Message.class));
     }
 
     /**
@@ -148,7 +146,7 @@ public class OfflineMessageManager {
             request.addItem(item);
         }
         // Filter offline messages that were requested by this request
-        PacketFilter messageFilter = new AndFilter(packetFilter, new PacketFilter() {
+        PacketFilter messageFilter = new AndFilter(PACKET_FILTER, new PacketFilter() {
             public boolean accept(Packet packet) {
                 OfflineMessageInfo info = (OfflineMessageInfo) packet.getExtension("offline",
                         namespace);
@@ -185,7 +183,7 @@ public class OfflineMessageManager {
         request.setFetch(true);
         connection.createPacketCollectorAndSend(request).nextResultOrThrow();
 
-        PacketCollector messageCollector = connection.createPacketCollector(packetFilter);
+        PacketCollector messageCollector = connection.createPacketCollector(PACKET_FILTER);
         // Collect the received offline messages
         Message message = (Message) messageCollector.nextResult();
         while (message != null) {
