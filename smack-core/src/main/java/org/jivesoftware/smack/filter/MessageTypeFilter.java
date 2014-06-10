@@ -33,7 +33,7 @@ public class MessageTypeFilter extends FlexiblePacketTypeFilter<Message> {
     public static final PacketFilter CHAT = new MessageTypeFilter(Type.chat);
     public static final PacketFilter GROUPCHAT = new MessageTypeFilter(Type.groupchat);
     public static final PacketFilter HEADLINE = new MessageTypeFilter(Type.headline);
-    public static final PacketFilter ERROR = new MessageTypeFilter(Type.headline);
+    public static final PacketFilter ERROR = new MessageTypeFilter(Type.error);
 
     private final Message.Type type;
 
