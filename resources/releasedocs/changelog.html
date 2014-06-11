@@ -141,6 +141,129 @@ hr {
 
 	<div id="pageBody">
 
+<h2>4.0.0 -- <span style="font-weight: normal;">2014-06-08</span></h2>
+            
+<h2>        Sub-task
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-399'>SMACK-399</a>] -         Add support for Roster Versioning (was XEP-0237, now in RFC 6121)
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-400'>SMACK-400</a>] -         Change xml-not-well-formed to not-well-formed
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-401'>SMACK-401</a>] -         Remove &lt;invalid-id/&gt;
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-445'>SMACK-445</a>] -         XMPPError class is based on deprecated XEP-0086
+</li>
+</ul>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-357'>SMACK-357</a>] -         Error in SASL authentication when SASL authzid parameter is null
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-410'>SMACK-410</a>] -         Any valid SSL server certificate can be used to perform a man-in-the-middle attack
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-411'>SMACK-411</a>] -         ServiceDiscoveryManager identities should be non-static and kept in a Set to allow multiple identities as per XEP-30
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-414'>SMACK-414</a>] -         Smack does not announce the support for XEP-54 aka vcard-temp
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-427'>SMACK-427</a>] -         Typo in code - StreamInitiation.setSesssionID()
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-467'>SMACK-467</a>] -         Don&#39;t use the default locale for machine-readable output, use Locale.US instead
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-531'>SMACK-531</a>] -         Add missing namespace attribute to XHTML-IM body tags
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-533'>SMACK-533</a>] -         Smack should prevent IQ response spoofing
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-535'>SMACK-535</a>] -         jul.properties should only configure the &#39;org.igniterealtime&#39; namespace
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-538'>SMACK-538</a>] -         ParseRoster does not check the sender of the roster and for pending roster queries
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-541'>SMACK-541</a>] -         XHTMLExtensionProvider relies on incorrect behavior of MXParser, violating the contract of the XMLPullParser interface
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-543'>SMACK-543</a>] -         packet.Time is not thread-safe
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-546'>SMACK-546</a>] -         PubSub&#39;s Item needs to escape its XML payload
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-548'>SMACK-548</a>] -         PingManager notifies pingFailedListeners multiple times
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-551'>SMACK-551</a>] -         ChatManager throws NPE, when Message has no &#39;from&#39; attribute
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-554'>SMACK-554</a>] -         Memory leak in BookmarkManager
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-555'>SMACK-555</a>] -         VCardProvider should consider some elements as optional
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-558'>SMACK-558</a>] -         connect() must wait until the stream features have been parsed
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-559'>SMACK-559</a>] -         Roster entries without a group are not updated
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-560'>SMACK-560</a>] -         Race condition in PacketWriter
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-567'>SMACK-567</a>] -         XMPPConnection leaks listenerExecutor ExecutorService
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-343'>SMACK-343</a>] -         Make Smack jar an OSGi bundle.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-356'>SMACK-356</a>] -         There is no way to reliably end a Chat and have a new one created.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-454'>SMACK-454</a>] -         Follow XEP-0170 recommendation: Compression before Resource Binding
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-459'>SMACK-459</a>] -         Add option to configure the default identity in ServiceDiscoveryManager
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-465'>SMACK-465</a>] -         Replace custom wrapped Throwable in XMPPException with Exception.cause
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-468'>SMACK-468</a>] -         Don&#39;t throw an IOException in IBBStreams when the stream got closed by the remote
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-536'>SMACK-536</a>] -         JUL Loggers should become final
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-537'>SMACK-537</a>] -         Move XMPP Ping code to smackx, add keep-alive functionality to PingManager
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-545'>SMACK-545</a>] -         Change API to the style mentioned in Smack&#39;s Code Guidelines
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-547'>SMACK-547</a>] -         Consistent behavior for &quot;from&quot; attribute on outgoing stanzas
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-556'>SMACK-556</a>] -         Make ConnectionConfigration getters public
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-557'>SMACK-557</a>] -         Provide a MultiUserChat method to create *or* join a room
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-568'>SMACK-568</a>] -         Don&#39;t exclude groupchat messages without body element in MultiUserChat MessageListeners
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-53'>SMACK-53</a>] -         Add support for XEP-0092: Software Version
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-71'>SMACK-71</a>] -         Create new FromFilter that checks for exact matching
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-187'>SMACK-187</a>] -         Add HTTP Binding support (BOSH / XEP-0124)
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-265'>SMACK-265</a>] -         Move to a newer build process with artifacts published to maven central repo
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-426'>SMACK-426</a>] -         Improve XMPPException
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-544'>SMACK-544</a>] -         Add support for XEP-0079: Advanced Message Processing
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-552'>SMACK-552</a>] -         Add support for &quot;HTTP over XMPP transport&quot; aka. XEP-0332
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-371'>SMACK-371</a>] -         Some MUC tasks are using stanza&#39;s as defined in an older version of the spec.  Fails to work on some servers.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-432'>SMACK-432</a>] -         Code cleanup of deprecated methods
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-446'>SMACK-446</a>] -         Remove non-SASL authentication code
+</li>
+</ul>
+
 <h2>3.4.1 -- <span style="font-weight: normal;">Feb 9, 2014</span></h2>
 
 <h2>Bug</h2>
