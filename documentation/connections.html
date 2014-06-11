@@ -20,8 +20,8 @@
 
 <p>
     The <tt>org.jivesoftware.smack.XMPPConnection</tt> class manages your connection to an XMPP
-    server. The default implementation is the <tt>org.jivesoftware.smack.XMPPConnection</tt>
-    class.  Two constructors are mainly used. The first, <tt>XMPPConnection(String)</tt> takes
+    server. The default implementation is the <tt>org.jivesoftware.smack.XMPPTCPConnection</tt>
+    class.  Two constructors are mainly used. The first, <tt>XMPPTCPConnection(String)</tt> takes
     the server name you'd like to connect to as an argument. All default connection settings will
     be used:
     <ul>
@@ -33,7 +33,7 @@
         <li>The XMPP resource name "Smack" will be used for the connection.</li>
     </ul>
 
-    Alternatively, you can use the <tt>XMPPServer(ConnectionConfiguration)</tt> constructor to
+    Alternatively, you can use the <tt>XMPPTCPConnection(ConnectionConfiguration)</tt> constructor to
     specify advanced connection settings. Some of these settings include:
 
     <ul>
@@ -63,7 +63,7 @@ ConnectionConfiguration config = new ConnectionConfiguration(<font color="green"
 config.setCompressionEnabled(true);
 config.setSASLAuthenticationEnabled(true);
 
-Connection connection = new XMPPConnection(config);
+XMPPConnection connection = new XMPPTCPConnection(config);
 <font color="gray"><i>// Connect to the server</i></font>
 connection.connect();
 <font color="gray"><i>// Log into the server</i></font>

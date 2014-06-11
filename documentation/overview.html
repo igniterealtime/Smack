@@ -28,7 +28,7 @@ Smack Key Advantages
 	    can be accomplished in only a few lines of code:
 
 <div class="code"><pre>
-Connection connection = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+XMPPConnection connection = <font color="navy"><b>new</b></font> XMPPTCPConnection(<font color="green">"jabber.org"</font>);
 connection.connect();
 connection.login(<font color="green">"mtucker"</font>, <font color="green">"password"</font>);
 Chat chat = connection.getChatManager().createChat(<font color="green">"jsmith@jivesoftware.com"</font>, new MessageListener() {

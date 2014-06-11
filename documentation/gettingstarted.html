@@ -76,18 +76,18 @@ list of initializers.
 Establishing a Connection
 </p>
 
-The <tt>XMPPConnection</tt> class is used to create a connection to an 
+The <tt>XMPPTCPConnection</tt> class is used to create a connection to an 
 XMPP server. Below are code examples for making a connection:<p>
 
 <div class="code">
 <pre>
 <font color="gray"><i>// Create a connection to the jabber.org server.</i></font>
-Connection conn1 = <font color="navy"><b>new</b></font> XMPPConnection(<font color="green">"jabber.org"</font>);
+XMPPConnection conn1 = <font color="navy"><b>new</b></font> XMPPTCPConnection(<font color="green">"jabber.org"</font>);
 conn1.connect();
 
 <font color="gray"><i>// Create a connection to the jabber.org server on a specific port.</i></font>
 ConnectionConfiguration config = new ConnectionConfiguration(<font color="green">"jabber.org"</font>, 5222);
-Connection conn2 = <font color="navy"><b>new</b></font> XMPPConnection(config);
+XMPPConnection conn2 = <font color="navy"><b>new</b></font> XMPPTCPConnection(config);
 conn2.connect();
 </pre></div>
 
