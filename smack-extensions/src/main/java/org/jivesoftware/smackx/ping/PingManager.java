@@ -308,7 +308,7 @@ public class PingManager extends Manager {
             int nextPingIn = pingInterval - delta;
             LOGGER.fine("Scheduling ServerPingTask in " + nextPingIn + " seconds (pingInterval="
                             + pingInterval + ", delta=" + delta + ")");
-            nextAutomaticPing = schedule(pingServerRunnable, pingInterval, TimeUnit.SECONDS);
+            nextAutomaticPing = schedule(pingServerRunnable, nextPingIn, TimeUnit.SECONDS);
         }
     }
 
