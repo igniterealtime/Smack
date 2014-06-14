@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.bookmarks;
 
 /**
- * Respresents one instance of a URL defined using JEP-0048 Bookmark Storage JEP.
+ * Respresents one instance of a URL defined using XEP-0048 Bookmark Storage XEP.
  *
  * @author Derek DeMoro
  */

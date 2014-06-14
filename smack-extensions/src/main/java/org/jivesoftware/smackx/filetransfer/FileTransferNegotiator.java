@@ -43,7 +43,7 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
- * Manages the negotiation of file transfers according to JEP-0096. If a file is
+ * Manages the negotiation of file transfers according to XEP-0096. If a file is
  * being sent the remote user chooses the type of stream under which the file
  * will be sent.
  *
@@ -357,13 +357,13 @@ public class FileTransferNegotiator {
      * If they accept, the packet will contain the other user's chosen stream
      * type to send the file across. The two choices this implementation
      * provides to the other user for file transfer are <a
-     * href="http://www.jabber.org/jeps/jep-0065.html">SOCKS5 Bytestreams</a>,
+     * href="http://www.xmpp.org/extensions/jep-0065.html">SOCKS5 Bytestreams</a>,
      * which is the preferred method of transfer, and <a
-     * href="http://www.jabber.org/jeps/jep-0047.html">In-Band Bytestreams</a>,
+     * href="http://www.xmpp.org/extensions/jep-0047.html">In-Band Bytestreams</a>,
      * which is the fallback mechanism.
      * <p/>
      * The other user may choose to decline the file request if they do not
-     * desire the file, their client does not support JEP-0096, or if there are
+     * desire the file, their client does not support XEP-0096, or if there are
      * no acceptable means to transfer the file.
      * <p/>
      * Finally, if the other user does not respond this method will return null

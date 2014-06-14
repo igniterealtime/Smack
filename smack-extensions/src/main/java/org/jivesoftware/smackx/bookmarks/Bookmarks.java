@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Bookmarks is used for storing and retrieving URLS and Conference rooms.
- * Bookmark Storage (JEP-0048) defined a protocol for the storage of bookmarks to conference rooms and other entities
+ * Bookmark Storage (XEP-0048) defined a protocol for the storage of bookmarks to conference rooms and other entities
  * in a Jabber user's account.
  * See the following code sample for saving Bookmarks:
  * <p/>

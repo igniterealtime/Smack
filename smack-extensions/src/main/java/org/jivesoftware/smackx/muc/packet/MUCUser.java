@@ -520,7 +520,7 @@ public class MUCUser implements PacketExtension {
 
     /**
      * Status code assists in presenting notification messages. The following link provides the
-     * list of existing error codes (@link http://www.jabber.org/jeps/jep-0045.html#errorstatus).
+     * list of existing error codes (@link http://www.xmpp.org/extensions/jep-0045.html#errorstatus).
      *
      * @author Gaston Dombiak
      */

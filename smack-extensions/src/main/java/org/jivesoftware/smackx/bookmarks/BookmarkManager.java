@@ -34,10 +34,10 @@ import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
 
 
 /**
- * Provides methods to manage bookmarks in accordance with JEP-0048. Methods for managing URLs and
+ * Provides methods to manage bookmarks in accordance with XEP-0048. Methods for managing URLs and
  * Conferences are provided.
  * </p>
- * It should be noted that some extensions have been made to the JEP. There is an attribute on URLs
+ * It should be noted that some extensions have been made to the XEP. There is an attribute on URLs
  * that marks a url as a news feed and also a sub-element can be added to either a URL or conference
  * indicated that it is shared amongst all users on a server.
  *

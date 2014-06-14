@@ -172,7 +172,7 @@
         <className>org.jivesoftware.smackx.sharedgroups.packet.SharedGroupsInfo$Provider</className>
     </iqProvider>
 
-    <!-- JEP-33: Extended Stanza Addressing -->
+    <!-- XEP-33: Extended Stanza Addressing -->
     <extensionProvider>
         <elementName>addresses</elementName>
         <namespace>http://jabber.org/protocol/address</namespace>
