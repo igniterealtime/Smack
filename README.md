@@ -1,6 +1,8 @@
 Smack
 =====
 
+[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Project Stats](https://www.ohloh.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/smackxmpp)
+
 About
 -----
 
@@ -73,8 +75,6 @@ Resources
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
-
-[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)
 
 Ignite Realtime
 ===============
