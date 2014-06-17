@@ -66,6 +66,9 @@ task javadocAll(type: Javadoc) {
 	// Might need a classpath
 	classpath = files(subprojects.collect {project ->
 		project.sourceSets.main.compileClasspath})
+	options.linkSource = true
+	options.use = true
+	options.links = ["http://docs.oracle.com/javase/$sourceCompatibility/docs/api/"] as String[]
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
