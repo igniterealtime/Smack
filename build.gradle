@@ -200,7 +200,7 @@ subprojects {
 	}
 }
 
-['smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
+['smack-resolver-javax', 'smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
 	project(":$name") {
 		jar {
 			manifest {
