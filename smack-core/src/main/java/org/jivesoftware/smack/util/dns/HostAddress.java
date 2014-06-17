@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util.dns;
 
+import org.jivesoftware.smack.SmackException.ConnectionException;
+
 public class HostAddress {
     private final String fqdn;
     private final int port;
@@ -66,6 +68,13 @@ public class HostAddress {
         this.exception = e;
     }
 
+    /**
+     * Retrieve the Exception that caused a connection failure to this HostAddress. Every
+     * HostAddress found in {@link ConnectionException} will have an Exception set,
+     * which can be retrieved with this method.
+     * 
+     * @return the Exception causing this HostAddress to fail
+     */
     public Exception getException() {
         return this.exception;
     }
