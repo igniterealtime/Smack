@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright © 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package org.jivesoftware.smack.util.dns;
 
 public class HostAddress {
-    private String fqdn;
-    private int port;
+    private final String fqdn;
+    private final int port;
     private Exception exception;
 
     /**
@@ -28,16 +28,8 @@ public class HostAddress {
      * @throws IllegalArgumentException If the fqdn is null.
      */
     public HostAddress(String fqdn) {
-        if (fqdn == null)
-            throw new IllegalArgumentException("FQDN is null");
-        if (fqdn.charAt(fqdn.length() - 1) == '.') {
-            this.fqdn = fqdn.substring(0, fqdn.length() - 1);
-        }
-        else {
-            this.fqdn = fqdn;
-        }
         // Set port to the default port for XMPP client communication
-        this.port = 5222;
+        this(fqdn, 5222);
     }
 
     /**
@@ -48,11 +40,17 @@ public class HostAddress {
      * @throws IllegalArgumentException If the fqdn is null or port is out of valid range (0 - 65535).
      */
     public HostAddress(String fqdn, int port) {
-        this(fqdn);
+        if (fqdn == null)
+            throw new IllegalArgumentException("FQDN is null");
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
                     "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
-
+        if (fqdn.charAt(fqdn.length() - 1) == '.') {
+            this.fqdn = fqdn.substring(0, fqdn.length() - 1);
+        }
+        else {
+            this.fqdn = fqdn;
+        }
         this.port = port;
     }
 
@@ -66,6 +64,10 @@ public class HostAddress {
 
     public void setException(Exception e) {
         this.exception = e;
+    }
+
+    public Exception getException() {
+        return this.exception;
     }
 
     @Override
