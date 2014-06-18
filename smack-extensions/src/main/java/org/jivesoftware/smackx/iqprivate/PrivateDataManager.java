@@ -285,7 +285,7 @@ public class PrivateDataManager extends Manager {
             StringBuilder buf = new StringBuilder();
             buf.append("<query xmlns=\"jabber:iq:private\">");
             if (privateData != null) {
-                privateData.toXML();
+                buf.append(privateData.toXML());
             }
             buf.append("</query>");
             return buf.toString();
