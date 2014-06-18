@@ -44,6 +44,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
@@ -53,6 +54,24 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class PacketParserUtils {
     private static final Logger LOGGER = Logger.getLogger(PacketParserUtils.class.getName());
+
+    /**
+     * Creates a new XmlPullParser suitable for parsing XMPP. This means in particular that
+     * FEATURE_PROCESS_NAMESPACES is enabled.
+     * <p>
+     * Note that not all XmlPullParser implementations will return a String on
+     * <code>getText()</code> if the parser is on START_TAG or END_TAG. So you must not rely on this
+     * behavior when using the parser.
+     * </p>
+     * 
+     * @return A suitable XmlPullParser for XMPP parsing
+     * @throws XmlPullParserException
+     */
+    public static XmlPullParser newXmppParser() throws XmlPullParserException {
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        return parser;
+    }
 
     /**
      * Parses a message packet.
@@ -96,7 +115,7 @@ public class PacketParserUtils {
                         xmlLang = defaultLanguage;
                     }
 
-                    String subject = parseContent(parser);
+                    String subject = parseElementText(parser);
 
                     if (message.getSubject(xmlLang) == null) {
                         message.addSubject(xmlLang, subject);
@@ -108,8 +127,8 @@ public class PacketParserUtils {
                         xmlLang = defaultLanguage;
                     }
 
-                    String body = parseContent(parser);
-                    
+                    String body = parseElementText(parser);
+
                     if (message.getBody(xmlLang) == null) {
                         message.addBody(xmlLang, body);
                     }
@@ -140,29 +159,156 @@ public class PacketParserUtils {
     }
 
     /**
-     * Returns the content of a tag as string regardless of any tags included.
+     * Returns the textual content of an element as String.
+     * <p>
+     * The parser must be positioned on a START_TAG of an element which MUST NOT contain Mixed
+     * Content (as defined in XML 3.2.2), or else an XmlPullParserException will be thrown.
+     * </p>
+     * This method is used for the parts where the XMPP specification requires elements that contain
+     * only text or are the empty element.
+     * 
+     * @param parser
+     * @return the textual content of the element as String
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    public static String parseElementText(XmlPullParser parser) throws XmlPullParserException, IOException {
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        String res;
+        if (parser.isEmptyElementTag()) {
+            res = "";
+        }
+        else {
+            // Advance to the text of the Element
+            int event = parser.next();
+            if (event != XmlPullParser.TEXT) {
+                throw new XmlPullParserException(
+                                "Non-empty element tag not followed by text, while Mixed Content (XML 3.2.2) is disallowed");
+            }
+            res = parser.getText();
+            event = parser.next();
+            if (event != XmlPullParser.END_TAG) {
+                throw new XmlPullParserException(
+                                "Non-empty element tag contains child-elements, while Mixed Content (XML 3.2.2) is disallowed");
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Returns the current element as string.
+     * <p>
+     * The parser must be positioned on START_TAG.
+     * </p>
+     * Note that only the outermost namespace attributes ("xmlns") will be returned, not nested ones.
+     *
+     * @param parser the XML pull parser
+     * @return the element as string
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    public static String parseElement(XmlPullParser parser) throws XmlPullParserException, IOException {
+        assert(parser.getEventType() == XmlPullParser.START_TAG);
+        return parseContentDepth(parser, parser.getDepth());
+    }
+
+    /**
+     * Returns the content of a element as string.
+     * <p>
+     * The parser must be positioned on the START_TAG of the element which content is going to get
+     * returned. If the current element is the empty element, then the empty string is returned. If
+     * it is a element which contains just text, then just the text is returned. If it contains
+     * nested elements (and text), then everything from the current opening tag to the corresponding
+     * closing tag of the same depth is returned as String.
+     * </p>
+     * Note that only the outermost namespace attributes ("xmlns") will be returned, not nested ones.
      * 
      * @param parser the XML pull parser
      * @return the content of a tag as string
      * @throws XmlPullParserException if parser encounters invalid XML
      * @throws IOException if an IO error occurs
      */
-    private static String parseContent(XmlPullParser parser)
+    public static String parseContent(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
-        int parserDepth = parser.getDepth();
-        return parseContentDepth(parser, parserDepth);
+        assert(parser.getEventType() == XmlPullParser.START_TAG);
+        if (parser.isEmptyElementTag()) {
+            return "";
+        }
+        // Advance the parser, since we want to parse the content of the current element
+        parser.next();
+        return parseContentDepth(parser, parser.getDepth());
     }
 
+    /**
+     * Returns the content from the current position of the parser up to the closing tag of the
+     * given depth. Note that only the outermost namespace attributes ("xmlns") will be returned,
+     * not nested ones.
+     * <p>
+     * This method is able to parse the content with MX- and KXmlParser. In order to achieve
+     * this some trade-off has to be make, because KXmlParser does not support xml-roundtrip (ie.
+     * return a String on getText() on START_TAG and END_TAG). We are therefore required to work
+     * around this limitation, which results in only partial support for XML namespaces ("xmlns"):
+     * Only the outermost namespace of elements will be included in the resulting String.
+     * </p>
+     * 
+     * @param parser
+     * @param depth
+     * @return the content of the current depth
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
     public static String parseContentDepth(XmlPullParser parser, int depth) throws XmlPullParserException, IOException {
-        StringBuilder content = new StringBuilder();
-        while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
-            String text = parser.getText();
-            if (text == null) {
-                throw new IllegalStateException("Parser should never return 'null' on getText() here");
+        XmlStringBuilder xml = new XmlStringBuilder();
+        int event = parser.getEventType();
+        boolean isEmptyElement = false;
+        // XmlPullParser reports namespaces in nested elements even if *only* the outer ones defines
+        // it. This 'flag' ensures that when a namespace is set for an element, it won't be set again
+        // in a nested element. It's an ugly workaround that has the potential to break things.
+        String namespaceElement = null;;
+        while (true) {
+            if (event == XmlPullParser.START_TAG) {
+                xml.halfOpenElement(parser.getName());
+                if (namespaceElement == null) {
+                    String namespace = parser.getNamespace();
+                    if (StringUtils.isNotEmpty(namespace)) {
+                        xml.attribute("xmlns", namespace);
+                        namespaceElement = parser.getName();
+                    }
+                }
+                for (int i = 0; i < parser.getAttributeCount(); i++) {
+                    xml.attribute(parser.getAttributeName(i), parser.getAttributeValue(i));
+                }
+                if (parser.isEmptyElementTag()) {
+                    xml.closeEmptyElement();
+                    isEmptyElement = true;
+                }
+                else {
+                    xml.rightAngelBracket();
+                }
             }
-            content.append(text);
+            else if (event == XmlPullParser.END_TAG) {
+                if (isEmptyElement) {
+                    // Do nothing as the element was already closed, just reset the flag
+                    isEmptyElement = false;
+                }
+                else {
+                    xml.closeElement(parser.getName());
+                }
+                if (namespaceElement != null && namespaceElement.equals(parser.getName())) {
+                    // We are on the closing tag, which defined the namespace as starting tag, reset the 'flag'
+                    namespaceElement = null;
+                }
+                if (parser.getDepth() <= depth) {
+                    // Abort parsing, we are done
+                    break;
+                }
+            }
+            else if (event == XmlPullParser.TEXT) {
+                xml.append(parser.getText());
+            }
+            event = parser.next();
         }
-        return content.toString();
+        return xml.toString();
     }
 
     /**

@@ -35,7 +35,7 @@ public class ParsingExceptionTest {
     private final static String EXTENSION2 =
     "<extension2 xmlns='namespace'>" +
         "<bar node='testNode'>" +
-            "<i id='testid1' >" +
+            "<i id='testid1'>" +
             "</i>" +
         "</bar>" +
      "</extension2>";
@@ -52,12 +52,14 @@ public class ParsingExceptionTest {
 
     @Test
     public void consumeUnparsedInput() throws Exception {
+        final String MESSAGE_EXCEPTION_ELEMENT = 
+                        "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
+                            "<nothingInHere>" +
+                            "</nothingInHere>" +
+                        "</" + ThrowException.ELEMENT + ">";
         XmlPullParser parser = TestUtils.getMessageParser(
                 "<message from='user@server.example' to='francisco@denmark.lit' id='foo'>" +
-                    "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
-                       "<nothingInHere>" +
-                       "</nothingInHere>" +
-                    "</" + ThrowException.ELEMENT + ">" +
+                    MESSAGE_EXCEPTION_ELEMENT +
                     EXTENSION2 +
                 "</message>");
         int parserDepth = parser.getDepth();
@@ -68,8 +70,7 @@ public class ParsingExceptionTest {
             content = PacketParserUtils.parseContentDepth(parser, parserDepth);
         }
         assertNotNull(content);
-        assertEquals(content, "<nothingInHere></nothingInHere>" + "</" + ThrowException.ELEMENT + ">" + EXTENSION2);
-
+        assertEquals(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", content);
     }
 
     static class ThrowException implements PacketExtensionProvider {

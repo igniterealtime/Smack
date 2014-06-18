@@ -17,9 +17,10 @@
 package org.jivesoftware.smack.test.util;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -39,12 +40,18 @@ final public class TestUtils {
         return getParser(stanza, "presence");
     }
 
-    public static XmlPullParser getParser(String stanza, String startTag) {
+    public static XmlPullParser getParser(String string, String startTag) {
+        return getParser(new StringReader(string), startTag);
+    }
+
+    public static XmlPullParser getParser(Reader reader, String startTag) {
         XmlPullParser parser;
         try {
-            parser = XmlPullParserFactory.newInstance().newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(new StringReader(stanza));
+            parser = PacketParserUtils.newXmppParser();
+            parser.setInput(reader);
+            if (startTag == null) {
+                return parser;
+            }
             boolean found = false;
 
             while (!found) {
@@ -53,8 +60,7 @@ final public class TestUtils {
             }
 
             if (!found)
-                throw new IllegalArgumentException("Cannot parse start tag [" + startTag + "] from stanza [" + stanza
-                        + "]");
+                throw new IllegalArgumentException("Can not find start tag '" + startTag + "'");
         } catch (XmlPullParserException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
