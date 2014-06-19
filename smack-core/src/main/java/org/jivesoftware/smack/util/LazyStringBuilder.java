@@ -22,13 +22,20 @@ import java.util.List;
 public class LazyStringBuilder implements Appendable, CharSequence {
 
     private final List<CharSequence> list;
-    
+
+    private String cache;
+
+    private void invalidateCache() {
+        cache = null;
+    }
+
     public LazyStringBuilder() {
         list = new ArrayList<CharSequence>(20);
     }
 
     public LazyStringBuilder append(LazyStringBuilder lsb) {
         list.addAll(lsb.list);
+        invalidateCache();
         return this;
     }
 
@@ -36,6 +43,7 @@ public class LazyStringBuilder implements Appendable, CharSequence {
     public LazyStringBuilder append(CharSequence csq) {
         assert csq != null;
         list.add(csq);
+        invalidateCache();
         return this;
     }
 
@@ -43,17 +51,22 @@ public class LazyStringBuilder implements Appendable, CharSequence {
     public LazyStringBuilder append(CharSequence csq, int start, int end) {
         CharSequence subsequence = csq.subSequence(start, end);
         list.add(subsequence);
+        invalidateCache();
         return this;
     }
 
     @Override
     public LazyStringBuilder append(char c) {
         list.add(Character.toString(c));
+        invalidateCache();
         return this;
     }
 
     @Override
     public int length() {
+        if (cache != null) {
+            return cache.length();
+        }
         int length = 0;
         for (CharSequence csq : list) {
             length += csq.length();
@@ -63,6 +76,9 @@ public class LazyStringBuilder implements Appendable, CharSequence {
 
     @Override
     public char charAt(int index) {
+        if (cache != null) {
+            return cache.charAt(index);
+        }
         for (CharSequence csq : list) {
             if (index < csq.length()) {
                 return csq.charAt(index);
@@ -80,10 +96,13 @@ public class LazyStringBuilder implements Appendable, CharSequence {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(length());
-        for (CharSequence csq : list) {
-            sb.append(csq);
+        if (cache == null) {
+            StringBuilder sb = new StringBuilder(length());
+            for (CharSequence csq : list) {
+                sb.append(csq);
+            }
+            cache = sb.toString();
         }
-        return sb.toString();
+        return cache;
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.bookmarks;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -58,6 +59,9 @@ import java.util.List;
  * @author Derek DeMoro
  */
 public class Bookmarks implements PrivateData {
+
+    public static final String NAMESPACE = "storage:bookmarks";
+    public static final String ELEMENT = "storage";
 
     private List<BookmarkedURL> bookmarkedURLS;
     private List<BookmarkedConference> bookmarkedConferences;
@@ -145,7 +149,7 @@ public class Bookmarks implements PrivateData {
      * @return the element name.
      */
     public String getElementName() {
-        return "storage";
+        return ELEMENT;
     }
 
     /**
@@ -154,28 +158,26 @@ public class Bookmarks implements PrivateData {
      * @return the namespace.
      */
     public String getNamespace() {
-        return "storage:bookmarks";
+        return NAMESPACE;
     }
 
     /**
-     * Returns the XML reppresentation of the PrivateData.
+     * Returns the XML representation of the PrivateData.
      *
      * @return the private data as XML.
      */
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<storage xmlns=\"storage:bookmarks\">");
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder buf = new XmlStringBuilder();
+        buf.openElement(ELEMENT).xmlnsAttribute(NAMESPACE);
 
         for (BookmarkedURL urlStorage : getBookmarkedURLS()) {
             if(urlStorage.isShared()) {
                 continue;
             }
-            buf.append("<url name=\"").append(urlStorage.getName()).
-                    append("\" url=\"").append(urlStorage.getURL()).append("\"");
-            if(urlStorage.isRss()) {
-                buf.append(" rss=\"").append(true).append("\"");
-            }
-            buf.append(" />");
+            buf.openElement("url").attribute("name", urlStorage.getName()).attribute("url", urlStorage.getURL());
+            buf.condAttribute(urlStorage.isRss(), "rss", "true");
+            buf.closeEmptyElement();
         }
 
         // Add Conference additions
@@ -183,26 +185,20 @@ public class Bookmarks implements PrivateData {
             if(conference.isShared()) {
                 continue;
             }
-            buf.append("<conference ");
-            buf.append("name=\"").append(conference.getName()).append("\" ");
-            buf.append("autojoin=\"").append(conference.isAutoJoin()).append("\" ");
-            buf.append("jid=\"").append(conference.getJid()).append("\" ");
-            buf.append(">");
+            buf.openElement("conference");
+            buf.attribute("name", conference.getName());
+            buf.attribute("autojoin", Boolean.toString(conference.isAutoJoin()));
+            buf.attribute("jid", conference.getJid());
+            buf.rightAngelBracket();
 
-            if (conference.getNickname() != null) {
-                buf.append("<nick>").append(conference.getNickname()).append("</nick>");
-            }
+            buf.optElement("nick", conference.getNickname());
+            buf.optElement("password", conference.getPassword());
 
-
-            if (conference.getPassword() != null) {
-                buf.append("<password>").append(conference.getPassword()).append("</password>");
-            }
-            buf.append("</conference>");
+            buf.closeElement("conference");
         }
 
-
-        buf.append("</storage>");
-        return buf.toString();
+        buf.closeElement(ELEMENT);
+        return buf;
     }
 
     /**

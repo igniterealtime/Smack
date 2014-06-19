@@ -168,6 +168,25 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder emptyElement(String element) {
+        halfOpenElement(element);
+        return closeEmptyElement();
+    }
+
+    public XmlStringBuilder condEmptyElement(boolean condition, String element) {
+        if (condition) {
+            emptyElement(element);
+        }
+        return this;
+    }
+
+    public XmlStringBuilder condAttribute(boolean condition, String name, String value) {
+        if (condition) {
+            attribute(name, value);
+        }
+        return this;
+    }
+
     @Override
     public XmlStringBuilder append(CharSequence csq) {
         assert csq != null;
@@ -206,5 +225,19 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     @Override
     public String toString() {
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof XmlStringBuilder)) {
+            return false;
+        }
+        XmlStringBuilder otherXmlStringBuilder = (XmlStringBuilder) other;
+        return toString().equals(otherXmlStringBuilder.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 }

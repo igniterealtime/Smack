@@ -45,5 +45,5 @@ public interface PrivateData {
      *
      * @return the private data as XML.
      */
-    public String toXML();
+    public CharSequence toXML();
 }

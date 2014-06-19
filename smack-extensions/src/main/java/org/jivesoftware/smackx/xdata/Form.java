@@ -49,9 +49,6 @@ public class Form {
     public static final String TYPE_CANCEL = "cancel";
     public static final String TYPE_RESULT = "result";
 
-    public static final String NAMESPACE = "jabber:x:data";
-    public static final String ELEMENT = "x";
-
     private DataForm dataForm;
 
     /**

@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.xdata.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
 
 import java.util.ArrayList;
@@ -32,6 +32,9 @@ import java.util.List;
  * @author Gaston Dombiak
  */
 public class DataForm implements PacketExtension {
+
+    public static final String NAMESPACE = "jabber:x:data";
+    public static final String ELEMENT = "x";
 
     private String type;
     private String title;
@@ -120,11 +123,11 @@ public class DataForm implements PacketExtension {
     }
 
     public String getElementName() {
-        return Form.ELEMENT;
+        return ELEMENT;
     }
 
     public String getNamespace() {
-        return Form.NAMESPACE;
+        return NAMESPACE;
     }
 
     /**
@@ -207,15 +210,15 @@ public class DataForm implements PacketExtension {
         return found;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
-            "\" type=\"" + getType() +"\">");
-        if (getTitle() != null) {
-            buf.append("<title>").append(getTitle()).append("</title>");
-        }
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder buf = new XmlStringBuilder(this);
+        buf.attribute("type", getType());
+        buf.rightAngelBracket();
+
+        buf.optElement("title", getTitle());
         for (String instruction : getInstructions()) {
-            buf.append("<instructions>").append(instruction).append("</instructions>");
+            buf.element("instructions", instruction);
         }
         // Append the list of fields returned from a search
         if (getReportedData() != null) {
@@ -229,8 +232,8 @@ public class DataForm implements PacketExtension {
         for (FormField field : getFields()) {
             buf.append(field.toXML());
         }
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+        buf.closeElement(this);
+        return buf;
     }
 
     /**
@@ -241,6 +244,8 @@ public class DataForm implements PacketExtension {
      * @author Gaston Dombiak
      */
     public static class ReportedData {
+        public static final String ELEMENT = "reported";
+
         private List<FormField> fields = new ArrayList<FormField>();
         
         public ReportedData(List<FormField> fields) {
@@ -256,15 +261,15 @@ public class DataForm implements PacketExtension {
             return Collections.unmodifiableList(new ArrayList<FormField>(fields));
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<reported>");
+        public CharSequence toXML() {
+            XmlStringBuilder buf = new XmlStringBuilder();
+            buf.openElement(ELEMENT);
             // Loop through all the form items and append them to the string buffer
             for (FormField field : getFields()) {
                 buf.append(field.toXML());
             }
-            buf.append("</reported>");
-            return buf.toString();
+            buf.closeElement(ELEMENT);
+            return buf;
         }
     }
     
@@ -275,6 +280,8 @@ public class DataForm implements PacketExtension {
      * @author Gaston Dombiak
      */
     public static class Item {
+        public static final String ELEMENT = "item";
+
         private List<FormField> fields = new ArrayList<FormField>();
         
         public Item(List<FormField> fields) {
@@ -290,15 +297,15 @@ public class DataForm implements PacketExtension {
             return Collections.unmodifiableList(new ArrayList<FormField>(fields));
         }
         
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<item>");
+        public CharSequence toXML() {
+            XmlStringBuilder buf = new XmlStringBuilder();
+            buf.openElement(ELEMENT);
             // Loop through all the form items and append them to the string buffer
             for (FormField field : getFields()) {
                 buf.append(field.toXML());
             }
-            buf.append("</item>");
-            return buf.toString();
+            buf.closeElement(ELEMENT);
+            return buf;
         }
     }
 }
