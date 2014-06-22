@@ -36,6 +36,7 @@ import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
@@ -167,6 +168,9 @@ public final class SmackConfiguration {
         catch (Exception e) {
             // Ignore.
         }
+
+        // Initialize the DNS resolvers
+        DNSUtil.init();
     }
 
     /**

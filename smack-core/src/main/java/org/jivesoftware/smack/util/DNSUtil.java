@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -38,6 +40,31 @@ public class DNSUtil {
 
     private static final Logger LOGGER = Logger.getLogger(DNSUtil.class.getName());
     private static DNSResolver dnsResolver = null;
+
+    /**
+     * Initializes DNSUtil. This method is automatically called by SmackConfiguration, you don't
+     * have to call it manually.
+     */
+    public static void init() {
+        final String[] RESOLVERS = new String[] { "javax.JavaxResolver", "minidns.MiniDnsResolver",
+                        "dnsjava.DNSJavaResolver" };
+        for (String resolver :RESOLVERS) {
+            DNSResolver availableResolver = null;
+            String resolverFull = "org.jivesoftware.smack.util.dns" + resolver;
+            try {
+                Class<?> resolverClass = Class.forName(resolverFull);
+                Method getInstanceMethod = resolverClass.getMethod("getInstance");
+                availableResolver = (DNSResolver) getInstanceMethod.invoke(null);
+                if (availableResolver != null) {
+                    setDNSResolver(availableResolver);
+                    break;
+                }
+            }
+            catch (ClassNotFoundException|NoSuchMethodException|SecurityException|IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
+                LOGGER.log(Level.FINE, "Exception on init", e);
+            }
+        }
+    }
 
     /**
      * Set the DNS resolver that should be used to perform DNS lookups.
