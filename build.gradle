@@ -36,7 +36,12 @@ allprojects {
 				   // first occurence of an dash with a dot.
 				   // For example 4.0.0-rc1 becomes 4.0.0.rc1, but
 				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
-				   'Bundle-Version': version.replaceFirst("-", "."))
+				   'Bundle-Version': version.replaceFirst("-", "."),
+				   'Built-Date': new Date(),
+				   'Built-JDK': System.getProperty('java.version'),
+				   'Built-Gradle': gradle.gradleVersion,
+				   'Built-By': System.getProperty('user.name')
+				  )
 	}
 
 	eclipse {
