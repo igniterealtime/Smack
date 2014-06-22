@@ -17,8 +17,10 @@
 
 package org.jivesoftware.smack;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,10 +97,13 @@ public final class SmackConfiguration {
     static {
         String smackVersion;
         try {
-            InputStream is = FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null);
-            byte[] buf = new byte[1024];
-            is.read(buf);
-            smackVersion = new String(buf, "UTF-8");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null)));
+            smackVersion = reader.readLine();
+            try {
+                reader.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "IOException closing stream", e);
+            }
         } catch(Exception e) {
             LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);
             smackVersion = "unkown";
