@@ -102,6 +102,9 @@ jar {
 	enabled = false
 }
 
+// Disable upload archives for the root project
+uploadArchives.enabled = false
+
 description = """\
 Smack ${version}
 ${oneLineDesc}."""
