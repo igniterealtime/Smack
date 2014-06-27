@@ -200,7 +200,9 @@ subprojects {
 	rootProject.distributionZip {
 		dependsOn build
 		from(buildDir) {
-			include "$libsDirName/**"
+			include "$libsDirName/*${version}.jar"
+			include "$libsDirName/*${version}-javadoc.jar"
+			include "$libsDirName/*${version}-sources.jar"
 		}
 	}
 	signing {
