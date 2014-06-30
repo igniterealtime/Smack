@@ -41,6 +41,7 @@ import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.packet.DelayInformation;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.XHTMLExtension;
@@ -124,7 +125,7 @@ public class MultiUserChatTest extends SmackTestCase {
             // Get first historic message
             msg = muc2.nextMessage(1000);
             assertNotNull("First message is null", msg);
-            DelayInformation delay = (DelayInformation) msg.getExtension("x", "jabber:x:delay");
+            DelayInformation delay = DelayInformationManager.getDelayInformation(msg);
             assertNotNull("Message contains no delay information", delay);
             SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
             UTC_FORMAT.setTimeZone(TimeZone.getDefault());

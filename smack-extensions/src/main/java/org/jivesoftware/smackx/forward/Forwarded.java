@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.forward;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smackx.delay.packet.DelayInfo;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**
  * Packet extension for <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297</a>: Stanza Forwarding.
@@ -29,16 +29,16 @@ public class Forwarded implements PacketExtension {
     public static final String NAMESPACE = "urn:xmpp:forward:0";
     public static final String ELEMENT_NAME = "forwarded";
 
-    private DelayInfo delay;
+    private DelayInformation delay;
     private Packet forwardedPacket;
 
     /**
      * Creates a new Forwarded packet extension.
      *
-     * @param delay an optional {@link DelayInfo} timestamp of the packet.
+     * @param delay an optional {@link DelayInformation} timestamp of the packet.
      * @param fwdPacket the packet that is forwarded (required).
      */
-    public Forwarded(DelayInfo delay, Packet fwdPacket) {
+    public Forwarded(DelayInformation delay, Packet fwdPacket) {
         this.delay = delay;
         this.forwardedPacket = fwdPacket;
     }
@@ -88,9 +88,19 @@ public class Forwarded implements PacketExtension {
     /**
      * get the timestamp of the forwarded packet.
      *
-     * @return the {@link DelayInfo} representing the time when the original packet was sent. May be null.
+     * @return the {@link DelayInformation} representing the time when the original packet was sent. May be null.
+     * @deprecated Use {@link #getDelayInformation} instead.
      */
-    public DelayInfo getDelayInfo() {
+    public DelayInformation getDelayInfo() {
+        return getDelayInformation();
+    }
+
+    /**
+     * get the timestamp of the forwarded packet.
+     *
+     * @return the {@link DelayInformation} representing the time when the original packet was sent. May be null.
+     */
+    public DelayInformation getDelayInformation() {
         return delay;
     }
 }

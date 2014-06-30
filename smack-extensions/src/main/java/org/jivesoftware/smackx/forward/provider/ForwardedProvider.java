@@ -20,7 +20,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.delay.packet.DelayInfo;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.Forwarded;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class ForwardedProvider implements PacketExtensionProvider {
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-        DelayInfo di = null;
+        DelayInformation di = null;
         Packet packet = null;
 
         boolean done = false;
@@ -40,7 +40,7 @@ public class ForwardedProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("delay"))
-                    di = (DelayInfo)PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser);
+                    di = (DelayInformation)PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser);
                 else if (parser.getName().equals("message"))
                     packet = PacketParserUtils.parseMessage(parser);
                 else throw new Exception("Unsupported forwarded packet type: " + parser.getName());

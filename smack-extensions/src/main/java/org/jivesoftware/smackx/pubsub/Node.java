@@ -32,7 +32,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;
 import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
@@ -409,14 +409,7 @@ abstract public class Node
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 			ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
-			DelayInformation delay = (DelayInformation)packet.getExtension("delay", "urn:xmpp:delay");
-			
-			// If there was no delay based on XEP-0203, then try XEP-0091 for backward compatibility
-			if (delay == null)
-			{
-				delay = (DelayInformation)packet.getExtension("x", "jabber:x:delay");
-			}
-            ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), (List<Item>)itemsElem.getItems(), getSubscriptionIds(packet), (delay == null ? null : delay.getStamp()));
+            ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), (List<Item>)itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
 			listener.handlePublishedItems(eventItems);
 		}
 	}

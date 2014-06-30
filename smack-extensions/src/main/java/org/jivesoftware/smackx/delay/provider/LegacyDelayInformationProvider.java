@@ -23,15 +23,14 @@ import org.jxmpp.util.XmppDateTime;
 
 /**
  * The DelayInformationProvider parses DelayInformation packets.
- * 
+ *
  * @author Florian Schmaus
  */
-public class DelayInformationProvider extends AbstractDelayInformationProvider {
+public class LegacyDelayInformationProvider extends AbstractDelayInformationProvider {
 
-    @SuppressWarnings("deprecation")
     @Override
     protected Date parseDate(String string) throws ParseException {
-        return XmppDateTime.parseXEP0082Date(string);
+        return XmppDateTime.parseDate(string);
     }
 
 }

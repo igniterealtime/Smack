@@ -114,13 +114,13 @@
     <extensionProvider>
         <elementName>x</elementName>
         <namespace>jabber:x:delay</namespace>
-        <className>org.jivesoftware.smackx.delay.provider.DelayInformationProvider</className>
+        <className>org.jivesoftware.smackx.delay.provider.LegacyDelayInformationProvider</className>
     </extensionProvider>
     
     <extensionProvider>
     	<elementName>delay</elementName>
         <namespace>urn:xmpp:delay</namespace>
-        <className>org.jivesoftware.smackx.delay.provider.DelayInfoProvider</className>
+        <className>org.jivesoftware.smackx.delay.provider.DelayInformationProvider</className>
     </extensionProvider>
 
     <!-- Version -->
