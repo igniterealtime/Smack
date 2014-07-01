@@ -23,6 +23,9 @@ public abstract class Manager {
     final WeakReference<XMPPConnection> weakConnection;
 
     public Manager(XMPPConnection connection) {
+        if (connection == null) {
+            throw new IllegalArgumentException("XMPPConnection must not be null");
+        }
         weakConnection = new WeakReference<XMPPConnection>(connection);
     }
 

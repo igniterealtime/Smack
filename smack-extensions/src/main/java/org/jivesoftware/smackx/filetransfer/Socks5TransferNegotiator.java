@@ -122,11 +122,6 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         }
     }
 
-    @Override
-    public void cleanup() {
-        /* do nothing */
-    }
-
     /**
      * This PacketFilter accepts an incoming SOCKS5 Bytestream request with a specified session ID.
      */

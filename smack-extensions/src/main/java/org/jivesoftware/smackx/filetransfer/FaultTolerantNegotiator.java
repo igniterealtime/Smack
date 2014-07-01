@@ -161,9 +161,6 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return namespaces;
     }
 
-    public void cleanup() {
-    }
-
     private class NegotiatorService implements Callable<InputStream> {
 
         private PacketCollector collector;

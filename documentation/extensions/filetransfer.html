@@ -33,9 +33,8 @@ to enable the user to easily send a file.
 
 <b>Usage</b><p>
 
-In order to send a file you must first construct an instance of the <b><i>FileTransferManager</i></b>
-class. This class has one constructor with one parameter which is your XMPPConnection.
-In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i>
+In order to send a file you must first construct an instance of the <b><i>FileTransferManager</i></b> class.
+In order to instantiate the manager you should call <i>FileTransferManager.getInstanceFor(connection)</i>
 
 <p>Once you have your <b><i>FileTransferManager</i></b> you will need to create an outgoing
 file transfer to send a file. The method to use on the <b><i>FileTransferManager</i></b>
@@ -62,7 +61,7 @@ In this example we can see how to send a file: <br>
 <blockquote>
 <pre>
       <font color="#3f7f5f">// Create the file transfer manager</font>
-      FileTransferManager manager = new FileTransferManager(connection);
+      FileTransferManager manager = FileTransferManager.getInstanceFor(connection);
 		
       <font color="#3f7f5f">// Create the outgoing file transfer</font>
       OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(<font color="#0000FF">"romeo@montague.net"</font>);
@@ -85,9 +84,8 @@ manager.</p>
 
 <b>Usage</b><p>
 
-In order to recieve a file you must first construct an instance of the <b><i>FileTransferManager</i></b>
-class. This class has one constructor with one parameter which is your XMPPConnection.
-In order to instantiate the manager you should call <i>new FileTransferManager(connection)</i>
+In order to recieve a file you must first construct an instance of the <b><i>FileTransferManager</i></b> class.
+In order to instantiate the manager you should call <i>FileTransferManager.getInstanceFor(connection)</i>
 
 <p>Once you have your <b><i>FileTransferManager</i></b> you will need to register a listener
 with it. The FileTransferListner interface has one method, <b>fileTransferRequest(request)</b>.
@@ -114,7 +112,7 @@ consult the Javadoc for more information.
 In this example we can see how to approve or reject a file transfer request: <br>
 <blockquote>
 <pre>      <font color="#3f7f5f">// Create the file transfer manager</font>
-      final FileTransferManager manager = new FileTransferManager(connection);
+      FileTransferManager manager = FileTransferManager.getInstanceFor(connection);
 
       <font color="#3f7f5f">// Create the listener</font>
       manager.addFileTransferListener(new FileTransferListener() {

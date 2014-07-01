@@ -24,9 +24,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
@@ -50,16 +50,13 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  * @author Alexander Wenckus
  * @see <a href="http://xmpp.org/extensions/xep-0096.html">XEP-0096: SI File Transfer</a>
  */
-public class FileTransferNegotiator {
+public class FileTransferNegotiator extends Manager {
 
-    // Static
+    public static final String SI_NAMESPACE = "http://jabber.org/protocol/si";
+    public static final String SI_PROFILE_FILE_TRANSFER_NAMESPACE = "http://jabber.org/protocol/si/profile/file-transfer";
+    private static final String[] NAMESPACE = { SI_NAMESPACE, SI_PROFILE_FILE_TRANSFER_NAMESPACE };
 
-    private static final String[] NAMESPACE = {
-            "http://jabber.org/protocol/si/profile/file-transfer",
-            "http://jabber.org/protocol/si"};
-
-    private static final Map<XMPPConnection, FileTransferNegotiator> transferObject =
-            new ConcurrentHashMap<XMPPConnection, FileTransferNegotiator>();
+    private static final Map<XMPPConnection, FileTransferNegotiator> INSTANCES = new WeakHashMap<XMPPConnection, FileTransferNegotiator>();
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
@@ -80,27 +77,16 @@ public class FileTransferNegotiator {
      * service is automatically enabled.
      *
      * @param connection The connection for which the transfer manager is desired
-     * @return The IMFileTransferManager
+     * @return The FileTransferNegotiator
      */
-    public static FileTransferNegotiator getInstanceFor(
+    public static synchronized FileTransferNegotiator getInstanceFor(
             final XMPPConnection connection) {
-        if (connection == null) {
-            throw new IllegalArgumentException("XMPPConnection cannot be null");
+        FileTransferNegotiator fileTransferNegotiator = INSTANCES.get(connection);
+        if (fileTransferNegotiator == null) {
+            fileTransferNegotiator = new FileTransferNegotiator(connection);
+            INSTANCES.put(connection, fileTransferNegotiator);
         }
-        if (!connection.isConnected()) {
-            return null;
-        }
-
-        if (transferObject.containsKey(connection)) {
-            return transferObject.get(connection);
-        }
-        else {
-            FileTransferNegotiator transfer = new FileTransferNegotiator(
-                    connection);
-            setServiceEnabled(connection, true);
-            transferObject.put(connection, transfer);
-            return transfer;
-        }
+        return fileTransferNegotiator;
     }
 
     /**
@@ -110,7 +96,7 @@ public class FileTransferNegotiator {
      * @param connection The connection on which to enable or disable the services.
      * @param isEnabled  True to enable, false to disable.
      */
-    public static void setServiceEnabled(final XMPPConnection connection,
+    private static void setServiceEnabled(final XMPPConnection connection,
             final boolean isEnabled) {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
@@ -124,14 +110,11 @@ public class FileTransferNegotiator {
 
         for (String namespace : namespaces) {
             if (isEnabled) {
-                if (!manager.includesFeature(namespace)) {
-                    manager.addFeature(namespace);
-                }
+                manager.addFeature(namespace);
             } else {
                 manager.removeFeature(namespace);
             }
         }
-        
     }
 
     /**
@@ -200,38 +183,16 @@ public class FileTransferNegotiator {
 
     // non-static
 
-    private final XMPPConnection connection;
-
     private final StreamNegotiator byteStreamTransferManager;
 
     private final StreamNegotiator inbandTransferManager;
 
     private FileTransferNegotiator(final XMPPConnection connection) {
-        configureConnection(connection);
-
-        this.connection = connection;
+        super(connection);
         byteStreamTransferManager = new Socks5TransferNegotiator(connection);
         inbandTransferManager = new IBBTransferNegotiator(connection);
-    }
 
-    private void configureConnection(final XMPPConnection connection) {
-        connection.addConnectionListener(new AbstractConnectionListener() {
-            @Override
-            public void connectionClosed() {
-                cleanup(connection);
-            }
-
-            @Override
-            public void connectionClosedOnError(Exception e) {
-                cleanup(connection);
-            }
-        });
-    }
-
-    private void cleanup(final XMPPConnection connection) {
-        if (transferObject.remove(connection) != null) {
-            inbandTransferManager.cleanup();
-        }
+        setServiceEnabled(connection, true);
     }
 
     /**
@@ -255,7 +216,7 @@ public class FileTransferNegotiator {
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                     IQ.Type.error);
             iqPacket.setError(error);
-            connection.sendPacket(iqPacket);
+            connection().sendPacket(iqPacket);
             throw new XMPPErrorException(errorMessage, error);
         }
 
@@ -269,7 +230,7 @@ public class FileTransferNegotiator {
             IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                     IQ.Type.error);
             iqPacket.setError(e.getXMPPError());
-            connection.sendPacket(iqPacket);
+            connection().sendPacket(iqPacket);
             throw e;
         }
 
@@ -308,9 +269,8 @@ public class FileTransferNegotiator {
             throw new XMPPErrorException(error);
         }
 
-       //if (isByteStream && isIBB && field.getType().equals(FormField.TYPE_LIST_MULTI)) {
         if (isByteStream && isIBB) { 
-            return new FaultTolerantNegotiator(connection,
+            return new FaultTolerantNegotiator(connection(),
                     byteStreamTransferManager,
                     inbandTransferManager);
         }
@@ -333,7 +293,7 @@ public class FileTransferNegotiator {
         IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
                 IQ.Type.error);
         iqPacket.setError(error);
-        connection.sendPacket(iqPacket);
+        connection().sendPacket(iqPacket);
     }
 
     /**
@@ -394,11 +354,11 @@ public class FileTransferNegotiator {
 
         si.setFeatureNegotiationForm(createDefaultInitiationForm());
 
-        si.setFrom(connection.getUser());
+        si.setFrom(connection().getUser());
         si.setTo(userID);
         si.setType(IQ.Type.set);
 
-        PacketCollector collector = connection.createPacketCollectorAndSend(si);
+        PacketCollector collector = connection().createPacketCollectorAndSend(si);
         Packet siResponse = collector.nextResult(responseTimeout);
         collector.cancel();
 
@@ -439,7 +399,7 @@ public class FileTransferNegotiator {
         }
 
         if (isByteStream && isIBB) {
-            return new FaultTolerantNegotiator(connection,
+            return new FaultTolerantNegotiator(connection(),
                     byteStreamTransferManager, inbandTransferManager);
         }
         else if (isByteStream) {

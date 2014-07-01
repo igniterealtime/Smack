@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -28,8 +29,10 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The file transfer manager class handles the sending and recieving of files.
@@ -43,13 +46,22 @@ import java.util.List;
  * @author Alexander Wenckus
  * 
  */
-public class FileTransferManager {
+public class FileTransferManager extends Manager {
+
+    private static final Map<XMPPConnection, FileTransferManager> INSTANCES = new WeakHashMap<XMPPConnection, FileTransferManager>();
+
+    public static synchronized FileTransferManager getInstanceFor(XMPPConnection connection) {
+        FileTransferManager fileTransferManager = INSTANCES.get(connection);
+        if (fileTransferManager == null) {
+            fileTransferManager = new FileTransferManager(connection);
+            INSTANCES.put(connection, fileTransferManager);
+        }
+        return fileTransferManager;
+    }
 
 	private final FileTransferNegotiator fileTransferNegotiator;
 
-	private List<FileTransferListener> listeners;
-
-	private XMPPConnection connection;
+	private final List<FileTransferListener> listeners = new CopyOnWriteArrayList<FileTransferListener>();
 
 	/**
 	 * Creates a file transfer manager to initiate and receive file transfers.
@@ -57,10 +69,19 @@ public class FileTransferManager {
 	 * @param connection
 	 *            The XMPPConnection that the file transfers will use.
 	 */
-	public FileTransferManager(XMPPConnection connection) {
-		this.connection = connection;
+	private FileTransferManager(XMPPConnection connection) {
+		super(connection);
 		this.fileTransferNegotiator = FileTransferNegotiator
 				.getInstanceFor(connection);
+        connection.addPacketListener(new PacketListener() {
+            public void processPacket(Packet packet) {
+                StreamInitiation si = (StreamInitiation) packet;
+                FileTransferRequest request = new FileTransferRequest(FileTransferManager.this, si);
+                for (FileTransferListener listener : listeners) {
+                    listener.fileTransferRequest(request);
+                }
+            }
+        }, new AndFilter(new PacketTypeFilter(StreamInitiation.class), IQTypeFilter.SET));
 	}
 
 	/**
@@ -73,35 +94,7 @@ public class FileTransferManager {
 	 * @see FileTransferListener
 	 */
 	public void addFileTransferListener(final FileTransferListener li) {
-		if (listeners == null) {
-			initListeners();
-		}
-		synchronized (this.listeners) {
-			listeners.add(li);
-		}
-	}
-
-	private void initListeners() {
-		listeners = new ArrayList<FileTransferListener>();
-
-		connection.addPacketListener(new PacketListener() {
-			public void processPacket(Packet packet) {
-				fireNewRequest((StreamInitiation) packet);
-			}
-		}, new AndFilter(new PacketTypeFilter(StreamInitiation.class),
-				IQTypeFilter.SET));
-	}
-
-	protected void fireNewRequest(StreamInitiation initiation) {
-		FileTransferListener[] listeners = null;
-		synchronized (this.listeners) {
-			listeners = new FileTransferListener[this.listeners.size()];
-			this.listeners.toArray(listeners);
-		}
-		FileTransferRequest request = new FileTransferRequest(this, initiation);
-		for (int i = 0; i < listeners.length; i++) {
-			listeners[i].fileTransferRequest(request);
-		}
+		listeners.add(li);
 	}
 
 	/**
@@ -112,12 +105,7 @@ public class FileTransferManager {
 	 * @see FileTransferListener
 	 */
 	public void removeFileTransferListener(final FileTransferListener li) {
-		if (listeners == null) {
-			return;
-		}
-		synchronized (this.listeners) {
-			listeners.remove(li);
-		}
+		listeners.remove(li);
 	}
 
 	/**
@@ -140,7 +128,7 @@ public class FileTransferManager {
             throw new IllegalArgumentException("The provided user id was not a full JID (i.e. with resource part)");
         }
 
-		return new OutgoingFileTransfer(connection.getUser(), userID,
+		return new OutgoingFileTransfer(connection().getUser(), userID,
 				fileTransferNegotiator.getNextStreamID(),
 				fileTransferNegotiator);
 	}
@@ -175,6 +163,6 @@ public class FileTransferManager {
 				initiation.getPacketID(), initiation.getFrom(), initiation
 						.getTo(), IQ.Type.error);
 		rejection.setError(new XMPPError(XMPPError.Condition.no_acceptable));
-		connection.sendPacket(rejection);
+		connection().sendPacket(rejection);
 	}
 }

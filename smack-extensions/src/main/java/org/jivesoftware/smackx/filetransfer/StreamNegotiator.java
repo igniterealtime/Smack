@@ -157,9 +157,4 @@ public abstract class StreamNegotiator {
      */
     public abstract String[] getNamespaces();
 
-    /**
-     * Cleanup any and all resources associated with this negotiator.
-     */
-    public abstract void cleanup();
-
 }

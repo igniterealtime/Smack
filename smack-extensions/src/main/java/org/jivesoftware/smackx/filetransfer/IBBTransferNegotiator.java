@@ -106,9 +106,6 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return session.getInputStream();
     }
 
-    public void cleanup() {
-    }
-
     /**
      * This PacketFilter accepts an incoming In-Band Bytestream open request
      * with a specified session ID.
