@@ -159,10 +159,7 @@ public class FileTransferManager extends Manager {
 	protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException {
 		StreamInitiation initiation = request.getStreamInitiation();
 
-		IQ rejection = FileTransferNegotiator.createIQ(
-				initiation.getPacketID(), initiation.getFrom(), initiation
-						.getTo(), IQ.Type.error);
-		rejection.setError(new XMPPError(XMPPError.Condition.no_acceptable));
+		IQ rejection = IQ.createErrorResponse(initiation, new XMPPError(XMPPError.Condition.no_acceptable));
 		connection().sendPacket(rejection);
 	}
 }

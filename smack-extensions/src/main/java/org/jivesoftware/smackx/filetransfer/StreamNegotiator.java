@@ -26,7 +26,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -72,13 +71,6 @@ public abstract class StreamNegotiator {
 
         response.setFeatureNegotiationForm(form);
         return response;
-    }
-
-
-    public IQ createError(String from, String to, String packetID, XMPPError xmppError) {
-        IQ iq = FileTransferNegotiator.createIQ(packetID, to, from, IQ.Type.error);
-        iq.setError(xmppError);
-        return iq;
     }
 
     Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws NoResponseException, XMPPErrorException, NotConnectedException  {

@@ -144,30 +144,6 @@ public class FileTransferNegotiator extends Manager {
     }
 
     /**
-     * A convenience method to create an IQ packet.
-     *
-     * @param ID   The packet ID of the
-     * @param to   To whom the packet is addressed.
-     * @param from From whom the packet is sent.
-     * @param type The IQ type of the packet.
-     * @return The created IQ packet.
-     */
-    public static IQ createIQ(final String ID, final String to,
-            final String from, final IQ.Type type) {
-        IQ iqPacket = new IQ() {
-            public String getChildElementXML() {
-                return null;
-            }
-        };
-        iqPacket.setPacketID(ID);
-        iqPacket.setTo(to);
-        iqPacket.setFrom(from);
-        iqPacket.setType(type);
-
-        return iqPacket;
-    }
-
-    /**
      * Returns a collection of the supported transfer protocols.
      *
      * @return Returns a collection of the supported transfer protocols.
@@ -213,9 +189,7 @@ public class FileTransferNegotiator extends Manager {
         if (streamMethodField == null) {
             String errorMessage = "No stream methods contained in packet.";
             XMPPError error = new XMPPError(XMPPError.Condition.bad_request, errorMessage);
-            IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
-                    IQ.Type.error);
-            iqPacket.setError(error);
+            IQ iqPacket = IQ.createErrorResponse(si, error);
             connection().sendPacket(iqPacket);
             throw new XMPPErrorException(errorMessage, error);
         }
@@ -227,9 +201,7 @@ public class FileTransferNegotiator extends Manager {
             selectedStreamNegotiator = getNegotiator(streamMethodField);
         }
         catch (XMPPErrorException e) {
-            IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
-                    IQ.Type.error);
-            iqPacket.setError(e.getXMPPError());
+            IQ iqPacket = IQ.createErrorResponse(si, e.getXMPPError());
             connection().sendPacket(iqPacket);
             throw e;
         }
@@ -290,9 +262,7 @@ public class FileTransferNegotiator extends Manager {
      */
     public void rejectStream(final StreamInitiation si) throws NotConnectedException {
         XMPPError error = new XMPPError(XMPPError.Condition.forbidden, "Offer Declined");
-        IQ iqPacket = createIQ(si.getPacketID(), si.getFrom(), si.getTo(),
-                IQ.Type.error);
-        iqPacket.setError(error);
+        IQ iqPacket = IQ.createErrorResponse(si, error);
         connection().sendPacket(iqPacket);
     }
 
