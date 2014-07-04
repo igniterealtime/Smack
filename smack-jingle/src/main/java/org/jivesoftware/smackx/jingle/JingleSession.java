@@ -505,7 +505,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         if (iq != null) {
             // Don't acknowledge ACKs, errors...
             if (iq.getType().equals(IQ.Type.set)) {
-                IQ ack = createIQ(iq.getPacketID(), iq.getFrom(), iq.getTo(), IQ.Type.result);
+                IQ ack = IQ.createResultIQ(iq);
 
                 // No! Don't send it.  Let it flow to the normal way IQ results get processed and sent.
                 // getConnection().sendPacket(ack);
@@ -1018,59 +1018,6 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     // Packet and error creation
 
     /**
-     * A convience method to create an IQ packet.
-     * 
-     * @param ID
-     *            The packet ID of the
-     * @param to
-     *            To whom the packet is addressed.
-     * @param from
-     *            From whom the packet is sent.
-     * @param type
-     *            The iq type of the packet.
-     * @return The created IQ packet.
-     */
-    public static IQ createIQ(String ID, String to, String from, IQ.Type type) {
-        IQ iqPacket = new IQ() {
-            public String getChildElementXML() {
-                return null;
-            }
-        };
-
-        iqPacket.setPacketID(ID);
-        iqPacket.setTo(to);
-        iqPacket.setFrom(from);
-        iqPacket.setType(type);
-
-        return iqPacket;
-    }
-
-    /**
-     * A convience method to create an error packet.
-     * 
-     * @param ID
-     *            The packet ID of the
-     * @param to
-     *            To whom the packet is addressed.
-     * @param from
-     *            From whom the packet is sent.
-     * @param errCode
-     *            The error code.
-     * @param error
-     *            The XMPPError string.
-     * @return The created IQ packet.
-     */
-    public static IQ createError(String ID, String to, String from, int errCode, XMPPError error) {
-
-        IQ iqError = createIQ(ID, to, from, IQ.Type.error);
-        iqError.setError(error);
-
-        LOGGER.fine("Created Error Packet:" + iqError.toXML());
-
-        return iqError;
-    }
-
-    /**
      * Complete and send an error. Complete all the null fields in an IQ error
      * reponse, using the sesssion information we have or some info from the
      * incoming packet.
@@ -1083,11 +1030,11 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public IQ createJingleError(IQ iq, JingleError jingleError) {
         IQ errorPacket = null;
         if (jingleError != null) {
-            errorPacket = createIQ(getSid(), iq.getFrom(), iq.getTo(), IQ.Type.error);
-
             List<PacketExtension> extList = new ArrayList<PacketExtension>();
             extList.add(jingleError);
             XMPPError error = new XMPPError(XMPPError.Type.CANCEL, jingleError.toString(), "", extList);
+
+            errorPacket = IQ.createErrorResponse(iq, error);
 
             // Fill in the fields with the info from the Jingle packet
             errorPacket.setPacketID(iq.getPacketID());

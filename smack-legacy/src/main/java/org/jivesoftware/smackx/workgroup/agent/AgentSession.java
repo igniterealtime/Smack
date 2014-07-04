@@ -667,14 +667,7 @@ public class AgentSession {
     private void handlePacket(Packet packet) throws NotConnectedException {
         if (packet instanceof OfferRequestProvider.OfferRequestPacket) {
             // Acknowledge the IQ set.
-            IQ reply = new IQ() {
-                public String getChildElementXML() {
-                    return null;
-                }
-            };
-            reply.setPacketID(packet.getPacketID());
-            reply.setTo(packet.getFrom());
-            reply.setType(IQ.Type.result);
+            IQ reply = IQ.createResultIQ((IQ) packet);
             connection.sendPacket(reply);
 
             fireOfferRequestEvent((OfferRequestProvider.OfferRequestPacket)packet);
