@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util.dns.javax;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.SRVRecord;
@@ -37,7 +39,7 @@ import org.jivesoftware.smack.util.dns.SRVRecord;
  * @author Florian Schmaus
  *
  */
-public class JavaxResolver implements DNSResolver {
+public class JavaxResolver implements DNSResolver, SmackInitializer {
     
     private static JavaxResolver instance;
     private static DirContext dirContext;
@@ -52,22 +54,26 @@ public class JavaxResolver implements DNSResolver {
         }
 
         // Try to set this DNS resolver as primary one
-        DNSUtil.setDNSResolver(getInstance());
+        setup();
     }
     
-    private JavaxResolver() {
+    public JavaxResolver() {
         
     }
-    
-    public static DNSResolver getInstance() {
+
+    public static synchronized DNSResolver getInstance() {
         if (instance == null && isSupported()) {
             instance = new JavaxResolver();
         }
         return instance;
     }
-    
+
     public static boolean isSupported() {
         return dirContext != null;
+    }
+
+    public static void setup() {
+        DNSUtil.setDNSResolver(getInstance());
     }
 
     @Override
@@ -92,5 +98,16 @@ public class JavaxResolver implements DNSResolver {
             res.add(srvRecord);
         }
         return res;
+    }
+
+    @Override
+    public List<Exception> initialize() {
+        return initialize(null);
+    }
+
+    @Override
+    public List<Exception> initialize(ClassLoader classLoader) {
+        setup();
+        return Collections.emptyList();
     }
 }

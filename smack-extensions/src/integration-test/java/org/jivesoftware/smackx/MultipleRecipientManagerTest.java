@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests that JEP-33 support in Smack is correct.
+ * Tests that XEP-33 support in Smack is correct.
  *
  * @author Gaston Dombiak
  */

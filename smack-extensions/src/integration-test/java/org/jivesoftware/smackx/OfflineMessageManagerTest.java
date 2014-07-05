@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * Tests handling of offline messaging using OfflineMessageManager. This server requires the
- * server to support JEP-0013: Flexible Offline Message Retrieval.
+ * server to support XEP-0013: Flexible Offline Message Retrieval.
  *
  * @author Gaston Dombiak
  */
@@ -44,7 +44,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
 
     public void testDiscoverFlexibleRetrievalSupport() throws XMPPException {
         OfflineMessageManager offlineManager = new OfflineMessageManager(getConnection(1));
-        assertTrue("Server does not support JEP-13", offlineManager.supportsFlexibleRetrieval());
+        assertTrue("Server does not support XEP-13", offlineManager.supportsFlexibleRetrieval());
     }
 
     /**

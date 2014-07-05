@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The UserSearchManager is a facade built upon Jabber Search Services (JEP-055) to allow for searching
+ * The UserSearchManager is a facade built upon Jabber Search Services (XEP-055) to allow for searching
  * repositories on a Jabber Server. This implementation allows for transparency of implementation of
  * searching (DataForms or No DataForms), but allows the user to simply use the DataForm model for both
  * types of support.

@@ -19,6 +19,7 @@ allprojects {
 		sonatypeStagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
 		buildDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
+		jxmppVersion = "0.1.0"
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7
@@ -35,7 +36,12 @@ allprojects {
 				   // first occurence of an dash with a dot.
 				   // For example 4.0.0-rc1 becomes 4.0.0.rc1, but
 				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
-				   'Bundle-Version': version.replaceFirst("-", "."))
+				   'Bundle-Version': version.replaceFirst("-", "."),
+				   'Built-Date': new Date(),
+				   'Built-JDK': System.getProperty('java.version'),
+				   'Built-Gradle': gradle.gradleVersion,
+				   'Built-By': System.getProperty('user.name')
+				  )
 	}
 
 	eclipse {
@@ -73,6 +79,9 @@ task javadocAll(type: Javadoc) {
 	// Might need a classpath
 	classpath = files(subprojects.collect {project ->
 		project.sourceSets.main.compileClasspath})
+	options.linkSource = true
+	options.use = true
+	options.links = ["http://docs.oracle.com/javase/$sourceCompatibility/docs/api/"] as String[]
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -99,6 +108,9 @@ jar {
 	// Root project should not create empty jar artifact
 	enabled = false
 }
+
+// Disable upload archives for the root project
+uploadArchives.enabled = false
 
 description = """\
 Smack ${version}
@@ -157,7 +169,7 @@ subprojects {
 
 					issueManagement {
 						system 'JIRA'
-						url 'http://issues.igniterealtime.org/browse/SMACK'
+						url 'https://igniterealtime.org/issues/browse/SMACK'
 					}
 
 					distributionManagement {
@@ -195,7 +207,9 @@ subprojects {
 	rootProject.distributionZip {
 		dependsOn build
 		from(buildDir) {
-			include "$libsDirName/**"
+			include "$libsDirName/*${version}.jar"
+			include "$libsDirName/*${version}-javadoc.jar"
+			include "$libsDirName/*${version}-sources.jar"
 		}
 	}
 	signing {
@@ -204,7 +218,7 @@ subprojects {
 	}
 }
 
-['smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
+['smack-resolver-javax', 'smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
 	project(":$name") {
 		jar {
 			manifest {

@@ -29,10 +29,10 @@ import java.util.List;
  * An Jingle sub-packet, which is used by XMPP clients to exchange info like
  * descriptions and transports. <p/> The following link summarizes the
  * requirements of Jingle IM: <a
- * href="http://www.jabber.org/jeps/jep-0166.html">Valid tags</a>.
+ * href="http://www.xmpp.org/extensions/jep-0166.html">Valid tags</a>.
  * <p/>
  * <p/> Warning: this is an non-standard protocol documented by <a
- * href="http://www.jabber.org/jeps/jep-0166.html">JEP-166</a>. Because this is
+ * href="http://www.xmpp.org/extensions/jep-0166.html">XEP-166</a>. Because this is
  * a non-standard protocol, it is subject to change.
  *
  * @author Alvaro Saurin

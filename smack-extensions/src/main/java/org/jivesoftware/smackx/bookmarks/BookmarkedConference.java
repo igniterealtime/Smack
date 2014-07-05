@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.bookmarks;
 
 /**
- * Respresents a Conference Room bookmarked on the server using JEP-0048 Bookmark Storage JEP.
+ * Respresents a Conference Room bookmarked on the server using XEP-0048 Bookmark Storage XEP.
  *
  * @author Derek DeMoro
  */

@@ -17,8 +17,10 @@
 
 package org.jivesoftware.smack;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +36,7 @@ import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
@@ -49,8 +52,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *          via the API will override settings in the configuration file.
  * </ul>
  *
- * Configuration settings are stored in org.jivesoftware.smack/smack-config.xml (typically inside the
- * smack.jar file).
+ * Configuration settings are stored in org.jivesoftware.smack/smack-config.xml.
  * 
  * @author Gaston Dombiak
  */
@@ -95,10 +97,13 @@ public final class SmackConfiguration {
     static {
         String smackVersion;
         try {
-            InputStream is = FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null);
-            byte[] buf = new byte[1024];
-            is.read(buf);
-            smackVersion = new String(buf, "UTF-8");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null)));
+            smackVersion = reader.readLine();
+            try {
+                reader.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "IOException closing stream", e);
+            }
         } catch(Exception e) {
             LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);
             smackVersion = "unkown";
@@ -162,6 +167,9 @@ public final class SmackConfiguration {
         catch (Exception e) {
             // Ignore.
         }
+
+        // Initialize the DNS resolvers
+        DNSUtil.init();
     }
 
     /**

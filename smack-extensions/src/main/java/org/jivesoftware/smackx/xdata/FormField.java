@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.xdata;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
@@ -32,6 +31,8 @@ import java.util.List;
  * @author Gaston Dombiak
  */
 public class FormField {
+
+    public static final String ELEMENT = "field";
 
     public static final String TYPE_BOOLEAN = "boolean";
     public static final String TYPE_FIXED = "fixed";
@@ -263,25 +264,17 @@ public class FormField {
         }
     }
 
-    public String toXML() {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
-        buf.append("<field");
+        buf.halfOpenElement(ELEMENT);
         // Add attributes
-        if (getLabel() != null) {
-            buf.append(" label=\"").append(getLabel()).append("\"");
-        }
-        buf.attribute("var", getVariable());
-        if (getType() != null) {
-            buf.append(" type=\"").append(getType()).append("\"");
-        }
-        buf.append(">");
+        buf.optAttribute("label", getLabel());
+        buf.optAttribute("var", getVariable());
+        buf.optAttribute("type", getType());
+        buf.rightAngelBracket();
         // Add elements
-        if (getDescription() != null) {
-            buf.append("<desc>").append(getDescription()).append("</desc>");
-        }
-        if (isRequired()) {
-            buf.append("<required/>");
-        }
+        buf.optElement("desc", getDescription());
+        buf.condEmptyElement(isRequired(), "required");
         // Loop through all the values and append them to the string buffer
         for (String value : getValues()) {
             buf.element("value", value);
@@ -290,8 +283,8 @@ public class FormField {
         for (Option option : getOptions()) {
             buf.append(option.toXML());
         }
-        buf.append("</field>");
-        return buf.toString();
+        buf.closeElement(ELEMENT);
+        return buf;
     }
 
     @Override
@@ -320,8 +313,10 @@ public class FormField {
      */
     public static class Option {
 
+        public static final String ELEMNT = "option";
+
+        private final String value;
         private String label;
-        private String value;
 
         public Option(String value) {
             this.value = value;
@@ -355,19 +350,18 @@ public class FormField {
             return getLabel();
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<option");
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.halfOpenElement(ELEMNT);
             // Add attribute
-            if (getLabel() != null) {
-                buf.append(" label=\"").append(getLabel()).append("\"");
-            }
-            buf.append(">");
-            // Add element
-            buf.append("<value>").append(StringUtils.escapeForXML(getValue())).append("</value>");
+            xml.optAttribute("label", getLabel());
+            xml.rightAngelBracket();
 
-            buf.append("</option>");
-            return buf.toString();
+            // Add element
+            xml.element("value", getValue());
+
+            xml.closeElement(ELEMENT);
+            return xml;
         }
 
         @Override

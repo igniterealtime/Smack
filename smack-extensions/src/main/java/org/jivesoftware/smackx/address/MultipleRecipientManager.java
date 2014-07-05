@@ -40,7 +40,7 @@ import java.util.logging.Logger;
 
 /**
  * A MultipleRecipientManager allows to send packets to multiple recipients by making use of
- * <a href="http://www.jabber.org/jeps/jep-0033.html">JEP-33: Extended Stanza Addressing</a>.
+ * <a href="http://www.xmpp.org/extensions/jep-0033.html">XEP-33: Extended Stanza Addressing</a>.
  * It also allows to send replies to packets that were sent to multiple recipients.
  *
  * @author Gaston Dombiak
@@ -57,9 +57,9 @@ public class MultipleRecipientManager {
 
     /**
      * Sends the specified packet to the list of specified recipients using the
-     * specified connection. If the server has support for JEP-33 then only one
+     * specified connection. If the server has support for XEP-33 then only one
      * packet is going to be sent to the server with the multiple recipient instructions.
-     * However, if JEP-33 is not supported by the server then the client is going to send
+     * However, if XEP-33 is not supported by the server then the client is going to send
      * the packet to each recipient.
      *
      * @param connection the connection to use to send the packet.
@@ -72,8 +72,8 @@ public class MultipleRecipientManager {
      *                   list exists.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
-     * @throws XMPPErrorException if server does not support JEP-33: Extended Stanza Addressing and
-     *                       some JEP-33 specific features were requested.
+     * @throws XMPPErrorException if server does not support XEP-33: Extended Stanza Addressing and
+     *                       some XEP-33 specific features were requested.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
@@ -84,8 +84,8 @@ public class MultipleRecipientManager {
 
     /**
      * Sends the specified packet to the list of specified recipients using the specified
-     * connection. If the server has support for JEP-33 then only one packet is going to be sent to
-     * the server with the multiple recipient instructions. However, if JEP-33 is not supported by
+     * connection. If the server has support for XEP-33 then only one packet is going to be sent to
+     * the server with the multiple recipient instructions. However, if XEP-33 is not supported by
      * the server then the client is going to send the packet to each recipient.
      * 
      * @param connection the connection to use to send the packet.
@@ -99,8 +99,8 @@ public class MultipleRecipientManager {
      * @param replyRoom JID of a MUC room to which responses should be sent or <tt>null</tt>
      *        indicating that they can reply to any address.
      * @param noReply true means that receivers should not reply to the message.
-     * @throws XMPPErrorException if server does not support JEP-33: Extended Stanza Addressing and
-     *         some JEP-33 specific features were requested.
+     * @throws XMPPErrorException if server does not support XEP-33: Extended Stanza Addressing and
+     *         some XEP-33 specific features were requested.
      * @throws NoResponseException if there was no response from the server.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
@@ -115,10 +115,10 @@ public class MultipleRecipientManager {
                     serviceAddress);
         }
         else {
-            // Server does not support JEP-33 so try to send the packet to each recipient
+            // Server does not support XEP-33 so try to send the packet to each recipient
             if (noReply || (replyTo != null && replyTo.trim().length() > 0) ||
                     (replyRoom != null && replyRoom.trim().length() > 0)) {
-                // Some specified JEP-33 features were requested so throw an exception alerting
+                // Some specified XEP-33 features were requested so throw an exception alerting
                 // the user that this features are not available
                 throw new FeatureNotSupportedException("Extended Stanza Addressing");
             }
@@ -191,7 +191,7 @@ public class MultipleRecipientManager {
                         serviceAddress);
             }
             else {
-                // Server does not support JEP-33 so try to send the packet to each recipient
+                // Server does not support XEP-33 so try to send the packet to each recipient
                 sendToIndividualRecipients(connection, reply, to, cc, null);
             }
         }

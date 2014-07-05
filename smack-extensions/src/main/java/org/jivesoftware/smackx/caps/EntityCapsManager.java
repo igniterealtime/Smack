@@ -45,7 +45,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -536,7 +535,7 @@ public class EntityCapsManager extends Manager {
     protected static boolean verifyPacketExtensions(DiscoverInfo info) {
         List<FormField> foundFormTypes = new LinkedList<FormField>();
         for (PacketExtension pe : info.getExtensions()) {
-            if (pe.getNamespace().equals(Form.NAMESPACE)) {
+            if (pe.getNamespace().equals(DataForm.NAMESPACE)) {
                 DataForm df = (DataForm) pe;
                 for (FormField f : df.getFields()) {
                     if (f.getVariable().equals("FORM_TYPE")) {
@@ -569,7 +568,7 @@ public class EntityCapsManager extends Manager {
         if (md == null)
             return null;
 
-        DataForm extendedInfo = (DataForm) discoverInfo.getExtension(Form.ELEMENT, Form.NAMESPACE);
+        DataForm extendedInfo = (DataForm) discoverInfo.getExtension(DataForm.ELEMENT, DataForm.NAMESPACE);
 
         // 1. Initialize an empty string S ('sb' in this method).
         StringBuilder sb = new StringBuilder(); // Use StringBuilder as we don't

@@ -36,7 +36,7 @@ import java.io.OutputStream;
 
 /**
  * After the file transfer negotiation process is completed according to
- * JEP-0096, the negotiation process is passed off to a particular stream
+ * XEP-0096, the negotiation process is passed off to a particular stream
  * negotiator. The stream negotiator will then negotiate the chosen stream and
  * return the stream to transfer the file.
  *

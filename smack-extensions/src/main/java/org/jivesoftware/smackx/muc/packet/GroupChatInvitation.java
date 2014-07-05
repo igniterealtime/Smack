@@ -43,8 +43,8 @@ import org.xmlpull.v1.XmlPullParser;
  * // Create a packet collector or packet listeners using the filter...
  * </pre>
  *
- * <b>Note</b>: this protocol is outdated now that the Multi-User Chat (MUC) JEP is available
- * (<a href="http://www.jabber.org/jeps/jep-0045.html">JEP-45</a>). However, most
+ * <b>Note</b>: this protocol is outdated now that the Multi-User Chat (MUC) XEP is available
+ * (<a href="http://www.xmpp.org/extensions/jep-0045.html">XEP-45</a>). However, most
  * existing clients still use this older protocol. Once MUC support becomes more
  * widespread, this API may be deprecated.
  * 

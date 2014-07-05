@@ -24,7 +24,7 @@ import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.packet.Version;
 
 /**
- * Ensure that stream compression (JEP-138) is correctly supported by Smack.
+ * Ensure that stream compression (XEP-138) is correctly supported by Smack.
  *
  * @author Gaston Dombiak
  */

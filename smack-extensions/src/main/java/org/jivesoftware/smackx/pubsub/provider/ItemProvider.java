@@ -20,7 +20,6 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
@@ -41,7 +40,6 @@ public class ItemProvider implements PacketExtensionProvider
     {
         String id = parser.getAttributeValue(null, "id");
         String node = parser.getAttributeValue(null, "node");
-        String elem = parser.getName();
 
         int tag = parser.next();
 
@@ -56,57 +54,8 @@ public class ItemProvider implements PacketExtensionProvider
 
             if (ProviderManager.getExtensionProvider(payloadElemName, payloadNS) == null) 
             {
-                boolean done = false;
-                boolean isEmptyElement = false;
-                StringBuilder payloadText = new StringBuilder();
-
-                while (!done) 
-                {
-                    if (tag == XmlPullParser.END_TAG && parser.getName().equals(elem)) 
-                    {
-                        done = true;
-                        continue;
-                    }
-                    else if (parser.getEventType() == XmlPullParser.START_TAG) 
-                    {
-                        payloadText.append("<").append(parser.getName());
-
-                        if (parser.getName().equals(payloadElemName) && (payloadNS.length() > 0))
-                            payloadText.append(" xmlns=\"").append(payloadNS).append("\"");
-                        int n = parser.getAttributeCount();
-
-                        for (int i = 0; i < n; i++) 
-                            payloadText.append(" ").append(parser.getAttributeName(i)).append("=\"")
-                                    .append(parser.getAttributeValue(i)).append("\"");
-
-                        if (parser.isEmptyElementTag()) 
-                        {
-                            payloadText.append("/>");
-                            isEmptyElement = true;
-                        }
-                        else 
-                        {
-                            payloadText.append(">");
-                        }
-                    }
-                    else if (parser.getEventType() == XmlPullParser.END_TAG) 
-                    {
-                        if (isEmptyElement) 
-                        {
-                            isEmptyElement = false;
-                        }
-                        else 
-                        {
-                            payloadText.append("</").append(parser.getName()).append(">");
-                        }
-                    }
-                    else if (parser.getEventType() == XmlPullParser.TEXT) 
-                    {
-                        payloadText.append(StringUtils.escapeForXML(parser.getText()));
-                    }
-                    tag = parser.next();
-                }
-                return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText.toString()));
+                String payloadText = PacketParserUtils.parseElement(parser);
+                return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
             else 
             {

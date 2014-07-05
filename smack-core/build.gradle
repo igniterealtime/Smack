@@ -35,6 +35,7 @@ task dnsJar(type: Jar) {
 	from sourceSets.main.output
 	include('org/jivesoftware/smack/util/dns/**')
 	include('org/jivesoftware/smack/util/DNSUtil.class')
+	include('org/jivesoftware/smack/initializer/**')
 }
 
 artifacts {

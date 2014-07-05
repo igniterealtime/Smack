@@ -45,7 +45,7 @@ import org.jivesoftware.smackx.vcardtemp.VCardManager;
  * <a href="http://www.jivesoftware.org/smack/" target="_blank">SMACK jabber library</a>.<p>
  * <p/>
  * You should refer to the
- * <a href="http://www.jabber.org/jeps/jep-0054.html" target="_blank">JEP-54 documentation</a>.<p>
+ * <a href="http://www.xmpp.org/extensions/jep-0054.html" target="_blank">XEP-54 documentation</a>.<p>
  * <p/>
  * Please note that this class is incomplete but it does provide the most commonly found
  * information in vCards. Also remember that VCard transfer is not a standard, and the protocol
@@ -114,7 +114,7 @@ public class VCard extends IQ {
     private String photoBinval;
 
     /**
-     * Such as DESC ROLE GEO etc.. see JEP-0054
+     * Such as DESC ROLE GEO etc.. see XEP-0054
      */
     private Map<String, String> otherSimpleFields = new HashMap<String, String>();
 

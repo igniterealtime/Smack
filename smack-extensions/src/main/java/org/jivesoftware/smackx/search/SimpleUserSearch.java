@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SimpleUserSearch is used to support the non-dataform type of JEP 55. This provides
+ * SimpleUserSearch is used to support the non-dataform type of XEP 55. This provides
  * the mechanism for allowing always type ReportedData to be returned by any search result,
  * regardless of the form of the data returned from the server.
  *

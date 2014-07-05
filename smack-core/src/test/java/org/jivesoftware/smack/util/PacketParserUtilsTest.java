@@ -27,12 +27,12 @@ import static org.junit.Assert.fail;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -653,7 +653,13 @@ public class PacketParserUtilsTest {
 
     }
 
-    @Test
+    /**
+     * RFC6121 5.2.3 explicitly disallows mixed content in <body/> elements. Make sure that we throw
+     * an exception if we encounter such an element.
+     * 
+     * @throws Exception
+     */
+    @Test(expected=XmlPullParserException.class)
     public void invalidMessageBodyContainingTagTest() throws Exception {
         String control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -667,23 +673,10 @@ public class PacketParserUtilsTest {
                     .a("style", "font-weight: bold;")
                     .t("Bad Message Body")
             .asString(outputProperties);
-        
-        try {
-            Message message = (Message) PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
-            String body = "<span style=\"font-weight: bold;\">"
-                            + "Bad Message Body</span>";
-            assertEquals(body, message.getBody());
-            
-            assertXMLNotEqual(control, message.toXML().toString());
-            
-            DetailedDiff diffs = new DetailedDiff(new Diff(control, message.toXML().toString()));
-            
-            // body has no namespace URI, span is escaped 
-            assertEquals(6, diffs.getAllDifferences().size());
-        } catch(XmlPullParserException e) {
-            fail("No parser exception should be thrown" + e.getMessage());
-        }
-        
+
+        Message message = (Message) PacketParserUtils.parseMessage(TestUtils.getMessageParser(control));
+
+        fail("Should throw exception. Instead got message: " + message.toXML().toString());
     }
 
     @Test
@@ -792,8 +785,8 @@ public class PacketParserUtilsTest {
     @Test
     public void parseContentDepthTest() throws Exception {
         final String stanza = "<iq type='result' to='foo@bar.com' from='baz.com' id='42'/>";
-        XmlPullParser parser = PacketParserUtils.getParserFor(stanza, "iq");
-        String content = PacketParserUtils.parseContentDepth(parser, 1);
+        XmlPullParser parser = TestUtils.getParser(stanza, "iq");
+        String content = PacketParserUtils.parseContent(parser);
         assertEquals("", content);
     }
 

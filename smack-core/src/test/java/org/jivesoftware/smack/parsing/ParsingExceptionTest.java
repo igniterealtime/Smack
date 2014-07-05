@@ -23,6 +23,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +35,7 @@ public class ParsingExceptionTest {
     private final static String EXTENSION2 =
     "<extension2 xmlns='namespace'>" +
         "<bar node='testNode'>" +
-            "<i id='testid1' >" +
+            "<i id='testid1'>" +
             "</i>" +
         "</bar>" +
      "</extension2>";
@@ -51,12 +52,14 @@ public class ParsingExceptionTest {
 
     @Test
     public void consumeUnparsedInput() throws Exception {
-        XmlPullParser parser = PacketParserUtils.getParserFor(
+        final String MESSAGE_EXCEPTION_ELEMENT = 
+                        "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
+                            "<nothingInHere>" +
+                            "</nothingInHere>" +
+                        "</" + ThrowException.ELEMENT + ">";
+        XmlPullParser parser = TestUtils.getMessageParser(
                 "<message from='user@server.example' to='francisco@denmark.lit' id='foo'>" +
-                    "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
-                       "<nothingInHere>" +
-                       "</nothingInHere>" +
-                    "</" + ThrowException.ELEMENT + ">" +
+                    MESSAGE_EXCEPTION_ELEMENT +
                     EXTENSION2 +
                 "</message>");
         int parserDepth = parser.getDepth();
@@ -67,8 +70,7 @@ public class ParsingExceptionTest {
             content = PacketParserUtils.parseContentDepth(parser, parserDepth);
         }
         assertNotNull(content);
-        assertEquals(content, "<nothingInHere></nothingInHere>" + "</" + ThrowException.ELEMENT + ">" + EXTENSION2);
-
+        assertEquals(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", content);
     }
 
     static class ThrowException implements PacketExtensionProvider {

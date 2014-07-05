@@ -50,7 +50,7 @@ import java.util.WeakHashMap;
  * a {@link DefaultPrivateData} instance will be returned.<p>
  *
  * Warning: this is an non-standard protocol documented by
- * <a href="http://www.jabber.org/jeps/jep-0049.html">JEP-49</a>. Because this is a
+ * <a href="http://www.xmpp.org/extensions/jep-0049.html">XEP-49</a>. Because this is a
  * non-standard protocol, it is subject to change.
  *
  * @author Matt Tucker
@@ -285,7 +285,7 @@ public class PrivateDataManager extends Manager {
             StringBuilder buf = new StringBuilder();
             buf.append("<query xmlns=\"jabber:iq:private\">");
             if (privateData != null) {
-                privateData.toXML();
+                buf.append(privateData.toXML());
             }
             buf.append("</query>");
             return buf.toString();
