@@ -63,8 +63,7 @@ public class PacketParserUtils {
     }
 
     public static XmlPullParser getParserFor(Reader reader) throws XmlPullParserException, IOException {
-        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        XmlPullParser parser = newXmppParser();
         parser.setInput(reader);
 
         // Wind the parser forward to the first start tag

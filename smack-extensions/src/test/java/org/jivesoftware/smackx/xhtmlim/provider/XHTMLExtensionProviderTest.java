@@ -17,11 +17,11 @@
 package org.jivesoftware.smackx.xhtmlim.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 
@@ -36,8 +36,7 @@ public class XHTMLExtensionProviderTest {
 
     @Test
     public void parsesWell() throws IOException, XmlPullParserException {
-        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        XmlPullParser parser = PacketParserUtils.newXmppParser();
         parser.setInput(getClass().getResourceAsStream(XHTML_EXTENSION_SAMPLE_RESOURCE_NAME), "UTF-8");
         parser.next();
 
