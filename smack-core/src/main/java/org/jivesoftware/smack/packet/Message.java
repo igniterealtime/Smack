@@ -47,6 +47,8 @@ import java.util.*;
  */
 public class Message extends Packet {
 
+    public static final String BODY = "body";
+
     private Type type = Type.normal;
     private String thread = null;
     private String language;
@@ -440,9 +442,9 @@ public class Message extends Packet {
             // Skip the default language
             if(body.equals(defaultBody))
                 continue;
-            buf.halfOpenElement("body").xmllangAttribute(body.getLanguage()).rightAngelBracket();
+            buf.halfOpenElement(BODY).xmllangAttribute(body.getLanguage()).rightAngelBracket();
             buf.escape(body.getMessage());
-            buf.closeElement("body");
+            buf.closeElement(BODY);
         }
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.

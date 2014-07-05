@@ -185,7 +185,7 @@ public class PacketParserUtils {
                         message.addSubject(xmlLang, subject);
                     }
                 }
-                else if (elementName.equals("body")) {
+                else if (elementName.equals(Message.BODY)) {
                     String xmlLang = getLanguageAttribute(parser);
                     if (xmlLang == null) {
                         xmlLang = defaultLanguage;

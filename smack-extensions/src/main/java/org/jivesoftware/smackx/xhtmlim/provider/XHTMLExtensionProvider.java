@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.xhtmlim.provider;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.StringUtils;
@@ -31,8 +32,6 @@ import java.io.IOException;
  * @author Vyacheslav Blinov
  */
 public class XHTMLExtensionProvider implements PacketExtensionProvider {
-    public static final String BODY_ELEMENT = "body";
-
     @Override
     public PacketExtension parseExtension(XmlPullParser parser) throws IOException, XmlPullParserException {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
@@ -47,7 +46,7 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 boolean appendNamespace = false;
-                if (BODY_ELEMENT.equals(parser.getName())) {
+                if (Message.BODY.equals(parser.getName())) {
                     buffer = new StringBuilder();
                     tagDepth = parser.getDepth();
                     appendNamespace = true;
@@ -67,7 +66,7 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
                     // handle self-closing tags by our own means
                     appendEndTag(buffer, parser, tagStarted);
                     tagStarted = false;
-                    if (BODY_ELEMENT.equals(name) && parser.getDepth() <= tagDepth) {
+                    if (Message.BODY.equals(name) && parser.getDepth() <= tagDepth) {
                         xhtmlExtension.addBody(buffer.toString());
                     }
                 }

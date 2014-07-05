@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.xhtmlim.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +39,9 @@ import java.util.List;
  */
 public class XHTMLExtension implements PacketExtension {
 
+    public static final String ELEMENT = "html";
+    public static final String NAMESPACE = "http://jabber.org/protocol/xhtml-im";
+
     private List<String> bodies = new ArrayList<String>();
 
     /**
@@ -47,7 +51,7 @@ public class XHTMLExtension implements PacketExtension {
     * @return the XML element name of the packet extension.
     */
     public String getElementName() {
-        return "html";
+        return ELEMENT;
     }
 
     /** 
@@ -57,7 +61,7 @@ public class XHTMLExtension implements PacketExtension {
      * @return the XML namespace of the packet extension.
      */
     public String getNamespace() {
-        return "http://jabber.org/protocol/xhtml-im";
+        return NAMESPACE;
     }
 
     /**
@@ -76,16 +80,16 @@ public class XHTMLExtension implements PacketExtension {
      * </pre>
      * 
      */
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
-            "\">");
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngelBracket();
         // Loop through all the bodies and append them to the string buffer
         for (String body : getBodies()) {
-            buf.append(body);
+            xml.append(body);
         }
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+        xml.closeElement(this);
+        return xml;
     }
 
     /**

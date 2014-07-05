@@ -37,8 +37,6 @@ import java.util.List;
  * @author Gaston Dombiak
  */
 public class XHTMLManager {
-    private final static String namespace = "http://jabber.org/protocol/xhtml-im";
-
     // Enable the XHTML support on every established connection
     // The ServiceDiscoveryManager class should have been already initialized
     static {
@@ -57,7 +55,7 @@ public class XHTMLManager {
      * @return an Iterator for the bodies in the message or null if none.
      */
     public static List<String> getBodies(Message message) {
-        XHTMLExtension xhtmlExtension = (XHTMLExtension) message.getExtension("html", namespace);
+        XHTMLExtension xhtmlExtension = (XHTMLExtension) message.getExtension(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE);
         if (xhtmlExtension != null)
             return xhtmlExtension.getBodies();
         else
@@ -71,7 +69,7 @@ public class XHTMLManager {
      * @param body the string to add as an XHTML body to the message
      */
     public static void addBody(Message message, String body) {
-        XHTMLExtension xhtmlExtension = (XHTMLExtension) message.getExtension("html", namespace);
+        XHTMLExtension xhtmlExtension = (XHTMLExtension) message.getExtension(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE);
         if (xhtmlExtension == null) {
             // Create an XHTMLExtension and add it to the message
             xhtmlExtension = new XHTMLExtension();
@@ -88,7 +86,7 @@ public class XHTMLManager {
      * @return a boolean indicating whether the message is an XHTML message
      */
     public static boolean isXHTMLMessage(Message message) {
-        return message.getExtension("html", namespace) != null;
+        return message.getExtension(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE) != null;
     }
 
     /**
@@ -105,10 +103,10 @@ public class XHTMLManager {
             return;
 
         if (enabled) {
-            ServiceDiscoveryManager.getInstanceFor(connection).addFeature(namespace);
+            ServiceDiscoveryManager.getInstanceFor(connection).addFeature(XHTMLExtension.NAMESPACE);
         }
         else {
-            ServiceDiscoveryManager.getInstanceFor(connection).removeFeature(namespace);
+            ServiceDiscoveryManager.getInstanceFor(connection).removeFeature(XHTMLExtension.NAMESPACE);
         }
     }
 
@@ -119,7 +117,7 @@ public class XHTMLManager {
      * @return a boolean indicating if the XHTML support is enabled for the given connection
      */
     public static boolean isServiceEnabled(XMPPConnection connection) {
-        return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(namespace);
+        return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(XHTMLExtension.NAMESPACE);
     }
 
     /**
@@ -134,6 +132,6 @@ public class XHTMLManager {
      */
     public static boolean isServiceEnabled(XMPPConnection connection, String userID)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, namespace);
+        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, XHTMLExtension.NAMESPACE);
     }
 }
