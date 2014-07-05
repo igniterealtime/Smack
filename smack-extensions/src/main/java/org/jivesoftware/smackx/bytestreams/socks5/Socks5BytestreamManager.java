@@ -125,11 +125,6 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         });
     }
 
-    /**
-     * The XMPP namespace of the SOCKS5 Bytestream
-     */
-    public static final String NAMESPACE = "http://jabber.org/protocol/bytestreams";
-
     /* prefix used to generate session IDs */
     private static final String SESSION_ID_PREFIX = "js5_";
 
@@ -322,7 +317,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
 
         // check if service discovery is not already disposed by connection shutdown
         if (serviceDiscoveryManager != null) {
-            serviceDiscoveryManager.removeFeature(NAMESPACE);
+            serviceDiscoveryManager.removeFeature(Bytestream.NAMESPACE);
         }
 
     }
@@ -540,7 +535,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * @throws NotConnectedException 
      */
     private boolean supportsSocks5(String targetJID) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(targetJID, NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(targetJID, Bytestream.NAMESPACE);
     }
 
     /**
@@ -732,9 +727,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      */
     private void enableService() {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager.getInstanceFor(this.connection);
-        if (!manager.includesFeature(NAMESPACE)) {
-            manager.addFeature(NAMESPACE);
-        }
+        manager.addFeature(Bytestream.NAMESPACE);
     }
 
     /**

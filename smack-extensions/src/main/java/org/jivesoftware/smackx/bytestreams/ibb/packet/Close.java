@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a request to close an In-Band Bytestream.
@@ -25,6 +25,8 @@ import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
  * @author Henning Staib
  */
 public class Close extends IQ {
+
+    public static final String ELEMENT = "close";
 
     /* unique session ID identifying this In-Band Bytestream */
     private final String sessionID;
@@ -52,17 +54,13 @@ public class Close extends IQ {
     }
 
     @Override
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<close ");
-        buf.append("xmlns=\"");
-        buf.append(InBandBytestreamManager.NAMESPACE);
-        buf.append("\" ");
-        buf.append("sid=\"");
-        buf.append(sessionID);
-        buf.append("\"");
-        buf.append("/>");
-        return buf.toString();
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(ELEMENT);
+        xml.xmlnsAttribute(DataPacketExtension.NAMESPACE);
+        xml.attribute("sid", sessionID);
+        xml.closeEmptyElement();
+        return xml;
     }
 
 }

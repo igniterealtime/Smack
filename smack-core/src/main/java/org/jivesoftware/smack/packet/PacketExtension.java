@@ -28,14 +28,7 @@ package org.jivesoftware.smack.packet;
  * @see org.jivesoftware.smack.provider.PacketExtensionProvider
  * @author Matt Tucker
  */
-public interface PacketExtension {
-
-    /**
-     * Returns the root element name.
-     *
-     * @return the element name.
-     */
-    public String getElementName();
+public interface PacketExtension extends Element {
 
     /**
      * Returns the root element XML namespace.
@@ -44,10 +37,4 @@ public interface PacketExtension {
      */
     public String getNamespace();
 
-    /**
-     * Returns the XML representation of the PacketExtension.
-     *
-     * @return the packet extension as XML.
-     */
-    public CharSequence toXML();
 }

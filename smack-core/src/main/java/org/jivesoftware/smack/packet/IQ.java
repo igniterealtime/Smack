@@ -40,6 +40,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public abstract class IQ extends Packet {
 
+    public static final String QUERY_ELEMENT = "query";
+
     private Type type = Type.get;
 
     public IQ() {

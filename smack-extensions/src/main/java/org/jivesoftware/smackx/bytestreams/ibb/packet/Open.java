@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 import java.util.Locale;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 
 /**
@@ -28,6 +28,8 @@ import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaTyp
  * @author Henning Staib
  */
 public class Open extends IQ {
+
+    public static final String ELEMENT = "open";
 
     /* unique session ID identifying this In-Band Bytestream */
     private final String sessionID;
@@ -109,23 +111,15 @@ public class Open extends IQ {
     }
 
     @Override
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<open ");
-        buf.append("xmlns=\"");
-        buf.append(InBandBytestreamManager.NAMESPACE);
-        buf.append("\" ");
-        buf.append("block-size=\"");
-        buf.append(blockSize);
-        buf.append("\" ");
-        buf.append("sid=\"");
-        buf.append(sessionID);
-        buf.append("\" ");
-        buf.append("stanza=\"");
-        buf.append(stanza.toString().toLowerCase(Locale.US));
-        buf.append("\"");
-        buf.append("/>");
-        return buf.toString();
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(ELEMENT);
+        xml.xmlnsAttribute(DataPacketExtension.NAMESPACE);
+        xml.attribute("block-size", Integer.toString(blockSize));
+        xml.attribute("sid", sessionID);
+        xml.attribute("stanza", stanza.toString().toLowerCase(Locale.US));
+        xml.closeEmptyElement();
+        return xml;
     }
 
 }

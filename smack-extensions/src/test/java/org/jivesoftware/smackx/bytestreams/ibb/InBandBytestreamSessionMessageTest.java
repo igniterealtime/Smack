@@ -99,7 +99,7 @@ public class InBandBytestreamSessionMessageTest {
 
             public void verify(Message request, IQ response) {
                 DataPacketExtension dpe = (DataPacketExtension) request.getExtension(
-                                DataPacketExtension.ELEMENT_NAME, InBandBytestreamManager.NAMESPACE);
+                                DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE);
                 assertEquals(lastSeq++, dpe.getSeq());
             }
 

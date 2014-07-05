@@ -405,8 +405,10 @@ public class ServiceDiscoveryManager extends Manager {
      */
     public void addFeature(String feature) {
         synchronized (features) {
-            features.add(feature);
-            renewEntityCapsVersion();
+            if (!features.contains(feature)) {
+                features.add(feature);
+                renewEntityCapsVersion();
+            }
         }
     }
 

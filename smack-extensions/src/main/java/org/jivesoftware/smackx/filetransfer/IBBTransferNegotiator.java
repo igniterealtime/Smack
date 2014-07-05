@@ -32,6 +32,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
+import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
@@ -92,7 +93,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     }
 
     public String[] getNamespaces() {
-        return new String[] { InBandBytestreamManager.NAMESPACE };
+        return new String[] { DataPacketExtension.NAMESPACE };
     }
 
     InputStream negotiateIncomingStream(Packet streamInitiation) throws NotConnectedException {

@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A packet representing part of a SOCKS5 Bytestream negotiation.
@@ -30,6 +31,10 @@ import org.jivesoftware.smack.packet.PacketExtension;
  * @author Alexander Wenckus
  */
 public class Bytestream extends IQ {
+    /**
+     * The XMPP namespace of the SOCKS5 Bytestream
+     */
+    public static final String NAMESPACE = "http://jabber.org/protocol/bytestreams";
 
     private String sessionID;
 
@@ -213,48 +218,51 @@ public class Bytestream extends IQ {
         this.toActivate = new Activate(targetID);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.openElement(IQ.QUERY_ELEMENT);
+        xml.xmlnsAttribute(NAMESPACE);
 
-        buf.append("<query xmlns=\"http://jabber.org/protocol/bytestreams\"");
-        if (this.getType().equals(IQ.Type.set)) {
+        switch(getType()) {
+        case set:
             if (getSessionID() != null) {
-                buf.append(" sid=\"").append(getSessionID()).append("\"");
+                xml.attribute("sid", getSessionID());
             }
             if (getMode() != null) {
-                buf.append(" mode = \"").append(getMode()).append("\"");
+                xml.attribute("mode", getMode());
             }
-            buf.append(">");
+            xml.rightAngelBracket();
             if (getToActivate() == null) {
                 for (StreamHost streamHost : getStreamHosts()) {
-                    buf.append(streamHost.toXML());
+                    xml.append(streamHost.toXML());
                 }
             }
             else {
-                buf.append(getToActivate().toXML());
+                xml.append(getToActivate().toXML());
             }
-        }
-        else if (this.getType().equals(IQ.Type.result)) {
-            buf.append(">");
+            break;
+        case result:
+            xml.rightAngelBracket();
             if (getUsedHost() != null) {
-                buf.append(getUsedHost().toXML());
+                xml.append(getUsedHost().toXML());
             }
             // A result from the server can also contain stream hosts
             else if (countStreamHosts() > 0) {
                 for (StreamHost host : streamHosts) {
-                    buf.append(host.toXML());
+                    xml.append(host.toXML());
                 }
             }
+            break;
+        case get:
+            xml.closeEmptyElement();
+            return xml;
+        default:
+            throw new IllegalStateException();
         }
-        else if (this.getType().equals(IQ.Type.get)) {
-            return buf.append("/>").toString();
-        }
-        else {
-            return null;
-        }
-        buf.append("</query>");
+        xml.closeElement(IQ.QUERY_ELEMENT);
 
-        return buf.toString();
+        return xml;
     }
 
     /**
@@ -263,9 +271,7 @@ public class Bytestream extends IQ {
      * 
      * @author Alexander Wenckus
      */
-    public static class StreamHost implements PacketExtension {
-
-        public static String NAMESPACE = "";
+    public static class StreamHost implements Element {
 
         public static String ELEMENTNAME = "streamhost";
 
@@ -322,29 +328,22 @@ public class Bytestream extends IQ {
             return port;
         }
 
-        public String getNamespace() {
-            return NAMESPACE;
-        }
-
         public String getElementName() {
             return ELEMENTNAME;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append("<").append(getElementName()).append(" ");
-            buf.append("jid=\"").append(getJID()).append("\" ");
-            buf.append("host=\"").append(getAddress()).append("\" ");
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.attribute("jid", getJID());
+            xml.attribute("host", getAddress());
             if (getPort() != 0) {
-                buf.append("port=\"").append(getPort()).append("\"");
+                xml.attribute("port", Integer.toString(getPort()));
+            } else {
+                xml.attribute("zeroconf", "_jabber.bytestreams");
             }
-            else {
-                buf.append("zeroconf=\"_jabber.bytestreams\"");
-            }
-            buf.append("/>");
-
-            return buf.toString();
+            xml.closeEmptyElement();
+            return xml;
         }
     }
 
@@ -354,9 +353,7 @@ public class Bytestream extends IQ {
      * 
      * @author Alexander Wenckus
      */
-    public static class StreamHostUsed implements PacketExtension {
-
-        public String NAMESPACE = "";
+    public static class StreamHostUsed implements Element {
 
         public static String ELEMENTNAME = "streamhost-used";
 
@@ -380,20 +377,16 @@ public class Bytestream extends IQ {
             return JID;
         }
 
-        public String getNamespace() {
-            return NAMESPACE;
-        }
-
         public String getElementName() {
             return ELEMENTNAME;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<").append(getElementName()).append(" ");
-            buf.append("jid=\"").append(getJID()).append("\" ");
-            buf.append("/>");
-            return buf.toString();
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.attribute("jid", getJID());
+            xml.closeEmptyElement();
+            return xml;
         }
     }
 
@@ -402,9 +395,7 @@ public class Bytestream extends IQ {
      * 
      * @author Alexander Wenckus
      */
-    public static class Activate implements PacketExtension {
-
-        public String NAMESPACE = "";
+    public static class Activate implements Element {
 
         public static String ELEMENTNAME = "activate";
 
@@ -428,20 +419,17 @@ public class Bytestream extends IQ {
             return target;
         }
 
-        public String getNamespace() {
-            return NAMESPACE;
-        }
-
         public String getElementName() {
             return ELEMENTNAME;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<").append(getElementName()).append(">");
-            buf.append(getTarget());
-            buf.append("</").append(getElementName()).append(">");
-            return buf.toString();
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.rightAngelBracket();
+            xml.escape(getTarget());
+            xml.closeElement(this);
+            return xml;
         }
     }
 

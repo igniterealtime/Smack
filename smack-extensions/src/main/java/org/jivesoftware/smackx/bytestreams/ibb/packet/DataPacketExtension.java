@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a chunk of data of an In-Band Bytestream within an IQ stanza or a
@@ -31,7 +31,12 @@ public class DataPacketExtension implements PacketExtension {
     /**
      * The element name of the data packet extension.
      */
-    public final static String ELEMENT_NAME = "data";
+    public final static String ELEMENT = "data";
+
+    /**
+     * The XMPP namespace of the In-Band Bytestream
+     */
+    public static final String NAMESPACE = "http://jabber.org/protocol/ibb";
 
     /* unique session ID identifying this In-Band Bytestream */
     private final String sessionID;
@@ -121,32 +126,22 @@ public class DataPacketExtension implements PacketExtension {
     }
 
     public String getElementName() {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     public String getNamespace() {
-        return InBandBytestreamManager.NAMESPACE;
+        return NAMESPACE;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<");
-        buf.append(getElementName());
-        buf.append(" ");
-        buf.append("xmlns=\"");
-        buf.append(InBandBytestreamManager.NAMESPACE);
-        buf.append("\" ");
-        buf.append("seq=\"");
-        buf.append(seq);
-        buf.append("\" ");
-        buf.append("sid=\"");
-        buf.append(sessionID);
-        buf.append("\">");
-        buf.append(data);
-        buf.append("</");
-        buf.append(getElementName());
-        buf.append(">");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.attribute("seq", Long.toString(seq));
+        xml.attribute("sid", sessionID);
+        xml.rightAngelBracket();
+        xml.append(data);
+        xml.closeElement(this);
+        return xml;
     }
 
 }

@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a chunk of data sent over an In-Band Bytestream encapsulated in an
@@ -60,8 +61,9 @@ public class Data extends IQ {
         return this.dataPacketExtension;
     }
 
-    public String getChildElementXML() {
-        return this.dataPacketExtension.toXML();
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        return dataPacketExtension.toXML();
     }
 
 }

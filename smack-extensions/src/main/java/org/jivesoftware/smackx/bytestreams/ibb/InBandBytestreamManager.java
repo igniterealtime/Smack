@@ -132,11 +132,6 @@ public class InBandBytestreamManager implements BytestreamManager {
     }
 
     /**
-     * The XMPP namespace of the In-Band Bytestream
-     */
-    public static final String NAMESPACE = "http://jabber.org/protocol/ibb";
-
-    /**
      * Maximum block size that is allowed for In-Band Bytestreams
      */
     public static final int MAXIMUM_BLOCK_SIZE = 65535;

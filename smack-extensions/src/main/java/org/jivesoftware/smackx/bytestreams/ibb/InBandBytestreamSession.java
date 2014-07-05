@@ -451,8 +451,8 @@ public class InBandBytestreamSession implements BytestreamSession {
                 public void processPacket(Packet packet) throws NotConnectedException {
                     // get data packet extension
                     DataPacketExtension data = (DataPacketExtension) packet.getExtension(
-                                    DataPacketExtension.ELEMENT_NAME,
-                                    InBandBytestreamManager.NAMESPACE);
+                                    DataPacketExtension.ELEMENT,
+                                    DataPacketExtension.NAMESPACE);
 
                     /*
                      * check if sequence was not used already (see XEP-0047 Section 2.2)
@@ -514,8 +514,8 @@ public class InBandBytestreamSession implements BytestreamSession {
                 public void processPacket(Packet packet) {
                     // get data packet extension
                     DataPacketExtension data = (DataPacketExtension) packet.getExtension(
-                                    DataPacketExtension.ELEMENT_NAME,
-                                    InBandBytestreamManager.NAMESPACE);
+                                    DataPacketExtension.ELEMENT,
+                                    DataPacketExtension.NAMESPACE);
 
                     // check if encoded data is valid
                     if (data.getDecodedData() == null) {
@@ -563,8 +563,8 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
             // stanza contains data packet extension
-            PacketExtension packetExtension = packet.getExtension(DataPacketExtension.ELEMENT_NAME,
-                            InBandBytestreamManager.NAMESPACE);
+            PacketExtension packetExtension = packet.getExtension(DataPacketExtension.ELEMENT,
+                            DataPacketExtension.NAMESPACE);
             if (packetExtension == null || !(packetExtension instanceof DataPacketExtension)) {
                 return false;
             }

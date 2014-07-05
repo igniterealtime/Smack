@@ -127,11 +127,11 @@ public class Socks5ByteStreamManagerTest {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
-        assertTrue(discoveryManager.includesFeature(Socks5BytestreamManager.NAMESPACE));
+        assertTrue(discoveryManager.includesFeature(Bytestream.NAMESPACE));
 
         byteStreamManager.disableService();
 
-        assertFalse(discoveryManager.includesFeature(Socks5BytestreamManager.NAMESPACE));
+        assertFalse(discoveryManager.includesFeature(Bytestream.NAMESPACE));
     }
 
     /**
@@ -182,7 +182,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -233,7 +233,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -297,7 +297,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -388,7 +388,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -478,7 +478,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -560,7 +560,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -654,7 +654,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -773,7 +773,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
@@ -1003,7 +1003,7 @@ public class Socks5ByteStreamManagerTest {
     private void createResponses(Verification<Bytestream, Bytestream> streamHostUsedVerification) {
         // build discover info that supports the SOCKS5 feature
         DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Socks5BytestreamManager.NAMESPACE);
+        discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,

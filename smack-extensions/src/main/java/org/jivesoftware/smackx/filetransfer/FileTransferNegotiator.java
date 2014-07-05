@@ -34,8 +34,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
-import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
+import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
+import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.Form;
@@ -103,9 +103,9 @@ public class FileTransferNegotiator extends Manager {
 
         List<String> namespaces = new ArrayList<String>();
         namespaces.addAll(Arrays.asList(NAMESPACE));
-        namespaces.add(InBandBytestreamManager.NAMESPACE);
+        namespaces.add(DataPacketExtension.NAMESPACE);
         if (!IBB_ONLY) {
-            namespaces.add(Socks5BytestreamManager.NAMESPACE);
+            namespaces.add(Bytestream.NAMESPACE);
         }
 
         for (String namespace : namespaces) {
@@ -130,9 +130,9 @@ public class FileTransferNegotiator extends Manager {
 
         List<String> namespaces = new ArrayList<String>();
         namespaces.addAll(Arrays.asList(NAMESPACE));
-        namespaces.add(InBandBytestreamManager.NAMESPACE);
+        namespaces.add(DataPacketExtension.NAMESPACE);
         if (!IBB_ONLY) {
-            namespaces.add(Socks5BytestreamManager.NAMESPACE);
+            namespaces.add(Bytestream.NAMESPACE);
         }
 
         for (String namespace : namespaces) {
@@ -150,9 +150,9 @@ public class FileTransferNegotiator extends Manager {
      */
     public static Collection<String> getSupportedProtocols() {
         List<String> protocols = new ArrayList<String>();
-        protocols.add(InBandBytestreamManager.NAMESPACE);
+        protocols.add(DataPacketExtension.NAMESPACE);
         if (!IBB_ONLY) {
-            protocols.add(Socks5BytestreamManager.NAMESPACE);
+            protocols.add(Bytestream.NAMESPACE);
         }
         return Collections.unmodifiableList(protocols);
     }
@@ -227,10 +227,10 @@ public class FileTransferNegotiator extends Manager {
         boolean isIBB = false;
         for (FormField.Option option : field.getOptions()) {
             variable = option.getValue();
-            if (variable.equals(Socks5BytestreamManager.NAMESPACE) && !IBB_ONLY) {
+            if (variable.equals(Bytestream.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }
-            else if (variable.equals(InBandBytestreamManager.NAMESPACE)) {
+            else if (variable.equals(DataPacketExtension.NAMESPACE)) {
                 isIBB = true;
             }
         }
@@ -354,10 +354,10 @@ public class FileTransferNegotiator extends Manager {
         boolean isByteStream = false;
         boolean isIBB = false;
         for (String variable : field.getValues()) {
-            if (variable.equals(Socks5BytestreamManager.NAMESPACE) && !IBB_ONLY) {
+            if (variable.equals(Bytestream.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }
-            else if (variable.equals(InBandBytestreamManager.NAMESPACE)) {
+            else if (variable.equals(DataPacketExtension.NAMESPACE)) {
                 isIBB = true;
             }
         }
@@ -385,9 +385,9 @@ public class FileTransferNegotiator extends Manager {
         FormField field = new FormField(STREAM_DATA_FIELD_NAME);
         field.setType(FormField.TYPE_LIST_SINGLE);
         if (!IBB_ONLY) {
-            field.addOption(new FormField.Option(Socks5BytestreamManager.NAMESPACE));
+            field.addOption(new FormField.Option(Bytestream.NAMESPACE));
         }
-        field.addOption(new FormField.Option(InBandBytestreamManager.NAMESPACE));
+        field.addOption(new FormField.Option(DataPacketExtension.NAMESPACE));
         form.addField(field);
         return form;
     }
