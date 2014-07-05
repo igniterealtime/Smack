@@ -52,8 +52,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *          via the API will override settings in the configuration file.
  * </ul>
  *
- * Configuration settings are stored in org.jivesoftware.smack/smack-config.xml (typically inside the
- * smack.jar file).
+ * Configuration settings are stored in org.jivesoftware.smack/smack-config.xml.
  * 
  * @author Gaston Dombiak
  */
