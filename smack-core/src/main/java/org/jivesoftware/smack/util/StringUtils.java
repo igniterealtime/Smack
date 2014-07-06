@@ -22,14 +22,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A collection of utility methods for String objects.
  */
 public class StringUtils {
-    private static final Logger LOGGER = Logger.getLogger(StringUtils.class.getName());
+
+    public static final String SHA1 = "SHA-1";
+    public static final String UTF8 = "UTF-8";
 
     public static final String QUOTE_ENCODE = "&quot;";
     public static final String APOS_ENCODE = "&apos;";
@@ -120,18 +120,22 @@ public class StringUtils {
     public synchronized static String hash(String data) {
         if (digest == null) {
             try {
-                digest = MessageDigest.getInstance("SHA-1");
+                digest = MessageDigest.getInstance(SHA1);
             }
             catch (NoSuchAlgorithmException nsae) {
-                LOGGER.log(Level.SEVERE, "Failed to load the SHA-1 MessageDigest. Smack will be unable to function normally.", nsae);
+                // Smack wont be able to function normally if this exception is thrown, wrap it into
+                // an ISE and make the user aware of the problem.
+                throw new IllegalStateException(nsae);
             }
         }
         // Now, compute hash.
         try {
-            digest.update(data.getBytes("UTF-8"));
+            digest.update(data.getBytes(UTF8));
         }
         catch (UnsupportedEncodingException e) {
-            LOGGER.log(Level.SEVERE, "Error computing hash", e);
+            // Smack wont be able to function normally if this exception is thrown, wrap it into an
+            // ISE and make the user aware of the problem.
+            throw new IllegalStateException(e);
         }
         return encodeHex(digest.digest());
     }
