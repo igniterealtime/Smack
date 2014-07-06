@@ -69,6 +69,7 @@ public class Presence extends Packet {
      * @param type the type.
      */
     public Presence(Type type) {
+        super();
         setType(type);
     }
 
@@ -81,6 +82,7 @@ public class Presence extends Packet {
      * @param mode the mode type for this presence update.
      */
     public Presence(Type type, String status, int priority, Mode mode) {
+        super();
         setType(type);
         setStatus(status);
         setPriority(priority);

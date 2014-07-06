@@ -52,7 +52,7 @@ public class MessageTest {
         String control = controlBuilder.toString();
 
         Message messageTypeInConstructor = new Message(null, Message.Type.chat);
-        messageTypeInConstructor.setPacketID(Packet.ID_NOT_AVAILABLE);
+        messageTypeInConstructor.setPacketID(null);
         assertEquals(type, messageTypeInConstructor.getType());
         assertXMLEqual(control, messageTypeInConstructor.toXML().toString());
 
@@ -257,7 +257,7 @@ public class MessageTest {
 
     private static Message getNewMessage() {
         Message message = new Message();
-        message.setPacketID(Packet.ID_NOT_AVAILABLE);
+        message.setPacketID(null);
         return message;
     }
 }

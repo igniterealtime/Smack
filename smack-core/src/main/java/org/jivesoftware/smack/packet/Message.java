@@ -60,6 +60,7 @@ public class Message extends Packet {
      * Creates a new, "normal" message.
      */
     public Message() {
+        super();
     }
 
     /**
@@ -68,6 +69,7 @@ public class Message extends Packet {
      * @param to the recipient of the message.
      */
     public Message(String to) {
+        super();
         setTo(to);
     }
 
@@ -78,11 +80,9 @@ public class Message extends Packet {
      * @param type the message type.
      */
     public Message(String to, Type type) {
+        super();
         setTo(to);
-        
-        if (type != null) {
-            this.type = type;
-        }
+        setType(type);
     }
 
     /**

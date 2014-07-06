@@ -160,8 +160,7 @@ public class PacketParserUtils {
      */
     public static Message parseMessage(XmlPullParser parser) throws Exception {
         Message message = new Message();
-        String id = parser.getAttributeValue("", "id");
-        message.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
+        message.setPacketID(parser.getAttributeValue("", "id"));
         message.setTo(parser.getAttributeValue("", "to"));
         message.setFrom(parser.getAttributeValue("", "from"));
         String typeString = parser.getAttributeValue("", "type");
@@ -408,14 +407,12 @@ public class PacketParserUtils {
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
         presence.setFrom(parser.getAttributeValue("", "from"));
-        String id = parser.getAttributeValue("", "id");
-        presence.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
+        presence.setPacketID(parser.getAttributeValue("", "id"));
 
         String language = getLanguageAttribute(parser);
         if (language != null && !"".equals(language.trim())) {
         	presence.setLanguage(language);
         }
-        presence.setPacketID(id == null ? Packet.ID_NOT_AVAILABLE : id);
 
         // Parse sub-elements
         boolean done = false;

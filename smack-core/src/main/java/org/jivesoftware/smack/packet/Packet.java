@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Base class for XMPP packets. Every packet has a unique ID (which is automatically
@@ -41,14 +42,7 @@ public abstract class Packet {
     private static String DEFAULT_XML_NS = null;
 
     /**
-     * Constant used as packetID to indicate that a packet has no id. To indicate that a packet
-     * has no id set this constant as the packet's id. When the packet is asked for its id the
-     * answer will be <tt>null</tt>.
-     */
-    public static final String ID_NOT_AVAILABLE = "ID_NOT_AVAILABLE";
-
-    /**
-     * A prefix helps to make sure that ID's are unique across mutliple instances.
+     * A prefix helps to make sure that ID's are unique across multiple instances.
      */
     private static String prefix = StringUtils.randomString(5) + "-";
 
@@ -56,19 +50,9 @@ public abstract class Packet {
      * Keeps track of the current increment, which is appended to the prefix to
      * forum a unique ID.
      */
-    private static long id = 0;
+    private static AtomicLong id = new AtomicLong();
 
     private String xmlns = DEFAULT_XML_NS;
-
-    /**
-     * Returns the next unique id. Each id made up of a short alphanumeric
-     * prefix along with a unique numeric value.
-     *
-     * @return the next id.
-     */
-    public static synchronized String nextID() {
-        return prefix + Long.toString(id++);
-    }
 
     public static void setDefaultXmlns(String defaultXmlns) {
         DEFAULT_XML_NS = defaultXmlns;
@@ -83,6 +67,11 @@ public abstract class Packet {
     private XMPPError error = null;
 
     public Packet() {
+        this(prefix + Long.toString(id.incrementAndGet()));
+    }
+
+    public Packet(String packetID) {
+        setPacketID(packetID);
     }
 
     public Packet(Packet p) {
@@ -105,13 +94,6 @@ public abstract class Packet {
      * @return the packet's unique ID or <tt>null</tt> if the packet's id is not available.
      */
     public String getPacketID() {
-        if (ID_NOT_AVAILABLE.equals(packetID)) {
-            return null;
-        }
-
-        if (packetID == null) {
-            packetID = nextID();
-        }
         return packetID;
     }
 
