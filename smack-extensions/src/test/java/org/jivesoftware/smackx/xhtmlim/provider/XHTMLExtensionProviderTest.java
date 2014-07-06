@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.xhtmlim.provider;
 
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -26,8 +27,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 
@@ -43,10 +42,10 @@ public class XHTMLExtensionProviderTest {
         XHTMLExtensionProvider provider = new XHTMLExtensionProvider();
         PacketExtension extension = provider.parseExtension(parser);
 
-        assertThat(extension, is(instanceOf(XHTMLExtension.class)));
+        assertThat(extension, instanceOf(XHTMLExtension.class));
         XHTMLExtension attachmentsInfo = (XHTMLExtension) extension;
 
-        assertEquals(sampleXhtml(), attachmentsInfo.getBodies().get(0));
+        assertThat(sampleXhtml(), equalsCharSequence(attachmentsInfo.getBodies().get(0)));
     }
 
     private String sampleXhtml() {

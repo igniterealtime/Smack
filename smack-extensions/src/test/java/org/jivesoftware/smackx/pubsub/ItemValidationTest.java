@@ -148,7 +148,7 @@ public class ItemValidationTest extends InitExtensions {
         SimplePayload payload = (SimplePayload) item.getPayload();
         assertEquals("foo", payload.getElementName());
         assertEquals("smack:test", payload.getNamespace());
-        assertXMLEqual(itemContent, payload.toXML());
+        assertXMLEqual(itemContent, payload.toXML().toString());
     }
 
     @Test
@@ -195,7 +195,7 @@ public class ItemValidationTest extends InitExtensions {
         SimplePayload payload = (SimplePayload) item.getPayload();
         assertEquals("entry", payload.getElementName());
         assertEquals("http://www.w3.org/2005/Atom", payload.getNamespace());
-        assertXMLEqual(itemContent, payload.toXML());
+        assertXMLEqual(itemContent, payload.toXML().toString());
     }
 
     @Test
@@ -231,6 +231,6 @@ public class ItemValidationTest extends InitExtensions {
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
         
-        assertXMLEqual(itemContent, ((SimplePayload)item.getPayload()).toXML());
+        assertXMLEqual(itemContent, ((SimplePayload)item.getPayload()).toXML().toString());
     }
 }

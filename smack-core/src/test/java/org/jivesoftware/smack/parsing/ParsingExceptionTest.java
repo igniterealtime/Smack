@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.parsing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -63,14 +63,13 @@ public class ParsingExceptionTest {
                     EXTENSION2 +
                 "</message>");
         int parserDepth = parser.getDepth();
-        String content = null;
+        CharSequence content = null;
         try {
             PacketParserUtils.parseMessage(parser);
         } catch (Exception e) {
             content = PacketParserUtils.parseContentDepth(parser, parserDepth);
         }
-        assertNotNull(content);
-        assertEquals(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", content);
+        assertThat(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", equalsCharSequence(content));
     }
 
     static class ThrowException implements PacketExtensionProvider {

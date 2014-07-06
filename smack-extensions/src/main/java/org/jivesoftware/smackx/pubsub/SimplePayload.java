@@ -26,9 +26,9 @@ import org.jivesoftware.smack.packet.PacketExtension;
  */
 public class SimplePayload implements PacketExtension
 {
-	private String elemName;
-	private String ns;
-	private String payload;
+	private final String elemName;
+	private final String ns;
+	private final CharSequence payload;
 	
 	/**
 	 * Construct a <tt>SimplePayload</tt> object with the specified element name, 
@@ -38,7 +38,7 @@ public class SimplePayload implements PacketExtension
 	 * @param namespace The namespace of the payload, null if there is none
 	 * @param xmlPayload The payload data
 	 */
-	public SimplePayload(String elementName, String namespace, String xmlPayload)
+	public SimplePayload(String elementName, String namespace, CharSequence xmlPayload)
 	{
 		elemName = elementName;
 		payload = xmlPayload;
@@ -55,7 +55,8 @@ public class SimplePayload implements PacketExtension
 		return ns;
 	}
 
-	public String toXML()
+	@Override
+	public CharSequence toXML()
 	{
 		return payload;
 	}

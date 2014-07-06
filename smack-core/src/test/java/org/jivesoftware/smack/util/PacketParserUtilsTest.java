@@ -786,7 +786,7 @@ public class PacketParserUtilsTest {
     public void parseContentDepthTest() throws Exception {
         final String stanza = "<iq type='result' to='foo@bar.com' from='baz.com' id='42'/>";
         XmlPullParser parser = TestUtils.getParser(stanza, "iq");
-        String content = PacketParserUtils.parseContent(parser);
+        CharSequence content = PacketParserUtils.parseContent(parser);
         assertEquals("", content);
     }
 

@@ -25,10 +25,10 @@ package org.jivesoftware.smack.parsing;
  *
  */
 public class UnparsablePacket {
-    private final String content;
+    private final CharSequence content;
     private final Exception e;
 
-    public UnparsablePacket(final String content, final Exception e) {
+    public UnparsablePacket(final CharSequence content, final Exception e) {
         this.content = content;
         this.e = e;
     }
@@ -46,7 +46,7 @@ public class UnparsablePacket {
      * 
      * @return the raw stanza data
      */
-    public String getContent() {
+    public CharSequence getContent() {
         return content;
     }
 

@@ -982,7 +982,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         try {
                             packet = PacketParserUtils.parseStanza(parser, XMPPTCPConnection.this);
                         } catch (Exception e) {
-                            String content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+                            CharSequence content = PacketParserUtils.parseContentDepth(parser, parserDepth);
                             UnparsablePacket message = new UnparsablePacket(content, e);
                             if (callback != null) {
                                 callback.handleUnparsablePacket(message);
