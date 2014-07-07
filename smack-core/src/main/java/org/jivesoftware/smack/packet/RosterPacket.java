@@ -17,10 +17,14 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -66,7 +70,8 @@ public class RosterPacket extends IQ {
         }
     }
 
-    public CharSequence getChildElementXML() {
+    @Override
+    public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement("query");
         buf.xmlnsAttribute("jabber:iq:roster");
@@ -95,6 +100,8 @@ public class RosterPacket extends IQ {
      * the groups the roster item belongs to.
      */
     public static class Item {
+
+        public static final String GROUP = "group";
 
         private String user;
         private String name;
@@ -207,24 +214,19 @@ public class RosterPacket extends IQ {
             groupNames.remove(groupName);
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<item jid=\"").append(StringUtils.escapeForXML(user)).append("\"");
-            if (name != null) {
-                buf.append(" name=\"").append(StringUtils.escapeForXML(name)).append("\"");
-            }
-            if (itemType != null) {
-                buf.append(" subscription=\"").append(itemType).append("\"");
-            }
-            if (itemStatus != null) {
-                buf.append(" ask=\"").append(itemStatus).append("\"");
-            }
-            buf.append(">");
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.halfOpenElement(Packet.ITEM).attribute("jid", user);
+            xml.optAttribute("name", name);
+            xml.optAttribute("subscription", itemType);
+            xml.optAttribute("ask", itemStatus);
+            xml.rightAngelBracket();
+
             for (String groupName : groupNames) {
-                buf.append("<group>").append(StringUtils.escapeForXML(groupName)).append("</group>");
+                xml.openElement(GROUP).escape(groupName).closeElement(GROUP);
             }
-            buf.append("</item>");
-            return buf.toString();
+            xml.closeElement(Packet.ITEM);
+            return xml;
         }
 
         @Override

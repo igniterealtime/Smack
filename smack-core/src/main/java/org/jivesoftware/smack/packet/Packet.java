@@ -36,6 +36,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class Packet {
 
+    public static final String TEXT = "text";
+    public static final String ITEM = "item";
+
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 

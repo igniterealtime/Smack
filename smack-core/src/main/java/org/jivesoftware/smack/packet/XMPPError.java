@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
  * problems by sending the packet back and including an error packet. Each error has a type,
@@ -59,6 +61,9 @@ import java.util.Map;
  * @author Matt Tucker
  */
 public class XMPPError {
+
+    public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-stanzas";
+    public static final String ERROR = "error";
 
     private final Type type;
     private final String condition;
@@ -153,29 +158,30 @@ public class XMPPError {
      *
      * @return the error as XML.
      */
-    public CharSequence toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<error");
-        if (type != null) {
-            buf.append(" type=\"");
-            buf.append(type.name().toLowerCase(Locale.US));
-            buf.append("\"");
-        }
-        buf.append(">");
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(ERROR);
+        xml.optAttribute("type", type.name().toLowerCase(Locale.US));
+        xml.rightAngelBracket();
+
         if (condition != null) {
-            buf.append("<").append(condition);
-            buf.append(" xmlns=\"urn:ietf:params:xml:ns:xmpp-stanzas\"/>");
+            xml.halfOpenElement(condition);
+            xml.xmlnsAttribute(NAMESPACE);
+            xml.closeEmptyElement();
         }
         if (message != null) {
-            buf.append("<text xml:lang=\"en\" xmlns=\"urn:ietf:params:xml:ns:xmpp-stanzas\">");
-            buf.append(message);
-            buf.append("</text>");
+            xml.halfOpenElement(Packet.TEXT);
+            xml.xmllangAttribute("en");
+            xml.xmlnsAttribute(NAMESPACE);
+            xml.rightAngelBracket();
+            xml.escape(message);
+            xml.closeElement(Packet.TEXT);
         }
         for (PacketExtension element : this.getExtensions()) {
-            buf.append(element.toXML());
+            xml.append(element.toXML());
         }
-        buf.append("</error>");
-        return buf.toString();
+        xml.closeElement(ERROR);
+        return xml;
     }
 
     public String toString() {

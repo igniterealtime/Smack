@@ -779,7 +779,7 @@ public class PacketParserUtils {
             String namespace = parser.getNamespace();
             if (StreamError.NAMESPACE.equals(namespace)) {
                 String name = parser.getName();
-                if (name.equals("text") && !parser.isEmptyElementTag()) {
+                if (name.equals(Packet.TEXT) && !parser.isEmptyElementTag()) {
                     parser.next();
                     text = parser.getText();
                 }
@@ -822,7 +822,7 @@ public class PacketParserUtils {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("text")) {
+                if (parser.getName().equals(Packet.TEXT)) {
                     message = parser.nextText();
                 }
                 else {
