@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack;
 
+import javax.security.sasl.SaslException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -33,11 +34,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.sasl.SaslException;
-
+import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
@@ -71,6 +70,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Ensure the SmackConfiguration class is loaded by calling a method in it.
         SmackConfiguration.getVersion();
     }
+
+    private boolean iqFilterEnabled = true;
 
     /**
      * Get the collection of listeners that are interested in connection creation events.
@@ -1072,6 +1073,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public FromMode getFromMode() {
         return this.fromMode;
+    }
+
+    @Override
+    public void setIQFilterEnabled(boolean enabled){
+        this.iqFilterEnabled = enabled;
+    }
+
+    @Override
+    public boolean isIQFilterEnabled(){
+        return this.iqFilterEnabled;
     }
 
     @Override

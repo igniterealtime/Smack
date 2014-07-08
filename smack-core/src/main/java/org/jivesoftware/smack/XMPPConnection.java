@@ -357,4 +357,20 @@ public interface XMPPConnection {
      * @return true if the roster will be loaded from the server when logging in.
      */
     public boolean isRosterLoadedAtLogin();
+
+
+    /**
+     * If IQ filter is enabled for this connection instance.
+     * It's useful if you have to connect to misbehaving servers.
+     *
+     * @param enabled
+     */
+    public void setIQFilterEnabled(boolean enabled);
+
+    /**
+     * Get if IQ filter is enabled for this connection instance
+     *
+     * @return if IQ filter is enabled
+     */
+    public boolean isIQFilterEnabled();
 }
