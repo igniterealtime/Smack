@@ -29,15 +29,33 @@ import org.jivesoftware.smackx.pubsub.PubSubElementType;
  */
 public class PubSub extends IQ
 {
+    public static final String ELEMENT = "pubsub";
+    public static final String NAMESPACE = "http://jabber.org/protocol/pubsub";
+
 	private PubSubNamespace ns = PubSubNamespace.BASIC;
-	
+
+	public PubSub() {
+	}
+
+	public PubSub(String to, Type type) {
+        setTo(to);
+        setType(type);
+    }
+
+    public PubSub(String to, Type type, PubSubNamespace ns) {
+        this(to, type);
+        if (ns != null) {
+            setPubSubNamespace(ns);
+        }
+    }
+
 	/**
     * Returns the XML element name of the extension sub-packet root element.
     *
     * @return the XML element name of the packet extension.
     */
     public String getElementName() {
-        return "pubsub";
+        return ELEMENT;
     }
 
     /** 
@@ -106,4 +124,9 @@ public class PubSub extends IQ
         return buf.toString();
     }
 
+    public static PubSub createPubsubPacket(String to, Type type, PacketExtension extension, PubSubNamespace ns) {
+        PubSub pubSub = new PubSub(to, type, ns);
+        pubSub.addExtension(extension);
+        return pubSub;
+    }
 }
