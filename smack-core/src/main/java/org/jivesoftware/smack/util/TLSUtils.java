@@ -78,7 +78,8 @@ public class TLSUtils {
     /**
      * Accept all SSL/TLS certificates.
      * <p>
-     * <b>Warning</b> Use with care. Only use this method if you understand the implications.
+     * <b>Warning</b> Use with care. This method make the Connection use
+     * {@link AcceptAllTrustManager}. Only use this method if you understand the implications.
      * </p>
      * 
      * @param conf
@@ -134,6 +135,14 @@ public class TLSUtils {
         }
     }
 
+    /**
+     * A {@link X509TrustManager} that <b>doesn't validate</b> X.509 certificates.
+     * <p>
+     * Connections that use this TrustManager will just be encrypted, without any guarantee that the
+     * counter part is actually the intended one. Man-in-the-Middle attacks will be possible, since
+     * any certificate presented by the attacker will be considered valid.
+     * </p>
+     */
     public static class AcceptAllTrustManager implements X509TrustManager {
 
         @Override
@@ -150,7 +159,7 @@ public class TLSUtils {
 
         @Override
         public X509Certificate[] getAcceptedIssuers() {
-            throw new UnsupportedOperationException();
+            return new X509Certificate[0];
         }
     }
 }
