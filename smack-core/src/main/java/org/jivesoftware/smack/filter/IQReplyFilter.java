@@ -51,6 +51,8 @@ import org.jxmpp.util.XmppStringUtils;
 public class IQReplyFilter implements PacketFilter {
     private static final Logger LOGGER = Logger.getLogger(IQReplyFilter.class.getName());
 
+    private final boolean enabled;
+
     private final PacketFilter iqAndIdFilter;
     private final OrFilter fromFilter;
     private final String to;
@@ -81,47 +83,61 @@ public class IQReplyFilter implements PacketFilter {
      * @param iqPacket An IQ request. Filter for replies to this packet.
      */
     public IQReplyFilter(IQ iqPacket, XMPPConnection conn) {
-        to = iqPacket.getTo();
-        if (conn.getUser() == null) {
-            // We have not yet been assigned a username, this can happen if the connection is
-            // in an early stage, i.e. when performing the SASL auth.
-            local = null;
-        } else {
-            local = conn.getUser().toLowerCase(Locale.US);
-        }
-        server = conn.getServiceName().toLowerCase(Locale.US);
-        packetId = iqPacket.getPacketID();
+        if(conn.isIQFilterEnabled()) {
+            enabled = true;
+            to = iqPacket.getTo();
+            if (conn.getUser() == null) {
+                // We have not yet been assigned a username, this can happen if the connection is
+                // in an early stage, i.e. when performing the SASL auth.
+                local = null;
+            } else {
+                local = conn.getUser().toLowerCase(Locale.US);
+            }
+            server = conn.getServiceName().toLowerCase(Locale.US);
+            packetId = iqPacket.getPacketID();
 
-        PacketFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
-        PacketFilter idFilter = new PacketIDFilter(iqPacket);
-        iqAndIdFilter = new AndFilter(iqFilter, idFilter);
-        fromFilter = new OrFilter();
-        fromFilter.addFilter(FromMatchesFilter.createFull(to));
-        if (to == null) {
-            if (local != null)
-                fromFilter.addFilter(FromMatchesFilter.createBare(local));
-            fromFilter.addFilter(FromMatchesFilter.createFull(server));
-        }
-        else if (local != null && to.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(local))) {
-            fromFilter.addFilter(FromMatchesFilter.createFull(null));
+            PacketFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
+            PacketFilter idFilter = new PacketIDFilter(iqPacket);
+            iqAndIdFilter = new AndFilter(iqFilter, idFilter);
+            fromFilter = new OrFilter();
+            fromFilter.addFilter(FromMatchesFilter.createFull(to));
+            if (to == null) {
+                if (local != null)
+                    fromFilter.addFilter(FromMatchesFilter.createBare(local));
+                fromFilter.addFilter(FromMatchesFilter.createFull(server));
+            } else if (local != null && to.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(local))) {
+                fromFilter.addFilter(FromMatchesFilter.createFull(null));
+            }
+        } else {
+            enabled = false;
+            iqAndIdFilter = null;
+            fromFilter = null;
+            to = null;
+            local = null;
+            server = null;
+            packetId = null;
         }
     }
 
     @Override
     public boolean accept(Packet packet) {
-        // First filter out everything that is not an IQ stanza and does not have the correct ID set.
-        if (!iqAndIdFilter.accept(packet))
-            return false;
+        if(enabled) {
+            // First filter out everything that is not an IQ stanza and does not have the correct ID set.
+            if (!iqAndIdFilter.accept(packet))
+                return false;
 
-        // Second, check if the from attributes are correct and log potential IQ spoofing attempts
-        if (fromFilter.accept(packet)) {
-            return true;
+            // Second, check if the from attributes are correct and log potential IQ spoofing attempts
+            if (fromFilter.accept(packet)) {
+                return true;
+            } else {
+                String msg = String.format("Rejected potentially spoofed reply to IQ-packet. Filter settings: "
+                                + "packetId=%s, to=%s, local=%s, server=%s. Received packet with from=%s",
+                        packetId, to, local, server, packet.getFrom());
+                LOGGER.log(Level.WARNING, msg, packet);
+                return false;
+            }
         } else {
-            String msg = String.format("Rejected potentially spoofed reply to IQ-packet. Filter settings: "
-                            + "packetId=%s, to=%s, local=%s, server=%s. Received packet with from=%s",
-                            packetId, to, local, server, packet.getFrom());
-            LOGGER.log(Level.WARNING, msg , packet);
-            return false;
+            return true;
         }
     }
 
