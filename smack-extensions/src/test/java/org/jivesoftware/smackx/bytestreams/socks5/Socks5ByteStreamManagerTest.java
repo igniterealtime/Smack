@@ -424,7 +424,7 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build error packet to reject SOCKS5 Bytestream
-        XMPPError xmppError = new XMPPError(XMPPError.Condition.no_acceptable);
+        XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ rejectPacket = new IQ() {
 
             public String getChildElementXML() {
