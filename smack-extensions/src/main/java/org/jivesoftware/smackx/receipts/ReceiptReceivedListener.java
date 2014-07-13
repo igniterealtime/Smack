@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,5 +22,16 @@ package org.jivesoftware.smackx.receipts;
  * Implement this and add a listener to get notified. 
  */
 public interface ReceiptReceivedListener {
+    /**
+     * Callback invoked when a new receipt got received.
+     * <p>
+     * {@code receiptId} correspondents to the message ID, which can be obtained with
+     * {@link org.jivesoftware.smack.packet.Packet#getPacketID()}.
+     * </p>
+     * 
+     * @param fromJid the jid that send this receipt
+     * @param toJid the jid which received this receipt
+     * @param receiptId the message ID of the packet which has been received and this receipt is for
+     */
     void onReceiptReceived(String fromJid, String toJid, String receiptId);
 }
