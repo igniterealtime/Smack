@@ -99,7 +99,7 @@ public class InitiationListenerTest {
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
         assertEquals(IQ.Type.error, argument.getValue().getType());
-        assertEquals(XMPPError.Condition.no_acceptable.toString(),
+        assertEquals(XMPPError.Condition.not_acceptable.toString(),
                         argument.getValue().getError().getCondition());
 
     }
@@ -189,7 +189,7 @@ public class InitiationListenerTest {
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
         assertEquals(IQ.Type.error, argument.getValue().getType());
-        assertEquals(XMPPError.Condition.no_acceptable.toString(),
+        assertEquals(XMPPError.Condition.not_acceptable.toString(),
                         argument.getValue().getError().getCondition());
     }
 

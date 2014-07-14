@@ -156,10 +156,23 @@ public class FileTransferManager extends Manager {
 		return transfer;
 	}
 
+	/**
+	 * Reject an incoming file transfer.
+	 * <p>
+	 * Specified in XEP-95 4.2 and 3.2 Example 8
+	 * </p>
+	 * @param request
+	 * @throws NotConnectedException
+	 */
 	protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException {
 		StreamInitiation initiation = request.getStreamInitiation();
 
-		IQ rejection = IQ.createErrorResponse(initiation, new XMPPError(XMPPError.Condition.no_acceptable));
-		connection().sendPacket(rejection);
+        // Reject as specified in XEP-95 4.2. Note that this is not to be confused with the Socks 5
+        // Bytestream rejection as specified in XEP-65 5.3.1 Example 13, which says that
+        // 'not-acceptable' should be returned. This is done by Smack in
+        // Socks5BytestreamManager.replyRejectPacket(IQ).
+        IQ rejection = IQ.createErrorResponse(initiation, new XMPPError(
+                        XMPPError.Condition.forbidden));
+        connection().sendPacket(rejection);
 	}
 }

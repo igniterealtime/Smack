@@ -447,7 +447,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @throws NotConnectedException 
      */
     protected void replyRejectPacket(IQ request) throws NotConnectedException {
-        XMPPError xmppError = new XMPPError(XMPPError.Condition.no_acceptable);
+        XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);
     }

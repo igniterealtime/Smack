@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  */
 public class DeliveryReceiptManager extends Manager implements PacketListener {
 
-    private static Map<XMPPConnection, DeliveryReceiptManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, DeliveryReceiptManager>());
+    private static Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<XMPPConnection, DeliveryReceiptManager>();
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -63,7 +62,6 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
-        instances.put(connection, this);
 
         // register listener for delivery receipts and requests
         connection.addPacketListener(this, new PacketExtensionFilter(DeliveryReceipt.NAMESPACE));
@@ -81,6 +79,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
 
         if (receiptManager == null) {
             receiptManager = new DeliveryReceiptManager(connection);
+            instances.put(connection, receiptManager);
         }
 
         return receiptManager;
@@ -102,20 +101,17 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
     // handle incoming receipts and receipt requests
     @Override
     public void processPacket(Packet packet) throws NotConnectedException {
-        DeliveryReceipt dr = (DeliveryReceipt)packet.getExtension(
-                DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE);
+        DeliveryReceipt dr = DeliveryReceipt.getFrom(packet);
         if (dr != null) {
             // notify listeners of incoming receipt
             for (ReceiptReceivedListener l : receiptReceivedListeners) {
                 l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId());
             }
-
         }
 
         // if enabled, automatically send a receipt
         if (auto_receipts_enabled) {
-            DeliveryReceiptRequest drr = (DeliveryReceiptRequest)packet.getExtension(
-                    DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
+            DeliveryReceiptRequest drr = DeliveryReceiptRequest.getFrom(packet);
             if (drr != null) {
                 XMPPConnection connection = connection();
                 Message ack = new Message(packet.getFrom(), Message.Type.normal);
@@ -183,8 +179,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
      * @return true if a delivery receipt was requested
      */
     public static boolean hasDeliveryReceiptRequest(Packet p) {
-        return (p.getExtension(DeliveryReceiptRequest.ELEMENT,
-                    DeliveryReceipt.NAMESPACE) != null);
+        return (DeliveryReceiptRequest.getFrom(p) != null);
     }
 
     /**
@@ -194,8 +189,10 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
      * therefore only allow Message as the parameter type.
      *
      * @param m Message object to add a request to
+     * @return the Message ID which will be used as receipt ID
      */
-    public static void addDeliveryReceiptRequest(Message m) {
+    public static String addDeliveryReceiptRequest(Message m) {
         m.addExtension(new DeliveryReceiptRequest());
+        return m.getPacketID();
     }
 }

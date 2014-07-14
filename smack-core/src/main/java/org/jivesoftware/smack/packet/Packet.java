@@ -211,7 +211,8 @@ public abstract class Packet {
      * @param namespace the XML element namespace of the packet extension.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
-    public PacketExtension getExtension(String elementName, String namespace) {
+    @SuppressWarnings("unchecked")
+    public <PE extends PacketExtension> PE getExtension(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }
@@ -219,7 +220,7 @@ public abstract class Packet {
             if ((elementName == null || elementName.equals(ext.getElementName()))
                     && namespace.equals(ext.getNamespace()))
             {
-                return ext;
+                return (PE) ext;
             }
         }
         return null;

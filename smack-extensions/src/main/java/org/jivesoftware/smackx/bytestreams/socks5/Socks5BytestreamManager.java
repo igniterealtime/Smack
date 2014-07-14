@@ -699,12 +699,15 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     /**
      * Responses to the given packet's sender with a XMPP error that a SOCKS5 Bytestream is not
      * accepted.
+     * <p>
+     * Specified in XEP-65 5.3.1 (Example 13)
+     * </p>
      * 
      * @param packet Packet that should be answered with a not-acceptable error
      * @throws NotConnectedException 
      */
     protected void replyRejectPacket(IQ packet) throws NotConnectedException {
-        XMPPError xmppError = new XMPPError(XMPPError.Condition.no_acceptable);
+        XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         this.connection.sendPacket(errorIQ);
     }

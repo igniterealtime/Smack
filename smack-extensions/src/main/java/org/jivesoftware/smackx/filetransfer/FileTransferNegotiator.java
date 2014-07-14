@@ -255,18 +255,6 @@ public class FileTransferNegotiator extends Manager {
     }
 
     /**
-     * Reject a stream initiation request from a remote user.
-     *
-     * @param si The Stream Initiation request to reject.
-     * @throws NotConnectedException 
-     */
-    public void rejectStream(final StreamInitiation si) throws NotConnectedException {
-        XMPPError error = new XMPPError(XMPPError.Condition.forbidden, "Offer Declined");
-        IQ iqPacket = IQ.createErrorResponse(si, error);
-        connection().sendPacket(iqPacket);
-    }
-
-    /**
      * Returns a new, unique, stream ID to identify a file transfer.
      *
      * @return Returns a new, unique, stream ID to identify a file transfer.

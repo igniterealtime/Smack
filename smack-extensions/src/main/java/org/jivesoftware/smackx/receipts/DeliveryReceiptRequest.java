@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright 2013-2014 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.receipts;
 
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -43,6 +44,16 @@ public class DeliveryReceiptRequest implements PacketExtension
     public String toXML()
     {
         return "<request xmlns='" + DeliveryReceipt.NAMESPACE + "'/>";
+    }
+
+    /**
+     * Get the {@link DeliveryReceiptRequest} extension of the packet, if any.
+     *
+     * @param p the packet
+     * @return the {@link DeliveryReceiptRequest} extension or {@code null}
+     */
+    public static DeliveryReceiptRequest getFrom(Packet p) {
+        return p.getExtension(ELEMENT, DeliveryReceipt.NAMESPACE);
     }
 
     /**

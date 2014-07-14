@@ -40,7 +40,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *      <tr><td>feature-not-implemented</td><td>CANCEL</td></tr>
  *      <tr><td>gone</td><td>MODIFY</td></tr>
  *      <tr><td>jid-malformed</td><td>MODIFY</td></tr>
- *      <tr><td>no-acceptable</td><td> MODIFY</td></tr>
+ *      <tr><td>not-acceptable</td><td> MODIFY</td></tr>
  *      <tr><td>not-allowed</td><td>CANCEL</td></tr>
  *      <tr><td>not-authorized</td><td>AUTH</td></tr>
  *      <tr><td>payment-required</td><td>AUTH</td></tr>
@@ -282,7 +282,7 @@ public class XMPPError {
         public static final Condition gone = new Condition("gone");
         public static final Condition item_not_found = new Condition("item-not-found");
         public static final Condition jid_malformed = new Condition("jid-malformed");
-        public static final Condition no_acceptable = new Condition("not-acceptable");
+        public static final Condition not_acceptable = new Condition("not-acceptable");
         public static final Condition not_allowed = new Condition("not-allowed");
         public static final Condition not_authorized = new Condition("not-authorized");
         public static final Condition payment_required = new Condition("payment-required");
@@ -354,8 +354,8 @@ public class XMPPError {
                     Condition.gone, Type.MODIFY));
             instances.put(Condition.jid_malformed, new XMPPError.ErrorSpecification(
                     Condition.jid_malformed, Type.MODIFY));
-            instances.put(Condition.no_acceptable, new XMPPError.ErrorSpecification(
-                    Condition.no_acceptable, Type.MODIFY));
+            instances.put(Condition.not_acceptable, new XMPPError.ErrorSpecification(
+                    Condition.not_acceptable, Type.MODIFY));
             instances.put(Condition.not_allowed, new XMPPError.ErrorSpecification(
                     Condition.not_allowed, Type.CANCEL));
             instances.put(Condition.not_authorized, new XMPPError.ErrorSpecification(

@@ -40,7 +40,7 @@ public enum PubSubNamespace
 	
 	public String getXmlns()
 	{
-		String ns = "http://jabber.org/protocol/pubsub";
+		String ns = PubSub.NAMESPACE;
 		
 		if (fragment != null)
 			ns += '#' + fragment;

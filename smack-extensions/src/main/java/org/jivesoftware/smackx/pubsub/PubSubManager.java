@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,7 +87,7 @@ final public class PubSubManager
 	 */
 	public LeafNode createNode() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub reply = (PubSub)sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE));
+		PubSub reply = (PubSub)sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE), null);
 		NodeExtension elem = (NodeExtension)reply.getExtension("create", PubSubNamespace.BASIC.getXmlns());
 		
 		LeafNode newNode = new LeafNode(con, elem.getNode());
@@ -126,7 +127,7 @@ final public class PubSubManager
 	 */
 	public Node createNode(String name, Form config) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub request = createPubsubPacket(to, Type.set, new NodeExtension(PubSubElementType.CREATE, name));
+		PubSub request = PubSub.createPubsubPacket(to, Type.set, new NodeExtension(PubSubElementType.CREATE, name), null);
 		boolean isLeafNode = true;
 		
 		if (config != null)
@@ -140,7 +141,7 @@ final public class PubSubManager
 
 		// Errors will cause exceptions in getReply, so it only returns
 		// on success.
-		sendPubsubPacket(con, to, Type.set, request);
+		sendPubsubPacket(con, request);
 		Node newNode = isLeafNode ? new LeafNode(con, name) : new CollectionNode(con, name);
 		newNode.setTo(to);
 		nodeMap.put(newNode.getId(), newNode);
@@ -217,7 +218,7 @@ final public class PubSubManager
 	 */
 	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		Packet reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS));
+		Packet reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS), null);
 		SubscriptionsExtension subElem = (SubscriptionsExtension)reply.getExtension(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
 		return subElem.getSubscriptions();
 	}
@@ -233,7 +234,7 @@ final public class PubSubManager
 	 */
 	public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub reply = (PubSub)sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS));
+		PubSub reply = (PubSub)sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS), null);
 		AffiliationsExtension listElem = (AffiliationsExtension)reply.getExtension(PubSubElementType.AFFILIATIONS);
 		return listElem.getAffiliations();
 	}
@@ -282,53 +283,22 @@ final public class PubSubManager
 		ServiceDiscoveryManager mgr = ServiceDiscoveryManager.getInstanceFor(con);
 		return mgr.discoverInfo(to);
 	}
-	
-	private Packet sendPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException
+
+    private Packet sendPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+        return sendPubsubPacket(con, to, type, Collections.singletonList(ext), ns);
+    }
+
+	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, List<PacketExtension> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		return sendPubsubPacket(con, to, type, ext, ns);
+	    PubSub pubSub = new PubSub(to, type, ns);
+	    for (PacketExtension pe : extList) {
+	        pubSub.addExtension(pe);
+	    }
+		return sendPubsubPacket(con ,pubSub);
 	}
 
-	private Packet sendPubsubPacket(Type type, PacketExtension ext) throws NoResponseException, XMPPErrorException, NotConnectedException
-	{
-		return sendPubsubPacket(type, ext, null);
-	}
-
-	static PubSub createPubsubPacket(String to, Type type, PacketExtension ext)
-	{
-		return createPubsubPacket(to, type, ext, null);
-	}
-	
-	static PubSub createPubsubPacket(String to, Type type, PacketExtension ext, PubSubNamespace ns)
-	{
-		PubSub request = new PubSub();
-		request.setTo(to);
-		request.setType(type);
-		
-		if (ns != null)
-		{
-			request.setPubSubNamespace(ns);
-		}
-		request.addExtension(ext);
-		
-		return request;
-	}
-
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext) throws NoResponseException, XMPPErrorException, NotConnectedException
-	{
-		return sendPubsubPacket(con, to, type, ext, null);
-	}
-	
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PacketExtension ext, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException
-	{
-		return con.createPacketCollectorAndSend(createPubsubPacket(to, type, ext, ns)).nextResultOrThrow();
-	}
-
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException
-	{
-		return sendPubsubPacket(con, to, type, packet, null);
-	}
-
-	static Packet sendPubsubPacket(XMPPConnection con, String to, Type type, PubSub packet, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException
+	static Packet sendPubsubPacket(XMPPConnection con, PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		return con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
