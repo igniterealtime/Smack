@@ -17,8 +17,7 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.muc.packet.MUCAdmin;
-import org.jivesoftware.smackx.muc.packet.MUCOwner;
+import org.jivesoftware.smackx.muc.packet.MUCItem;
 
 /**
  * Represents an affiliation of a user to a given room. The affiliate's information will always have
@@ -36,15 +35,7 @@ public class Affiliate {
     private String role;
     private String nick;
 
-    Affiliate(MUCOwner.Item item) {
-        super();
-        this.jid = item.getJid();
-        this.affiliation = item.getAffiliation();
-        this.role = item.getRole();
-        this.nick = item.getNick();
-    }
-
-    Affiliate(MUCAdmin.Item item) {
+    Affiliate(MUCItem item) {
         super();
         this.jid = item.getJid();
         this.affiliation = item.getAffiliation();

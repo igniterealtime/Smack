@@ -17,7 +17,10 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
+import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents extended presence information about roles, affiliations, full JIDs,
@@ -27,45 +30,36 @@ import org.jivesoftware.smack.packet.PacketExtension;
  */
 public class MUCUser implements PacketExtension {
 
+    public static final String ELEMENT = "x";
+    public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#user";
+
     private Invite invite;
     private Decline decline;
-    private Item item;
+    private MUCItem item;
     private String password;
     private Status status;
     private Destroy destroy;
 
     public String getElementName() {
-        return "x";
+        return ELEMENT;
     }
 
     public String getNamespace() {
-        return "http://jabber.org/protocol/muc#user";
+        return NAMESPACE;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
-            "\">");
-        if (getInvite() != null) {
-            buf.append(getInvite().toXML());
-        }
-        if (getDecline() != null) {
-            buf.append(getDecline().toXML());
-        }
-        if (getItem() != null) {
-            buf.append(getItem().toXML());
-        }
-        if (getPassword() != null) {
-            buf.append("<password>").append(getPassword()).append("</password>");
-        }
-        if (getStatus() != null) {
-            buf.append(getStatus().toXML());
-        }
-        if (getDestroy() != null) {
-            buf.append(getDestroy().toXML());
-        }
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngelBracket();
+        xml.optElement(getInvite());
+        xml.optElement(getDecline());
+        xml.optElement(getItem());
+        xml.optElement("password", getPassword());
+        xml.optElement(getStatus());
+        xml.optElement(getDestroy());
+        xml.closeElement(this);
+        return xml;
     }
 
     /**
@@ -94,7 +88,7 @@ public class MUCUser implements PacketExtension {
      *
      * @return an item child that holds information about roles, affiliation, jids and nicks.
      */
-    public Item getItem() {
+    public MUCItem getItem() {
         return item;
     }
 
@@ -154,7 +148,7 @@ public class MUCUser implements PacketExtension {
      *
      * @param item the item child that holds information about roles, affiliation, jids and nicks.
      */
-    public void setItem(Item item) {
+    public void setItem(MUCItem item) {
         this.item = item;
     }
 
@@ -190,13 +184,25 @@ public class MUCUser implements PacketExtension {
     }
 
     /**
+     * Retrieve the MUCUser PacketExtension from packet, if any.
+     *
+     * @param packet
+     * @return the MUCUser PacketExtension or {@code null}
+     */
+    public static MUCUser getFrom(Packet packet) {
+        return packet.getExtension(ELEMENT, NAMESPACE);
+    }
+
+    /**
      * Represents an invitation for another user to a room. The sender of the invitation
      * must be an occupant of the room. The invitation will be sent to the room which in turn
      * will forward the invitation to the invitee.
      *
      * @author Gaston Dombiak
      */
-    public static class Invite {
+    public static class Invite implements Element {
+        public static final String ELEMENT ="invite";
+
         private String reason;
         private String from;
         private String to;
@@ -257,21 +263,20 @@ public class MUCUser implements PacketExtension {
             this.to = to;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<invite ");
-            if (getTo() != null) {
-                buf.append(" to=\"").append(getTo()).append("\"");
-            }
-            if (getFrom() != null) {
-                buf.append(" from=\"").append(getFrom()).append("\"");
-            }
-            buf.append(">");
-            if (getReason() != null) {
-                buf.append("<reason>").append(getReason()).append("</reason>");
-            }
-            buf.append("</invite>");
-            return buf.toString();
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.optAttribute("to", getTo());
+            xml.optAttribute("from", getFrom());
+            xml.rightAngelBracket();
+            xml.optElement("reason", getReason());
+            xml.closeElement(this);
+            return xml;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
     }
 
@@ -281,7 +286,9 @@ public class MUCUser implements PacketExtension {
      *
      * @author Gaston Dombiak
      */
-    public static class Decline {
+    public static class Decline implements Element {
+        public static final String ELEMENT = "decline";
+
         private String reason;
         private String from;
         private String to;
@@ -342,179 +349,20 @@ public class MUCUser implements PacketExtension {
             this.to = to;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<decline ");
-            if (getTo() != null) {
-                buf.append(" to=\"").append(getTo()).append("\"");
-            }
-            if (getFrom() != null) {
-                buf.append(" from=\"").append(getFrom()).append("\"");
-            }
-            buf.append(">");
-            if (getReason() != null) {
-                buf.append("<reason>").append(getReason()).append("</reason>");
-            }
-            buf.append("</decline>");
-            return buf.toString();
-        }
-    }
-
-    /**
-     * Item child that holds information about roles, affiliation, jids and nicks.
-     *
-     * @author Gaston Dombiak
-     */
-    public static class Item {
-        private String actor;
-        private String reason;
-        private String affiliation;
-        private String jid;
-        private String nick;
-        private String role;
-
-        /**
-         * Creates a new item child.
-         *
-         * @param affiliation the actor's affiliation to the room
-         * @param role the privilege level of an occupant within a room.
-         */
-        public Item(String affiliation, String role) {
-            this.affiliation = affiliation;
-            this.role = role;
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.optAttribute("to", getTo());
+            xml.optAttribute("from", getFrom());
+            xml.rightAngelBracket();
+            xml.optElement("reason", getReason());
+            xml.closeElement(this);
+            return xml;
         }
 
-        /**
-         * Returns the actor (JID of an occupant in the room) that was kicked or banned.
-         *
-         * @return the JID of an occupant in the room that was kicked or banned.
-         */
-        public String getActor() {
-            return actor == null ? "" : actor;
-        }
-
-        /**
-         * Returns the reason for the item child. The reason is optional and could be used to
-         * explain the reason why a user (occupant) was kicked or banned.
-         *
-         * @return the reason for the item child.
-         */
-        public String getReason() {
-            return reason == null ? "" : reason;
-        }
-
-        /**
-         * Returns the occupant's affiliation to the room. The affiliation is a semi-permanent
-         * association or connection with a room. The possible affiliations are "owner", "admin",
-         * "member", and "outcast" (naturally it is also possible to have no affiliation). An
-         * affiliation lasts across a user's visits to a room.
-         *
-         * @return the actor's affiliation to the room
-         */
-        public String getAffiliation() {
-            return affiliation;
-        }
-
-        /**
-         * Returns the <room@service/nick> by which an occupant is identified within the context
-         * of a room. If the room is non-anonymous, the JID will be included in the item.
-         *
-         * @return the room JID by which an occupant is identified within the room.
-         */
-        public String getJid() {
-            return jid;
-        }
-
-        /**
-         * Returns the new nickname of an occupant that is changing his/her nickname. The new
-         * nickname is sent as part of the unavailable presence.
-         *
-         * @return the new nickname of an occupant that is changing his/her nickname.
-         */
-        public String getNick() {
-            return nick;
-        }
-
-        /**
-         * Returns the temporary position or privilege level of an occupant within a room. The
-         * possible roles are "moderator", "participant", and "visitor" (it is also possible to
-         * have no defined role). A role lasts only for the duration of an occupant's visit to
-         * a room.
-         *
-         * @return the privilege level of an occupant within a room.
-         */
-        public String getRole() {
-            return role;
-        }
-
-        /**
-         * Sets the actor (JID of an occupant in the room) that was kicked or banned.
-         *
-         * @param actor the actor (JID of an occupant in the room) that was kicked or banned.
-         */
-        public void setActor(String actor) {
-            this.actor = actor;
-        }
-
-        /**
-         * Sets the reason for the item child. The reason is optional and could be used to
-         * explain the reason why a user (occupant) was kicked or banned.
-         *
-         * @param reason the reason why a user (occupant) was kicked or banned.
-         */
-        public void setReason(String reason) {
-            this.reason = reason;
-        }
-
-        /**
-         * Sets the <room@service/nick> by which an occupant is identified within the context
-         * of a room. If the room is non-anonymous, the JID will be included in the item.
-         *
-         * @param jid the JID by which an occupant is identified within a room.
-         */
-        public void setJid(String jid) {
-            this.jid = jid;
-        }
-
-        /**
-         * Sets the new nickname of an occupant that is changing his/her nickname. The new
-         * nickname is sent as part of the unavailable presence.
-         *
-         * @param nick the new nickname of an occupant that is changing his/her nickname.
-         */
-        public void setNick(String nick) {
-            this.nick = nick;
-        }
-
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<item");
-            if (getAffiliation() != null) {
-                buf.append(" affiliation=\"").append(getAffiliation()).append("\"");
-            }
-            if (getJid() != null) {
-                buf.append(" jid=\"").append(getJid()).append("\"");
-            }
-            if (getNick() != null) {
-                buf.append(" nick=\"").append(getNick()).append("\"");
-            }
-            if (getRole() != null) {
-                buf.append(" role=\"").append(getRole()).append("\"");
-            }
-            if (getReason() == null && getActor() == null) {
-                buf.append("/>");
-            }
-            else {
-                buf.append(">");
-                if (getReason() != null) {
-                    buf.append("<reason>").append(getReason()).append("</reason>");
-                }
-                if (getActor() != null) {
-                    buf.append("<actor jid=\"").append(getActor()).append("\"/>");
-                }
-                buf.append("</item>");
-            }
-            return buf.toString();
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
     }
 
@@ -524,7 +372,9 @@ public class MUCUser implements PacketExtension {
      *
      * @author Gaston Dombiak
      */
-    public static class Status {
+    public static class Status implements Element {
+        public static final String ELEMENT = "status";
+
         private String code;
 
         /**
@@ -546,79 +396,17 @@ public class MUCUser implements PacketExtension {
             return code;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<status code=\"").append(getCode()).append("\"/>");
-            return buf.toString();
-        }
-    }
-
-    /**
-     * Represents a notification that the room has been destroyed. After a room has been destroyed,
-     * the room occupants will receive a Presence packet of type 'unavailable' with the reason for
-     * the room destruction if provided by the room owner.
-     *
-     * @author Gaston Dombiak
-     */
-    public static class Destroy {
-        private String reason;
-        private String jid;
-
-
-        /**
-         * Returns the JID of an alternate location since the current room is being destroyed.
-         *
-         * @return the JID of an alternate location.
-         */
-        public String getJid() {
-            return jid;
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.attribute("code", getCode());
+            xml.closeEmptyElement();
+            return xml;
         }
 
-        /**
-         * Returns the reason for the room destruction.
-         *
-         * @return the reason for the room destruction.
-         */
-        public String getReason() {
-            return reason;
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
-
-        /**
-         * Sets the JID of an alternate location since the current room is being destroyed.
-         *
-         * @param jid the JID of an alternate location.
-         */
-        public void setJid(String jid) {
-            this.jid = jid;
-        }
-
-        /**
-         * Sets the reason for the room destruction.
-         *
-         * @param reason the reason for the room destruction.
-         */
-        public void setReason(String reason) {
-            this.reason = reason;
-        }
-
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<destroy");
-            if (getJid() != null) {
-                buf.append(" jid=\"").append(getJid()).append("\"");
-            }
-            if (getReason() == null) {
-                buf.append("/>");
-            }
-            else {
-                buf.append(">");
-                if (getReason() != null) {
-                    buf.append("<reason>").append(getReason()).append("</reason>");
-                }
-                buf.append("</destroy>");
-            }
-            return buf.toString();
-        }
-
     }
 }

@@ -36,7 +36,7 @@ public class MUCAdminProvider implements IQProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
-                    mucAdmin.addItem(parseItem(parser));
+                    mucAdmin.addItem(MUCParserUtils.parseItem(parser));
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -47,32 +47,5 @@ public class MUCAdminProvider implements IQProvider {
         }
 
         return mucAdmin;
-    }
-
-    private MUCAdmin.Item parseItem(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        MUCAdmin.Item item =
-            new MUCAdmin.Item(
-                parser.getAttributeValue("", "affiliation"),
-                parser.getAttributeValue("", "role"));
-        item.setNick(parser.getAttributeValue("", "nick"));
-        item.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("actor")) {
-                    item.setActor(parser.getAttributeValue("", "jid"));
-                }
-                if (parser.getName().equals("reason")) {
-                    item.setReason(parser.nextText());
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    done = true;
-                }
-            }
-        }
-        return item;
     }
 }

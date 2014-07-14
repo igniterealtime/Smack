@@ -32,14 +32,6 @@ import org.xmlpull.v1.XmlPullParser;
 public class MUCUserProvider implements PacketExtensionProvider {
 
     /**
-     * Creates a new MUCUserProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument 
-     * constructor
-     */
-    public MUCUserProvider() {
-    }
-
-    /**
      * Parses a MUCUser packet (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
@@ -56,7 +48,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
                     mucUser.setInvite(parseInvite(parser));
                 }
                 if (parser.getName().equals("item")) {
-                    mucUser.setItem(parseItem(parser));
+                    mucUser.setItem(MUCParserUtils.parseItem(parser));
                 }
                 if (parser.getName().equals("password")) {
                     mucUser.setPassword(parser.nextText());
@@ -68,7 +60,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
                     mucUser.setDecline(parseDecline(parser));
                 }
                 if (parser.getName().equals("destroy")) {
-                    mucUser.setDestroy(parseDestroy(parser));
+                    mucUser.setDestroy(MUCParserUtils.parseDestroy(parser));
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
@@ -81,34 +73,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
         return mucUser;
     }
 
-    private MUCUser.Item parseItem(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        MUCUser.Item item =
-            new MUCUser.Item(
-                parser.getAttributeValue("", "affiliation"),
-                parser.getAttributeValue("", "role"));
-        item.setNick(parser.getAttributeValue("", "nick"));
-        item.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("actor")) {
-                    item.setActor(parser.getAttributeValue("", "jid"));
-                }
-                if (parser.getName().equals("reason")) {
-                    item.setReason(parser.nextText());
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    done = true;
-                }
-            }
-        }
-        return item;
-    }
-
-    private MUCUser.Invite parseInvite(XmlPullParser parser) throws Exception {
+    private static MUCUser.Invite parseInvite(XmlPullParser parser) throws Exception {
         boolean done = false;
         MUCUser.Invite invite = new MUCUser.Invite();
         invite.setFrom(parser.getAttributeValue("", "from"));
@@ -129,7 +94,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
         return invite;
     }
 
-    private MUCUser.Decline parseDecline(XmlPullParser parser) throws Exception {
+    private static MUCUser.Decline parseDecline(XmlPullParser parser) throws Exception {
         boolean done = false;
         MUCUser.Decline decline = new MUCUser.Decline();
         decline.setFrom(parser.getAttributeValue("", "from"));
@@ -148,25 +113,5 @@ public class MUCUserProvider implements PacketExtensionProvider {
             }
         }
         return decline;
-    }
-
-    private MUCUser.Destroy parseDestroy(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        MUCUser.Destroy destroy = new MUCUser.Destroy();
-        destroy.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("reason")) {
-                    destroy.setReason(parser.nextText());
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("destroy")) {
-                    done = true;
-                }
-            }
-        }
-        return destroy;
     }
 }

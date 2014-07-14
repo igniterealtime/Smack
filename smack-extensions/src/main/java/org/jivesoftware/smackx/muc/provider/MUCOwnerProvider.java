@@ -37,10 +37,10 @@ public class MUCOwnerProvider implements IQProvider {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
-                    mucOwner.addItem(parseItem(parser));
+                    mucOwner.addItem(MUCParserUtils.parseItem(parser));
                 }
                 else if (parser.getName().equals("destroy")) {
-                    mucOwner.setDestroy(parseDestroy(parser));
+                    mucOwner.setDestroy(MUCParserUtils.parseDestroy(parser));
                 }
                 // Otherwise, it must be a packet extension.
                 else {
@@ -56,50 +56,5 @@ public class MUCOwnerProvider implements IQProvider {
         }
 
         return mucOwner;
-    }
-
-    private MUCOwner.Item parseItem(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        MUCOwner.Item item = new MUCOwner.Item(parser.getAttributeValue("", "affiliation"));
-        item.setNick(parser.getAttributeValue("", "nick"));
-        item.setRole(parser.getAttributeValue("", "role"));
-        item.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("actor")) {
-                    item.setActor(parser.getAttributeValue("", "jid"));
-                }
-                if (parser.getName().equals("reason")) {
-                    item.setReason(parser.nextText());
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    done = true;
-                }
-            }
-        }
-        return item;
-    }
-
-    private MUCOwner.Destroy parseDestroy(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        MUCOwner.Destroy destroy = new MUCOwner.Destroy();
-        destroy.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("reason")) {
-                    destroy.setReason(parser.nextText());
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("destroy")) {
-                    done = true;
-                }
-            }
-        }
-        return destroy;
     }
 }

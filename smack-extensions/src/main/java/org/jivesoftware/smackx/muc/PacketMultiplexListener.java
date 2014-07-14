@@ -26,6 +26,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 /**
  * The single <code>PacketListener</code> used by each {@link MultiUserChat}
@@ -42,9 +43,8 @@ class PacketMultiplexListener implements PacketListener {
             return msg.getSubject() != null;
         }
     };
-    private static final PacketFilter DECLINES_FILTER =
-            new PacketExtensionFilter("x",
-                    "http://jabber.org/protocol/muc#user");
+    private static final PacketFilter DECLINES_FILTER = new PacketExtensionFilter(MUCUser.ELEMENT,
+                    MUCUser.NAMESPACE);
 
     private ConnectionDetachedPacketCollector messageCollector;
     private PacketListener presenceListener;

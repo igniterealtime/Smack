@@ -66,6 +66,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder optElement(Element element) {
+        if (element != null) {
+            append(element.toXML());
+        }
+        return this;
+    }
+
     public XmlStringBuilder optElement(String name, Enum<?> content) {
         if (content != null) {
             element(name, content);
@@ -135,6 +142,20 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     public XmlStringBuilder optAttribute(String name, Enum<?> value) {
         if (value != null) {
             attribute(name, value.name());
+        }
+        return this;
+    }
+
+    /**
+     * Add the given attribute if value => 0
+     *
+     * @param name
+     * @param value
+     * @return a reference to this object
+     */
+    public XmlStringBuilder optIntAttribute(String name, int value) {
+        if (value >= 0) {
+            attribute(name, Integer.toString(value));
         }
         return this;
     }

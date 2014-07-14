@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smackx.muc.packet.MUCAdmin;
+import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smack.packet.Presence;
 import org.jxmpp.util.XmppStringUtils;
@@ -36,8 +36,7 @@ public class Occupant {
     private String jid;
     private String nick;
 
-    Occupant(MUCAdmin.Item item) {
-        super();
+    Occupant(MUCItem item) {
         this.jid = item.getJid();
         this.affiliation = item.getAffiliation();
         this.role = item.getRole();
@@ -45,10 +44,9 @@ public class Occupant {
     }
 
     Occupant(Presence presence) {
-        super();
         MUCUser mucUser = (MUCUser) presence.getExtension("x",
                 "http://jabber.org/protocol/muc#user");
-        MUCUser.Item item = mucUser.getItem();
+        MUCItem item = mucUser.getItem();
         this.jid = item.getJid();
         this.affiliation = item.getAffiliation();
         this.role = item.getRole();

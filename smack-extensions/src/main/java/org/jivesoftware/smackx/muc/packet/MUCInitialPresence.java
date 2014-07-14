@@ -17,11 +17,13 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
+import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.util.XmppDateTime;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Represents extended presence information whose sole purpose is to signal the ability of 
@@ -37,29 +39,28 @@ import java.util.TimeZone;
  */
 public class MUCInitialPresence implements PacketExtension {
 
+    public static final String ELEMENT = "x";
+    public static final String NAMESPACE = "http://jabber.org/protocol/muc";
+
     private String password;
     private History history; 
 
     public String getElementName() {
-        return "x";
+        return ELEMENT;
     }
 
     public String getNamespace() {
-        return "http://jabber.org/protocol/muc";
+        return NAMESPACE;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
-            "\">");
-        if (getPassword() != null) {
-            buf.append("<password>").append(getPassword()).append("</password>");
-        }
-        if (getHistory() != null) {
-            buf.append(getHistory().toXML());
-        }
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngelBracket();
+        xml.optElement("password", getPassword());
+        xml.optElement(getHistory());
+        xml.closeElement(this);
+        return xml;
     }
 
     /**
@@ -103,12 +104,24 @@ public class MUCInitialPresence implements PacketExtension {
     }
 
     /**
+     * Retrieve the MUCInitialPresence PacketExtension from packet, if any.
+     *
+     * @param packet
+     * @return the MUCInitialPresence PacketExtension or {@code null}
+     */
+    public static MUCInitialPresence getFrom(Packet packet) {
+        return packet.getExtension(ELEMENT, NAMESPACE);
+    }
+
+    /**
      * The History class controls the number of characters or messages to receive
      * when entering a room.
      * 
      * @author Gaston Dombiak
      */
-    public static class History {
+    public static class History implements Element {
+
+        public static final String ELEMENT = "history";
 
         private int maxChars = -1;
         private int maxStanzas = -1; 
@@ -196,25 +209,21 @@ public class MUCInitialPresence implements PacketExtension {
             this.since = since;
         }
 
-        public String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<history");
-            if (getMaxChars() != -1) {
-                buf.append(" maxchars=\"").append(getMaxChars()).append("\"");
-            }
-            if (getMaxStanzas() != -1) {
-                buf.append(" maxstanzas=\"").append(getMaxStanzas()).append("\"");
-            }
-            if (getSeconds() != -1) {
-                buf.append(" seconds=\"").append(getSeconds()).append("\"");
-            }
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.optIntAttribute("maxchars", getMaxChars());
+            xml.optIntAttribute("maxstanzas", getMaxStanzas());
+            xml.optIntAttribute("seconds", getSeconds());
             if (getSince() != null) {
-                SimpleDateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                buf.append(" since=\"").append(utcFormat.format(getSince())).append("\"");
+                xml.attribute("since", XmppDateTime.formatXEP0082Date(getSince()));
             }
-            buf.append("/>");
-            return buf.toString();
+            xml.closeEmptyElement();
+            return xml;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
     }
 }

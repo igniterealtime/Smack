@@ -17,8 +17,10 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -55,14 +57,14 @@ public class GroupChatInvitation implements PacketExtension {
     /**
      * Element name of the packet extension.
      */
-    public static final String ELEMENT_NAME = "x";
+    public static final String ELEMENT = "x";
 
     /**
      * Namespace of the packet extension.
      */
     public static final String NAMESPACE = "jabber:x:conference";
 
-    private String roomAddress;
+    private final String roomAddress;
 
     /**
      * Creates a new group chat invitation to the specified room address.
@@ -88,17 +90,23 @@ public class GroupChatInvitation implements PacketExtension {
     }
 
     public String getElementName() {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<x xmlns=\"jabber:x:conference\" jid=\"").append(roomAddress).append("\"/>");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.attribute("jid", getRoomAddress());
+        xml.closeEmptyElement();
+        return xml;
+    }
+
+    public static GroupChatInvitation getFrom(Packet packet) {
+        return packet.getExtension(ELEMENT, NAMESPACE);
     }
 
     public static class Provider implements PacketExtensionProvider {

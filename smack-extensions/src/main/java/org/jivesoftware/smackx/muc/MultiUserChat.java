@@ -64,8 +64,10 @@ import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
+import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.xdata.Form;
@@ -73,7 +75,7 @@ import org.jivesoftware.smackx.xdata.Form;
 /**
  * A MultiUserChat is a conversation that takes place among many users in a virtual
  * room. A room could have many occupants with different affiliation and roles.
- * Possible affiliatons are "owner", "admin", "member", and "outcast". Possible roles
+ * Possible affiliations are "owner", "admin", "member", and "outcast". Possible roles
  * are "moderator", "participant", and "visitor". Each role and affiliation guarantees
  * different privileges (e.g. Send messages to all occupants, Kick participants and visitors,
  * Grant voice, Edit member list, etc.).
@@ -83,8 +85,7 @@ import org.jivesoftware.smackx.xdata.Form;
 public class MultiUserChat {
     private static final Logger LOGGER = Logger.getLogger(MultiUserChat.class.getName());
     
-    private final static String discoNamespace = "http://jabber.org/protocol/muc";
-    private final static String discoNode = "http://jabber.org/protocol/muc#rooms";
+    private final static String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static Map<XMPPConnection, List<String>> joinedRooms =
             new WeakHashMap<XMPPConnection, List<String>>();
@@ -118,13 +119,13 @@ public class MultiUserChat {
                 // Set on every established connection that this client supports the Multi-User
                 // Chat protocol. This information will be used when another client tries to
                 // discover whether this client supports MUC or not.
-                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(discoNamespace);
+                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(MUCInitialPresence.NAMESPACE);
 
                 // Set the NodeInformationProvider that will provide information about the
                 // joined rooms whenever a disco request is received
                 final WeakReference<XMPPConnection> weakRefConnection = new WeakReference<XMPPConnection>(connection);
                 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
-                    discoNode,
+                    DISCO_NODE,
                     new NodeInformationProvider() {
                         public List<DiscoverItems.Item> getNodeItems() {
                             XMPPConnection connection = weakRefConnection.get();
@@ -187,7 +188,7 @@ public class MultiUserChat {
     public static boolean isServiceEnabled(XMPPConnection connection, String user)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(user,
-                        discoNamespace);
+                        MUCInitialPresence.NAMESPACE);
     }
 
     /**
@@ -223,7 +224,7 @@ public class MultiUserChat {
         ArrayList<String> answer = new ArrayList<String>();
         // Send the disco packet to the user
         DiscoverItems result = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
-                        user, discoNode);
+                        user, DISCO_NODE);
         // Collect the entityID for each returned item
         for (DiscoverItems.Item item : result.getItems()) {
             answer.add(item.getEntityID());
@@ -264,7 +265,7 @@ public class MultiUserChat {
         DiscoverItems items = discoManager.discoverItems(connection.getServiceName());
         for (DiscoverItems.Item item : items.getItems()) {
             DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
-            if (info.containsFeature(discoNamespace)) {
+            if (info.containsFeature(MUCInitialPresence.NAMESPACE)) {
                 answer.add(item.getEntityID());
             }
         }
@@ -420,7 +421,7 @@ public class MultiUserChat {
         Presence presence = enter(nickname, null, null, connection.getPacketReplyTimeout());
 
         // Look for confirmation of room creation from the server
-        MUCUser mucUser = getMUCUserExtension(presence);
+        MUCUser mucUser = MUCUser.getFrom(presence);
         if (mucUser != null && mucUser.getStatus() != null) {
             if ("201".equals(mucUser.getStatus().getCode())) {
                 // Room was created and the user has joined the room
@@ -661,7 +662,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
 
         // Create the reason for the room destruction
-        MUCOwner.Destroy destroy = new MUCOwner.Destroy();
+        Destroy destroy = new Destroy();
         destroy.setReason(reason);
         destroy.setJid(alternateJID);
         iq.setDestroy(destroy);
@@ -1371,7 +1372,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         // Set the new affiliation.
-        MUCOwner.Item item = new MUCOwner.Item(affiliation);
+        MUCItem item = new MUCItem(affiliation);
         item.setJid(jid);
         iq.addItem(item);
 
@@ -1385,7 +1386,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
         for (String jid : jids) {
             // Set the new affiliation.
-            MUCOwner.Item item = new MUCOwner.Item(affiliation);
+            MUCItem item = new MUCItem(affiliation);
             item.setJid(jid);
             iq.addItem(item);
         }
@@ -1409,7 +1410,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         // Set the new affiliation.
-        MUCAdmin.Item item = new MUCAdmin.Item(affiliation, null);
+        MUCItem item = new MUCItem(affiliation, null);
         item.setJid(jid);
         item.setReason(reason);
         iq.addItem(item);
@@ -1424,7 +1425,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
         for (String jid : jids) {
             // Set the new affiliation.
-            MUCAdmin.Item item = new MUCAdmin.Item(affiliation, null);
+            MUCItem item = new MUCItem(affiliation, null);
             item.setJid(jid);
             iq.addItem(item);
         }
@@ -1437,7 +1438,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         // Set the new role.
-        MUCAdmin.Item item = new MUCAdmin.Item(null, role);
+        MUCItem item = new MUCItem(null, role);
         item.setNick(nickname);
         item.setReason(reason);
         iq.addItem(item);
@@ -1451,7 +1452,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
         for (String nickname : nicknames) {
             // Set the new role.
-            MUCAdmin.Item item = new MUCAdmin.Item(null, role);
+            MUCItem item = new MUCItem(null, role);
             item.setNick(nickname);
             iq.addItem(item);
         }
@@ -1478,7 +1479,7 @@ public class MultiUserChat {
      * in the group chat. For example, "conference@chat.jivesoftware.com/SomeUser".
      * Typically, a client would only display the nickname of the occupant. To
      * get the nickname from the fully qualified name, use the
-     * {@link org.jivesoftware.smack.util.StringUtils#parseResource(String)} method.
+     * {@link org.jxmpp.util.XmppStringUtils#parseResource(String)} method.
      * Note: this value will only be accurate after joining the group chat, and may
      * fluctuate over time.
      *
@@ -1606,14 +1607,14 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.get);
         // Set the specified affiliation. This may request the list of owners/admins/members/outcasts.
-        MUCAdmin.Item item = new MUCAdmin.Item(affiliation, null);
+        MUCItem item = new MUCItem(affiliation, null);
         iq.addItem(item);
 
         MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
 
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
-        for (MUCAdmin.Item mucadminItem : answer.getItems()) {
+        for (MUCItem mucadminItem : answer.getItems()) {
             affiliates.add(new Affiliate(mucadminItem));
         }
         return affiliates;
@@ -1658,13 +1659,13 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.get);
         // Set the specified role. This may request the list of moderators/participants.
-        MUCAdmin.Item item = new MUCAdmin.Item(null, role);
+        MUCItem item = new MUCItem(null, role);
         iq.addItem(item);
 
         MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
         // Get the list of participants from the server's answer
         List<Occupant> participants = new ArrayList<Occupant>();
-        for (MUCAdmin.Item mucadminItem : answer.getItems()) {
+        for (MUCItem mucadminItem : answer.getItems()) {
             participants.add(new Occupant(mucadminItem));
         }
         return participants;
@@ -1829,20 +1830,6 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the MUCUser packet extension included in the packet or <tt>null</tt> if none.
-     *
-     * @param packet the packet that may include the MUCUser extension.
-     * @return the MUCUser found in the packet.
-     */
-    private MUCUser getMUCUserExtension(Packet packet) {
-        if (packet != null) {
-            // Get the MUC User extension
-            return (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
-        }
-        return null;
-    }
-
-    /**
      * Adds a listener that will be notified of changes in your status in the room
      * such as the user being kicked, banned, or granted admin permissions.
      *
@@ -1978,11 +1965,11 @@ public class MultiUserChat {
                     Presence oldPresence = occupantsMap.put(from, presence);
                     if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
-                        MUCUser mucExtension = getMUCUserExtension(oldPresence);
+                        MUCUser mucExtension = MUCUser.getFrom(packet);
                         String oldAffiliation = mucExtension.getItem().getAffiliation();
                         String oldRole = mucExtension.getItem().getRole();
                         // Get the new occupant's affiliation & role
-                        mucExtension = getMUCUserExtension(presence);
+                        mucExtension = MUCUser.getFrom(packet);
                         String newAffiliation = mucExtension.getItem().getAffiliation();
                         String newRole = mucExtension.getItem().getRole();
                         // Fire role modification events
@@ -2005,7 +1992,7 @@ public class MultiUserChat {
                 }
                 else if (presence.getType() == Presence.Type.unavailable) {
                     occupantsMap.remove(from);
-                    MUCUser mucUser = getMUCUserExtension(presence);
+                    MUCUser mucUser = MUCUser.getFrom(packet);
                     if (mucUser != null && mucUser.getStatus() != null) {
                         // Fire events according to the received presence code
                         checkPresenceCode(
@@ -2030,7 +2017,7 @@ public class MultiUserChat {
         PacketListener declinesListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 // Get the MUC User extension
-                MUCUser mucUser = getMUCUserExtension(packet);
+                MUCUser mucUser = MUCUser.getFrom(packet);
                 // Check if the MUCUser informs that the invitee has declined the invitation
                 if (mucUser.getDecline() != null &&
                         ((Message) packet).getType() != Message.Type.error) {
@@ -2513,8 +2500,7 @@ public class MultiUserChat {
             invitationPacketListener = new PacketListener() {
                 public void processPacket(Packet packet) {
                     // Get the MUCUser extension
-                    MUCUser mucUser =
-                        (MUCUser) packet.getExtension("x", "http://jabber.org/protocol/muc#user");
+                    MUCUser mucUser = MUCUser.getFrom(packet);
                     // Check if the MUCUser extension includes an invitation
                     if (mucUser.getInvite() != null &&
                             ((Message) packet).getType() != Message.Type.error) {
