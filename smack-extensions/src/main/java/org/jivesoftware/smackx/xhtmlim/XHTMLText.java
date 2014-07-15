@@ -120,7 +120,7 @@ public class XHTMLText {
      * 
      */
     public XHTMLText appendBrTag() {
-        text.closeElement(BR);
+        text.emptyElement(BR);
         return this;
     }
 
