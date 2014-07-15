@@ -19,7 +19,7 @@ allprojects {
 		sonatypeStagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
 		buildDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
-		jxmppVersion = "0.1.0"
+		jxmppVersion = "0.2.0"
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7

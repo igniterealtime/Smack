@@ -1,10 +1,6 @@
 description = """\
 Smack core components."""
 
-ext {
-	jxmppVersion = "0.1.0-alpha1-SNAPSHOT"
-}
-
 configurations {
 	compression
 	dns
@@ -12,7 +8,7 @@ configurations {
 
 dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
-	compile "org.igniterealtime.jxmpp:jxmpp-core:$jxmppVersion"
+	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
 	//	compile "org.igniterealtime.jxmpp:jxmpp-jid:$jxmppVersion"
 	testCompile 'junit:junit:4.11'
 	testCompile 'xmlunit:xmlunit:1.5'
