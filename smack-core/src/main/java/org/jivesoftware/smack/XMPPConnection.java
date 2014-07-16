@@ -200,7 +200,12 @@ public abstract class XMPPConnection {
 
     protected XMPPInputOutputStream compressionHandler;
 
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2,
+    /**
+     * ExecutorService used to invoke the PacketListeners on newly arrived and parsed stanzas. It is
+     * important that we use a <b>single threaded ExecutorService</b> in order to guarantee that the
+     * PacketListeners are invoked in the same order the stanzas arrived.
+     */
+    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
                     new SmackExecutorThreadFactory(connectionCounterValue));
 
     /**
