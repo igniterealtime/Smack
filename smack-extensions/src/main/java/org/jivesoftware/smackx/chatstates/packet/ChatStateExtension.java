@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.chatstates.packet;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -31,7 +32,9 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class ChatStateExtension implements PacketExtension {
 
-    private ChatState state;
+    public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
+
+    private final ChatState state;
 
     /**
      * Default constructor. The argument provided is the state that the extension will represent.
@@ -42,16 +45,21 @@ public class ChatStateExtension implements PacketExtension {
         this.state = state;
     }
 
+    @Override
     public String getElementName() {
         return state.name();
     }
 
+    @Override
     public String getNamespace() {
-        return "http://jabber.org/protocol/chatstates";
+        return NAMESPACE;
     }
 
-    public String toXML() {
-        return "<" + getElementName() + " xmlns=\"" + getNamespace() + "\" />";
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.closeEmptyElement();
+        return xml;
     }
 
     public static class Provider implements PacketExtensionProvider {

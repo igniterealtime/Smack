@@ -54,11 +54,10 @@ public class LastActivity extends IQ {
     @Override
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement("query");
+        xml.halfOpenElement(IQ.QUERY_ELEMENT);
         xml.xmlnsAttribute(NAMESPACE);
-        if (lastActivity != -1) {
-            xml.attribute("seconds", Long.toString(lastActivity));
-        }
+        xml.optLongAttribute("seconds", lastActivity);
+
         // We don't support adding the optional message attribute, because it is usually only added
         // by XMPP servers and not by client entities.
         xml.closeEmptyElement();
@@ -108,10 +107,6 @@ public class LastActivity extends IQ {
         }
 
         public IQ parseIQ(XmlPullParser parser) throws SmackException, XmlPullParserException {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new SmackException("Parser not in proper position, or bad XML.");
-            }
-
             LastActivity lastActivity = new LastActivity();
             String seconds = parser.getAttributeValue("", "seconds");
             if (seconds != null) {

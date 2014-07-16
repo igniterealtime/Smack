@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * This class implements the {@link PacketExtensionProvider} to parse
- * cabon copied messages from a packet.  It will return a {@link CarbonExtension} packet extension.
+ * carbon copied messages from a packet.  It will return a {@link CarbonExtension} packet extension.
  * 
  * @author Georg Lukas
  *
@@ -41,7 +41,7 @@ public class CarbonManagerProvider implements PacketExtensionProvider {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("forwarded")) {
-                fwd = (Forwarded) PacketParserUtils.parsePacketExtension(Forwarded.ELEMENT_NAME, Forwarded.NAMESPACE, parser);
+                fwd = (Forwarded) PacketParserUtils.parsePacketExtension(Forwarded.ELEMENT, Forwarded.NAMESPACE, parser);
             }
             else if (eventType == XmlPullParser.END_TAG && dir == Direction.valueOf(parser.getName()))
                 done = true;

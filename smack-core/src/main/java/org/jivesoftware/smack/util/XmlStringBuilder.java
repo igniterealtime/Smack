@@ -160,6 +160,20 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    /**
+     * Add the given attribute if value => 0
+     *
+     * @param name
+     * @param value
+     * @return a reference to this object
+     */
+    public XmlStringBuilder optLongAttribute(String name, Long value) {
+        if (value >= 0) {
+            attribute(name, Long.toString(value));
+        }
+        return this;
+    }
+
     public XmlStringBuilder xmlnsAttribute(String value) {
         optAttribute("xmlns", value);
         return this;

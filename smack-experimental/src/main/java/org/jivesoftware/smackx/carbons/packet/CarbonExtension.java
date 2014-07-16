@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.carbons.packet;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.forward.Forwarded;
 
 /**
@@ -33,8 +35,8 @@ import org.jivesoftware.smackx.forward.Forwarded;
 public class CarbonExtension implements PacketExtension {
     public static final String NAMESPACE = "urn:xmpp:carbons:2";
 
-    private Direction dir;
-    private Forwarded fwd;
+    private final Direction dir;
+    private final Forwarded fwd;
 
     /**
      * Construct a Carbon message extension.
@@ -67,7 +69,7 @@ public class CarbonExtension implements PacketExtension {
 
     @Override
     public String getElementName() {
-        return dir.toString();
+        return dir.name();
     }
 
     @Override
@@ -76,15 +78,29 @@ public class CarbonExtension implements PacketExtension {
     }
 
     @Override
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"")
-                .append(getNamespace()).append("\">");
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngelBracket();
+        xml.append(fwd.toXML());
+        xml.closeElement(this);
+        return xml;
+    }
 
-        buf.append(fwd.toXML());
-
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+    /**
+     * Obtain a Carbon from a message, if available.
+     * <p>
+     * Only {@link Message} instances can contain a Carbon extensions.
+     * </p>
+     *
+     * @param msg Message object to check for carbons
+     *
+     * @return a Carbon if available, null otherwise.
+     */
+    public static CarbonExtension getFrom(Message msg) {
+        CarbonExtension cc = msg.getExtension(Direction.received.name(), CarbonExtension.NAMESPACE);
+        if (cc == null)
+            cc = msg.getExtension(Direction.sent.name(), CarbonExtension.NAMESPACE);
+        return cc;
     }
 
     /**
@@ -102,16 +118,19 @@ public class CarbonExtension implements PacketExtension {
     public static class Private implements PacketExtension {
         public static final String ELEMENT = "private";
 
+        @Override
         public String getElementName() {
             return ELEMENT;
         }
 
+        @Override
         public String getNamespace() {
             return CarbonExtension.NAMESPACE;
         }
 
+        @Override
         public String toXML() {
-            return "<" + ELEMENT + " xmlns=\"" + CarbonExtension.NAMESPACE + "\"/>";
+            return "<" + ELEMENT + " xmlns='" + CarbonExtension.NAMESPACE + "'/>";
         }
     }
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.carbons;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -49,8 +48,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  */
 public class CarbonManager extends Manager {
 
-    private static Map<XMPPConnection, CarbonManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, CarbonManager>());
+    private static Map<XMPPConnection, CarbonManager> INSTANCES = new WeakHashMap<XMPPConnection, CarbonManager>();
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -66,7 +64,6 @@ public class CarbonManager extends Manager {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(CarbonExtension.NAMESPACE);
-        instances.put(connection, this);
     }
 
     /**
@@ -77,16 +74,17 @@ public class CarbonManager extends Manager {
      * @return a CarbonManager instance
      */
     public static synchronized CarbonManager getInstanceFor(XMPPConnection connection) {
-        CarbonManager carbonManager = instances.get(connection);
+        CarbonManager carbonManager = INSTANCES.get(connection);
 
         if (carbonManager == null) {
             carbonManager = new CarbonManager(connection);
+            INSTANCES.put(connection, carbonManager);
         }
 
         return carbonManager;
     }
 
-    private IQ carbonsEnabledIQ(final boolean new_state) {
+    private static IQ carbonsEnabledIQ(final boolean new_state) {
         IQ setIQ = new IQ() {
             public String getChildElementXML() {
                 return "<" + (new_state? "enable" : "disable") + " xmlns='" + CarbonExtension.NAMESPACE + "'/>";
@@ -100,10 +98,11 @@ public class CarbonManager extends Manager {
      * Returns true if XMPP Carbons are supported by the server.
      * 
      * @return true if supported
-     * @throws SmackException if there was no response from the server.
-     * @throws XMPPException 
+     * @throws NotConnectedException 
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public boolean isSupportedByServer() throws XMPPException, SmackException {
+    public boolean isSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
                         connection().getServiceName(), CarbonExtension.NAMESPACE);
     }
@@ -182,20 +181,6 @@ public class CarbonManager extends Manager {
      */
     public boolean getCarbonsEnabled() {
         return this.enabled_state;
-    }
-
-    /**
-     * Obtain a Carbon from a message, if available.
-     *
-     * @param msg Message object to check for carbons
-     *
-     * @return a Carbon if available, null otherwise.
-     */
-    public static CarbonExtension getCarbon(Message msg) {
-        CarbonExtension cc = (CarbonExtension)msg.getExtension("received", CarbonExtension.NAMESPACE);
-        if (cc == null)
-            cc = (CarbonExtension)msg.getExtension("sent", CarbonExtension.NAMESPACE);
-        return cc;
     }
 
     /**

@@ -51,7 +51,7 @@ public class ForwardedTest {
         fwd = (Forwarded) new ForwardedProvider().parseExtension(parser);
 
         // no delay in packet
-        assertEquals(null, fwd.getDelayInfo());
+        assertEquals(null, fwd.getDelayInformation());
         
         // check message
         assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());

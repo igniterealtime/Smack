@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class ForwardedProvider implements PacketExtensionProvider {
                     packet = PacketParserUtils.parseMessage(parser);
                 else throw new Exception("Unsupported forwarded packet type: " + parser.getName());
             }
-            else if (eventType == XmlPullParser.END_TAG && parser.getName().equals(Forwarded.ELEMENT_NAME))
+            else if (eventType == XmlPullParser.END_TAG && parser.getName().equals(Forwarded.ELEMENT))
                 done = true;
         }
         if (packet == null)

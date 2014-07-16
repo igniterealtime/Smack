@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.delay.packet;
 
 import java.util.Date;
 
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppDateTime;
@@ -96,16 +97,17 @@ public class DelayInformation implements PacketExtension {
     }
 
     @Override
-    public CharSequence toXML() {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("stamp", XmppDateTime.formatXEP0082Date(stamp));
         xml.optAttribute("from", from);
         xml.rightAngelBracket();
-        if (reason != null) {
-            xml.escape(reason);
-        }
+        xml.optAppend(reason);
         xml.closeElement(this);
         return xml;
     }
 
+    public static DelayInformation getFrom(Packet packet) {
+        return packet.getExtension(ELEMENT, NAMESPACE);
+    }
 }

@@ -60,6 +60,7 @@ public class EntityTimeManager extends Manager {
         EntityTimeManager entityTimeManager = INSTANCES.get(connection);
         if (entityTimeManager == null) {
             entityTimeManager = new EntityTimeManager(connection);
+            INSTANCES.put(connection, entityTimeManager);
         }
         return entityTimeManager;
     }
@@ -68,7 +69,6 @@ public class EntityTimeManager extends Manager {
 
     private EntityTimeManager(XMPPConnection connection) {
         super(connection);
-        INSTANCES.put(connection, this);
         if (autoEnable)
             enable();
 

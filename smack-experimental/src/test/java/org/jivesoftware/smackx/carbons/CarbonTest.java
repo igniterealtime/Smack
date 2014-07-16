@@ -20,30 +20,23 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.ExperimentalInitializerTest;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider;
 import org.jivesoftware.smackx.forward.Forwarded;
-import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 
 import com.jamesmurty.utils.XMLBuilder;
 
-public class CarbonTest {
+public class CarbonTest extends ExperimentalInitializerTest {
 
     private static Properties outputProperties = new Properties();
     static {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
 
-    @BeforeClass
-    public static void setup() {
-        ProviderManager.addExtensionProvider("forwarded", "urn:xmpp:forward:0", new ForwardedProvider());
-    }
-    
     @Test
     public void carbonSentTest() throws Exception {
         XmlPullParser parser;
@@ -66,7 +59,7 @@ public class CarbonTest {
         assertEquals(CarbonExtension.Direction.sent, cc.getDirection());
         
         // no delay in packet
-        assertEquals(null, fwd.getDelayInfo());
+        assertEquals(null, fwd.getDelayInformation());
         
         // check message
         assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());

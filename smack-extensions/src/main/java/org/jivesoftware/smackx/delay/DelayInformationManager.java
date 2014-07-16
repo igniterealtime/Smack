@@ -44,7 +44,7 @@ public class DelayInformationManager {
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getXep203DelayInformation(Packet packet) {
-        return (DelayInformation) packet.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+        return DelayInformation.getFrom(packet);
     }
 
     /**
@@ -56,7 +56,7 @@ public class DelayInformationManager {
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getLegacyDelayInformation(Packet packet) {
-        return (DelayInformation) packet.getExtension(LEGACY_DELAYED_DELIVERY_ELEMENT, LEGACY_DELAYED_DELIVERY_NAMESPACE);
+        return packet.getExtension(LEGACY_DELAYED_DELIVERY_ELEMENT, LEGACY_DELAYED_DELIVERY_NAMESPACE);
     }
 
     /**
