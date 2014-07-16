@@ -9,4 +9,11 @@
         <className>org.jivesoftware.smackx.xroster.provider.RosterExchangeProvider</className>
     </extensionProvider>
 
+    <!-- Message Events -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:event</namespace>
+        <className>org.jivesoftware.smackx.xevent.provider.MessageEventProvider</className>
+    </extensionProvider>
+
 </smackProviders>

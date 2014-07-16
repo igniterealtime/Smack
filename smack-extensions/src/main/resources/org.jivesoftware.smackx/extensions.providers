@@ -16,13 +16,6 @@
         <className>org.jivesoftware.smackx.time.packet.Time</className>
     </iqProvider>
 
-    <!-- Message Events -->
-    <extensionProvider>
-        <elementName>x</elementName>
-        <namespace>jabber:x:event</namespace>
-        <className>org.jivesoftware.smackx.xevent.provider.MessageEventProvider</className>
-    </extensionProvider>
-
     <!-- Chat State -->
     <extensionProvider>
         <elementName>active</elementName>
