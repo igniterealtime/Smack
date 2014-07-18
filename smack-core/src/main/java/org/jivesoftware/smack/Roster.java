@@ -131,6 +131,23 @@ public class Roster {
         // Listen for connection events
         connection.addConnectionListener(new AbstractConnectionListener() {
             
+            public void authenticated(XMPPConnection connection) {
+                // Anonymous users can't have a roster, but it is possible that a Roster instance is
+                // retrieved if getRoster() is called *before* connect(). So we have to check here
+                // again if it's an anonymous connection.
+                if (connection.isAnonymous())
+                    return;
+                if (!connection.isRosterLoadedAtLogin())
+                    return;
+                try {
+                    Roster.this.reload();
+                }
+                catch (SmackException e) {
+                    LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
+                    return;
+                }
+            }
+
             public void connectionClosed() {
                 // Changes the presence available contacts to unavailable
                 try {
@@ -161,24 +178,6 @@ public class Roster {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
             }
         }
-        connection.addConnectionListener(new AbstractConnectionListener() {
-            public void authenticated(XMPPConnection connection) {
-                // Anonymous users can't have a roster, but it is possible that a Roster instance is
-                // retrieved if getRoster() is called *before* connect(). So we have to check here
-                // again if it's an anonymous connection.
-                if (connection.isAnonymous())
-                    return;
-                if (!connection.isRosterLoadedAtLogin())
-                    return;
-                try {
-                    Roster.this.reload();
-                }
-                catch (SmackException e) {
-                    LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
-                    return;
-                }
-            }
-        });
     }
 
     /**
