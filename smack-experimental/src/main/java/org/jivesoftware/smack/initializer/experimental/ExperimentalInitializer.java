@@ -32,6 +32,6 @@ public class ExperimentalInitializer extends UrlInitializer {
 
     @Override
     protected String getConfigUrl() {
-        return "classpath:org.jivesoftware.smackx/extensions.xml";
+        return "classpath:org.jivesoftware.smackx/experimental.xml";
     }
 }
