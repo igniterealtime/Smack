@@ -28,7 +28,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import org.jivesoftware.smack.initializer.SmackInitializer;
+import org.jivesoftware.smack.initializer.SmackAndOsgiInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.SRVRecord;
@@ -39,7 +39,7 @@ import org.jivesoftware.smack.util.dns.SRVRecord;
  * @author Florian Schmaus
  *
  */
-public class JavaxResolver implements DNSResolver, SmackInitializer {
+public class JavaxResolver extends SmackAndOsgiInitializer implements DNSResolver {
     
     private static JavaxResolver instance;
     private static DirContext dirContext;

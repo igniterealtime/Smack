@@ -14,24 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.initializer.experimental;
+package org.jivesoftware.smack.initializer;
 
-import org.jivesoftware.smack.initializer.UrlInitializer;
+public abstract class SmackAndOsgiInitializer implements SmackInitializer {
 
-/**
- * Initializes the providers in the experimental code stream.
- * 
- * @author Florian Schmaus
- */
-public class ExperimentalInitializer extends UrlInitializer {
-
-    @Override
-    protected String getProvidersUrl() {
-        return "classpath:org.jivesoftware.smackx/experimental.providers";
-    }
-
-    @Override
-    protected String getConfigUrl() {
-        return "classpath:org.jivesoftware.smackx/experimental.xml";
+    /**
+     * A simple wrapper around {@link #initialize} for OSGi, as the activate method of a component
+     * must have a void return type.
+     */
+    public final void activate() {
+        initialize();
     }
 }
