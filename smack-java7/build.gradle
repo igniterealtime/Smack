@@ -1,0 +1,18 @@
+description = """\
+Smack for Java7 (or higher).
+This is a pseudo-artifact that pulls all the required dependencies to
+run Smack on Java 7 (or higher) JVMs. You can add further dependencies
+like smack-bosh, run with a minimal subset by don't depending on
+smack-java7, but using e.g. just smack-core, smack-tcp and
+smack-resolver-javax"""
+
+dependencies {
+	compile project(":smack-core")
+	compile project(":smack-extensions")
+	compile project(":smack-tcp")
+	compile project(":smack-resolver-javax")
+}
+
+javadoc {
+	enabled = false
+}

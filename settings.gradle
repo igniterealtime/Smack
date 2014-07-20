@@ -9,4 +9,5 @@ include 'smack-core',
 		'smack-compression-jzlib',
 		'smack-legacy',
 		'smack-jingle',
-		'smack-bosh'
+		'smack-bosh',
+		'smack-java7'
