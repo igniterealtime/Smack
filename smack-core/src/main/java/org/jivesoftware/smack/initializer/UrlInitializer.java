@@ -34,16 +34,8 @@ import org.jivesoftware.smack.util.FileUtils;
  * 
  * @author Florian Schmaus
  */
-public abstract class UrlInitializer implements SmackInitializer {
+public abstract class UrlInitializer extends SmackAndOsgiInitializer {
     private static final Logger LOGGER = Logger.getLogger(UrlInitializer.class.getName());
-
-    /**
-     * A simple wrapper around {@link #initialize} for OSGi, as the activate method of a component
-     * must have a void return type.
-     */
-    public final void activate() {
-        initialize();
-    }
 
     @Override
     public List<Exception> initialize() {
