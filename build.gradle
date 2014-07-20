@@ -37,7 +37,7 @@ allprojects {
 				   // For example 4.0.0-rc1 becomes 4.0.0.rc1, but
 				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
 				   'Bundle-Version': version.replaceFirst("-", "."),
-				   'Built-Date': new Date(),
+				   'Built-Date': getDatestamp(),
 				   'Built-JDK': System.getProperty('java.version'),
 				   'Built-Gradle': gradle.gradleVersion,
 				   'Built-By': System.getProperty('user.name')
@@ -236,4 +236,12 @@ def getGitCommit() {
 	def gitCommit = proc.text.trim()
 	assert !gitCommit.isEmpty()
 	gitCommit
+}
+
+// Returns only the date in yyyy-MM-dd format, as otherwise, with
+// hh:mm:ss information, the manifest files would change with every
+// build, causing unnecessary rebuilds.
+def getDatestamp() {
+	def date = new Date()
+	return date.format('yyyy-MM-dd')
 }
