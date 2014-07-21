@@ -46,6 +46,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -673,6 +674,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // Proceed to do the handshake
         sslSocket.startHandshake();
+
+        final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
+        if (verifier != null && !verifier.verify(getServiceName(), sslSocket.getSession())) {
+            throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getServiceName());
+        }
 
         //if (((SSLSocket) socket).getWantClientAuth()) {
         //    System.err.println("XMPPConnection wants client auth");

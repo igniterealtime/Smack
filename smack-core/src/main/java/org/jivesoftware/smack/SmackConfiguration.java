@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.net.ssl.HostnameVerifier;
+
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.initializer.SmackInitializer;
@@ -178,6 +180,8 @@ public final class SmackConfiguration {
      */
     private static ParsingExceptionCallback defaultCallback = new ExceptionThrowingCallback();
 
+    private static HostnameVerifier defaultHostnameVerififer;
+
     /**
      * Returns the Smack version information, eg "1.3.0".
      * 
@@ -317,6 +321,25 @@ public final class SmackConfiguration {
             }
         }
         return res;
+    }
+
+    /**
+     * Set the default HostnameVerifier that will be used by XMPP connections to verify the hostname
+     * of a TLS certificate. XMPP connections are able to overwrite this settings by supplying a
+     * HostnameVerifier in their ConnecitonConfiguration with
+     * {@link ConnectionConfiguration#setHostnameVerifier(HostnameVerifier)}.
+     */
+    public static void setDefaultHostnameVerifier(HostnameVerifier verifier) {
+        defaultHostnameVerififer = verifier;
+    }
+
+    /**
+     * Get the default HostnameVerifier
+     *
+     * @return the default HostnameVerifier or <code>null</code> if none was set
+     */
+    static HostnameVerifier getDefaultHostnameVerifier() {
+        return defaultHostnameVerififer;
     }
 
     public static void processConfigFile(InputStream cfgFileStream,
