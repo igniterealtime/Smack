@@ -416,7 +416,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws SmackException, IOException {
-        Exception exception = null;
         try {
             maybeResolveDns();
         }
@@ -426,7 +425,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         Iterator<HostAddress> it = config.getHostAddresses().iterator();
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
         while (it.hasNext()) {
-            exception = null;
+            Exception exception = null;
             HostAddress hostAddress = it.next();
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
@@ -442,8 +441,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
             if (exception == null) {
                 // We found a host to connect to, break here
-                host = hostAddress.getFQDN();
-                port = hostAddress.getPort();
+                this.host = host;
+                this.port = port;
                 break;
             }
             hostAddress.setException(exception);

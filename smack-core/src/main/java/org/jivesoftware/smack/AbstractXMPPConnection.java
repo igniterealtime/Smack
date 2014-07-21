@@ -202,12 +202,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * The used host to establish the connection to
      */
-    private String host;
+    protected String host;
 
     /**
      * The used port to establish the connection to
      */
-    private int port;
+    protected int port;
 
     /**
      * Set to true if the server requires the connection to be binded in order to continue.
