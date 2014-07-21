@@ -35,6 +35,7 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -61,6 +62,7 @@ import java.net.Socket;
 import java.security.KeyStore;
 import java.security.Provider;
 import java.security.Security;
+import java.security.cert.CertificateException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -647,14 +649,21 @@ public class XMPPTCPConnection extends XMPPConnection {
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
 
+        final SSLSocket sslSocket = (SSLSocket) socket;
         try {
             // Proceed to do the handshake
-            ((SSLSocket) socket).startHandshake();
+            sslSocket.startHandshake();
         }
         catch (IOException e) {
             setConnectionException(e);
             throw e;
         }
+
+        final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
+        if (verifier != null && !verifier.verify(getServiceName(), sslSocket.getSession())) {
+            throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getServiceName());
+        }
+
         //if (((SSLSocket) socket).getWantClientAuth()) {
         //    System.err.println("XMPPConnection wants client auth");
         //}

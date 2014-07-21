@@ -23,6 +23,7 @@ import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.callback.CallbackHandler;
 
@@ -79,6 +80,8 @@ public class ConnectionConfiguration implements Cloneable {
     private boolean legacySessionDisabled = false;
     private boolean useDnsSrvRr = true;
     private SecurityMode securityMode = SecurityMode.enabled;
+
+    private HostnameVerifier hostnameVerifier;
 
     /**
      * Permanent store for the Roster, needed for roster versioning
@@ -308,6 +311,29 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setCustomSSLContext(SSLContext context) {
         this.customSSLContext = context;
+    }
+
+    /**
+     * Set the HostnameVerifier used to verify the hostname of SSLSockets used by XMPP connections
+     * created with this ConnectionConfiguration.
+     * 
+     * @param verifier
+     */
+    public void setHostnameVerifier(HostnameVerifier verifier) {
+        hostnameVerifier = verifier;
+    }
+
+    /**
+     * Returns the configured HostnameVerifier of this ConnectionConfiguration or the Smack default
+     * HostnameVerifier configured with
+     * {@link SmackConfiguration#setDefaultHostnameVerifier(HostnameVerifier)}.
+     * 
+     * @return a configured HostnameVerifier or <code>null</code>
+     */
+    public HostnameVerifier getHostnameVerifier() {
+        if (hostnameVerifier != null)
+            return hostnameVerifier;
+        return SmackConfiguration.getDefaultHostnameVerifier();
     }
 
     /**
