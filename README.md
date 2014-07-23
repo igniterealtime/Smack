@@ -1,7 +1,7 @@
 Smack
 =====
 
-[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Project Stats](https://www.ohloh.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/smackxmpp)
+[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp)
 
 About
 -----
