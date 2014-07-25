@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -45,6 +46,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Manages discovery of services in XMPP entities. This class provides:
@@ -59,6 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ServiceDiscoveryManager extends Manager {
 
+    private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
@@ -680,6 +684,77 @@ public class ServiceDiscoveryManager extends Manager {
     public boolean supportsFeature(String jid, String feature) throws NoResponseException, XMPPErrorException, NotConnectedException {
         DiscoverInfo result = discoverInfo(jid);
         return result.containsFeature(feature);
+    }
+
+    /**
+     * Create a cache to hold the 25 most recently lookup services for a given feature for a period
+     * of 24 hours.
+     */
+    private Cache<String, List<String>> services = new Cache<String, List<String>>(25,
+                    24 * 60 * 60 * 1000);
+
+    /**
+     * Find all services under the users service that provide a given feature.
+     * 
+     * @param feature the feature to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     */
+    public List<String> findServices(String feature, boolean stopOnFirst, boolean useCache)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+        List<String> serviceAddresses = null;
+        String serviceName = connection().getServiceName();
+        if (useCache) {
+            serviceAddresses = (List<String>) services.get(feature);
+            if (serviceAddresses != null) {
+                return serviceAddresses;
+            }
+        }
+        serviceAddresses = new LinkedList<String>();
+        // Send the disco packet to the server itself
+        DiscoverInfo info = discoverInfo(serviceName);
+        // Check if the server supports XEP-33
+        if (info.containsFeature(feature)) {
+            serviceAddresses.add(serviceName);
+            if (stopOnFirst) {
+                if (useCache) {
+                    // Cache the discovered information
+                    services.put(feature, serviceAddresses);
+                }
+                return serviceAddresses;
+            }
+        }
+        // Get the disco items and send the disco packet to each server item
+        DiscoverItems items = discoverItems(serviceName);
+        for (DiscoverItems.Item item : items.getItems()) {
+            try {
+                // TODO is it OK here in all cases to query without the node attribute?
+                // MultipleRecipientManager queried initially also with the node attribute, but this
+                // could be simply a fault instead of intentional.
+                info = discoverInfo(item.getEntityID());
+            }
+            catch (XMPPErrorException | NoResponseException e) {
+                // Don't throw this exceptions if one of the server's items fail
+                LOGGER.log(Level.WARNING, "Exception while discovering info for feature " + feature
+                                + " of " + item.getEntityID() + " node: " + item.getNode(), e);
+                continue;
+            }
+            if (info.containsFeature(feature)) {
+                serviceAddresses.add(item.getEntityID());
+                if (stopOnFirst) {
+                    break;
+                }
+            }
+        }
+        if (useCache) {
+            // Cache the discovered information
+            services.put(feature, serviceAddresses);
+        }
+        return serviceAddresses;
     }
 
     /**

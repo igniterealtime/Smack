@@ -25,18 +25,13 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A MultipleRecipientManager allows to send packets to multiple recipients by making use of
@@ -46,14 +41,6 @@ import java.util.logging.Logger;
  * @author Gaston Dombiak
  */
 public class MultipleRecipientManager {
-
-    private static final Logger LOGGER = Logger.getLogger(MultipleRecipientManager.class.getName());
-
-    /**
-     * Create a cache to hold the 100 most recently accessed elements for a period of
-     * 24 hours.
-     */
-    private static Cache<String, String> services = new Cache<String, String>(100, 24 * 60 * 60 * 1000);
 
     /**
      * Sends the specified packet to the list of specified recipients using the
@@ -295,43 +282,12 @@ public class MultipleRecipientManager {
      * @throws NotConnectedException 
      */
     private static String getMultipleRecipienServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        String serviceName = connection.getServiceName();
-        String serviceAddress = (String) services.get(serviceName);
-        if (serviceAddress == null) {
-            ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-            // Send the disco packet to the server itself
-            DiscoverInfo info = sdm.discoverInfo(serviceName);
-            // Check if the server supports XEP-33
-            if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
-                serviceAddress = serviceName;
-            }
-            else {
-                // Get the disco items and send the disco packet to each server item
-                DiscoverItems items = sdm.discoverItems(serviceName);
-                for (DiscoverItems.Item item : items.getItems()) {
-                    try {
-                        info = sdm.discoverInfo(item.getEntityID(), item.getNode());
-                    }
-                    catch (XMPPErrorException|NoResponseException e) {
-                        // Don't throw this exceptions if one of the server's items fail
-                        LOGGER.log(Level.WARNING,
-                                        "Exception while discovering info of " + item.getEntityID()
-                                                        + " node: " + item.getNode(), e);
-                        continue;
-                    }
-                    if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
-                        serviceAddress = serviceName;
-                        break;
-                    }
-                }
-            }
-            // Use the empty string to indicate that no service is known for this connection
-            serviceAddress = serviceAddress == null ? "" : serviceAddress;
-            // Cache the discovered information
-            services.put(serviceName, serviceAddress);
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+        List<String> services = sdm.findServices(MultipleAddresses.NAMESPACE, true, true);
+        if (services.size() > 0) {
+            return services.get(0);
         }
-
-        return "".equals(serviceAddress) ? null : serviceAddress;
+        return null;
     }
 
     /**

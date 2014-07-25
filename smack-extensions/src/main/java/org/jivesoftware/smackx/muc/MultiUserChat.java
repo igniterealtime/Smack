@@ -260,16 +260,8 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public static Collection<String> getServiceNames(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        final List<String> answer = new ArrayList<String>();
-        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        DiscoverItems items = discoManager.discoverItems(connection.getServiceName());
-        for (DiscoverItems.Item item : items.getItems()) {
-            DiscoverInfo info = discoManager.discoverInfo(item.getEntityID());
-            if (info.containsFeature(MUCInitialPresence.NAMESPACE)) {
-                answer.add(item.getEntityID());
-            }
-        }
-        return answer;
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+        return sdm.findServices(MUCInitialPresence.NAMESPACE, false, false);
     }
 
     /**

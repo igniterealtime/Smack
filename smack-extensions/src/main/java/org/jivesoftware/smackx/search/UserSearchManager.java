@@ -19,16 +19,11 @@ package org.jivesoftware.smackx.search;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.Form;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The UserSearchManager is a facade built upon Jabber Search Services (XEP-055) to allow for searching
@@ -101,29 +96,7 @@ public class UserSearchManager {
      * @throws NotConnectedException 
      */
     public Collection<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        final List<String> searchServices = new ArrayList<String>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
-        DiscoverItems items = discoManager.discoverItems(con.getServiceName());
-        for (DiscoverItems.Item item : items.getItems()) {
-            try {
-                DiscoverInfo info;
-                try {
-                    info = discoManager.discoverInfo(item.getEntityID());
-                }
-                catch (XMPPException e) {
-                    // Ignore Case
-                    continue;
-                }
-
-                if (info.containsFeature("jabber:iq:search")) {
-                    searchServices.add(item.getEntityID());
-                }
-            }
-            catch (Exception e) {
-                // No info found.
-                break;
-            }
-        }
-        return searchServices;
+        return discoManager.findServices(UserSearch.NAMESPACE, false, false);
     }
 }

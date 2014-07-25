@@ -23,6 +23,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -40,18 +41,23 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class UserSearch extends IQ {
 
+    public static final String NAMESPACE = "jabber:iq:search";
+
     /**
      * Creates a new instance of UserSearch.
      */
     public UserSearch() {
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:search\">");
-        buf.append(getExtensionsXML());
-        buf.append("</query>");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(IQ.QUERY_ELEMENT);
+        xml.xmlnsAttribute(NAMESPACE);
+        xml.rightAngelBracket();
+        xml.append(getExtensionsXML());
+        xml.closeElement(IQ.QUERY_ELEMENT);
+        return xml;
     }
 
     /**
