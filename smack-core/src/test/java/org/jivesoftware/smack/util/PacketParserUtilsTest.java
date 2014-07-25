@@ -796,7 +796,10 @@ public class PacketParserUtilsTest {
         for (int i = 0; i < availableLocales.length; i++) {
             if (availableLocales[i] != Locale.getDefault()) {
                 otherLanguage = availableLocales[i].getLanguage().toLowerCase(Locale.US);
-                break;
+                // Check for empty strings as Java8 returns those here for certain Locales
+                if (otherLanguage.length() > 0) {
+                    break;
+                }
             }
         }
         return otherLanguage;

@@ -56,6 +56,12 @@ allprojects {
 			url 'https://oss.sonatype.org/content/repositories/snapshots'
 		}
 	}
+
+	if (JavaVersion.current().isJava8Compatible()) {
+		tasks.withType(Javadoc) {
+			options.addStringOption('Xdoclint:none', '-quiet')
+		}
+	}
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
