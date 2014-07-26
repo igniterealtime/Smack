@@ -676,7 +676,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         sslSocket.startHandshake();
 
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
-        if (verifier != null && !verifier.verify(getServiceName(), sslSocket.getSession())) {
+        if (verifier == null) {
+                throw new IllegalStateException("No HostnameVerifier set. Use connectionConfiguration.setHostnameVerifier() to configure.");
+        } else if (!verifier.verify(getServiceName(), sslSocket.getSession())) {
             throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getServiceName());
         }
 
