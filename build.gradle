@@ -227,11 +227,21 @@ subprojects {
 	}
 }
 
-['smack-resolver-javax', 'smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
+['smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
 	project(":$name") {
 		jar {
 			manifest {
 				instruction 'Service-Component', "org.jivesoftware.smackx/$name-components.xml"
+			}
+		}
+	}
+}
+
+['smack-resolver-javax'].each { name ->
+	project(":$name") {
+		jar {
+			manifest {
+				instruction 'Service-Component', "org.jivesoftware.smack/$name-components.xml"
 			}
 		}
 	}
