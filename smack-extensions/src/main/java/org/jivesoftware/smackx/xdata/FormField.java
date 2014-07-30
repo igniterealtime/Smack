@@ -313,7 +313,7 @@ public class FormField {
      */
     public static class Option {
 
-        public static final String ELEMNT = "option";
+        public static final String ELEMENT = "option";
 
         private final String value;
         private String label;
@@ -352,7 +352,7 @@ public class FormField {
 
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMNT);
+            xml.halfOpenElement(ELEMENT);
             // Add attribute
             xml.optAttribute("label", getLabel());
             xml.rightAngelBracket();
