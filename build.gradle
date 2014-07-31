@@ -23,6 +23,7 @@ allprojects {
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7
+	targetCompatibility = sourceCompatibility
 	version = shortVersion
 	if (isSnapshot) {
 		version += '-SNAPSHOT'
@@ -81,7 +82,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 task prepareReleasedocs(type: Copy) {
 	from 'resources/releasedocs'
 	into releasedocsDir
-	filter(ReplaceTokens, tokens: [version: version, releasedate: buildDate])
+	filter(ReplaceTokens, tokens: [version: version, releasedate: buildDate, targetCompatibility: targetCompatibility.toString()])
 }
 
 task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs]) {
