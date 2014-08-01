@@ -33,8 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.sasl.SaslException;
-
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
@@ -60,7 +58,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final String[] DEBUGGERS = new String[] {
                     "org.jivesoftware.smackx.debugger.EnhancedDebugger",
                     "org.jivesoftware.smackx.debugger.android.AndroidDebugger",
-                    "org.jivesoftware.smack.debugger.LiteDebugger" };
+                    "org.jivesoftware.smack.debugger.LiteDebugger",
+                    "org.jivesoftware.smack.debugger.ConsoleDebugger" };
 
     /** 
      * Counter to uniquely identify connections that are created.
@@ -347,9 +346,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
      * @throws IOException 
-     * @throws SaslException 
      */
-    public void login(String username, String password) throws XMPPException, SmackException, SaslException, IOException {
+    public void login(String username, String password) throws XMPPException, SmackException, IOException {
         login(username, password, "Smack");
     }
 
@@ -378,9 +376,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
      * @throws IOException 
-     * @throws SaslException 
      */
-    public abstract void login(String username, String password, String resource) throws XMPPException, SmackException, SaslException, IOException;
+    public abstract void login(String username, String password, String resource) throws XMPPException, SmackException, IOException;
 
     /**
      * Logs in to the server anonymously. Very few servers are configured to support anonymous
@@ -391,9 +388,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
      * @throws IOException 
-     * @throws SaslException 
      */
-    public abstract void loginAnonymously() throws XMPPException, SmackException, SaslException, IOException;
+    public abstract void loginAnonymously() throws XMPPException, SmackException, IOException;
 
     /**
      * Notification message saying that the server requires the client to bind a

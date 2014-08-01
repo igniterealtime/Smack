@@ -1,0 +1,50 @@
+description = """\
+Smack for Android.
+All the required dependencies to run Smack on Android"""
+
+ext {
+	smackMinAndroidSdk = 8
+	androidProjects = [':smack-tcp',':smack-core', ':smack-resolver-minidns', ':smack-sasl-provided', ':smack-extensions', ':smack-experimental'].collect{ project(it) }
+}
+
+// Note that the test dependencies (junit, …) are inferred from the
+// sourceSet.test of the core subproject
+dependencies {
+	androidProjects.each { project ->
+		compile project
+	}
+}
+
+def getAndroidRuntimeJar() {
+	def androidHome = new File("$System.env.ANDROID_HOME")
+	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
+	new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
+}
+
+def getAndroidJavadocOffline() {
+	def androidHome = new File("$System.env.ANDROID_HOME")
+	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
+	return "$System.env.ANDROID_HOME" + "/docs/reference"
+}
+
+compileJava {
+	options.bootClasspath = getAndroidRuntimeJar()
+}
+
+// See http://stackoverflow.com/a/2823592/194894
+// TODO this doesn't seem to work right now. But on the other hand it
+// is not really required, just to avoid a javadoc compiler warning
+javadoc {
+	options.linksOffline "http://developer.android.com/reference", getAndroidJavadocOffline()
+}
+
+configure (androidProjects) {
+	task compileAndroid(type: JavaCompile) {
+		source = compileJava.source
+		classpath = compileJava.classpath
+		destinationDir = new File(buildDir, 'android')
+		options.bootClasspath = getAndroidRuntimeJar()
+	}
+}
+
+test { dependsOn androidProjects*.compileAndroid }

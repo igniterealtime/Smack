@@ -28,6 +28,7 @@ import java.util.Random;
  */
 public class StringUtils {
 
+    public static final String MD5 = "MD5";
     public static final String SHA1 = "SHA-1";
     public static final String UTF8 = "UTF-8";
 
@@ -36,6 +37,8 @@ public class StringUtils {
     public static final String AMP_ENCODE = "&amp;";
     public static final String LT_ENCODE = "&lt;";
     public static final String GT_ENCODE = "&gt;";
+
+    public static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 
     /**
      * Escapes all necessary characters in the String so that it can be used
@@ -129,14 +132,7 @@ public class StringUtils {
             }
         }
         // Now, compute hash.
-        try {
-            digest.update(data.getBytes(UTF8));
-        }
-        catch (UnsupportedEncodingException e) {
-            // Smack wont be able to function normally if this exception is thrown, wrap it into an
-            // ISE and make the user aware of the problem.
-            throw new IllegalStateException(e);
-        }
+        digest.update(toBytes(data));
         return encodeHex(digest.digest());
     }
 
@@ -147,16 +143,22 @@ public class StringUtils {
      * @return generated hex string.
      */
     public static String encodeHex(byte[] bytes) {
-        StringBuilder hex = new StringBuilder(bytes.length * 2);
-
-        for (byte aByte : bytes) {
-            if (((int) aByte & 0xff) < 0x10) {
-                hex.append("0");
-            }
-            hex.append(Integer.toString((int) aByte & 0xff, 16));
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_CHARS[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_CHARS[v & 0x0F];
         }
+        return new String(hexChars);
+    }
 
-        return hex.toString();
+    public static byte[] toBytes(String string) {
+        try {
+            return string.getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("UTF-8 encoding not supported by platform", e);
+        }
     }
 
     /**
@@ -166,13 +168,7 @@ public class StringUtils {
      * @return a base64 encoded String.
      */
     public static String encodeBase64(String data) {
-        byte [] bytes = null;
-        try {
-            bytes = data.getBytes("ISO-8859-1");
-        }
-        catch (UnsupportedEncodingException uee) {
-            throw new IllegalStateException(uee);
-        }
+        byte [] bytes = toBytes(data);
         return encodeBase64(bytes);
     }
 
@@ -218,17 +214,14 @@ public class StringUtils {
      * @return the decoded String.
      */
     public static byte[] decodeBase64(String data) {
-        byte[] bytes;
-        try {
-            bytes = data.getBytes("UTF-8");
-        } catch (java.io.UnsupportedEncodingException uee) {
-            bytes = data.getBytes();
-        }
-
-        bytes = Base64.decode(bytes, 0, bytes.length, Base64.NO_OPTIONS);
-        return bytes;
+        byte[] bytes = toBytes(data);
+        return decodeBase64(bytes);
     }
 
+    public static byte[] decodeBase64(byte[] data) {
+        return Base64.decode(data, 0, data.length, Base64.NO_OPTIONS);
+    }
+ 
     /**
      * Pseudo-random number generator object for use with randomString().
      * The Random class is not considered to be cryptographically secure, so
@@ -305,5 +298,16 @@ public class StringUtils {
         // Remove the trailing whitespace
         res = res.substring(0, res.length() - 1);
         return res;
+    }
+
+    public static String returnIfNotEmptyTrimmed(String string) {
+        if (string == null)
+            return null;
+        String trimmedString = string.trim();
+        if (trimmedString.length() > 0) {
+            return trimmedString;
+        } else {
+            return null;
+        }
     }
 }

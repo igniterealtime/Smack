@@ -20,9 +20,9 @@ package org.jivesoftware.smack.bosh;
 import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
-import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
-import org.jivesoftware.smack.sasl.SASLMechanism.Success;
+import org.jivesoftware.smack.sasl.packet.SaslStanzas.Challenge;
+import org.jivesoftware.smack.sasl.packet.SaslStanzas.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStanzas.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -97,8 +97,9 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                                             BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"),
                                             connection.getServiceName())
                                     .build());
-                            connection.getSASLAuthentication().authenticated();
-                            connection.processPacket(new Success(parser.nextText()));
+                            Success success = new Success(parser.nextText());
+                            connection.getSASLAuthentication().authenticated(success);
+                            connection.processPacket(success);
                         } else if (parser.getName().equals("features")) {
                             parseFeatures(parser);
                         } else if (parser.getName().equals("failure")) {

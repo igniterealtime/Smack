@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright © 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,16 @@
  */
 package org.jivesoftware.smack.sasl;
 
-import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smack.XMPPConnection;
 
-/**
- * Implementation of the SASL PLAIN mechanism
- *
- * @author Jay Kline
- */
-public class SASLPlainMechanism extends SASLMechanism {
+public class AbstractSaslTest {
 
-    public SASLPlainMechanism(SASLAuthentication saslAuthentication) {
-        super(saslAuthentication);
+    protected final XMPPConnection xmppConnection = new DummyConnection();
+    protected final SASLMechanism saslMechanism;
+
+    protected AbstractSaslTest(SASLMechanism saslMechanism) {
+        this.saslMechanism = saslMechanism.instanceForAuthentication(xmppConnection);
     }
 
-    protected String getName() {
-        return "PLAIN";
-    }
 }

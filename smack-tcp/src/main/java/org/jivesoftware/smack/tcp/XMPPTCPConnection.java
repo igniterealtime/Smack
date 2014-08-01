@@ -35,9 +35,9 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
-import org.jivesoftware.smack.sasl.SASLMechanism.Challenge;
-import org.jivesoftware.smack.sasl.SASLMechanism.SASLFailure;
-import org.jivesoftware.smack.sasl.SASLMechanism.Success;
+import org.jivesoftware.smack.sasl.packet.SaslStanzas.Challenge;
+import org.jivesoftware.smack.sasl.packet.SaslStanzas.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStanzas.Success;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.TLSUtils;
@@ -54,7 +54,6 @@ import javax.net.ssl.SSLSocket;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
-import javax.security.sasl.SaslException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -247,7 +246,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public synchronized void login(String username, String password, String resource) throws XMPPException, SmackException, SaslException, IOException {
+    public synchronized void login(String username, String password, String resource) throws XMPPException, SmackException, IOException {
         if (!isConnected()) {
             throw new NotConnectedException();
         }
@@ -266,7 +265,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
-            throw new SaslException("No non-anonymous SASL authentication mechanism available");
+            throw new SmackException("No non-anonymous SASL authentication mechanism available");
         }
 
         // If compression is enabled then request the server to use stream compression. XEP-170
@@ -312,7 +311,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public synchronized void loginAnonymously() throws XMPPException, SmackException, SaslException, IOException {
+    public synchronized void loginAnonymously() throws XMPPException, SmackException, IOException {
         if (!isConnected()) {
             throw new NotConnectedException();
         }
@@ -324,7 +323,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             saslAuthentication.authenticateAnonymously();
         }
         else {
-            throw new SaslException("No anonymous SASL authentication mechanism available");
+            throw new SmackException("No anonymous SASL authentication mechanism available");
         }
 
         String response = bindResourceAndEstablishSession(null);
@@ -1063,7 +1062,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             getSASLAuthentication().challengeReceived(challengeData);
                         }
                         else if (name.equals("success")) {
-                            processPacket(new Success(parser.nextText()));
+                            Success success = new Success(parser.nextText());
+                            processPacket(success);
                             // We now need to bind a resource for the connection
                             // Open a new stream and wait for the response
                             packetWriter.openStream();
@@ -1072,7 +1072,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             resetParser();
                             // The SASL authentication with the server was successful. The next step
                             // will be to bind the resource
-                            getSASLAuthentication().authenticated();
+                            getSASLAuthentication().authenticated(success);
                         }
                         else if (name.equals("compressed")) {
                             // Server confirmed that it's possible to use stream compression. Start

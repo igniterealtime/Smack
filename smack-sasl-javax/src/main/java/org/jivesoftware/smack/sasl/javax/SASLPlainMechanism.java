@@ -14,22 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl;
-
-import org.jivesoftware.smack.SASLAuthentication;
+package org.jivesoftware.smack.sasl.javax;
 
 /**
- * Implementation of the SASL DIGEST-MD5 mechanism
+ * Implementation of the SASL PLAIN mechanism
  *
  * @author Jay Kline
  */
-public class SASLDigestMD5Mechanism extends SASLMechanism {
+public class SASLPlainMechanism extends SASLJavaXMechanism {
 
-    public SASLDigestMD5Mechanism(SASLAuthentication saslAuthentication) {
-        super(saslAuthentication);
+    public static final String NAME = PLAIN;
+
+    public String getName() {
+        return NAME;
     }
 
-    protected String getName() {
-        return "DIGEST-MD5";
+    @Override
+    public int getPriority() {
+        return 400;
+    }
+
+    @Override
+    public SASLPlainMechanism newInstance() {
+        return new SASLPlainMechanism();
     }
 }

@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl;
-
-import org.jivesoftware.smack.SASLAuthentication;
+package org.jivesoftware.smack.sasl.javax;
 
 /**
  * Implementation of the SASL EXTERNAL mechanism.
@@ -44,13 +42,22 @@ import org.jivesoftware.smack.SASLAuthentication;
  *
  * @author Jay Kline
  */
-public class SASLExternalMechanism extends SASLMechanism  {
+public class SASLExternalMechanism extends SASLJavaXMechanism  {
 
-    public SASLExternalMechanism(SASLAuthentication saslAuthentication) {
-        super(saslAuthentication);
+    public static final String NAME = EXTERNAL;
+
+    @Override
+    public String getName() {
+        return EXTERNAL;
     }
 
-    protected String getName() {
-        return "EXTERNAL";
+    @Override
+    public int getPriority() {
+        return 500;
+    }
+
+    @Override
+    public SASLExternalMechanism newInstance() {
+        return new SASLExternalMechanism();
     }
 }

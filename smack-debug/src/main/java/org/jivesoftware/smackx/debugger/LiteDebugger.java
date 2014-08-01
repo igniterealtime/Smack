@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.debugger;
+package org.jivesoftware.smackx.debugger;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -25,6 +25,7 @@ import java.io.*;
 import javax.swing.*;
 
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.*;
 import org.jxmpp.util.XmppStringUtils;

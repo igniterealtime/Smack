@@ -16,10 +16,7 @@
  */
 package org.jivesoftware.smack.sasl;
 
-import org.jivesoftware.smack.SASLAuthentication;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-
-import java.io.IOException;
+import org.jivesoftware.smack.SmackException;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -30,32 +27,30 @@ import javax.security.auth.callback.CallbackHandler;
  */
 public class SASLAnonymous extends SASLMechanism {
 
-    public SASLAnonymous(SASLAuthentication saslAuthentication) {
-        super(saslAuthentication);
-    }
-
-    protected String getName() {
+    public String getName() {
         return "ANONYMOUS";
     }
 
-    public void authenticate(String username, String host, CallbackHandler cbh) throws IOException, NotConnectedException {
-        authenticate();
+    @Override
+    public int getPriority() {
+        return 500;
     }
 
-    public void authenticate(String username, String host, String password) throws IOException, NotConnectedException {
-        authenticate();
+    @Override
+    protected void authenticateInternal(CallbackHandler cbh)
+                    throws SmackException {
+        // Nothing to do here
     }
 
-    protected void authenticate() throws IOException, NotConnectedException {
-        // Send the authentication to the server
-        getSASLAuthentication().send(new AuthMechanism(getName(), null));
+    @Override
+    protected String getAuthenticationText() throws SmackException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public void challengeReceived(String challenge) throws IOException, NotConnectedException {
-        // Build the challenge response stanza encoding the response text
-        // and send the authentication to the server
-        getSASLAuthentication().send(new Response());
+    @Override
+    public SASLAnonymous newInstance() {
+        return new SASLAnonymous();
     }
-
 
 }

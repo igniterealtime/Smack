@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl;
+package org.jivesoftware.smack.sasl.javax;
 
-import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.sasl.DigestMd5SaslTest;
+import org.junit.Test;
 
-/**
- * Implementation of the SASL CRAM-MD5 mechanism
- *
- * @author Jay Kline
- */
-public class SASLCramMD5Mechanism extends SASLMechanism {
+public class SASLDigestMD5Test extends DigestMd5SaslTest {
 
-    public SASLCramMD5Mechanism(SASLAuthentication saslAuthentication) {
-        super(saslAuthentication);
+    public SASLDigestMD5Test() {
+        super(new SASLDigestMD5Mechanism());
     }
 
-    protected String getName() {
-        return "CRAM-MD5";
+    @Test
+    public void testDigestMD5() throws NotConnectedException, SmackException {
+        runTest();
     }
 }
