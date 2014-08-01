@@ -14,5 +14,7 @@
         <className>org.jivesoftware.smack.initializer.legacy.LegacyInitializer</className>
         <className>org.jivesoftware.smack.sasl.javax.SASLJavaXSmackInitializer</className>
         <className>org.jivesoftware.smack.sasl.provided.SASLProvidedSmackInitializer</className>
+        <className>org.jivesoftware.smack.android.AndroidSmackInitializer</className>
+        <className>org.jivesoftware.smack.java7.Java7SmackInitializer</className>
     </optionalStartupClasses>
 </smack>
