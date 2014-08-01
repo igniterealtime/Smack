@@ -528,12 +528,22 @@ public class StringUtils {
     }
 
     /**
-     * Returns true if the given CharSequence is not null or empty.
+     * Returns true if the given CharSequence is null or empty.
      *
      * @param cs
-     * @return true if the given CharSequence is not null or empty
+     * @return true if the given CharSequence is null or empty
      */
     public static boolean isNullOrEmpty(CharSequence cs) {
-        return cs == null || cs.length() == 0;
+        return cs == null || isEmpty(cs);
+    }
+
+    /**
+     * Returns true if the given CharSequence is empty
+     * 
+     * @param cs
+     * @return true if the given CharSequence is empty
+     */
+    public static boolean isEmpty(CharSequence cs) {
+        return cs.length() == 0;
     }
 }

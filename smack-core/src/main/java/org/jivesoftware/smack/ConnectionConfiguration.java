@@ -20,6 +20,7 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
 import javax.net.SocketFactory;
@@ -180,6 +181,9 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     protected void init(String serviceName, ProxyInfo proxy) {
+        if (StringUtils.isEmpty(serviceName)) {
+            throw new IllegalArgumentException("serviceName must not be the empty String");
+        }
         this.serviceName = serviceName;
         this.proxy = proxy;
 
@@ -597,6 +601,9 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     private void initHostAddresses(String host, int port) {
+        if (StringUtils.isEmpty(host)) {
+            throw new IllegalArgumentException("host must not be the empty String");
+        }
         hostAddresses = new ArrayList<HostAddress>(1);
         HostAddress hostAddress;
         hostAddress = new HostAddress(host, port);
