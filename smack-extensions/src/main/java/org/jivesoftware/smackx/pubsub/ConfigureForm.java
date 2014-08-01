@@ -577,11 +577,22 @@ public class ConfigureForm extends Form
 	 * Determines if subscriptions are allowed.
 	 * 
 	 * @return true if subscriptions are allowed, false otherwise
+	 * @deprecated use {@link #isSubscribe()} instead
 	 */
+	@Deprecated
 	public boolean isSubscibe()
 	{
-		return parseBoolean(getFieldValue(ConfigureNodeFields.subscribe));
+		return isSubscribe();
 	}
+
+    /**
+     * Determines if subscriptions are allowed.
+     * 
+     * @return true if subscriptions are allowed, false otherwise
+     */
+    public boolean isSubscribe() {
+        return parseBoolean(getFieldValue(ConfigureNodeFields.subscribe));
+    }
 
 	/**
 	 * Sets whether subscriptions are allowed.
