@@ -654,8 +654,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         PacketFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollector(packetFilter);
-        // Now we can send the packet as the collector has been created
-        sendPacket(packet);
+        try {
+            // Now we can send the packet as the collector has been created
+            sendPacket(packet);
+        }
+        catch (NotConnectedException e) {
+            packetCollector.cancel();
+            throw e;
+        }
         return packetCollector;
     }
 
