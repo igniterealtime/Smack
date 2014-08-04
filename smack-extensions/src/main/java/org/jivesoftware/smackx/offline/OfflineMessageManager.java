@@ -156,20 +156,24 @@ public class OfflineMessageManager {
             }
         });
         PacketCollector messageCollector = connection.createPacketCollector(messageFilter);
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
-        // Collect the received offline messages
-        Message message = (Message) messageCollector.nextResult();
-        while (message != null) {
-            messages.add(message);
-            message = (Message) messageCollector.nextResult();
+        try {
+            connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+            // Collect the received offline messages
+            Message message = (Message) messageCollector.nextResult();
+            while (message != null) {
+                messages.add(message);
+                message = (Message) messageCollector.nextResult();
+            }
         }
-        // Stop queuing offline messages
-        messageCollector.cancel();
+        finally {
+            // Stop queuing offline messages
+            messageCollector.cancel();
+        }
         return messages;
     }
 
     /**
-     * Returns an Iterator with all the offline <tt>Messages</tt> of the user. The returned offline
+     * Returns a List of Messages with all the offline <tt>Messages</tt> of the user. The returned offline
      * messages will not be deleted from the server. Use {@link #deleteMessages(java.util.List)}
      * to delete the messages.
      *
@@ -183,17 +187,22 @@ public class OfflineMessageManager {
         List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
 
         PacketCollector messageCollector = connection.createPacketCollector(packetFilter);
-        // Collect the received offline messages
-        Message message = (Message) messageCollector.nextResult();
-        while (message != null) {
-            messages.add(message);
-            message = (Message) messageCollector.nextResult();
+        try {
+            connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+
+            // Collect the received offline messages
+            Message message = (Message) messageCollector.nextResult();
+            while (message != null) {
+                messages.add(message);
+                message = (Message) messageCollector.nextResult();
+            }
         }
-        // Stop queuing offline messages
-        messageCollector.cancel();
+        finally {
+            // Stop queuing offline messages
+            messageCollector.cancel();
+        }
         return messages;
     }
 
