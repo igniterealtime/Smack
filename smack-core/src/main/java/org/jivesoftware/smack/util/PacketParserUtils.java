@@ -654,24 +654,23 @@ public class PacketParserUtils {
 
     private static Bind parseResourceBinding(XmlPullParser parser) throws IOException,
             XmlPullParserException {
-        Bind bind = new Bind();
+        Bind bind = null;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("resource")) {
-                    bind.setResource(parser.nextText());
+                    bind = Bind.newSet(parser.nextText());
                 }
                 else if (parser.getName().equals("jid")) {
-                    bind.setJid(parser.nextText());
+                    bind = Bind.newResult(parser.nextText());
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("bind")) {
+                if (parser.getName().equals(Bind.ELEMENT)) {
                     done = true;
                 }
             }
         }
-
         return bind;
     }
 

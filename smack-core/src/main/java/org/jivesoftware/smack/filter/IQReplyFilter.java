@@ -81,14 +81,13 @@ public class IQReplyFilter implements PacketFilter {
      * @param iqPacket An IQ request. Filter for replies to this packet.
      */
     public IQReplyFilter(IQ iqPacket, XMPPConnection conn) {
-        to = iqPacket.getTo();
-        if (conn.getUser() == null) {
-            // We have not yet been assigned a username, this can happen if the connection is
-            // in an early stage, i.e. when performing the SASL auth.
-            local = null;
+        if (iqPacket.getTo() != null) {
+            to = iqPacket.getTo().toLowerCase(Locale.US);
         } else {
-            local = conn.getUser().toLowerCase(Locale.US);
+            to = null;
         }
+        local = conn.getUser().toLowerCase(Locale.US);
+
         server = conn.getServiceName().toLowerCase(Locale.US);
         packetId = iqPacket.getPacketID();
 
@@ -98,11 +97,10 @@ public class IQReplyFilter implements PacketFilter {
         fromFilter = new OrFilter();
         fromFilter.addFilter(FromMatchesFilter.createFull(to));
         if (to == null) {
-            if (local != null)
-                fromFilter.addFilter(FromMatchesFilter.createBare(local));
+            fromFilter.addFilter(FromMatchesFilter.createBare(local));
             fromFilter.addFilter(FromMatchesFilter.createFull(server));
         }
-        else if (local != null && to.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(local))) {
+        else if (to.equals(XmppStringUtils.parseBareAddress(local))) {
             fromFilter.addFilter(FromMatchesFilter.createFull(null));
         }
     }

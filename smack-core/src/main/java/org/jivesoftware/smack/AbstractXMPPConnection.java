@@ -42,6 +42,7 @@ import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -431,15 +432,30 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             }
         }
 
-        Bind bindResource = new Bind();
-        bindResource.setResource(resource);
-
-        Bind response = (Bind) createPacketCollectorAndSend(bindResource).nextResultOrThrow();
+        // Resource binding, see RFC6120 7.
+        // Note that we can not use IQReplyFilter here, since the users full JID is not yet
+        // available. It will become available right after the resource has been successfully bound.
+        Bind bindResource = Bind.newSet(resource);
+        PacketCollector packetCollector = createPacketCollector(new PacketIDFilter(bindResource));
+        try {
+            sendPacket(bindResource);
+        } catch (NotConnectedException e) {
+            packetCollector.cancel();
+            throw e;
+        }
+        Bind response = packetCollector.nextResultOrThrow();
         String userJID = response.getJid();
 
         if (sessionSupported && !getConfiguration().isLegacySessionDisabled()) {
             Session session = new Session();
-            createPacketCollectorAndSend(session).nextResultOrThrow();
+            packetCollector = createPacketCollector(new PacketIDFilter(session));
+            try {
+                sendPacket(session);
+            } catch (NotConnectedException e) {
+                packetCollector.cancel();
+                throw e;
+            }
+            packetCollector.nextResultOrThrow();
         }
         return userJID;
     }

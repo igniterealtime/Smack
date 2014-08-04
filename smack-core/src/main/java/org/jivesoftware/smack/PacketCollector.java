@@ -139,9 +139,10 @@ public class PacketCollector {
      *
      * @return the next available packet.
      */
-    public Packet nextResult(long timeout) {
+    @SuppressWarnings("unchecked")
+    public <P extends Packet> P nextResult(long timeout) {
     	try {
-			return resultQueue.poll(timeout, TimeUnit.MILLISECONDS);
+			return (P) resultQueue.poll(timeout, TimeUnit.MILLISECONDS);
 		}
 		catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -157,7 +158,7 @@ public class PacketCollector {
      * @throws XMPPErrorException in case an error response.
      * @throws NoResponseException if there was no response from the server.
      */
-    public Packet nextResultOrThrow() throws NoResponseException, XMPPErrorException {
+    public <P extends Packet> P nextResultOrThrow() throws NoResponseException, XMPPErrorException {
         return nextResultOrThrow(connection.getPacketReplyTimeout());
     }
 
@@ -170,8 +171,8 @@ public class PacketCollector {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException in case an error response.
      */
-    public Packet nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException {
-        Packet result = nextResult(timeout);
+    public <P extends Packet> P nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException {
+        P result = nextResult(timeout);
         cancel();
         if (result == null) {
             throw new NoResponseException();
