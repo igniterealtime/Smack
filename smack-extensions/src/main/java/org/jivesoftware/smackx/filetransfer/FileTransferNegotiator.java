@@ -27,9 +27,9 @@ import java.util.Random;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -298,10 +298,11 @@ public class FileTransferNegotiator extends Manager {
      * @return Returns the stream negotiator selected by the peer.
      * @throws XMPPErrorException Thrown if there is an error negotiating the file transfer.
      * @throws NotConnectedException 
+     * @throws NoResponseException 
      */
     public StreamNegotiator negotiateOutgoingTransfer(final String userID,
             final String streamID, final String fileName, final long size,
-            final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException {
+            final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException {
         StreamInitiation si = new StreamInitiation();
         si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));
@@ -316,9 +317,8 @@ public class FileTransferNegotiator extends Manager {
         si.setTo(userID);
         si.setType(IQ.Type.set);
 
-        PacketCollector collector = connection().createPacketCollectorAndSend(si);
-        Packet siResponse = collector.nextResult(responseTimeout);
-        collector.cancel();
+        Packet siResponse = connection().createPacketCollectorAndSend(si).nextResultOrThrow(
+                        responseTimeout);
 
         if (siResponse instanceof IQ) {
             IQ iqResponse = (IQ) siResponse;

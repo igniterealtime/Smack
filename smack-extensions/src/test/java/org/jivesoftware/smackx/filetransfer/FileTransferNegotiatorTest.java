@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.filetransfer;
 import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.junit.After;
@@ -48,7 +49,11 @@ public class FileTransferNegotiatorTest {
     @Test
     public void verifyForm() throws Exception {
         FileTransferNegotiator fileNeg = FileTransferNegotiator.getInstanceFor(connection);
-        fileNeg.negotiateOutgoingTransfer("me", "streamid", "file", 1024, null, 10);
+        try {
+            fileNeg.negotiateOutgoingTransfer("me", "streamid", "file", 1024, null, 10);
+        } catch (NoResponseException e) {
+            // Ignore
+        }
         Packet packet = connection.getSentPacket();
         String xml = packet.toXML().toString();
         assertTrue(xml.indexOf("var='stream-method' type='list-single'") != -1);

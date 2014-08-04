@@ -373,12 +373,6 @@ public class OutgoingFileTransfer extends FileTransfer {
 				getPeer(), streamID, fileName, fileSize, description,
 				RESPONSE_TIMEOUT);
 
-		if (streamNegotiator == null) {
-			setStatus(Status.error);
-			setError(Error.no_response);
-			return null;
-		}
-
         // Negotiate the stream
         if (!updateStatus(Status.negotiating_transfer, Status.negotiating_stream)) {
             throw new IllegalStateChangeException();
