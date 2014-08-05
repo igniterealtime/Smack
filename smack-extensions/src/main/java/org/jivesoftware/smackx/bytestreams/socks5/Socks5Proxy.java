@@ -147,6 +147,9 @@ public class Socks5Proxy {
     * @param localSocks5ProxyPort the port of the local Socks5 proxy to set
     */
    public static void setLocalSocks5ProxyPort(int localSocks5ProxyPort) {
+       if (Math.abs(localSocks5ProxyPort) > 65535) {
+           throw new IllegalArgumentException("localSocks5ProxyPort must be within (-65535,65535)");
+       }
        Socks5Proxy.localSocks5ProxyPort = localSocks5ProxyPort;
    }
 
