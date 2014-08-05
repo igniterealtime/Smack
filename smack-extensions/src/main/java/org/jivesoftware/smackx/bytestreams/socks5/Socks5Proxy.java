@@ -73,7 +73,12 @@ public class Socks5Proxy {
     private static Socks5Proxy socks5Server;
 
     private static boolean localSocks5ProxyEnabled = true;
-    private static int localSocks5ProxyPort = 7777;
+
+    /**
+     * The port of the local Socks5 Proxy. If this value is negative, the next ports will be tried
+     * until a unused is found.
+     */
+    private static int localSocks5ProxyPort = -7777;
 
     /* reusable implementation of a SOCKS5 proxy server process */
     private Socks5ServerProcess serverProcess;
