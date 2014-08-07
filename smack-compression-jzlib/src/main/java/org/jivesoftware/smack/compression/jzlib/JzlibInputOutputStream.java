@@ -58,7 +58,9 @@ public class JzlibInputOutputStream extends XMPPInputOutputStream {
     @Override
     public OutputStream getOutputStream(OutputStream outputStream) throws IOException {
         final DeflaterOutputStream os = new DeflaterOutputStream(outputStream);
-        os.setSyncFlush(true);
+        if (flushMethod == FlushMethod.SYNC_FLUSH) {
+            os.setSyncFlush(true);
+        }
 
         return os;
     }
