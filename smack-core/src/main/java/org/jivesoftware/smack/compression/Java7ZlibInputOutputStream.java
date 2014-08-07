@@ -48,6 +48,9 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
     private final static boolean supported;
     private final static int compressionLevel = Deflater.DEFAULT_COMPRESSION;
 
+    private static final int SYNC_FLUSH_INT = 2;
+    private static final int FULL_FLUSH_INT = 3;
+
     static {
         Method m = null;
         try {
@@ -100,25 +103,23 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
 
     @Override
     public OutputStream getOutputStream(OutputStream outputStream) {
+        final int flushMethodInt;
+        if (flushMethod == FlushMethod.SYNC_FLUSH) {
+            flushMethodInt = SYNC_FLUSH_INT;
+        } else {
+            flushMethodInt = FULL_FLUSH_INT;
+        }
         return new DeflaterOutputStream(outputStream, new Deflater(compressionLevel)) {
             public void flush() throws IOException {
                 if (!supported) {
                     super.flush();
                     return;
                 }
-                int count = 0;
-                if (!def.needsInput()) {
-                    do {
-                        count = def.deflate(buf, 0, buf.length);
-                        out.write(buf, 0, count);
-                    } while (count > 0);
-                    out.flush();
-                }
                 try {
-                    do {
-                        count = (Integer) method.invoke(def, buf, 0, buf.length, 2);
+                    int count;
+                    while ((count = (Integer) method.invoke(def, buf, 0, buf.length, flushMethodInt)) != 0) {
                         out.write(buf, 0, count);
-                    } while (count > 0);
+                    }
                 } catch (IllegalArgumentException e) {
                     throw new IOException("Can't flush");
                 } catch (IllegalAccessException e) {

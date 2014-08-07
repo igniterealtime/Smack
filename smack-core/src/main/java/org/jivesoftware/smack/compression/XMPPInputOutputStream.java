@@ -20,6 +20,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public abstract class XMPPInputOutputStream {
+
+    protected static FlushMethod flushMethod;
+
+    /**
+     * Set the used flushed method when compressing data. The default is full flush which may not
+     * achieve the best compression ratio, but provides better security against certain attacks.
+     * Only use sync flush if you fully understand the implications.
+     * 
+     * @see <a href="https://blog.thijsalkema.de/blog/2014/08/07/https-attacks-and-xmpp-2-crime-and-breach/">Attacks against XMPP when using compression</a>
+     * @param flushMethod
+     */
+    public static void setFlushMethod(FlushMethod flushMethod) {
+        XMPPInputOutputStream.flushMethod = flushMethod;
+    }
+
     protected String compressionMethod;
 
     public String getCompressionMethod() {
@@ -31,4 +46,9 @@ public abstract class XMPPInputOutputStream {
     public abstract InputStream getInputStream(InputStream inputStream) throws Exception;
 
     public abstract OutputStream getOutputStream(OutputStream outputStream) throws Exception;
+
+    public enum FlushMethod {
+        FULL_FLUSH,
+        SYNC_FLUSH,
+    }
 }

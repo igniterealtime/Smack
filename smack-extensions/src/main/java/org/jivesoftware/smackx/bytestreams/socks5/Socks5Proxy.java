@@ -73,7 +73,12 @@ public class Socks5Proxy {
     private static Socks5Proxy socks5Server;
 
     private static boolean localSocks5ProxyEnabled = true;
-    private static int localSocks5ProxyPort = 7777;
+
+    /**
+     * The port of the local Socks5 Proxy. If this value is negative, the next ports will be tried
+     * until a unused is found.
+     */
+    private static int localSocks5ProxyPort = -7777;
 
     /* reusable implementation of a SOCKS5 proxy server process */
     private Socks5ServerProcess serverProcess;
@@ -142,6 +147,9 @@ public class Socks5Proxy {
     * @param localSocks5ProxyPort the port of the local Socks5 proxy to set
     */
    public static void setLocalSocks5ProxyPort(int localSocks5ProxyPort) {
+       if (Math.abs(localSocks5ProxyPort) > 65535) {
+           throw new IllegalArgumentException("localSocks5ProxyPort must be within (-65535,65535)");
+       }
        Socks5Proxy.localSocks5ProxyPort = localSocks5ProxyPort;
    }
 
