@@ -18,7 +18,12 @@ dependencies {
 def getAndroidRuntimeJar() {
 	def androidHome = new File("$System.env.ANDROID_HOME")
 	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
-	new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
+	def androidJar = new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
+	if (androidJar.isFile()) {
+		return androidJar
+	} else {
+		throw new Exception("Can't find android.jar for $smackMinAndroidSdk API. Please install corresponding SDK platform package")
+	}
 }
 
 def getAndroidJavadocOffline() {
