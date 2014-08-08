@@ -37,7 +37,8 @@ public class VersionTest {
         DummyConnection con = new DummyConnection();
 
         // Enable version replys for this connection
-        VersionManager.getInstanceFor(con).setVersion(new Version("Test", "0.23", "DummyOS"));
+        VersionManager.setAutoAppendSmackVersion(false);
+        VersionManager.getInstanceFor(con).setVersion("Test", "0.23", "DummyOS");
         IQ versionRequest = (IQ) PacketParserUtils.parseStanza(control);
 
         assertTrue(versionRequest instanceof Version);

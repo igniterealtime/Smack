@@ -24,25 +24,35 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class VersionProvider implements IQProvider {
     public IQ parseIQ(XmlPullParser parser) throws Exception {
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        final int initalDepth = parser.getDepth();
         String name = null, version = null, os = null;
 
-        boolean done = false;
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            String tagName = parser.getName();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (tagName.equals("name")) {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String tagName = parser.getName();
+                switch (tagName) {
+                case "name":
                     name = parser.nextText();
-                }
-                else if (tagName.equals("version")) {
+                    break;
+                case "version":
                     version = parser.nextText();
-                }
-                else if (tagName.equals("os")) {
+                    break;
+                case "os":
                     os = parser.nextText();
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG && tagName.equals("query")) {
-                done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initalDepth && parser.getName().equals(IQ.QUERY_ELEMENT)) {
+                    break outerloop;
+                }
             }
+        }
+        if (name == null && version == null && os == null) {
+            return new Version();
         }
         return new Version(name, version, os);
     }

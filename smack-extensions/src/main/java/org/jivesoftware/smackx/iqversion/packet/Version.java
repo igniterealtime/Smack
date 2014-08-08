@@ -19,7 +19,8 @@ package org.jivesoftware.smackx.iqversion.packet;
 
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
@@ -50,9 +51,29 @@ import org.jivesoftware.smack.util.StringUtils;
 public class Version extends IQ {
     public static final String NAMESPACE = "jabber:iq:version";
 
-    private String name;
-    private String version;
+    private final String name;
+    private final String version;
     private String os;
+
+    public Version() {
+        name = null;
+        version = null;
+        setType(Type.get);
+    }
+
+    /**
+     * Request version IQ
+     * 
+     * @param to the jid where to request version from
+     */
+    public Version(String to) {
+        this();
+        setTo(to);
+    }
+
+    public Version(String name, String version) {
+        this(name, version, null);
+    }
 
     /**
      * Creates a new Version object with given details.
@@ -62,6 +83,13 @@ public class Version extends IQ {
      * @param os The operating system of the queried entity. This element is OPTIONAL.
      */
     public Version(String name, String version, String os) {
+        if (name == null)
+        {
+            throw new IllegalArgumentException("name must not be null");
+        }
+        if (version == null) {
+            throw new IllegalArgumentException("version must not be null");
+        }
         this.setType(IQ.Type.result);
         this.name = name;
         this.version = version;
@@ -83,16 +111,6 @@ public class Version extends IQ {
     }
 
     /**
-     * Sets the natural-language name of the software. This message should only be
-     * invoked when parsing the XML and setting the property to a Version instance.
-     *
-     * @param name the natural-language name of the software.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * Returns the specific version of the software. This property will always be
      * present in a result.
      *
@@ -100,16 +118,6 @@ public class Version extends IQ {
      */
     public String getVersion() {
         return version;
-    }
-
-    /**
-     * Sets the specific version of the software. This message should only be
-     * invoked when parsing the XML and setting the property to a Version instance.
-     *
-     * @param version the specific version of the software.
-     */
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     /**
@@ -132,21 +140,23 @@ public class Version extends IQ {
         this.os = os;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"");
-        buf.append(Version.NAMESPACE);
-        buf.append("\">");
-        if (name != null) {
-            buf.append("<name>").append(StringUtils.escapeForXML(name)).append("</name>");
-        }
-        if (version != null) {
-            buf.append("<version>").append(StringUtils.escapeForXML(version)).append("</version>");
-        }
-        if (os != null) {
-            buf.append("<os>").append(StringUtils.escapeForXML(os)).append("</os>");
-        }
-        buf.append("</query>");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(IQ.QUERY_ELEMENT).xmlnsAttribute(NAMESPACE).rightAngelBracket();
+        // Although not really optional elements, 'name' and 'version' are not set when sending a
+        // version request. So we must handle the case that those are 'null' here.
+        xml.optElement("name", name);
+        xml.optElement("version", version);
+        xml.optElement("os", os);
+        xml.closeElement(IQ.QUERY_ELEMENT);
+        return xml;
+    }
+
+    public static Version createResultFor(Packet request, Version version) {
+        Version result = new Version(version);
+        result.setPacketID(request.getPacketID());
+        result.setTo(request.getFrom());
+        return result;
     }
 }
