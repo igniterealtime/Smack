@@ -20,7 +20,7 @@ allprojects {
 		// Returns only the date in yyyy-MM-dd format, as otherwise, with
 		// hh:mm:ss information, the manifest files would change with every
 		// build, causing unnecessary rebuilds.
-		buildDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
+		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 		jxmppVersion = "0.2.0"
 	}
@@ -41,7 +41,7 @@ allprojects {
 				   // For example 4.0.0-rc1 becomes 4.0.0.rc1, but
 				   // 4.0.0-SNAPSHOT-2014-05-01 becomes 4.0.0.SNAPSHOT-2014-05-01
 				   'Bundle-Version': version.replaceFirst("-", "."),
-				   'Built-Date': ext.buildDate,
+				   'Built-Date': ext.builtDate,
 				   'Built-JDK': System.getProperty('java.version'),
 				   'Built-Gradle': gradle.gradleVersion,
 				   'Built-By': System.getProperty('user.name')
@@ -98,11 +98,11 @@ import org.apache.tools.ant.filters.ReplaceTokens
 task prepareReleasedocs(type: Copy) {
 	from 'resources/releasedocs'
 	into releasedocsDir
-	filter(ReplaceTokens, tokens: [version: version, releasedate: buildDate, targetCompatibility: targetCompatibility.toString()])
+	filter(ReplaceTokens, tokens: [version: version, releasedate: builtDate, targetCompatibility: targetCompatibility.toString()])
 }
 
 task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs]) {
-	classifier buildDate
+	classifier builtDate
 	into ('javadoc') {
 		from(javadocAllDir)
 	}
