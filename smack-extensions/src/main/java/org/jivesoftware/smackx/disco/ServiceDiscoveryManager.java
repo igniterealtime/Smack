@@ -716,7 +716,14 @@ public class ServiceDiscoveryManager extends Manager {
         }
         serviceAddresses = new LinkedList<String>();
         // Send the disco packet to the server itself
-        DiscoverInfo info = discoverInfo(serviceName);
+        DiscoverInfo info;
+        try {
+            info = discoverInfo(serviceName);
+        } catch (XMPPErrorException e) {
+            // Be extra robust here: Return the empty linked list and log this situation
+            LOGGER.log(Level.WARNING, "Could not discover information about service", e);
+            return serviceAddresses;
+        }
         // Check if the server supports XEP-33
         if (info.containsFeature(feature)) {
             serviceAddresses.add(serviceName);
@@ -728,8 +735,14 @@ public class ServiceDiscoveryManager extends Manager {
                 return serviceAddresses;
             }
         }
-        // Get the disco items and send the disco packet to each server item
-        DiscoverItems items = discoverItems(serviceName);
+        DiscoverItems items;
+        try {
+            // Get the disco items and send the disco packet to each server item
+            items = discoverItems(serviceName);
+        } catch(XMPPErrorException e) {
+            LOGGER.log(Level.WARNING, "Could not discover items about service", e);
+            return serviceAddresses;
+        }
         for (DiscoverItems.Item item : items.getItems()) {
             try {
                 // TODO is it OK here in all cases to query without the node attribute?
