@@ -68,7 +68,7 @@ class CreateFileTask extends DefaultTask {
 }
 
 task createVersionResource(type: CreateFileTask) {
-	fileContent = version + ' (' + gitCommit + ')'
+	fileContent = version + ' (' + gitCommit + ' ' + builtDate + ')'
 	outputFile = new File(projectDir, 'src/main/resources/org.jivesoftware.smack/version')
 }
 
