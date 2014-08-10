@@ -300,29 +300,39 @@ public class MultipleRecipientManager {
         if (serviceAddress == null) {
             ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
             // Send the disco packet to the server itself
-            DiscoverInfo info = sdm.discoverInfo(serviceName);
+            DiscoverInfo info = null;
+            try {
+                info = sdm.discoverInfo(serviceName);
+            } catch (XMPPErrorException e) {
+                LOGGER.log(Level.WARNING, "Exception while discovering info of service", e);
+            }
             // Check if the server supports XEP-33
-            if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
+            if (info != null && info.containsFeature(MultipleAddresses.NAMESPACE)) {
                 serviceAddress = serviceName;
             }
             else {
                 // Get the disco items and send the disco packet to each server item
-                DiscoverItems items = sdm.discoverItems(serviceName);
-                for (DiscoverItems.Item item : items.getItems()) {
-                    try {
-                        info = sdm.discoverInfo(item.getEntityID(), item.getNode());
+                DiscoverItems items;
+                try {
+                    items = sdm.discoverItems(serviceName);
+                    for (DiscoverItems.Item item : items.getItems()) {
+                        try {
+                            info = sdm.discoverInfo(item.getEntityID(), item.getNode());
+                        }
+                        catch (XMPPErrorException|NoResponseException e) {
+                            // Don't throw this exceptions if one of the server's items fail
+                            LOGGER.log(Level.WARNING,
+                                            "Exception while discovering info of " + item.getEntityID()
+                                                            + " node: " + item.getNode(), e);
+                            continue;
+                        }
+                        if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
+                            serviceAddress = serviceName;
+                            break;
+                        }
                     }
-                    catch (XMPPErrorException|NoResponseException e) {
-                        // Don't throw this exceptions if one of the server's items fail
-                        LOGGER.log(Level.WARNING,
-                                        "Exception while discovering info of " + item.getEntityID()
-                                                        + " node: " + item.getNode(), e);
-                        continue;
-                    }
-                    if (info.containsFeature(MultipleAddresses.NAMESPACE)) {
-                        serviceAddress = serviceName;
-                        break;
-                    }
+                } catch (XMPPErrorException e) {
+                    LOGGER.log(Level.WARNING, "Exception while disvering items of service", e);
                 }
             }
             // Use the empty string to indicate that no service is known for this connection
