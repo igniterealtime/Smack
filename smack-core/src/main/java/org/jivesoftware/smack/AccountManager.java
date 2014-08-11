@@ -46,8 +46,10 @@ public class AccountManager extends Manager {
      */
     public static synchronized AccountManager getInstance(XMPPConnection connection) {
         AccountManager accountManager = INSTANCES.get(connection);
-        if (accountManager == null) 
+        if (accountManager == null) {
             accountManager = new AccountManager(connection);
+            INSTANCES.put(connection, accountManager);
+        }
         return accountManager;
     }
 
@@ -68,7 +70,6 @@ public class AccountManager extends Manager {
      */
     private AccountManager(XMPPConnection connection) {
         super(connection);
-        INSTANCES.put(connection, this);
     }
 
     /**
