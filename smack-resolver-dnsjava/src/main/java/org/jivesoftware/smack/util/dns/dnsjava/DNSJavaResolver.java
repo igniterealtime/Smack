@@ -19,6 +19,8 @@ package org.jivesoftware.smack.util.dns.dnsjava;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.initializer.SmackAndOsgiInitializer;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 import org.xbill.DNS.Lookup;
@@ -30,13 +32,10 @@ import org.xbill.DNS.Type;
  * This implementation uses the <a href="http://www.dnsjava.org/">dnsjava</a> implementation for resolving DNS addresses.
  *
  */
-public class DNSJavaResolver implements DNSResolver {
+public class DNSJavaResolver extends SmackAndOsgiInitializer implements DNSResolver {
     
     private static DNSJavaResolver instance = new DNSJavaResolver();
-    
-    private DNSJavaResolver() {
-    }
-    
+
     public static DNSResolver getInstance() {
         return instance;
     }
@@ -65,4 +64,15 @@ public class DNSJavaResolver implements DNSResolver {
 
         return res;
     }
+
+    public static void setup() {
+        DNSUtil.setDNSResolver(getInstance());
+    }
+
+    @Override
+    public List<Exception> initialize() {
+        setup();
+        return null;
+    }
+
 }

@@ -9,6 +9,8 @@
 
     <optionalStartupClasses>
         <className>org.jivesoftware.smack.util.dns.javax.JavaxResolver</className>
+        <className>org.jivesoftware.smack.util.dns.minidns.MiniDnsResolver</className>
+        <className>org.jivesoftware.smack.util.dns.dnsjava.DNSJavaResolver</className>
         <className>org.jivesoftware.smack.initializer.extensions.ExtensionsInitializer</className>
         <className>org.jivesoftware.smack.initializer.experimental.ExperimentalInitializer</className>
         <className>org.jivesoftware.smack.initializer.legacy.LegacyInitializer</className>

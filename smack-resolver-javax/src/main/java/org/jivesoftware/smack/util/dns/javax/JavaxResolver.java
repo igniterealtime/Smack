@@ -17,7 +17,6 @@
 package org.jivesoftware.smack.util.dns.javax;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -55,10 +54,6 @@ public class JavaxResolver extends SmackAndOsgiInitializer implements DNSResolve
 
         // Try to set this DNS resolver as primary one
         setup();
-    }
-    
-    public JavaxResolver() {
-        
     }
 
     public static synchronized DNSResolver getInstance() {
@@ -102,12 +97,8 @@ public class JavaxResolver extends SmackAndOsgiInitializer implements DNSResolve
 
     @Override
     public List<Exception> initialize() {
-        return initialize(null);
+        setup();
+        return null;
     }
 
-    @Override
-    public List<Exception> initialize(ClassLoader classLoader) {
-        setup();
-        return Collections.emptyList();
-    }
 }

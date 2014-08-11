@@ -238,7 +238,7 @@ subprojects {
 	}
 }
 
-['smack-resolver-javax', 'smack-sasl-javax', 'smack-sasl-provided'].each { name ->
+['smack-resolver-javax', 'smack-resolver-dnsjava', 'smack-resolver-minidns', 'smack-sasl-javax', 'smack-sasl-provided'].each { name ->
 	project(":$name") {
 		jar {
 			manifest {

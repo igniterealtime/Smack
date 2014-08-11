@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0"
+	enabled="true" immediate="true" name="Smack Resolver JavaX API">
+	<implementation
+		class="org.jivesoftware.smack.util.dns.minidns.MiniDnsResolver" />
+</scr:component>
