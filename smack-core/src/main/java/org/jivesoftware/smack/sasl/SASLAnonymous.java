@@ -27,8 +27,10 @@ import javax.security.auth.callback.CallbackHandler;
  */
 public class SASLAnonymous extends SASLMechanism {
 
+    public static final String NAME = "ANONYMOUS";
+
     public String getName() {
-        return "ANONYMOUS";
+        return NAME;
     }
 
     @Override
@@ -43,8 +45,8 @@ public class SASLAnonymous extends SASLMechanism {
     }
 
     @Override
-    protected String getAuthenticationText() throws SmackException {
-        // TODO Auto-generated method stub
+    protected byte[] getAuthenticationText() throws SmackException {
+        // ANONYMOUS has no initial response, return null
         return null;
     }
 

@@ -62,7 +62,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
     }
 
     @Override
-    protected String getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() throws SmackException {
         // DIGEST-MD5 has no initial response, return null
         return null;
     }

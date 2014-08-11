@@ -33,7 +33,6 @@ import javax.security.sasl.SaslException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.util.StringUtils;
 
 public abstract class SASLJavaXMechanism extends SASLMechanism {
 
@@ -107,19 +106,17 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
         }
     }
 
-    protected String getAuthenticationText() throws SmackException {
-        String authenticationText = null;
+    @Override
+    protected byte[] getAuthenticationText() throws SmackException {
         if (sc.hasInitialResponse()) {
-            byte[] response;
             try {
-                response = sc.evaluateChallenge(new byte[0]);
+                return sc.evaluateChallenge(new byte[0]);
             }
             catch (SaslException e) {
                 throw new SmackException(e);
             }
-            authenticationText = StringUtils.encodeBase64(response, false);
         }
-        return authenticationText;
+        return null;
     }
 
     @Override

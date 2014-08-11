@@ -169,12 +169,28 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected abstract void authenticateInternal(CallbackHandler cbh) throws SmackException;
 
     private final void authenticate() throws SmackException, NotConnectedException {
-        String authenticationText = getAuthenticationText();
+        byte[] authenticationBytes = getAuthenticationText();
+        String authenticationText;
+        if (authenticationBytes != null) {
+            authenticationText = StringUtils.encodeBase64(authenticationBytes);
+        } else {
+            // RFC6120 6.4.2 "If the initiating entity needs to send a zero-length initial response,
+            // it MUST transmit the response as a single equals sign character ("="), which
+            // indicates that the response is present but contains no data."
+            authenticationText = "=";
+        }
         // Send the authentication to the server
         connection.sendPacket(new AuthMechanism(getName(), authenticationText));
     }
 
-    protected abstract String getAuthenticationText() throws SmackException;
+    /**
+     * Should return the initial response of the SASL mechanism. The returned byte array will be
+     * send base64 encoded to the server. SASL mechanism are free to return <code>null</code> here.
+     * 
+     * @return the initial response or null
+     * @throws SmackException
+     */
+    protected abstract byte[] getAuthenticationText() throws SmackException;
 
     /**
      * The server is challenging the SASL mechanism for the stanza he just sent. Send a

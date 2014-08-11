@@ -37,8 +37,11 @@ public class SaslStanzas {
             if (mechanism == null) {
                 throw new NullPointerException("SASL mechanism shouldn't be null.");
             }
+            if (StringUtils.isNullOrEmpty(authenticationText)) {
+                throw new IllegalArgumentException("SASL authenticationText must not be null or empty (RFC6120 6.4.2)");
+            }
             this.mechanism = mechanism;
-            this.authenticationText = StringUtils.returnIfNotEmptyTrimmed(authenticationText);
+            this.authenticationText = authenticationText;
         }
 
         @Override
