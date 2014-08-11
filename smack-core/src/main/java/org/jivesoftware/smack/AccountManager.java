@@ -26,6 +26,7 @@ import java.util.WeakHashMap;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Registration;
 import org.jxmpp.util.XmppStringUtils;
@@ -226,7 +227,7 @@ public class AccountManager extends Manager {
         attributes.put("username", username);
         attributes.put("password", password);
         reg.setAttributes(attributes);
-        connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
+        createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -247,7 +248,7 @@ public class AccountManager extends Manager {
         map.put("username",XmppStringUtils.parseLocalpart(connection().getUser()));
         map.put("password",newPassword);
         reg.setAttributes(map);
-        connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
+        createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -268,7 +269,7 @@ public class AccountManager extends Manager {
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
         reg.setAttributes(attributes);
-        connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
+        createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -283,6 +284,12 @@ public class AccountManager extends Manager {
     private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Registration reg = new Registration();
         reg.setTo(connection().getServiceName());
-        info = (Registration) connection().createPacketCollectorAndSend(reg).nextResultOrThrow();
+        info = createPacketCollectorAndSend(reg).nextResultOrThrow();
+    }
+
+    private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException {
+        PacketCollector collector = connection().createPacketCollector(new PacketIDFilter(req.getPacketID()));
+        connection().sendPacket(req);
+        return collector;
     }
 }
