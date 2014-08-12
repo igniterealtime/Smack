@@ -200,7 +200,4 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         return responseValue;
     }
 
-    private static byte[] toBytes(String string) {
-        return StringUtils.toBytes(string);
-    }
 }
