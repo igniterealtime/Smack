@@ -148,9 +148,14 @@ subprojects {
 		classifier = 'javadoc'
 		from javadoc.destinationDir
 	}
+	task testJar(type: Jar) {
+		classifier = 'tests'
+		from sourceSets.test.output
+	}
 	artifacts {
 		archives sourcesJar
 		archives javadocJar
+		archives testJar
 	}
 
 	uploadArchives {
