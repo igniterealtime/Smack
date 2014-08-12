@@ -26,6 +26,7 @@ public class SASLProvidedSmackInitializer extends SmackAndOsgiInitializer {
 	@Override
 	public List<Exception> initialize() {
 		SASLAuthentication.registerSASLMechanism(new SASLDigestMD5Mechanism());
+		SASLAuthentication.registerSASLMechanism(new SASLExternalMechanism());
 		return null;
 	}
 
