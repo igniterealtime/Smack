@@ -35,23 +35,9 @@ task dnsJar(type: Jar) {
 	include('org/jivesoftware/smack/initializer/**')
 }
 
-task saslJar(type: Jar) {
-	appendix = 'sasl'
-	dependsOn classes
-	from sourceSets.main.output
-	include('org/jivesoftware/smack/SASLAuthentication.class')
-	include('org/jivesoftware/smack/SmackException.class')
-	include('org/jivesoftware/smack/XMPPConnection.class')
-	include('org/jivesoftware/smack/sasl/**')
-	include('org/jivesoftware/smack/initializer/**')
-	include('org/jivesoftware/smack/util/StringUtils.class')
-	include('org/jivesoftware/smack/util/ByteUtils.class')
-}
-
 artifacts {
 	compression compressionJar
 	dns dnsJar
-	sasl saslJar
 }
 
 class CreateFileTask extends DefaultTask {

@@ -3,6 +3,6 @@ SASL with javax.security.sasl
 Use javax.security.sasl for SASL."""
 
 dependencies {
-	compile project(path: ':smack-core', configuration: 'sasl')
+	compile project(path: ':smack-core')
 	testCompile project(':smack-core').sourceSets.test.runtimeClasspath
 }
