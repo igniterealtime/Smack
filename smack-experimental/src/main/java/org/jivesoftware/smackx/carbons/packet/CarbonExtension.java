@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.forward.Forwarded;
  * @author Georg Lukas
  */
 public class CarbonExtension implements PacketExtension {
-    public static final String NAMESPACE = "urn:xmpp:carbons:2";
+    public static final String NAMESPACE = Carbon.NAMESPACE;
 
     private final Direction dir;
     private final Forwarded fwd;
@@ -97,9 +97,9 @@ public class CarbonExtension implements PacketExtension {
      * @return a Carbon if available, null otherwise.
      */
     public static CarbonExtension getFrom(Message msg) {
-        CarbonExtension cc = msg.getExtension(Direction.received.name(), CarbonExtension.NAMESPACE);
+        CarbonExtension cc = msg.getExtension(Direction.received.name(), NAMESPACE);
         if (cc == null)
-            cc = msg.getExtension(Direction.sent.name(), CarbonExtension.NAMESPACE);
+            cc = msg.getExtension(Direction.sent.name(), NAMESPACE);
         return cc;
     }
 
@@ -116,7 +116,11 @@ public class CarbonExtension implements PacketExtension {
      * extension to any message will disallow that message from being copied. 
      */
     public static class Private implements PacketExtension {
+        public static final Private INSTANCE = new Private();
         public static final String ELEMENT = "private";
+
+        private Private() {
+        }
 
         @Override
         public String getElementName() {
@@ -125,12 +129,22 @@ public class CarbonExtension implements PacketExtension {
 
         @Override
         public String getNamespace() {
-            return CarbonExtension.NAMESPACE;
+            return NAMESPACE;
         }
 
         @Override
         public String toXML() {
-            return "<" + ELEMENT + " xmlns='" + CarbonExtension.NAMESPACE + "'/>";
+            return "<" + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
+        }
+
+        /**
+         * Marks a message "private", so that it will not be carbon-copied, by adding private packet
+         * extension to the message.
+         * 
+         * @param message the message to add the private extension to
+         */
+        public static void addTo(Message message) {
+            message.addExtension(INSTANCE);
         }
     }
 }
