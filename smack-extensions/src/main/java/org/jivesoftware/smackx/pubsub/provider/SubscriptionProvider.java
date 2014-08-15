@@ -46,7 +46,7 @@ public class SubscriptionProvider implements PacketExtensionProvider
 			if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("required"))
 				isRequired = true;
 			
-			while (tag != XmlPullParser.END_TAG && parser.getName() != "subscribe-options") tag = parser.next();
+			while (tag != XmlPullParser.END_TAG && !parser.getName().equals("subscribe-options")) tag = parser.next();
 		}
 		while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();
 		return new Subscription(jid, nodeId, subId, (state == null ? null : Subscription.State.valueOf(state)), isRequired);
