@@ -169,13 +169,13 @@ public class Bookmarks implements PrivateData {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
-        buf.openElement(ELEMENT).xmlnsAttribute(NAMESPACE);
+        buf.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngelBracket();
 
         for (BookmarkedURL urlStorage : getBookmarkedURLS()) {
             if(urlStorage.isShared()) {
                 continue;
             }
-            buf.openElement("url").attribute("name", urlStorage.getName()).attribute("url", urlStorage.getURL());
+            buf.halfOpenElement("url").attribute("name", urlStorage.getName()).attribute("url", urlStorage.getURL());
             buf.condAttribute(urlStorage.isRss(), "rss", "true");
             buf.closeEmptyElement();
         }
@@ -185,7 +185,7 @@ public class Bookmarks implements PrivateData {
             if(conference.isShared()) {
                 continue;
             }
-            buf.openElement("conference");
+            buf.halfOpenElement("conference");
             buf.attribute("name", conference.getName());
             buf.attribute("autojoin", Boolean.toString(conference.isAutoJoin()));
             buf.attribute("jid", conference.getJid());
