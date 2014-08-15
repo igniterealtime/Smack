@@ -1,5 +1,16 @@
 import org.gradle.plugins.signing.Sign
 
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
+    }
+    dependencies {
+        classpath 'org.kordamp:markdown-gradle-plugin:0.1.1'
+    }
+}
+apply plugin: 'org.kordamp.gradle.markdown'
+
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
@@ -9,7 +20,7 @@ allprojects {
 		isSnapshot = true
 		gitCommit = getGitCommit()
 		javadocAllDir = new File(buildDir, 'javadoc')
-		documentationDir = new File(projectDir, 'documentation')
+		documentationDir = new File(buildDir, 'documentation')
 		releasedocsDir = new File(buildDir, 'releasedocs')
 		rootConfigDir = new File(rootDir, 'config')
 		sonatypeCredentialsAvailable = project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
@@ -85,7 +96,13 @@ task prepareReleasedocs(type: Copy) {
 	filter(ReplaceTokens, tokens: [version: version, releasedate: buildDate, targetCompatibility: targetCompatibility.toString()])
 }
 
-task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs]) {
+markdownToHtml {
+	sourceDir = new File(projectDir, "/documentation")
+	outputDir documentationDir
+	configuration = [tables: true, fencedCodeBlocks: true]
+}
+
+task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs, markdownToHtml]) {
 	classifier buildDate
 	into ('javadoc') {
 		from(javadocAllDir)
