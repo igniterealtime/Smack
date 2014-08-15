@@ -31,21 +31,25 @@ public class Base64BinaryChunk implements PacketExtension {
     public static final String ELEMENT_CHUNK = "chunk";
     public static final String ATTRIBUTE_STREAM_ID = "streamId";
     public static final String ATTRIBUTE_LAST = "last";
+    public static final String ATTRIBUTE_NR = "nr";
 
     private final String streamId;
     private final boolean last;
     private final String text;
+    private final int nr;
 
     /**
      * Creates the extension.
      *
      * @param text     value of text attribute
      * @param streamId value of streamId attribute
+     * @param nr       value of nr attribute
      * @param last     value of last attribute
      */
-    public Base64BinaryChunk(String text, String streamId, boolean last) {
+    public Base64BinaryChunk(String text, String streamId, int nr, boolean last) {
         this.text = text;
         this.streamId = streamId;
+        this.nr = nr;
         this.last = last;
     }
 
@@ -54,9 +58,10 @@ public class Base64BinaryChunk implements PacketExtension {
      *
      * @param text     value of text attribute
      * @param streamId value of streamId attribute
+     * @param nr       value of nr attribute
      */
-    public Base64BinaryChunk(String text, String streamId) {
-        this(text, streamId, false);
+    public Base64BinaryChunk(String text, String streamId, int nr) {
+        this(text, streamId, nr, false);
     }
 
     /**
@@ -86,6 +91,15 @@ public class Base64BinaryChunk implements PacketExtension {
         return text;
     }
 
+    /**
+     * Returns nr attribute.
+     *
+     * @return nr attribute
+     */
+    public int getNr() {
+        return nr;
+    }
+
     @Override
     public String getElementName() {
         return ELEMENT_CHUNK;
@@ -101,6 +115,8 @@ public class Base64BinaryChunk implements PacketExtension {
         StringBuilder builder = new StringBuilder();
         builder.append("<chunk xmlns='urn:xmpp:http' streamId='");
         builder.append(streamId);
+        builder.append("' nr='");
+        builder.append(nr);
         builder.append("' last='");
         builder.append(Boolean.toString(last));
         builder.append("'>");

@@ -38,8 +38,10 @@ public class Base64BinaryChunkProvider implements PacketExtensionProvider {
     @Override
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
         String streamId = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_STREAM_ID);
+        String nrString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_NR);
         String lastString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_LAST);
         boolean last = false;
+        int nr = Integer.parseInt(nrString);
 
         if (lastString != null) {
             last = Boolean.parseBoolean(lastString);
@@ -64,6 +66,6 @@ public class Base64BinaryChunkProvider implements PacketExtensionProvider {
             }
         }
 
-        return new Base64BinaryChunk(text, streamId, last);
+        return new Base64BinaryChunk(text, streamId, nr, last);
     }
 }

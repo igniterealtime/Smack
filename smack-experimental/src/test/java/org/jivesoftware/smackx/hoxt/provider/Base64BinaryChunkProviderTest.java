@@ -34,7 +34,7 @@ public class Base64BinaryChunkProviderTest {
     @Test
     public void isNonLatsChunkParsedCorrectly() throws Exception {
         String base64Text = "iVBORw0KGgoAAAANSUhEUgAAASwAAAGQCAYAA";
-        String string = "<chunk xmlns='urn:xmpp:http' streamId='Stream0001'>" + base64Text + "</chunk>";
+        String string = "<chunk xmlns='urn:xmpp:http' streamId='Stream0001' nr='0'>" + base64Text + "</chunk>";
 
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
@@ -46,12 +46,13 @@ public class Base64BinaryChunkProviderTest {
         assertEquals("Stream0001", chunk.getStreamId());
         assertFalse(chunk.isLast());
         assertEquals(base64Text, chunk.getText());
+        assertEquals(0, chunk.getNr());
     }
 
     @Test
     public void isLatsChunkParsedCorrectly() throws Exception {
         String base64Text = "2uPzi9u+tVWJd+e+y1AAAAABJRU5ErkJggg==";
-        String string = "<chunk xmlns='urn:xmpp:http' streamId='Stream0001' last='true'>" + base64Text + "</chunk>";
+        String string = "<chunk xmlns='urn:xmpp:http' streamId='Stream0001' nr='1' last='true'>" + base64Text + "</chunk>";
 
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
@@ -63,5 +64,6 @@ public class Base64BinaryChunkProviderTest {
         assertEquals("Stream0001", chunk.getStreamId());
         assertTrue(chunk.isLast());
         assertEquals(base64Text, chunk.getText());
+        assertEquals(1, chunk.getNr());
     }
 }
