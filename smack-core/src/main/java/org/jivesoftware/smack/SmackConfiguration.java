@@ -35,6 +35,7 @@ import javax.net.ssl.HostnameVerifier;
 
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -254,6 +255,13 @@ public final class SmackConfiguration {
         for(String mech : mechs) {
             addSaslMech(mech);
         }
+    }
+
+    /**
+     * Sets smack debugger class
+     */
+    public static <T extends SmackDebugger> void setDebugger(Class<T> debuggerClass) {
+        System.setProperty("smack.debuggerClass", debuggerClass.getCanonicalName());
     }
 
     /**
