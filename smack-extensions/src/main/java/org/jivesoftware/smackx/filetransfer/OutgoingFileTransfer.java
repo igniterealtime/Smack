@@ -16,13 +16,18 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
-
-import java.io.*;
 
 /**
  * Handles the sending of a file to another user. File transfer's in jabber have

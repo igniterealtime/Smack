@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @author Robin Collier
  */
-public class ItemPublishEvent <T extends Item> extends SubscriptionEvent
+public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 {
 	private List<T> items;
 	private Date originalDate;

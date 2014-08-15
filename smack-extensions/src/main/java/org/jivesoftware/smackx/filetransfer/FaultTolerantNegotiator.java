@@ -16,6 +16,19 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -26,12 +39,6 @@ import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.*;
-import java.util.List;
-import java.util.ArrayList;
 
 
 /**

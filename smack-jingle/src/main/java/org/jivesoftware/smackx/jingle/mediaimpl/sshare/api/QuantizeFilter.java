@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare.api;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * A filter which quantizes an image to a set number of colors - useful for producing

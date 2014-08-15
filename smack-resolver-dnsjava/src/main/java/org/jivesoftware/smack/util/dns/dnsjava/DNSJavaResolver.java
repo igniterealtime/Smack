@@ -45,7 +45,7 @@ public class DNSJavaResolver extends SmackAndOsgiInitializer implements DNSResol
         List<SRVRecord> res = new ArrayList<SRVRecord>();
 
         Lookup lookup = new Lookup(name, Type.SRV);
-        Record recs[] = lookup.run();
+        Record[] recs = lookup.run();
         if (recs == null)
             return res;
 

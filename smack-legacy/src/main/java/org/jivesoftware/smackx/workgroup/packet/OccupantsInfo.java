@@ -17,12 +17,16 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TimeZone;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Packet used for requesting information about occupants of a room or for retrieving information

@@ -344,7 +344,7 @@ public class PacketParserUtils {
         // XmlPullParser reports namespaces in nested elements even if *only* the outer ones defines
         // it. This 'flag' ensures that when a namespace is set for an element, it won't be set again
         // in a nested element. It's an ugly workaround that has the potential to break things.
-        String namespaceElement = null;;
+        String namespaceElement = null;
         while (true) {
             if (event == XmlPullParser.START_TAG) {
                 xml.halfOpenElement(parser.getName());

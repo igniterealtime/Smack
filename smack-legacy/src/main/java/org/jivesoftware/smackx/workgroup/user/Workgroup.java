@@ -16,6 +16,32 @@
  */
 package org.jivesoftware.smackx.workgroup.user;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.WorkgroupInvitation;
 import org.jivesoftware.smackx.workgroup.WorkgroupInvitationListener;
@@ -24,26 +50,15 @@ import org.jivesoftware.smackx.workgroup.packet.DepartQueuePacket;
 import org.jivesoftware.smackx.workgroup.packet.QueueUpdate;
 import org.jivesoftware.smackx.workgroup.packet.SessionID;
 import org.jivesoftware.smackx.workgroup.packet.UserID;
-import org.jivesoftware.smackx.workgroup.settings.*;
+import org.jivesoftware.smackx.workgroup.settings.ChatSetting;
+import org.jivesoftware.smackx.workgroup.settings.ChatSettings;
+import org.jivesoftware.smackx.workgroup.settings.OfflineSettings;
+import org.jivesoftware.smackx.workgroup.settings.SoundSettings;
+import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Provides workgroup services for users. Users can join the workgroup queue, depart the

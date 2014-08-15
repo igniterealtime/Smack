@@ -78,7 +78,7 @@ public class AudioChannel {
     private Format format;
 
     private Processor processor = null;
-    private RTPManager rtpMgrs[];
+    private RTPManager[] rtpMgrs;
     private DataSource dataOutput = null;
     private AudioReceiver audioReceiver;
 
@@ -230,7 +230,7 @@ public class AudioChannel {
         ContentDescriptor cd = new ContentDescriptor(ContentDescriptor.RAW_RTP);
         processor.setContentDescriptor(cd);
 
-        Format supported[];
+        Format[] supported;
         Format chosen = null;
         boolean atLeastOneTrack = false;
 
@@ -265,7 +265,7 @@ public class AudioChannel {
                             }
 
                             if (tracks[i].getFormat().getEncoding().equals(AudioFormat.ULAW_RTP)) {
-                                Codec codec[] = new Codec[3];
+                                Codec[] codec = new Codec[3];
 
                                 codec[0] = new com.ibm.media.codec.audio.rc.RCModule();
                                 codec[1] = new com.ibm.media.codec.audio.ulaw.JavaEncoder();
@@ -339,7 +339,7 @@ public class AudioChannel {
 
         // Cheated.  Should have checked the type.
         PushBufferDataSource pbds = (PushBufferDataSource) dataOutput;
-        PushBufferStream pbss[] = pbds.getStreams();
+        PushBufferStream[] pbss = pbds.getStreams();
 
         rtpMgrs = new RTPManager[pbss.length];
         SessionAddress localAddr, destAddr;
@@ -498,7 +498,7 @@ public class AudioChannel {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         InetAddress localhost;
         try {

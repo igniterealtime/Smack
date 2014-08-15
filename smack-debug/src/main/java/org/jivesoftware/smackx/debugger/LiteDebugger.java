@@ -17,17 +17,37 @@
 
 package org.jivesoftware.smackx.debugger;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.Reader;
+import java.io.Writer;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.util.*;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.ObservableReader;
+import org.jivesoftware.smack.util.ObservableWriter;
+import org.jivesoftware.smack.util.ReaderListener;
+import org.jivesoftware.smack.util.WriterListener;
 import org.jxmpp.util.XmppStringUtils;
 
 /**

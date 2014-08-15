@@ -24,7 +24,7 @@ import java.util.Collection;
  * 
  * @author Robin Collier
  */
-public class PublishItem <T extends Item> extends NodeExtension
+public class PublishItem<T extends Item> extends NodeExtension
 {
 	protected Collection<T> items;
 	

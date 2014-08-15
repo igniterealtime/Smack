@@ -74,7 +74,7 @@ public class TcpUdpBridgeServer {
 
                     while (true) {
 
-                        byte b[] = new byte[500];
+                        byte[] b = new byte[500];
                         DatagramPacket p = new DatagramPacket(b, 500);
 
                         localUdpSocket.receive(p);
@@ -106,7 +106,7 @@ public class TcpUdpBridgeServer {
                     InetAddress remoteHost = InetAddress.getByName(remoteUdpHost);
 
                     while (true) {
-                        byte b[] = new byte[500];
+                        byte[] b = new byte[500];
 
                         int s = in.read(b);
                         //if (s == -1) continue;

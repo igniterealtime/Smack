@@ -611,8 +611,8 @@ public abstract class TransportCandidate {
         String localUser = null;
         String remoteUser = null;
         String id = null;
-        byte send[] = null;
-        byte receive[] = null;
+        byte[] send = null;
+        byte[] receive = null;
         DatagramPacket sendPacket = null;
         List<DatagramListener> listeners = new ArrayList<DatagramListener>();
         List<ResultListener> resultListeners = new ArrayList<ResultListener>();
@@ -677,9 +677,9 @@ public abstract class TransportCandidate {
 
                     long delay = 100 / replyTries;
 
-                    String str[] = new String(packet.getData(), "UTF-8").split(";");
+                    String[] str = new String(packet.getData(), "UTF-8").split(";");
                     String pass = str[0];
-                    String address[] = str[1].split(":");
+                    String[] address = str[1].split(":");
                     String ip = address[0];
                     String port = address[1];
 
@@ -750,9 +750,9 @@ public abstract class TransportCandidate {
 
                             try {
                                 LOGGER.fine("ECHO Received to: " + candidate.getIp() + ":" + candidate.getPort() + "  data: " + new String(datagramPacket.getData(), "UTF-8"));
-                                String str[] = new String(datagramPacket.getData(), "UTF-8").split(";");
+                                String[] str = new String(datagramPacket.getData(), "UTF-8").split(";");
                                 String pass = str[0];
-                                String addr[] = str[1].split(":");
+                                String[] addr = str[1].split(":");
                                 String ip = addr[0];
                                 String pt = addr[1];
 

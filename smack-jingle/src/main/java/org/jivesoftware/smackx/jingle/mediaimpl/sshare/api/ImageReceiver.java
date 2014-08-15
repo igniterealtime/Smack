@@ -16,7 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare.api;
 
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class ImageReceiver extends Canvas {
 	private static final long serialVersionUID = -7000112305305269025L;
 	private boolean on = true;
     private DatagramSocket socket;
-    private BufferedImage tiles[][];
+    private BufferedImage[][] tiles;
     private static final int tileWidth = ImageTransmitter.tileWidth;
     private InetAddress localHost;
     private InetAddress remoteHost;
@@ -58,7 +59,7 @@ public class ImageReceiver extends Canvas {
 
             new Thread(new Runnable() {
                 public void run() {
-                    byte buf[] = new byte[1024];
+                    byte[] buf = new byte[1024];
                     DatagramPacket p = new DatagramPacket(buf, 1024);
                     try {
                         while (on) {
@@ -87,7 +88,7 @@ public class ImageReceiver extends Canvas {
 
             new Thread(new Runnable() {
                 public void run() {
-                    byte buf[] = new byte[1024];
+                    byte[] buf = new byte[1024];
                     DatagramPacket p = new DatagramPacket(buf, 1024);
                     try {
                         while (on) {

@@ -16,9 +16,10 @@
  */
 package org.jivesoftware.smack.packet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

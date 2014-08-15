@@ -17,17 +17,34 @@
 
 package org.jivesoftware.smackx.debugger;
 
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.provider.ProviderManager;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.provider.ProviderManager;
 
 /**
  * The EnhancedDebuggerWindow is the main debug window that will show all the EnhancedDebuggers.

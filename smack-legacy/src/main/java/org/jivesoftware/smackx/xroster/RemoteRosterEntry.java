@@ -17,7 +17,11 @@
 
 package org.jivesoftware.smackx.xroster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a roster item, which consists of a JID and , their name and

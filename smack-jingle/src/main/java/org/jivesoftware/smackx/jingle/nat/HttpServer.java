@@ -69,7 +69,7 @@ public class HttpServer {
 
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         HttpServer httpServer = new HttpServer(Integer.parseInt(args[0]));
     }
 

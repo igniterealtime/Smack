@@ -23,7 +23,6 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 import org.junit.Test;
 
 import com.jamesmurty.utils.XMLBuilder;

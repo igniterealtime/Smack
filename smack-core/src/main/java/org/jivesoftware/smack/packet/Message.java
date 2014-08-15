@@ -17,9 +17,15 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.util.XmlStringBuilder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-import java.util.*;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents XMPP message packets. A message can be one of several types:

@@ -20,7 +20,10 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.*;
+import org.jivesoftware.smack.util.ObservableReader;
+import org.jivesoftware.smack.util.ObservableWriter;
+import org.jivesoftware.smack.util.ReaderListener;
+import org.jivesoftware.smack.util.WriterListener;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.Reader;

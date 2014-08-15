@@ -16,13 +16,15 @@
  */
 package org.jivesoftware.smackx.amp.packet;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
-
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AMPExtension implements PacketExtension {
 

@@ -16,13 +16,15 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests correct parsing of 'chunk' elements in Message stanza.

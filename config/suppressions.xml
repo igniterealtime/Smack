@@ -3,5 +3,11 @@
     "-//Puppy Crawl//DTD Suppressions 1.1//EN"
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
-	<!-- currently none -->
+	<suppress checks="IllegalImport"
+			  files="Java7HostnameVerifier.java"/>
+	<!-- GenericWhitespace has some problems with false postive, leave
+it disabled until gradle uses a checkstyle version where this is fixed
+-->
+	<suppress checks="GenericWhitespace"
+			  files="Protocol.java" />
 </suppressions>

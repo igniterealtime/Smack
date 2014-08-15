@@ -108,8 +108,8 @@ public class Base32Encoder implements StringEncoder {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         for (int i = 0; i < (b.length + 4) / 5; i++) {
-            short s[] = new short[5];
-            int t[] = new int[8];
+            short[] s = new short[5];
+            int[] t = new int[8];
 
             int blocklen = 5;
             for (int j = 0; j < 5; j++) {

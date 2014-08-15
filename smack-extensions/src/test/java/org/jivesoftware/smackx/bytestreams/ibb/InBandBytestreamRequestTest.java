@@ -16,16 +16,15 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
-import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.junit.Before;
 import org.junit.Test;

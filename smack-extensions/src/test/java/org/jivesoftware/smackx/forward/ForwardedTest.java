@@ -16,12 +16,11 @@
  */
 package org.jivesoftware.smackx.forward;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.forward.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

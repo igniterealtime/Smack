@@ -41,7 +41,7 @@ public class OctTreeQuantizer implements Quantizer {
 		int children;
 		int level;
 		OctTreeNode parent;
-		OctTreeNode leaf[] = new OctTreeNode[8];
+		OctTreeNode[] leaf = new OctTreeNode[8];
 		boolean isLeaf;
 		int count;
 		int	totalRed;

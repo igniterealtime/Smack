@@ -16,7 +16,10 @@
  */
 package org.jivesoftware.smackx.workgroup.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Utility methods frequently used by data classes and design-time

@@ -17,7 +17,10 @@
 
 package org.jivesoftware.smack.packet;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 

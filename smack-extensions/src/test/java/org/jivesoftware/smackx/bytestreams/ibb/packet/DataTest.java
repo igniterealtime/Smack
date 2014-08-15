@@ -18,15 +18,14 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
-import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.junit.Test;
 
 import com.jamesmurty.utils.XMLBuilder;

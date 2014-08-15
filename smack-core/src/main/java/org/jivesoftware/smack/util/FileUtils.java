@@ -106,7 +106,7 @@ public final class FileUtils {
         Reader reader = null;
         try {
             reader = new FileReader(file);
-            char buf[] = new char[8192];
+            char[] buf = new char[8192];
             int len;
             StringBuilder s = new StringBuilder();
             while ((len = reader.read(buf)) >= 0) {

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,7 +24,6 @@ import java.util.Properties;
 
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
-import org.jivesoftware.smackx.bytestreams.ibb.provider.OpenIQProvider;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;

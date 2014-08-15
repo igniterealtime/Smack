@@ -197,7 +197,7 @@ class Socks5Client {
      * @return SOCKS5 connection request message
      */
     private byte[] createSocks5ConnectRequest() {
-        byte addr[] = this.digest.getBytes();
+        byte[] addr = this.digest.getBytes();
 
         byte[] data = new byte[7 + addr.length];
         data[0] = (byte) 0x05; // version (SOCKS5)

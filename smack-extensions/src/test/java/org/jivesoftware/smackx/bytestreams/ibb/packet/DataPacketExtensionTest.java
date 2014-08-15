@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Properties;
 
-import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.junit.Test;
 
 import com.jamesmurty.utils.XMLBuilder;

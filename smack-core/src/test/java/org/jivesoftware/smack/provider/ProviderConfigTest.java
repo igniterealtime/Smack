@@ -22,12 +22,6 @@ import java.util.Collection;
 import org.junit.Assert;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.ExtensionProviderInfo;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.IQProviderInfo;
-import org.jivesoftware.smack.provider.ProviderFileLoader;
-import org.jivesoftware.smack.provider.ProviderLoader;
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.FileUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

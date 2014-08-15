@@ -17,10 +17,14 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * Represents a list of conversation transcripts that a user had in all his history. Each

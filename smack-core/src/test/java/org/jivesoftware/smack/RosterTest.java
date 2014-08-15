@@ -17,7 +17,12 @@
 
 package org.jivesoftware.smack;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -552,7 +557,7 @@ public class RosterTest {
                 connection.processPacket(rosterResult);
                 break;
             }
-        };
+        }
     }
 
     /**

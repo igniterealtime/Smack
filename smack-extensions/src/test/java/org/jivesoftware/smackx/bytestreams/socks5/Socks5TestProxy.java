@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smackx.bytestreams.socks5.Socks5Utils;
 
 /**
  * Simple SOCKS5 proxy for testing purposes. It is almost the same as the Socks5Proxy class but the

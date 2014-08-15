@@ -19,7 +19,6 @@ package org.jivesoftware.smack.sasl.provided;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.sasl.DigestMd5SaslTest;
-import org.jivesoftware.smack.sasl.provided.SASLDigestMD5Mechanism;
 import org.junit.Test;
 
 public class SASLDigestMD5Test extends DigestMd5SaslTest {

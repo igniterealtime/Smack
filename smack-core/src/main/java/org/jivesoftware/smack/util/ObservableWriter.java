@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smack.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An ObservableWriter is a wrapper on a Writer that notifies to its listeners when
@@ -34,7 +36,7 @@ public class ObservableWriter extends Writer {
         this.wrappedWriter = wrappedWriter;
     }
 
-    public void write(char cbuf[], int off, int len) throws IOException {
+    public void write(char[] cbuf, int off, int len) throws IOException {
         wrappedWriter.write(cbuf, off, len);
         String str = new String(cbuf, off, len);
         notifyListeners(str);
@@ -52,7 +54,7 @@ public class ObservableWriter extends Writer {
         wrappedWriter.write(c);
     }
 
-    public void write(char cbuf[]) throws IOException {
+    public void write(char[] cbuf) throws IOException {
         wrappedWriter.write(cbuf);
         String str = new String(cbuf);
         notifyListeners(str);

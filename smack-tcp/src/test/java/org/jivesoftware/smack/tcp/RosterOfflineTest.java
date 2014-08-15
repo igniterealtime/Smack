@@ -16,7 +16,8 @@
  */
 package org.jivesoftware.smack.tcp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.SmackException;

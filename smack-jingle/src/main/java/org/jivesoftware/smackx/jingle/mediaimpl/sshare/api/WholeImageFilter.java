@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.sshare.api;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;

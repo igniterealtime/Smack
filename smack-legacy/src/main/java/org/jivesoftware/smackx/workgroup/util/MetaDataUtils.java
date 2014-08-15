@@ -16,13 +16,18 @@
  */
 package org.jivesoftware.smackx.workgroup.util;
 
-import org.jivesoftware.smackx.workgroup.MetaData;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.workgroup.MetaData;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Utility class for meta-data parsing and writing.

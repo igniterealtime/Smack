@@ -17,7 +17,12 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Set;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
 

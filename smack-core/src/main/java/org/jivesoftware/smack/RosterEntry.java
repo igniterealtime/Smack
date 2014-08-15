@@ -17,11 +17,16 @@
 
 package org.jivesoftware.smack;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.RosterPacket;
 
-import java.util.*;
 
 /**
  * Each user in your roster is represented by a roster entry, which contains the user's

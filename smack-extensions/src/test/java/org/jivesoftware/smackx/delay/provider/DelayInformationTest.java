@@ -33,7 +33,6 @@ import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

@@ -72,7 +72,7 @@ public class TcpUdpBridgeClient {
 
                     while (true) {
 
-                        byte b[] = new byte[500];
+                        byte[] b = new byte[500];
                         DatagramPacket p = new DatagramPacket(b, 500);
 
                         localUdpSocket.receive(p);
@@ -104,7 +104,7 @@ public class TcpUdpBridgeClient {
                     process.start();                    
 
                     while (true) {
-                        byte b[] = new byte[500];
+                        byte[] b = new byte[500];
 
                         int s = in.read(b);
                         //if (s == -1) continue;

@@ -18,6 +18,34 @@
 package org.jivesoftware.smackx.workgroup.agent;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.OrFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.DefaultPacketExtension;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.MetaData;
@@ -29,21 +57,23 @@ import org.jivesoftware.smackx.workgroup.ext.history.ChatMetadata;
 import org.jivesoftware.smackx.workgroup.ext.macros.MacroGroup;
 import org.jivesoftware.smackx.workgroup.ext.macros.Macros;
 import org.jivesoftware.smackx.workgroup.ext.notes.ChatNotes;
-import org.jivesoftware.smackx.workgroup.packet.*;
+import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
+import org.jivesoftware.smackx.workgroup.packet.DepartQueuePacket;
+import org.jivesoftware.smackx.workgroup.packet.MonitorPacket;
+import org.jivesoftware.smackx.workgroup.packet.OccupantsInfo;
+import org.jivesoftware.smackx.workgroup.packet.OfferRequestProvider;
+import org.jivesoftware.smackx.workgroup.packet.OfferRevokeProvider;
+import org.jivesoftware.smackx.workgroup.packet.QueueDetails;
+import org.jivesoftware.smackx.workgroup.packet.QueueOverview;
+import org.jivesoftware.smackx.workgroup.packet.RoomInvitation;
+import org.jivesoftware.smackx.workgroup.packet.RoomTransfer;
+import org.jivesoftware.smackx.workgroup.packet.SessionID;
+import org.jivesoftware.smackx.workgroup.packet.Transcript;
+import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smackx.workgroup.settings.GenericSettings;
 import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
 import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class embodies the agent's active presence within a given workgroup. The application

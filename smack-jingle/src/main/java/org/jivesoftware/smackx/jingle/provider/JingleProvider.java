@@ -21,7 +21,11 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.jingle.JingleActionEnum;
-import org.jivesoftware.smackx.jingle.packet.*;
+import org.jivesoftware.smackx.jingle.packet.Jingle;
+import org.jivesoftware.smackx.jingle.packet.JingleContent;
+import org.jivesoftware.smackx.jingle.packet.JingleContentInfo;
+import org.jivesoftware.smackx.jingle.packet.JingleDescription;
+import org.jivesoftware.smackx.jingle.packet.JingleTransport;
 import org.xmlpull.v1.XmlPullParser;
 
 /**

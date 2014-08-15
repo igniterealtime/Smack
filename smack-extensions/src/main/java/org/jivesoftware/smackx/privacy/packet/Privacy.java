@@ -16,7 +16,11 @@
  */
 package org.jivesoftware.smackx.privacy.packet;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.privacy.PrivacyListManager;

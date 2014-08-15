@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
  *
  * @author Robin Collier
  */
-public interface ItemEventListener <T extends Item> 
+public interface ItemEventListener<T extends Item>
 {
 	/**
 	 * Called whenever an item is published to the node the listener

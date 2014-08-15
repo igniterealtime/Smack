@@ -16,8 +16,11 @@
  */
 package org.jivesoftware.smack.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * An ObservableReader is a wrapper on a Reader that notifies to its listeners when
@@ -59,7 +62,7 @@ public class ObservableReader extends Reader {
         return wrappedReader.read();
     }
 
-    public int read(char cbuf[]) throws IOException {
+    public int read(char[] cbuf) throws IOException {
         return wrappedReader.read(cbuf);
     }
 

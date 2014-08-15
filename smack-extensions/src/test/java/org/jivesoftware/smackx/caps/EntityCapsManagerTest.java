@@ -30,7 +30,6 @@ import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.Base64FileUrlEncoder;
 import org.jivesoftware.smack.util.StringEncoder;
 import org.jivesoftware.smackx.InitExtensions;
-import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;

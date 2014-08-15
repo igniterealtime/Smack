@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.jingle.mediaimpl.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingle.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingle.media.PayloadType;
 import org.jivesoftware.smackx.jingle.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.nat.TransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleSession;
-
-import java.util.*;
 
 /**
  * Implements a MediaManager for test purposes.

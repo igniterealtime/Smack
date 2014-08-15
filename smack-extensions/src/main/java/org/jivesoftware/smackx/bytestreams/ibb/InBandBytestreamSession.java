@@ -627,7 +627,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             buffer[bufferPointer++] = (byte) b;
         }
 
-        public synchronized void write(byte b[], int off, int len) throws IOException {
+        public synchronized void write(byte[] b, int off, int len) throws IOException {
             if (b == null) {
                 throw new NullPointerException();
             }
@@ -671,7 +671,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * @param len the number of bytes to write
          * @throws IOException if an I/O error occurred while sending or if the stream is closed
          */
-        private synchronized void writeOut(byte b[], int off, int len) throws IOException {
+        private synchronized void writeOut(byte[] b, int off, int len) throws IOException {
             if (this.isClosed) {
                 throw new IOException("Stream is closed");
             }

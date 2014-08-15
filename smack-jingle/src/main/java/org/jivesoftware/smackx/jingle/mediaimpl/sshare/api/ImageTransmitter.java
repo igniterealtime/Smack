@@ -49,7 +49,7 @@ public class ImageTransmitter implements Runnable {
     private boolean transmit = false;
     private DatagramSocket socket;
     private Rectangle area;
-    private int tiles[][][];
+    private int[][][] tiles;
     private int maxI;
     private int maxJ;
     private ImageEncoder encoder;
@@ -83,7 +83,7 @@ public class ImageTransmitter implements Runnable {
     }
 
     public void start() {
-        byte buf[] = new byte[1024];
+        byte[] buf = new byte[1024];
         final DatagramPacket p = new DatagramPacket(buf, 1024);
 
         int keyframe = 0;
@@ -108,7 +108,7 @@ public class ImageTransmitter implements Runnable {
 
                         final BufferedImage bufferedImage = capture.getSubimage(i * tileWidth, j * tileWidth, tileWidth, tileWidth);
 
-                        int pixels[] = new int[tileWidth * tileWidth];
+                        int[] pixels = new int[tileWidth * tileWidth];
 
                         PixelGrabber pg = new PixelGrabber(bufferedImage, 0, 0, tileWidth, tileWidth, pixels, 0, tileWidth);
 
