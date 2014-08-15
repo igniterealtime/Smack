@@ -157,10 +157,10 @@ public class OfflineMessageManager {
         try {
             connection.createPacketCollectorAndSend(request).nextResultOrThrow();
             // Collect the received offline messages
-            Message message = (Message) messageCollector.nextResult();
+            Message message = messageCollector.nextResult();
             while (message != null) {
                 messages.add(message);
-                message = (Message) messageCollector.nextResult();
+                message = messageCollector.nextResult();
             }
         }
         finally {
@@ -191,10 +191,10 @@ public class OfflineMessageManager {
 
         try {
             // Collect the received offline messages
-            Message message = (Message) messageCollector.nextResult();
+            Message message = messageCollector.nextResult();
             while (message != null) {
                 messages.add(message);
-                message = (Message) messageCollector.nextResult();
+                message = messageCollector.nextResult();
             }
             resultCollector.nextResultOrThrow();
         }

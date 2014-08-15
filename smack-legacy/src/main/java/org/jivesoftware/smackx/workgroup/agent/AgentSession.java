@@ -827,7 +827,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        AgentChatHistory response = (AgentChatHistory) connection.createPacketCollectorAndSend(
+        AgentChatHistory response = connection.createPacketCollectorAndSend(
                         request).nextResult();
 
         return response;
@@ -901,7 +901,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        ChatMetadata response = (ChatMetadata) connection.createPacketCollectorAndSend(request).nextResult();
+        ChatMetadata response = connection.createPacketCollectorAndSend(request).nextResult();
 
         return response.getMetadata();
     }

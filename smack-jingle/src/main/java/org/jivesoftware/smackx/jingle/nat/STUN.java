@@ -194,7 +194,7 @@ public class STUN extends IQ {
 
         PacketCollector collector = connection.createPacketCollectorAndSend(stunPacket);
 
-        STUN response = (STUN) collector.nextResult();
+        STUN response = collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();

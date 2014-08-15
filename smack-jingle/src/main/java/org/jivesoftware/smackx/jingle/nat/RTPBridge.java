@@ -396,7 +396,7 @@ public class RTPBridge extends IQ {
 
         PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
 
-        RTPBridge response = (RTPBridge) collector.nextResult();
+        RTPBridge response = collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();
@@ -470,7 +470,7 @@ public class RTPBridge extends IQ {
 
         PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
 
-        RTPBridge response = (RTPBridge) collector.nextResult();
+        RTPBridge response = collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();
@@ -499,7 +499,7 @@ public class RTPBridge extends IQ {
 
         PacketCollector collector = xmppConnection.createPacketCollectorAndSend(rtpPacket);
 
-        RTPBridge response = (RTPBridge) collector.nextResult();
+        RTPBridge response = collector.nextResult();
 
         // Cancel the collector.
         collector.cancel();
