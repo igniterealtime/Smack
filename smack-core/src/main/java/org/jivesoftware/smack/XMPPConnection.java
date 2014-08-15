@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack;
 
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -225,8 +226,9 @@ public interface XMPPConnection {
      * Removes a packet listener for received packets from this connection.
      * 
      * @param packetListener the packet listener to remove.
+     * @return true if the packet listener was removed
      */
-    public void removePacketListener(PacketListener packetListener);
+    public boolean removePacketListener(PacketListener packetListener);
 
     /**
      * Registers a packet listener with this connection. The listener will be
@@ -357,4 +359,101 @@ public interface XMPPConnection {
      * @return true if the roster will be loaded from the server when logging in.
      */
     public boolean isRosterLoadedAtLogin();
+
+    /**
+     * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
+     * <p>
+     * If there is a response, then <code>callback</code> will be invoked. The callback will be
+     * invoked at most once and it will be not invoked after the connections default reply timeout
+     * has been elapsed.
+     * </p>
+     * 
+     * @param stanza the stanza to send (required)
+     * @param replyFilter the filter used to determine response stanza (required)
+     * @param callback the callback invoked if there is a response (required)
+     * @throws NotConnectedException
+     */
+    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+                    PacketListener callback) throws NotConnectedException;
+
+    /**
+     * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
+     * <p>
+     * If there is a response, then <code>callback</code> will be invoked. If there is no response
+     * after the connections default reply timeout, then <code>exceptionCallback</code> will be invoked
+     * with a {@link SmackException.NoResponseException}. The callback will be invoked at most once.
+     * </p>
+     * 
+     * @param stanza the stanza to send (required)
+     * @param replyFilter the filter used to determine response stanza (required)
+     * @param callback the callback invoked if there is a response (required)
+     * @param exceptionCallback the callback invoked if there is an exception (optional)
+     * @throws NotConnectedException
+     */
+    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter, PacketListener callback,
+                    ExceptionCallback exceptionCallback) throws NotConnectedException;
+
+    /**
+     * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
+     * <p>
+     * If there is a response, then <code>callback</code> will be invoked. If there is no response
+     * after <code>timeout</code> milliseconds, then <code>exceptionCallback</code> will be invoked
+     * with a {@link SmackException.NoResponseException}. The callback will be invoked at most once.
+     * </p>
+     * 
+     * @param stanza the stanza to send (required)
+     * @param replyFilter the filter used to determine response stanza (required)
+     * @param callback the callback invoked if there is a response (required)
+     * @param exceptionCallback the callback invoked if there is an exception (optional)
+     * @param timeout the timeout in milliseconds to wait for a response
+     * @throws NotConnectedException
+     */
+    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+                    final PacketListener callback, final ExceptionCallback exceptionCallback,
+                    long timeout) throws NotConnectedException;
+
+    /**
+     * Send a IQ stanza and invoke <code>callback</code> if there is a result of
+     * {@link org.jivesoftware.smack.packet.IQ.Type#result} with that result IQ. The callback will
+     * not be invoked after the connections default reply timeout has been elapsed.
+     * 
+     * @param iqRequest the IQ stanza to send (required)
+     * @param callback the callback invoked if there is result response (required)
+     * @throws NotConnectedException
+     */
+    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback) throws NotConnectedException;
+
+    /**
+     * Send a IQ stanza and invoke <code>callback</code> if there is a result of
+     * {@link org.jivesoftware.smack.packet.IQ.Type#result} with that result IQ. If there is an
+     * error response <code>exceptionCallback</code> will be invoked, if not null, with the received
+     * error as {@link XMPPException.XMPPErrorException}. If there is no response after the
+     * connections default reply timeout, then <code>exceptionCallback</code> will be invoked with a
+     * {@link SmackException.NoResponseException}.
+     * 
+     * @param iqRequest the IQ stanza to send (required)
+     * @param callback the callback invoked if there is result response (required)
+     * @param exceptionCallback the callback invoked if there is an Exception optional
+     * @throws NotConnectedException
+     */
+    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback,
+                    ExceptionCallback exceptionCallback) throws NotConnectedException;
+
+    /**
+     * Send a IQ stanza and invoke <code>callback</code> if there is a result of
+     * {@link org.jivesoftware.smack.packet.IQ.Type#result} with that result IQ. If there is an
+     * error response <code>exceptionCallback</code> will be invoked, if not null, with the received
+     * error as {@link XMPPException.XMPPErrorException}. If there is no response after
+     * <code>timeout</code>, then <code>exceptionCallback</code> will be invoked with a
+     * {@link SmackException.NoResponseException}.
+     * 
+     * @param iqRequest the IQ stanza to send (required)
+     * @param callback the callback invoked if there is result response (required)
+     * @param exceptionCallback the callback invoked if there is an Exception optional
+     * @param timeout the timeout in milliseconds to wait for a response
+     * @throws NotConnectedException
+     */
+    public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
+                    final ExceptionCallback exceptionCallback, long timeout)
+                    throws NotConnectedException;
 }

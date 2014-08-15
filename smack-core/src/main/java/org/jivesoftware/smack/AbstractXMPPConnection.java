@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -697,17 +698,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void removePacketListener(PacketListener packetListener) {
-        recvListeners.remove(packetListener);
-    }
-
-    /**
-     * Get a map of all packet listeners for received packets of this connection.
-     * 
-     * @return a map of all packet listeners for received packets.
-     */
-    protected Map<PacketListener, ListenerWrapper> getPacketListeners() {
-        return recvListeners;
+    public boolean removePacketListener(PacketListener packetListener) {
+        return recvListeners.remove(packetListener) != null;
     }
 
     @Override
@@ -1106,6 +1098,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
             // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
             executorService.shutdownNow();
+            removeCallbacksService.shutdownNow();
         }
         finally {
             super.finalize();
@@ -1120,5 +1113,87 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public boolean isRosterLoadedAtLogin() {
         return config.isRosterLoadedAtLogin();
+    }
+
+    private final ScheduledExecutorService removeCallbacksService = new ScheduledThreadPoolExecutor(1,
+                    new SmackExecutorThreadFactory(connectionCounterValue));
+
+    @Override
+    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+                    PacketListener callback) throws NotConnectedException {
+        sendStanzaWithResponseCallback(stanza, replyFilter, callback, null);
+    }
+
+    @Override
+    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+                    PacketListener callback, ExceptionCallback exceptionCallback)
+                    throws NotConnectedException {
+        sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
+                        getPacketReplyTimeout());
+    }
+
+    @Override
+    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+                    final PacketListener callback, final ExceptionCallback exceptionCallback,
+                    long timeout) throws NotConnectedException {
+        if (stanza == null) {
+            throw new IllegalArgumentException("stanza must not be null");
+        }
+        if (replyFilter == null) {
+            // While Smack allows to add PacketListeners with a PacketFilter value of 'null', we
+            // disallow it here in the async API as it makes no sense
+            throw new IllegalArgumentException("replyFilter must not be null");
+        }
+        if (callback == null) {
+            throw new IllegalArgumentException("callback must not be null");
+        }
+        final PacketListener packetListener = new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                try {
+                    XMPPErrorException.ifHasErrorThenThrow(packet);
+                    callback.processPacket(packet);
+                }
+                catch (XMPPErrorException e) {
+                    if (exceptionCallback != null) {
+                        exceptionCallback.processException(e);
+                    }
+                }
+                finally {
+                    removePacketListener(this);
+                }
+            }
+        };
+        removeCallbacksService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                boolean removed = removePacketListener(packetListener);
+                if (!removed) {
+                    exceptionCallback.processException(new NoResponseException());
+                }
+            }
+        }, timeout, TimeUnit.MILLISECONDS);
+        addPacketListener(packetListener, replyFilter);
+        sendPacket(stanza);
+    }
+
+    @Override
+    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback)
+                    throws NotConnectedException {
+        sendIqWithResponseCallback(iqRequest, callback, null);
+    }
+
+    @Override
+    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback,
+                    ExceptionCallback exceptionCallback) throws NotConnectedException {
+        sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getPacketReplyTimeout());
+    }
+
+    @Override
+    public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
+                    final ExceptionCallback exceptionCallback, long timeout)
+                    throws NotConnectedException {
+        PacketFilter replyFilter = new IQReplyFilter(iqRequest, this);
+        sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
 }

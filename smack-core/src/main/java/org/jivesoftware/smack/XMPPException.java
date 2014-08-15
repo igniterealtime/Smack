@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
 
@@ -132,6 +133,13 @@ public abstract class XMPPException extends Exception {
         @Override
         public String toString() {
             return getMessage();
+        }
+
+        public static void ifHasErrorThenThrow(Packet packet) throws XMPPErrorException {
+            XMPPError xmppError = packet.getError();
+            if (xmppError != null) {
+                throw new XMPPErrorException(xmppError);
+            }
         }
     }
 

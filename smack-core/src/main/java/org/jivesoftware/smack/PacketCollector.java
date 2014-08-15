@@ -24,7 +24,6 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.XMPPError;
 
 /**
  * Provides a mechanism to collect packets into a result queue that pass a
@@ -180,10 +179,7 @@ public class PacketCollector {
             throw new NoResponseException();
         }
 
-        XMPPError xmppError = result.getError();
-        if (xmppError != null) {
-            throw new XMPPErrorException(xmppError);
-        }
+        XMPPErrorException.ifHasErrorThenThrow(result);
 
         return result;
     }

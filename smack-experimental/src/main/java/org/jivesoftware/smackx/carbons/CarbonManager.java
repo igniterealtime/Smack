@@ -29,7 +29,6 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -121,17 +120,11 @@ public class CarbonManager extends Manager {
     public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException {
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        connection().addPacketListener(new PacketListener() {
+        connection().sendIqWithResponseCallback(setIQ, new PacketListener() {
             public void processPacket(Packet packet) {
-                IQ result = (IQ)packet;
-                if (result.getType() == IQ.Type.result) {
-                    enabled_state = new_state;
-                }
-                connection().removePacketListener(this);
+                enabled_state = new_state;
             }
-        }, new IQReplyFilter(setIQ, connection()));
-
-        connection().sendPacket(setIQ);
+        });
     }
 
     /**
