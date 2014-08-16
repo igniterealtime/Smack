@@ -49,6 +49,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
+import org.jivesoftware.smack.rosterstore.RosterStore;
 
 public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(AbstractXMPPConnection.class.getName());

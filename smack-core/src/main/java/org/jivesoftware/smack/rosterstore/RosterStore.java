@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.rosterstore;
 
 import java.util.Collection;
 
@@ -29,13 +29,13 @@ public interface RosterStore {
 
     /**
      * This method returns a collection of all roster items contained in this store.
-     * @return List of {@link RosterEntry}
+     * @return List of {@link org.jivesoftware.smack.RosterEntry}
      */
     public Collection<RosterPacket.Item> getEntries();
     /**
      * This method returns the roster item in this store for the given JID.
      * @param bareJid The bare JID of the RosterEntry
-     * @return The {@link RosterEntry} which belongs to that user
+     * @return The {@link org.jivesoftware.smack.RosterEntry} which belongs to that user
      */
     public RosterPacket.Item getEntry(String bareJid);
     /**

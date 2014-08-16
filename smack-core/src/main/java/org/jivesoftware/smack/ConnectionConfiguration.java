@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;

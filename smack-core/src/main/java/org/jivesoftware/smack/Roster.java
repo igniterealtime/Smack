@@ -46,6 +46,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
+import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jxmpp.util.XmppStringUtils;
 
 /**

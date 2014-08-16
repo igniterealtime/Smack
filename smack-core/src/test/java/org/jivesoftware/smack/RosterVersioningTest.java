@@ -32,6 +32,8 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.rosterstore.DirectoryRosterStore;
+import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

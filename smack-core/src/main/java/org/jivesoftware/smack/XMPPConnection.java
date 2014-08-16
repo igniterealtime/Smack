@@ -23,6 +23,7 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.rosterstore.RosterStore;
 
 /**
  * The abstract XMPPConnection class provides an interface for connections to a XMPP server and
