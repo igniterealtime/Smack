@@ -55,6 +55,8 @@ public class Socks5TestProxy {
     /* port of the test proxy */
     private int port = 7777;
 
+    private boolean startupComplete;
+
     /**
      * Private constructor.
      */
@@ -169,6 +171,19 @@ public class Socks5TestProxy {
      * @return socket or null if there is no socket for the given digest
      */
     public Socket getSocket(String digest) {
+        synchronized(this) {
+            if (!startupComplete) {
+                try {
+                    wait(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (!startupComplete) {
+                        throw new IllegalStateException("Startup of Socks5TestProxy failed within 5 seconds");
+                    }
+                }
+            }
+        }
         return this.connectionMap.get(digest);
     }
 
@@ -205,6 +220,10 @@ public class Socks5TestProxy {
                     // initialize connection
                     establishConnection(socket);
 
+                    synchronized (this) {
+                        startupComplete = true;
+                        notify();
+                    }
                 }
                 catch (SocketException e) {
                     /* do nothing */
