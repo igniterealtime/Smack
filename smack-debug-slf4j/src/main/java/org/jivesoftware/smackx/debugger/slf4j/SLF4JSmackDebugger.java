@@ -58,7 +58,7 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
      * Makes Smack use this Debugger
      */
     public static void enable() {
-        SmackConfiguration.setDebugger(SLF4JSmackDebugger.class);
+        SmackConfiguration.setDebuggerFactory(new SLF4JDebuggerFactory());
     }
 
     /**

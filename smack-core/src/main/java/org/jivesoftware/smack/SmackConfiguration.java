@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +37,9 @@ import javax.net.ssl.HostnameVerifier;
 
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.debugger.ReflectionDebuggerFactory;
 import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -72,6 +76,8 @@ public final class SmackConfiguration {
     private static Set<String> disabledSmackClasses = new HashSet<String>();
 
     private final static List<XMPPInputOutputStream> compressionHandlers = new ArrayList<XMPPInputOutputStream>(2);
+
+    private static SmackDebuggerFactory debuggerFactory = new ReflectionDebuggerFactory();
 
     /**
      * Value that indicates whether debugging is enabled. When enabled, a debug
@@ -258,10 +264,38 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Sets smack debugger class
+     * Sets Smack debugger factory.
+     *
+     * @param debuggerFactory new debugger factory implementation to be used by Smack
      */
-    public static <T extends SmackDebugger> void setDebugger(Class<T> debuggerClass) {
-        System.setProperty("smack.debuggerClass", debuggerClass.getCanonicalName());
+    public static void setDebuggerFactory(SmackDebuggerFactory debuggerFactory) {
+        SmackConfiguration.debuggerFactory = debuggerFactory;
+    }
+
+    /**
+     * @return a debugger factory or <code>null</code>
+     */
+    public static SmackDebuggerFactory getDebuggerFactory() {
+        return debuggerFactory;
+    }
+
+    /**
+     * Creates new debugger instance with given arguments as parameters. May
+     * return <code>null</code> if no DebuggerFactory is set or if the factory
+     * did not produce a debugger.
+     * 
+     * @param connection
+     * @param writer
+     * @param reader
+     * @return a new debugger or <code>null</code>
+     */
+    public static SmackDebugger createDebugger(XMPPConnection connection, Writer writer, Reader reader) {
+        SmackDebuggerFactory factory = getDebuggerFactory();
+        if (factory == null) {
+            return null;
+        } else {
+            return factory.create(connection, writer, reader);
+        }
     }
 
     /**
