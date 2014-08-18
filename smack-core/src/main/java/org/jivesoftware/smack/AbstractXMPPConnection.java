@@ -19,7 +19,6 @@ package org.jivesoftware.smack;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,16 +52,6 @@ import org.jivesoftware.smack.rosterstore.RosterStore;
 
 public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(AbstractXMPPConnection.class.getName());
-
-    /**
-     * Possible default debugger implementations. The order of enumeration is the one in which we try
-     * to instantiate these.
-     */
-    private static final String[] DEBUGGERS = new String[] {
-                    "org.jivesoftware.smackx.debugger.EnhancedDebugger",
-                    "org.jivesoftware.smackx.debugger.android.AndroidDebugger",
-                    "org.jivesoftware.smack.debugger.LiteDebugger",
-                    "org.jivesoftware.smack.debugger.ConsoleDebugger" };
 
     /** 
      * Counter to uniquely identify connections that are created.
@@ -798,62 +787,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // If debugging is enabled, we open a window and write out all network traffic.
         if (config.isDebuggerEnabled()) {
             if (debugger == null) {
-                // Detect the debugger class to use.
-                String className = null;
-                // Use try block since we may not have permission to get a system
-                // property (for example, when an applet).
-                try {
-                    className = System.getProperty("smack.debuggerClass");
-                }
-                catch (Throwable t) {
-                    // Ignore.
-                }
-                Class<?> debuggerClass = null;
-                if (className != null) {
-                    try {
-                        debuggerClass = Class.forName(className);
-                    }
-                    catch (Exception e) {
-                        LOGGER.warning("Unabled to instantiate debugger class " + className);
-                    }
-                }
-                if (debuggerClass == null) {
-                    for (String debugger : DEBUGGERS) {
-                        try {
-                            debuggerClass = Class.forName(debugger);
-                        }
-                        catch (ClassNotFoundException cnfe) {
-                            LOGGER.fine("Did not find debugger class '" + debugger + "'");
-                        }
-                        catch (Exception ex) {
-                            LOGGER.warning("Unabled to instantiate either Smack debugger class");
-                        }
-                        if (debuggerClass != null) {
-                            // We found a debugger, let's use it
-                            break;
-                        }
-                    }
-                }
-                if (debuggerClass != null) {
-                    // Create a new debugger instance. If an exception occurs then disable the
-                    // debugging
-                    // option
-                    try {
-                        Constructor<?> constructor = debuggerClass.getConstructor(
-                                        XMPPConnection.class, Writer.class, Reader.class);
-                        debugger = (SmackDebugger) constructor.newInstance(this, writer, reader);
-                        reader = debugger.getReader();
-                        writer = debugger.getWriter();
-                    }
-                    catch (Exception e) {
-                        throw new IllegalArgumentException(
-                                        "Can't initialize the configured debugger!", e);
-                    }
-                } else {
-                    LOGGER.severe("Debugging enabled but could not find debugger class");
-                }
+                debugger = SmackConfiguration.createDebugger(this, writer, reader);
             }
-            else {
+
+            if (debugger == null) {
+                LOGGER.severe("Debugging enabled but could not find debugger class");
+            } else {
                 // Obtain new reader and writer from the existing debugger
                 reader = debugger.newConnectionReader(reader);
                 writer = debugger.newConnectionWriter(writer);
