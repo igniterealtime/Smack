@@ -274,11 +274,6 @@ public class XMPPTCPConnection extends XMPPConnection {
         authenticated = true;
         anonymous = false;
 
-        // Set presence to online.
-        if (config.isSendPresence()) {
-            sendPacket(new Presence(Presence.Type.available));
-        }
-
         // Stores the authentication for future reconnection
         setLoginInfo(username, password, resource);
 
@@ -290,6 +285,14 @@ public class XMPPTCPConnection extends XMPPConnection {
             debugger.userHasLogged(user);
         }
         callConnectionAuthenticatedListener();
+
+        // Set presence to online. It is important that this is done after
+        // callConnectionAuthenticatedListener(), as this call will also
+        // eventually load the roster. And we should load the roster before we
+        // send the initial presence.
+        if (config.isSendPresence()) {
+            sendPacket(new Presence(Presence.Type.available));
+        }
     }
 
     @Override
