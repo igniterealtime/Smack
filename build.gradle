@@ -72,6 +72,13 @@ allprojects {
 		}
 	}
 
+	compileJava {
+		// Some systems may not have set their platform default
+		// converter to 'utf8', but we use unicode in our source
+		// files. Therefore ensure that javac uses unicode
+		options.encoding = "utf8"
+	}
+
 	if (JavaVersion.current().isJava8Compatible()) {
 		tasks.withType(Javadoc) {
 			options.addStringOption('Xdoclint:none', '-quiet')
