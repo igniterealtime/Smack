@@ -277,11 +277,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             }
         }
 
-        // Set presence to online.
-        if (config.isSendPresence()) {
-            sendPacket(new Presence(Presence.Type.available));
-        }
-
         // Indicate that we're now authenticated.
         authenticated = true;
         anonymous = false;
@@ -296,6 +291,14 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             debugger.userHasLogged(user);
         }
         callConnectionAuthenticatedListener();
+
+        // Set presence to online. It is important that this is done after
+        // callConnectionAuthenticatedListener(), as this call will also
+        // eventually load the roster. And we should load the roster before we
+        // send the initial presence.
+        if (config.isSendPresence()) {
+            sendPacket(new Presence(Presence.Type.available));
+        }
     }
 
     public void loginAnonymously() throws XMPPException, SmackException, IOException {
