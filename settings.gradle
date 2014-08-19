@@ -11,7 +11,7 @@ include 'smack-core',
 		'smack-sasl-provided',
 		'smack-compression-jzlib',
 		'smack-legacy',
-		'smack-jingle',
+		'smack-jingle-old',
 		'smack-bosh',
 		'smack-android',
 		'smack-java7'
