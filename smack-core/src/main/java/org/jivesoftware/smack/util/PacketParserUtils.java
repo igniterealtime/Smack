@@ -443,7 +443,9 @@ public class PacketParserUtils {
                         presence.addExtension(PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
                 	}
                 	catch (Exception e) {
-                		LOGGER.warning("Failed to parse extension packet in Presence packet.");
+                        LOGGER.log(Level.WARNING,
+                                        "Failed to parse extension packet in Presence packet.",
+                                        e);
                 	}
                 }
             }
