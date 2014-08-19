@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.bytestreams.socks5.packet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -145,8 +144,8 @@ public class Bytestream extends IQ {
      * 
      * @return Returns the list of stream hosts contained in the packet.
      */
-    public Collection<StreamHost> getStreamHosts() {
-        return Collections.unmodifiableCollection(streamHosts);
+    public List<StreamHost> getStreamHosts() {
+        return Collections.unmodifiableList(streamHosts);
     }
 
     /**

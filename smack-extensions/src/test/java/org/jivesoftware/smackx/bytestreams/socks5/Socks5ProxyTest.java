@@ -30,6 +30,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -144,7 +145,13 @@ public class Socks5ProxyTest {
         proxy.addLocalAddress("same");
         proxy.addLocalAddress("same");
 
-        assertEquals(2, proxy.getLocalAddresses().size());
+        int sameCount = 0;
+        for(String localAddress : proxy.getLocalAddresses()) {
+            if ("same".equals(localAddress)) {
+                sameCount++;
+            }
+        }
+        assertEquals(1, sameCount);
     }
 
     /**
@@ -297,7 +304,6 @@ public class Socks5ProxyTest {
         proxy.start();
 
         assertTrue(proxy.isRunning());
-
         String digest = new String(new byte[] { (byte) 0xAA });
 
         // add digest to allow connection

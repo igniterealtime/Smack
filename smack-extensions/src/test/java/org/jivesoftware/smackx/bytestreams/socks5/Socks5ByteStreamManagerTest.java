@@ -799,10 +799,9 @@ public class Socks5ByteStreamManagerTest {
 
             public void verify(Bytestream request, Bytestream response) {
                 assertEquals(response.getSessionID(), request.getSessionID());
-                assertEquals(2, request.getStreamHosts().size());
-                StreamHost streamHost1 = (StreamHost) request.getStreamHosts().toArray()[0];
+                StreamHost streamHost1 = request.getStreamHosts().get(0);
                 assertEquals(response.getUsedHost().getJID(), streamHost1.getJID());
-                StreamHost streamHost2 = (StreamHost) request.getStreamHosts().toArray()[1];
+                StreamHost streamHost2 = request.getStreamHosts().get(request.getStreamHosts().size() - 1);
                 assertEquals(response.getUsedHost().getJID(), streamHost2.getJID());
                 assertEquals("localAddress", streamHost2.getAddress());
             }

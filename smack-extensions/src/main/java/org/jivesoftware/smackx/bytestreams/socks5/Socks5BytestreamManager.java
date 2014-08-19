@@ -652,24 +652,34 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         // get local proxy singleton
         Socks5Proxy socks5Server = Socks5Proxy.getSocks5Proxy();
 
-        if (socks5Server.isRunning()) {
-            List<String> addresses = socks5Server.getLocalAddresses();
-            int port = socks5Server.getPort();
-
-            if (addresses.size() >= 1) {
-                List<StreamHost> streamHosts = new ArrayList<StreamHost>();
-                for (String address : addresses) {
-                    StreamHost streamHost = new StreamHost(this.connection.getUser(), address);
-                    streamHost.setPort(port);
-                    streamHosts.add(streamHost);
-                }
-                return streamHosts;
-            }
-
+        if (!socks5Server.isRunning()) {
+            // server is not running
+            return null;
         }
+        List<String> addresses = socks5Server.getLocalAddresses();
+        if (addresses.isEmpty()) {
+            // local address could not be determined
+            return null;
+        }
+        final int port = socks5Server.getPort();
 
-        // server is not running or local address could not be determined
-        return null;
+        List<StreamHost> streamHosts = new ArrayList<StreamHost>();
+        outerloop: for (String address : addresses) {
+            // Prevent loopback addresses from appearing as streamhost
+            final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1" };
+            for (String loopbackAddress : loopbackAddresses) {
+                // Use 'startsWith' here since IPv6 addresses may have scope ID,
+                // ie. the part after the '%' sign.
+                if (address.startsWith(loopbackAddress)) {
+                    continue outerloop;
+                }
+            }
+            StreamHost streamHost = new StreamHost(this.connection.getUser(),
+                            address);
+            streamHost.setPort(port);
+            streamHosts.add(streamHost);
+        }
+        return streamHosts;
     }
 
     /**
