@@ -221,7 +221,7 @@ public class Bytestream extends IQ {
     @Override
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.openElement(IQ.QUERY_ELEMENT);
+        xml.halfOpenElement(IQ.QUERY_ELEMENT);
         xml.xmlnsAttribute(NAMESPACE);
 
         switch(getType()) {
