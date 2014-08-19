@@ -221,17 +221,13 @@ public class Bytestream extends IQ {
     @Override
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT);
+        xml.halfOpenElement(QUERY_ELEMENT);
         xml.xmlnsAttribute(NAMESPACE);
 
         switch(getType()) {
         case set:
-            if (getSessionID() != null) {
-                xml.attribute("sid", getSessionID());
-            }
-            if (getMode() != null) {
-                xml.attribute("mode", getMode());
-            }
+            xml.optAttribute("sid", getSessionID());
+            xml.optAttribute("mode", getMode());
             xml.rightAngelBracket();
             if (getToActivate() == null) {
                 for (StreamHost streamHost : getStreamHosts()) {
@@ -256,11 +252,13 @@ public class Bytestream extends IQ {
             break;
         case get:
             xml.closeEmptyElement();
+            // Return here so that we don't run into the
+            // closeElement(QUERY_ELEMNT) section
             return xml;
         default:
             throw new IllegalStateException();
         }
-        xml.closeElement(IQ.QUERY_ELEMENT);
+        xml.closeElement(QUERY_ELEMENT);
 
         return xml;
     }
