@@ -72,8 +72,7 @@ public class Socks5ClientTest {
 
             @Override
             public void run() {
-                StreamHost streamHost = new StreamHost(proxyJID, serverAddress);
-                streamHost.setPort(serverPort);
+                StreamHost streamHost = new StreamHost(proxyJID, serverAddress, serverPort);
 
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
 
@@ -131,8 +130,7 @@ public class Socks5ClientTest {
 
             @Override
             public void run() {
-                StreamHost streamHost = new StreamHost(proxyJID, serverAddress);
-                streamHost.setPort(serverPort);
+                StreamHost streamHost = new StreamHost(proxyJID, serverAddress, serverPort);
 
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
                 try {
@@ -194,8 +192,7 @@ public class Socks5ClientTest {
 
             @Override
             public void run() {
-                StreamHost streamHost = new StreamHost(proxyJID, serverAddress);
-                streamHost.setPort(serverPort);
+                StreamHost streamHost = new StreamHost(proxyJID, serverAddress, serverPort);
 
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
                 try {
@@ -261,8 +258,7 @@ public class Socks5ClientTest {
 
             @Override
             public void run() {
-                StreamHost streamHost = new StreamHost(proxyJID, serverAddress);
-                streamHost.setPort(serverPort);
+                StreamHost streamHost = new StreamHost(proxyJID, serverAddress, serverPort);
 
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
 

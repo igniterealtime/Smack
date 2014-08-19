@@ -49,7 +49,6 @@ public class Bytestream extends IQ {
      * The default constructor
      */
     public Bytestream() {
-        super();
     }
 
     /**
@@ -59,7 +58,6 @@ public class Bytestream extends IQ {
      * @see #setSessionID(String)
      */
     public Bytestream(final String SID) {
-        super();
         setSessionID(SID);
     }
 
@@ -123,8 +121,7 @@ public class Bytestream extends IQ {
      * @return The added stream host.
      */
     public StreamHost addStreamHost(final String JID, final String address, final int port) {
-        StreamHost host = new StreamHost(JID, address);
-        host.setPort(port);
+        StreamHost host = new StreamHost(JID, address, port);
         addStreamHost(host);
 
         return host;
@@ -276,7 +273,11 @@ public class Bytestream extends IQ {
 
         private final String addy;
 
-        private int port = 0;
+        private final int port;
+
+        public StreamHost(String jid, String address) {
+            this(jid, address, 0);
+        }
 
         /**
          * Default constructor.
@@ -284,9 +285,10 @@ public class Bytestream extends IQ {
          * @param JID The JID of the stream host.
          * @param address The internet address of the stream host.
          */
-        public StreamHost(final String JID, final String address) {
+        public StreamHost(final String JID, final String address, int port) {
             this.JID = JID;
             this.addy = address;
+            this.port = port;
         }
 
         /**
@@ -305,15 +307,6 @@ public class Bytestream extends IQ {
          */
         public String getAddress() {
             return addy;
-        }
-
-        /**
-         * Sets the port of the stream host.
-         * 
-         * @param port The port on which the potential stream host would accept the connection.
-         */
-        public void setPort(final int port) {
-            this.port = port;
         }
 
         /**

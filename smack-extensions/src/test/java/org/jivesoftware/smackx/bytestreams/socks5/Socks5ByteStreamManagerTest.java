@@ -813,8 +813,9 @@ public class Socks5ByteStreamManagerTest {
 
         // connect to proxy as target
         socks5Proxy.addTransfer(digest);
-        StreamHost streamHost = new StreamHost(targetJID, socks5Proxy.getLocalAddresses().get(0));
-        streamHost.setPort(socks5Proxy.getPort());
+        StreamHost streamHost = new StreamHost(targetJID,
+                        socks5Proxy.getLocalAddresses().get(0),
+                        socks5Proxy.getPort());
         Socks5Client socks5Client = new Socks5Client(streamHost, digest);
         InputStream inputStream = socks5Client.getSocket(2000).getInputStream();
 

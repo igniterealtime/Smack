@@ -674,10 +674,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
                     continue outerloop;
                 }
             }
-            StreamHost streamHost = new StreamHost(this.connection.getUser(),
-                            address);
-            streamHost.setPort(port);
-            streamHosts.add(streamHost);
+            streamHosts.add(new StreamHost(connection.getUser(), address, port));
         }
         return streamHosts;
     }

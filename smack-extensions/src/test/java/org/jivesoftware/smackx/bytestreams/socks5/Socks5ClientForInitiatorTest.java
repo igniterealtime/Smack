@@ -95,8 +95,8 @@ public class Socks5ClientForInitiatorTest {
 
         // build stream host information for local SOCKS5 proxy
         StreamHost streamHost = new StreamHost(connection.getUser(),
-                        socks5Proxy.getLocalAddresses().get(0));
-        streamHost.setPort(socks5Proxy.getPort());
+                        socks5Proxy.getLocalAddresses().get(0),
+                        socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);
@@ -142,8 +142,8 @@ public class Socks5ClientForInitiatorTest {
 
         // build stream host information
         final StreamHost streamHost = new StreamHost(connection.getUser(),
-                        socks5Proxy.getLocalAddresses().get(0));
-        streamHost.setPort(socks5Proxy.getPort());
+                        socks5Proxy.getLocalAddresses().get(0),
+                        socks5Proxy.getPort());
 
         // target connects to local SOCKS5 proxy
         Thread targetThread = new Thread() {
@@ -216,8 +216,8 @@ public class Socks5ClientForInitiatorTest {
         Socks5TestProxy socks5Proxy = Socks5TestProxy.getProxy(proxyPort);
         socks5Proxy.start();
 
-        StreamHost streamHost = new StreamHost(proxyJID, socks5Proxy.getAddress());
-        streamHost.setPort(socks5Proxy.getPort());
+        StreamHost streamHost = new StreamHost(proxyJID,
+                        socks5Proxy.getAddress(), socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);
@@ -276,8 +276,8 @@ public class Socks5ClientForInitiatorTest {
         Socks5TestProxy socks5Proxy = Socks5TestProxy.getProxy(proxyPort);
         socks5Proxy.start();
 
-        StreamHost streamHost = new StreamHost(proxyJID, socks5Proxy.getAddress());
-        streamHost.setPort(socks5Proxy.getPort());
+        StreamHost streamHost = new StreamHost(proxyJID,
+                        socks5Proxy.getAddress(), socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);
