@@ -457,4 +457,11 @@ public interface XMPPConnection {
     public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
                     throws NotConnectedException;
+
+    /**
+     * Returns the timestamp in milliseconds when the last stanza was received.
+     * 
+     * @return the timestamp in milliseconds
+     */
+    public long getLastStanzaReceived();
 }

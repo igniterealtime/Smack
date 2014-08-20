@@ -79,6 +79,7 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                         Packet packet = PacketParserUtils.parseStanza(parser, connection);
                         if (packet != null) {
                             connection.processPacket(packet);
+                            // TODO call connection.reportStanzaReceived here
                         } else if (parser.getName().equals("challenge")) {
                             // The server is challenging the SASL authentication
                             // made by the client

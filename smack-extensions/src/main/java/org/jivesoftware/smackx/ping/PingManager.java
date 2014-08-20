@@ -68,8 +68,6 @@ public class PingManager extends Manager {
 
     private static final PacketFilter PING_PACKET_FILTER = new AndFilter(
                     new PacketTypeFilter(Ping.class), IQTypeFilter.GET);
-    private static final PacketFilter PONG_PACKET_FILTER = new AndFilter(new PacketTypeFilter(
-                    Pong.class), IQTypeFilter.RESULT);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -134,11 +132,6 @@ public class PingManager extends Manager {
 
     private ScheduledFuture<?> nextAutomaticPing;
 
-    /**
-     * The time in milliseconds the last pong was received.
-     */
-    private long lastPongReceived = -1;
-
     private PingManager(XMPPConnection connection) {
         super(connection);
         executorService = new ScheduledThreadPoolExecutor(1,
@@ -155,12 +148,6 @@ public class PingManager extends Manager {
                 connection().sendPacket(pong);
             }
         }, PING_PACKET_FILTER);
-        connection.addPacketListener(new PacketListener() {
-            @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
-                lastPongReceived = System.currentTimeMillis();
-            }
-        }, PONG_PACKET_FILTER);
         connection.addConnectionListener(new AbstractConnectionListener() {
             @Override
             public void authenticated(XMPPConnection connection) {
@@ -306,15 +293,6 @@ public class PingManager extends Manager {
         pingFailedListeners.remove(listener);
     }
 
-    /**
-     * Returns the timestamp when the last XMPP Pong was received.
-     * 
-     * @return the timestamp of the last XMPP Pong
-     */
-    public long getLastReceivedPong() {
-        return lastPongReceived;
-    }
-
     private void maybeSchedulePingServerTask() {
         maybeSchedulePingServerTask(0);
     }
@@ -358,12 +336,12 @@ public class PingManager extends Manager {
                 // Ping has been disabled
                 return;
             }
-            long lastReceivedPong = getLastReceivedPong();
-            if (lastReceivedPong > 0) {
+            long lastStanzaReceived = connection.getLastStanzaReceived();
+            if (lastStanzaReceived > 0) {
                 long now = System.currentTimeMillis();
                 // Calculate the delta from now to the next ping time. If delta is positive, the
                 // last successful ping was not to long ago, so we can defer the current ping.
-                int delta = (int) (((pingInterval * 1000) - (now - lastReceivedPong)) / 1000);
+                int delta = (int) (((pingInterval * 1000) - (now - lastStanzaReceived)) / 1000);
                 if (delta > 0) {
                     maybeSchedulePingServerTask(delta);
                     return;

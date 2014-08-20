@@ -1002,6 +1002,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         }
                         if (packet != null) {
                             processPacket(packet);
+                            reportStanzaReceived();
                         }
                         // We found an opening stream. Record information about it, then notify
                         // the connectionID lock so that the packet reader startup can finish.

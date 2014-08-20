@@ -1136,4 +1136,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         PacketFilter replyFilter = new IQReplyFilter(iqRequest, this);
         sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
+
+    private long lastStanzaReceived;
+
+    public long getLastStanzaReceived() {
+        return lastStanzaReceived;
+    }
+
+    protected void reportStanzaReceived() {
+        this.lastStanzaReceived = System.currentTimeMillis();
+    }
 }
