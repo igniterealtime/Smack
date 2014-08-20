@@ -138,6 +138,19 @@ task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs, mark
 	}
 }
 
+task maybeCheckForSnapshotDependencies {
+	// Don't check for Snapshot dependencies if this is a snapshot.
+	if (isSnapshot) return
+	allprojects { project ->
+		project.configurations.runtime.each {
+			if (it.toString().contains("-SNAPSHOT"))
+				throw new Exception("Release build contains snapshot dependencies: " + it)
+		}
+	}
+}
+
+test { dependsOn maybeCheckForSnapshotDependencies }
+
 jar {
 	// Root project should not create empty jar artifact
 	enabled = false
