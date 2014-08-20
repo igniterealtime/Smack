@@ -666,7 +666,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         List<StreamHost> streamHosts = new ArrayList<StreamHost>();
         outerloop: for (String address : addresses) {
             // Prevent loopback addresses from appearing as streamhost
-            final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1" };
+            final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1", "::1" };
             for (String loopbackAddress : loopbackAddresses) {
                 // Use 'startsWith' here since IPv6 addresses may have scope ID,
                 // ie. the part after the '%' sign.
