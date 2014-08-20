@@ -54,7 +54,7 @@ public class UserSearch extends IQ {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(IQ.QUERY_ELEMENT);
         xml.xmlnsAttribute(NAMESPACE);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.append(getExtensionsXML());
         xml.closeElement(IQ.QUERY_ELEMENT);
         return xml;

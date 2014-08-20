@@ -92,7 +92,7 @@ public class Registration extends IQ {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement("query");
         xml.xmlnsAttribute("jabber:iq:register");
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optElement("instructions", instructions);
         if (attributes != null && attributes.size() > 0) {
             for (String name : attributes.keySet()) {

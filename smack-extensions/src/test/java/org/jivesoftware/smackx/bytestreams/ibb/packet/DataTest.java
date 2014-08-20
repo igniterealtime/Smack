@@ -76,7 +76,7 @@ public class DataTest {
         dataTag.xmlnsAttribute(DataPacketExtension.NAMESPACE);
         dataTag.attribute("seq", "0");
         dataTag.attribute("sid", "i781hf64");
-        dataTag.rightAngelBracket();
+        dataTag.rightAngleBracket();
         dataTag.escape(encodedData);
         dataTag.closeElement(DataPacketExtension.ELEMENT);
         when(dpe.toXML()).thenReturn(dataTag);

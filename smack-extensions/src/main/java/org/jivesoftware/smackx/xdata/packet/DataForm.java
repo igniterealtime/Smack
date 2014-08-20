@@ -214,7 +214,7 @@ public class DataForm implements PacketExtension {
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.attribute("type", getType());
-        buf.rightAngelBracket();
+        buf.rightAngleBracket();
 
         buf.optElement("title", getTitle());
         for (String instruction : getInstructions()) {

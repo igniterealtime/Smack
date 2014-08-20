@@ -138,7 +138,7 @@ public class DataPacketExtension implements PacketExtension {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("seq", Long.toString(seq));
         xml.attribute("sid", sessionID);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.append(data);
         xml.closeElement(this);
         return xml;

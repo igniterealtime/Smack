@@ -234,7 +234,7 @@ public class Presence extends Packet {
         if (type != Type.available) {
             buf.attribute("type", type);
         }
-        buf.rightAngelBracket();
+        buf.rightAngleBracket();
 
         buf.optElement("status", status);
         if (priority != Integer.MIN_VALUE) {

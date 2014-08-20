@@ -76,7 +76,7 @@ public class RosterPacket extends IQ {
         buf.halfOpenElement("query");
         buf.xmlnsAttribute("jabber:iq:roster");
         buf.optAttribute("ver", rosterVersion);
-        buf.rightAngelBracket();
+        buf.rightAngleBracket();
 
         synchronized (rosterItems) {
             for (Item entry : rosterItems) {
@@ -220,7 +220,7 @@ public class RosterPacket extends IQ {
             xml.optAttribute("name", name);
             xml.optAttribute("subscription", itemType);
             xml.optAttribute("ask", itemStatus);
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
 
             for (String groupName : groupNames) {
                 xml.openElement(GROUP).escape(groupName).closeElement(GROUP);

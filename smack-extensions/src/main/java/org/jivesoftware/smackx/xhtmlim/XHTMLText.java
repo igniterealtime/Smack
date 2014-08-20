@@ -56,7 +56,7 @@ public class XHTMLText {
         text.halfOpenElement(A);
         text.optAttribute(HREF, href);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -78,7 +78,7 @@ public class XHTMLText {
     public XHTMLText appendOpenBlockQuoteTag(String style) {
         text.halfOpenElement(BLOCKQUOTE);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -102,7 +102,7 @@ public class XHTMLText {
         text.xmlnsAttribute(NAMESPACE);
         text.optElement(STYLE, style);
         text.xmllangAttribute(lang);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -185,7 +185,7 @@ public class XHTMLText {
         }
         text.halfOpenElement(H + Integer.toString(level));
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -220,7 +220,7 @@ public class XHTMLText {
         text.optAttribute("height", height);
         text.optAttribute("src", src);
         text.optAttribute("width", width);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -235,7 +235,7 @@ public class XHTMLText {
     public XHTMLText appendLineItemTag(String style) {
         text.halfOpenElement(LI);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -248,7 +248,7 @@ public class XHTMLText {
     public XHTMLText appendOpenOrderedListTag(String style) {
         text.halfOpenElement(OL);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -272,7 +272,7 @@ public class XHTMLText {
     public XHTMLText appendOpenUnorderedListTag(String style) {
         text.halfOpenElement(UL);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -296,7 +296,7 @@ public class XHTMLText {
     public XHTMLText appendOpenParagraphTag(String style) {
         text.halfOpenElement(P);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -320,7 +320,7 @@ public class XHTMLText {
     public XHTMLText appendOpenInlinedQuoteTag(String style) {
         text.halfOpenElement(Q);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 
@@ -343,7 +343,7 @@ public class XHTMLText {
     public XHTMLText appendOpenSpanTag(String style) {
         text.halfOpenElement(SPAN);
         text.optAttribute(STYLE, style);
-        text.rightAngelBracket();
+        text.rightAngleBracket();
         return this;
     }
 

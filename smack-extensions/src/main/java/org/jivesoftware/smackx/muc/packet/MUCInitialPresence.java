@@ -56,7 +56,7 @@ public class MUCInitialPresence implements PacketExtension {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optElement("password", getPassword());
         xml.optElement(getHistory());
         xml.closeElement(this);

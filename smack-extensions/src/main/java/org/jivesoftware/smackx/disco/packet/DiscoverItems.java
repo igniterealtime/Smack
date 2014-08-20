@@ -102,7 +102,7 @@ public class DiscoverItems extends IQ {
         xml.halfOpenElement("query");
         xml.xmlnsAttribute(NAMESPACE);
         xml.optAttribute("node", getNode());
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
 
         for (Item item : items) {
             xml.append(item.toXML());

@@ -88,7 +88,7 @@ public class MUCOwner extends IQ {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(IQ.QUERY_ELEMENT);
         xml.xmlnsAttribute(NAMESPACE);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         synchronized (items) {
             for (MUCItem item : items) {
                 xml.append(item.toXML());

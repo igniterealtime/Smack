@@ -80,7 +80,7 @@ public class CarbonExtension implements PacketExtension {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.append(fwd.toXML());
         xml.closeElement(this);
         return xml;

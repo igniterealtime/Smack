@@ -422,7 +422,7 @@ public class Message extends Packet {
         if (type != Type.normal) {
             buf.attribute("type", type);
         }
-        buf.rightAngelBracket();
+        buf.rightAngleBracket();
 
         // Add the subject in the default language
         Subject defaultSubject = getMessageSubject(null);
@@ -434,7 +434,7 @@ public class Message extends Packet {
             // Skip the default language
             if(subject.equals(defaultSubject))
                 continue;
-            buf.halfOpenElement("subject").xmllangAttribute(subject.language).rightAngelBracket();
+            buf.halfOpenElement("subject").xmllangAttribute(subject.language).rightAngleBracket();
             buf.escape(subject.subject);
             buf.closeElement("subject");
         }
@@ -448,7 +448,7 @@ public class Message extends Packet {
             // Skip the default language
             if(body.equals(defaultBody))
                 continue;
-            buf.halfOpenElement(BODY).xmllangAttribute(body.getLanguage()).rightAngelBracket();
+            buf.halfOpenElement(BODY).xmllangAttribute(body.getLanguage()).rightAngleBracket();
             buf.escape(body.getMessage());
             buf.closeElement(BODY);
         }

@@ -66,7 +66,7 @@ public class Forwarded implements PacketExtension {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optElement(getDelayInformation());
         xml.append(forwardedPacket.toXML());
         xml.closeElement(this);

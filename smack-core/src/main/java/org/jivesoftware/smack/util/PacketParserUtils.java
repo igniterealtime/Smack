@@ -372,7 +372,7 @@ public class PacketParserUtils {
                     isEmptyElement = true;
                 }
                 else {
-                    xml.rightAngelBracket();
+                    xml.rightAngleBracket();
                 }
             }
             else if (event == XmlPullParser.END_TAG) {

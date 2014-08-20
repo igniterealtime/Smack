@@ -101,7 +101,7 @@ public class DelayInformation implements PacketExtension {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("stamp", XmppDateTime.formatXEP0082Date(stamp));
         xml.optAttribute("from", from);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optAppend(reason);
         xml.closeElement(this);
         return xml;

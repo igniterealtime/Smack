@@ -162,7 +162,7 @@ public class XMPPError {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(ERROR);
         xml.optAttribute("type", type.name().toLowerCase(Locale.US));
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
 
         if (condition != null) {
             xml.halfOpenElement(condition);
@@ -173,7 +173,7 @@ public class XMPPError {
             xml.halfOpenElement(Packet.TEXT);
             xml.xmllangAttribute("en");
             xml.xmlnsAttribute(NAMESPACE);
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             xml.escape(message);
             xml.closeElement(Packet.TEXT);
         }

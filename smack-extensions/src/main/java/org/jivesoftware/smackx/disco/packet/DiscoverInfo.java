@@ -175,7 +175,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
         xml.halfOpenElement("query");
         xml.xmlnsAttribute(NAMESPACE);
         xml.optAttribute("node", getNode());
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         for (Identity identity : identities) {
             xml.append(identity.toXML());
         }

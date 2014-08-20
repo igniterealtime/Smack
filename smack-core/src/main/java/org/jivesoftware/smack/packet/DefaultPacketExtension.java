@@ -84,7 +84,7 @@ public class DefaultPacketExtension implements PacketExtension {
     @Override
     public CharSequence toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement(elementName).xmlnsAttribute(namespace).rightAngelBracket();
+        buf.halfOpenElement(elementName).xmlnsAttribute(namespace).rightAngleBracket();
         for (String name : getNames()) {
             String value = getValue(name);
             buf.element(name, value);

@@ -47,7 +47,7 @@ public class SaslStanzas {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).attribute("mechanism", mechanism).rightAngelBracket();
+            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).attribute("mechanism", mechanism).rightAngleBracket();
             xml.optAppend(authenticationText);
             xml.closeElement(ELEMENT);
             return xml;
@@ -69,7 +69,7 @@ public class SaslStanzas {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder().halfOpenElement(ELEMENT).xmlnsAttribute(
-                            NAMESPACE).rightAngelBracket();
+                            NAMESPACE).rightAngleBracket();
             xml.optAppend(data);
             xml.closeElement(ELEMENT);
             return xml;
@@ -95,7 +95,7 @@ public class SaslStanzas {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngelBracket();
+            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.optAppend(authenticationText);
             xml.closeElement(ELEMENT);
             return xml;
@@ -132,7 +132,7 @@ public class SaslStanzas {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngelBracket();
+            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.optAppend(data);
             xml.closeElement(ELEMENT);
             return xml;
@@ -180,7 +180,7 @@ public class SaslStanzas {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(ELEMENT).rightAngelBracket();
+            xml.halfOpenElement(ELEMENT).xmlnsAttribute(ELEMENT).rightAngleBracket();
             xml.emptyElement(saslErrorString);
             xml.closeElement(ELEMENT);
             return xml;

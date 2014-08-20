@@ -224,7 +224,7 @@ public class Bytestream extends IQ {
         case set:
             xml.optAttribute("sid", getSessionID());
             xml.optAttribute("mode", getMode());
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             if (getToActivate() == null) {
                 for (StreamHost streamHost : getStreamHosts()) {
                     xml.append(streamHost.toXML());
@@ -235,7 +235,7 @@ public class Bytestream extends IQ {
             }
             break;
         case result:
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             if (getUsedHost() != null) {
                 xml.append(getUsedHost().toXML());
             }
@@ -416,7 +416,7 @@ public class Bytestream extends IQ {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder(this);
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             xml.escape(getTarget());
             xml.closeElement(this);
             return xml;

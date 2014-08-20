@@ -55,7 +55,7 @@ public class Bind extends IQ {
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
 
-        xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngelBracket();
+        xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
         xml.optElement("resource", resource);
         xml.optElement("jid", jid);
         xml.closeElement(ELEMENT);

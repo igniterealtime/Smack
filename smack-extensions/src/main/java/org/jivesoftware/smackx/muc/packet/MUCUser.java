@@ -51,7 +51,7 @@ public class MUCUser implements PacketExtension {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optElement(getInvite());
         xml.optElement(getDecline());
         xml.optElement(getItem());
@@ -268,7 +268,7 @@ public class MUCUser implements PacketExtension {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.optAttribute("to", getTo());
             xml.optAttribute("from", getFrom());
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             xml.optElement("reason", getReason());
             xml.closeElement(this);
             return xml;
@@ -354,7 +354,7 @@ public class MUCUser implements PacketExtension {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.optAttribute("to", getTo());
             xml.optAttribute("from", getFrom());
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             xml.optElement("reason", getReason());
             xml.closeElement(this);
             return xml;

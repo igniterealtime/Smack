@@ -271,7 +271,7 @@ public class FormField {
         buf.optAttribute("label", getLabel());
         buf.optAttribute("var", getVariable());
         buf.optAttribute("type", getType());
-        buf.rightAngelBracket();
+        buf.rightAngleBracket();
         // Add elements
         buf.optElement("desc", getDescription());
         buf.condEmptyElement(isRequired(), "required");
@@ -355,7 +355,7 @@ public class FormField {
             xml.halfOpenElement(ELEMENT);
             // Add attribute
             xml.optAttribute("label", getLabel());
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
 
             // Add element
             xml.element("value", getValue());

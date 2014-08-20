@@ -137,7 +137,7 @@ public class JivePropertiesExtension implements PacketExtension {
     @Override
     public CharSequence toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         // Loop through all properties and write them out.
         for (String name : getPropertyNames()) {
             Object value = getProperty(name);
@@ -209,7 +209,7 @@ public class JivePropertiesExtension implements PacketExtension {
                 }
             }
             xml.attribute("type", type);
-            xml.rightAngelBracket();
+            xml.rightAngleBracket();
             xml.escape(valueStr);
             xml.closeElement("value");
             xml.closeElement("property");

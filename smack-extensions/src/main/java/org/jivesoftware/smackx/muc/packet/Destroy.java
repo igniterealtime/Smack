@@ -72,7 +72,7 @@ public class Destroy implements Element {
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optAttribute("jid", getJid());
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optElement("reason", getReason());
         xml.closeElement(this);
         return xml;

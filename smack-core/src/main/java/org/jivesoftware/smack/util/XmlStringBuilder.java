@@ -20,7 +20,7 @@ import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 public class XmlStringBuilder implements Appendable, CharSequence {
-    public static final String RIGHT_ANGEL_BRACKET = Character.toString('>');
+    public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
 
     private final LazyStringBuilder sb;
 
@@ -86,13 +86,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder openElement(String name) {
-        halfOpenElement(name).rightAngelBracket();
+        halfOpenElement(name).rightAngleBracket();
         return this;
     }
 
     public XmlStringBuilder closeElement(String name) {
         sb.append("</").append(name);
-        rightAngelBracket();
+        rightAngleBracket();
         return this;
     }
 
@@ -106,9 +106,24 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
-    public XmlStringBuilder rightAngelBracket() {
-        sb.append(RIGHT_ANGEL_BRACKET);
+    /**
+     * Add a right angle bracket '>'
+     * 
+     * @return a reference to this object.
+     */
+    public XmlStringBuilder rightAngleBracket() {
+        sb.append(RIGHT_ANGLE_BRACKET);
         return this;
+    }
+
+    /**
+     * 
+     * @return a reference to this object
+     * @deprecated use {@link #rightAngleBracket()} instead
+     */
+    @Deprecated
+    public XmlStringBuilder rightAngelBracket() {
+        return rightAngleBracket();
     }
 
     /**

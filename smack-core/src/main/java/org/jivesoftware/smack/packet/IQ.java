@@ -86,7 +86,7 @@ public abstract class IQ extends Packet {
         else {
             buf.attribute("type", type.toString());
         }
-        buf.rightAngelBracket();
+        buf.rightAngleBracket();
         // Add the query section if there is one.
         buf.optAppend(getChildElementXML());
         // Add the error sub-packet, if there is one.

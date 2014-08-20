@@ -80,7 +80,7 @@ public class XHTMLExtension implements PacketExtension {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         // Loop through all the bodies and append them to the string buffer
         for (CharSequence body : getBodies()) {
             xml.append(body);

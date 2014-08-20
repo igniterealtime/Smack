@@ -143,7 +143,7 @@ public class Version extends IQ {
     @Override
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT).xmlnsAttribute(NAMESPACE).rightAngelBracket();
+        xml.halfOpenElement(IQ.QUERY_ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
         // Although not really optional elements, 'name' and 'version' are not set when sending a
         // version request. So we must handle the case that those are 'null' here.
         xml.optElement("name", name);

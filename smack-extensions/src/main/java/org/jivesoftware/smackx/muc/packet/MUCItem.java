@@ -173,7 +173,7 @@ public class MUCItem implements Element {
         xml.optAttribute("jid", getJid());
         xml.optAttribute("nick", getNick());
         xml.optAttribute("role", getRole());
-        xml.rightAngelBracket();
+        xml.rightAngleBracket();
         xml.optElement("reason", getReason());
         if (getActor() != null) {
             xml.halfOpenElement("actor").attribute("jid", getActor()).closeEmptyElement();
