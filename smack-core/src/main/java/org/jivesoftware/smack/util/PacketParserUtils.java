@@ -262,8 +262,17 @@ public class PacketParserUtils {
             // Advance to the text of the Element
             int event = parser.next();
             if (event != XmlPullParser.TEXT) {
-                throw new XmlPullParserException(
-                                "Non-empty element tag not followed by text, while Mixed Content (XML 3.2.2) is disallowed");
+                if (event == XmlPullParser.END_TAG) {
+                    // Assume this is the end tag of the start tag at the
+                    // beginning of this method. Typical examples where this
+                    // happens are body elements containing the empty string,
+                    // ie. <body></body>, which appears to be valid XMPP, or a
+                    // least it's not explicitly forbidden by RFC 6121 5.2.3
+                    return "";
+                } else {
+                    throw new XmlPullParserException(
+                                    "Non-empty element tag not followed by text, while Mixed Content (XML 3.2.2) is disallowed");
+                }
             }
             res = parser.getText();
             event = parser.next();
