@@ -301,7 +301,7 @@ public class PingManager extends Manager {
      * Cancels any existing periodic ping task if there is one and schedules a new ping task if
      * pingInterval is greater then zero.
      *
-     * @param delta the delta to the last received ping in seconds
+     * @param delta the delta to the last received stanza in seconds
      */
     private synchronized void maybeSchedulePingServerTask(int delta) {
         maybeStopPingServerTask();
@@ -339,11 +339,11 @@ public class PingManager extends Manager {
             long lastStanzaReceived = connection.getLastStanzaReceived();
             if (lastStanzaReceived > 0) {
                 long now = System.currentTimeMillis();
-                // Calculate the delta from now to the next ping time. If delta is positive, the
-                // last successful ping was not to long ago, so we can defer the current ping.
-                int delta = (int) (((pingInterval * 1000) - (now - lastStanzaReceived)) / 1000);
-                if (delta > 0) {
-                    maybeSchedulePingServerTask(delta);
+                // Delta since the last stanza was received
+                int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
+                // If the delta is small then the ping interval, then we can defer the ping
+                if (deltaInSeconds < pingInterval) {
+                    maybeSchedulePingServerTask(deltaInSeconds);
                     return;
                 }
             }
