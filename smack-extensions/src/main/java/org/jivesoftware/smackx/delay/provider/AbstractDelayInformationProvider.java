@@ -31,11 +31,21 @@ public abstract class AbstractDelayInformationProvider implements PacketExtensio
         String from = parser.getAttributeValue("", "from");
         String reason = null;
         if (!parser.isEmptyElementTag()) {
+            int event = parser.next();
+            switch (event) {
+            case XmlPullParser.TEXT:
+                reason = parser.getText();
+                parser.next();
+                break;
+            case XmlPullParser.END_TAG:
+                reason = "";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected event: " + event);
+            }
+        } else {
             parser.next();
-            assert(parser.getEventType() == XmlPullParser.TEXT);
-            reason = parser.getText();
         }
-        parser.next();
         assert(parser.getEventType() == XmlPullParser.END_TAG);
         Date stamp = parseDate(stampString);
         return new DelayInformation(stamp, from, reason);
