@@ -47,7 +47,6 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
-import org.jivesoftware.smackx.ping.packet.Pong;
 
 /**
  * Implements the XMPP Ping as defined by XEP-0199. The XMPP Ping protocol allows one entity to
@@ -59,8 +58,6 @@ import org.jivesoftware.smackx.ping.packet.Pong;
  * @see <a href="http://www.xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP Ping</a>
  */
 public class PingManager extends Manager {
-    public static final String NAMESPACE = "urn:xmpp:ping";
-
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
 
     private static final Map<XMPPConnection, PingManager> INSTANCES = Collections
@@ -137,15 +134,15 @@ public class PingManager extends Manager {
         executorService = new ScheduledThreadPoolExecutor(1,
                         new PingExecutorThreadFactory(connection.getConnectionCounter()));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-        sdm.addFeature(PingManager.NAMESPACE);
+        sdm.addFeature(Ping.NAMESPACE);
         INSTANCES.put(connection, this);
 
         connection.addPacketListener(new PacketListener() {
             // Send a Pong for every Ping
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {
-                Pong pong = new Pong(packet);
-                connection().sendPacket(pong);
+                Ping ping = (Ping) packet;
+                connection().sendPacket(ping.getPong());
             }
         }, PING_PACKET_FILTER);
         connection.addConnectionListener(new AbstractConnectionListener() {
@@ -213,7 +210,7 @@ public class PingManager extends Manager {
      * @throws NotConnectedException 
      */
     public boolean isPingSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, PingManager.NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, Ping.NAMESPACE);
     }
 
     /**

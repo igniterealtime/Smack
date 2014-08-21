@@ -17,22 +17,31 @@
 package org.jivesoftware.smackx.ping.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.ping.PingManager;
 
 public class Ping extends IQ {
 
     public static final String ELEMENT = "ping";
-    
+    public static final String NAMESPACE = "urn:xmpp:ping";
+
     public Ping() {
     }
-    
+
     public Ping(String to) {
         setTo(to);
         setType(IQ.Type.get);
     }
-    
+
     @Override
     public String getChildElementXML() {
-        return "<" + ELEMENT + " xmlns=\'" + PingManager.NAMESPACE + "\' />";
+        return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
+    }
+
+    /**
+     * Create a XMPP Pong for this Ping
+     * 
+     * @return the Pong
+     */
+    public IQ getPong() {
+        return createResultIQ(this);
     }
 }
