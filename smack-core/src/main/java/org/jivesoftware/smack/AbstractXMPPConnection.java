@@ -1108,7 +1108,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             @Override
             public void run() {
                 boolean removed = removePacketListener(packetListener);
-                if (!removed) {
+                // If the packetListener got removed, then it was never run and
+                // we never received a response, inform the exception callback
+                if (removed && exceptionCallback != null) {
                     exceptionCallback.processException(new NoResponseException());
                 }
             }
