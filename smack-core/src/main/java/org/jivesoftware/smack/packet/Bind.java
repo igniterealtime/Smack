@@ -40,7 +40,7 @@ public class Bind extends IQ {
 
     public Bind(String resource, String jid) {
         this.resource = resource;
-        this.jid = null;
+        this.jid = jid;
     }
 
     public String getResource() {
