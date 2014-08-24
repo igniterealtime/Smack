@@ -17,6 +17,9 @@
 
 package org.jivesoftware.smackx.muc;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -30,50 +33,57 @@ import org.jivesoftware.smackx.xdata.FormField;
  */
 public class RoomInfo {
 
+    private static final Logger LOGGER = Logger.getLogger(RoomInfo.class.getName());
+
     /**
      * JID of the room. The node of the JID is commonly used as the ID of the room or name.
      */
-    private String room;
+    private final String room;
     /**
      * Description of the room.
      */
-    private String description = "";
+    private final String description;
+
+    /**
+     * Short Description of the room.
+     */
+    private final String shortDescription;
+
     /**
      * Last known subject of the room.
      */
-    private String subject = "";
+    private final String subject;
     /**
      * Current number of occupants in the room.
      */
-    private int occupantsCount = -1;
+    private final int occupantsCount;
     /**
      * A room is considered members-only if an invitation is required in order to enter the room.
      * Any user that is not a member of the room won't be able to join the room unless the user
      * decides to register with the room (thus becoming a member).
      */
-    private boolean membersOnly;
+    private final boolean membersOnly;
     /**
      * Moderated rooms enable only participants to speak. Users that join the room and aren't
      * participants can't speak (they are just visitors).
      */
-    private boolean moderated;
+    private final boolean moderated;
     /**
      * Every presence packet can include the JID of every occupant unless the owner deactives this
      * configuration.
      */
-    private boolean nonanonymous;
+    private final boolean nonanonymous;
     /**
      * Indicates if users must supply a password to join the room.
      */
-    private boolean passwordProtected;
+    private final boolean passwordProtected;
     /**
      * Persistent rooms are saved to the database to make sure that rooms configurations can be
      * restored in case the server goes down.
      */
-    private boolean persistent;
+    private final boolean persistent;
 
     RoomInfo(DiscoverInfo info) {
-        super();
         this.room = info.getFrom();
         // Get the information based on the discovered features
         this.membersOnly = info.containsFeature("muc_membersonly");
@@ -81,19 +91,42 @@ public class RoomInfo {
         this.nonanonymous = info.containsFeature("muc_nonanonymous");
         this.passwordProtected = info.containsFeature("muc_passwordprotected");
         this.persistent = info.containsFeature("muc_persistent");
+
+        List<DiscoverInfo.Identity> identities = info.getIdentities();
+        // XEP-45 6.4 is not really clear on the topic if an identity needs to
+        // be send together with the disco result and how to call this description.
+        if (!identities.isEmpty()) {
+            this.shortDescription = identities.get(0).getName();
+        } else {
+            LOGGER.fine("DiscoverInfo does not contain any Identity: " + info.toXML());
+            this.shortDescription = "";
+        }
+        String subject = "";
+        int occupantsCount = -1;
+        String description = "";
         // Get the information based on the discovered extended information
         Form form = Form.getFormFrom(info);
         if (form != null) {
             FormField descField = form.getField("muc#roominfo_description");
-            this.description = ( descField == null || descField.getValues().isEmpty() ) ? "" : descField.getValues().get(0);
+            if (descField != null && !descField.getValues().isEmpty()) {
+                // Prefer the extended result description
+                description = descField.getValues().get(0);
+            }
 
             FormField subjField = form.getField("muc#roominfo_subject");
-            this.subject = ( subjField == null || subjField.getValues().isEmpty() ) ? "" : subjField.getValues().get(0);
+            if (subjField != null && !subjField.getValues().isEmpty()) {
+                subject = subjField.getValues().get(0);
+            }
 
             FormField occCountField = form.getField("muc#roominfo_occupants");
-            this.occupantsCount = occCountField == null ? -1 : Integer.parseInt(occCountField.getValues()
-                    .get(0));
+            if (occCountField != null) {
+                occupantsCount = Integer.parseInt(occCountField.getValues().get(
+                                0));
+            }
         }
+        this.description = description;
+        this.subject = subject;
+        this.occupantsCount = occupantsCount;
     }
 
     /**
@@ -106,19 +139,36 @@ public class RoomInfo {
     }
 
     /**
+     * Returns the discovered short description.
+     * <p>
+     * The description return here was provided as value of the name attribute
+     * of the returned identity within the disco#info result.
+     * </p>
+     * 
+     * @return the discovered short description of the room.
+     */
+    public String getShortDesription() {
+        return shortDescription;
+    }
+
+    /**
      * Returns the discovered description of the room.
-     *
-     * @return the discovered description of the room.
+     * <p>
+     * The description returned by this method was provided as value of the form
+     * field of the extended disco info result. It may be <code>null</code>.
+     * </p>
+     * 
+     * @return the discovered description of the room or null
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Returns the discovered subject of the room. The subject may be empty if the room does not
+     * Returns the discovered subject of the room. The subject may be null if the room does not
      * have a subject.
      *
-     * @return the discovered subject of the room.
+     * @return the discovered subject of the room or null
      */
     public String getSubject() {
         return subject;
