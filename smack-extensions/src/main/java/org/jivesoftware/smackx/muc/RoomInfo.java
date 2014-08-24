@@ -17,7 +17,10 @@
 
 package org.jivesoftware.smackx.muc;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -45,9 +48,9 @@ public class RoomInfo {
     private final String description;
 
     /**
-     * Short Description of the room.
+     * Name of the room.
      */
-    private final String shortDescription;
+    private final String name;
 
     /**
      * Last known subject of the room.
@@ -83,6 +86,47 @@ public class RoomInfo {
      */
     private final boolean persistent;
 
+    /**
+     * Maximum number of history messages returned by the room.
+     */
+    private final int maxhistoryfetch;
+
+    /**
+     * Contact Address
+     */
+    private final List<String> contactJid;
+
+    /**
+     * Natural Language for Room Discussions
+     */
+    private final String lang;
+
+    /**
+     * An associated LDAP group that defined room membership. Should be an LDAP
+     * Distinguished Name
+     */
+    private final String ldapgroup;
+
+    /**
+     * True if the room subject can be modified by participants
+     */
+    private final Boolean subjectmod;
+
+    /**
+     * URL for archived discussion logs
+     */
+    private final URL logs;
+
+    /**
+     * An associated pubsub node
+     */
+    private final String pubsub;
+
+    /**
+     * The rooms extended configuration form;
+     */
+    private final Form form;
+
     RoomInfo(DiscoverInfo info) {
         this.room = info.getFrom();
         // Get the information based on the discovered features
@@ -96,16 +140,23 @@ public class RoomInfo {
         // XEP-45 6.4 is not really clear on the topic if an identity needs to
         // be send together with the disco result and how to call this description.
         if (!identities.isEmpty()) {
-            this.shortDescription = identities.get(0).getName();
+            this.name = identities.get(0).getName();
         } else {
-            LOGGER.fine("DiscoverInfo does not contain any Identity: " + info.toXML());
-            this.shortDescription = "";
+            LOGGER.warning("DiscoverInfo does not contain any Identity: " + info.toXML());
+            this.name = "";
         }
         String subject = "";
         int occupantsCount = -1;
         String description = "";
+        int maxhistoryfetch = -1;
+        List<String> contactJid = null;
+        String lang = null;
+        String ldapgroup = null;
+        Boolean subjectmod = null;
+        URL logs = null;
+        String pubsub = null;
         // Get the information based on the discovered extended information
-        Form form = Form.getFormFrom(info);
+        form = Form.getFormFrom(info);
         if (form != null) {
             FormField descField = form.getField("muc#roominfo_description");
             if (descField != null && !descField.getValues().isEmpty()) {
@@ -119,14 +170,62 @@ public class RoomInfo {
             }
 
             FormField occCountField = form.getField("muc#roominfo_occupants");
-            if (occCountField != null) {
+            if (occCountField != null && !occCountField.getValues().isEmpty()) {
                 occupantsCount = Integer.parseInt(occCountField.getValues().get(
                                 0));
+            }
+
+            FormField maxhistoryfetchField = form.getField("muc#maxhistoryfetch");
+            if (maxhistoryfetchField != null && !maxhistoryfetchField.getValues().isEmpty()) {
+                maxhistoryfetch = Integer.parseInt(maxhistoryfetchField.getValues().get(
+                                0));
+            }
+
+            FormField contactJidField = form.getField("muc#roominfo_contactjid");
+            if (contactJidField != null && !contactJidField.getValues().isEmpty()) {
+                contactJid = contactJidField.getValues();
+            }
+
+            FormField langField = form.getField("muc#roominfo_lang");
+            if (langField != null && !langField.getValues().isEmpty()) {
+                lang = langField.getValues().get(0);
+            }
+
+            FormField ldapgroupField = form.getField("muc#roominfo_ldapgroup");
+            if (ldapgroupField != null && !ldapgroupField.getValues().isEmpty()) {
+                ldapgroup = ldapgroupField.getValues().get(0);
+            }
+
+            FormField subjectmodField = form.getField("muc#roominfo_subjectmod");
+            if (subjectmodField != null && !subjectmodField.getValues().isEmpty()) {
+                subjectmod = Boolean.valueOf(subjectmodField.getValues().get(0));
+            }
+
+            FormField urlField = form.getField("muc#roominfo_logs");
+            if (urlField != null && !urlField.getValues().isEmpty()) {
+                String urlString = urlField.getValues().get(0);
+                try {
+                    logs = new URL(urlString);
+                } catch (MalformedURLException e) {
+                    LOGGER.log(Level.SEVERE, "Could not parse URL", e);
+                }
+            }
+
+            FormField pubsubField = form.getField("muc#roominfo_pubsub");
+            if (pubsubField != null && !pubsubField.getValues().isEmpty()) {
+                pubsub = pubsubField.getValues().get(0);
             }
         }
         this.description = description;
         this.subject = subject;
         this.occupantsCount = occupantsCount;
+        this.maxhistoryfetch = maxhistoryfetch;
+        this.contactJid = contactJid;
+        this.lang = lang;
+        this.ldapgroup = ldapgroup;
+        this.subjectmod = subjectmod;
+        this.logs = logs;
+        this.pubsub = pubsub;
     }
 
     /**
@@ -139,16 +238,16 @@ public class RoomInfo {
     }
 
     /**
-     * Returns the discovered short description.
+     * Returns the room name.
      * <p>
-     * The description return here was provided as value of the name attribute
+     * The name returnd here was provided as value of the name attribute
      * of the returned identity within the disco#info result.
      * </p>
      * 
-     * @return the discovered short description of the room.
+     * @return the name of the room.
      */
-    public String getShortDesription() {
-        return shortDescription;
+    public String getName() {
+        return name;
     }
 
     /**
@@ -230,6 +329,89 @@ public class RoomInfo {
      */
     public boolean isPersistent() {
         return persistent;
+    }
+
+    /**
+     * Returns the maximum number of history messages which are returned by the
+     * room or '-1' if this property is not reported by the room.
+     *
+     * @return the maximum number of history messages or '-1'
+     */
+    public int getMaxHistoryFetch() {
+        return maxhistoryfetch;
+    }
+
+    /**
+     * Returns Contact Addresses as JIDs, if such are reported.
+     *
+     * @return a list of contact addresses for this room.
+     */
+    public List<String> getContactJids() {
+        return contactJid;
+    }
+
+    /**
+     * Returns the natural language of the room discussion, or <code>null</code>.
+     *
+     * @return the language of the room discussion or <code>null</code>.
+     */
+    public String getLang() {
+        return lang;
+    }
+
+    /**
+     * Returns an associated LDAP group that defines room membership. The
+     * value should be an LDAP Distinguished Name according to an
+     * implementation-specific or deployment-specific definition of a group.
+     *
+     * @return an associated LDAP group or <code>null</code>
+     */
+    public String getLdapGroup() {
+        return ldapgroup;
+    }
+
+    /**
+     * Returns an Boolean instance with the value 'true' if the subject can be
+     * modified by the room participants, 'false' if not, or <code>null</code>
+     * if this information is reported by the room.
+     *
+     * @return an boolean that is true if the subject can be modified by
+     *         participants or <code>null</code>
+     */
+    public Boolean isSubjectModifiable() {
+        return subjectmod;
+    }
+
+    /**
+     * An associated pubsub node for this room or <code>null</code>.
+     *
+     * @return the associated pubsub node or <code>null</code>
+     */
+    public String getPubSub() {
+        return pubsub;
+    }
+
+    /**
+     * Returns the URL where archived discussion logs can be found or
+     * <code>null</code> if there is no such URL.
+     *
+     * @return the URL where archived logs can be found or <code>null</code>
+     */
+    public URL getLogsUrl() {
+        return logs;
+    }
+
+    /**
+     * Returns the form included in the extended disco info result or
+     * <code>null</code> if no such form was sent.
+     *
+     * @return The room info form or <code>null</code>
+     * @see <a
+     *      href="http://xmpp.org/extensions/xep-0045.html#disco-roominfo">XEP-45:
+     *      Multi User Chat - 6.5 Querying for Room Information</a>
+     */
+    public Form getForm() {
+        return form;
     }
 
 }
