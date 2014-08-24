@@ -1311,7 +1311,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantAdmin(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByOwner(jids, "admin");
+        changeAffiliationByAdmin(jids, "admin");
     }
 
     /**
@@ -1326,7 +1326,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantAdmin(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByOwner(jid, "admin");
+        changeAffiliationByAdmin(jid, "admin");
     }
 
     /**
@@ -1340,7 +1340,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeAdmin(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByOwner(jids, "member");
+        changeAffiliationByAdmin(jids, "member");
     }
 
     /**
@@ -1355,35 +1355,22 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeAdmin(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByOwner(jid, "member");
+        changeAffiliationByAdmin(jid, "member");
     }
 
-    private void changeAffiliationByOwner(String jid, String affiliation)
-                    throws XMPPErrorException, NoResponseException, NotConnectedException {
-        MUCOwner iq = new MUCOwner();
-        iq.setTo(room);
-        iq.setType(IQ.Type.set);
-        // Set the new affiliation.
-        MUCItem item = new MUCItem(affiliation);
-        item.setJid(jid);
-        iq.addItem(item);
-
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
-    }
-
-    private void changeAffiliationByOwner(Collection<String> jids, String affiliation)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
-        MUCOwner iq = new MUCOwner();
-        iq.setTo(room);
-        iq.setType(IQ.Type.set);
-        for (String jid : jids) {
-            // Set the new affiliation.
-            MUCItem item = new MUCItem(affiliation);
-            item.setJid(jid);
-            iq.addItem(item);
-        }
-
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+    /**
+     * Tries to change the affiliation with an 'muc#admin' namespace
+     *
+     * @param jid
+     * @param affiliation
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     */
+    private void changeAffiliationByAdmin(String jid, String affiliation)
+                    throws NoResponseException, XMPPErrorException,
+                    NotConnectedException {
+        changeAffiliationByAdmin(jid, affiliation, null);
     }
 
     /**
