@@ -30,11 +30,11 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public class Occupant {
     // Fields that must have a value
-    private String affiliation;
-    private String role;
+    private final MUCAffiliation affiliation;
+    private final MUCRole role;
     // Fields that may have a value
-    private String jid;
-    private String nick;
+    private final String jid;
+    private final String nick;
 
     Occupant(MUCItem item) {
         this.jid = item.getJid();
@@ -72,7 +72,7 @@ public class Occupant {
      *
      * @return the affiliation of the occupant.
      */
-    public String getAffiliation() {
+    public MUCAffiliation getAffiliation() {
         return affiliation;
     }
 
@@ -82,7 +82,7 @@ public class Occupant {
      *
      * @return the current role of the occupant in the room.
      */
-    public String getRole() {
+    public MUCRole getRole() {
         return role;
     }
 

@@ -1018,7 +1018,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void kickParticipant(String nickname, String reason) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nickname, "none", reason);
+        changeRole(nickname, MUCRole.none, reason);
     }
 
     /**
@@ -1035,7 +1035,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantVoice(Collection<String> nicknames) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nicknames, "participant");
+        changeRole(nicknames, MUCRole.participant);
     }
 
     /**
@@ -1052,7 +1052,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantVoice(String nickname) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nickname, "participant", null);
+        changeRole(nickname, MUCRole.participant, null);
     }
 
     /**
@@ -1069,7 +1069,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeVoice(Collection<String> nicknames) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nicknames, "visitor");
+        changeRole(nicknames, MUCRole.visitor);
     }
 
     /**
@@ -1086,7 +1086,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeVoice(String nickname) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nickname, "visitor", null);
+        changeRole(nickname, MUCRole.visitor, null);
     }
 
     /**
@@ -1104,7 +1104,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void banUsers(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "outcast");
+        changeAffiliationByAdmin(jids, MUCAffiliation.outcast);
     }
 
     /**
@@ -1123,7 +1123,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void banUser(String jid, String reason) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "outcast", reason);
+        changeAffiliationByAdmin(jid, MUCAffiliation.outcast, reason);
     }
 
     /**
@@ -1137,7 +1137,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantMembership(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "member");
+        changeAffiliationByAdmin(jids, MUCAffiliation.member);
     }
 
     /**
@@ -1151,7 +1151,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantMembership(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "member", null);
+        changeAffiliationByAdmin(jid, MUCAffiliation.member, null);
     }
 
     /**
@@ -1166,7 +1166,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeMembership(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "none");
+        changeAffiliationByAdmin(jids, MUCAffiliation.none);
     }
 
     /**
@@ -1181,7 +1181,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeMembership(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "none", null);
+        changeAffiliationByAdmin(jid, MUCAffiliation.none, null);
     }
 
     /**
@@ -1195,7 +1195,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantModerator(Collection<String> nicknames) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nicknames, "moderator");
+        changeRole(nicknames, MUCRole.moderator);
     }
 
     /**
@@ -1209,7 +1209,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantModerator(String nickname) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nickname, "moderator", null);
+        changeRole(nickname, MUCRole.moderator, null);
     }
 
     /**
@@ -1224,7 +1224,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeModerator(Collection<String> nicknames) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nicknames, "participant");
+        changeRole(nicknames, MUCRole.participant);
     }
 
     /**
@@ -1239,7 +1239,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeModerator(String nickname) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeRole(nickname, "participant", null);
+        changeRole(nickname, MUCRole.participant, null);
     }
 
     /**
@@ -1254,7 +1254,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantOwnership(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "owner");
+        changeAffiliationByAdmin(jids, MUCAffiliation.owner);
     }
 
     /**
@@ -1269,7 +1269,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantOwnership(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "owner", null);
+        changeAffiliationByAdmin(jid, MUCAffiliation.owner, null);
     }
 
     /**
@@ -1283,7 +1283,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeOwnership(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "admin");
+        changeAffiliationByAdmin(jids, MUCAffiliation.admin);
     }
 
     /**
@@ -1297,7 +1297,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeOwnership(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "admin", null);
+        changeAffiliationByAdmin(jid, MUCAffiliation.admin, null);
     }
 
     /**
@@ -1311,7 +1311,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantAdmin(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "admin");
+        changeAffiliationByAdmin(jids, MUCAffiliation.admin);
     }
 
     /**
@@ -1326,7 +1326,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void grantAdmin(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "admin");
+        changeAffiliationByAdmin(jid, MUCAffiliation.admin);
     }
 
     /**
@@ -1340,7 +1340,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeAdmin(Collection<String> jids) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jids, "member");
+        changeAffiliationByAdmin(jids, MUCAffiliation.admin);
     }
 
     /**
@@ -1355,7 +1355,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void revokeAdmin(String jid) throws XMPPErrorException, NoResponseException, NotConnectedException {
-        changeAffiliationByAdmin(jid, "member");
+        changeAffiliationByAdmin(jid, MUCAffiliation.member);
     }
 
     /**
@@ -1367,7 +1367,7 @@ public class MultiUserChat {
      * @throws NoResponseException
      * @throws NotConnectedException
      */
-    private void changeAffiliationByAdmin(String jid, String affiliation)
+    private void changeAffiliationByAdmin(String jid, MUCAffiliation affiliation)
                     throws NoResponseException, XMPPErrorException,
                     NotConnectedException {
         changeAffiliationByAdmin(jid, affiliation, null);
@@ -1383,56 +1383,50 @@ public class MultiUserChat {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      */
-    private void changeAffiliationByAdmin(String jid, String affiliation, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException
+    private void changeAffiliationByAdmin(String jid, MUCAffiliation affiliation, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         // Set the new affiliation.
-        MUCItem item = new MUCItem(affiliation, null);
-        item.setJid(jid);
-        item.setReason(reason);
+        MUCItem item = new MUCItem(affiliation, jid, reason);
         iq.addItem(item);
 
         connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
     }
 
-    private void changeAffiliationByAdmin(Collection<String> jids, String affiliation)
+    private void changeAffiliationByAdmin(Collection<String> jids, MUCAffiliation affiliation)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         for (String jid : jids) {
             // Set the new affiliation.
-            MUCItem item = new MUCItem(affiliation, null);
-            item.setJid(jid);
+            MUCItem item = new MUCItem(affiliation, jid);
             iq.addItem(item);
         }
 
         connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
     }
 
-    private void changeRole(String nickname, String role, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private void changeRole(String nickname, MUCRole role, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         // Set the new role.
-        MUCItem item = new MUCItem(null, role);
-        item.setNick(nickname);
-        item.setReason(reason);
+        MUCItem item = new MUCItem(role, nickname, reason);
         iq.addItem(item);
 
         connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
     }
 
-    private void changeRole(Collection<String> nicknames, String role) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    private void changeRole(Collection<String> nicknames, MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
         for (String nickname : nicknames) {
             // Set the new role.
-            MUCItem item = new MUCItem(null, role);
-            item.setNick(nickname);
+            MUCItem item = new MUCItem(role, nickname);
             iq.addItem(item);
         }
 
@@ -1532,7 +1526,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public Collection<Affiliate> getOwners() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return getAffiliatesByAdmin("owner");
+        return getAffiliatesByAdmin(MUCAffiliation.owner);
     }
 
     /**
@@ -1544,7 +1538,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public Collection<Affiliate> getAdmins() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return getAffiliatesByAdmin("admin");
+        return getAffiliatesByAdmin(MUCAffiliation.admin);
     }
 
     /**
@@ -1556,7 +1550,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public Collection<Affiliate> getMembers() throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        return getAffiliatesByAdmin("member");
+        return getAffiliatesByAdmin(MUCAffiliation.member);
     }
 
     /**
@@ -1568,7 +1562,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public Collection<Affiliate> getOutcasts() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return getAffiliatesByAdmin("outcast");
+        return getAffiliatesByAdmin(MUCAffiliation.outcast);
     }
 
     /**
@@ -1581,12 +1575,12 @@ public class MultiUserChat {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    private Collection<Affiliate> getAffiliatesByAdmin(String affiliation) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private Collection<Affiliate> getAffiliatesByAdmin(MUCAffiliation affiliation) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.get);
         // Set the specified affiliation. This may request the list of owners/admins/members/outcasts.
-        MUCItem item = new MUCItem(affiliation, null);
+        MUCItem item = new MUCItem(affiliation);
         iq.addItem(item);
 
         MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
@@ -1608,7 +1602,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public Collection<Occupant> getModerators() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return getOccupants("moderator");
+        return getOccupants(MUCRole.moderator);
     }
 
     /**
@@ -1620,7 +1614,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public Collection<Occupant> getParticipants() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return getOccupants("participant");
+        return getOccupants(MUCRole.participant);
     }
 
     /**
@@ -1633,12 +1627,12 @@ public class MultiUserChat {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    private Collection<Occupant> getOccupants(String role) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private Collection<Occupant> getOccupants(MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.get);
         // Set the specified role. This may request the list of moderators/participants.
-        MUCItem item = new MUCItem(null, role);
+        MUCItem item = new MUCItem(role);
         iq.addItem(item);
 
         MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
@@ -1945,12 +1939,12 @@ public class MultiUserChat {
                     if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
                         MUCUser mucExtension = MUCUser.getFrom(packet);
-                        String oldAffiliation = mucExtension.getItem().getAffiliation();
-                        String oldRole = mucExtension.getItem().getRole();
+                        MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
+                        MUCRole oldRole = mucExtension.getItem().getRole();
                         // Get the new occupant's affiliation & role
                         mucExtension = MUCUser.getFrom(packet);
-                        String newAffiliation = mucExtension.getItem().getAffiliation();
-                        String newRole = mucExtension.getItem().getRole();
+                        MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
+                        MUCRole newRole = mucExtension.getItem().getRole();
                         // Fire role modification events
                         checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
                         // Fire affiliation modification events
@@ -2054,8 +2048,8 @@ public class MultiUserChat {
      * (e.g. room@conference.jabber.org/nick).
      */
     private void checkRoleModifications(
-        String oldRole,
-        String newRole,
+        MUCRole oldRole,
+        MUCRole newRole,
         boolean isUserModification,
         String from) {
         // Voice was granted to a visitor
@@ -2168,8 +2162,8 @@ public class MultiUserChat {
      * (e.g. room@conference.jabber.org/nick).
      */
     private void checkAffiliationModifications(
-        String oldAffiliation,
-        String newAffiliation,
+        MUCAffiliation oldAffiliation,
+        MUCAffiliation newAffiliation,
         boolean isUserModification,
         String from) {
         // First check for revoked affiliation and then for granted affiliations. The idea is to

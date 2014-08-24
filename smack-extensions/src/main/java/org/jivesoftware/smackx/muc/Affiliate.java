@@ -28,15 +28,14 @@ import org.jivesoftware.smackx.muc.packet.MUCItem;
  */
 public class Affiliate {
     // Fields that must have a value
-    private String jid;
-    private String affiliation;
+    private final String jid;
+    private final MUCAffiliation affiliation;
 
     // Fields that may have a value
-    private String role;
-    private String nick;
+    private final MUCRole role;
+    private final String nick;
 
     Affiliate(MUCItem item) {
-        super();
         this.jid = item.getJid();
         this.affiliation = item.getAffiliation();
         this.role = item.getRole();
@@ -58,18 +57,18 @@ public class Affiliate {
      *
      * @return the affiliation of the afffiliated user.
      */
-    public String getAffiliation() {
+    public MUCAffiliation getAffiliation() {
         return affiliation;
     }
 
     /**
      * Returns the current role of the affiliated user if the user is currently in the room.
-     * If the user is not present in the room then the answer will be null.
+     * If the user is not present in the room then the answer will be 'none'.
      *
      * @return the current role of the affiliated user in the room or null if the user is not in
      *         the room.
      */
-    public String getRole() {
+    public MUCRole getRole() {
         return role;
     }
 

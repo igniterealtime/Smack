@@ -16,34 +16,42 @@
  */
 package org.jivesoftware.smackx.muc.provider;
 
+import org.jivesoftware.smackx.muc.MUCAffiliation;
+import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.xmlpull.v1.XmlPullParser;
 
 public class MUCParserUtils {
     public static MUCItem parseItem(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        MUCItem item = new MUCItem(parser.getAttributeValue("", "affiliation"));
-        item.setNick(parser.getAttributeValue("", "nick"));
-        item.setRole(parser.getAttributeValue("", "role"));
-        item.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
+        int initialDepth = parser.getDepth();
+        MUCAffiliation affiliation = MUCAffiliation.fromString(parser.getAttributeValue("", "affiliation"));
+        String nick = parser.getAttributeValue("", "nick");
+        MUCRole role = MUCRole.fromString(parser.getAttributeValue("", "role"));
+        String jid = parser.getAttributeValue("", "jid");
+        String actor = null;
+        String reason = null;
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("actor")) {
-                    item.setActor(parser.getAttributeValue("", "jid"));
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "actor":
+                    actor = parser.getAttributeValue("", "jid");
+                    break;
+                case "reason":
+                    reason = parser.nextText();
+                    break;
                 }
-                if (parser.getName().equals("reason")) {
-                    item.setReason(parser.nextText());
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    done = true;
-                }
+                break;
             }
         }
-        return item;
+        return new MUCItem(affiliation, role, actor, reason, jid, nick);
     }
 
     public static Destroy parseDestroy(XmlPullParser parser) throws Exception {
