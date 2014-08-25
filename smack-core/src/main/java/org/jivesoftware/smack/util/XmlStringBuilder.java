@@ -285,11 +285,11 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof XmlStringBuilder)) {
+        if (!(other instanceof CharSequence)) {
             return false;
         }
-        XmlStringBuilder otherXmlStringBuilder = (XmlStringBuilder) other;
-        return toString().equals(otherXmlStringBuilder.toString());
+        CharSequence otherCharSequenceBuilder = (CharSequence) other;
+        return toString().equals(otherCharSequenceBuilder.toString());
     }
 
     @Override
