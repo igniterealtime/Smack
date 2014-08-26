@@ -117,8 +117,6 @@ public class ServiceDiscoveryManager extends Manager {
      */
     private ServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
-        // Register the new instance and associate it with the connection 
-        instances.put(connection, this);
 
         addFeature(DiscoverInfo.NAMESPACE);
         addFeature(DiscoverItems.NAMESPACE);
@@ -293,6 +291,8 @@ public class ServiceDiscoveryManager extends Manager {
         ServiceDiscoveryManager sdm = instances.get(connection);
         if (sdm == null) {
             sdm = new ServiceDiscoveryManager(connection);
+            // Register the new instance and associate it with the connection
+            instances.put(connection, sdm);
         }
         return sdm;
     }
