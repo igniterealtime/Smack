@@ -100,7 +100,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 Future<InputStream> future;
                 try {
                     i++;
-                    future = service.poll(10, TimeUnit.SECONDS);
+                    future = service.poll(connection.getPacketReplyTimeout(), TimeUnit.MILLISECONDS);
                 }
                 catch (InterruptedException e) {
                     continue;
