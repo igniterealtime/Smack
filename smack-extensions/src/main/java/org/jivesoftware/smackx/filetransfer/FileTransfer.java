@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smack.SmackException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -202,7 +200,7 @@ public abstract class FileTransfer {
     }
 
     protected void writeToStream(final InputStream in, final OutputStream out)
-                    throws SmackException
+                    throws IOException
     {
 		final byte[] b = new byte[BUFFER_SIZE];
 		int count = 0;
@@ -210,23 +208,15 @@ public abstract class FileTransfer {
 
         do {
 			// write to the output stream
-			try {
-				out.write(b, 0, count);
-			} catch (IOException e) {
-				throw new SmackException("error writing to output stream", e);
-			}
+			out.write(b, 0, count);
 
 			amountWritten += count;
 
 			// read more bytes from the input stream
-			try {
-				count = in.read(b);
-			} catch (IOException e) {
-				throw new SmackException("error reading from input stream", e);
-			}
+			count = in.read(b);
 		} while (count != -1 && !getStatus().equals(Status.cancelled));
 
-		// the connection was likely terminated abrubtly if these are not equal
+		// the connection was likely terminated abruptly if these are not equal
 		if (!getStatus().equals(Status.cancelled) && getError() == Error.none
 				&& amountWritten != fileSize) {
             setStatus(Status.error);

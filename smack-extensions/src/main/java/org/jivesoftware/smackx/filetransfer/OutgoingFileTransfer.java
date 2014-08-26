@@ -22,6 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
@@ -38,6 +40,7 @@ import org.jivesoftware.smack.packet.XMPPError;
  *
  */
 public class OutgoingFileTransfer extends FileTransfer {
+    private static final Logger LOGGER = Logger.getLogger(OutgoingFileTransfer.class.getName());
 
 	private static int RESPONSE_TIMEOUT = 60 * 1000;
     private NegotiationProgress callback;
@@ -247,20 +250,23 @@ public class OutgoingFileTransfer extends FileTransfer {
 					setStatus(FileTransfer.Status.error);
 					setError(Error.bad_file);
 					setException(e);
-				} catch (SmackException e) {
+				} catch (IOException e) {
 					setStatus(FileTransfer.Status.error);
 					setException(e);
 				} finally {
-					try {
 						if (inputStream != null) {
-							inputStream.close();
+							try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                LOGGER.log(Level.WARNING, "Closing input stream", e);
+                            }
 						}
 
-						outputStream.flush();
-						outputStream.close();
-					} catch (IOException e) {
-                        /* Do Nothing */
-					}
+						try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            LOGGER.log(Level.WARNING, "Closing output stream", e);
+                        }
 				}
                 updateStatus(Status.in_progress, FileTransfer.Status.complete);
 				}
@@ -310,7 +316,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 				}
 				try {
 					writeToStream(in, outputStream);
-				} catch (SmackException e) {
+				} catch (IOException e) {
 					setStatus(FileTransfer.Status.error);
 					setException(e);
 				} finally {

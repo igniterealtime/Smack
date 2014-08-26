@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -53,6 +55,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
  * @author Alexander Wenckus
  */
 public class IncomingFileTransfer extends FileTransfer {
+
+    private static final Logger LOGGER = Logger.getLogger(IncomingFileTransfer.class.getName());
 
     private FileTransferRequest recieveRequest;
 
@@ -104,26 +108,19 @@ public class IncomingFileTransfer extends FileTransfer {
      * 
      * @param file The location to save the file.
      * @throws SmackException when the file transfer fails
+     * @throws IOException 
      * @throws IllegalArgumentException This exception is thrown when the the provided file is
      *         either null, or cannot be written to.
      */
-    public void recieveFile(final File file) throws SmackException {
-        if (file != null) {
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                }
-                catch (IOException e) {
-                    throw new SmackException(
-                            "Could not create file to write too", e);
-                }
-            }
-            if (!file.canWrite()) {
-                throw new IllegalArgumentException("Cannot write to provided file");
-            }
-        }
-        else {
+    public void recieveFile(final File file) throws SmackException, IOException {
+        if (file == null) {
             throw new IllegalArgumentException("File cannot be null");
+        }
+        if (!file.exists()) {
+                 file.createNewFile();
+            }
+        if (!file.canWrite()) {
+                throw new IllegalArgumentException("Cannot write to provided file");
         }
 
         Thread transferThread = new Thread(new Runnable() {
@@ -143,16 +140,17 @@ public class IncomingFileTransfer extends FileTransfer {
                     setStatus(Status.in_progress);
                     writeToStream(inputStream, outputStream);
                 }
-                catch (SmackException e) {
-                    setStatus(Status.error);
-                    setError(Error.stream);
-                    setException(e);
-                }
                 catch (FileNotFoundException e) {
                     setStatus(Status.error);
                     setError(Error.bad_file);
                     setException(e);
                 }
+                catch (IOException e) {
+                    setStatus(Status.error);
+                    setError(Error.stream);
+                    setException(e);
+                }
+
 
                 if (getStatus().equals(Status.in_progress)) {
                     setStatus(Status.complete);
@@ -160,17 +158,15 @@ public class IncomingFileTransfer extends FileTransfer {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
-                    }
-                    catch (Throwable io) {
-                        /* Ignore */
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "Closing input stream", e);
                     }
                 }
                 if (outputStream != null) {
                     try {
                         outputStream.close();
-                    }
-                    catch (Throwable io) {
-                        /* Ignore */
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "Closing output stream", e);
                     }
                 }
             }
