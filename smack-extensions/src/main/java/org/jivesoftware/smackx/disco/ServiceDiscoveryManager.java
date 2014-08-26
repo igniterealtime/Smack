@@ -24,6 +24,8 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -63,9 +65,14 @@ import java.util.logging.Logger;
 public class ServiceDiscoveryManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
+
+    private static final PacketFilter GET_DISCOVER_ITEMS = new AndFilter(IQTypeFilter.GET, new PacketTypeFilter(DiscoverItems.class));
+    private static final PacketFilter GET_DISCOVER_INFO = new AndFilter(IQTypeFilter.GET, new PacketTypeFilter(DiscoverInfo.class));
+
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
+
     private static DiscoverInfo.Identity defaultIdentity = new Identity(DEFAULT_IDENTITY_CATEGORY,
             DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
 
@@ -117,87 +124,72 @@ public class ServiceDiscoveryManager extends Manager {
         addFeature(DiscoverItems.NAMESPACE);
 
         // Listen for disco#items requests and answer with an empty result        
-        PacketFilter packetFilter = new PacketTypeFilter(DiscoverItems.class);
         PacketListener packetListener = new PacketListener() {
             public void processPacket(Packet packet) throws NotConnectedException {
-                XMPPConnection connection = connection();
-                if (connection == null) return;
                 DiscoverItems discoverItems = (DiscoverItems) packet;
-                // Send back the items defined in the client if the request is of type GET
-                if (discoverItems != null && discoverItems.getType() == IQ.Type.get) {
-                    DiscoverItems response = new DiscoverItems();
-                    response.setType(IQ.Type.result);
-                    response.setTo(discoverItems.getFrom());
-                    response.setPacketID(discoverItems.getPacketID());
-                    response.setNode(discoverItems.getNode());
+                DiscoverItems response = new DiscoverItems();
+                response.setType(IQ.Type.result);
+                response.setTo(discoverItems.getFrom());
+                response.setPacketID(discoverItems.getPacketID());
+                response.setNode(discoverItems.getNode());
 
-                    // Add the defined items related to the requested node. Look for 
-                    // the NodeInformationProvider associated with the requested node.  
-                    NodeInformationProvider nodeInformationProvider =
-                            getNodeInformationProvider(discoverItems.getNode());
-                    if (nodeInformationProvider != null) {
-                        // Specified node was found, add node items
-                        response.addItems(nodeInformationProvider.getNodeItems());
-                        // Add packet extensions
-                        response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
-                    } else if(discoverItems.getNode() != null) {
-                        // Return <item-not-found/> error since client doesn't contain
-                        // the specified node
-                        response.setType(IQ.Type.error);
-                        response.setError(new XMPPError(XMPPError.Condition.item_not_found));
-                    }
-                    connection.sendPacket(response);
+                // Add the defined items related to the requested node. Look for
+                // the NodeInformationProvider associated with the requested node.
+                NodeInformationProvider nodeInformationProvider = getNodeInformationProvider(discoverItems.getNode());
+                if (nodeInformationProvider != null) {
+                    // Specified node was found, add node items
+                    response.addItems(nodeInformationProvider.getNodeItems());
+                    // Add packet extensions
+                    response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
+                } else if(discoverItems.getNode() != null) {
+                    // Return <item-not-found/> error since client doesn't contain
+                    // the specified node
+                    response.setType(IQ.Type.error);
+                    response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                 }
+                connection().sendPacket(response);
             }
         };
-        connection.addPacketListener(packetListener, packetFilter);
+        connection.addPacketListener(packetListener, GET_DISCOVER_ITEMS);
 
         // Listen for disco#info requests and answer the client's supported features 
         // To add a new feature as supported use the #addFeature message        
-        packetFilter = new PacketTypeFilter(DiscoverInfo.class);
         packetListener = new PacketListener() {
             public void processPacket(Packet packet) throws NotConnectedException {
-                XMPPConnection connection = connection();
-                if (connection == null) return;
                 DiscoverInfo discoverInfo = (DiscoverInfo) packet;
                 // Answer the client's supported features if the request is of the GET type
-                if (discoverInfo != null && discoverInfo.getType() == IQ.Type.get) {
-                    DiscoverInfo response = new DiscoverInfo();
-                    response.setType(IQ.Type.result);
-                    response.setTo(discoverInfo.getFrom());
-                    response.setPacketID(discoverInfo.getPacketID());
-                    response.setNode(discoverInfo.getNode());
-                    // Add the client's identity and features only if "node" is null
-                    // and if the request was not send to a node. If Entity Caps are
-                    // enabled the client's identity and features are may also added
-                    // if the right node is chosen
-                    if (discoverInfo.getNode() == null) {
-                        addDiscoverInfoTo(response);
+                DiscoverInfo response = new DiscoverInfo();
+                response.setType(IQ.Type.result);
+                response.setTo(discoverInfo.getFrom());
+                response.setPacketID(discoverInfo.getPacketID());
+                response.setNode(discoverInfo.getNode());
+                // Add the client's identity and features only if "node" is null
+                // and if the request was not send to a node. If Entity Caps are
+                // enabled the client's identity and features are may also added
+                // if the right node is chosen
+                if (discoverInfo.getNode() == null) {
+                    addDiscoverInfoTo(response);
+                } else {
+                    // Disco#info was sent to a node. Check if we have information of the
+                    // specified node
+                    NodeInformationProvider nodeInformationProvider = getNodeInformationProvider(discoverInfo.getNode());
+                    if (nodeInformationProvider != null) {
+                        // Node was found. Add node features
+                        response.addFeatures(nodeInformationProvider.getNodeFeatures());
+                        // Add node identities
+                        response.addIdentities(nodeInformationProvider.getNodeIdentities());
+                        // Add packet extensions
+                        response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
+                    } else {
+                        // Return <item-not-found/> error since specified node was not found
+                        response.setType(IQ.Type.error);
+                        response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                     }
-                    else {
-                        // Disco#info was sent to a node. Check if we have information of the
-                        // specified node
-                        NodeInformationProvider nodeInformationProvider =
-                                getNodeInformationProvider(discoverInfo.getNode());
-                        if (nodeInformationProvider != null) {
-                            // Node was found. Add node features
-                            response.addFeatures(nodeInformationProvider.getNodeFeatures());
-                            // Add node identities
-                            response.addIdentities(nodeInformationProvider.getNodeIdentities());
-                            // Add packet extensions
-                            response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
-                        }
-                        else {
-                            // Return <item-not-found/> error since specified node was not found
-                            response.setType(IQ.Type.error);
-                            response.setError(new XMPPError(XMPPError.Condition.item_not_found));
-                        }
-                    }
-                    connection.sendPacket(response);
                 }
+                connection().sendPacket(response);
             }
         };
-        connection.addPacketListener(packetListener, packetFilter);
+        connection.addPacketListener(packetListener, GET_DISCOVER_INFO);
     }
 
     /**
