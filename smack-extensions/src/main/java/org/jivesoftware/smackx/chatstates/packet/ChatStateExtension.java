@@ -55,6 +55,10 @@ public class ChatStateExtension implements PacketExtension {
         return NAMESPACE;
     }
 
+    public ChatState getChatState() {
+        return state;
+    }
+
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
