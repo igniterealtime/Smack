@@ -439,7 +439,18 @@ public class PacketParserUtils {
                 }
                 else if (elementName.equals("show")) {
                     String modeText = parser.nextText();
-                    presence.setMode(Presence.Mode.fromString(modeText));
+                    if (StringUtils.isNotEmpty(modeText)) {
+                        presence.setMode(Presence.Mode.fromString(modeText));
+                    } else {
+                        // Some implementations send presence stanzas with a
+                        // '<show />' element, which is a invalid XMPP presence
+                        // stanza according to RFC 6121 4.7.2.1
+                        LOGGER.warning("Empty or null mode text in presence show element form "
+                                        + presence.getFrom()
+                                        + " with id '"
+                                        + presence.getPacketID()
+                                        + "' which is invalid according to RFC6121 4.7.2.1");
+                    }
                 }
                 else if (elementName.equals("error")) {
                     presence.setError(parseError(parser));
