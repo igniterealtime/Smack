@@ -67,7 +67,7 @@ public class ParsingExceptionTest {
         try {
             PacketParserUtils.parseMessage(parser);
         } catch (Exception e) {
-            content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+            content = PacketParserUtils.parseContentDepth(parser, parserDepth, false);
         }
         assertNotNull(content);
         assertEquals(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", content);

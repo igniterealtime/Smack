@@ -217,8 +217,14 @@ public class PacketParserUtils {
      * @throws IOException
      */
     public static String parseElement(XmlPullParser parser) throws XmlPullParserException, IOException {
-        assert(parser.getEventType() == XmlPullParser.START_TAG);
-        return parseContentDepth(parser, parser.getDepth());
+        return parseElement(parser, false);
+    }
+
+    public static String parseElement(XmlPullParser parser,
+                    boolean fullNamespaces) throws XmlPullParserException,
+                    IOException {
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        return parseContentDepth(parser, parser.getDepth(), fullNamespaces);
     }
 
     /**
@@ -245,28 +251,36 @@ public class PacketParserUtils {
         }
         // Advance the parser, since we want to parse the content of the current element
         parser.next();
-        return parseContentDepth(parser, parser.getDepth());
+        return parseContentDepth(parser, parser.getDepth(), false);
+    }
+
+    public static String parseContentDepth(XmlPullParser parser, int depth)
+                    throws XmlPullParserException, IOException {
+        return parseContentDepth(parser, depth, false);
     }
 
     /**
      * Returns the content from the current position of the parser up to the closing tag of the
      * given depth. Note that only the outermost namespace attributes ("xmlns") will be returned,
-     * not nested ones.
+     * not nested ones, if <code>fullNamespaces</code> is false. If it is true, then namespaces of
+     * parent elements will be added to child elements that don't define a different namespace.
      * <p>
      * This method is able to parse the content with MX- and KXmlParser. In order to achieve
      * this some trade-off has to be make, because KXmlParser does not support xml-roundtrip (ie.
      * return a String on getText() on START_TAG and END_TAG). We are therefore required to work
      * around this limitation, which results in only partial support for XML namespaces ("xmlns"):
-     * Only the outermost namespace of elements will be included in the resulting String.
+     * Only the outermost namespace of elements will be included in the resulting String, if
+     * <code>fullNamespaces</code> is set to false.
      * </p>
      * 
      * @param parser
      * @param depth
+     * @param fullNamespaces
      * @return the content of the current depth
      * @throws XmlPullParserException
      * @throws IOException
      */
-    public static String parseContentDepth(XmlPullParser parser, int depth) throws XmlPullParserException, IOException {
+    public static String parseContentDepth(XmlPullParser parser, int depth, boolean fullNamespaces) throws XmlPullParserException, IOException {
         XmlStringBuilder xml = new XmlStringBuilder();
         int event = parser.getEventType();
         boolean isEmptyElement = false;
@@ -277,7 +291,7 @@ public class PacketParserUtils {
         while (true) {
             if (event == XmlPullParser.START_TAG) {
                 xml.halfOpenElement(parser.getName());
-                if (namespaceElement == null) {
+                if (namespaceElement == null || fullNamespaces) {
                     String namespace = parser.getNamespace();
                     if (StringUtils.isNotEmpty(namespace)) {
                         xml.attribute("xmlns", namespace);
