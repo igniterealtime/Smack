@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 /**
  * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
  * problems by sending the packet back and including an error packet. Each error has a type,
@@ -57,6 +59,7 @@ import java.util.Map;
  * </table>
  *
  * @author Matt Tucker
+ * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-syntax">RFC 6120 - 8.3.2 Syntax: The Syntax of XMPP error stanzas</a>
  */
 public class XMPPError {
 
@@ -266,7 +269,7 @@ public class XMPPError {
     /**
      * A class to represent predefined error conditions.
      */
-    public static class Condition {
+    public static class Condition implements CharSequence {
 
         public static final Condition internal_server_error = new Condition("internal-server-error");
         public static final Condition forbidden = new Condition("forbidden");
@@ -306,12 +309,34 @@ public class XMPPError {
 
         @Override
         public boolean equals(Object other) {
+            if (other == null) {
+                return false;
+            }
             return toString().equals(other.toString());
+        }
+
+        public boolean equals(CharSequence other) {
+            return StringUtils.nullSafeCharSequenceEquals(this, other);
         }
 
         @Override
         public int hashCode() {
             return value.hashCode();
+        }
+
+        @Override
+        public int length() {
+            return value.length();
+        }
+
+        @Override
+        public char charAt(int index) {
+            return value.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return value.subSequence(start, end);
         }
     }
 
