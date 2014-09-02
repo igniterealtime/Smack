@@ -4,10 +4,10 @@
      "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="Checker">
 	<module name="SuppressionFilter">
-		<property name="file" value="suppressions.xml"/>
+		<property name="file" value="../config/suppressions.xml"/>
 	</module>
 	<module name="Header">
-		<property name="headerFile" value="header.txt"/>
+		<property name="headerFile" value="../config/header.txt"/>
 		<property name="ignoreLines" value="3"/>
 		<property name="fileExtensions" value="java"/>
 	</module>
