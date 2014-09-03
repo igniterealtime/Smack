@@ -416,7 +416,6 @@ public class Message extends Packet {
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement("message");
-        buf.xmlnsAttribute(getXmlns());
         buf.xmllangAttribute(getLanguage());
         addCommonAttributes(buf);
         if (type != Type.normal) {

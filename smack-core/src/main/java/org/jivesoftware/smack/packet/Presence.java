@@ -228,7 +228,6 @@ public class Presence extends Packet {
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
-        buf.xmlnsAttribute(getXmlns());
         buf.xmllangAttribute(getLanguage());
         addCommonAttributes(buf);
         if (type != Type.available) {

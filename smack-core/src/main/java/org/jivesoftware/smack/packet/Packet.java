@@ -42,8 +42,6 @@ public abstract class Packet {
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
-    private static String DEFAULT_XML_NS = null;
-
     /**
      * A prefix helps to make sure that ID's are unique across multiple instances.
      */
@@ -54,12 +52,6 @@ public abstract class Packet {
      * forum a unique ID.
      */
     private static AtomicLong id = new AtomicLong();
-
-    private String xmlns = DEFAULT_XML_NS;
-
-    public static void setDefaultXmlns(String defaultXmlns) {
-        DEFAULT_XML_NS = defaultXmlns;
-    }
 
     private String packetID = null;
     private String to = null;
@@ -81,7 +73,6 @@ public abstract class Packet {
         packetID = p.getPacketID();
         to = p.getTo();
         from = p.getFrom();
-        xmlns = p.xmlns;
         error = p.error;
 
         // Copy extensions
@@ -280,10 +271,6 @@ public abstract class Packet {
         return xml;
     }
 
-    public String getXmlns() {
-        return this.xmlns;
-    }
-
     /**
      * Returns the default language used for all messages containing localized content.
      * 
@@ -307,13 +294,12 @@ public abstract class Packet {
             return false;
         }
         if (to != null ? !to.equals(packet.to) : packet.to != null)  { return false; }
-        return !(xmlns != null ? !xmlns.equals(packet.xmlns) : packet.xmlns != null);
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result;
-        result = (xmlns != null ? xmlns.hashCode() : 0);
+        int result = 1;
         result = 31 * result + (packetID != null ? packetID.hashCode() : 0);
         result = 31 * result + (to != null ? to.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
