@@ -309,7 +309,13 @@ public class Presence extends Packet {
         /**
          * The presence packet contains an error message.
          */
-        error;
+        error,
+
+        /**
+         * A presence probe as defined in section 4.3 of RFC 6121
+         */
+        probe,
+        ;
 
         /**
          * Converts a String into the corresponding types. Valid String values that can be converted
