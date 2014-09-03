@@ -51,13 +51,12 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public class Message extends Packet {
+public class Message extends XmlLangStanza {
 
     public static final String BODY = "body";
 
     private Type type = Type.normal;
     private String thread = null;
-    private String language;
 
     private final Set<Subject> subjects = new HashSet<Subject>();
     private final Set<Body> bodies = new HashSet<Body>();
@@ -374,26 +373,6 @@ public class Message extends Packet {
         this.thread = thread;
     }
 
-    /**
-     * Returns the xml:lang of this Message.
-     *
-     * @return the xml:lang of this Message.
-     * @since 3.0.2
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * Sets the xml:lang of this Message.
-     *
-     * @param language the xml:lang of this Message.
-     * @since 3.0.2
-     */
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
     private String determineLanguage(String language) {
         
         // empty string is passed by #setSubject() and #setBody() and is the same as null
@@ -416,7 +395,7 @@ public class Message extends Packet {
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement("message");
-        buf.xmllangAttribute(getLanguage());
+        buf.xmllangAttribute(language);
         addCommonAttributes(buf);
         if (type != Type.normal) {
             buf.attribute("type", type);
