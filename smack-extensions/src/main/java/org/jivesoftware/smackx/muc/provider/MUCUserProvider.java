@@ -39,35 +39,38 @@ public class MUCUserProvider implements PacketExtensionProvider {
      * @throws Exception if a parsing error occurs.
      */
     public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        final int initialDepth = parser.getDepth();
         MUCUser mucUser = new MUCUser();
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("invite")) {
+        outerloop: while (true) {
+            switch (parser.next()) {
+            case XmlPullParser.START_TAG:
+                switch (parser.getName()) {
+                case "invite":
                     mucUser.setInvite(parseInvite(parser));
-                }
-                if (parser.getName().equals("item")) {
+                    break;
+                case "item":
                     mucUser.setItem(MUCParserUtils.parseItem(parser));
-                }
-                if (parser.getName().equals("password")) {
+                    break;
+                case "password":
                     mucUser.setPassword(parser.nextText());
-                }
-                if (parser.getName().equals("status")) {
+                    break;
+                case "status":
                     String statusString = parser.getAttributeValue("", "code");
                     mucUser.addStatusCode(MUCUser.Status.create(statusString));
-                }
-                if (parser.getName().equals("decline")) {
+                    break;
+                case "decline":
                     mucUser.setDecline(parseDecline(parser));
-                }
-                if (parser.getName().equals("destroy")) {
+                    break;
+                case "destroy":
                     mucUser.setDestroy(MUCParserUtils.parseDestroy(parser));
+                    break;
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("x")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
 
