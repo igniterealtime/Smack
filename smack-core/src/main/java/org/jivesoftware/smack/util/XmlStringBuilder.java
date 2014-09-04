@@ -59,6 +59,11 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder element(Element element) {
+        assert element != null;
+        return append(element.toXML());
+    }
+
     public XmlStringBuilder optElement(String name, String content) {
         if (content != null) {
             element(name, content);
@@ -145,6 +150,11 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         assert value != null;
         attribute(name, value.name());
         return this;
+    }
+
+    public XmlStringBuilder attribute(String name, int value) {
+        assert name != null;
+        return attribute(name, String.valueOf(value));
     }
 
     public XmlStringBuilder optAttribute(String name, String value) {

@@ -54,7 +54,8 @@ public class MUCUserProvider implements PacketExtensionProvider {
                     mucUser.setPassword(parser.nextText());
                 }
                 if (parser.getName().equals("status")) {
-                    mucUser.setStatus(new MUCUser.Status(parser.getAttributeValue("", "code")));
+                    String statusString = parser.getAttributeValue("", "code");
+                    mucUser.addStatusCode(MUCUser.Status.create(statusString));
                 }
                 if (parser.getName().equals("decline")) {
                     mucUser.setDecline(parseDecline(parser));

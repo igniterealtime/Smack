@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -70,6 +71,7 @@ import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
+import org.jivesoftware.smackx.muc.packet.MUCUser.Status;
 import org.jivesoftware.smackx.xdata.Form;
 
 /**
@@ -414,11 +416,9 @@ public class MultiUserChat {
 
         // Look for confirmation of room creation from the server
         MUCUser mucUser = MUCUser.getFrom(presence);
-        if (mucUser != null && mucUser.getStatus() != null) {
-            if ("201".equals(mucUser.getStatus().getCode())) {
-                // Room was created and the user has joined the room
-                return true;
-            }
+        if (mucUser != null && mucUser.getStatus().contains(Status.ROOM_CREATED_201)) {
+            // Room was created and the user has joined the room
+            return true;
         }
         return false;
     }
@@ -1969,7 +1969,7 @@ public class MultiUserChat {
                     if (mucUser != null && mucUser.getStatus() != null) {
                         // Fire events according to the received presence code
                         checkPresenceCode(
-                            mucUser.getStatus().getCode(),
+                            mucUser.getStatus(),
                             presence.getFrom().equals(myRoomJID),
                             mucUser,
                             from);
@@ -2241,18 +2241,18 @@ public class MultiUserChat {
     /**
      * Fires events according to the received presence code.
      *
-     * @param code
+     * @param statusCodes
      * @param isUserModification
      * @param mucUser
      * @param from
      */
     private void checkPresenceCode(
-        String code,
+        Set<Status> statusCodes,
         boolean isUserModification,
         MUCUser mucUser,
         String from) {
         // Check if an occupant was kicked from the room
-        if ("307".equals(code)) {
+        if (statusCodes.contains(Status.KICKED_307)) {
             // Check if this occupant was kicked
             if (isUserModification) {
                 joined = false;
@@ -2275,7 +2275,7 @@ public class MultiUserChat {
             }
         }
         // A user was banned from the room
-        else if ("301".equals(code)) {
+        if (statusCodes.contains(Status.BANNED_301)) {
             // Check if this occupant was banned
             if (isUserModification) {
                 joined = false;
@@ -2298,7 +2298,7 @@ public class MultiUserChat {
             }
         }
         // A user's membership was revoked from the room
-        else if ("321".equals(code)) {
+        if (statusCodes.contains(Status.REMOVED_AFFIL_CHANGE_321)) {
             // Check if this occupant's membership was revoked
             if (isUserModification) {
                 joined = false;
@@ -2312,7 +2312,7 @@ public class MultiUserChat {
             }
         }
         // A occupant has changed his nickname in the room
-        else if ("303".equals(code)) {
+        if (statusCodes.contains(Status.NEW_NICKNAME_303)) {
             List<String> params = new ArrayList<String>();
             params.add(from);
             params.add(mucUser.getItem().getNick());
