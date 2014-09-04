@@ -31,6 +31,7 @@ public class StringUtils {
     public static final String MD5 = "MD5";
     public static final String SHA1 = "SHA-1";
     public static final String UTF8 = "UTF-8";
+    public static final String USASCII = "US-ASCII";
 
     public static final String QUOTE_ENCODE = "&quot;";
     public static final String APOS_ENCODE = "&apos;";
@@ -159,67 +160,6 @@ public class StringUtils {
         catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("UTF-8 encoding not supported by platform", e);
         }
-    }
-
-    /**
-     * Encodes a String as a base64 String.
-     *
-     * @param data a String to encode.
-     * @return a base64 encoded String.
-     */
-    public static String encodeBase64(String data) {
-        byte [] bytes = toBytes(data);
-        return encodeBase64(bytes);
-    }
-
-    /**
-     * Encodes a byte array into a base64 String.
-     *
-     * @param data a byte array to encode.
-     * @return a base64 encode String.
-     */
-    public static String encodeBase64(byte[] data) {
-        return encodeBase64(data, false);
-    }
-
-    /**
-     * Encodes a byte array into a bse64 String.
-     *
-     * @param data The byte arry to encode.
-     * @param lineBreaks True if the encoding should contain line breaks and false if it should not.
-     * @return A base64 encoded String.
-     */
-    public static String encodeBase64(byte[] data, boolean lineBreaks) {
-        return encodeBase64(data, 0, data.length, lineBreaks);
-    }
-
-    /**
-     * Encodes a byte array into a bse64 String.
-     *
-     * @param data The byte arry to encode.
-     * @param offset the offset of the bytearray to begin encoding at.
-     * @param len the length of bytes to encode.
-     * @param lineBreaks True if the encoding should contain line breaks and false if it should not.
-     * @return A base64 encoded String.
-     */
-    public static String encodeBase64(byte[] data, int offset, int len, boolean lineBreaks) {
-        return Base64.encodeBytes(data, offset, len, (lineBreaks ?  Base64.NO_OPTIONS : Base64.DONT_BREAK_LINES));
-    }
-
-    /**
-     * Decodes a base64 String.
-     * Unlike Base64.decode() this method does not try to detect and decompress a gzip-compressed input.
-     *
-     * @param data a base64 encoded String to decode.
-     * @return the decoded String.
-     */
-    public static byte[] decodeBase64(String data) {
-        byte[] bytes = toBytes(data);
-        return decodeBase64(bytes);
-    }
-
-    public static byte[] decodeBase64(byte[] data) {
-        return Base64.decode(data, 0, data.length, Base64.NO_OPTIONS);
     }
  
     /**

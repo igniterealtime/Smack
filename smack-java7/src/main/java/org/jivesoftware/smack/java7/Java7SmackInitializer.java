@@ -20,12 +20,18 @@ import java.util.List;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.initializer.SimpleSmackInitializer;
+import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
+import org.jivesoftware.smack.util.stringencoder.java7.Java7Base64Encoder;
+import org.jivesoftware.smack.util.stringencoder.java7.Java7Base64UrlSafeEncoder;
 
 public class Java7SmackInitializer extends SimpleSmackInitializer {
 
     @Override
     public List<Exception> initialize() {
         SmackConfiguration.setDefaultHostnameVerifier(new Java7HostnameVerifier());
+        Base64.setEncoder(Java7Base64Encoder.getInstance());
+        Base64UrlSafeEncoder.setEncoder(Java7Base64UrlSafeEncoder.getInstance());
         return null;
     }
 

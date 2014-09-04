@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util;
+package org.jivesoftware.smack.util.stringencoder.java7;
+
+import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
 
 /**
@@ -24,18 +26,19 @@ package org.jivesoftware.smack.util;
  * Note: This does NOT produce standard Base 64 encodings, but a variant as defined in 
  * Section 4 of RFC3548:
  * <a href="http://www.faqs.org/rfcs/rfc3548.html">http://www.faqs.org/rfcs/rfc3548.html</a>.
+ * </p>
  * 
  * @author Robin Collier
  */
-public class Base64FileUrlEncoder implements StringEncoder {
+public class Java7Base64UrlSafeEncoder implements StringEncoder {
 
-    private static Base64FileUrlEncoder instance = new Base64FileUrlEncoder();
+    private static Java7Base64UrlSafeEncoder instance = new Java7Base64UrlSafeEncoder();
 
-    private Base64FileUrlEncoder() {
+    private Java7Base64UrlSafeEncoder() {
         // Use getInstance()
     }
 
-    public static Base64FileUrlEncoder getInstance() {
+    public static Java7Base64UrlSafeEncoder getInstance() {
         return instance;
     }
 

@@ -38,6 +38,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 
 /**
@@ -372,7 +373,7 @@ public class VCard extends IQ {
         }
 
         // Otherwise, add to mappings.
-        String encodedImage = StringUtils.encodeBase64(bytes);
+        String encodedImage = Base64.encodeToString(bytes);
 
         setAvatar(encodedImage, mimeType);
     }
@@ -425,7 +426,7 @@ public class VCard extends IQ {
         if (photoBinval == null) {
             return null;
         }
-        return StringUtils.decodeBase64(photoBinval);
+        return Base64.decode(photoBinval);
     }
 
     /**

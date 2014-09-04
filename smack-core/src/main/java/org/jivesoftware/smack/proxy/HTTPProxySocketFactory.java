@@ -27,7 +27,7 @@ import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,7 +92,7 @@ class HTTPProxySocketFactory
         else
         {
             String password = proxy.getProxyPassword();
-            proxyLine = "\r\nProxy-Authorization: Basic " + StringUtils.encodeBase64(username + ":" + password);
+            proxyLine = "\r\nProxy-Authorization: Basic " + Base64.encode(username + ":" + password);
         }
         socket.getOutputStream().write((hostport + " HTTP/1.1\r\nHost: "
             + hostport + proxyLine + "\r\n\r\n").getBytes("UTF-8"));

@@ -28,9 +28,9 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
-import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -298,7 +298,7 @@ public class DirectoryRosterStore implements RosterStore {
 
 
     private File getBareJidFile(String bareJid) {
-        String encodedJid = Base32Encoder.getInstance().encode(bareJid);
+        String encodedJid = Base32.encode(bareJid);
         return new File(fileDir, ENTRY_PREFIX + encodedJid);
     }
 

@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Represents a chunk of data of an In-Band Bytestream within an IQ stanza or a
@@ -121,7 +121,7 @@ public class DataPacketExtension implements PacketExtension {
         }
 
         // decodeBase64 will return null if bad characters are included
-        this.decodedData = StringUtils.decodeBase64(data);
+        this.decodedData = Base64.decode(data);
         return this.decodedData;
     }
 

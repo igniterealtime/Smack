@@ -136,51 +136,6 @@ public class StringUtilsTest  {
                 new String(output.getBytes()));
     }
 
-    /**
-     * This method tests 2 StringUtil methods - encodeBase64(String) and encodeBase64(byte[]).
-     */
-	@Test
-    public void testEncodeBase64() {
-        String input = "";
-        String output = "";
-        assertEquals(StringUtils.encodeBase64(input), output);
-
-        input = "foo bar 123";
-        output = "Zm9vIGJhciAxMjM=";
-        assertEquals(StringUtils.encodeBase64(input), output);
-
-        input = "=";
-        output = "PQ==";
-        assertEquals(StringUtils.encodeBase64(input), output);
-
-        input = "abcdefghijklmnopqrstuvwxyz0123456789\n\t\"?!.@{}[]();',./<>#$%^&*";
-        output = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5CgkiPyEuQHt9W10oKTsnLC4vPD4jJCVeJio=";
-        assertEquals(StringUtils.encodeBase64(input), output);
-    }
-
-    /***
-     * This method tests 2 StringUtil methods - decodeBase64(String) and decodeBase64(byte[]).
-     */
-    /*
-    public void testDecodeBase64() {
-        String input = "";
-        String output = "";
-        assertEquals(StringUtils.decodeBase64(input), output);
-
-        input = "Zm9vIGJhciAxMjM=";
-        output = "foo bar 123";
-        assertEquals(StringUtils.decodeBase64(input), output);
-
-        input = "PQ==";
-        output = "=";
-        assertEquals(StringUtils.decodeBase64(input), output);
-
-        input = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5CgkiPyEuQHt9W10oKTsnLC4vPD4jJCVeJio=";
-        output = "abcdefghijklmnopqrstuvwxyz0123456789\n\t\"?!.@{}[]();',./<>#$%^&*";
-        assertEquals(StringUtils.decodeBase64(input), output);
-    }
-    */
-
 	@Test
     public void testRandomString() {
         // Boundary test

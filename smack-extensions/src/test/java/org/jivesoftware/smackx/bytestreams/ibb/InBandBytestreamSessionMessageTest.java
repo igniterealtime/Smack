@@ -31,7 +31,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -263,7 +263,7 @@ public class InBandBytestreamSessionMessageTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // build invalid packet with out of order sequence
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 123, base64Data);
         Message dataMessage = new Message();
         dataMessage.addExtension(dpe);
@@ -304,8 +304,7 @@ public class InBandBytestreamSessionMessageTest {
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
-            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
-                            false);
+            String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Message dataMessage = new Message();
             dataMessage.addExtension(dpe);
@@ -350,8 +349,7 @@ public class InBandBytestreamSessionMessageTest {
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
-            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
-                            false);
+            String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Message dataMessage = new Message();
             dataMessage.addExtension(dpe);

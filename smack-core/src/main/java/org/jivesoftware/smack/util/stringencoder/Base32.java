@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util;
+package org.jivesoftware.smack.util.stringencoder;
 
 
 import java.io.ByteArrayOutputStream;
@@ -30,21 +30,28 @@ import java.io.IOException;
  * @see <a href="http://en.wikipedia.org/wiki/Base32">Base32 Wikipedia entry</a>
  *
  */
-public class Base32Encoder implements StringEncoder {
+public class Base32 {
 
-    private static Base32Encoder instance = new Base32Encoder();
+    private static final StringEncoder base32Stringencoder = new StringEncoder() {
+
+        @Override
+        public String encode(String string) {
+            return Base32.encode(string);
+        }
+
+        @Override
+        public String decode(String string) {
+            return Base32.decode(string);
+        }
+
+    };
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ2345678";
 
-    private Base32Encoder() {
-        // Use getInstance()
+    public static StringEncoder getStringEncoder() {
+        return base32Stringencoder;
     }
 
-    public static Base32Encoder getInstance() {
-        return instance;
-    }
-
-    @Override
-    public String decode(String str) {
+    public static String decode(String str) {
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         byte[] raw = str.getBytes();
         for (int i = 0; i < raw.length; i++) {
@@ -102,8 +109,7 @@ public class Base32Encoder implements StringEncoder {
         return new String(bs.toByteArray());
     }
 
-    @Override
-    public String encode(String str) {
+    public static String encode(String str) {
         byte[] b = str.getBytes();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 

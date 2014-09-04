@@ -35,7 +35,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
@@ -708,7 +708,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
             // create data packet
-            String enc = StringUtils.encodeBase64(buffer, 0, bufferPointer, false);
+            String enc = Base64.encodeToString(buffer, 0, bufferPointer);
             DataPacketExtension data = new DataPacketExtension(byteStreamRequest.getSessionID(),
                             this.seq, enc);
 

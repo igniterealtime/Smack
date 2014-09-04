@@ -31,7 +31,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -308,7 +308,7 @@ public class InBandBytestreamSessionTest {
         // insert data to read
         InputStream inputStream = session.getInputStream();
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data = new Data(dpe);
         listener.processPacket(data);
@@ -343,7 +343,7 @@ public class InBandBytestreamSessionTest {
         InputStream inputStream = session.getInputStream();
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data = new Data(dpe);
 
@@ -381,7 +381,7 @@ public class InBandBytestreamSessionTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // build data packets
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data1 = new Data(dpe);
         Data data2 = new Data(dpe);
@@ -453,7 +453,7 @@ public class InBandBytestreamSessionTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // build invalid packet with out of order sequence
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 123, base64Data);
         Data data = new Data(dpe);
 
@@ -496,8 +496,7 @@ public class InBandBytestreamSessionTest {
         // set data packet acknowledgment and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
             protocol.addResponse(resultIQ);
-            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
-                            false);
+            String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Data data = new Data(dpe);
             listener.processPacket(data);
@@ -544,8 +543,7 @@ public class InBandBytestreamSessionTest {
         // set data packet acknowledgment and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
             protocol.addResponse(resultIQ);
-            String base64Data = StringUtils.encodeBase64(controlData, i * blockSize, blockSize,
-                            false);
+            String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Data data = new Data(dpe);
             listener.processPacket(data);
@@ -584,7 +582,7 @@ public class InBandBytestreamSessionTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // build data packet
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data = new Data(dpe);
 
@@ -627,7 +625,7 @@ public class InBandBytestreamSessionTest {
         PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
 
         // build data packet
-        String base64Data = StringUtils.encodeBase64("Data");
+        String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data = new Data(dpe);
 

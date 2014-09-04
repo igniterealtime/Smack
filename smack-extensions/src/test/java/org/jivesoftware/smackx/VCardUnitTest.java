@@ -20,12 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.vcardtemp.provider.VCardProvider;
 import org.junit.Test;
 
-public class VCardUnitTest {
+public class VCardUnitTest extends InitExtensions {
 
     @Test
     public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
@@ -67,7 +67,7 @@ public class VCardUnitTest {
     }
 
     public static byte[] getAvatarBinary() {
-        return StringUtils.decodeBase64(getAvatarEncoded());
+        return Base64.decode(getAvatarEncoded());
     }
     private static String getAvatarEncoded() {
         return "/9j/4AAQSkZJRgABAQEASABIAAD/4QAWRXhpZgAATU0AKgAAAAgAAAAAAAD/2wBDAAUDBAQEAwUE\n" +

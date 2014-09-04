@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 import org.xmlpull.v1.XmlPullParser;
@@ -94,7 +94,7 @@ public class JivePropertiesExtensionProvider implements PacketExtensionProvider 
                             else if ("java-object".equals(type)) {
                                 if (JivePropertiesManager.isJavaObjectEnabled()) {
                                     try {
-                                        byte[] bytes = StringUtils.decodeBase64(valueText);
+                                        byte[] bytes = Base64.decode(valueText);
                                         ObjectInputStream in = new ObjectInputStream(
                                                         new ByteArrayInputStream(bytes));
                                         value = in.readObject();

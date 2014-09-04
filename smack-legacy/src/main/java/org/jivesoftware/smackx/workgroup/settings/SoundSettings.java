@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.workgroup.settings;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.xmlpull.v1.XmlPullParser;
 
 public class SoundSettings extends IQ {
@@ -36,11 +36,11 @@ public class SoundSettings extends IQ {
     }
 
     public byte[] getIncomingSoundBytes() {
-        return StringUtils.decodeBase64(incomingSound);
+        return Base64.decode(incomingSound);
     }
 
     public byte[] getOutgoingSoundBytes() {
-        return StringUtils.decodeBase64(outgoingSound);
+        return Base64.decode(outgoingSound);
     }
 
 

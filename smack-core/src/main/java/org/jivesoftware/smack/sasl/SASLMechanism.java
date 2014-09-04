@@ -22,6 +22,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.sasl.packet.SaslStanzas.AuthMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStanzas.Response;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -172,7 +173,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         byte[] authenticationBytes = getAuthenticationText();
         String authenticationText;
         if (authenticationBytes != null) {
-            authenticationText = StringUtils.encodeBase64(authenticationBytes);
+            authenticationText = Base64.encodeToString(authenticationBytes);
         } else {
             // RFC6120 6.4.2 "If the initiating entity needs to send a zero-length initial response,
             // it MUST transmit the response as a single equals sign character ("="), which
@@ -202,7 +203,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @throws SmackException
      */
     public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException {
-        byte[] challenge = StringUtils.decodeBase64(challengeString);
+        byte[] challenge = Base64.decode(challengeString);
         byte[] response = evaluateChallenge(challenge);
         if (finalChallenge) {
             return;
@@ -213,7 +214,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
             responseStanza = new Response();
         }
         else {
-            responseStanza = new Response(StringUtils.encodeBase64(response, false));
+            responseStanza = new Response(Base64.encodeToString(response));
         }
 
         // Send the authentication to the server

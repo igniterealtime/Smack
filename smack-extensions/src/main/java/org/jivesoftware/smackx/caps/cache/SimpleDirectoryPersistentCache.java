@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.util.Base32Encoder;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringEncoder;
+import org.jivesoftware.smack.util.stringencoder.Base32;
+import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**
@@ -48,14 +48,14 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * Creates a new SimpleDirectoryPersistentCache Object. Make sure that the
      * cacheDir exists and that it's an directory.
      * <p>
-     * Default filename encoder {@link Base32Encoder}, as this will work on all 
+     * Default filename encoder {@link Base32}, as this will work on all 
      * file systems, both case sensitive and case insensitive.  It does however 
      * produce longer filenames.
      * 
      * @param cacheDir
      */
     public SimpleDirectoryPersistentCache(File cacheDir) {
-        this(cacheDir, Base32Encoder.getInstance());
+        this(cacheDir, Base32.getStringEncoder());
     }
 
     /**
@@ -63,7 +63,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * cacheDir exists and that it's an directory.
      * 
      * If your cacheDir is case insensitive then make sure to set the
-     * StringEncoder to {@link Base32Encoder} (which is the default).
+     * StringEncoder to {@link Base32} (which is the default).
      * 
      * @param cacheDir The directory where the cache will be stored.
      * @param filenameEncoder Encodes the node string into a filename.

@@ -24,8 +24,8 @@ import static org.mockito.Mockito.when;
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.junit.Test;
 
 import com.jamesmurty.utils.XMLBuilder;
@@ -56,7 +56,7 @@ public class DataTest {
 
     @Test
     public void shouldReturnValidIQStanzaXML() throws Exception {
-        String encodedData = StringUtils.encodeBase64("Test");
+        String encodedData = Base64.encode("Test");
         
         String control = XMLBuilder.create("iq")
             .a("from", "romeo@montague.lit/orchard")

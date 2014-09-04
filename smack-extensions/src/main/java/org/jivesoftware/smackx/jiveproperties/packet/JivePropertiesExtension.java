@@ -28,8 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Properties provide an easy mechanism for clients to share data. Each property has a
@@ -182,7 +182,7 @@ public class JivePropertiesExtension implements PacketExtension {
                     out = new ObjectOutputStream(byteStream);
                     out.writeObject(value);
                     type = "java-object";
-                    valueStr = StringUtils.encodeBase64(byteStream.toByteArray());
+                    valueStr = Base64.encodeToString(byteStream.toByteArray());
                 }
                 catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Error encoding java object", e);

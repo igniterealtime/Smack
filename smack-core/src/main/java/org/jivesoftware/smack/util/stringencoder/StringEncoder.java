@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util;
+package org.jivesoftware.smack.util.stringencoder;
 
 /**
  * @author Florian Schmaus
@@ -27,7 +27,7 @@ public interface StringEncoder {
      * @return the encoded String
      */
     String encode(String string);
-    
+
     /**
      * Decodes an string back to it's initial representation
      * 

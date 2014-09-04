@@ -35,8 +35,8 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.util.Base64;
 import org.jivesoftware.smack.util.Cache;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.disco.NodeInformationProvider;
@@ -663,7 +663,7 @@ public class EntityCapsManager extends Manager {
         // (note: the Base64 output MUST NOT include whitespace and MUST set
         // padding bits to zero).
         byte[] digest = md.digest(sb.toString().getBytes());
-        return Base64.encodeBytes(digest);
+        return Base64.encodeToString(digest);
     }
 
     private static void formFieldValuesToCaps(List<String> i, StringBuilder sb) {
