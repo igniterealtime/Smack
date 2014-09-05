@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackInitialization;
 import org.jivesoftware.smack.provider.ProviderFileLoader;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.FileUtils;
@@ -72,7 +72,7 @@ public abstract class UrlInitializer extends SmackAndOsgiInitializer {
         if (configUrl != null) {
             try {
                 is = FileUtils.getStreamForUrl(configUrl, classLoader);
-                SmackConfiguration.processConfigFile(is, exceptions, classLoader);
+                SmackInitialization.processConfigFile(is, exceptions, classLoader);
             }
             catch (Exception e) {
                 exceptions.add(e);

@@ -16,8 +16,11 @@
  */
 package org.jivesoftware.smack;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SmackConfigurationTest {
@@ -29,5 +32,29 @@ public class SmackConfigurationTest {
         } catch (Throwable t) {
             fail("SmackConfiguration threw Throwable");
         }
+    }
+
+    // As there is currently no annotation/way to run a testclass/single test in a separate VM,
+    // which is required for reliable results of this test, and we don't want to fork a VM for
+    // *every* test, those tests are currently disabled. Hopefully this will change in the future.
+    @Ignore 
+    @Test
+    public void smackConfigurationShouldNotCauseInitializationTest() {
+        SmackConfiguration.getDefaultPacketReplyTimeout();
+
+        // Only a call to SmackConfiguration.getVersion() should cause Smack to become initialized.
+        assertFalse(SmackConfiguration.isSmackInitialized());
+    }
+
+    // As there is currently no annotation/way to run a testclass/single test in a separate VM,
+    // which is required for reliable results of this test, and we don't want to fork a VM for
+    // *every* test, those tests are currently disabled. Hopefully this will change in the future.
+    @Ignore 
+    @Test
+    public void smackconfigurationVersionShouldInitialzieSmacktTest() {
+        SmackConfiguration.getVersion();
+
+        // Only a call to SmackConfiguration.getVersion() should cause Smack to become initialized.
+        assertTrue(SmackConfiguration.isSmackInitialized());
     }
 }
