@@ -35,11 +35,10 @@ Please search for your issues in the bug tracker before reporting.
 Contact
 -------
 
-The developeres hang around in `#smack` (freenode, IRC). Remember that it
-may take some time (~hours) to get a response.
+The developeres hang around in `#smack` (freenode, IRC) and `open_chat@conference.igniterealtime.org` (XMPP MUC room).
+Remember that it may take some time (~hours) to get a response.
  
-You can also reach us via the
-[Smack Users Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
+You can also reach us via the [Smack Users Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
 
 Resources
 ---------
