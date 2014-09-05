@@ -26,6 +26,8 @@ public class AndroidBase64Encoder implements org.jivesoftware.smack.util.stringe
 
     private static AndroidBase64Encoder instance = new AndroidBase64Encoder();
 
+    private static final int BASE64_ENCODER_FLAGS = Base64.NO_WRAP;
+
     private AndroidBase64Encoder() {
         // Use getInstance()
     }
@@ -46,12 +48,12 @@ public class AndroidBase64Encoder implements org.jivesoftware.smack.util.stringe
 
     @Override
     public String encodeToString(byte[] input, int offset, int len) {
-        return Base64.encodeToString(input, offset, len, Base64.DEFAULT);
+        return Base64.encodeToString(input, offset, len, BASE64_ENCODER_FLAGS);
     }
 
     @Override
     public byte[] encode(byte[] input, int offset, int len) {
-        return Base64.encode(input, offset, len, Base64.DEFAULT);
+        return Base64.encode(input, offset, len, BASE64_ENCODER_FLAGS);
     }
 
 }

@@ -31,6 +31,8 @@ public class AndroidBase64UrlSafeEncoder implements StringEncoder {
 
     private static AndroidBase64UrlSafeEncoder instance = new AndroidBase64UrlSafeEncoder();
 
+    private static final int BASE64_ENCODER_FLAGS = Base64.URL_SAFE | Base64.NO_WRAP;
+
     private AndroidBase64UrlSafeEncoder() {
         // Use getInstance()
     }
@@ -42,7 +44,7 @@ public class AndroidBase64UrlSafeEncoder implements StringEncoder {
     @Override
     public String encode(String string) {
         try {
-            return Base64.encodeToString(string.getBytes(StringUtils.UTF8), Base64.URL_SAFE);
+            return Base64.encodeToString(string.getBytes(StringUtils.UTF8), BASE64_ENCODER_FLAGS);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("UTF-8 not supported", e);
         }
@@ -50,7 +52,7 @@ public class AndroidBase64UrlSafeEncoder implements StringEncoder {
 
     @Override
     public String decode(String string) {
-        byte[] bytes = Base64.decode(string, Base64.URL_SAFE);
+        byte[] bytes = Base64.decode(string, BASE64_ENCODER_FLAGS);
         try {
             return new String(bytes, StringUtils.UTF8);
         } catch (UnsupportedEncodingException e) {

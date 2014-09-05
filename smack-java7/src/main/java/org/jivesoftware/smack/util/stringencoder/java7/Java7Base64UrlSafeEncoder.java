@@ -34,6 +34,8 @@ public class Java7Base64UrlSafeEncoder implements StringEncoder {
 
     private static Java7Base64UrlSafeEncoder instance = new Java7Base64UrlSafeEncoder();
 
+    private static int BASE64_ENCODER_FLAGS =  Base64.URL_SAFE | Base64.DONT_BREAK_LINES;
+
     private Java7Base64UrlSafeEncoder() {
         // Use getInstance()
     }
@@ -43,11 +45,11 @@ public class Java7Base64UrlSafeEncoder implements StringEncoder {
     }
 
     public String encode(String s) {
-        return Base64.encodeBytes(s.getBytes(), Base64.URL_SAFE);
+        return Base64.encodeBytes(s.getBytes(), BASE64_ENCODER_FLAGS);
     }
 
     public String decode(String s) {
-        return new String(Base64.decode(s, Base64.URL_SAFE));
+        return new String(Base64.decode(s, BASE64_ENCODER_FLAGS));
     }
 
 }

@@ -28,6 +28,8 @@ public class Java7Base64Encoder implements org.jivesoftware.smack.util.stringenc
 
     private static Java7Base64Encoder instance = new Java7Base64Encoder();
 
+    private static int BASE64_ENCODER_FLAGS =  Base64.URL_SAFE;
+
     private Java7Base64Encoder() {
         // Use getInstance()
     }
@@ -48,7 +50,7 @@ public class Java7Base64Encoder implements org.jivesoftware.smack.util.stringenc
 
     @Override
     public String encodeToString(byte[] input, int offset, int len) {
-        return Base64.encodeBytes(input, offset, len);
+        return Base64.encodeBytes(input, offset, len, BASE64_ENCODER_FLAGS);
     }
 
     @Override
