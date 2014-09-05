@@ -24,8 +24,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
@@ -34,6 +39,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -788,6 +794,23 @@ public class PacketParserUtilsTest {
         XmlPullParser parser = TestUtils.getParser(stanza, "iq");
         CharSequence content = PacketParserUtils.parseContent(parser);
         assertEquals("", content);
+    }
+
+    @Test
+    public void parseElementMultipleNamespace()
+                    throws ParserConfigurationException,
+                    FactoryConfigurationError, XmlPullParserException,
+                    IOException, TransformerException, SAXException {
+        // @formatter:off
+        final String stanza = XMLBuilder.create("outer", "outerNamespace").a("outerAttribute", "outerValue")
+                        .element("inner", "innerNamespace").a("innverAttribute", "innerValue")
+                            .element("innermost")
+                                .t("some text")
+                        .asString();
+        // @formatter:on
+        XmlPullParser parser = TestUtils.getParser(stanza, "outer");
+        CharSequence result = PacketParserUtils.parseElement(parser, true);
+        assertXMLEqual(stanza, result.toString());
     }
 
     private String determineNonDefaultLanguage() {

@@ -54,7 +54,7 @@ public class ItemProvider implements PacketExtensionProvider
 
             if (ProviderManager.getExtensionProvider(payloadElemName, payloadNS) == null) 
             {
-                CharSequence payloadText = PacketParserUtils.parseElement(parser);
+                CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
                 return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
             else 

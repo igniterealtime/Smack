@@ -19,6 +19,8 @@ package org.jivesoftware.smack;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -40,6 +42,8 @@ import org.jivesoftware.smack.packet.Packet;
  * @author Matt Tucker
  */
 public class PacketCollector {
+
+    private static final Logger LOGGER = Logger.getLogger(PacketCollector.class.getName());
 
     private PacketFilter packetFilter;
     private ArrayBlockingQueue<Packet> resultQueue;
@@ -115,12 +119,16 @@ public class PacketCollector {
      */
     @SuppressWarnings("unchecked")
     public <P extends Packet> P nextResultBlockForever() {
-        try {
-            return (P) resultQueue.take();
+        P res = null;
+        while (res == null) {
+            try {
+                res = (P) resultQueue.take();
+            } catch (InterruptedException e) {
+                LOGGER.log(Level.FINE,
+                                "nextResultBlockForever was interrupted", e);
+            }
         }
-        catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return res;
     }
 
     /**
@@ -142,12 +150,18 @@ public class PacketCollector {
      */
     @SuppressWarnings("unchecked")
     public <P extends Packet> P nextResult(long timeout) {
-    	try {
-			return (P) resultQueue.poll(timeout, TimeUnit.MILLISECONDS);
-		}
-		catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+        P res = null;
+        long remainingWait = timeout;
+        final long waitStart = System.currentTimeMillis();
+        while (res == null && remainingWait > 0) {
+            try {
+                res = (P) resultQueue.poll(remainingWait, TimeUnit.MILLISECONDS);
+                remainingWait = timeout - (System.currentTimeMillis() - waitStart);
+            } catch (InterruptedException e) {
+                LOGGER.log(Level.FINE, "nextResult was interrupted", e);
+            }
+        }
+        return res;
     }
 
     /**

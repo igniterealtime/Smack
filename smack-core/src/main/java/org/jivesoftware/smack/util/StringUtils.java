@@ -260,4 +260,18 @@ public class StringUtils {
             return null;
         }
     }
+
+    public static boolean nullSafeCharSequenceEquals(CharSequence csOne, CharSequence csTwo) {
+        return nullSafeCharSequenceComperator(csOne, csTwo) == 0;
+    }
+
+    public static int nullSafeCharSequenceComperator(CharSequence csOne, CharSequence csTwo) {
+        if (csOne == null ^ csTwo == null) {
+            return (csOne == null) ? -1 : 1;
+        }
+        if (csOne == null && csTwo == null) {
+            return 0;
+        }
+        return csOne.toString().compareTo(csTwo.toString());
+    }
 }
