@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.CloseTest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtensionTest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataTest;
@@ -24,7 +25,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.provider.OpenIQProviderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
+@RunWith(SmackTestSuite.class)
 @Suite.SuiteClasses( { CloseTest.class, DataPacketExtensionTest.class, DataTest.class,
                 OpenTest.class, OpenIQProviderTest.class, CloseListenerTest.class,
                 DataListenerTest.class, InBandBytestreamManagerTest.class,

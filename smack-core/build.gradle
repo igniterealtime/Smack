@@ -16,6 +16,7 @@ dependencies {
 	testCompile 'org.powermock:powermock-module-junit4:1.5.5'
 	testCompile 'org.powermock:powermock-api-mockito:1.5.5'
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6'
+	testCompile 'net.iharder:base64:2.3.8'
 }
 
 task compressionJar(type: Jar) {

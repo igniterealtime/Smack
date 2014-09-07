@@ -20,12 +20,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.vcardtemp.provider.VCardProvider;
+import org.junit.Before;
 import org.junit.Test;
 
 public class VCardUnitTest extends InitExtensions {
+
+    @Before
+    public void initSmackTestSuite() {
+        SmackTestSuite.init();
+    }
 
     @Test
     public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
