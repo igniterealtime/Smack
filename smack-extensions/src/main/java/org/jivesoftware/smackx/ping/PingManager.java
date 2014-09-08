@@ -317,70 +317,76 @@ public class PingManager extends Manager {
         }
     }
 
-    private final Runnable pingServerRunnable = new Runnable() {
-        private static final int DELTA = 1000; // 1 seconds
-        private static final int TRIES = 3; // 3 tries
-
-        public void run() {
-            LOGGER.fine("ServerPingTask run()");
-            XMPPConnection connection = connection();
-            if (connection == null) {
-                // connection has been collected by GC
-                // which means we can stop the thread by breaking the loop
+    /**
+     * Ping the server if deemed necessary because automatic server pings are
+     * enabled ({@link #setPingInterval(int)}) and the ping interval has expired.
+     */
+    public synchronized void pingServerIfNecessary() {
+        final int DELTA = 1000; // 1 seconds
+        final int TRIES = 3; // 3 tries
+        final XMPPConnection connection = connection();
+        if (connection == null) {
+            // connection has been collected by GC
+            // which means we can stop the thread by breaking the loop
+            return;
+        }
+        if (pingInterval <= 0) {
+            // Ping has been disabled
+            return;
+        }
+        long lastStanzaReceived = connection.getLastStanzaReceived();
+        if (lastStanzaReceived > 0) {
+            long now = System.currentTimeMillis();
+            // Delta since the last stanza was received
+            int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
+            // If the delta is small then the ping interval, then we can defer the ping
+            if (deltaInSeconds < pingInterval) {
+                maybeSchedulePingServerTask(deltaInSeconds);
                 return;
             }
-            if (pingInterval <= 0) {
-                // Ping has been disabled
-                return;
-            }
-            long lastStanzaReceived = connection.getLastStanzaReceived();
-            if (lastStanzaReceived > 0) {
-                long now = System.currentTimeMillis();
-                // Delta since the last stanza was received
-                int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
-                // If the delta is small then the ping interval, then we can defer the ping
-                if (deltaInSeconds < pingInterval) {
-                    maybeSchedulePingServerTask(deltaInSeconds);
-                    return;
-                }
-            }
-            if (connection.isAuthenticated()) {
-                boolean res = false;
+        }
+        if (connection.isAuthenticated()) {
+            boolean res = false;
 
-                for (int i = 0; i < TRIES; i++) {
-                    if (i != 0) {
-                        try {
-                            Thread.sleep(DELTA);
-                        } catch (InterruptedException e) {
-                            // We received an interrupt
-                            // This only happens if we should stop pinging
-                            return;
-                        }
-                    }
+            for (int i = 0; i < TRIES; i++) {
+                if (i != 0) {
                     try {
-                        res = pingMyServer(false);
-                    }
-                    catch (SmackException e) {
-                        LOGGER.log(Level.WARNING, "SmackError while pinging server", e);
-                        res = false;
-                    }
-                    // stop when we receive a pong back
-                    if (res) {
-                        break;
+                        Thread.sleep(DELTA);
+                    } catch (InterruptedException e) {
+                        // We received an interrupt
+                        // This only happens if we should stop pinging
+                        return;
                     }
                 }
-                LOGGER.fine("ServerPingTask res=" + res);
-                if (!res) {
-                    for (PingFailedListener l : pingFailedListeners) {
-                        l.pingFailed();
-                    }
-                } else {
-                    // Ping was successful, wind-up the periodic task again
-                    maybeSchedulePingServerTask();
+                try {
+                    res = pingMyServer(false);
+                }
+                catch (SmackException e) {
+                    LOGGER.log(Level.WARNING, "SmackError while pinging server", e);
+                    res = false;
+                }
+                // stop when we receive a pong back
+                if (res) {
+                    break;
+                }
+            }
+            if (!res) {
+                for (PingFailedListener l : pingFailedListeners) {
+                    l.pingFailed();
                 }
             } else {
-                LOGGER.warning("ServerPingTask: XMPPConnection was not authenticated");
+                // Ping was successful, wind-up the periodic task again
+                maybeSchedulePingServerTask();
             }
+        } else {
+            LOGGER.warning("XMPPConnection was not authenticated");
+        }
+    }
+
+    private final Runnable pingServerRunnable = new Runnable() {
+        public void run() {
+            LOGGER.fine("ServerPingTask run()");
+            pingServerIfNecessary();
         }
     };
 
