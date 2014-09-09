@@ -206,15 +206,10 @@ public abstract class FileTransfer {
 		int count = 0;
 		amountWritten = 0;
 
-        do {
-			// write to the output stream
-			out.write(b, 0, count);
-
-			amountWritten += count;
-
-			// read more bytes from the input stream
-			count = in.read(b);
-		} while (count != -1 && !getStatus().equals(Status.cancelled));
+        while ((count = in.read(b)) > 0 && !getStatus().equals(Status.cancelled)) {
+            out.write(b, 0, count);
+            amountWritten += count;
+        }
 
 		// the connection was likely terminated abruptly if these are not equal
 		if (!getStatus().equals(Status.cancelled) && getError() == Error.none
