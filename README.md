@@ -1,7 +1,7 @@
 Smack
 =====
 
-[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp)
+[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/d7b3aa1146d7542921816c4ed057683e)
 
 About
 -----
@@ -51,6 +51,14 @@ Resources
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
+
+Donate
+------
+
+If you find Smack useful and feel like donating, then you can use one of the following systems:
+
+- [Donate via Flattr](https://flattr.com/thing/d7b3aa1146d7542921816c4ed057683e)
+- Donate via Bitcoin: 1D4k11bsPxRB6rS51fxDty8QYfRVUt5JMB
 
 Ignite Realtime
 ===============
