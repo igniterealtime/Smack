@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -265,7 +265,7 @@ public class Bytestream extends IQ {
      * 
      * @author Alexander Wenckus
      */
-    public static class StreamHost implements Element {
+    public static class StreamHost implements NamedElement {
 
         public static String ELEMENTNAME = "streamhost";
 
@@ -343,7 +343,7 @@ public class Bytestream extends IQ {
      * 
      * @author Alexander Wenckus
      */
-    public static class StreamHostUsed implements Element {
+    public static class StreamHostUsed implements NamedElement {
 
         public static String ELEMENTNAME = "streamhost-used";
 
@@ -385,7 +385,7 @@ public class Bytestream extends IQ {
      * 
      * @author Alexander Wenckus
      */
-    public static class Activate implements Element {
+    public static class Activate implements NamedElement {
 
         public static String ELEMENTNAME = "activate";
 

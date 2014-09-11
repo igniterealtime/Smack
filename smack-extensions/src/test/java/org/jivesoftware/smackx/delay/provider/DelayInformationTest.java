@@ -20,12 +20,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.TimeZone;
+
+import javax.xml.parsers.FactoryConfigurationError;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -35,14 +38,17 @@ import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
 
 public class DelayInformationTest extends InitExtensions {
 
+    private static final Calendar calendar = new GregorianCalendar(2002, 9 - 1, 10, 23, 8, 25);
     private static Properties outputProperties = new Properties();
     static {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     @Test
@@ -95,8 +101,6 @@ public class DelayInformationTest extends InitExtensions {
         DelayInformationProvider p = new DelayInformationProvider();
         DelayInformation delayInfo;
         String control;
-        GregorianCalendar calendar = new GregorianCalendar(2002, 9 - 1, 10, 23, 8, 25);
-        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         
         // XEP-0082 date format
         control = XMLBuilder.create("delay")
@@ -132,6 +136,14 @@ public class DelayInformationTest extends InitExtensions {
         delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
+    }
+
+    @Test
+    public void legacyDateFormatsTest() throws FactoryConfigurationError, XmlPullParserException, IOException, Exception {
+        LegacyDelayInformationProvider p = new LegacyDelayInformationProvider();
+        DelayInformation delayInfo;
+
+        String control;
 
         // XEP-0091 date format
         control = XMLBuilder.create("x")

@@ -46,6 +46,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class Registration extends IQ {
 
+    public static final String NAMESPACE = "jabber:iq:register";
+
     private String instructions = null;
     private Map<String, String> attributes = null;
 
@@ -90,8 +92,8 @@ public class Registration extends IQ {
     @Override
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement("query");
-        xml.xmlnsAttribute("jabber:iq:register");
+        xml.halfOpenElement(QUERY_ELEMENT);
+        xml.xmlnsAttribute(NAMESPACE);
         xml.rightAngleBracket();
         xml.optElement("instructions", instructions);
         if (attributes != null && attributes.size() > 0) {
@@ -102,7 +104,33 @@ public class Registration extends IQ {
         }
         // Add packet extensions, if any are defined.
         xml.append(getExtensionsXML());
-        xml.closeElement("query");
+        xml.closeElement(QUERY_ELEMENT);
         return xml;
+    }
+
+    public static class Feature implements PacketExtension {
+
+        public static final String ELEMENT = "register";
+        public static final String NAMESPACE = "http://jabber.org/features/iq-register";
+        public static final Feature INSTANCE = new Registration.Feature();
+
+        private Feature() {
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public CharSequence toXML() {
+            return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
     }
 }

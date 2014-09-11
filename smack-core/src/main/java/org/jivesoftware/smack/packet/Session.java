@@ -32,12 +32,40 @@ package org.jivesoftware.smack.packet;
  */
 public class Session extends IQ {
 
+    public static final String ELEMENT = "session";
+    public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-session";
+
+    private static final String SESSION = '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
+
     public Session() {
         setType(IQ.Type.set);
     }
 
     @Override
-    public CharSequence getChildElementXML() {
-        return "<session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/>";
+    public String getChildElementXML() {
+        return SESSION;
+    }
+
+    public static class Feature implements PacketExtension {
+
+        public static final Session.Feature INSTANCE = new Feature();
+
+        private Feature() {
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String toXML() {
+            return SESSION;
+        }
     }
 }

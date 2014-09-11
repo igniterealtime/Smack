@@ -23,6 +23,8 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 
 /**
@@ -152,6 +154,13 @@ public interface XMPPConnection {
     public void sendPacket(Packet packet) throws NotConnectedException;
 
     /**
+     * 
+     * @param element
+     * @throws NotConnectedException
+     */
+    public void  send(PlainStreamElement element) throws NotConnectedException;
+
+    /**
      * Returns the roster for the user.
      * <p>
      * This method will never return <code>null</code>, instead if the user has not yet logged into
@@ -273,23 +282,6 @@ public interface XMPPConnection {
     public void removePacketInterceptor(PacketInterceptor packetInterceptor);
 
     /**
-     * Retrieve the servers Entity Caps node
-     * 
-     * XMPPConnection holds this information in order to avoid a dependency to
-     * smackx where EntityCapsManager lives from smack.
-     * 
-     * @return the servers entity caps node
-     */
-    public String getServiceCapsNode();
-
-    /**
-     * Returns true if the server supports roster versioning as defined in XEP-0237.
-     *
-     * @return true if the server supports roster versioning
-     */
-    public boolean isRosterVersioningSupported();
-
-    /**
      * Returns the current value of the reply timeout in milliseconds for request for this
      * XMPPConnection instance.
      *
@@ -354,12 +346,32 @@ public interface XMPPConnection {
 
     /**
      * Returns true if the roster will be loaded from the server when logging in. This
-     * is the common behaviour for clients but sometimes clients may want to differ this
+     * is the common behavior for clients but sometimes clients may want to differ this
      * or just never do it if not interested in rosters.
      *
      * @return true if the roster will be loaded from the server when logging in.
+     * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-login">RFC 6121 2.2 - Retrieving the Roster on Login</a>
      */
     public boolean isRosterLoadedAtLogin();
+
+    /**
+     * Get the feature packet extensions for a given stream feature of the
+     * server, or <code>null</code> if the server doesn't support that feature.
+     * 
+     * @param element
+     * @param namespace
+     * @return a packet extensions of the feature or <code>null</code>
+     */
+    public <F extends PacketExtension> F getFeature(String element, String namespace);
+
+    /**
+     * Return true if the server supports the given stream feature.
+     * 
+     * @param element
+     * @param namespace
+     * @return
+     */
+    public boolean hasFeature(String element, String namespace);
 
     /**
      * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
@@ -464,4 +476,5 @@ public interface XMPPConnection {
      * @return the timestamp in milliseconds
      */
     public long getLastStanzaReceived();
+
 }

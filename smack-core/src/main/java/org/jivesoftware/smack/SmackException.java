@@ -89,6 +89,17 @@ public class SmackException extends Exception {
         }
     }
 
+    public static class AlreadyConnectedException extends SmackException {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 5011416918049135231L;
+
+        public AlreadyConnectedException() {
+        }
+    }
+
     public static class NotConnectedException extends SmackException {
 
         /**
@@ -119,6 +130,10 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 384291845029773545L;
 
         public SecurityRequiredException() {
+        }
+
+        public SecurityRequiredException(String message) {
+            super(message);
         }
     }
 

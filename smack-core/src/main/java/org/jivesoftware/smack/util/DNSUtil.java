@@ -123,15 +123,20 @@ public class DNSUtil {
         } else {
             srvDomain = domain;
         }
-        List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
-        if (LOGGER.isLoggable(Level.FINE)) {
-            String logMessage = "Resolved SRV RR for " + srvDomain + ":";
-            for (SRVRecord r : srvRecords)
-                logMessage += " " + r;
-            LOGGER.fine(logMessage);
+        try {
+            List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                String logMessage = "Resolved SRV RR for " + srvDomain + ":";
+                for (SRVRecord r : srvRecords)
+                    logMessage += " " + r;
+                LOGGER.fine(logMessage);
+            }
+            List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
+            addresses.addAll(sortedRecords);
         }
-        List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
-        addresses.addAll(sortedRecords);
+        catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Exception while resolving SRV records for " + domain, e);
+        }
 
         // Step two: Add the hostname to the end of the list
         addresses.add(new HostAddress(domain));

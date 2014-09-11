@@ -38,9 +38,12 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
+import org.xmlpull.v1.XmlPullParser;
 import org.igniterealtime.jbosh.BOSHClient;
 import org.igniterealtime.jbosh.BOSHClientConfig;
 import org.igniterealtime.jbosh.BOSHClientConnEvent;
@@ -85,7 +88,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     // Some flags which provides some info about the current state.
     private boolean connected = false;
     private boolean authenticated = false;
-    private boolean anonymous = false;
     private boolean isFirstInitialization = true;
     private boolean wasAuthenticated = false;
     private boolean done = false;
@@ -103,11 +105,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * The session ID for the BOSH session with the connection manager.
      */
     protected String sessionID = null;
-
-    /**
-     * The full JID of the authenticated user.
-     */
-    private String user = null;
 
     /**
      * Create a HTTP Binding connection to a XMPP server.
@@ -220,10 +217,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         return user;
     }
 
-    public boolean isAnonymous() {
-        return anonymous;
-    }
-
     public boolean isAuthenticated() {
         return authenticated;
     }
@@ -250,6 +243,10 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         if (authenticated) {
             throw new AlreadyLoggedInException();
         }
+
+        // Wait with SASL auth until the SASL mechanisms have been received
+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
+
         // Do partial version of nameprep on the username.
         username = username.toLowerCase(Locale.US).trim();
 
@@ -264,41 +261,11 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             throw new SaslException("No non-anonymous SASL authentication mechanism available");
         }
 
-        String response = bindResourceAndEstablishSession(resource);
-        // Set the user.
-        if (response != null) {
-            this.user = response;
-            // Update the serviceName with the one returned by the server
-            setServiceName(response);
-        } else {
-            this.user = username + "@" + getServiceName();
-            if (resource != null) {
-                this.user += "/" + resource;
-            }
-        }
+        bindResourceAndEstablishSession(resource);
 
-        // Indicate that we're now authenticated.
-        authenticated = true;
-        anonymous = false;
-
-        // Stores the autentication for future reconnection
+        // Stores the authentication for future reconnection
         setLoginInfo(username, password, resource);
-
-        // If debugging is enabled, change the the debug window title to include
-        // the
-        // name we are now logged-in as.l
-        if (config.isDebuggerEnabled() && debugger != null) {
-            debugger.userHasLogged(user);
-        }
-        callConnectionAuthenticatedListener();
-
-        // Set presence to online. It is important that this is done after
-        // callConnectionAuthenticatedListener(), as this call will also
-        // eventually load the roster. And we should load the roster before we
-        // send the initial presence.
-        if (config.isSendPresence()) {
-            sendPacket(new Presence(Presence.Type.available));
-        }
+        afterSuccessfulLogin(false, false);
     }
 
     public void loginAnonymously() throws XMPPException, SmackException, IOException {
@@ -309,6 +276,9 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             throw new AlreadyLoggedInException();
         }
 
+        // Wait with SASL auth until the SASL mechanisms have been received
+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
+
         if (saslAuthentication.hasAnonymousAuthentication()) {
             saslAuthentication.authenticateAnonymously();
         }
@@ -317,38 +287,27 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             throw new SaslException("No anonymous SASL authentication mechanism available");
         }
 
-        String response = bindResourceAndEstablishSession(null);
-        // Set the user value.
-        this.user = response;
-        // Update the serviceName with the one returned by the server
-        setServiceName(response);
+        bindResourceAndEstablishSession(null);
 
-        // Set presence to online.
-        if (config.isSendPresence()) {
-            sendPacket(new Presence(Presence.Type.available));
+        afterSuccessfulLogin(true, false);
+    }
+
+    @Override
+    public void send(PlainStreamElement element) throws NotConnectedException {
+        if (done) {
+            throw new NotConnectedException();
         }
-
-        // Indicate that we're now authenticated.
-        authenticated = true;
-        anonymous = true;
-
-        // If debugging is enabled, change the the debug window title to include the
-        // name we are now logged-in as.
-        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
-        // will be null
-        if (config.isDebuggerEnabled() && debugger != null) {
-            debugger.userHasLogged(user);
-        }
-        callConnectionAuthenticatedListener();
+        sendElement(element);
     }
 
     @Override
     protected void sendPacketInternal(Packet packet) throws NotConnectedException {
-        if (done) {
-            throw new NotConnectedException();
-        }
+        sendElement(packet);
+    }
+
+    private void sendElement(Element element) {
         try {
-            send(ComposableBody.builder().setPayloadXML(packet.toXML().toString()).build());
+            send(ComposableBody.builder().setPayloadXML(element.toXML().toString()).build());
         }
         catch (BOSHException e) {
             LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);
@@ -524,19 +483,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         return super.getSASLAuthentication();
     }
 
-    @Override
-    protected void serverRequiresBinding() {
-        super.serverRequiresBinding();
-    }
-
-    @Override
-    protected void serverSupportsSession() {
-        super.serverSupportsSession();
-    }
-
-    @Override
-    protected void serverSupportsAccountCreation() {
-        super.serverSupportsAccountCreation();
+    void parseFeatures0(XmlPullParser parser) throws Exception {
+        parseFeatures(parser);
     }
 
     /**

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Manages providers for parsing custom XML sub-documents of XMPP packets. Two types of
@@ -111,13 +112,13 @@ public final class ProviderManager {
     public static void addLoader(ProviderLoader loader) {
         if (loader.getIQProviderInfo() != null) {
             for (IQProviderInfo info : loader.getIQProviderInfo()) {
-                iqProviders.put(getProviderKey(info.getElementName(), info.getNamespace()), info.getProvider());
+                iqProviders.put(getKey(info.getElementName(), info.getNamespace()), info.getProvider());
             }
         }
         
         if (loader.getExtensionProviderInfo() != null) {
             for (ExtensionProviderInfo info : loader.getExtensionProviderInfo()) {
-                extensionProviders.put(getProviderKey(info.getElementName(), info.getNamespace()), info.getProvider());
+                extensionProviders.put(getKey(info.getElementName(), info.getNamespace()), info.getProvider());
             }
         }
     }
@@ -143,7 +144,7 @@ public final class ProviderManager {
      * @return the IQ provider.
      */
     public static Object getIQProvider(String elementName, String namespace) {
-        String key = getProviderKey(elementName, namespace);
+        String key = getKey(elementName, namespace);
         return iqProviders.get(key);
     }
 
@@ -176,7 +177,7 @@ public final class ProviderManager {
             throw new IllegalArgumentException("Provider must be an IQProvider " +
                     "or a Class instance sublcassing IQ.");
         }
-        String key = getProviderKey(elementName, namespace);
+        String key = getKey(elementName, namespace);
         iqProviders.put(key, provider);
     }
 
@@ -189,7 +190,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      */
     public static void removeIQProvider(String elementName, String namespace) {
-        String key = getProviderKey(elementName, namespace);
+        String key = getKey(elementName, namespace);
         iqProviders.remove(key);
     }
 
@@ -213,7 +214,7 @@ public final class ProviderManager {
      * @return the extenion provider.
      */
     public static Object getExtensionProvider(String elementName, String namespace) {
-        String key = getProviderKey(elementName, namespace);
+        String key = getKey(elementName, namespace);
         return extensionProviders.get(key);
     }
 
@@ -233,7 +234,7 @@ public final class ProviderManager {
             throw new IllegalArgumentException("Provider must be a PacketExtensionProvider " +
                     "or a Class instance.");
         }
-        String key = getProviderKey(elementName, namespace);
+        String key = getKey(elementName, namespace);
         extensionProviders.put(key, provider);
     }
 
@@ -246,7 +247,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      */
     public static void removeExtensionProvider(String elementName, String namespace) {
-        String key = getProviderKey(elementName, namespace);
+        String key = getKey(elementName, namespace);
         extensionProviders.remove(key);
     }
 
@@ -261,14 +262,7 @@ public final class ProviderManager {
         return Collections.unmodifiableCollection(extensionProviders.values());
     }
 
-    /**
-     * Returns a String key for a given element name and namespace.
-     *
-     * @param elementName the element name.
-     * @param namespace the namespace.
-     * @return a unique key for the element name and namespace pair.
-     */
-    private static String getProviderKey(String elementName, String namespace) {
-        return elementName + '#' + namespace;
+    private static String getKey(String elementName, String namespace) {
+        return XmppStringUtils.generateKey(elementName, namespace);
     }
 }

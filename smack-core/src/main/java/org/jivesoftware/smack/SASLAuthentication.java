@@ -19,17 +19,17 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.sasl.SASLAnonymous;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.Success;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 
 import javax.security.auth.callback.CallbackHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -128,13 +128,12 @@ public class SASLAuthentication {
     }
 
     private final AbstractXMPPConnection connection;
-    private Collection<String> serverMechanisms = new ArrayList<String>();
     private SASLMechanism currentMechanism = null;
 
     /**
      * Boolean indicating if SASL negotiation has finished and was successful.
      */
-    private boolean saslNegotiated;
+    private boolean authenticationSuccessful;
 
     /**
      * Either of type {@link SmackException} or {@link SASLErrorException}
@@ -152,7 +151,7 @@ public class SASLAuthentication {
      * @return true if the server offered ANONYMOUS SASL as a way to authenticate users.
      */
     public boolean hasAnonymousAuthentication() {
-        return serverMechanisms.contains("ANONYMOUS");
+        return serverMechanisms().contains("ANONYMOUS");
     }
 
     /**
@@ -161,7 +160,7 @@ public class SASLAuthentication {
      * @return true if the server offered SASL authentication besides ANONYMOUS SASL.
      */
     public boolean hasNonAnonymousAuthentication() {
-        return !serverMechanisms.isEmpty() && (serverMechanisms.size() != 1 || !hasAnonymousAuthentication());
+        return !serverMechanisms().isEmpty() && (serverMechanisms().size() != 1 || !hasAnonymousAuthentication());
     }
 
     /**
@@ -197,7 +196,7 @@ public class SASLAuthentication {
 
             maybeThrowException();
 
-            if (!saslNegotiated) {
+            if (!authenticationSuccessful) {
                 throw new NoResponseException();
             }
         }
@@ -244,7 +243,7 @@ public class SASLAuthentication {
 
             maybeThrowException();
 
-            if (!saslNegotiated) {
+            if (!authenticationSuccessful) {
                 throw new NoResponseException();
             }
         }
@@ -283,7 +282,7 @@ public class SASLAuthentication {
 
         maybeThrowException();
 
-        if (!saslNegotiated) {
+        if (!authenticationSuccessful) {
             throw new NoResponseException();
         }
     }
@@ -298,17 +297,6 @@ public class SASLAuthentication {
                 throw new IllegalStateException("Unexpected exception type" , saslException);
             }
         }
-    }
-    /**
-     * Sets the available SASL mechanism reported by the server. The server will report the
-     * available SASL mechanism once the TLS negotiation was successful. This information is
-     * stored and will be used when doing the authentication for logging in the user.
-     *
-     * @param mechanisms collection of strings with the available SASL mechanism reported
-     *                   by the server.
-     */
-    public void setAvailableSASLMethods(Collection<String> mechanisms) {
-        this.serverMechanisms = mechanisms;
     }
 
     /**
@@ -355,7 +343,7 @@ public class SASLAuthentication {
         if (success.getData() != null) {
             challengeReceived(success.getData(), true);
         }
-        saslNegotiated = true;
+        authenticationSuccessful = true;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
             notify();
@@ -381,13 +369,17 @@ public class SASLAuthentication {
         }
     }
 
+    public boolean authenticationSuccessful() {
+        return authenticationSuccessful;
+    }
+
     /**
      * Initializes the internal state in order to be able to be reused. The authentication
      * is used by the connection at the first login and then reused after the connection
      * is disconnected and then reconnected.
      */
     protected void init() {
-        saslNegotiated = false;
+        authenticationSuccessful = false;
         saslException = null;
     }
 
@@ -404,12 +396,17 @@ public class SASLAuthentication {
                     continue;
                 }
             }
-            if (serverMechanisms.contains(mechanismName)) {
+            if (serverMechanisms().contains(mechanismName)) {
                 // Create a new instance of the SASLMechanism for every authentication attempt.
                 selectedMechanism = mechanism.instanceForAuthentication(connection);
                 break;
             }
         }
         return selectedMechanism;
+    }
+
+    private List<String> serverMechanisms() {
+        Mechanisms mechanisms = connection.getFeature(Mechanisms.ELEMENT, Mechanisms.NAMESPACE);
+        return mechanisms.getMechanisms();
     }
 }

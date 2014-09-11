@@ -9,6 +9,14 @@ for many of the protocol extensions.
 This manual provides details about each of the "smackx" extensions, including
 what it is, how to use it, and some simple example code.
 
+Currently supported XEPs of smack-tcp
+-------------------------------------
+
+| Name                                        | XEP                                                      | Description |
+|---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [Stream Management](streammanagement.html)  | [XEP-0198](http://xmpp.org/extensions/xep-0198.html) | Allows active management of an XML Stream between two XMPP entities (stanza acknowledgement, stream resumption). |
+
+
 Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 -------------------------------------------------------------------------
 

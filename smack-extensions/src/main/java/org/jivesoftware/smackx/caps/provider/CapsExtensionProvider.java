@@ -19,10 +19,10 @@ package org.jivesoftware.smackx.caps.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.CapsExtension;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
-import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

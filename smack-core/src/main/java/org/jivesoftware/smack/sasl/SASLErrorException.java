@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 
 public class SASLErrorException extends XMPPException {
 

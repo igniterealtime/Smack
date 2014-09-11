@@ -16,18 +16,18 @@
  */
 package org.jivesoftware.smack.sasl.packet;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class SaslStanzas {
+public class SaslStreamElements {
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl";
 
     /**
      * Initiating SASL authentication by select a mechanism.
      */
-    public static class AuthMechanism extends Packet {
+    public static class AuthMechanism extends PlainStreamElement {
         public static final String ELEMENT = "auth";
 
         private final String mechanism;
@@ -55,9 +55,9 @@ public class SaslStanzas {
     }
 
     /**
-     * A SASL challenge stanza.
+     * A SASL challenge stream element.
      */
-    public static class Challenge extends Packet {
+    public static class Challenge extends PlainStreamElement {
         public static final String ELEMENT = "challenge";
 
         private final String data;
@@ -77,9 +77,9 @@ public class SaslStanzas {
     }
 
     /**
-     * A SASL response stanza.
+     * A SASL response stream element.
      */
-    public static class Response extends Packet {
+    public static class Response extends PlainStreamElement {
         public static final String ELEMENT = "response";
 
         private final String authenticationText;
@@ -103,15 +103,15 @@ public class SaslStanzas {
     }
 
     /**
-     * A SASL success stanza.
+     * A SASL success stream element.
      */
-    public static class Success extends Packet {
+    public static class Success extends PlainStreamElement {
         public static final String ELEMENT = "success";
 
         final private String data;
 
         /**
-         * Construct a new SASL success stanza with optional additional data for the SASL layer
+         * Construct a new SASL success stream element with optional additional data for the SASL layer
          * (RFC6120 6.3.10)
          * 
          * @param data additional data for the SASL layer or <code>null</code>
@@ -140,9 +140,9 @@ public class SaslStanzas {
     }
 
     /**
-     * A SASL failure stanza.
+     * A SASL failure stream element.
      */
-    public static class SASLFailure extends Packet {
+    public static class SASLFailure extends PlainStreamElement {
         public static final String ELEMENT = "failure";
 
         private final SASLError saslError;

@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
-import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Packet;
 
 import java.util.HashMap;
@@ -218,7 +218,7 @@ public class MUCUser implements PacketExtension {
      *
      * @author Gaston Dombiak
      */
-    public static class Invite implements Element {
+    public static class Invite implements NamedElement {
         public static final String ELEMENT ="invite";
 
         private String reason;
@@ -304,7 +304,7 @@ public class MUCUser implements PacketExtension {
      *
      * @author Gaston Dombiak
      */
-    public static class Decline implements Element {
+    public static class Decline implements NamedElement {
         public static final String ELEMENT = "decline";
 
         private String reason;
@@ -390,7 +390,7 @@ public class MUCUser implements PacketExtension {
      *
      * @author Gaston Dombiak
      */
-    public static class Status implements Element {
+    public static class Status implements NamedElement {
         public static final String ELEMENT = "status";
 
         private static final Map<Integer, Status> statusMap = new HashMap<Integer, Status>(8);

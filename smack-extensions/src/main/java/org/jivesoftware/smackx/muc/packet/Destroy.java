@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.muc.packet;
 
-import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -26,7 +26,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * 
  * @author Gaston Dombiak
  */
-public class Destroy implements Element {
+public class Destroy implements NamedElement {
     public static final String ELEMENT = "destroy";
 
     private String reason;

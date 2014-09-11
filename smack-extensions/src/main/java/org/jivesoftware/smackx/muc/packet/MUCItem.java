@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.muc.packet;
 
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.muc.MUCRole;
  *
  * @author Gaston Dombiak
  */
-public class MUCItem implements Element {
+public class MUCItem implements NamedElement {
     public static final String ELEMENT = IQ.ITEM;
 
     private final MUCAffiliation affiliation;

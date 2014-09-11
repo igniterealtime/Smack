@@ -24,14 +24,7 @@ package org.jivesoftware.smack.packet;
 public interface Element {
 
     /**
-     * Returns the root element name.
-     *
-     * @return the element name.
-     */
-    public String getElementName();
-
-    /**
-     * Returns the XML representation of the PacketExtension.
+     * Returns the XML representation of this Element.
      *
      * @return the packet extension as XML.
      */

@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Matt Tucker
  */
-public abstract class Packet {
+public abstract class Packet extends TopLevelStreamElement {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";
@@ -245,15 +245,6 @@ public abstract class Packet {
     public void removeExtension(PacketExtension extension)  {
         packetExtensions.remove(extension);
     }
-
-    /**
-     * Returns the packet as XML. Every concrete extension of Packet must implement
-     * this method. In addition to writing out packet-specific data, every sub-class
-     * should also write out the error and the extensions data if they are defined.
-     *
-     * @return the XML format of the packet as a String.
-     */
-    public abstract CharSequence toXML();
 
     /**
      * Returns the extension sub-packets (including properties data) as an XML

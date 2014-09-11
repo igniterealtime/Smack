@@ -40,19 +40,22 @@ public class PacketWriterTest {
      * 
      * @throws InterruptedException
      * @throws BrokenBarrierException
+     * @throws NotConnectedException 
      */
     @SuppressWarnings("javadoc")
     @Test
     public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException {
         XMPPTCPConnection connection = new XMPPTCPConnection("foobar.com");
         final PacketWriter pw = connection.new PacketWriter();
-        pw.setWriter(new BlockingStringWriter());
-        pw.startup();
+        connection.packetWriter = pw;
+        connection.packetReader = connection.new PacketReader();
+        connection.setWriter(new BlockingStringWriter());
+        pw.init();
 
         for (int i = 0; i < XMPPTCPConnection.PacketWriter.QUEUE_SIZE; i++) {
-            pw.sendPacket(new Message());
+            pw.sendStreamElement(new Message());
         }
-        
+
         final CyclicBarrier barrier = new CyclicBarrier(2);
         shutdown = false;
         prematureUnblocked = false;
@@ -61,7 +64,7 @@ public class PacketWriterTest {
             public void run() {
                 try {
                     barrier.await();
-                    pw.sendPacket(new Message());
+                    pw.sendStreamElement(new Message());
                     // should only return after the pw was interrupted
                     if (!shutdown) {
                         prematureUnblocked = true;
@@ -85,9 +88,9 @@ public class PacketWriterTest {
         Thread.sleep(250);
 
         // Set to true for testing purposes, so that shutdown() won't wait packet writer
-        pw.shutdownDone.set(true);
+        pw.shutdownDone.reportSuccess();
         // Shutdown the packetwriter
-        pw.shutdown();
+        pw.shutdown(false);
         shutdown = true;
         barrier.await();
         if (prematureUnblocked) {

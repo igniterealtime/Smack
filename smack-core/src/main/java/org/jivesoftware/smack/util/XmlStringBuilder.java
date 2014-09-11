@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util;
 
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 public class XmlStringBuilder implements Appendable, CharSequence {
@@ -33,7 +34,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         prelude(pe);
     }
 
-    public XmlStringBuilder(Element e) {
+    public XmlStringBuilder(NamedElement e) {
         this();
         halfOpenElement(e.getElementName());
     }
@@ -101,7 +102,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
-    public XmlStringBuilder closeElement(Element e) {
+    public XmlStringBuilder closeElement(NamedElement e) {
         closeElement(e.getElementName());
         return this;
     }

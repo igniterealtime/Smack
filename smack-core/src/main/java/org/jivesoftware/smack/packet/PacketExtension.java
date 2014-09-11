@@ -28,7 +28,7 @@ package org.jivesoftware.smack.packet;
  * @see org.jivesoftware.smack.provider.PacketExtensionProvider
  * @author Matt Tucker
  */
-public interface PacketExtension extends Element {
+public interface PacketExtension extends NamedElement {
 
     /**
      * Returns the root element XML namespace.

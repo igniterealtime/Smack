@@ -176,10 +176,11 @@ public class ConsoleDebugger implements SmackDebugger {
     }
 
     public void userHasLogged(String user) {
-        boolean isAnonymous = "".equals(XmppStringUtils.parseLocalpart(user));
+        String localpart = XmppStringUtils.parseLocalpart(user);
+        boolean isAnonymous = "".equals(localpart);
         String title =
                 "User logged (" + connection.hashCode() + "): "
-                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
+                + (isAnonymous ? "" : localpart)
                 + "@"
                 + connection.getServiceName()
                 + ":"

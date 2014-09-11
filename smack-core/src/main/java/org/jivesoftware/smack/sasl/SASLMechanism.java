@@ -19,8 +19,8 @@ package org.jivesoftware.smack.sasl;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.AuthMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.Response;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -181,7 +181,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
             authenticationText = "=";
         }
         // Send the authentication to the server
-        connection.sendPacket(new AuthMechanism(getName(), authenticationText));
+        connection.send(new AuthMechanism(getName(), authenticationText));
     }
 
     /**
@@ -218,7 +218,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         }
 
         // Send the authentication to the server
-        connection.sendPacket(responseStanza);
+        connection.send(responseStanza);
     }
 
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {

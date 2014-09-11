@@ -33,7 +33,7 @@ allprojects {
 		// build, causing unnecessary rebuilds.
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
-		jxmppVersion = "0.2.0"
+		jxmppVersion = "0.3.0"
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7

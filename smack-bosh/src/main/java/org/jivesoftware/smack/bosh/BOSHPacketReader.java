@@ -20,9 +20,8 @@ package org.jivesoftware.smack.bosh;
 import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.Challenge;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.Success;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -86,8 +85,6 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                             final String challengeData = parser.nextText();
                             connection.getSASLAuthentication()
                                     .challengeReceived(challengeData);
-                            connection.processPacket(new Challenge(
-                                    challengeData));
                         } else if (parser.getName().equals("success")) {
                             connection.send(ComposableBody.builder()
                                     .setNamespaceDefinition("xmpp", XMPPBOSHConnection.XMPP_BOSH_NS)
@@ -100,14 +97,12 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
                                     .build());
                             Success success = new Success(parser.nextText());
                             connection.getSASLAuthentication().authenticated(success);
-                            connection.processPacket(success);
                         } else if (parser.getName().equals("features")) {
                             parseFeatures(parser);
                         } else if (parser.getName().equals("failure")) {
                             if ("urn:ietf:params:xml:ns:xmpp-sasl".equals(parser.getNamespace(null))) {
                                 final SASLFailure failure = PacketParserUtils.parseSASLFailure(parser);
                                 connection.getSASLAuthentication().authenticationFailed(failure);
-                                connection.processPacket(failure);
                             }
                         } else if (parser.getName().equals("error")) {
                             throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
@@ -123,41 +118,7 @@ public class BOSHPacketReader implements BOSHClientResponseListener {
         }
     }
 
-    /**
-     * Parse and setup the XML stream features.
-     * 
-     * @param parser the XML parser, positioned at the start of a message packet.
-     * @throws Exception if an exception occurs while parsing the packet.
-     */
     private void parseFeatures(XmlPullParser parser) throws Exception {
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("mechanisms")) {
-                    // The server is reporting available SASL mechanisms. Store
-                    // this information
-                    // which will be used later while logging (i.e.
-                    // authenticating) into
-                    // the server
-                    connection.getSASLAuthentication().setAvailableSASLMethods(
-                            PacketParserUtils.parseMechanisms(parser));
-                } else if (parser.getName().equals("bind")) {
-                    // The server requires the client to bind a resource to the
-                    // stream
-                    connection.serverRequiresBinding();
-                } else if (parser.getName().equals("session")) {
-                    // The server supports sessions
-                    connection.serverSupportsSession();
-                } else if (parser.getName().equals("register")) {
-                    connection.serverSupportsAccountCreation();
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("features")) {
-                    done = true;
-                }
-            }
-        }
+        connection.parseFeatures0(parser);
     }
 }

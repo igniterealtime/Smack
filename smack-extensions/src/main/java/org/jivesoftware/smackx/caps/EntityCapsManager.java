@@ -26,6 +26,7 @@ import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.CapsExtension;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -38,7 +39,6 @@ import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
-import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -74,8 +74,8 @@ import java.security.NoSuchAlgorithmException;
 public class EntityCapsManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(EntityCapsManager.class.getName());
 
-    public static final String NAMESPACE = "http://jabber.org/protocol/caps";
-    public static final String ELEMENT = "c";
+    public static final String NAMESPACE = CapsExtension.NAMESPACE;
+    public static final String ELEMENT = CapsExtension.ELEMENT;
 
     private static final Map<String, MessageDigest> SUPPORTED_HASHES = new HashMap<String, MessageDigest>();
     private static String DEFAULT_ENTITY_NODE = "http://www.igniterealtime.org/projects/smack";
@@ -239,6 +239,17 @@ public class EntityCapsManager extends Manager {
         CAPS_CACHE.clear();
     }
 
+    private static void addCapsExtensionInfo(String from, CapsExtension capsExtension) {
+        String hash = capsExtension.getHash().toLowerCase(Locale.US);
+        if (!SUPPORTED_HASHES.containsKey(hash))
+            return;
+
+        String node = capsExtension.getNode();
+        String ver = capsExtension.getVer();
+
+        JID_TO_NODEVER_CACHE.put(from, new NodeVerHash(node, ver, hash));
+    }
+
     private final Queue<String> lastLocalCapsVersions = new ConcurrentLinkedQueue<String>();
 
     private final ServiceDiscoveryManager sdm;
@@ -259,12 +270,36 @@ public class EntityCapsManager extends Manager {
 
         connection.addConnectionListener(new AbstractConnectionListener() {
             @Override
+            public void connected(XMPPConnection connection) {
+                // It's not clear when a server would report the caps stream
+                // feature, so we try to process it after we are connected and
+                // once after we are authenticated.
+                processCapsStreamFeatureIfAvailable(connection);
+            }
+            @Override
+            public void authenticated(XMPPConnection connection) {
+                // It's not clear when a server would report the caps stream
+                // feature, so we try to process it after we are connected and
+                // once after we are authenticated.
+                processCapsStreamFeatureIfAvailable(connection);
+            }
+            @Override
             public void connectionClosed() {
                 presenceSend = false;
             }
             @Override
             public void connectionClosedOnError(Exception e) {
                 presenceSend = false;
+            }
+
+            private void processCapsStreamFeatureIfAvailable(XMPPConnection connection) {
+                CapsExtension capsExtension = connection.getFeature(
+                                CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
+                if (capsExtension == null) {
+                    return;
+                }
+                String from = connection.getServiceName();
+                addCapsExtensionInfo(from, capsExtension);
             }
         });
 
@@ -282,18 +317,9 @@ public class EntityCapsManager extends Manager {
                 if (!entityCapsEnabled())
                     return;
 
-                CapsExtension ext = (CapsExtension) packet.getExtension(EntityCapsManager.ELEMENT,
-                        EntityCapsManager.NAMESPACE);
-
-                String hash = ext.getHash().toLowerCase(Locale.US);
-                if (!SUPPORTED_HASHES.containsKey(hash))
-                    return;
-
+                CapsExtension capsExtension = CapsExtension.from(packet);
                 String from = packet.getFrom();
-                String node = ext.getNode();
-                String ver = ext.getVer();
-
-                JID_TO_NODEVER_CACHE.put(from, new NodeVerHash(node, ver, hash));
+                addCapsExtensionInfo(from, capsExtension);
             }
 
         }, PRESENCES_WITH_CAPS);

@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
-import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -119,7 +119,7 @@ public class MUCInitialPresence implements PacketExtension {
      * 
      * @author Gaston Dombiak
      */
-    public static class History implements Element {
+    public static class History implements NamedElement {
 
         public static final String ELEMENT = "history";
 

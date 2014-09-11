@@ -40,6 +40,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public abstract class IQ extends Packet {
 
+    public static final String ELEMENT = "iq";
     public static final String QUERY_ELEMENT = "query";
 
     private Type type = Type.get;
@@ -78,7 +79,7 @@ public abstract class IQ extends Packet {
     @Override
     public CharSequence toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement("iq");
+        buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);
         if (type == null) {
             buf.attribute("type", "get");
@@ -94,7 +95,7 @@ public abstract class IQ extends Packet {
         if (error != null) {
             buf.append(error.toXML());
         }
-        buf.closeElement("iq");
+        buf.closeElement(ELEMENT);
         return buf;
     }
 

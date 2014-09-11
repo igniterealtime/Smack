@@ -51,18 +51,6 @@ public class Bind extends IQ {
         return jid;
     }
 
-    @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-
-        xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
-        xml.optElement("resource", resource);
-        xml.optElement("jid", jid);
-        xml.closeElement(ELEMENT);
-
-        return xml;
-    }
-
     public static Bind newSet(String resource) {
         Bind bind = new Bind(resource, null);
         bind.setType(IQ.Type.set);
@@ -71,5 +59,39 @@ public class Bind extends IQ {
 
     public static Bind newResult(String jid) {
         return new Bind(null, jid);
+    }
+
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
+        xml.optElement("resource", resource);
+        xml.optElement("jid", jid);
+        xml.closeElement(ELEMENT);
+        return xml;
+    }
+
+    public static class Feature implements PacketExtension {
+
+        public static final Feature INSTANCE = new Feature();
+
+        private Feature() {
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String toXML() {
+            return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
+        }
+
     }
 }

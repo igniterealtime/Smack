@@ -23,9 +23,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.PlainStreamElement;
 
 /**
  * A dummy implementation of {@link XMPPConnection}, intended to be used during
@@ -53,7 +54,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     private String connectionID;
     private Roster roster;
 
-    private final BlockingQueue<Packet> queue = new LinkedBlockingQueue<Packet>();
+    private final BlockingQueue<Element> queue = new LinkedBlockingQueue<Element>();
 
     public DummyConnection() {
 	this(new ConnectionConfiguration("example.com"));
@@ -179,6 +180,14 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
+    public void send(PlainStreamElement element) {
+        if (SmackConfiguration.DEBUG_ENABLED) {
+            System.out.println("[SEND]: " + element.toXML());
+        }
+        queue.add(element);
+    }
+
+    @Override
     protected void sendPacketInternal(Packet packet) {
         if (SmackConfiguration.DEBUG_ENABLED) {
             System.out.println("[SEND]: " + packet.toXML());
@@ -204,7 +213,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @throws InterruptedException
      */
     public Packet getSentPacket() throws InterruptedException {
-	return queue.poll();
+        return (Packet) queue.poll();
     }
 
     /**
@@ -217,7 +226,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @throws InterruptedException
      */
     public Packet getSentPacket(int wait) throws InterruptedException {
-	return queue.poll(wait, TimeUnit.SECONDS);
+        return (Packet) queue.poll(wait, TimeUnit.SECONDS);
     }
 
     /**

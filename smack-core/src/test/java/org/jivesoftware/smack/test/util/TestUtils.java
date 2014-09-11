@@ -47,8 +47,7 @@ final public class TestUtils {
     public static XmlPullParser getParser(Reader reader, String startTag) {
         XmlPullParser parser;
         try {
-            parser = PacketParserUtils.newXmppParser();
-            parser.setInput(reader);
+            parser = PacketParserUtils.newXmppParser(reader);
             if (startTag == null) {
                 return parser;
             }

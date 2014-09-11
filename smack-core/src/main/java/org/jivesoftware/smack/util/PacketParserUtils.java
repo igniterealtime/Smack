@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
@@ -39,12 +41,13 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.sasl.packet.SaslStanzas.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -63,9 +66,7 @@ public class PacketParserUtils {
     }
 
     public static XmlPullParser getParserFor(Reader reader) throws XmlPullParserException, IOException {
-        XmlPullParser parser = newXmppParser();
-        parser.setInput(reader);
-
+        XmlPullParser parser = newXmppParser(reader);
         // Wind the parser forward to the first start tag
         int event = parser.getEventType();
         while (event != XmlPullParser.START_TAG) {
@@ -116,20 +117,17 @@ public class PacketParserUtils {
      * @throws Exception
      */
     public static Packet parseStanza(XmlPullParser parser, XMPPConnection connection) throws Exception {
-        final int eventType = parser.getEventType();
-        if (eventType != XmlPullParser.START_TAG) {
-            throw new IllegalArgumentException("Parser not at start tag");
-        }
+        assert(parser.getEventType() == XmlPullParser.START_TAG);
         final String name = parser.getName();
         switch (name) {
-        case "message":
+        case Message.ELEMENT:
             return parseMessage(parser);
-        case "iq":
+        case IQ.ELEMENT:
             return parseIQ(parser, connection);
-        case "presence":
+        case Presence.ELEMENT:
             return parsePresence(parser);
         default:
-            return null;
+            throw new IllegalArgumentException("Can only parse message, iq or presence, not " + name);
         }
     }
 
@@ -148,6 +146,25 @@ public class PacketParserUtils {
     public static XmlPullParser newXmppParser() throws XmlPullParserException {
         XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        return parser;
+    }
+
+    /**
+     * Creates a new XmlPullParser suitable for parsing XMPP. This means in particular that
+     * FEATURE_PROCESS_NAMESPACES is enabled.
+     * <p>
+     * Note that not all XmlPullParser implementations will return a String on
+     * <code>getText()</code> if the parser is on START_TAG or END_TAG. So you must not rely on this
+     * behavior when using the parser.
+     * </p>
+     * 
+     * @param reader
+     * @return A suitable XmlPullParser for XMPP parsing
+     * @throws XmlPullParserException
+     */
+    public static XmlPullParser newXmppParser(Reader reader) throws XmlPullParserException {
+        XmlPullParser parser = newXmppParser();
+        parser.setInput(reader);
         return parser;
     }
 
@@ -525,8 +542,7 @@ public class PacketParserUtils {
                 else if (elementName.equals("query") && namespace.equals("jabber:iq:register")) {
                     iqPacket = parseRegistration(parser);
                 }
-                else if (elementName.equals("bind") &&
-                        namespace.equals("urn:ietf:params:xml:ns:xmpp-bind")) {
+                else if (elementName.equals(Bind.ELEMENT) && namespace.equals(Bind.NAMESPACE)) {
                     iqPacket = parseResourceBinding(parser);
                 }
                 // Otherwise, see if there is a registered provider for
@@ -688,25 +704,35 @@ public class PacketParserUtils {
         return registration;
     }
 
-    private static Bind parseResourceBinding(XmlPullParser parser) throws IOException,
-            XmlPullParserException {
+    public static Bind parseResourceBinding(XmlPullParser parser) throws IOException,
+                    XmlPullParserException {
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        int initalDepth = parser.getDepth();
+        String name;
         Bind bind = null;
-        boolean done = false;
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("resource")) {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                name = parser.getName();
+                switch (name) {
+                case "resource":
                     bind = Bind.newSet(parser.nextText());
-                }
-                else if (parser.getName().equals("jid")) {
+                    break;
+                case "jid":
                     bind = Bind.newResult(parser.nextText());
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(Bind.ELEMENT)) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                name = parser.getName();
+                if (name.equals(Bind.ELEMENT) && parser.getDepth() == initalDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
+        assert (parser.getEventType() == XmlPullParser.END_TAG);
         return bind;
     }
 
@@ -715,9 +741,11 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of the mechanisms stanza.
      * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
-     * @throws Exception if an exception occurs while parsing the stanza.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
-    public static Collection<String> parseMechanisms(XmlPullParser parser) throws Exception {
+    public static Collection<String> parseMechanisms(XmlPullParser parser)
+                    throws XmlPullParserException, IOException {
         List<String> mechanisms = new ArrayList<String>();
         boolean done = false;
         while (!done) {
@@ -739,32 +767,42 @@ public class PacketParserUtils {
     }
 
     /**
-     * Parse the available compression methods reported from the server.
+     * Parse the Compression Feature reported from the server.
      *
      * @param parser the XML parser, positioned at the start of the compression stanza.
-     * @return a collection of Stings with the methods included in the compression stanza.
+     * @return The CompressionFeature stream element
      * @throws XmlPullParserException if an exception occurs while parsing the stanza.
      */
-    public static Collection<String> parseCompressionMethods(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
-        List<String> methods = new ArrayList<String>();
-        boolean done = false;
-        while (!done) {
+    public static Compress.Feature parseCompressionFeature(XmlPullParser parser)
+                    throws IOException, XmlPullParserException {
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        String name;
+        final int initialDepth = parser.getDepth();
+        List<String> methods = new LinkedList<String>();
+        outerloop: while (true) {
             int eventType = parser.next();
-
-            if (eventType == XmlPullParser.START_TAG) {
-                String elementName = parser.getName();
-                if (elementName.equals("method")) {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                name = parser.getName();
+                switch (name) {
+                case "method":
                     methods.add(parser.nextText());
+                    break;
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("compression")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                name = parser.getName();
+                switch (name) {
+                case Compress.Feature.ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
                 }
             }
         }
-        return methods;
+        assert (parser.getEventType() == XmlPullParser.END_TAG);
+        assert (parser.getDepth() == initialDepth);
+        return new Compress.Feature(methods);
     }
 
     /**
@@ -840,21 +878,16 @@ public class PacketParserUtils {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     public static XMPPError parseError(XmlPullParser parser) throws Exception {
-        final String errorNamespace = "urn:ietf:params:xml:ns:xmpp-stanzas";
         String type = null;
         String message = null;
         String condition = null;
         List<PacketExtension> extensions = new ArrayList<PacketExtension>();
 
         // Parse the error header
-        for (int i=0; i<parser.getAttributeCount(); i++) {
-            if (parser.getAttributeName(i).equals("type")) {
-            	type = parser.getAttributeValue("", "type");
-            }
-        }
-        boolean done = false;
+        type = parser.getAttributeValue("", "type");
         // Parse the text and condition tags
-        while (!done) {
+        outerloop:
+        while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals(Packet.TEXT)) {
@@ -864,7 +897,7 @@ public class PacketParserUtils {
                 	// Condition tag, it can be xmpp error or an application defined error.
                     String elementName = parser.getName();
                     String namespace = parser.getNamespace();
-                    if (errorNamespace.equals(namespace)) {
+                    if (namespace.equals(XMPPError.NAMESPACE)) {
                     	condition = elementName;
                     }
                     else {
@@ -874,7 +907,7 @@ public class PacketParserUtils {
             }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("error")) {
-                        done = true;
+                        break outerloop;
                     }
                 }
         }
@@ -940,6 +973,33 @@ public class PacketParserUtils {
             }
         }
         return extension;
+    }
+
+    public static StartTls parseStartTlsFeature(XmlPullParser parser)
+                    throws XmlPullParserException, IOException {
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        assert (parser.getNamespace().equals(StartTls.NAMESPACE));
+        int initalDepth = parser.getDepth();
+        boolean required = false;
+        outerloop: while (true) {
+            int event = parser.next();
+            switch (event) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "required":
+                    required = true;
+                    break;
+                }
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initalDepth) {
+                    break outerloop;
+                }
+            }
+        }
+        assert(parser.getEventType() == XmlPullParser.END_TAG);
+        return new StartTls(required);
     }
 
     private static String getLanguageAttribute(XmlPullParser parser) {

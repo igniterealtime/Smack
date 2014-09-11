@@ -72,6 +72,10 @@ public class XMPPError {
     private String message;
     private List<PacketExtension> applicationExtensions = null;
 
+    public XMPPError(String condition) {
+        this(new Condition(condition));
+    }
+
     /**
      * Creates a new error with the specified condition inferring the type.
      * If the Condition is predefined, client code should be like:
