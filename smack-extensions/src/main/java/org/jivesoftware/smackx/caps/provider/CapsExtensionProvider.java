@@ -19,14 +19,15 @@ package org.jivesoftware.smackx.caps.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.CapsExtension;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.StreamFeatureProvider;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
+import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class CapsExtensionProvider implements PacketExtensionProvider {
+public class CapsExtensionProvider implements PacketExtensionProvider, StreamFeatureProvider {
 
     public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException,
             SmackException {
@@ -54,5 +55,11 @@ public class CapsExtensionProvider implements PacketExtensionProvider {
         } else {
             throw new SmackException("Caps elment with missing attributes");
         }
+    }
+
+    @Override
+    public PacketExtension parseStreamFeature(XmlPullParser parser) throws XmlPullParserException,
+                    IOException, SmackException {
+        return parseExtension(parser);
     }
 }

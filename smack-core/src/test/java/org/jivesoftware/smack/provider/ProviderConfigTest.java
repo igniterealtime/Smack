@@ -43,6 +43,11 @@ public class ProviderConfigTest {
             public Collection<ExtensionProviderInfo> getExtensionProviderInfo() {
                 return null;
             }
+
+            @Override
+            public Collection<StreamFeatureProviderInfo> getStreamFeatureProviderInfo() {
+                return null;
+            }
         });
 
         Assert.assertNotNull(ProviderManager.getIQProvider("provider", "test:provider"));

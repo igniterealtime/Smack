@@ -421,6 +421,12 @@
         <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
     </extensionProvider>
 
+    <streamFeatureProvider>
+        <elementName>c</elementName>
+        <namespace>http://jabber.org/protocol/caps</namespace>
+        <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
+    </streamFeatureProvider>
+
    	<!-- XEP-0297 Stanza Forwarding -->
  	<extensionProvider>
  	 	<elementName>forwarded</elementName>
@@ -455,4 +461,17 @@
         <namespace>http://www.jivesoftware.com/xmlns/xmpp/properties</namespace>
         <className>org.jivesoftware.smackx.jiveproperties.provider.JivePropertiesExtensionProvider</className>
     </extensionProvider>
+
+    <!-- XEP-0077: In-Band Registration -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:register</namespace>
+        <className>org.jivesoftware.smackx.iqregister.provider.RegistrationProvider</className>
+    </iqProvider>
+
+    <streamFeatureProvider>
+        <elementName>register</elementName>
+        <namespace>http://jabber.org/features/iq-register</namespace>
+        <className>org.jivesoftware.smackx.iqregister.provider.RegistrationStreamFeatureProvider</className>
+    </streamFeatureProvider>
 </smackProviders>

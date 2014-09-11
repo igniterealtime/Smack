@@ -36,4 +36,12 @@ public interface ProviderLoader {
      * @return The extension provider info to load.
      */
     Collection<ExtensionProviderInfo> getExtensionProviderInfo();
+
+    /**
+     * Provides the stream feature providers information for the creation of stream feature
+     * providers to be added to the <code>ProviderManager</code>.
+     * 
+     * @return The extension provider info to load.
+     */
+    Collection<StreamFeatureProviderInfo> getStreamFeatureProviderInfo();
 }

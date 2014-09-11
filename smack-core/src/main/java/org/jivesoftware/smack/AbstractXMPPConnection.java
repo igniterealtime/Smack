@@ -49,17 +49,17 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Bind;
-import org.jivesoftware.smack.packet.CapsExtension;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.packet.RosterVer;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.provider.StreamFeatureProvider;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jxmpp.util.XmppStringUtils;
@@ -1015,42 +1015,32 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException,
-                    IOException, SecurityRequiredException, NotConnectedException {
+                    IOException, SmackException {
         streamFeatures.clear();
         final int initialDepth = parser.getDepth();
         while (true) {
             int eventType = parser.next();
 
             if (eventType == XmlPullParser.START_TAG && parser.getDepth() == initialDepth + 1) {
+                PacketExtension streamFeature = null;
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (name) {
                 case StartTls.ELEMENT:
-                    StartTls startTls = PacketParserUtils.parseStartTlsFeature(parser);
-                    addStreamFeature(startTls);
+                    streamFeature = PacketParserUtils.parseStartTlsFeature(parser);
                     break;
                 case Mechanisms.ELEMENT:
-                    Mechanisms mechanisms = new Mechanisms(PacketParserUtils.parseMechanisms(parser));
-                    addStreamFeature(mechanisms);
+                    streamFeature = new Mechanisms(PacketParserUtils.parseMechanisms(parser));
                     break;
                 case Bind.ELEMENT:
-                    addStreamFeature(Bind.Feature.INSTANCE);
-                    break;
-                case CapsExtension.ELEMENT:
-                    // Set the entity caps node for the server if one is send
-                    // See http://xmpp.org/extensions/xep-0115.html#stream
-                    String node = parser.getAttributeValue(null, "node");
-                    String ver = parser.getAttributeValue(null, "ver");
-                    String hash = parser.getAttributeValue(null, "hash");
-                    CapsExtension capsExtension = new CapsExtension(node, ver, hash);
-                    addStreamFeature(capsExtension);
+                    streamFeature = Bind.Feature.INSTANCE;
                     break;
                 case Session.ELEMENT:
-                    addStreamFeature(Session.Feature.INSTANCE);
+                    streamFeature = Session.Feature.INSTANCE;
                     break;
                 case RosterVer.ELEMENT:
                     if(namespace.equals(RosterVer.NAMESPACE)) {
-                        addStreamFeature(RosterVer.INSTANCE);
+                        streamFeature = RosterVer.INSTANCE;
                     }
                     else {
                         LOGGER.severe("Unkown Roster Versioning Namespace: "
@@ -1059,15 +1049,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     }
                     break;
                 case Compress.Feature.ELEMENT:
-                    Compress.Feature compression = PacketParserUtils.parseCompressionFeature(parser);
-                    addStreamFeature(compression);
-                    break;
-                case Registration.Feature.ELEMENT:
-                    addStreamFeature(Registration.Feature.INSTANCE);
+                    streamFeature = PacketParserUtils.parseCompressionFeature(parser);
                     break;
                 default:
-                    parseFeaturesSubclass(name, namespace, parser);
+                    StreamFeatureProvider provider = ProviderManager.getStreamFeatureProvider(name, namespace);
+                    if (provider != null) {
+                        streamFeature = provider.parseStreamFeature(parser);
+                    }
                     break;
+                }
+                if (streamFeature != null) {
+                    addStreamFeature(streamFeature);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG && parser.getDepth() == initialDepth) {
@@ -1096,10 +1088,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         afterFeaturesReceived();
     }
 
-    protected void parseFeaturesSubclass (String name, String namespace, XmlPullParser parser) {
-        // Default implementation does nothing
-    }
-
     protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException {
         // Default implementation does nothing
     }
@@ -1115,7 +1103,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return getFeature(element, namespace) != null;
     }
 
-    protected void addStreamFeature(PacketExtension feature) {
+    private void addStreamFeature(PacketExtension feature) {
         String key = XmppStringUtils.generateKey(feature.getElementName(), feature.getNamespace());
         streamFeatures.put(key, feature);
     }

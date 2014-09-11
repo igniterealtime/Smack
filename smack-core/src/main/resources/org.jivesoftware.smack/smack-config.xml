@@ -14,6 +14,7 @@
         <className>org.jivesoftware.smack.initializer.extensions.ExtensionsInitializer</className>
         <className>org.jivesoftware.smack.initializer.experimental.ExperimentalInitializer</className>
         <className>org.jivesoftware.smack.initializer.legacy.LegacyInitializer</className>
+        <className>org.jivesoftware.smack.initializer.tcp.SmackTcpSmackInitializer</className>
         <className>org.jivesoftware.smack.sasl.javax.SASLJavaXSmackInitializer</className>
         <className>org.jivesoftware.smack.sasl.provided.SASLProvidedSmackInitializer</className>
         <className>org.jivesoftware.smack.android.AndroidSmackInitializer</className>

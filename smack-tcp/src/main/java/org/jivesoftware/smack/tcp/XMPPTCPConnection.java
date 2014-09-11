@@ -918,19 +918,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void parseFeaturesSubclass(String name, String namespace, XmlPullParser parser) {
-        switch(name) {
-        case StreamManagementFeature.ELEMENT:
-            if (namespace.equals(StreamManagement.NAMESPACE)) {
-                addStreamFeature(StreamManagementFeature.INSTANCE);
-            } else {
-                LOGGER.fine("Unsupported Stream Management version: " + namespace);
-            }
-            break;
-        }
-    }
-
-    @Override
     protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException {
         StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
         if (startTlsFeature != null) {

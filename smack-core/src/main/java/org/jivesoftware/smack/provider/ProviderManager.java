@@ -108,6 +108,7 @@ public final class ProviderManager {
 
     private static final Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
     private static final Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
+    private static final Map<String, StreamFeatureProvider> streamFeatureProviders = new ConcurrentHashMap<String, StreamFeatureProvider>();
 
     public static void addLoader(ProviderLoader loader) {
         if (loader.getIQProviderInfo() != null) {
@@ -260,6 +261,21 @@ public final class ProviderManager {
      */
     public static Collection<Object> getExtensionProviders() {
         return Collections.unmodifiableCollection(extensionProviders.values());
+    }
+
+    public static StreamFeatureProvider getStreamFeatureProvider(String elementName, String namespace) {
+        String key = getKey(elementName, namespace);
+        return streamFeatureProviders.get(key);
+    }
+
+    public static void addStreamFeatureProvider(String elementName, String namespace, StreamFeatureProvider provider) {
+        String key = getKey(elementName, namespace);
+        streamFeatureProviders.put(key, provider);
+    }
+
+    public static void removeStreamFeatureProvider(String elementName, String namespace) {
+        String key = getKey(elementName, namespace);
+        streamFeatureProviders.remove(key);
     }
 
     private static String getKey(String elementName, String namespace) {

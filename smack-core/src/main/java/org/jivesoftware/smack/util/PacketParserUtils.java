@@ -22,11 +22,10 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +38,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
@@ -539,9 +537,6 @@ public class PacketParserUtils {
                 else if (elementName.equals("query") && namespace.equals("jabber:iq:roster")) {
                     iqPacket = parseRoster(parser);
                 }
-                else if (elementName.equals("query") && namespace.equals("jabber:iq:register")) {
-                    iqPacket = parseRegistration(parser);
-                }
                 else if (elementName.equals(Bind.ELEMENT) && namespace.equals(Bind.NAMESPACE)) {
                     iqPacket = parseResourceBinding(parser);
                 }
@@ -656,52 +651,6 @@ public class PacketParserUtils {
             }
         }
         return roster;
-    }
-
-     private static Registration parseRegistration(XmlPullParser parser) throws Exception {
-        Registration registration = new Registration();
-        Map<String, String> fields = null;
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                // Any element that's in the jabber:iq:register namespace,
-                // attempt to parse it if it's in the form <name>value</name>.
-                if (parser.getNamespace().equals("jabber:iq:register")) {
-                    String name = parser.getName();
-                    String value = "";
-                    if (fields == null) {
-                        fields = new HashMap<String, String>();
-                    }
-
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        value = parser.getText();
-                    }
-                    // Ignore instructions, but anything else should be added to the map.
-                    if (!name.equals("instructions")) {
-                        fields.put(name, value);
-                    }
-                    else {
-                        registration.setInstructions(value);
-                    }
-                }
-                // Otherwise, it must be a packet extension.
-                else {
-                    registration.addExtension(
-                        PacketParserUtils.parsePacketExtension(
-                            parser.getName(),
-                            parser.getNamespace(),
-                            parser));
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("query")) {
-                    done = true;
-                }
-            }
-        }
-        registration.setAttributes(fields);
-        return registration;
     }
 
     public static Bind parseResourceBinding(XmlPullParser parser) throws IOException,

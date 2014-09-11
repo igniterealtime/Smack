@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smackx.iqregister;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,12 +23,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -221,12 +226,11 @@ public class AccountManager extends Manager {
      */
     public void createAccount(String username, String password, Map<String, String> attributes)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
-        Registration reg = new Registration();
-        reg.setType(IQ.Type.set);
-        reg.setTo(connection().getServiceName());
         attributes.put("username", username);
         attributes.put("password", password);
-        reg.setAttributes(attributes);
+        Registration reg = new Registration(attributes);
+        reg.setType(IQ.Type.set);
+        reg.setTo(connection().getServiceName());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
@@ -241,13 +245,12 @@ public class AccountManager extends Manager {
      * @throws NotConnectedException 
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        Registration reg = new Registration();
-        reg.setType(IQ.Type.set);
-        reg.setTo(connection().getServiceName());
         Map<String, String> map = new HashMap<String, String>();
         map.put("username",XmppStringUtils.parseLocalpart(connection().getUser()));
         map.put("password",newPassword);
-        reg.setAttributes(map);
+        Registration reg = new Registration(map);
+        reg.setType(IQ.Type.set);
+        reg.setTo(connection().getServiceName());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
@@ -262,13 +265,12 @@ public class AccountManager extends Manager {
      * @throws NotConnectedException 
      */
     public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        Registration reg = new Registration();
-        reg.setType(IQ.Type.set);
-        reg.setTo(connection().getServiceName());
         Map<String, String> attributes = new HashMap<String, String>();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
-        reg.setAttributes(attributes);
+        Registration reg = new Registration(attributes);
+        reg.setType(IQ.Type.set);
+        reg.setTo(connection().getServiceName());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 

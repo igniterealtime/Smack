@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.packet;
+package org.jivesoftware.smackx.iqregister.packet;
 
 import java.util.Map;
 
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -48,8 +50,21 @@ public class Registration extends IQ {
 
     public static final String NAMESPACE = "jabber:iq:register";
 
-    private String instructions = null;
-    private Map<String, String> attributes = null;
+    private final String instructions;
+    private final Map<String, String> attributes;
+
+    public Registration() {
+        this(null);
+    }
+
+    public Registration(Map<String, String> attributes) {
+        this(null, attributes);
+    }
+
+    public Registration(String instructions, Map<String, String> attributes) {
+        this.instructions = instructions;
+        this.attributes = attributes;
+    }
 
     /**
      * Returns the registration instructions, or <tt>null</tt> if no instructions
@@ -63,30 +78,12 @@ public class Registration extends IQ {
     }
 
     /**
-     * Sets the registration instructions.
-     *
-     * @param instructions the registration instructions.
-     */
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    /**
      * Returns the map of String key/value pairs of account attributes.
      *
      * @return the account attributes.
      */
     public Map<String, String> getAttributes() {
         return attributes;
-    }
-
-    /**
-     * Sets the account attributes. The map must only contain String key/value pairs.
-     *
-     * @param attributes the account attributes.
-     */
-    public void setAttributes(Map<String, String> attributes) {
-        this.attributes = attributes;
     }
 
     @Override
