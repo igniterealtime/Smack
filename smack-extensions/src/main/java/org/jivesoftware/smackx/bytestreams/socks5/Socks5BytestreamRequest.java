@@ -27,10 +27,11 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
+import org.jxmpp.util.cache.Cache;
+import org.jxmpp.util.cache.ExpirationCache;
 
 /**
  * Socks5BytestreamRequest class handles incoming SOCKS5 Bytestream requests.
@@ -46,7 +47,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     private static final int BLACKLIST_MAX_SIZE = 100;
 
     /* blacklist of addresses of SOCKS5 proxies */
-    private static final Cache<String, Integer> ADDRESS_BLACKLIST = new Cache<String, Integer>(
+    private static final Cache<String, Integer> ADDRESS_BLACKLIST = new ExpirationCache<String, Integer>(
                     BLACKLIST_MAX_SIZE, BLACKLIST_LIFETIME);
 
     /*

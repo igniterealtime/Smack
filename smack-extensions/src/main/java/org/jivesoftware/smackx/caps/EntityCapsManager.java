@@ -35,7 +35,6 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
@@ -47,6 +46,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.util.cache.LruCache;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,7 +96,7 @@ public class EntityCapsManager extends Manager {
     /**
      * Map of (node + '#" + hash algorithm) to DiscoverInfo data
      */
-    private static final Cache<String, DiscoverInfo> CAPS_CACHE = new Cache<String, DiscoverInfo>(1000, -1);
+    private static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<String, DiscoverInfo>(1000);
 
     /**
      * Map of Full JID -&gt; DiscoverInfo/null. In case of c2s connection the
@@ -104,7 +104,7 @@ public class EntityCapsManager extends Manager {
      * link-local connection the key is formed as user@host (no resource) In
      * case of a server or component the key is formed as domain
      */
-    private static final Cache<String, NodeVerHash> JID_TO_NODEVER_CACHE = new Cache<String, NodeVerHash>(10000, -1);
+    private static final LruCache<String, NodeVerHash> JID_TO_NODEVER_CACHE = new LruCache<String, NodeVerHash>(10000);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {

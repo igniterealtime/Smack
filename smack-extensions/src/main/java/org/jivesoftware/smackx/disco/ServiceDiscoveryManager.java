@@ -32,12 +32,13 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.Cache;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.util.cache.Cache;
+import org.jxmpp.util.cache.ExpirationCache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -682,7 +683,7 @@ public class ServiceDiscoveryManager extends Manager {
      * Create a cache to hold the 25 most recently lookup services for a given feature for a period
      * of 24 hours.
      */
-    private Cache<String, List<String>> services = new Cache<String, List<String>>(25,
+    private Cache<String, List<String>> services = new ExpirationCache<String, List<String>>(25,
                     24 * 60 * 60 * 1000);
 
     /**
