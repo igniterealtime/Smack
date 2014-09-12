@@ -235,6 +235,10 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder emptyElement(Enum<?> element) {
+        return emptyElement(element.name());
+    }
+
     public XmlStringBuilder emptyElement(String element) {
         halfOpenElement(element);
         return closeEmptyElement();
