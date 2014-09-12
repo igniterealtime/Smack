@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.commands.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.SpecificErrorCondition;
@@ -34,6 +36,9 @@ import java.util.List;
  * @author Gabriel Guardincerri
  */
 public class AdHocCommandData extends IQ {
+
+    public static final String ELEMENT = "command";
+    public static final String NAMESPACE = "http://jabber.org/protocol/commands";
 
     /* JID of the command host */
     private String id;
@@ -61,61 +66,42 @@ public class AdHocCommandData extends IQ {
 
     private AdHocCommand.Action executeAction;
 
-    private String lang;
-
     public AdHocCommandData() {
     }
 
     @Override
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<command xmlns=\"http://jabber.org/protocol/commands\"");
-        buf.append(" node=\"").append(node).append("\"");
-        if (sessionID != null) {
-            if (!sessionID.equals("")) {
-                buf.append(" sessionid=\"").append(sessionID).append("\"");
-            }
-        }
-        if (status != null) {
-            buf.append(" status=\"").append(status).append("\"");
-        }
-        if (action != null) {
-            buf.append(" action=\"").append(action).append("\"");
-        }
-
-        if (lang != null) {
-            if (!lang.equals("")) {
-                buf.append(" lang=\"").append(lang).append("\"");
-            }
-        }
-        buf.append(">");
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE);
+        xml.attribute("node", node);
+        xml.optAttribute("sessionid", sessionID);
+        xml.optAttribute("status", status);
+        xml.optAttribute("action", action);
+        xml.rightAngleBracket();
 
         if (getType() == Type.result) {
-            buf.append("<actions");
-
-            if (executeAction != null) {
-                buf.append(" execute=\"").append(executeAction).append("\"");
-            }
+            xml.halfOpenElement("actions");
+            xml.optAttribute("execute", executeAction);
             if (actions.size() == 0) {
-                buf.append("/>");
+                xml.closeEmptyElement();
             } else {
-                buf.append(">");
+                xml.rightAngleBracket();
 
                 for (AdHocCommand.Action action : actions) {
-                    buf.append("<").append(action).append("/>");
+                    xml.emptyElement(action);
                 }
-                buf.append("</actions>");
+                xml.closeElement("actions");
             }
         }
 
         if (form != null) {
-            buf.append(form.toXML());
+            xml.append(form.toXML());
         }
 
         for (AdHocCommandNote note : notes) {
-            buf.append("<note type=\"").append(note.getType().toString()).append("\">");
-            buf.append(note.getValue());
-            buf.append("</note>");
+            xml.halfOpenElement("note").attribute("type", note.getType().toString()).rightAngleBracket();
+            xml.append(note.getValue());
+            xml.closeElement("note");
         }
 
         // TODO ERRORS
@@ -123,8 +109,8 @@ public class AdHocCommandData extends IQ {
 //            buf.append(getError().toXML());
 //        }
 
-        buf.append("</command>");
-        return buf.toString();
+        xml.closeElement(ELEMENT);
+        return xml;
     }
 
     /**
@@ -239,6 +225,9 @@ public class AdHocCommandData extends IQ {
     }
 
     public void setSessionID(String sessionID) {
+        if (StringUtils.isNullOrEmpty(sessionID)) {
+            throw new IllegalArgumentException("session id must not be null or empty");
+        }
         this.sessionID = sessionID;
     }
 

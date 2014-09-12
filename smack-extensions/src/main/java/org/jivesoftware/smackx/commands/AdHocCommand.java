@@ -170,7 +170,7 @@ public abstract class AdHocCommand {
     }
 
     public String getRaw() {
-        return data.getChildElementXML();
+        return data.getChildElementXML().toString();
     }
 
     /**
