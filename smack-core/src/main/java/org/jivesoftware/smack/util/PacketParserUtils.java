@@ -534,7 +534,7 @@ public class PacketParserUtils {
                 if (elementName.equals("error")) {
                     error = PacketParserUtils.parseError(parser);
                 }
-                else if (elementName.equals("query") && namespace.equals("jabber:iq:roster")) {
+                else if (elementName.equals(RosterPacket.ELEMENT) && namespace.equals(RosterPacket.NAMESPACE)) {
                     iqPacket = parseRoster(parser);
                 }
                 else if (elementName.equals(Bind.ELEMENT) && namespace.equals(Bind.NAMESPACE)) {

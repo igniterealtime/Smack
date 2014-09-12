@@ -34,6 +34,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class RosterPacket extends IQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
+    public static final String NAMESPACE = "jabber:iq:roster";
+
     private final List<Item> rosterItems = new ArrayList<Item>();
     private String rosterVersion;
 
@@ -73,8 +76,8 @@ public class RosterPacket extends IQ {
     @Override
     public XmlStringBuilder getChildElementXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement("query");
-        buf.xmlnsAttribute("jabber:iq:roster");
+        buf.halfOpenElement(ELEMENT);
+        buf.xmlnsAttribute(NAMESPACE);
         buf.optAttribute("ver", rosterVersion);
         buf.rightAngleBracket();
 
@@ -83,7 +86,7 @@ public class RosterPacket extends IQ {
                 buf.append(entry.toXML());
             }
         }
-        buf.closeElement("query");
+        buf.closeElement(ELEMENT);
         return buf;
     }
 
