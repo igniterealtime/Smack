@@ -609,7 +609,7 @@ public class PacketParserUtils {
         return iqPacket;
     }
 
-    private static RosterPacket parseRoster(XmlPullParser parser) throws Exception {
+    public static RosterPacket parseRoster(XmlPullParser parser) throws Exception {
         RosterPacket roster = new RosterPacket();
         boolean done = false;
         RosterPacket.Item item = null;

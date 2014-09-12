@@ -18,7 +18,9 @@
 package org.jivesoftware.smackx.xdata.provider;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
@@ -60,6 +62,10 @@ public class DataFormProvider implements PacketExtensionProvider {
                 }
                 else if (parser.getName().equals("reported")) {                    
                     dataForm.setReportedData(parseReported(parser));
+                }
+                // See XEP-133 Example 32 for a corner case where the data form contains this extension.
+                else if (parser.getName().equals(RosterPacket.ELEMENT) && parser.getNamespace().equals(RosterPacket.NAMESPACE)) {
+                    dataForm.addExtensionElement(PacketParserUtils.parseRoster(parser));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals(dataForm.getElementName())) {

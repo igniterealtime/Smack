@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.xdata.packet;
 
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -42,6 +43,7 @@ public class DataForm implements PacketExtension {
     private ReportedData reportedData;
     private final List<Item> items = new ArrayList<Item>();
     private final List<FormField> fields = new ArrayList<FormField>();
+    private final List<Element> extensionElements = new ArrayList<Element>();
     
     public DataForm(String type) {
         this.type = type;
@@ -195,6 +197,14 @@ public class DataForm implements PacketExtension {
         }
     }
 
+    public void addExtensionElement(Element element) {
+        extensionElements.add(element);
+    }
+
+    public List<Element> getExtensionElements() {
+        return Collections.unmodifiableList(extensionElements);
+    }
+
     /**
      * Returns true if this DataForm has at least one FORM_TYPE field which is
      * hidden. This method is used for sanity checks.
@@ -231,6 +241,9 @@ public class DataForm implements PacketExtension {
         // Loop through all the form fields and append them to the string buffer
         for (FormField field : getFields()) {
             buf.append(field.toXML());
+        }
+        for (Element element : extensionElements) {
+            buf.append(element.toXML());
         }
         buf.closeElement(this);
         return buf;
