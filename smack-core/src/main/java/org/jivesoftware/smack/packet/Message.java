@@ -51,7 +51,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public class Message extends XmlLangStanza {
+public class Message extends Packet {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
@@ -396,7 +396,6 @@ public class Message extends XmlLangStanza {
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
-        buf.xmllangAttribute(language);
         addCommonAttributes(buf);
         if (type != Type.normal) {
             buf.attribute("type", type);

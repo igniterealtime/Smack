@@ -55,7 +55,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @see RosterPacket
  * @author Matt Tucker
  */
-public class Presence extends XmlLangStanza {
+public class Presence extends Packet {
 
     public static final String ELEMENT = "presence";
 
@@ -207,7 +207,6 @@ public class Presence extends XmlLangStanza {
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
-        buf.xmllangAttribute(language);
         addCommonAttributes(buf);
         if (type != Type.available) {
             buf.attribute("type", type);

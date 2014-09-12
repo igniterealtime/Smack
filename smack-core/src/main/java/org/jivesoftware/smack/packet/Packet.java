@@ -61,6 +61,18 @@ public abstract class Packet extends TopLevelStreamElement {
 
     private XMPPError error = null;
 
+    /**
+     * Optional value of the 'xml:lang' attribute of the outermost element of
+     * the stanza.
+     * <p>
+     * Such an attribute is defined for all stanza types. For IQ, see for
+     * example XEP-50 3.7:
+     * "The requester SHOULD provide its locale information using the "xml:lang
+     * " attribute on either the <iq/> (RECOMMENDED) or <command/> element."
+     * </p>
+     */
+    protected String language;
+
     public Packet() {
         this(prefix + Long.toString(id.incrementAndGet()));
     }
@@ -163,6 +175,24 @@ public abstract class Packet extends TopLevelStreamElement {
      */
     public void setError(XMPPError error) {
         this.error = error;
+    }
+
+    /**
+     * Returns the xml:lang of this Stanza, or null if one has not been set.
+     *
+     * @return the xml:lang of this Stanza, or null.
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * Sets the xml:lang of this Stanza.
+     *
+     * @param language the xml:lang of this Stanza.
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     /**
@@ -305,7 +335,7 @@ public abstract class Packet extends TopLevelStreamElement {
     }
 
     /**
-     * Add to, from and id attributes
+     * Add to, from, id and 'xml:lang' attributes
      *
      * @param xml
      */
@@ -313,5 +343,6 @@ public abstract class Packet extends TopLevelStreamElement {
         xml.optAttribute("id", getPacketID());
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
+        xml.xmllangAttribute(getLanguage());
     }
 }
