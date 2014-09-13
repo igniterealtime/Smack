@@ -40,6 +40,23 @@ public class DNSUtil {
     private static DNSResolver dnsResolver = null;
 
     /**
+     * International Domain Name transformer.
+     * <p>
+     * Used to transform Unicode representations of the Domain Name to ASCII in
+     * order to perform a DNS request with the ASCII representation.
+     * 'java.net.IDN' is available since Android API 9, but as long as Smack
+     * requires API 8, we are going to need this. This part is going to get
+     * removed once Smack depends on Android API 9 or higher.
+     * </p>
+     */
+    private static StringTransformer idnaTransformer = new StringTransformer() {
+        @Override
+        public String transform(String string) {
+            return string;
+        }
+    };
+
+    /**
      * Set the DNS resolver that should be used to perform DNS lookups.
      *
      * @param resolver
@@ -55,6 +72,27 @@ public class DNSUtil {
      */
     public static DNSResolver getDNSResolver() {
         return dnsResolver;
+    }
+
+
+    /**
+     * Set the IDNA (Internatiionalizing Domain Names in Applications, RFC 3490) transformer.
+     * <p>
+     * You usually want to wrap 'java.net.IDN.toASCII()' into a StringTransformer here.
+     * </p>
+     * @param idnaTransformer
+     */
+    public static void setIdnaTransformer(StringTransformer idnaTransformer) {
+        if (idnaTransformer == null) {
+            throw new NullPointerException();
+        }
+        DNSUtil.idnaTransformer = idnaTransformer;
+    }
+
+    private static enum DomainType {
+        Server,
+        Client,
+        ;
     }
 
     /**
@@ -75,13 +113,15 @@ public class DNSUtil {
      *      XMPP server can be reached at for the specified domain.
      * @throws Exception 
      */
-    public static List<HostAddress> resolveXMPPDomain(final String domain) throws Exception {
+    public static List<HostAddress> resolveXMPPDomain(String domain) throws Exception {
+        domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
+            LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
             List<HostAddress> addresses = new ArrayList<HostAddress>(1);
             addresses.add(new HostAddress(domain, 5222));
             return addresses;
         }
-        return resolveDomain(domain, 'c');
+        return resolveDomain(domain, DomainType.Client);
     }
 
     /**
@@ -102,26 +142,31 @@ public class DNSUtil {
      *      XMPP server can be reached at for the specified domain.
      * @throws Exception 
      */
-    public static List<HostAddress> resolveXMPPServerDomain(final String domain) throws Exception {
+    public static List<HostAddress> resolveXMPPServerDomain(String domain) throws Exception {
+        domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
+            LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
             List<HostAddress> addresses = new ArrayList<HostAddress>(1);
             addresses.add(new HostAddress(domain, 5269));
             return addresses;
         }
-        return resolveDomain(domain, 's');
+        return resolveDomain(domain, DomainType.Server);
     }
 
-    private static List<HostAddress> resolveDomain(String domain, char keyPrefix) throws Exception {
+    private static List<HostAddress> resolveDomain(String domain, DomainType domainType) throws Exception {
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
         String srvDomain;
-        if (keyPrefix == 's') {
+        switch (domainType) {
+        case Server:
             srvDomain = "_xmpp-server._tcp." + domain;
-        } else if (keyPrefix == 'c') {
+            break;
+        case Client:
             srvDomain = "_xmpp-client._tcp." + domain;
-        } else {
-            srvDomain = domain;
+            break;
+        default:
+            throw new AssertionError();
         }
         try {
             List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
@@ -225,4 +270,5 @@ public class DNSUtil {
         }
         return pos;
     }
+
 }
