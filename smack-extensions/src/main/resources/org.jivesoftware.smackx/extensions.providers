@@ -474,4 +474,11 @@
         <namespace>http://jabber.org/features/iq-register</namespace>
         <className>org.jivesoftware.smackx.iqregister.provider.RegistrationStreamFeatureProvider</className>
     </streamFeatureProvider>
+
+   <!-- XEP-0059: Result Set Management -->
+   <extensionProvider>
+       <elementName>set</elementName>
+       <namespace>http://jabber.org/protocol/rsm</namespace>
+       <className>org.jivesoftware.smackx.rsm.provider.RSMSetProvider</className>
+    </extensionProvider>
 </smackProviders>

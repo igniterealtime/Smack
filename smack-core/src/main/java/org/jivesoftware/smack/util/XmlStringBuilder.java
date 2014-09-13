@@ -86,6 +86,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder optIntElement(String name, int value) {
+        if (value >= 0) {
+            element(name, String.valueOf(value));
+        }
+        return this;
+    }
+
     public XmlStringBuilder halfOpenElement(String name) {
         sb.append('<').append(name);
         return this;

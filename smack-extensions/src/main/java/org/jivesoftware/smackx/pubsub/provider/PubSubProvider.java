@@ -45,7 +45,7 @@ public class PubSubProvider implements IQProvider
             
             if (eventType == XmlPullParser.START_TAG) 
             {
-            	PacketExtension ext = PacketParserUtils.parsePacketExtension(parser.getName(), namespace, parser);
+                PacketExtension ext = PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser);
             	
             	if (ext != null)
             	{

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -75,6 +76,11 @@ public class ParserUtils {
         else {
             return integer;
         }
+    }
+
+    public static int getIntegerFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String intString = parser.nextText();
+        return Integer.valueOf(intString);
     }
 
     public static Long getLongAttribute(XmlPullParser parser, String name) {

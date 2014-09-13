@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -232,19 +233,11 @@ public abstract class Packet extends TopLevelStreamElement {
      * @param namespace the XML element namespace of the packet extension.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
-    @SuppressWarnings("unchecked")
     public <PE extends PacketExtension> PE getExtension(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }
-        for (PacketExtension ext : packetExtensions) {
-            if ((elementName == null || elementName.equals(ext.getElementName()))
-                    && namespace.equals(ext.getNamespace()))
-            {
-                return (PE) ext;
-            }
-        }
-        return null;
+        return PacketUtil.packetExtensionfromCollection(packetExtensions, elementName, namespace);
     }
 
     /**

@@ -36,6 +36,7 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | Ad-Hoc Commands                             | [XEP-0050](http://xmpp.org/extensions/xep-0049.html) | Advertising and executing application-specific commands. |
 | vcard-temp                                  | [XEP-0054](http://xmpp.org/extensions/xep-0049.html) | The vCard-XML format currently in use. |
 | Jabber Search                               | [XEP-0055](http://xmpp.org/extensions/xep-0055.html) | Search information repositories on the XMPP network. |
+| Result Set Management                       | [XEP-0059](http://xmpp.org/extensions/xep-0059.html) | Page through and otherwise manage the receipt of large result sets |
 | [PubSub](pubsub.html)                       | [XEP-0060](http://xmpp.org/extensions/xep-0060.html) | Generic publish and subscribe functionality. |
 | SOCKS5 Bytestrams                           | [XEP-0065](http://xmpp.org/extensions/xep-0065.html) | Out-of-band bytestream between any two XMPP entities. |
 | [XHTML-IM](xhtml.html)                      | [XEP-0071](http://xmpp.org/extensions/xep-0071.html) | Allows send and receiving formatted messages using XHTML. |
