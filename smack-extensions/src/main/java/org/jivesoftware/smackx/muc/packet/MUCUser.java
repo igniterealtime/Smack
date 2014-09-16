@@ -206,8 +206,20 @@ public class MUCUser implements PacketExtension {
      *
      * @param packet
      * @return the MUCUser PacketExtension or {@code null}
+     * @deprecated use {@link #from(Packet)} instead
      */
+    @Deprecated
     public static MUCUser getFrom(Packet packet) {
+        return from(packet);
+    }
+
+    /**
+     * Retrieve the MUCUser PacketExtension from packet, if any.
+     *
+     * @param packet
+     * @return the MUCUser PacketExtension or {@code null}
+     */
+    public static MUCUser from(Packet packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

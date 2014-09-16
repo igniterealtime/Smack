@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -61,10 +60,8 @@ public class Form {
      */
     public static Form getFormFrom(Packet packet) {
         // Check if the packet includes the DataForm extension
-        PacketExtension packetExtension = packet.getExtension("x","jabber:x:data");
-        if (packetExtension != null) {
-            // Check if the existing DataForm is not a result of a search
-            DataForm dataForm = (DataForm) packetExtension;
+        DataForm dataForm = DataForm.from(packet);
+        if (dataForm != null) {
             if (dataForm.getReportedData() == null)
                 return new Form(dataForm);
         }

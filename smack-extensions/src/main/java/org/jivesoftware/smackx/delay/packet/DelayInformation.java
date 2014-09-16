@@ -107,7 +107,23 @@ public class DelayInformation implements PacketExtension {
         return xml;
     }
 
+    /**
+     * 
+     * @param packet
+     * @return the DelayInformation or null
+     * @deprecated use {@link #from(Packet)} instead
+     */
+    @Deprecated
     public static DelayInformation getFrom(Packet packet) {
+        return from(packet);
+    }
+
+    /**
+     * 
+     * @param packet
+     * @return the DelayInformation or null
+     */
+    public static DelayInformation from(Packet packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 }

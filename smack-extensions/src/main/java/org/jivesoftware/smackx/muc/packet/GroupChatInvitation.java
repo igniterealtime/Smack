@@ -105,7 +105,23 @@ public class GroupChatInvitation implements PacketExtension {
         return xml;
     }
 
+    /**
+     * 
+     * @param packet
+     * @return the GroupChatInvitation or null
+     * @deprecated use {@link #from(Packet)} instead
+     */
+    @Deprecated
     public static GroupChatInvitation getFrom(Packet packet) {
+        return from(packet);
+    }
+
+    /**
+     * 
+     * @param packet
+     * @return the GroupChatInvitation or null
+     */
+    public static GroupChatInvitation from(Packet packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

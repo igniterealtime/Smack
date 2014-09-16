@@ -594,7 +594,7 @@ public class EntityCapsManager extends Manager {
         if (md == null)
             return null;
 
-        DataForm extendedInfo = (DataForm) discoverInfo.getExtension(DataForm.ELEMENT, DataForm.NAMESPACE);
+        DataForm extendedInfo =  DataForm.from(discoverInfo);
 
         // 1. Initialize an empty string S ('sb' in this method).
         StringBuilder sb = new StringBuilder(); // Use StringBuilder as we don't

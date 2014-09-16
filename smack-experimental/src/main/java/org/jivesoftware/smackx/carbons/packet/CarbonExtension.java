@@ -95,8 +95,24 @@ public class CarbonExtension implements PacketExtension {
      * @param msg Message object to check for carbons
      *
      * @return a Carbon if available, null otherwise.
+     * @deprecated use {@link #from(Message)} instead
      */
+    @Deprecated
     public static CarbonExtension getFrom(Message msg) {
+        return from(msg);
+    }
+
+    /**
+     * Obtain a Carbon from a message, if available.
+     * <p>
+     * Only {@link Message} instances can contain a Carbon extensions.
+     * </p>
+     *
+     * @param msg Message object to check for carbons
+     *
+     * @return a Carbon if available, null otherwise.
+     */
+    public static CarbonExtension from(Message msg) {
         CarbonExtension cc = msg.getExtension(Direction.received.name(), NAMESPACE);
         if (cc == null)
             cc = msg.getExtension(Direction.sent.name(), NAMESPACE);

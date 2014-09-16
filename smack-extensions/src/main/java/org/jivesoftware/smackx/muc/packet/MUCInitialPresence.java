@@ -108,8 +108,20 @@ public class MUCInitialPresence implements PacketExtension {
      *
      * @param packet
      * @return the MUCInitialPresence PacketExtension or {@code null}
+     * @deprecated use {@link #from(Packet)} instead
      */
+    @Deprecated
     public static MUCInitialPresence getFrom(Packet packet) {
+        return from(packet);
+    }
+
+    /**
+     * Retrieve the MUCInitialPresence PacketExtension from packet, if any.
+     *
+     * @param packet
+     * @return the MUCInitialPresence PacketExtension or {@code null}
+     */
+    public static MUCInitialPresence from(Packet packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

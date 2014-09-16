@@ -51,9 +51,21 @@ public class DeliveryReceiptRequest implements PacketExtension
      *
      * @param p the packet
      * @return the {@link DeliveryReceiptRequest} extension or {@code null}
+     * @deprecated use {@link #from(Packet)} instead
      */
+    @Deprecated
     public static DeliveryReceiptRequest getFrom(Packet p) {
-        return p.getExtension(ELEMENT, DeliveryReceipt.NAMESPACE);
+        return from(p);
+    }
+
+    /**
+     * Get the {@link DeliveryReceiptRequest} extension of the packet, if any.
+     *
+     * @param packet the packet
+     * @return the {@link DeliveryReceiptRequest} extension or {@code null}
+     */
+    public static DeliveryReceiptRequest from(Packet packet) {
+        return packet.getExtension(ELEMENT, DeliveryReceipt.NAMESPACE);
     }
 
     /**

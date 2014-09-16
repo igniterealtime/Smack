@@ -73,7 +73,23 @@ public class Forwarded implements PacketExtension {
         return xml;
     }
 
+    /**
+     * 
+     * @param packet
+     * @return the Forwarded extension or null
+     * @deprecated use {@link #from(Packet)} instead
+     */
+    @Deprecated
     public static Forwarded getFrom(Packet packet) {
+        return from(packet);
+    }
+
+    /**
+     * 
+     * @param packet
+     * @return the Forwarded extension or null
+     */
+    public static Forwarded from(Packet packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

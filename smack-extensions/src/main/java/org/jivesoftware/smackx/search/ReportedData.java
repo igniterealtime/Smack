@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.search;
 
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
@@ -46,10 +45,8 @@ public class ReportedData {
      */
     public static ReportedData getReportedDataFrom(Packet packet) {
         // Check if the packet includes the DataForm extension
-        PacketExtension packetExtension = packet.getExtension("x","jabber:x:data");
-        if (packetExtension != null) {
-            // Check if the existing DataForm is a result of a search
-            DataForm dataForm = (DataForm) packetExtension;
+        DataForm dataForm = DataForm.from(packet);
+        if (dataForm != null) {
             if (dataForm.getReportedData() != null)
                 return new ReportedData(dataForm);
         }
