@@ -1,6 +1,8 @@
 description = """\
 Smack for Android.
-All the required dependencies to run Smack on Android"""
+All the required dependencies to run Smack on Android.
+Usually you want to add additional dependencies to smack-tcp,
+smack-extensions and smack-experimental."""
 
 ext {
 	smackMinAndroidSdk = 8
@@ -10,7 +12,10 @@ ext {
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
-	androidProjects.each { project ->
+	// Filter out the optional Smack dependencies from androidProjects
+	androidProjects.findAll {
+		![':smack-tcp', ':smack-extensions', ':smack-experimental'].contains(it.getPath())
+	}.each { project ->
 		compile project
 	}
 }
