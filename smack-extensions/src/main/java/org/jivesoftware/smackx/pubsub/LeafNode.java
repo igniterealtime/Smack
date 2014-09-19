@@ -24,6 +24,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
@@ -171,6 +172,44 @@ public class LeafNode extends Node
 		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
 		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
 		return (List<T>)itemsElem.getItems();
+	}
+	
+	/**
+	 * Get items persisted on the node.
+	 * <p>
+     * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
+     * {@code returnedExtensions} will be filled with the packet extensions found in the answer.
+     * </p>
+     *  
+	 * @param additionalExtensions additional {@code PacketExtensions} to be added to the request
+	 * @param returnedExtensions a collection that will be filled with the returned packet
+     *        extensions
+	 * @return List of {@link Item}
+	 * @throws NoResponseException
+	 * @throws XMPPErrorException
+	 * @throws NotConnectedException
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Item> getItems(List<PacketExtension> additionalExtensions,
+			List<PacketExtension> returnedExtensions) throws NoResponseException, XMPPErrorException, NotConnectedException 
+	{
+		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId()));
+		if (additionalExtensions != null) 
+		{
+			for (PacketExtension pe : additionalExtensions) 
+			{
+				request.addExtension(pe);
+			}
+		}
+		PubSub result = (PubSub) con.createPacketCollectorAndSend(request)
+				.nextResultOrThrow();
+		if (returnedExtensions != null) 
+		{
+			returnedExtensions.addAll(result.getExtensions());
+		}
+		ItemsExtension itemsElem = (ItemsExtension) result
+				.getExtension(PubSubElementType.ITEMS);
+		return (List<Item>) itemsElem.getItems();
 	}
 	
 	/**
