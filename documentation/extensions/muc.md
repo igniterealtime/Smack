@@ -49,12 +49,9 @@ In this example we can see how to create an instant room:
 ```java
 // Create a MultiUserChat using a XMPPConnection for a room
 MultiUserChat muc = new MultiUserChat(conn1, "myroom@conference.jabber.org");
-
 // Create the room
 muc.create("testbot");
-
-// Send an empty room configuration form which indicates that we want
-// an instant room
+// Send an empty room configuration form which indicates that we want an instant room
 muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
 ```
 
@@ -64,10 +61,8 @@ completed with default values:
 ```java
 // Create a MultiUserChat using a XMPPConnection for a room
 MultiUserChat muc = new MultiUserChat(conn1, "myroom@conference.jabber.org");
-
 // Create the room
 muc.create("testbot");
-
 // Get the the room's configuration form
 Form form = muc.getConfigurationForm();
 // Create a new form to submit based on the original form
