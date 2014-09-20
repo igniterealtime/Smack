@@ -33,7 +33,7 @@ In this example we can see how to create and send a form to fill out:
 ```java
 // Create a new form to gather data
 Form formToSend = new Form(Form.TYPE_FORM);
-formToSend.setInstructions(Fill out this form to report your case. The case will be created automatically.");
+formToSend.setInstructions("Fill out this form to report your case.\n The case will be created automatically.");
 formToSend.setTitle("Case configurations");
 // Add a hidden variable to the form
 FormField field = new FormField("hidden_var");
