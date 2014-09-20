@@ -84,56 +84,55 @@ message to the other user. The other user will add a
 listen and react to the event notification requested by the other user.
 
 ```java
-        // Connect to the server and log in the users
-        conn1 = new XMPPTCPConnection(host);
-        conn1.login(server_user1, pass1);
-        conn2 = new XMPPTCPConnection(host);
-        conn2.login(server_user2, pass2);
-        // User2 creates a MessageEventManager
-        MessageEventManager messageEventManager = new MessageEventManager(conn2);
-        // User2 adds the listener that will react to the event notifications requests
-        messageEventManager.addMessageEventRequestListener(new DefaultMessageEventRequestListener() {
-            public void deliveredNotificationRequested(
-                    String from,
-                    String packetID,
-                    MessageEventManager messageEventManager) {
-                super.deliveredNotificationRequested(from, packetID, messageEventManager);
-                // DefaultMessageEventRequestListener automatically responds that the message was delivered when receives this r
-                System.out.println("Delivered Notification Requested (" + from + ", " + packetID + ")");
-            }
+// Connect to the server and log in the users
+conn1 = new XMPPTCPConnection(host);
+conn1.login(server_user1, pass1);
+conn2 = new XMPPTCPConnection(host);
+conn2.login(server_user2, pass2);
+// User2 creates a MessageEventManager
+MessageEventManager messageEventManager = new MessageEventManager(conn2);
+// User2 adds the listener that will react to the event notifications requests
+messageEventManager.addMessageEventRequestListener(new DefaultMessageEventRequestListener() {
+    public void deliveredNotificationRequested(
+            String from,
+            String packetID,
+            MessageEventManager messageEventManager) {
+        super.deliveredNotificationRequested(from, packetID, messageEventManager);
+        // DefaultMessageEventRequestListener automatically responds that the message was delivered when receives this r
+        System.out.println("Delivered Notification Requested (" + from + ", " + packetID + ")");
+    }
 
-            public void displayedNotificationRequested(String from, String packetID, MessageEventManager messageEventManager) {
-                super.displayedNotificationRequested(from, packetID, messageEventManager);
-                // Send to the message's sender that the message was
-                messageEventManager.sendDisplayedNotification(from, packetID);
-            }
+    public void displayedNotificationRequested(String from, String packetID, MessageEventManager messageEventManager) {
+        super.displayedNotificationRequested(from, packetID, messageEventManager);
+        // Send to the message's sender that the message was
+        messageEventManager.sendDisplayedNotification(from, packetID);
+    }
 
-            public void composingNotificationRequested(String from, String packetID, MessageEventManager messageEventManager) {
-                super.composingNotificationRequested(from, packetID, messageEventManager);
-                // Send to the message's sender that the message's receiver is composing a reply
-                messageEventManager.sendComposingNotification(from, packetID);
-            }
+    public void composingNotificationRequested(String from, String packetID, MessageEventManager messageEventManager) {
+        super.composingNotificationRequested(from, packetID, messageEventManager);
+        // Send to the message's sender that the message's receiver is composing a reply
+        messageEventManager.sendComposingNotification(from, packetID);
+    }
 
-            public void offlineNotificationRequested(String from, String packetID, MessageEventManager messageEventManager) {
-                super.offlineNotificationRequested(from, packetID, messageEventManager);
-                // The XMPP server should take care of this request. Do nothing.
-                System.out.println("Offline Notification Requested (" + from + ", " + packetID + ")");
-            }
-        });
-        // User1 creates a chat with user2
-        Chat chat1 = conn1.createChat(user2);
-        // User1 creates a message to send to user2
-        Message msg = chat1.createMessage();
-        msg.setSubject("Any subject you want");
-        msg.setBody("An interesting body comes here...");
-        // User1 adds to the message all the notifications requests (offline, delivered, displayed, composing)
-        MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
-        // User1 sends the message that contains the notifications request
-        chat1.sendMessage(msg);
-        Thread.sleep(500);
-        // User2 sends to the message's sender that the message's receiver cancelled composing a reply
-        messageEventManager.sendCancelledNotification(user1, msg.getPacketID());
-
+    public void offlineNotificationRequested(String from, String packetID, MessageEventManager messageEventManager) {
+        super.offlineNotificationRequested(from, packetID, messageEventManager);
+        // The XMPP server should take care of this request. Do nothing.
+        System.out.println("Offline Notification Requested (" + from + ", " + packetID + ")");
+    }
+});
+// User1 creates a chat with user2
+Chat chat1 = conn1.createChat(user2);
+// User1 creates a message to send to user2
+Message msg = chat1.createMessage();
+msg.setSubject("Any subject you want");
+msg.setBody("An interesting body comes here...");
+// User1 adds to the message all the notifications requests (offline, delivered, displayed, composing)
+MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
+// User1 sends the message that contains the notifications request
+chat1.sendMessage(msg);
+Thread.sleep(500);
+// User2 sends to the message's sender that the message's receiver cancelled composing a reply
+messageEventManager.sendCancelledNotification(user1, msg.getPacketID());
 ```
 
 ## Reacting to Event Notifications
@@ -164,37 +163,37 @@ and react to the event notifications, creates a message, adds the requests for
 notifications and sends the message.
 
 ```java
-        // Connect to the server and log in
-        conn1 = new XMPPTCPConnection(host);
-        conn1.login(server_user1, pass1);
-        // Create a MessageEventManager
-        MessageEventManager messageEventManager = new MessageEventManager(conn1);
-        // Add the listener that will react to the event notifications
-        messageEventManager.addMessageEventNotificationListener(new MessageEventNotificationListener() {
-            public void deliveredNotification(String from, String packetID) {
-                System.out.println("The message has been delivered (" + from + ", " + packetID + ")");
-            }
-            public void displayedNotification(String from, String packetID) {
-                System.out.println("The message has been displayed (" + from + ", " + packetID + ")");
-            }
-            public void composingNotification(String from, String packetID) {
-                System.out.println("The message's receiver is composing a reply (" + from + ", " + packetID + ")");
-            }
-            public void offlineNotification(String from, String packetID) {
-                System.out.println("The message's receiver is offline (" + from + ", " + packetID + ")");
-            }
-            public void cancelledNotification(String from, String packetID) {
-                System.out.println("The message's receiver cancelled composing a reply (" + from + ", " + packetID + ")");
-            }
-        });
-        // Create a chat with user2
-        Chat chat1 = conn1.createChat(user2);
-        // Create a message to send
-        Message msg = chat1.createMessage();
-        msg.setSubject("Any subject you want");
-        msg.setBody("An interesting body comes here...");
-        // Add to the message all the notifications requests (offline, delivered, displayed, composing)
-        MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
-        // Send the message that contains the notifications request
-        chat1.sendMessage(msg);
+// Connect to the server and log in
+conn1 = new XMPPTCPConnection(host);
+conn1.login(server_user1, pass1);
+// Create a MessageEventManager
+MessageEventManager messageEventManager = new MessageEventManager(conn1);
+// Add the listener that will react to the event notifications
+messageEventManager.addMessageEventNotificationListener(new MessageEventNotificationListener() {
+    public void deliveredNotification(String from, String packetID) {
+        System.out.println("The message has been delivered (" + from + ", " + packetID + ")");
+    }
+    public void displayedNotification(String from, String packetID) {
+        System.out.println("The message has been displayed (" + from + ", " + packetID + ")");
+    }
+    public void composingNotification(String from, String packetID) {
+        System.out.println("The message's receiver is composing a reply (" + from + ", " + packetID + ")");
+    }
+    public void offlineNotification(String from, String packetID) {
+        System.out.println("The message's receiver is offline (" + from + ", " + packetID + ")");
+    }
+    public void cancelledNotification(String from, String packetID) {
+        System.out.println("The message's receiver cancelled composing a reply (" + from + ", " + packetID + ")");
+    }
+});
+// Create a chat with user2
+Chat chat1 = conn1.createChat(user2);
+// Create a message to send
+Message msg = chat1.createMessage();
+msg.setSubject("Any subject you want");
+msg.setBody("An interesting body comes here...");
+// Add to the message all the notifications requests (offline, delivered, displayed, composing)
+MessageEventManager.addNotificationsRequests(msg, true, true, true, true);
+// Send the message that contains the notifications request
+chat1.sendMessage(msg);
 ```
