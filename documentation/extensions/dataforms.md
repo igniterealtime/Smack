@@ -1,5 +1,4 @@
-Data Forms
-==========
+# Data Forms
 
 Allows to exchange structured data between users and applications for common
 tasks such as registration and searching using Forms.
@@ -7,10 +6,9 @@ tasks such as registration and searching using Forms.
   * Create a Form to fill out
   * Answer a Form
 
-**XEP related:** [XEP-4](http://www.xmpp.org/extensions/xep-0004.html)
+**XEP related:** [XEP-4 Data Forms](http://www.xmpp.org/extensions/xep-0004.html)
 
-Create a Form to fill out
--------------------------
+## Create a Form to fill out
 
 **Description**
 
@@ -21,25 +19,18 @@ entity.
 
 **Usage**
 
-In order to create a Form to fill out use the _**Form**_'s constructor passing
-the constant **Form.TYPE_FORM** as the parameter. The next step is to create
-the form fields and add them to the form. In order to create and customize a
-_**FormField**_ use the _**FormField**_'s constructor specifying the variable
-name of the field as the parameter. Then use **setType(String type)** to set
-the field's type (e.g. FormField.TYPE_HIDDEN, FormField.TYPE_TEXT_SINGLE).
-Once we have the _**Form**_ instance and the _**FormFields**_ the last step is
-to send **addField(FormField field)** for each field that we want to add to
-the form.
-
+In order to create a Form to fill out use the `Form`'s constructor passing the constant `Form.TYPE_FORM` as the parameter.
+The next step is to create the form fields and add them to the form. In order to create and customize a`FormField` use the `FormField`'s constructor specifying the variable name of the field as the parameter.
+Then use `setType(String type)` to set the field's type (e.g. `FormField.TYPE_HIDDEN`, `FormField.TYPE_TEXT_SINGLE`).
+Once we have the `Form` instance and the `FormFields` the last step is to send `addField(FormField field)` for each field that we want to add to the form.
 Once the form to fill out is finished we will want to send it in a message.
-Send **getDataFormToSend()** to the form and add the answer as an extension to
-the message to send.
+Send `getDataFormToSend()` to the form and add the answer as an extension to the message to send.
 
 **Examples**
 
 In this example we can see how to create and send a form to fill out:
 
-```
+```java
 // Create a new form to gather data
 Form formToSend = new Form(Form.TYPE_FORM);
 formToSend.setInstructions(Fill out this form to report your case.\nThe case will be created automatically.");
@@ -73,8 +64,7 @@ msg.addExtension(formToSend.getDataFormToSend());
 chat.sendMessage(msg);
 ```
 
-Answer a Form
--------------
+## Answer a Form
 
 **Description**
 
@@ -90,17 +80,17 @@ rendering the form. But it cannot be used to actually complete it. Instead
 it's necessary to create a new form based on the original form whose purpose
 is to hold all the answers.
 
-In order to create a new _**Form**_ to complete based on the original
-_**Form**_ just send **createAnswerForm()** to the original _**Form**_. Once
+In order to create a new `Form` to complete based on the original
+`Form` just send `createAnswerForm()` to the original `Form`. Once
 you have a valid form that could be actually completed all you have to do is
-send **setAnswer(String variable, String value)** to the form where variable
-is the variable of the _**FormField**_ that you want to answer and value is
+send `setAnswer(String variable, String value)` to the form where variable
+is the variable of the `FormField` that you want to answer and value is
 the String representation of the answer. If the answer consist of several
-values you could then use **setAnswer(String variable, List values)** where
+values you could then use `setAnswer(String variable, List values)` where
 values is a List of Strings.
 
 Once the form has been completed we will want to send it back in a message.
-Send **getDataFormToSend()** to the form and add the answer as an extension to
+Send `getDataFormToSend()` to the form and add the answer as an extension to
 the message to send back.
 
 **Examples**
@@ -108,7 +98,7 @@ the message to send back.
 In this example we can see how to retrieve a form to fill out, complete the
 form and send it back:
 
-```
+```java
 // Get the message with the form to fill out
 Message msg2 = chat2.nextMessage();
 // Retrieve the form to fill out from the message
