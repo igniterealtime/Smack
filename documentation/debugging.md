@@ -9,13 +9,8 @@ traffic between the client and server. A lite debugger which is part of the
 
 Debugging mode can be enabled in two different ways:
 
-  1. Add the following line of code **before** creating new connections:
-
-`XMPPConnection.DEBUG_ENABLED = true;`
-
-  2. Set the Java system property `smack.debugEnabled` to true. The system property can be set on the command line such as:
-
-`java -Dsmack.debugEnabled=true SomeApp `
+  1. Add the `XMPPConnection.DEBUG_ENABLED = true;` line of code **before** creating new connections.
+  2. Set the Java system property `smack.debugEnabled` to true. The system property can be set on the command line such as: `java -Dsmack.debugEnabled=true SomeApp`
 
 If you wish to explicitly disable debug mode in your application, including
 using the command-line parameter, add the following line to your application
@@ -25,9 +20,7 @@ before opening new connections:
 
 Smack uses the following logic to decide the debugger console to use:
 
-  1. It will first try use the debugger class specified in the Java system property `smack.debuggerClass`. If you need to develop your own debugger, implement the `SmackDebugger` interface and then set the system property on the command line such as:
-
-`java -Dsmack.debuggerClass=my.company.com.MyDebugger SomeApp `
+  1. It will first try use the debugger class specified in the Java system property `smack.debuggerClass`. If you need to develop your own debugger, implement the `SmackDebugger` interface and then set the system property on the command line such as: `java -Dsmack.debuggerClass=my.company.com.MyDebugger SomeApp`
 
   2. If step 1 fails then Smack will try to use the enhanced debugger. The file `smackx-debug.jar` contains the enhanced debugger. Therefore you will need to place the jar file in the classpath. For situations where space is an issue you may want to only deploy `smack-core.jar` in which case the enhanced debugger won't be available.
   3. The last option if the previous two steps fail is to use the lite debugger. The lite debugger is a very good option for situations where you need to have low memory footprint.
