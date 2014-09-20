@@ -157,7 +157,7 @@ subscribe for messages.
 PubSubManager mgr = new PubSubManager(con);
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-node.addItemEventListener(new ItemEventCoordinator&ltItem;>());
+node.addItemEventListener(new ItemEventCoordinator<Item>());
 node.subscribe(myJid);
 ```
 
@@ -186,7 +186,7 @@ subscribe for item deletion messages.
 PubSubManager mgr = new PubSubManager(con);
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-node.addItemDeleteListener(new ItemDeleteCoordinator&ltItem;>());
+node.addItemDeleteListener(new ItemDeleteCoordinator<Item>());
 node.subscribe(myJid);
 node.deleteItem("id_one");
 ```
@@ -287,7 +287,7 @@ In this example we can see how to retrieve the specified existing items:
 PubSubManager mgr = new PubSubManager(con);
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-Collection&ltString;> ids = new ArrayList&ltString;>(3);
+Collection<String> ids = new ArrayList<String>(3);
 ids.add("1");
 ids.add("3");
 ids.add("4");
@@ -363,5 +363,5 @@ In this example we can see how to get node subscriptions:
 PubSubManager mgr = new PubSubManager(con);
 Node node = mgr.getNode("testNode");
 // Discover the node subscriptions
-List&ltSubscription;> subscriptions = node.getSubscriptions();
+List<Subscription> subscriptions = node.getSubscriptions();
 ```
