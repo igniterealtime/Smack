@@ -2,8 +2,8 @@ Smack Extensions User Manual
 ============================
 
 The XMPP protocol includes a base protocol and many optional extensions
-typically documented as "XEP's". Smack provides the org.jivesoftware.smack
-package for the core XMPP protocol, and the org.jivesoftware.smackx package
+typically documented as "XEP's". Smack provides the `org.jivesoftware.smack`
+package for the core XMPP protocol, and the `org.jivesoftware.smackx` package
 for many of the protocol extensions.
 
 This manual provides details about each of the "smackx" extensions, including
