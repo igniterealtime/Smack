@@ -46,13 +46,7 @@ ProviderManager.addLoader(new ProviderFileLoader(FileUtils.getStreamForUrl("clas
 ```
 
   * VM Argument - You can add a provider file via the VM argument _smack.provider.file_. This will load the file at the specified URL during startup when Smack initializes. This also assumes the default configuration, since it requires that the **VmArgInitializer** was part of the startup configuration.
-
-
-`-Dsmack.provider.file=classpath:com/myco/provider/myco_custom.provider`s
-
-or
-
-`-Dsmack.provider.file=file:///c:/myco/provider/myco_custom.providers`
+`-Dsmack.provider.file=classpath:com/myco/provider/myco_custom.providers` or `-Dsmack.provider.file=file:///c:/myco/provider/myco_custom.providers`
 
 
 IQ Providers
@@ -118,14 +112,14 @@ _Disco Items Packet_
 ```xml
 <iq type='result' from='shakespeare.lit' to='romeo@montague.net/orchard' id='items1'>
 	<query xmlns='http://jabber.org/protocol/disco#items'>
-	<item jid='people.shakespeare.lit' name='Directory of Characters'/>
-	<item jid='plays.shakespeare.lit' name='Play-Specific Chatrooms'/>
-	<item jid='mim.shakespeare.lit' name='Gateway to Marlowe IM'/>
-	<item jid='words.shakespeare.lit' name='Shakespearean Lexicon'/>
-	<item jid='globe.shakespeare.lit' name='Calendar of Performances'/>
-	<item jid='headlines.shakespeare.lit' name='Latest Shakespearean News'/>
-	<item jid='catalog.shakespeare.lit' name='Buy Shakespeare Stuff!'/>
-	<item jid='en2fr.shakespeare.lit' name='French Translation Service'/>
+		<item jid='people.shakespeare.lit' name='Directory of Characters'/>
+		<item jid='plays.shakespeare.lit' name='Play-Specific Chatrooms'/>
+		<item jid='mim.shakespeare.lit' name='Gateway to Marlowe IM'/>
+		<item jid='words.shakespeare.lit' name='Shakespearean Lexicon'/>
+		<item jid='globe.shakespeare.lit' name='Calendar of Performances'/>
+		<item jid='headlines.shakespeare.lit' name='Latest Shakespearean News'/>
+		<item jid='catalog.shakespeare.lit' name='Buy Shakespeare Stuff!'/>
+		<item jid='en2fr.shakespeare.lit' name='French Translation Service'/>
 	</query>
 </iq>
 ```
