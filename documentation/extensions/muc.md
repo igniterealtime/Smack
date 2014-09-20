@@ -73,7 +73,7 @@ for (Iterator fields = form.getFields(); fields.hasNext();) {
 	if (!FormField.TYPE_HIDDEN.equals(field.getType()) && field.getVariable() != null) {
 		// Sets the default value as the answer
 		submitForm.setDefaultAnswer(field.getVariable());
-}
+	}
 }
 // Sets the new owner of the room
 List owners = new ArrayList();
