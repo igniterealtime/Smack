@@ -1,7 +1,7 @@
 Processing Incoming Packets
 ===========================
 
-[Back](index.html)
+[Back](index.md)
 
 Smack provides a flexible framework for processing incoming packets using two
 constructs:
@@ -17,24 +17,20 @@ package.
 The following code snippet demonstrates registering both a packet collector
 and a packet listener:
 
-```
-// Create a packet filter to listen for new messages from a particular
-// user. We use an AndFilter to combine two other filters._
-PacketFilter filter = new AndFilter(new PacketTypeFilter(Message.class),
-		new FromContainsFilter("mary@jivesoftware.com"));
+```java
+// Create a packet filter to listen for new messages from a particular user. We use an AndFilter to combine two other filters.
+PacketFilter filter = new AndFilter(new PacketTypeFilter(Message.class), new FromContainsFilter("mary@jivesoftware.com"));
 // Assume we've created a XMPPConnection name "connection".
-
 // First, register a packet collector using the filter we created.
 PacketCollector myCollector = connection.createPacketCollector(filter);
 // Normally, you'd do something with the collector, like wait for new packets.
-
 // Next, create a packet listener. We use an anonymous inner class for brevity.
 PacketListener myListener = new PacketListener() {
-		**public** **void** processPacket(Packet packet) {
-			// Do something with the incoming packet here._
-		}
-	};
-// Register the listener._
+	public void processPacket(Packet packet) {
+		// Do something with the incoming packet here._
+	}
+};
+// Register the listener
 connection.addPacketListener(myListener, filter);
 ```
 
