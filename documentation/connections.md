@@ -1,10 +1,8 @@
-Smack: XMPPConnection Management
-================================
+# Smack: XMPPConnection Management
 
-[Back](index.html)
+[Back](index.md)
 
-Creating a Connection
----------------------
+## Creating a Connection
 
 The `org.jivesoftware.smack.XMPPConnection` class manages your connection to
 an XMPP server. The default implementation is the
@@ -22,35 +20,31 @@ include:
   * Manually specify the server address and port of the server rather than using a DNS SRV lookup.
   * Enable connection compression.
   * Customize security settings, such as flagging the connection to require TLS encryption in order to connect.
-  * Specify a custom connection resource name such as "Work" or "Home". Every connection by a user to a server must have a unique resource name. For the user "jsmith@example.com", the full address with resource might be "jsmith@example.com/Smack". With unique resource names, a user can be logged into the server from multiple locations at once, or using multiple devices. The presence priority value used with each resource will determine which particular connection receives messages to the bare address ("jsmith@example.com" in our example).
+  * Specify a custom connection resource name such as `Work` or `Home`. Every connection by a user to a server must have a unique resource name. For the user `jsmith@example.com`, the full address with resource might be `jsmith@example.com/Smack`. With unique resource names, a user can be logged into the server from multiple locations at once, or using multiple devices. The presence priority value used with each resource will determine which particular connection receives messages to the bare address (`jsmith@example.com` in our example).
 
-Connect and Disconnect
-----------------------
+## Connect and Disconnect
 
-```
-// Create the configuration for this new connection_
+```java
+// Create the configuration for this new connection
 ConnectionConfiguration config = new ConnectionConfiguration("jabber.org", 5222);
-
 AbstractXMPPConnection connection = new XMPPTCPConnection(config);
-// Connect to the server_
+// Connect to the server
 connection.connect();
-// Log into the server_
+// Log into the server
 connection.login("username", "password", "SomeResource");
-
 ...
-
-// Disconnect from the server_
+// Disconnect from the server
 connection.disconnect();
 ```
 
 By default Smack will try to reconnect the connection in case it was abruptly
-disconnected. Use _ConnectionConfiguration#setReconnectionAllowed(boolean) to
+disconnected. Use `ConnectionConfiguration#setReconnectionAllowed(boolean)` to
 turn on/off this feature. The reconnection manager will try to immediately
 reconnect to the server and increase the delay between attempts as successive
-reconnections keep failing._
+reconnections keep failing.
 
 In case you want to force a reconnection while the reconnetion manager is
-waiting for the next reconnection, you can just use _AbstractXMPPConnection#connect()_
+waiting for the next reconnection, you can just use `AbstractXMPPConnection#connect()`
 and a new attempt will be made. If the manual attempt also failed then the
 reconnection manager will still continue the reconnection job.
 
