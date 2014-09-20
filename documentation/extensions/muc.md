@@ -129,7 +129,6 @@ password:
 ```java
 // Create a MultiUserChat using a XMPPConnection for a room
 MultiUserChat muc2 = new MultiUserChat(conn1, "myroom@conference.jabber.org");
-
 // User2 joins the new room using a password
 // The room service will decide the amount of history to send
 muc2.join("testbot2", "password");
@@ -141,7 +140,6 @@ the amount of history to receive:
 ```java
 // Create a MultiUserChat using a XMPPConnection for a room
 MultiUserChat muc2 = new MultiUserChat(conn1, "myroom@conference.jabber.org");
-
 // User2 joins the new room using a password and specifying
 // the amount of history to receive. In this example we are requesting the last 5 messages.
 DiscussionHistory history = new DiscussionHistory();
@@ -410,25 +408,25 @@ to the listeners whenever an occupant's role has changed.
 
 These are the triggered events when the role has been upgraded:
 
-| Old | New | Events |
-|-----|-----|--------|
-| None | Visitor | -- |
-| Visitor | Participant | voiceGranted |
-| Participant | Moderator | moderatorGranted |
-| None | Participant | voiceGranted |
-| None | Moderator | voiceGranted + moderatorGranted |
-| Visitor | Moderator | voiceGranted + moderatorGranted |
+| Old         | New         | Events                          |
+|-------------|-------------|---------------------------------|
+| None        | Visitor     | --                              |
+| Visitor     | Participant | voiceGranted                    |
+| Participant | Moderator   | moderatorGranted                |
+| None        | Participant | voiceGranted                    |
+| None        | Moderator   | voiceGranted + moderatorGranted |
+| Visitor     | Moderator   | voiceGranted + moderatorGranted |
 
 These are the triggered events when the role has been downgraded:
 
-| Old | New | Events |
-|-----|-----|--------|
-| Moderator | Participant | moderatorRevoked |
-| Participant | Visitor | voiceRevoked |
-| Visitor | None | kicked |
-| Moderator | Visitor | voiceRevoked + moderatorRevoked |
-| Moderator | None | kicked |
-| Participant | None | kicked |
+| Old         | New         | Events                          |
+|-------------|-------------|---------------------------------|
+| Moderator   | Participant | moderatorRevoked                |
+| Participant | Visitor     | voiceRevoked                    |
+| Visitor     | None        | kicked                          |
+| Moderator   | Visitor     | voiceRevoked + moderatorRevoked |
+| Moderator   | None        | kicked                          |
+| Participant | None        | kicked                          |
 
 **Examples**
 
@@ -547,26 +545,26 @@ to the listeners whenever a user's affiliation has changed.
 
 These are the triggered events when the affiliation has been upgraded:
 
-| Old | New | Events |
-|-----|-----|--------|
-| None | Member | membershipGranted |
-| Member | Admin | membershipRevoked + adminGranted |
-| Admin | Owner | adminRevoked + ownershipGranted |
-| None | Admin | adminGranted |
-| None | Owner | ownershipGranted |
-| Member | Owner | membershipRevoked + ownershipGranted |
+| Old    | New    | Events                               |
+|--------|--------|--------------------------------------|
+| None   | Member | membershipGranted                    |
+| Member | Admin  | membershipRevoked + adminGranted     |
+| Admin  | Owner  | adminRevoked + ownershipGranted      |
+| None   | Admin  | adminGranted                         |
+| None   | Owner  | ownershipGranted                     |
+| Member | Owner  | membershipRevoked + ownershipGranted |
 
 These are the triggered events when the affiliation has been downgraded:
 
-| Old | New | Events |
-|-----|-----|--------|
-| Owner | Admin | ownershipRevoked + adminGranted |
-| Admin | Member | adminRevoked + membershipGranted |
-| Member | None | membershipRevoked |
-| Owner | Member | ownershipRevoked + membershipGranted |
-| Owner | None | ownershipRevoked |
-| Admin | None | adminRevoked |
-| _Anyone_ | Outcast | banned |
+| Old      | New     | Events                               |
+|----------|---------|--------------------------------------|
+| Owner    | Admin   | ownershipRevoked + adminGranted      |
+| Admin    | Member  | adminRevoked + membershipGranted     |
+| Member   | None    | membershipRevoked                    |
+| Owner    | Member  | ownershipRevoked + membershipGranted |
+| Owner    | None    | ownershipRevoked                     |
+| Admin    | None    | adminRevoked                         |
+| _Anyone_ | Outcast | banned                               |
 
 **Examples**
 
