@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents a request to subscribe to a node.
  * 
@@ -23,29 +25,28 @@ package org.jivesoftware.smackx.pubsub;
  */
 public class GetItemsRequest extends NodeExtension
 {
-	protected String subId;
-	protected int maxItems;
+	protected final String subId;
+	protected final int maxItems;
 	
 	public GetItemsRequest(String nodeId)
 	{
-		super(PubSubElementType.ITEMS, nodeId);
+		this(nodeId, null, -1);
 	}
 	
 	public GetItemsRequest(String nodeId, String subscriptionId)
 	{
-		super(PubSubElementType.ITEMS, nodeId);
-		subId = subscriptionId;
+        this(nodeId, subscriptionId, -1);
 	}
 
 	public GetItemsRequest(String nodeId, int maxItemsToReturn)
 	{
-		super(PubSubElementType.ITEMS, nodeId);
-		maxItems = maxItemsToReturn;
+        this(nodeId, null, maxItemsToReturn);
 	}
 
 	public GetItemsRequest(String nodeId, String subscriptionId, int maxItemsToReturn)
 	{
-		this(nodeId, maxItemsToReturn);
+        super(PubSubElementType.ITEMS, nodeId);
+        maxItems = maxItemsToReturn;
 		subId = subscriptionId;
 	}
 
@@ -60,29 +61,13 @@ public class GetItemsRequest extends NodeExtension
 	}
 
 	@Override
-	public String toXML()
-	{
-		StringBuilder builder = new StringBuilder("<");
-		builder.append(getElementName());
-		
-		builder.append(" node='");
-		builder.append(getNode());
-		builder.append("'");
-
-		if (getSubscriptionId() != null)
-		{
-			builder.append(" subid='");
-			builder.append(getSubscriptionId());
-			builder.append("'");
-		}
-
-		if (getMaxItems() > 0)
-		{
-			builder.append(" max_items='");
-			builder.append(getMaxItems());
-			builder.append("'");
-		}
-		builder.append("/>");
-		return builder.toString();
-	}
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(getElementName());
+        xml.attribute("node", getNode());
+        xml.optAttribute("subid", getSubscriptionId());
+        xml.optIntAttribute("max_items", getMaxItems());
+        xml.closeEmptyElement();
+        return xml;
+    }
 }

@@ -68,14 +68,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId()));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 	
 	/**
@@ -90,14 +86,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 
 	/**
@@ -114,7 +106,6 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		List<Item> itemList = new ArrayList<Item>(ids.size());
@@ -124,10 +115,7 @@ public class LeafNode extends Node
 			itemList.add(new Item(id));
 		}
 		PubSub request = createPubsubPacket(Type.get, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 
 	/**
@@ -140,14 +128,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(int maxItems) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), maxItems));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 	
 	/**
@@ -163,16 +147,19 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(int maxItems, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId, maxItems));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
-	
+
+    @SuppressWarnings("unchecked")
+    private <T extends Item> List<T> getItems(PubSub request) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        PubSub result = con.createPacketCollectorAndSend(request).nextResultOrThrow();
+        ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
+        return (List<T>) itemsElem.getItems();
+    }
+
 	/**
 	 * Publishes an event to the node.  This is an empty event
 	 * with no item.
