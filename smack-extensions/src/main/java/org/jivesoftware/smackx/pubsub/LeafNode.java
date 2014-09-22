@@ -24,8 +24,8 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
@@ -69,14 +69,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId()));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 	
 	/**
@@ -91,14 +87,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 
 	/**
@@ -115,7 +107,6 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		List<Item> itemList = new ArrayList<Item>(ids.size());
@@ -125,10 +116,7 @@ public class LeafNode extends Node
 			itemList.add(new Item(id));
 		}
 		PubSub request = createPubsubPacket(Type.get, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 
 	/**
@@ -141,14 +129,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(int maxItems) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), maxItems));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 	
 	/**
@@ -164,14 +148,10 @@ public class LeafNode extends Node
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Item> List<T> getItems(int maxItems, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId, maxItems));
-		
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request).nextResultOrThrow();
-		ItemsExtension itemsElem = (ItemsExtension)result.getExtension(PubSubElementType.ITEMS);
-		return (List<T>)itemsElem.getItems();
+        return getItems(request);
 	}
 	
 	/**
@@ -189,29 +169,29 @@ public class LeafNode extends Node
 	 * @throws XMPPErrorException
 	 * @throws NotConnectedException
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Item> getItems(List<PacketExtension> additionalExtensions,
 			List<PacketExtension> returnedExtensions) throws NoResponseException, XMPPErrorException, NotConnectedException 
 	{
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId()));
-		if (additionalExtensions != null) 
-		{
-			for (PacketExtension pe : additionalExtensions) 
-			{
-				request.addExtension(pe);
-			}
-		}
-		PubSub result = (PubSub) con.createPacketCollectorAndSend(request)
-				.nextResultOrThrow();
-		if (returnedExtensions != null) 
-		{
-			returnedExtensions.addAll(result.getExtensions());
-		}
-		ItemsExtension itemsElem = (ItemsExtension) result
-				.getExtension(PubSubElementType.ITEMS);
-		return (List<Item>) itemsElem.getItems();
+		request.addExtensions(additionalExtensions);
+		return getItems(request, returnedExtensions);
 	}
 	
+    private <T extends Item> List<T> getItems(PubSub request) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        return getItems(request, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends Item> List<T> getItems(PubSub request, List<PacketExtension> returnedExtensions) 
+    		throws NoResponseException, XMPPErrorException, NotConnectedException {
+        PubSub result = con.createPacketCollectorAndSend(request).nextResultOrThrow();
+        ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
+        if (returnedExtensions != null) {
+			returnedExtensions.addAll(result.getExtensions());
+		}
+        return (List<T>) itemsElem.getItems();
+    }
+
 	/**
 	 * Publishes an event to the node.  This is an empty event
 	 * with no item.
