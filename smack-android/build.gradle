@@ -5,8 +5,6 @@ Usually you want to add additional dependencies to smack-tcp,
 smack-extensions and smack-experimental."""
 
 ext {
-	smackMinAndroidSdk = 8
-	androidProjects = [':smack-tcp',':smack-core', ':smack-resolver-minidns', ':smack-sasl-provided', ':smack-extensions', ':smack-experimental'].collect{ project(it) }
 }
 
 // Note that the test dependencies (junit, …) are inferred from the
@@ -20,32 +18,15 @@ dependencies {
 	}
 }
 
-def getAndroidRuntimeJar() {
-	def androidHome = new File("$System.env.ANDROID_HOME")
-	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
-	def androidJar = new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
-	if (androidJar.isFile()) {
-		return androidJar
-	} else {
-		throw new Exception("Can't find android.jar for $smackMinAndroidSdk API. Please install corresponding SDK platform package")
-	}
-}
-
-def getAndroidJavadocOffline() {
-	def androidHome = new File("$System.env.ANDROID_HOME")
-	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
-	return "$System.env.ANDROID_HOME" + "/docs/reference"
-}
-
 compileJava {
-	options.bootClasspath = getAndroidRuntimeJar()
+	options.bootClasspath = androidBootClasspath
 }
 
 // See http://stackoverflow.com/a/2823592/194894
 // TODO this doesn't seem to work right now. But on the other hand it
 // is not really required, just to avoid a javadoc compiler warning
 javadoc {
-	options.linksOffline "http://developer.android.com/reference", getAndroidJavadocOffline()
+	options.linksOffline "http://developer.android.com/reference", androidJavadocOffline
 }
 
 configure (androidProjects) {
@@ -53,7 +34,7 @@ configure (androidProjects) {
 		source = compileJava.source
 		classpath = compileJava.classpath
 		destinationDir = new File(buildDir, 'android')
-		options.bootClasspath = getAndroidRuntimeJar()
+		options.bootClasspath = androidBootClasspath
 	}
 }
 

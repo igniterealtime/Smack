@@ -34,6 +34,10 @@ allprojects {
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 		jxmppVersion = "0.3.0"
+		smackMinAndroidSdk = 8
+		androidProjects = [':smack-tcp',':smack-core', ':smack-resolver-minidns', ':smack-sasl-provided', ':smack-extensions', ':smack-experimental'].collect{ project(it) }
+		androidBootClasspath = getAndroidRuntimeJar()
+		androidJavadocOffline = getAndroidJavadocOffline()
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7
@@ -305,4 +309,21 @@ def getGitCommit() {
 	def gitCommit = proc.text.trim()
 	assert !gitCommit.isEmpty()
 	gitCommit
+}
+
+def getAndroidRuntimeJar() {
+	def androidHome = new File("$System.env.ANDROID_HOME")
+	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
+	def androidJar = new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
+	if (androidJar.isFile()) {
+		return androidJar
+	} else {
+		throw new Exception("Can't find android.jar for $smackMinAndroidSdk API. Please install corresponding SDK platform package")
+	}
+}
+
+def getAndroidJavadocOffline() {
+	def androidHome = new File("$System.env.ANDROID_HOME")
+	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
+	return "$System.env.ANDROID_HOME" + "/docs/reference"
 }
