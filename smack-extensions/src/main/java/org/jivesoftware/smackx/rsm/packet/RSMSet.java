@@ -47,6 +47,10 @@ public class RSMSet implements PacketExtension {
         this(null, null, -1, index, null, max, null, -1);
     }
 
+    public RSMSet(String item, PageDirection pageDirection) {
+        this(-1, item, pageDirection);
+    }
+
     public RSMSet(int max, String item, PageDirection pageDirection) {
         switch (pageDirection) {
         case before:
@@ -145,5 +149,13 @@ public class RSMSet implements PacketExtension {
 
     public static RSMSet from(Packet packet) {
         return (RSMSet) packet.getExtension(ELEMENT, NAMESPACE);
+    }
+
+    public static RSMSet newAfter(String after) {
+        return new RSMSet(after, PageDirection.after);
+    }
+
+    public static RSMSet newBefore(String before) {
+        return new RSMSet(before, PageDirection.before);
     }
 }
