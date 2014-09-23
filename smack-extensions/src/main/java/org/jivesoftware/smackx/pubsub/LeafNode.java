@@ -154,13 +154,6 @@ public class LeafNode extends Node
         return getItems(request);
 	}
 
-    @SuppressWarnings("unchecked")
-    private <T extends Item> List<T> getItems(PubSub request) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        PubSub result = con.createPacketCollectorAndSend(request).nextResultOrThrow();
-        ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
-        return (List<T>) itemsElem.getItems();
-    }
-
 	/**
 	 * Get items persisted on the node.
 	 * <p>
