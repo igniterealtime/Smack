@@ -44,7 +44,7 @@ public class DelayInformationManager {
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getXep203DelayInformation(Packet packet) {
-        return DelayInformation.getFrom(packet);
+        return DelayInformation.from(packet);
     }
 
     /**
