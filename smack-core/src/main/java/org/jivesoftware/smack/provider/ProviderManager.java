@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -109,6 +110,14 @@ public final class ProviderManager {
     private static final Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
     private static final Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
     private static final Map<String, StreamFeatureProvider> streamFeatureProviders = new ConcurrentHashMap<String, StreamFeatureProvider>();
+
+    static {
+        // Ensure that Smack is initialized by calling getVersion, so that user
+        // registered providers do not get overwritten by a following Smack
+        // initialization. This guarantees that Smack is initialized before a
+        // new provider is registered
+        SmackConfiguration.getVersion();
+    }
 
     public static void addLoader(ProviderLoader loader) {
         if (loader.getIQProviderInfo() != null) {
