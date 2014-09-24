@@ -592,7 +592,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // There are no more host addresses to try
                 // throw an exception and report all tried
                 // HostAddresses in the exception
-                throw new ConnectionException(failedAddresses);
+                throw ConnectionException.from(failedAddresses);
             }
         }
         socketClosed = false;

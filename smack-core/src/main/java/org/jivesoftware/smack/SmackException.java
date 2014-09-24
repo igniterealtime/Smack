@@ -169,8 +169,20 @@ public class SmackException extends Exception {
             failedAddresses = new ArrayList<HostAddress>(0);
         }
 
-        public ConnectionException(List<HostAddress> failedAddresses) {
+        private ConnectionException(String message, List<HostAddress> failedAddresses) {
+            super(message);
             this.failedAddresses = failedAddresses;
+        }
+
+        public static ConnectionException from(List<HostAddress> failedAddresses) {
+            StringBuilder sb = new StringBuilder("The following addresses failed: ");
+            for (HostAddress hostAddress : failedAddresses) {
+                sb.append(hostAddress.getErrorMessage());
+                sb.append(", ");
+            }
+            // Remove the last whitespace
+            sb.deleteCharAt(sb.length());
+            return new ConnectionException(sb.toString(), failedAddresses);
         }
 
         public List<HostAddress> getFailedAddresses() {
