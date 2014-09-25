@@ -283,7 +283,11 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Add a class to the disabled smack classes
+     * Add a class to the disabled smack classes.
+     * <p>
+     * {@code className} can also be a package name, in this case, the entire
+     * package is disabled (but can be manually enabled).
+     * </p>
      *
      * @param className
      */

@@ -166,27 +166,37 @@ public final class SmackInitialization {
         final String startName = parser.getName();
         int eventType;
         String name;
-        do {
+        outerloop: do {
             eventType = parser.next();
             name = parser.getName();
             if (eventType == XmlPullParser.START_TAG && "className".equals(name)) {
                 String classToLoad = parser.nextText();
-                if (SmackConfiguration.disabledSmackClasses.contains(classToLoad)) {
-                    LOGGER.info("Not loading disabled Smack class " + classToLoad);
-                }
-                else {
-                    try {
-                        loadSmackClass(classToLoad, optional, classLoader);
+                for (String disabledClassOrPackage : SmackConfiguration.disabledSmackClasses) {
+                    if (disabledClassOrPackage.equals(classToLoad)) {
+                        // Skip disabled class
+                        continue outerloop;
                     }
-                    catch (Exception e) {
-                        // Don't throw the exception if an exceptions collection is given, instead
-                        // record it there. This is used for unit testing purposes.
-                        if (exceptions != null) {
-                            exceptions.add(e);
-                        }
-                        else {
-                            throw e;
-                        }
+                    int lastDotIndex = disabledClassOrPackage.lastIndexOf('.');
+                    // Security check to avoid NPEs if someone entered 'foo.bar.'
+                    if (disabledClassOrPackage.length() > lastDotIndex
+                                    // disabledClassOrPackage is not an Class
+                                    && !Character.isUpperCase(disabledClassOrPackage.charAt(lastDotIndex + 1))
+                                    // classToLoad startsWith the package disabledClassOrPackage disables
+                                    && classToLoad.startsWith(disabledClassOrPackage)) {
+                        // Skip the class because the whole package was disabled
+                        continue outerloop;
+                    }
+                }
+
+                try {
+                    loadSmackClass(classToLoad, optional, classLoader);
+                } catch (Exception e) {
+                    // Don't throw the exception if an exceptions collection is given, instead
+                    // record it there. This is used for unit testing purposes.
+                    if (exceptions != null) {
+                        exceptions.add(e);
+                    } else {
+                        throw e;
                     }
                 }
             }
