@@ -33,7 +33,7 @@ public class RSMManager {
         return packetExtensions;
     }
 
-    Collection<PacketExtension> contiunePage(int max, Collection<PacketExtension> returnedExtensions) {
+    Collection<PacketExtension> continuePage(int max, Collection<PacketExtension> returnedExtensions) {
         return continuePage(max, returnedExtensions, null);
     }
 

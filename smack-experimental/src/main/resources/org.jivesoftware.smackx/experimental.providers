@@ -31,4 +31,11 @@
         <className>org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0352 Client State Indication -->
+    <streamFeatureProvider>
+        <elementName>csi</elementName>
+        <namespace>urn:xmpp:csi:0</namespace>
+        <className>org.jivesoftware.smackx.csi.provider.ClientStateIndicationFeatureProvider</className>
+    </streamFeatureProvider>
+
 </smackProviders>

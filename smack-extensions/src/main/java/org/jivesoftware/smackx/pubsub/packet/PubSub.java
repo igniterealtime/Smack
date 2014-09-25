@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.pubsub.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
 
 /**
@@ -85,9 +86,10 @@ public class PubSub extends IQ
 		this.ns = ns;
 	}
 
-	public PacketExtension getExtension(PubSubElementType elem)
+    @SuppressWarnings("unchecked")
+    public <PE extends PacketExtension> PE getExtension(PubSubElementType elem)
 	{
-		return getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
+		return (PE) getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
 	}
 
 	/**
@@ -116,12 +118,13 @@ public class PubSub extends IQ
      * </pre>
      * 
      */
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\">");
-        buf.append(getExtensionsXML());
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+    @Override
+    public XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(getElementName()).xmlnsAttribute(getNamespace()).rightAngleBracket();
+        xml.append(getExtensionsXML());
+        xml.closeElement(getElementName());
+        return xml;
     }
 
     public static PubSub createPubsubPacket(String to, Type type, PacketExtension extension, PubSubNamespace ns) {

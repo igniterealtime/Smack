@@ -28,8 +28,8 @@ import org.jivesoftware.smack.packet.PacketExtension;
  */
 public class NodeExtension implements PacketExtension
 {
-	private PubSubElementType element;
-	private String node;
+	private final PubSubElementType element;
+	private final String node;
 	
 	/**
 	 * Constructs a <tt>NodeExtension</tt> with an element name specified
