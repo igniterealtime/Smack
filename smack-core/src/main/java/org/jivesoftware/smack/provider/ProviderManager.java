@@ -17,13 +17,15 @@
 
 package org.jivesoftware.smack.provider;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -107,8 +109,10 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public final class ProviderManager {
 
-    private static final Map<String, Object> extensionProviders = new ConcurrentHashMap<String, Object>();
-    private static final Map<String, Object> iqProviders = new ConcurrentHashMap<String, Object>();
+    private static final Map<String, PacketExtensionProvider> extensionProviders = new ConcurrentHashMap<String, PacketExtensionProvider>();
+    private static final Map<String, IQProvider> iqProviders = new ConcurrentHashMap<String, IQProvider>();
+    private static final Map<String, Class<?>> extensionIntrospectionProviders = new ConcurrentHashMap<String, Class<?>>();
+    private static final Map<String, Class<?>> iqIntrospectionProviders = new ConcurrentHashMap<String, Class<?>>();
     private static final Map<String, StreamFeatureProvider> streamFeatureProviders = new ConcurrentHashMap<String, StreamFeatureProvider>();
 
     static {
@@ -122,13 +126,13 @@ public final class ProviderManager {
     public static void addLoader(ProviderLoader loader) {
         if (loader.getIQProviderInfo() != null) {
             for (IQProviderInfo info : loader.getIQProviderInfo()) {
-                iqProviders.put(getKey(info.getElementName(), info.getNamespace()), info.getProvider());
+                addIQProvider(info.getElementName(), info.getNamespace(), info.getProvider());
             }
         }
         
         if (loader.getExtensionProviderInfo() != null) {
             for (ExtensionProviderInfo info : loader.getExtensionProviderInfo()) {
-                extensionProviders.put(getKey(info.getElementName(), info.getNamespace()), info.getProvider());
+                addExtensionProvider(info.getElementName(), info.getNamespace(), info.getProvider());
             }
         }
     }
@@ -153,9 +157,14 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @return the IQ provider.
      */
-    public static Object getIQProvider(String elementName, String namespace) {
+    public static IQProvider getIQProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return iqProviders.get(key);
+    }
+
+    public static Class<?> getIQIntrospectionProvider(String elementName, String namespace) {
+        String key = getKey(elementName, namespace);
+        return iqIntrospectionProviders.get(key);
     }
 
     /**
@@ -165,8 +174,11 @@ public final class ProviderManager {
      *
      * @return all IQProvider instances.
      */
-    public static Collection<Object> getIQProviders() {
-        return Collections.unmodifiableCollection(iqProviders.values());
+    public static List<Object> getIQProviders() {
+        List<Object> providers = new ArrayList<Object>(iqProviders.size() + iqIntrospectionProviders.size());
+        providers.addAll(iqProviders.values());
+        providers.addAll(iqIntrospectionProviders.values());
+        return Collections.unmodifiableList(providers);
     }
 
     /**
@@ -181,14 +193,16 @@ public final class ProviderManager {
     public static void addIQProvider(String elementName, String namespace,
             Object provider)
     {
-        if (!(provider instanceof IQProvider || (provider instanceof Class &&
-                IQ.class.isAssignableFrom((Class<?>)provider))))
-        {
+        // First remove existing providers
+        String key = removeIQProvider(elementName, namespace);
+        if (provider instanceof IQProvider) {
+            iqProviders.put(key, (IQProvider) provider);
+        } else if (provider instanceof Class && IQ.class.isAssignableFrom((Class<?>) provider)) {
+            iqIntrospectionProviders.put(key, (Class<?>) provider);
+        } else {
             throw new IllegalArgumentException("Provider must be an IQProvider " +
-                    "or a Class instance sublcassing IQ.");
+                            "or a Class instance sublcassing IQ.");
         }
-        String key = getKey(elementName, namespace);
-        iqProviders.put(key, provider);
     }
 
     /**
@@ -198,10 +212,13 @@ public final class ProviderManager {
      *
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
+     * @return the key of the removed IQ Provider
      */
-    public static void removeIQProvider(String elementName, String namespace) {
+    public static String removeIQProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         iqProviders.remove(key);
+        iqIntrospectionProviders.remove(key);
+        return key;
     }
 
     /**
@@ -223,9 +240,14 @@ public final class ProviderManager {
      * @param namespace namespace associated with extension provider.
      * @return the extenion provider.
      */
-    public static Object getExtensionProvider(String elementName, String namespace) {
+    public static PacketExtensionProvider getExtensionProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return extensionProviders.get(key);
+    }
+
+    public static Class<?> getExtensionIntrospectionProvider(String elementName, String namespace) {
+        String key = getKey(elementName, namespace);
+        return extensionIntrospectionProviders.get(key);
     }
 
     /**
@@ -240,12 +262,16 @@ public final class ProviderManager {
     public static void addExtensionProvider(String elementName, String namespace,
             Object provider)
     {
-        if (!(provider instanceof PacketExtensionProvider || provider instanceof Class)) {
+        // First remove existing providers
+        String key = removeExtensionProvider(elementName, namespace);
+        if (provider instanceof PacketExtensionProvider) {
+            extensionProviders.put(key, (PacketExtensionProvider) provider);
+        } else if (provider instanceof Class && PacketExtension.class.isAssignableFrom((Class<?>) provider)) {
+            extensionIntrospectionProviders.put(key, (Class<?>) provider);
+        } else {
             throw new IllegalArgumentException("Provider must be a PacketExtensionProvider " +
-                    "or a Class instance.");
+                            "or a Class instance.");
         }
-        String key = getKey(elementName, namespace);
-        extensionProviders.put(key, provider);
     }
 
     /**
@@ -255,10 +281,13 @@ public final class ProviderManager {
      *
      * @param elementName the XML element name.
      * @param namespace the XML namespace.
+     * @return the key of the removed packet extension provider
      */
-    public static void removeExtensionProvider(String elementName, String namespace) {
+    public static String removeExtensionProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         extensionProviders.remove(key);
+        extensionIntrospectionProviders.remove(key);
+        return key;
     }
 
     /**
@@ -268,8 +297,11 @@ public final class ProviderManager {
      *
      * @return all PacketExtensionProvider instances.
      */
-    public static Collection<Object> getExtensionProviders() {
-        return Collections.unmodifiableCollection(extensionProviders.values());
+    public static List<Object> getExtensionProviders() {
+        List<Object> providers = new ArrayList<Object>(extensionProviders.size() + extensionIntrospectionProviders.size());
+        providers.addAll(extensionProviders.values());
+        providers.addAll(extensionIntrospectionProviders.values());
+        return Collections.unmodifiableList(providers);
     }
 
     public static StreamFeatureProvider getStreamFeatureProvider(String elementName, String namespace) {

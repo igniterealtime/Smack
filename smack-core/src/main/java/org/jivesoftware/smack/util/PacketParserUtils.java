@@ -543,22 +543,24 @@ public class PacketParserUtils {
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 else {
-                    Object provider = ProviderManager.getIQProvider(elementName, namespace);
+                    IQProvider provider = ProviderManager.getIQProvider(elementName, namespace);
                     if (provider != null) {
-                        if (provider instanceof IQProvider) {
-                            iqPacket = ((IQProvider)provider).parseIQ(parser);
+                            iqPacket =provider.parseIQ(parser);
+                    } else {
+                        Class<?> introspectionProvider = ProviderManager.getIQIntrospectionProvider(
+                                        elementName, namespace);
+                        if (introspectionProvider != null) {
+                        iqPacket = (IQ) PacketParserUtils.parseWithIntrospection(
+                                        elementName, introspectionProvider,
+                                        parser);
                         }
-                        else if (provider instanceof Class) {
-                            iqPacket = (IQ)PacketParserUtils.parseWithIntrospection(elementName,
-                                    (Class<?>)provider, parser);
+                        // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
+                        // have to be answered with an IQ error response. See the code a few lines below
+                        else if (IQ.Type.result == type){
+                            // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
+                            // so that the content of the IQ can be examined later on
+                            iqPacket = new UnparsedResultIQ(parseContent(parser));
                         }
-                    }
-                    // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
-                    // have to be answered with an IQ error response. See the code a few lines below
-                    else if (IQ.Type.result == type){
-                        // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
-                        // so that the content of the IQ can be examined later on
-                        iqPacket = new UnparsedResultIQ(parseContent(parser));
                     }
                 }
             }
@@ -885,15 +887,13 @@ public class PacketParserUtils {
     public static PacketExtension parsePacketExtension(String elementName, String namespace,
                     XmlPullParser parser) throws Exception {
         // See if a provider is registered to handle the extension.
-        Object provider = ProviderManager.getExtensionProvider(elementName, namespace);
+        PacketExtensionProvider provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
-            if (provider instanceof PacketExtensionProvider) {
-                return ((PacketExtensionProvider)provider).parseExtension(parser);
-            }
-            else if (provider instanceof Class) {
-                return (PacketExtension)parseWithIntrospection(
-                        elementName, (Class<?>)provider, parser);
-            }
+                return provider.parseExtension(parser);
+        }
+        Class<?> introspectionProvider = ProviderManager.getExtensionIntrospectionProvider(elementName, namespace);
+        if (introspectionProvider != null) {
+            return (PacketExtension)parseWithIntrospection(elementName, introspectionProvider, parser);
         }
         // No providers registered, so use a default extension.
         DefaultPacketExtension extension = new DefaultPacketExtension(elementName, namespace);
