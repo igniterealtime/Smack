@@ -360,9 +360,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             throw new AlreadyLoggedInException();
         }
 
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
-
         // Do partial version of nameprep on the username.
         if (username != null) {
             username = username.toLowerCase(Locale.US).trim();
@@ -634,9 +631,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // get an opening stream packet back from server
             packetReader.init();
 
-            // Make note of the fact that we're now connected.
-            connected = true;
-
             if (isFirstInitialization) {
                 // Notify listeners that a new connection has been established
                 for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
@@ -856,6 +850,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
+
+        // Wait with SASL auth until the SASL mechanisms have been received
+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
+
+        // Make note of the fact that we're now connected.
+        connected = true;
         callConnectionConnectedListener();
 
         // Automatically makes the login if the user was previously connected successfully

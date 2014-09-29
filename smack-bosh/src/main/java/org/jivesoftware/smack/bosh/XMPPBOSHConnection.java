@@ -200,6 +200,10 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     + getHost() + ":" + getPort() + ".";
             throw new SmackException(errorMessage);
         }
+
+        // Wait with SASL auth until the SASL mechanisms have been received
+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
+
         callConnectionConnectedListener();
     }
 
@@ -243,9 +247,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         if (authenticated) {
             throw new AlreadyLoggedInException();
         }
-
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
         // Do partial version of nameprep on the username.
         username = username.toLowerCase(Locale.US).trim();
