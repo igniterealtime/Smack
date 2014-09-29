@@ -171,7 +171,7 @@ public class PingManager extends Manager {
      * by the entity.
      * 
      * @param jid The id of the entity the ping is being sent to
-     * @param pingTimeout The time to wait for a reply
+     * @param pingTimeout The time to wait for a reply in milliseconds
      * @return true if a reply was received from the entity, false otherwise.
      * @throws NoResponseException if there was no response from the jid.
      * @throws NotConnectedException 
@@ -179,7 +179,7 @@ public class PingManager extends Manager {
     public boolean ping(String jid, long pingTimeout) throws NotConnectedException, NoResponseException {
         Ping ping = new Ping(jid);
         try {
-            connection().createPacketCollectorAndSend(ping).nextResultOrThrow();
+            connection().createPacketCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }
         catch (XMPPException exc) {
             return jid.equals(connection().getServiceName());
