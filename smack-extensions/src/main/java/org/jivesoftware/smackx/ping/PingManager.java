@@ -177,9 +177,15 @@ public class PingManager extends Manager {
      * @throws NotConnectedException 
      */
     public boolean ping(String jid, long pingTimeout) throws NotConnectedException, NoResponseException {
+        final XMPPConnection connection = connection();
+        // Packet collector for IQs needs an connection that was at least authenticated once,
+        // otherwise the client JID will be null causing an NPE
+        if (!connection.isAuthenticated()) {
+            throw new NotConnectedException();
+        }
         Ping ping = new Ping(jid);
         try {
-            connection().createPacketCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
+            connection.createPacketCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }
         catch (XMPPException exc) {
             return jid.equals(connection().getServiceName());

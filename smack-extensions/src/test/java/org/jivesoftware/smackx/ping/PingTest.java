@@ -21,13 +21,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -36,13 +39,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PingTest extends InitExtensions {
-    private DummyConnection dummyCon;
-    private ThreadedDummyConnection threadedCon;
-    
+
     @Before
-    public void setup() {
-        dummyCon = new DummyConnection();
-        threadedCon = new ThreadedDummyConnection();
+    public void initSmackTestSuite() {
+        SmackTestSuite.init();
     }
 
     @Test
@@ -72,8 +72,8 @@ public class PingTest extends InitExtensions {
     }
 
     @Test
-    public void checkSendingPing() throws InterruptedException {
-        dummyCon = new DummyConnection();
+    public void checkSendingPing() throws InterruptedException, SmackException, IOException, XMPPException {
+        DummyConnection dummyCon = getAuthentiactedDummyConnection();
         PingManager pinger = PingManager.getInstanceFor(dummyCon);
         try {
             pinger.ping("test@myserver.com");
@@ -88,7 +88,7 @@ public class PingTest extends InitExtensions {
 
     @Test
     public void checkSuccessfulPing() throws Exception {
-        threadedCon = new ThreadedDummyConnection();
+        ThreadedDummyConnection threadedCon = getAuthentiactedDummyConnection();
         
         PingManager pinger = PingManager.getInstanceFor(threadedCon);
 
@@ -101,10 +101,12 @@ public class PingTest extends InitExtensions {
     /**
      * DummyConnection will not reply so it will timeout.
      * @throws SmackException 
+     * @throws XMPPException 
+     * @throws IOException 
      */
     @Test
-    public void checkFailedPingOnTimeout() throws SmackException {
-        dummyCon = new DummyConnection();
+    public void checkFailedPingOnTimeout() throws SmackException, IOException, XMPPException {
+        DummyConnection dummyCon = getAuthenticatedDummyConnectionWithoutIqReplies();
         PingManager pinger = PingManager.getInstanceFor(dummyCon);
 
         try {
@@ -122,7 +124,7 @@ public class PingTest extends InitExtensions {
      */
     @Test
     public void checkFailedPingToEntityError() throws Exception {
-        threadedCon = new ThreadedDummyConnection();
+        ThreadedDummyConnection threadedCon = getAuthentiactedDummyConnection();
         //@formatter:off
         String reply = 
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com'>" +
@@ -144,7 +146,7 @@ public class PingTest extends InitExtensions {
     
     @Test
     public void checkPingToServerSuccess() throws Exception {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean pingSuccess = pinger.pingMyServer();
@@ -158,7 +160,7 @@ public class PingTest extends InitExtensions {
      */
     @Test
     public void checkPingToServerError() throws Exception {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         //@formatter:off
         String reply = 
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com' from='" + con.getServiceName() + "'>" +
@@ -179,8 +181,8 @@ public class PingTest extends InitExtensions {
     }
     
     @Test
-    public void checkPingToServerTimeout() throws NotConnectedException {
-        DummyConnection con = new DummyConnection();
+    public void checkPingToServerTimeout() throws SmackException, IOException, XMPPException {
+        DummyConnection con = getAuthenticatedDummyConnectionWithoutIqReplies();
         PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean res = pinger.pingMyServer();
@@ -189,7 +191,7 @@ public class PingTest extends InitExtensions {
 
     @Test
     public void checkSuccessfulDiscoRequest() throws Exception {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         DiscoverInfo info = new DiscoverInfo();
         info.addFeature(Ping.NAMESPACE);
         
@@ -211,7 +213,7 @@ public class PingTest extends InitExtensions {
 
     @Test
     public void checkUnuccessfulDiscoRequest() throws Exception {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+        ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         DiscoverInfo info = new DiscoverInfo();
         info.addFeature(Ping.NAMESPACE);
         
@@ -229,5 +231,28 @@ public class PingTest extends InitExtensions {
         boolean pingSupported = pinger.isPingSupported("test@myserver.com");
         
         assertFalse(pingSupported);
+    }
+
+    private static ThreadedDummyConnection getAuthentiactedDummyConnection() throws SmackException, IOException, XMPPException {
+        ThreadedDummyConnection connection = new ThreadedDummyConnection();
+        connection.connect();
+        connection.login("foo", "bar");
+        return connection;
+    }
+
+    /**
+     * The returned connection won't send replies to IQs
+     * 
+     * @return
+     * @throws XMPPException 
+     * @throws IOException 
+     * @throws SmackException 
+     */
+    private static DummyConnection getAuthenticatedDummyConnectionWithoutIqReplies() throws SmackException, IOException, XMPPException {
+        DummyConnection con = new DummyConnection();
+        con.setPacketReplyTimeout(500);
+        con.connect();
+        con.login("foo", "bar");
+        return con;
     }
 }
