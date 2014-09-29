@@ -181,7 +181,7 @@ public class SmackException extends Exception {
                 sb.append(", ");
             }
             // Remove the last whitespace
-            sb.deleteCharAt(sb.length());
+            sb.deleteCharAt(sb.length() - 1);
             return new ConnectionException(sb.toString(), failedAddresses);
         }
 
