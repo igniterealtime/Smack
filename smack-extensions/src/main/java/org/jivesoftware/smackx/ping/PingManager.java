@@ -245,9 +245,25 @@ public class PingManager extends Manager {
      * @throws NotConnectedException
      */
     public boolean pingMyServer(boolean notifyListeners) throws NotConnectedException {
+        return pingMyServer(notifyListeners, connection().getPacketReplyTimeout());
+    }
+
+    /**
+     * Pings the server. This method will return true if the server is reachable.  It
+     * is the equivalent of calling <code>ping</code> with the XMPP domain.
+     * <p>
+     * Unlike the {@link #ping(String)} case, this method will return true even if
+     * {@link #isPingSupported(String)} is false.
+     *
+     * @param notifyListeners Notify the PingFailedListener in case of error if true
+     * @param pingTimeout The time to wait for a reply in milliseconds
+     * @return true if the user's server could be pinged.
+     * @throws NotConnectedException
+     */
+    public boolean pingMyServer(boolean notifyListeners, long pingTimeout) throws NotConnectedException {
         boolean res;
         try {
-            res = ping(connection().getServiceName());
+            res = ping(connection().getServiceName(), pingTimeout);
         }
         catch (NoResponseException e) {
             res = false;
