@@ -415,7 +415,7 @@ public class MultiUserChat {
         Presence presence = enter(nickname, null, null, connection.getPacketReplyTimeout());
 
         // Look for confirmation of room creation from the server
-        MUCUser mucUser = MUCUser.getFrom(presence);
+        MUCUser mucUser = MUCUser.from(presence);
         if (mucUser != null && mucUser.getStatus().contains(Status.ROOM_CREATED_201)) {
             // Room was created and the user has joined the room
             return true;
@@ -1938,11 +1938,11 @@ public class MultiUserChat {
                     Presence oldPresence = occupantsMap.put(from, presence);
                     if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
-                        MUCUser mucExtension = MUCUser.getFrom(packet);
+                        MUCUser mucExtension = MUCUser.from(packet);
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
                         MUCRole oldRole = mucExtension.getItem().getRole();
                         // Get the new occupant's affiliation & role
-                        mucExtension = MUCUser.getFrom(packet);
+                        mucExtension = MUCUser.from(packet);
                         MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
                         MUCRole newRole = mucExtension.getItem().getRole();
                         // Fire role modification events
@@ -1965,7 +1965,7 @@ public class MultiUserChat {
                 }
                 else if (presence.getType() == Presence.Type.unavailable) {
                     occupantsMap.remove(from);
-                    MUCUser mucUser = MUCUser.getFrom(packet);
+                    MUCUser mucUser = MUCUser.from(packet);
                     if (mucUser != null && mucUser.getStatus() != null) {
                         // Fire events according to the received presence code
                         checkPresenceCode(
@@ -1990,7 +1990,7 @@ public class MultiUserChat {
         PacketListener declinesListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 // Get the MUC User extension
-                MUCUser mucUser = MUCUser.getFrom(packet);
+                MUCUser mucUser = MUCUser.from(packet);
                 // Check if the MUCUser informs that the invitee has declined the invitation
                 if (mucUser.getDecline() != null &&
                         ((Message) packet).getType() != Message.Type.error) {
@@ -2473,7 +2473,7 @@ public class MultiUserChat {
             invitationPacketListener = new PacketListener() {
                 public void processPacket(Packet packet) {
                     // Get the MUCUser extension
-                    MUCUser mucUser = MUCUser.getFrom(packet);
+                    MUCUser mucUser = MUCUser.from(packet);
                     // Check if the MUCUser extension includes an invitation
                     if (mucUser.getInvite() != null &&
                             ((Message) packet).getType() != Message.Type.error) {
