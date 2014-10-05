@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -2350,9 +2351,7 @@ public class MultiUserChat {
 
         private static final PacketFilter invitationFilter = new PacketExtensionFilter(new MUCUser());
 
-        // We don't use a synchronized List here because it would break the semantic of (add|remove)InvitationListener
-        private final List<InvitationListener> invitationsListeners =
-                new ArrayList<InvitationListener>();
+        private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
         private final PacketListener invitationPacketListener;
 
         /**
@@ -2403,11 +2402,7 @@ public class MultiUserChat {
          * @param listener an invitation listener.
          */
         public void addInvitationListener(InvitationListener listener) {
-            synchronized (invitationsListeners) {
-                if (!invitationsListeners.contains(listener)) {
-                    invitationsListeners.add(listener);
-                }
-            }
+            invitationsListeners.add(listener);
         }
 
         /**
@@ -2417,11 +2412,7 @@ public class MultiUserChat {
          * @param listener an invitation listener.
          */
         public void removeInvitationListener(InvitationListener listener) {
-            synchronized (invitationsListeners) {
-                if (invitationsListeners.contains(listener)) {
-                    invitationsListeners.remove(listener);
-                }
-            }
+            invitationsListeners.remove(listener);
         }
 
         /**
@@ -2429,10 +2420,8 @@ public class MultiUserChat {
          */
         private void fireInvitationListeners(String room, String inviter, String reason, String password,
                                              Message message) {
-            synchronized (invitationsListeners) {
-                for (InvitationListener listener : invitationsListeners) {
-                    listener.invitationReceived(connection(), room, inviter, reason, password, message);
-                }
+            for (InvitationListener listener : invitationsListeners) {
+                listener.invitationReceived(connection(), room, inviter, reason, password, message);
             }
         }
     }
