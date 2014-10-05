@@ -16,11 +16,10 @@
  */
 package org.jivesoftware.smackx.receipts;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -55,8 +54,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
     }
 
     private boolean auto_receipts_enabled = false;
-    private Set<ReceiptReceivedListener> receiptReceivedListeners = Collections
-            .synchronizedSet(new HashSet<ReceiptReceivedListener>());
+    private final Set<ReceiptReceivedListener> receiptReceivedListeners = new CopyOnWriteArraySet<ReceiptReceivedListener>();
 
     private DeliveryReceiptManager(XMPPConnection connection) {
         super(connection);
