@@ -175,13 +175,14 @@ public class SmackException extends Exception {
         }
 
         public static ConnectionException from(List<HostAddress> failedAddresses) {
+            final String DELIMITER = ", ";
             StringBuilder sb = new StringBuilder("The following addresses failed: ");
             for (HostAddress hostAddress : failedAddresses) {
                 sb.append(hostAddress.getErrorMessage());
-                sb.append(", ");
+                sb.append(DELIMITER);
             }
-            // Remove the last whitespace
-            sb.deleteCharAt(sb.length() - 1);
+            // Remove the last delimiter
+            sb.setLength(sb.length() - DELIMITER.length());
             return new ConnectionException(sb.toString(), failedAddresses);
         }
 
