@@ -54,7 +54,7 @@ public class SmackException extends Exception {
     }
 
     /**
-     * Exception thrown always when there was no response to an IQ request within the packet reply
+     * Exception thrown always when there was no response to an (IQ) request within the packet reply
      * timeout of the used connection instance.
      */
     public static class NoResponseException extends SmackException {
@@ -64,6 +64,7 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = -6523363748984543636L;
 
         public NoResponseException() {
+            super("No response received within packet reply timeout");
         }
     }
 
@@ -75,6 +76,7 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 3216216839100019278L;
 
         public NotLoggedInException() {
+            super("Client is not logged in");
         }
     }
 
@@ -86,6 +88,7 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 5011416918049935231L;
 
         public AlreadyLoggedInException() {
+            super("Client is already logged in");
         }
     }
 
@@ -97,6 +100,7 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 5011416918049135231L;
 
         public AlreadyConnectedException() {
+            super("Client is already connected");
         }
     }
 
@@ -108,6 +112,7 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 9197980400776001173L;
 
         public NotConnectedException() {
+            super("Client is not, or no longer, connected");
         }
     }
 
@@ -122,18 +127,37 @@ public class SmackException extends Exception {
         }
     }
 
-    public static class SecurityRequiredException extends SmackException {
+    public static abstract class SecurityRequiredException extends SmackException {
 
         /**
          * 
          */
         private static final long serialVersionUID = 384291845029773545L;
 
-        public SecurityRequiredException() {
-        }
-
         public SecurityRequiredException(String message) {
             super(message);
+        }
+    }
+
+    public static class SecurityRequiredByClientException extends SecurityRequiredException {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 2395325821201543159L;
+
+        public SecurityRequiredByClientException() {
+            super("SSL/TLS required by client but not supported by server");
+        }
+    }
+
+    public static class SecurityRequiredByServerException extends SecurityRequiredException {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 8268148813117631819L;
+
+        public SecurityRequiredByServerException() {
+            super("SSL/TLS required by server but disabled in client");
         }
     }
 
@@ -238,5 +262,8 @@ public class SmackException extends Exception {
          */
         private static final long serialVersionUID = 2346934138253437571L;
 
+        public ResourceBindingNotOfferedException() {
+            super("Resource binding was not offered by server");
+        }
     }
 }

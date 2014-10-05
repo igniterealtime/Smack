@@ -29,6 +29,8 @@ import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
 import org.jivesoftware.smack.SynchronizationPoint;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
@@ -922,8 +924,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
-                notifyConnectionError(new SecurityRequiredException(
-                                "TLS required by server but not allowed by connection configuration"));
+                notifyConnectionError(new SecurityRequiredByServerException());
                 return;
             }
 
@@ -938,7 +939,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // and are secure, however (features get parsed a second time after TLS is established).
         if (!isSecureConnection() && startTlsFeature == null
                         && getConfiguration().getSecurityMode() == SecurityMode.required) {
-            throw new SecurityRequiredException();
+            throw new SecurityRequiredByClientException();
         }
 
         if (getSASLAuthentication().authenticationSuccessful()) {
