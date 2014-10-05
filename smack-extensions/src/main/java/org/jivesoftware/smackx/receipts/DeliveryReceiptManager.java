@@ -101,7 +101,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
     // handle incoming receipts and receipt requests
     @Override
     public void processPacket(Packet packet) throws NotConnectedException {
-        DeliveryReceipt dr = DeliveryReceipt.getFrom(packet);
+        DeliveryReceipt dr = DeliveryReceipt.from(packet);
         if (dr != null) {
             // notify listeners of incoming receipt
             for (ReceiptReceivedListener l : receiptReceivedListeners) {
@@ -111,7 +111,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
 
         // if enabled, automatically send a receipt
         if (auto_receipts_enabled) {
-            DeliveryReceiptRequest drr = DeliveryReceiptRequest.getFrom(packet);
+            DeliveryReceiptRequest drr = DeliveryReceiptRequest.from(packet);
             if (drr != null) {
                 XMPPConnection connection = connection();
                 Message ack = new Message(packet.getFrom(), Message.Type.normal);
@@ -179,7 +179,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
      * @return true if a delivery receipt was requested
      */
     public static boolean hasDeliveryReceiptRequest(Packet p) {
-        return (DeliveryReceiptRequest.getFrom(p) != null);
+        return (DeliveryReceiptRequest.from(p) != null);
     }
 
     /**
