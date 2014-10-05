@@ -312,8 +312,7 @@ def getGitCommit() {
 }
 
 def getAndroidRuntimeJar() {
-	def androidHome = new File("$System.env.ANDROID_HOME")
-	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
+	def androidHome = getAndroidHome()
 	def androidJar = new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
 	if (androidJar.isFile()) {
 		return androidJar
@@ -323,7 +322,16 @@ def getAndroidRuntimeJar() {
 }
 
 def getAndroidJavadocOffline() {
-	def androidHome = new File("$System.env.ANDROID_HOME")
-	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
-	return "$System.env.ANDROID_HOME" + "/docs/reference"
+	def androidHome = getAndroidHome()
+	return androidHome.toString() + "/docs/reference"
+}
+
+def getAndroidHome() {
+	def androidHomeEnv = System.getenv("ANDROID_HOME")
+	if (androidHomeEnv == null) {
+		throw new Exception("ANDROID_HOME environment variable is not set")
+	}
+	def androidHome = new File(androidHomeEnv)
+	if (!androidHome.isDirectory()) throw new Exception("Environment variable ANDROID_HOME is not pointing to a directory")
+	return androidHome
 }
