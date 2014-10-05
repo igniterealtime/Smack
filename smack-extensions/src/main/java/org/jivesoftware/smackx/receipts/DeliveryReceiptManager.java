@@ -105,7 +105,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
         if (dr != null) {
             // notify listeners of incoming receipt
             for (ReceiptReceivedListener l : receiptReceivedListeners) {
-                l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId());
+                l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId(), packet);
             }
         }
 

@@ -90,7 +90,7 @@ public class DeliveryReceiptTest extends InitExtensions {
     private static class TestReceiptReceivedListener implements ReceiptReceivedListener {
         public String receiptId = null;
         @Override
-        public void onReceiptReceived(String fromJid, String toJid, String receiptId) {
+        public void onReceiptReceived(String fromJid, String toJid, String receiptId, Packet receipt) {
             assertEquals("julia@capulet.com", fromJid);
             assertEquals("romeo@montague.com", toJid);
             assertEquals("original-test-id", receiptId);
