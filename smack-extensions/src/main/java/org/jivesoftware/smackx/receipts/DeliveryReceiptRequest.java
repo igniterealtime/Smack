@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.receipts;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
@@ -66,6 +67,20 @@ public class DeliveryReceiptRequest implements PacketExtension
      */
     public static DeliveryReceiptRequest from(Packet packet) {
         return packet.getExtension(ELEMENT, DeliveryReceipt.NAMESPACE);
+    }
+
+    /**
+     * Add a delivery receipt request to an outgoing packet.
+     *
+     * Only message packets may contain receipt requests as of XEP-0184,
+     * therefore only allow Message as the parameter type.
+     *
+     * @param message Message object to add a request to
+     * @return the Message ID which will be used as receipt ID
+     */
+    public static String addTo(Message message) {
+        message.addExtension(new DeliveryReceiptRequest());
+        return message.getPacketID();
     }
 
     /**

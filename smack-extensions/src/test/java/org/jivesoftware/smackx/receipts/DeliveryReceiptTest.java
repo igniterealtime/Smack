@@ -63,7 +63,7 @@ public class DeliveryReceiptTest extends InitExtensions {
 
         Message m = new Message("romeo@montague.com", Message.Type.normal);
         assertFalse(DeliveryReceiptManager.hasDeliveryReceiptRequest(m));
-        DeliveryReceiptManager.addDeliveryReceiptRequest(m);
+        DeliveryReceiptRequest.addTo(m);
         assertTrue(DeliveryReceiptManager.hasDeliveryReceiptRequest(m));
     }
 
@@ -112,7 +112,7 @@ public class DeliveryReceiptTest extends InitExtensions {
         Message m = new Message("julia@capulet.com", Message.Type.normal);
         m.setFrom("romeo@montague.com");
         m.setPacketID("test-receipt-request");
-        DeliveryReceiptManager.addDeliveryReceiptRequest(m);
+        DeliveryReceiptRequest.addTo(m);
 
         // the DRM will send a reply-packet
         assertEquals(0, c.getNumberOfSentPackets());

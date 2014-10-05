@@ -188,9 +188,10 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
      *
      * @param m Message object to add a request to
      * @return the Message ID which will be used as receipt ID
+     * @deprecated use {@link DeliveryReceiptRequest#addTo(Message)}
      */
+    @Deprecated
     public static String addDeliveryReceiptRequest(Message m) {
-        m.addExtension(new DeliveryReceiptRequest());
-        return m.getPacketID();
+        return DeliveryReceiptRequest.addTo(m);
     }
 }
