@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -131,7 +130,7 @@ public class MultiUserChat {
                     new NodeInformationProvider() {
                         public List<DiscoverItems.Item> getNodeItems() {
                             XMPPConnection connection = weakRefConnection.get();
-                            if (connection == null) return new LinkedList<DiscoverItems.Item>();
+                            if (connection == null) return Collections.emptyList();
                             List<DiscoverItems.Item> answer = new ArrayList<DiscoverItems.Item>();
                             for (String room : MultiUserChat.getJoinedRooms(connection)) {
                                 answer.add(new DiscoverItems.Item(room));
