@@ -245,8 +245,7 @@ public class PacketParserUtils {
                     message.setError(parseError(parser));
                     break;
                  default:
-                    message.addExtension(
-                    PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
+                    PacketParserUtils.addPacketExtension(message, parser, elementName, namespace);
                     break;
                 }
                 break;
@@ -504,15 +503,12 @@ public class PacketParserUtils {
                 // Otherwise, it must be a packet extension.
                     // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
                     // failing completely here. See SMACK-390 for more information.
-                	try {
-                        presence.addExtension(PacketParserUtils.parsePacketExtension(elementName, namespace, parser));
-                	}
-                	catch (Exception e) {
-                        LOGGER.log(Level.WARNING,
-                                        "Failed to parse extension packet in Presence packet.",
-                                        e);
-                	}
-                	break;
+                    try {
+                        PacketParserUtils.addPacketExtension(presence, parser, elementName, namespace);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.WARNING, "Failed to parse extension packet in Presence packet.", e);
+                    }
+                    break;
                 }
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
@@ -871,8 +867,8 @@ public class PacketParserUtils {
                     if (namespace.equals(XMPPError.NAMESPACE)) {
                     	condition = elementName;
                     }
-                    else {
-                    	extensions.add(parsePacketExtension(elementName, namespace, parser));
+                     else {
+                        PacketParserUtils.addPacketExtension(extensions, parser, elementName, namespace);
                     }
                 }
             }
@@ -906,6 +902,7 @@ public class PacketParserUtils {
     public static PacketExtension parsePacketExtension(String elementName, String namespace,
                     XmlPullParser parser) throws XmlPullParserException,
                     IOException, SmackException {
+        ParserUtils.assertAtStartTag(parser);
         // See if a provider is registered to handle the extension.
         PacketExtensionProvider<PacketExtension> provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
@@ -923,12 +920,14 @@ public class PacketParserUtils {
                 throw new SmackException(e);
             }
         }
+
+        final int initialDepth = parser.getDepth();
         // No providers registered, so use a default extension.
         DefaultPacketExtension extension = new DefaultPacketExtension(elementName, namespace);
-        boolean done = false;
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
                 String name = parser.getName();
                 // If an empty element, set the value with the empty string.
                 if (parser.isEmptyElementTag()) {
@@ -942,10 +941,10 @@ public class PacketParserUtils {
                         extension.setValue(name, value);
                     }
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(elementName)) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
             }
         }
@@ -1020,6 +1019,29 @@ public class PacketParserUtils {
             }
         }
         return object;
+    }
+
+    public static void addPacketExtension(Packet packet, XmlPullParser parser) throws XmlPullParserException,
+                    IOException, SmackException {
+        ParserUtils.assertAtStartTag(parser);
+        addPacketExtension(packet, parser, parser.getName(), parser.getNamespace());
+    }
+
+    public static void addPacketExtension(Packet packet, XmlPullParser parser, String elementName, String namespace)
+                    throws XmlPullParserException, IOException, SmackException {
+        PacketExtension packetExtension = parsePacketExtension(elementName, namespace, parser);
+        packet.addExtension(packetExtension);
+    }
+
+    public static void addPacketExtension(Collection<PacketExtension> collection, XmlPullParser parser)
+                    throws XmlPullParserException, IOException, SmackException {
+        addPacketExtension(collection, parser, parser.getName(), parser.getNamespace());
+    }
+
+    public static void addPacketExtension(Collection<PacketExtension> collection, XmlPullParser parser,
+                    String elementName, String namespace) throws XmlPullParserException, IOException, SmackException {
+        PacketExtension packetExtension = parsePacketExtension(elementName, namespace, parser);
+        collection.add(packetExtension);
     }
 
     /**

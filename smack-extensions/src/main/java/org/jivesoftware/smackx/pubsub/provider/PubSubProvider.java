@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
@@ -50,8 +49,7 @@ public class PubSubProvider extends IQProvider<PubSub>
             
             if (eventType == XmlPullParser.START_TAG) 
             {
-                PacketExtension ext = PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser);
-                pubsub.addExtension(ext);
+                PacketParserUtils.addPacketExtension(pubsub, parser);
             }
             else if (eventType == XmlPullParser.END_TAG) 
             {

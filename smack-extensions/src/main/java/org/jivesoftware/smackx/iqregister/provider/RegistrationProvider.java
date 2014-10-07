@@ -62,9 +62,7 @@ public class RegistrationProvider extends IQProvider<Registration> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    packetExtensions.add(PacketParserUtils.parsePacketExtension(
-                                    parser.getName(), parser.getNamespace(),
-                                    parser));
+                    PacketParserUtils.addPacketExtension(packetExtensions, parser);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

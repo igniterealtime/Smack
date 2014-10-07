@@ -61,8 +61,7 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    discoverInfo.addExtension(PacketParserUtils.parsePacketExtension(parser
-                            .getName(), parser.getNamespace(), parser));
+                    PacketParserUtils.addPacketExtension(discoverInfo, parser);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("identity")) {

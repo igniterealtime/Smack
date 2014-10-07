@@ -67,8 +67,7 @@ public class WorkgroupForm extends IQ {
                 int eventType = parser.next();
                 if (eventType == XmlPullParser.START_TAG) {
                     // Parse the packet extension
-                    answer.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
-                            parser.getNamespace(), parser));
+                    PacketParserUtils.addPacketExtension(answer, parser);
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals(ELEMENT_NAME)) {

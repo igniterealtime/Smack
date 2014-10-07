@@ -102,8 +102,8 @@ abstract public class EmbeddedExtensionProvider<PE extends PacketExtension> exte
         {
             tag = parser.next();
 
-            if (tag == XmlPullParser.START_TAG) 
-            	extensions.add(PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser));
+            if (tag == XmlPullParser.START_TAG)
+                PacketParserUtils.addPacketExtension(extensions, parser);
         } while (!(tag == XmlPullParser.END_TAG && parser.getDepth() == initialDepth));
 
 		return createReturnExtension(name, namespace, attMap, extensions);

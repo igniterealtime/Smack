@@ -150,9 +150,7 @@ public class UserSearch extends IQ {
                 else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
                     // Otherwise, it must be a packet extension.
                     search = new UserSearch();
-                    search.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
-                            parser.getNamespace(), parser));
-
+                    PacketParserUtils.addPacketExtension(search, parser);
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("query")) {
@@ -205,8 +203,7 @@ public class UserSearch extends IQ {
                 }
             }
             else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
-                search.addExtension(PacketParserUtils.parsePacketExtension(parser.getName(),
-                        parser.getNamespace(), parser));
+                PacketParserUtils.addPacketExtension(search, parser);
                 done = true;
             }
         }
