@@ -58,8 +58,8 @@ import org.jivesoftware.smack.packet.RosterVer;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.provider.StreamFeatureProvider;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jxmpp.util.XmppStringUtils;
@@ -1052,9 +1052,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     streamFeature = PacketParserUtils.parseCompressionFeature(parser);
                     break;
                 default:
-                    StreamFeatureProvider provider = ProviderManager.getStreamFeatureProvider(name, namespace);
+                    PacketExtensionProvider<PacketExtension> provider = ProviderManager.getStreamFeatureProvider(name, namespace);
                     if (provider != null) {
-                        streamFeature = provider.parseStreamFeature(parser);
+                        streamFeature = provider.parse(parser);
                     }
                     break;
                 }

@@ -16,13 +16,16 @@
  */
 package org.jivesoftware.smackx.carbons.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.forward.Forwarded;
+import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class implements the {@link PacketExtensionProvider} to parse
@@ -31,9 +34,13 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Georg Lukas
  *
  */
-public class CarbonManagerProvider implements PacketExtensionProvider {
+public class CarbonManagerProvider extends PacketExtensionProvider<CarbonExtension> {
 
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    private static final ForwardedProvider FORWARDED_PROVIDER = new ForwardedProvider();
+
+    @Override
+    public CarbonExtension parse(XmlPullParser parser, int initialDepth)
+                    throws SmackException, XmlPullParserException, IOException {
         Direction dir = Direction.valueOf(parser.getName());
         Forwarded fwd = null;
 
@@ -41,13 +48,13 @@ public class CarbonManagerProvider implements PacketExtensionProvider {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("forwarded")) {
-                fwd = (Forwarded) PacketParserUtils.parsePacketExtension(Forwarded.ELEMENT, Forwarded.NAMESPACE, parser);
+                fwd = FORWARDED_PROVIDER.parse(parser);
             }
             else if (eventType == XmlPullParser.END_TAG && dir == Direction.valueOf(parser.getName()))
                 done = true;
         }
         if (fwd == null)
-            throw new Exception("sent/received must contain exactly one <forwarded> tag");
+            throw new SmackException("sent/received must contain exactly one <forwarded> tag");
         return new CarbonExtension(dir, fwd);
     }
 }

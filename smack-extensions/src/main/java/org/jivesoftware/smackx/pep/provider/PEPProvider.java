@@ -17,12 +17,15 @@
 
 package org.jivesoftware.smackx.pep.provider;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -38,19 +41,11 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Jeff Williams
  */
-public class PEPProvider implements PacketExtensionProvider {
+public class PEPProvider extends PacketExtensionProvider<PacketExtension> {
 
-    Map<String, PacketExtensionProvider> nodeParsers = new HashMap<String, PacketExtensionProvider>();
-    PacketExtension pepItem;
-    
-    /**
-     * Creates a new PEPProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument constructor
-     */
-    public PEPProvider() {
-    }
+    private static final Map<String, PacketExtensionProvider<?>> nodeParsers = new HashMap<String, PacketExtensionProvider<?>>();
 
-    public void registerPEPParserExtension(String node, PacketExtensionProvider pepItemParser) {
+    public static void registerPEPParserExtension(String node, PacketExtensionProvider<?> pepItemParser) {
         nodeParsers.put(node, pepItemParser);
     }
 
@@ -60,10 +55,14 @@ public class PEPProvider implements PacketExtensionProvider {
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
+     * @throws IOException 
+     * @throws XmlPullParserException 
+     * @throws SmackException 
      */
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-
+    @Override
+    public PacketExtension parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
+        PacketExtension pepItem = null;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -73,9 +72,9 @@ public class PEPProvider implements PacketExtensionProvider {
                     // Figure out the node for this event.
                     String node = parser.getAttributeValue("", "node");
                     // Get the parser for this kind of node, and if found then parse the node.
-                    PacketExtensionProvider nodeParser = nodeParsers.get(node);
+                    PacketExtensionProvider<?> nodeParser = nodeParsers.get(node);
                     if (nodeParser != null) {
-                        pepItem = nodeParser.parseExtension(parser);
+                        pepItem = nodeParser.parse(parser);
                     }
                  }
             } else if (eventType == XmlPullParser.END_TAG) {

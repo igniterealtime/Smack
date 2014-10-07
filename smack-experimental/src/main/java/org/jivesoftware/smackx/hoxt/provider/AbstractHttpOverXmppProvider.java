@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
@@ -23,7 +24,9 @@ import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.shim.provider.HeaderProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +36,7 @@ import java.util.Set;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public abstract class AbstractHttpOverXmppProvider implements IQProvider {
+public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmpp> extends IQProvider<H> {
 
     private static final String ELEMENT_HEADERS = "headers";
     private static final String ELEMENT_HEADER = "header";
@@ -56,9 +59,11 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
      * @param parser      parser
      * @param elementName name of concrete implementation of this element
      * @param body        parent Body element
-     * @throws Exception if anything goes wrong
+     * @throws IOException 
+     * @throws XmlPullParserException 
+     * @throws SmackException 
      */
-    protected void parseHeadersAndData(XmlPullParser parser, String elementName, AbstractHttpOverXmpp.AbstractBody body) throws Exception {
+    protected void parseHeadersAndData(XmlPullParser parser, String elementName, AbstractHttpOverXmpp.AbstractBody body) throws XmlPullParserException, IOException, SmackException {
         boolean done = false;
 
         while (!done) {
@@ -82,7 +87,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         }
     }
 
-    private HeadersExtension parseHeaders(XmlPullParser parser) throws Exception {
+    private HeadersExtension parseHeaders(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         HeaderProvider provider = new HeaderProvider();
         Set<Header> set = new HashSet<Header>();
         boolean done = false;
@@ -92,7 +97,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
 
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals(ELEMENT_HEADER)) {
-                    Header header = (Header) provider.parseExtension(parser);
+                    Header header = provider.parse(parser);
                     set.add(header);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
@@ -104,7 +109,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         return new HeadersExtension(set);
     }
 
-    private AbstractHttpOverXmpp.Data parseData(XmlPullParser parser) throws Exception {
+    private AbstractHttpOverXmpp.Data parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
         AbstractHttpOverXmpp.DataChild child = null;
         boolean done = false;
 
@@ -143,7 +148,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         return data;
     }
 
-    private AbstractHttpOverXmpp.Text parseText(XmlPullParser parser) throws Exception {
+    private AbstractHttpOverXmpp.Text parseText(XmlPullParser parser) throws XmlPullParserException, IOException {
         String text = null;
         boolean done = false;
 
@@ -166,7 +171,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         return new AbstractHttpOverXmpp.Text(text);
     }
 
-    private AbstractHttpOverXmpp.Xml parseXml(XmlPullParser parser) throws Exception {
+    private AbstractHttpOverXmpp.Xml parseXml(XmlPullParser parser) throws XmlPullParserException, IOException {
         StringBuilder builder = new StringBuilder();
         boolean done = false;
         boolean startClosed = true;
@@ -214,7 +219,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         return new AbstractHttpOverXmpp.Xml(builder.toString());
     }
 
-    private void appendXmlAttributes(XmlPullParser parser, StringBuilder builder) throws Exception {
+    private void appendXmlAttributes(XmlPullParser parser, StringBuilder builder) {
         // NOTE: for now we ignore namespaces
         int count = parser.getAttributeCount();
 
@@ -230,7 +235,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         }
     }
 
-    private AbstractHttpOverXmpp.Base64 parseBase64(XmlPullParser parser) throws Exception {
+    private AbstractHttpOverXmpp.Base64 parseBase64(XmlPullParser parser) throws XmlPullParserException, IOException {
         String text = null;
         boolean done = false;
 
@@ -254,7 +259,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         return new AbstractHttpOverXmpp.Base64(text);
     }
 
-    private AbstractHttpOverXmpp.ChunkedBase64 parseChunkedBase64(XmlPullParser parser) throws Exception {
+    private AbstractHttpOverXmpp.ChunkedBase64 parseChunkedBase64(XmlPullParser parser) throws XmlPullParserException, IOException {
         String streamId = parser.getAttributeValue("", ATTRIBUTE_STREAM_ID);
         AbstractHttpOverXmpp.ChunkedBase64 child = new AbstractHttpOverXmpp.ChunkedBase64(streamId);
         boolean done = false;
@@ -275,7 +280,7 @@ public abstract class AbstractHttpOverXmppProvider implements IQProvider {
         return child;
     }
 
-    private AbstractHttpOverXmpp.Ibb parseIbb(XmlPullParser parser) throws Exception {
+    private AbstractHttpOverXmpp.Ibb parseIbb(XmlPullParser parser) throws XmlPullParserException, IOException {
         String sid = parser.getAttributeValue("", ATTRIBUTE_SID);
         AbstractHttpOverXmpp.Ibb child = new AbstractHttpOverXmpp.Ibb(sid);
         boolean done = false;

@@ -47,7 +47,7 @@ public class ForwardedTest {
             .asString(outputProperties);
         
         parser = PacketParserUtils.getParserFor(control);
-        fwd = (Forwarded) new ForwardedProvider().parseExtension(parser);
+        fwd = (Forwarded) new ForwardedProvider().parse(parser);
 
         // no delay in packet
         assertEquals(null, fwd.getDelayInformation());
@@ -71,6 +71,6 @@ public class ForwardedTest {
             .asString(outputProperties);
         
         parser = PacketParserUtils.getParserFor(control);
-        new ForwardedProvider().parseExtension(parser);
+        new ForwardedProvider().parse(parser);
     }
 }

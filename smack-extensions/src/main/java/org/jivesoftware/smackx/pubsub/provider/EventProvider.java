@@ -31,10 +31,10 @@ import org.jivesoftware.smackx.pubsub.NodeExtension;
  * 
  * @author Robin Collier
  */
-public class EventProvider extends EmbeddedExtensionProvider
+public class EventProvider extends EmbeddedExtensionProvider<EventElement>
 {
 	@Override
-	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends PacketExtension> content)
+	protected EventElement createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends PacketExtension> content)
 	{
 	   	return new EventElement(EventElementType.valueOf(content.get(0).getElementName()), (NodeExtension)content.get(0));
 	}

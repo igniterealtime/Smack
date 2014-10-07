@@ -17,13 +17,14 @@
 
 package org.jivesoftware.smackx.xroster.provider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -31,23 +32,19 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Gaston Dombiak
  */
-public class RosterExchangeProvider implements PacketExtensionProvider {
-
-    /**
-     * Creates a new RosterExchangeProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument constructor
-     */
-    public RosterExchangeProvider() {
-    }
+public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchange> {
 
     /**
      * Parses a RosterExchange packet (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    @Override
+    public RosterExchange parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
 
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;

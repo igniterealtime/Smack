@@ -16,19 +16,19 @@
  */
 package org.jivesoftware.smackx.rsm.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
-public class RSMSetProvider implements PacketExtensionProvider {
+public class RSMSetProvider extends PacketExtensionProvider<RSMSet> {
 
     @Override
-    public PacketExtension parseExtension(XmlPullParser parser)
-                    throws Exception {
-        int initialDepth = parser.getDepth();
-
+    public RSMSet parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
         String after = null;
         String before = null;
         int count = -1;

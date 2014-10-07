@@ -16,10 +16,13 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
-import org.jivesoftware.smack.packet.IQ;
+import java.io.IOException;
+
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Req packet provider.
@@ -27,7 +30,7 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider {
+public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOverXmppReq> {
 
     private static final String ELEMENT_REQ = "req";
 
@@ -42,7 +45,8 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider {
     }
 
     @Override
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
         String method = parser.getAttributeValue("", ATTRIBUTE_METHOD);
         String resource = parser.getAttributeValue("", ATTRIBUTE_RESOURCE);
         String version = parser.getAttributeValue("", ATTRIBUTE_VERSION);

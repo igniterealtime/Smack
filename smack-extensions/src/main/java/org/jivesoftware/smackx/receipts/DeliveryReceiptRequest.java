@@ -16,11 +16,14 @@
  */
 package org.jivesoftware.smackx.receipts;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents a <b>message delivery receipt request</b> entry as specified by
@@ -86,9 +89,11 @@ public class DeliveryReceiptRequest implements PacketExtension
     /**
      * This Provider parses and returns DeliveryReceiptRequest packets.
      */
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<DeliveryReceiptRequest> {
         @Override
-        public PacketExtension parseExtension(XmlPullParser parser) {
+        public DeliveryReceiptRequest parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
             return new DeliveryReceiptRequest();
         }
     }

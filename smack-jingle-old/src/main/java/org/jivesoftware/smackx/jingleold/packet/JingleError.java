@@ -122,7 +122,7 @@ public class JingleError implements PacketExtension {
 		return NAMESPACE;
 	}
 
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<PacketExtension> {
 
            private PacketExtension audioInfo;
 
@@ -135,8 +135,8 @@ public class JingleError implements PacketExtension {
            /**
             * Parse a JingleDescription.Audio extension.
             */
-           public PacketExtension parseExtension(final XmlPullParser parser)
-                   throws Exception {
+           @Override
+           public PacketExtension parse(XmlPullParser parser, int initialDepth) {
                PacketExtension result = null;
 
                if (audioInfo != null) {

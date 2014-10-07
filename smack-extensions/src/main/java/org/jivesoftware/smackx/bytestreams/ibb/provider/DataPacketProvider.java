@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import java.io.IOException;
+
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses an In-Band Bytestream data packet which can be a packet extension of
@@ -30,19 +30,33 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Henning Staib
  */
-public class DataPacketProvider implements PacketExtensionProvider, IQProvider {
+public class DataPacketProvider {
 
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-        String sessionID = parser.getAttributeValue("", "sid");
-        long seq = Long.parseLong(parser.getAttributeValue("", "seq"));
-        String data = parser.nextText();
-        return new DataPacketExtension(sessionID, seq, data);
+    public static class IQProvider extends org.jivesoftware.smack.provider.IQProvider<Data> {
+
+        private static final PacketExtensionProvider packetExtensionProvider = new PacketExtensionProvider();
+
+        @Override
+        public Data parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException,
+                        SmackException {
+            DataPacketExtension data = packetExtensionProvider.parse(parser);
+            Data iq = new Data(data);
+            return iq;
+        }
     }
 
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
-        DataPacketExtension data = (DataPacketExtension) parseExtension(parser);
-        IQ iq = new Data(data);
-        return iq;
-    }
+    public static class PacketExtensionProvider extends org.jivesoftware.smack.provider.PacketExtensionProvider<DataPacketExtension> {
 
+        @Override
+        public DataPacketExtension parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
+            String sessionID = parser.getAttributeValue("", "sid");
+            long seq = Long.parseLong(parser.getAttributeValue("", "seq"));
+            String data = parser.nextText();
+            return new DataPacketExtension(sessionID, seq, data);
+        }
+
+    }
 }

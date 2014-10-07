@@ -20,7 +20,9 @@ package org.jivesoftware.smackx.workgroup.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -114,14 +116,11 @@ public class AgentStatusRequest extends IQ {
     /**
      * Packet extension provider for AgentStatusRequest packets.
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<AgentStatusRequest> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             AgentStatusRequest statusRequest = new AgentStatusRequest();
-
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
 
             boolean done = false;
             while (!done) {
@@ -138,7 +137,7 @@ public class AgentStatusRequest extends IQ {
             return statusRequest;
         }
 
-        private Item parseAgent(XmlPullParser parser) throws Exception {
+        private Item parseAgent(XmlPullParser parser) throws XmlPullParserException, IOException {
 
             boolean done = false;
             String jid = parser.getAttributeValue("", "jid");

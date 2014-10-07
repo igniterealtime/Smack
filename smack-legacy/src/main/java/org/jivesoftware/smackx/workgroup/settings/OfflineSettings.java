@@ -17,10 +17,13 @@
 
 package org.jivesoftware.smackx.workgroup.settings;
 
+import java.io.IOException;
+
 import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class OfflineSettings extends IQ {
     private String redirectURL;
@@ -108,13 +111,10 @@ public class OfflineSettings extends IQ {
     /**
      * Packet extension provider for AgentStatusRequest packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<OfflineSettings> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
-
+        @Override
+        public OfflineSettings parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             OfflineSettings offlineSettings = new OfflineSettings();
 
             boolean done = false;

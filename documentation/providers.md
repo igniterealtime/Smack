@@ -65,7 +65,10 @@ introspection is used to try to automatically set properties of the IQ
 instance using the values found in the IQ packet XML. For example, an XMPP
 time packet resembles the following:
 
-### Introspection
+### Introspection (DEPRECATED)
+
+*Note*: This feature is deprecated, using introspection for parsing is not recommended.
+Instead implement your own provider like shown in the next section.
 
 _Time Packet_
 
@@ -112,7 +115,65 @@ The introspection service will automatically try to convert the String value
 from the XML into a boolean, int, long, float, double, or Class depending on
 the type the IQ instance expects.
 
-_IQProvider Implementation_
+### Custom IQProvider example
+
+Let's assume you want to write a provider for a new, unsupported IQ in Smack.
+
+_Custom IQ_
+
+```
+<iq type='set' from='juliet@capulet.example/balcony' to='romeo@montage.example'>
+  <myiq xmlns='example:iq:foo' token='secret'>
+    <user age='42'>John Doe</user>
+	<location>New York</location>
+  </myiq>
+</iq>
+```
+
+_Custom IQ Provider_
+
+```java
+public class MyIQProvider extends IQProvider<MyIQ> {
+
+  @Override
+  public MyIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    // Define the data we are trying to collect with sane defaults
+    int age = -1;
+	String user = null;
+	String location = null;
+
+    // Start parsing loop
+	outerloop: while(true) {
+	  int eventType = parser.next();
+	  switch(eventType) {
+	  case XmlPullParser.START_TAG:
+		String elementName = parser.getName();
+		switch (elementName) {
+		case "user":
+		  age = ParserUtils.getIntegerAttribute(parser, "age");
+		  user = parser.nextText();
+		  break;
+		case "location"
+		  location = parser.nextText();
+		  break;
+	    }
+		break;
+	  case XmlPullParser.END_TAG:
+		// Abort condition: if the are on a end tag (closing element) of the same depth
+		if (parser.getDepth() == initialDepth) {
+		  break outerloop;
+		}
+		break;
+	  }
+	}
+
+    // Construct the IQ instance at the end of parsing, when all data has been collected
+	return new MyIQ(user, age, location);
+  }
+}
+```
+
+### DiscoItemsProvider
 
 _Disco Items Packet_
 
@@ -136,37 +197,48 @@ _Disco Items IQProvider_
 
 
 
-	public class DiscoverItemsProvider implements IQProvider {
+	public class DiscoverItemsProvider implements IQProvider<DiscoverItems> {
 
-		public IQ parseIQ(XmlPullParser parser) throws Exception {
+		public DiscoverItems parseIQ(XmlPullParser parser, int initialDepth) throw XmlPullParserException, IOException {
 			DiscoverItems discoverItems = new DiscoverItems();
-			boolean done = false;
 			DiscoverItems.Item item;
 			String jid = "";
 			String name = "";
 			String action = "";
 			String node = "";
 			discoverItems.setNode(parser.getAttributeValue("", "node"));
-			while (!done) {
+			outerloop: while (true) {
 				int eventType = parser.next();
-
-				if (eventType == XmlPullParser.START_TAG && "item".equals(parser.getName())) {
-					// Initialize the variables from the parsed XML
-					jid = parser.getAttributeValue("", "jid");
-					name = parser.getAttributeValue("", "name");
-					node = parser.getAttributeValue("", "node");
-					action = parser.getAttributeValue("", "action");
-				}
-				else if (eventType == XmlPullParser.END_TAG && "item".equals(parser.getName())) {
-					// Create a new Item and add it to DiscoverItems.
-					item = new DiscoverItems.Item(jid);
-					item.setName(name);
-					item.setNode(node);
-					item.setAction(action);
-					discoverItems.addItem(item);
-				}
-				else if (eventType == XmlPullParser.END_TAG && "query".equals(parser.getName())) {
-					done = true;
+				switch (eventType) {
+				case XmlPullParser.START_TAG:
+					String elementName = parser.getName();
+					switch (elementName) {
+					case "item":
+						// Initialize the variables from the parsed XML
+						jid = parser.getAttributeValue("", "jid");
+						name = parser.getAttributeValue("", "name");
+						node = parser.getAttributeValue("", "node");
+						action = parser.getAttributeValue("", "action");
+						break;
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					String elementName = parser.getName();
+					switch (elementName) {
+					case "item":
+						// Create a new Item and add it to DiscoverItems.
+						item = new DiscoverItems.Item(jid);
+						item.setName(name);
+						item.setNode(node);
+						item.setAction(action);
+						discoverItems.addItem(item);
+						break;
+					case "query":
+					    if (parser.getDepth() == initialDepth) {
+							break outerloop;
+						}
+						break;
+					}
 				}
 			}
 			return discoverItems;

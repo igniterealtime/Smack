@@ -29,11 +29,11 @@ import org.jivesoftware.smackx.pubsub.ItemsExtension;
  * 
  * @author Robin Collier
  */
-public class ItemsProvider extends EmbeddedExtensionProvider
+public class ItemsProvider extends EmbeddedExtensionProvider<ItemsExtension>
 {
 
 	@Override
-	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
+	protected ItemsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
 	{
         return new ItemsExtension(ItemsExtension.ItemsElementType.items, attributeMap.get("node"), content);
 	}

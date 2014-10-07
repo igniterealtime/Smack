@@ -20,7 +20,9 @@ package org.jivesoftware.smackx.workgroup.settings;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -125,9 +127,10 @@ public class ChatSettings extends IQ {
     /**
      * Packet extension provider for AgentStatusRequest packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<ChatSettings> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public ChatSettings parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 throw new IllegalStateException("Parser not in proper position, or bad XML.");
             }
@@ -148,7 +151,7 @@ public class ChatSettings extends IQ {
             return chatSettings;
         }
 
-        private ChatSetting parseChatSetting(XmlPullParser parser) throws Exception {
+        private ChatSetting parseChatSetting(XmlPullParser parser) throws XmlPullParserException, IOException {
 
             boolean done = false;
             String key = null;

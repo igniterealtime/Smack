@@ -59,10 +59,10 @@ public class ProviderConfigTest {
         Assert.assertNotNull(ProviderManager.getIQProvider("provider", "test:file_provider"));
     }
 
-    public static class TestIQProvider implements IQProvider {
+    public static class TestIQProvider extends IQProvider<IQ> {
 
         @Override
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        public IQ parse(XmlPullParser parser, int initialDepth) {
             return null;
         }
 

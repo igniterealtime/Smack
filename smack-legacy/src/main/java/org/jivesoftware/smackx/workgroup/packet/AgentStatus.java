@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.TimeZone;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Agent status packet.
@@ -221,9 +223,10 @@ public class AgentStatus implements PacketExtension {
     /**
      * Packet extension provider for AgentStatus packets.
      */
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<AgentStatus> {
 
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        @Override
+        public AgentStatus parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             AgentStatus agentStatus = new AgentStatus();
 
             agentStatus.workgroupJID = parser.getAttributeValue("", "jid");

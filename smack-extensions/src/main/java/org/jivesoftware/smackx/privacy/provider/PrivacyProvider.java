@@ -17,12 +17,13 @@
 package org.jivesoftware.smackx.privacy.provider;
 
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -33,12 +34,11 @@ import java.util.ArrayList;
  * 
  * @author Francisco Vives
  */
-public class PrivacyProvider implements IQProvider {
+public class PrivacyProvider extends IQProvider<Privacy> {
 
-	public PrivacyProvider() {
-	}
-
-	public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public Privacy parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
         Privacy privacy = new Privacy();
         /* privacy.addExtension(PacketParserUtils.parsePacketExtension(parser
                 .getName(), parser.getNamespace(), parser)); */
@@ -78,7 +78,7 @@ public class PrivacyProvider implements IQProvider {
 	}
 	
 	// Parse the list complex type
-	public void parseList(XmlPullParser parser, Privacy privacy) throws Exception {
+	public void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException {
         boolean done = false;
         String listName = parser.getAttributeValue("", "name");
         ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
@@ -100,7 +100,7 @@ public class PrivacyProvider implements IQProvider {
 	}
 	
 	// Parse the list complex type
-	public PrivacyItem parseItem(XmlPullParser parser) throws Exception {
+	public PrivacyItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         // Retrieves the required attributes
         String actionValue = parser.getAttributeValue("", "action");

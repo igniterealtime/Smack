@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.pubsub.Subscription;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses the <b>subscription</b> element out of the pubsub IQ message from 
@@ -27,10 +29,11 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Robin Collier
  */
-public class SubscriptionProvider implements PacketExtensionProvider
+public class SubscriptionProvider extends PacketExtensionProvider<Subscription>
 {
-	public PacketExtension parseExtension(XmlPullParser parser) throws Exception
-	{
+    @Override
+    public Subscription parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
 		String jid = parser.getAttributeValue(null, "jid");
 		String nodeId = parser.getAttributeValue(null, "node");
 		String subId = parser.getAttributeValue(null, "subid");

@@ -16,19 +16,23 @@
  */
 package org.jivesoftware.smackx.bytestreams.socks5.provider;
 
-import org.jivesoftware.smack.packet.IQ;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses a bytestream packet.
  * 
  * @author Alexander Wenckus
  */
-public class BytestreamsProvider implements IQProvider {
+public class BytestreamsProvider extends IQProvider<Bytestream> {
 
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public Bytestream parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
         boolean done = false;
 
         Bytestream toReturn = new Bytestream();

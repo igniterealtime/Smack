@@ -17,10 +17,12 @@
 
 package org.jivesoftware.smackx.xevent.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -28,24 +30,19 @@ import org.xmlpull.v1.XmlPullParser;
 *
  * @author Gaston Dombiak
  */
-public class MessageEventProvider implements PacketExtensionProvider {
-
-    /**
-     * Creates a new MessageEventProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument constructor
-     */
-    public MessageEventProvider() {
-    }
+public class MessageEventProvider extends PacketExtensionProvider<MessageEvent> {
 
     /**
      * Parses a MessageEvent packet (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
-    public PacketExtension parseExtension(XmlPullParser parser)
-        throws Exception {
+    @Override
+    public MessageEvent parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
         MessageEvent messageEvent = new MessageEvent();
         boolean done = false;
         while (!done) {

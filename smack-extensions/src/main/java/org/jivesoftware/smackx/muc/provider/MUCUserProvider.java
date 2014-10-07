@@ -18,10 +18,12 @@
 package org.jivesoftware.smackx.muc.provider;
 
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The MUCUserProvider parses packets with extended presence information about 
@@ -29,17 +31,18 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Gaston Dombiak
  */
-public class MUCUserProvider implements PacketExtensionProvider {
+public class MUCUserProvider extends PacketExtensionProvider<MUCUser> {
 
     /**
      * Parses a MUCUser packet (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
-        final int initialDepth = parser.getDepth();
+    @Override
+    public MUCUser parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         MUCUser mucUser = new MUCUser();
         outerloop: while (true) {
             switch (parser.next()) {
@@ -77,7 +80,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
         return mucUser;
     }
 
-    private static MUCUser.Invite parseInvite(XmlPullParser parser) throws Exception {
+    private static MUCUser.Invite parseInvite(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         MUCUser.Invite invite = new MUCUser.Invite();
         invite.setFrom(parser.getAttributeValue("", "from"));
@@ -98,7 +101,7 @@ public class MUCUserProvider implements PacketExtensionProvider {
         return invite;
     }
 
-    private static MUCUser.Decline parseDecline(XmlPullParser parser) throws Exception {
+    private static MUCUser.Decline parseDecline(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         MUCUser.Decline decline = new MUCUser.Decline();
         decline.setFrom(parser.getAttributeValue("", "from"));

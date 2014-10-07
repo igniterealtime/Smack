@@ -20,7 +20,9 @@ package org.jivesoftware.smackx.offline.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -187,9 +189,12 @@ public class OfflineMessageRequest extends IQ {
         }
     }
 
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<OfflineMessageRequest> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public OfflineMessageRequest parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
             OfflineMessageRequest request = new OfflineMessageRequest();
             boolean done = false;
             while (!done) {
@@ -214,7 +219,8 @@ public class OfflineMessageRequest extends IQ {
             return request;
         }
 
-        private Item parseItem(XmlPullParser parser) throws Exception {
+        private Item parseItem(XmlPullParser parser)
+                        throws XmlPullParserException, IOException {
             boolean done = false;
             Item item = new Item(parser.getAttributeValue("", "node"));
             item.setAction(parser.getAttributeValue("", "action"));

@@ -17,12 +17,14 @@
 
 package org.jivesoftware.smackx.jingleold.nat;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -34,6 +36,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * RTPBridge IQ Packet used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
@@ -316,13 +319,12 @@ public class RTPBridge extends IQ {
      *
      * @author Thiago Rocha
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<RTPBridge> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public RTPBridge parse(XmlPullParser parser, int initialDepth)
+                        throws SmackException, XmlPullParserException,
+                        IOException {
 
             boolean done = false;
 
@@ -330,7 +332,7 @@ public class RTPBridge extends IQ {
             String elementName;
 
             if (!parser.getNamespace().equals(RTPBridge.NAMESPACE))
-                throw new Exception("Not a RTP Bridge packet");
+                throw new SmackException("Not a RTP Bridge packet");
 
             RTPBridge iq = new RTPBridge();
 

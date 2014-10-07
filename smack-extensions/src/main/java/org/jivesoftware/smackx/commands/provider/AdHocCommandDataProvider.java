@@ -17,8 +17,9 @@
 
 package org.jivesoftware.smackx.commands.provider;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
@@ -30,15 +31,18 @@ import org.jivesoftware.smackx.commands.AdHocCommandNote;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The AdHocCommandDataProvider parses AdHocCommandData packets.
  * 
  * @author Gabriel Guardincerri
  */
-public class AdHocCommandDataProvider implements IQProvider {
+public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
 
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public AdHocCommandData parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
         boolean done = false;
         AdHocCommandData adHocCommandData = new AdHocCommandData();
         DataFormProvider dataFormProvider = new DataFormProvider();
@@ -93,7 +97,7 @@ public class AdHocCommandDataProvider implements IQProvider {
                     adHocCommandData.addAction(AdHocCommand.Action.prev);
                 }
                 else if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
-                    adHocCommandData.setForm((DataForm) dataFormProvider.parseExtension(parser));
+                    adHocCommandData.setForm((DataForm) dataFormProvider.parse(parser));
                 }
                 else if (parser.getName().equals("note")) {
                     AdHocCommandNote.Type type = AdHocCommandNote.Type.valueOf(
@@ -115,38 +119,44 @@ public class AdHocCommandDataProvider implements IQProvider {
         return adHocCommandData;
     }
 
-    public static class BadActionError implements PacketExtensionProvider {
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class BadActionError extends PacketExtensionProvider<AdHocCommandData.SpecificError> {
+        @Override
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badAction);
         }
     }
 
-    public static class MalformedActionError implements PacketExtensionProvider {
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class MalformedActionError extends PacketExtensionProvider<AdHocCommandData.SpecificError> {
+        @Override
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.malformedAction);
         }
     }
 
-    public static class BadLocaleError implements PacketExtensionProvider {
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class BadLocaleError extends PacketExtensionProvider<AdHocCommandData.SpecificError> {
+        @Override
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badLocale);
         }
     }
 
-    public static class BadPayloadError implements PacketExtensionProvider {
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class BadPayloadError extends PacketExtensionProvider<AdHocCommandData.SpecificError> {
+        @Override
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badPayload);
         }
     }
 
-    public static class BadSessionIDError implements PacketExtensionProvider {
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class BadSessionIDError extends PacketExtensionProvider<AdHocCommandData.SpecificError> {
+        @Override
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badSessionid);
         }
     }
 
-    public static class SessionExpiredError implements PacketExtensionProvider {
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class SessionExpiredError extends PacketExtensionProvider<AdHocCommandData.SpecificError> {
+        @Override
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.sessionExpired);
         }
     }

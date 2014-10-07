@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.jingleold.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 import org.xmlpull.v1.XmlPullParser;
@@ -26,30 +25,19 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Jeff Williams
  */
-public class JingleContentProvider implements PacketExtensionProvider {
-
-    /**
-     * Creates a new provider. ProviderManager requires that every
-     * PacketExtensionProvider has a public, no-argument constructor
-     */
-    public JingleContentProvider() {
-        super();
-    }
+public class JingleContentProvider extends PacketExtensionProvider<JingleContent> {
 
     /**
      * Parse a JingleContent extension.
      */
-    public PacketExtension parseExtension(final XmlPullParser parser) throws Exception {
-        PacketExtension result = null;
-
+    @Override
+    public JingleContent parse(XmlPullParser parser, int initialDepth) {
         String elementName = parser.getName();
         String creator = parser.getAttributeValue("", JingleContent.CREATOR);
         String name = parser.getAttributeValue("", JingleContent.NAME);
 
         // Try to get an Audio content info
-        result = new JingleContent(creator, name);
-
-        return result;
+        return new JingleContent(creator, name);
     }
 
 }

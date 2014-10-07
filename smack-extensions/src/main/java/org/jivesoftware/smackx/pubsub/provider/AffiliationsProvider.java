@@ -29,11 +29,11 @@ import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
  * as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">affiliation schema</a>.
  * 
  * @author Robin Collier
- */public class AffiliationsProvider extends EmbeddedExtensionProvider
+ */public class AffiliationsProvider extends EmbeddedExtensionProvider<AffiliationsExtension>
 {
 	@SuppressWarnings("unchecked")
 	@Override
-	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
+	protected AffiliationsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
 	{
         return new AffiliationsExtension((List<Affiliation>)content);
 	}

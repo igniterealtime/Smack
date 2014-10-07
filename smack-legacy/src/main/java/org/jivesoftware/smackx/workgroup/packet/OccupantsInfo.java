@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -24,9 +26,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Packet used for requesting information about occupants of a room or for retrieving information
@@ -126,12 +130,10 @@ public class OccupantsInfo extends IQ {
     /**
      * Packet extension provider for AgentStatusRequest packets.
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<OccupantsInfo> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
+        @Override
+        public OccupantsInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             OccupantsInfo occupantsInfo = new OccupantsInfo(parser.getAttributeValue("", "roomID"));
 
             boolean done = false;
@@ -148,7 +150,7 @@ public class OccupantsInfo extends IQ {
             return occupantsInfo;
         }
 
-        private OccupantInfo parseOccupantInfo(XmlPullParser parser) throws Exception {
+        private OccupantInfo parseOccupantInfo(XmlPullParser parser) throws XmlPullParserException, IOException {
 
             boolean done = false;
             String jid = null;
@@ -163,7 +165,11 @@ public class OccupantsInfo extends IQ {
                     nickname = parser.nextText();
                 } else if ((eventType == XmlPullParser.START_TAG) &&
                         ("joined".equals(parser.getName()))) {
-                    joined = UTC_FORMAT.parse(parser.nextText());
+                    try {
+                        joined = UTC_FORMAT.parse(parser.nextText());
+                    } catch (ParseException e) {
+                        new SmackException(e);
+                    }
                 } else if (eventType == XmlPullParser.END_TAG &&
                         "occupant".equals(parser.getName())) {
                     done = true;

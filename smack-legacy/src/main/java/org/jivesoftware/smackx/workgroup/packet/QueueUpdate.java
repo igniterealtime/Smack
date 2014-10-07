@@ -17,9 +17,12 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * An IQ packet that encapsulates both types of workgroup queue
@@ -87,9 +90,11 @@ public class QueueUpdate implements PacketExtension {
         return NAMESPACE;
     }
 
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<QueueUpdate> {
 
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        @Override
+        public QueueUpdate parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException {
             boolean done = false;
             int position = -1;
             int timeRemaining = -1;

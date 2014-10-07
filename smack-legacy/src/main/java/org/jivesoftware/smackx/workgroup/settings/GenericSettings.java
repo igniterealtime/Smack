@@ -21,7 +21,9 @@ import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,13 +79,10 @@ public class GenericSettings extends IQ {
     /**
      * Packet extension provider for SoundSetting Packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<GenericSettings> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
-
+        @Override
+        public GenericSettings parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             GenericSettings setting = new GenericSettings();
 
             boolean done = false;

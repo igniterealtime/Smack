@@ -17,10 +17,13 @@
 
 package org.jivesoftware.smackx.workgroup.settings;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class SoundSettings extends IQ {
     private String outgoingSound;
@@ -69,13 +72,10 @@ public class SoundSettings extends IQ {
     /**
      * Packet extension provider for SoundSetting Packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<SoundSettings> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
-
+        @Override
+        public SoundSettings parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             SoundSettings soundSettings = new SoundSettings();
 
             boolean done = false;

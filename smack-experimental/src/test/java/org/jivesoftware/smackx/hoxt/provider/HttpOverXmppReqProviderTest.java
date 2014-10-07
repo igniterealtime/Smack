@@ -68,7 +68,7 @@ public class HttpOverXmppReqProviderTest {
     private HttpOverXmppReq.Req parseReq(String string) throws Exception {
         HttpOverXmppReqProvider provider = new HttpOverXmppReqProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
-        IQ iq = provider.parseIQ(parser);
+        IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
         HttpOverXmppReq castedIq = (HttpOverXmppReq) iq;
         return castedIq.getReq();

@@ -30,11 +30,11 @@ import org.jivesoftware.smackx.shim.packet.HeadersExtension;
  * 
  * @author Robin Collier
  */
-public class HeadersProvider extends EmbeddedExtensionProvider
+public class HeadersProvider extends EmbeddedExtensionProvider<HeadersExtension>
 {
 	@SuppressWarnings("unchecked")
 	@Override
-	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
+	protected HeadersExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
 	{
 		return new HeadersExtension((Collection<Header>)content);
 	}

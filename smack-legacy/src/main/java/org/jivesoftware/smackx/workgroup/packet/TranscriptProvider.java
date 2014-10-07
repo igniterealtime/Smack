@@ -17,12 +17,14 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,10 @@ import java.util.List;
  *
  * @author Gaston Dombiak
  */
-public class TranscriptProvider implements IQProvider {
+public class TranscriptProvider extends IQProvider<Transcript> {
 
-    public TranscriptProvider() {
-        super();
-    }
-
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public Transcript parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         String sessionID = parser.getAttributeValue("", "sessionID");
         List<Packet> packets = new ArrayList<Packet>();
 

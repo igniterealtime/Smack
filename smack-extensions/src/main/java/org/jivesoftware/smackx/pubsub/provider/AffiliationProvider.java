@@ -29,10 +29,10 @@ import org.jivesoftware.smackx.pubsub.Affiliation;
  * 
  * @author Robin Collier
  */
-public class AffiliationProvider extends EmbeddedExtensionProvider
+public class AffiliationProvider extends EmbeddedExtensionProvider<Affiliation>
 {
 	@Override
-	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
+	protected Affiliation createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
 	{
 		return new Affiliation(attributeMap.get("node"), Affiliation.Type.valueOf(attributeMap.get("affiliation")));
 	}

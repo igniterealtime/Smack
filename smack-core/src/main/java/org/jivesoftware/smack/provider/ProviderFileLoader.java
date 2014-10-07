@@ -83,10 +83,15 @@ public class ProviderFileLoader implements ProviderLoader {
                                     // reflection later to create instances of the class.
                                     // Add the provider to the map.
                                     if (IQProvider.class.isAssignableFrom(provider)) {
-                                        iqProviders.add(new IQProviderInfo(elementName, namespace, (IQProvider) provider.newInstance()));
+                                        iqProviders.add(new IQProviderInfo(elementName, namespace, (IQProvider<IQ>) provider.newInstance()));
                                     }
                                     else if (IQ.class.isAssignableFrom(provider)) {
                                         iqProviders.add(new IQProviderInfo(elementName, namespace, (Class<? extends IQ>)provider));
+                                    }
+                                    else {
+                                        exceptions.add(new IllegalArgumentException(
+                                                        className
+                                                                        + " is neither IQProvider or IQ class"));
                                     }
                                     break;
                                 case "extensionProvider":
@@ -96,16 +101,21 @@ public class ProviderFileLoader implements ProviderLoader {
                                     // then we'll use reflection later to create instances
                                     // of the class.
                                     if (PacketExtensionProvider.class.isAssignableFrom(provider)) {
-                                        extProviders.add(new ExtensionProviderInfo(elementName, namespace, (PacketExtensionProvider) provider.newInstance()));
+                                        extProviders.add(new ExtensionProviderInfo(elementName, namespace, (PacketExtensionProvider<PacketExtension>) provider.newInstance()));
                                     }
                                     else if (PacketExtension.class.isAssignableFrom(provider)) {
                                         extProviders.add(new ExtensionProviderInfo(elementName, namespace, provider));
+                                    }
+                                    else {
+                                        exceptions.add(new IllegalArgumentException(
+                                                        className
+                                                                        + " is neither PacketExtensionProvider or PacketExtension class"));
                                     }
                                     break;
                                 case "streamFeatureProvider":
                                     sfProviders.add(new StreamFeatureProviderInfo(elementName,
                                                     namespace,
-                                                    (StreamFeatureProvider) provider.newInstance()));
+                                                    (PacketExtensionProvider<PacketExtension>) provider.newInstance()));
                                     break;
                                 default:
                                     LOGGER.warning("Unkown provider type: " + typeName);

@@ -100,13 +100,10 @@ public class LastActivity extends IQ {
      *
      * @author Derek DeMoro
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<LastActivity> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws SmackException, XmlPullParserException {
+        @Override
+        public LastActivity parse(XmlPullParser parser, int initialDepth) throws SmackException, XmlPullParserException {
             LastActivity lastActivity = new LastActivity();
             String seconds = parser.getAttributeValue("", "seconds");
             if (seconds != null) {

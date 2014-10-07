@@ -17,11 +17,14 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A group chat invitation packet extension, which is used to invite other
@@ -125,8 +128,12 @@ public class GroupChatInvitation implements PacketExtension {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 
-    public static class Provider implements PacketExtensionProvider {
-        public PacketExtension parseExtension (XmlPullParser parser) throws Exception {
+    public static class Provider extends PacketExtensionProvider<GroupChatInvitation> {
+
+        @Override
+        public GroupChatInvitation parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
             String roomAddress = parser.getAttributeValue("", "jid");
             // Advance to end of extension.
             parser.next();

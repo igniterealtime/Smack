@@ -327,7 +327,7 @@ public class RosterTest {
                 .append("</query>")
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
-        final IQ rosterPush = PacketParserUtils.parseIQ(parser, connection);
+        final IQ rosterPush = PacketParserUtils.parse(parser, connection);
         initRoster(connection, roster);
         rosterListener.reset();
 
@@ -460,7 +460,7 @@ public class RosterTest {
                 .append("</query>")
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
-        final IQ rosterPush = PacketParserUtils.parseIQ(parser, connection);
+        final IQ rosterPush = PacketParserUtils.parse(parser, connection);
         initRoster(connection, roster);
         rosterListener.reset();
 

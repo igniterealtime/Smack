@@ -17,15 +17,18 @@
 
 package org.jivesoftware.smackx.iqversion.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.iqversion.packet.Version;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
-public class VersionProvider implements IQProvider {
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
-        assert (parser.getEventType() == XmlPullParser.START_TAG);
-        final int initalDepth = parser.getDepth();
+public class VersionProvider extends IQProvider<Version> {
+
+    @Override
+    public Version parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String name = null, version = null, os = null;
 
         outerloop: while (true) {
@@ -46,7 +49,7 @@ public class VersionProvider implements IQProvider {
                 }
                 break;
             case XmlPullParser.END_TAG:
-                if (parser.getDepth() == initalDepth && parser.getName().equals(IQ.QUERY_ELEMENT)) {
+                if (parser.getDepth() == initialDepth && parser.getName().equals(IQ.QUERY_ELEMENT)) {
                     break outerloop;
                 }
             }

@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.iqprivate;
 
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -28,7 +29,9 @@ import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -211,8 +214,11 @@ public class PrivateDataManager extends Manager {
     /**
      * An IQ provider to parse IQ results containing private data.
      */
-    public static class PrivateDataIQProvider implements IQProvider {
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+    public static class PrivateDataIQProvider extends IQProvider<PrivateDataResult> {
+
+        @Override
+        public PrivateDataResult parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException, SmackException {
             PrivateData privateData = null;
             boolean done = false;
             while (!done) {

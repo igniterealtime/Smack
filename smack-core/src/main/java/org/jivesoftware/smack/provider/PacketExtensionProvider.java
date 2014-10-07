@@ -17,27 +17,16 @@
 
 package org.jivesoftware.smack.provider;
 
+
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
- * An interface for parsing custom packets extensions. Each PacketExtensionProvider must
+ * An abstract class for parsing custom packets extensions. Each PacketExtensionProvider must
  * be registered with the ProviderManager class for it to be used. Every implementation
- * of this interface <b>must</b> have a public, no-argument constructor.
+ * of this abstract class <b>must</b> have a public, no-argument constructor.
  *
  * @author Matt Tucker
  */
-public interface PacketExtensionProvider {
+public abstract class PacketExtensionProvider<PE extends PacketExtension> extends Provider<PE> {
 
-    /**
-     * Parse an extension sub-packet and create a PacketExtension instance. At
-     * the beginning of the method call, the xml parser will be positioned on the
-     * opening element of the packet extension. At the end of the method call, the
-     * parser <b>must</b> be positioned on the closing element of the packet extension.
-     *
-     * @param parser an XML parser.
-     * @return a new IQ instance.
-     * @throws java.lang.Exception if an error occurs parsing the XML.
-     */
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception;
 }

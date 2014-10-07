@@ -21,7 +21,9 @@ import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,13 +78,11 @@ public class ChatMetadata extends IQ {
      *
      * @author Derek DeMoro
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<ChatMetadata> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public ChatMetadata parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException {
             final ChatMetadata chatM = new ChatMetadata();
 
             boolean done = false;

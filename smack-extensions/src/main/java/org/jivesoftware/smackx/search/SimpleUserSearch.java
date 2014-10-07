@@ -20,7 +20,9 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +86,7 @@ class SimpleUserSearch extends IQ {
         }
     }
 
-    protected void parseItems(XmlPullParser parser) throws Exception {
+    protected void parseItems(XmlPullParser parser) throws XmlPullParserException, IOException {
         ReportedData data = new ReportedData();
         data.addColumn(new ReportedData.Column("JID", "jid", "text-single"));
 

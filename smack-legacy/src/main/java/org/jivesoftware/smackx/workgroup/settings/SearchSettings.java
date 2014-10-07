@@ -16,10 +16,13 @@
  */
 package org.jivesoftware.smackx.workgroup.settings;
 
+import java.io.IOException;
+
 import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class SearchSettings extends IQ {
     private String forumsLocation;
@@ -79,13 +82,10 @@ public class SearchSettings extends IQ {
     /**
      * Packet extension provider for AgentStatusRequest packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<SearchSettings> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
-
+        @Override
+        public SearchSettings parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             SearchSettings settings = new SearchSettings();
 
             boolean done = false;

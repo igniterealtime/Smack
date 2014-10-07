@@ -31,10 +31,10 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  * 
  * @author Robin Collier
  */
-public class ConfigEventProvider extends EmbeddedExtensionProvider
+public class ConfigEventProvider extends EmbeddedExtensionProvider<ConfigurationEvent>
 {
 	@Override
-	protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends PacketExtension> content)
+	protected ConfigurationEvent createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends PacketExtension> content)
 	{
 		if (content.size() == 0)
 			return new ConfigurationEvent(attMap.get("node"));

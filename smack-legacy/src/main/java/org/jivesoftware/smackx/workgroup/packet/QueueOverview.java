@@ -18,10 +18,14 @@
 package org.jivesoftware.smackx.workgroup.packet;
 
 import org.jivesoftware.smackx.workgroup.agent.WorkgroupQueue;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -113,16 +117,15 @@ public class QueueOverview implements PacketExtension {
         return buf.toString();
     }
 
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<QueueOverview> {
 
-        public PacketExtension parseExtension (XmlPullParser parser) throws Exception {
+        @Override
+        public QueueOverview parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException, SmackException {
             int eventType = parser.getEventType();
             QueueOverview queueOverview = new QueueOverview();            
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-            if (eventType != XmlPullParser.START_TAG) {
-                // throw exception
-            }
 
             eventType = parser.next();
             while ((eventType != XmlPullParser.END_TAG)
@@ -135,7 +138,11 @@ public class QueueOverview implements PacketExtension {
                     queueOverview.setAverageWaitTime(Integer.parseInt(parser.nextText()));
                 }
                 else if ("oldest".equals(parser.getName())) {
-                    queueOverview.setOldestEntry((dateFormat.parse(parser.nextText())));                    
+                    try {
+                        queueOverview.setOldestEntry((dateFormat.parse(parser.nextText())));
+                    } catch (ParseException e) {
+                        throw new SmackException(e);
+                    }
                 }
                 else if ("status".equals(parser.getName())) {
                     queueOverview.setStatus(WorkgroupQueue.Status.fromString(parser.nextText()));

@@ -125,7 +125,7 @@ public class PrivacyProviderTest extends SmackTestCase {
         	// Create the xml parser
         	XmlPullParser parser = getParserFromXML(xml);
         	// Create a packet from the xml
-        	Privacy packet = (Privacy) (new PrivacyProvider()).parseIQ(parser);
+        	Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
         	
         	// check if it exist
             assertNotNull(packet);
@@ -317,7 +317,7 @@ public class PrivacyProviderTest extends SmackTestCase {
         	// Create the xml parser
         	XmlPullParser parser = getParserFromXML(xml);
         	// Create a packet from the xml
-        	Privacy packet = (Privacy) (new PrivacyProvider()).parseIQ(parser);
+        	Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
         	
             assertNotNull(packet);
             assertNotNull(packet.getChildElementXML());
@@ -356,7 +356,7 @@ public class PrivacyProviderTest extends SmackTestCase {
         	// Create the xml parser
         	XmlPullParser parser = getParserFromXML(xml);
         	// Create a packet from the xml
-        	Privacy packet = (Privacy) (new PrivacyProvider()).parseIQ(parser);
+        	Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
         	
             assertNotNull(packet);
             

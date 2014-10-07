@@ -109,11 +109,11 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public final class ProviderManager {
 
-    private static final Map<String, PacketExtensionProvider> extensionProviders = new ConcurrentHashMap<String, PacketExtensionProvider>();
-    private static final Map<String, IQProvider> iqProviders = new ConcurrentHashMap<String, IQProvider>();
+    private static final Map<String, PacketExtensionProvider<PacketExtension>> extensionProviders = new ConcurrentHashMap<String, PacketExtensionProvider<PacketExtension>>();
+    private static final Map<String, IQProvider<IQ>> iqProviders = new ConcurrentHashMap<String, IQProvider<IQ>>();
     private static final Map<String, Class<?>> extensionIntrospectionProviders = new ConcurrentHashMap<String, Class<?>>();
     private static final Map<String, Class<?>> iqIntrospectionProviders = new ConcurrentHashMap<String, Class<?>>();
-    private static final Map<String, StreamFeatureProvider> streamFeatureProviders = new ConcurrentHashMap<String, StreamFeatureProvider>();
+    private static final Map<String, PacketExtensionProvider<PacketExtension>> streamFeatureProviders = new ConcurrentHashMap<String, PacketExtensionProvider<PacketExtension>>();
 
     static {
         // Ensure that Smack is initialized by calling getVersion, so that user
@@ -157,7 +157,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @return the IQ provider.
      */
-    public static IQProvider getIQProvider(String elementName, String namespace) {
+    public static IQProvider<IQ> getIQProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return iqProviders.get(key);
     }
@@ -190,13 +190,14 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the IQ provider.
      */
+    @SuppressWarnings("unchecked")
     public static void addIQProvider(String elementName, String namespace,
             Object provider)
     {
         // First remove existing providers
         String key = removeIQProvider(elementName, namespace);
         if (provider instanceof IQProvider) {
-            iqProviders.put(key, (IQProvider) provider);
+            iqProviders.put(key, (IQProvider<IQ>) provider);
         } else if (provider instanceof Class && IQ.class.isAssignableFrom((Class<?>) provider)) {
             iqIntrospectionProviders.put(key, (Class<?>) provider);
         } else {
@@ -240,7 +241,7 @@ public final class ProviderManager {
      * @param namespace namespace associated with extension provider.
      * @return the extenion provider.
      */
-    public static PacketExtensionProvider getExtensionProvider(String elementName, String namespace) {
+    public static PacketExtensionProvider<PacketExtension> getExtensionProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return extensionProviders.get(key);
     }
@@ -259,13 +260,14 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @param provider the extension provider.
      */
+    @SuppressWarnings("unchecked")
     public static void addExtensionProvider(String elementName, String namespace,
             Object provider)
     {
         // First remove existing providers
         String key = removeExtensionProvider(elementName, namespace);
         if (provider instanceof PacketExtensionProvider) {
-            extensionProviders.put(key, (PacketExtensionProvider) provider);
+            extensionProviders.put(key, (PacketExtensionProvider<PacketExtension>) provider);
         } else if (provider instanceof Class && PacketExtension.class.isAssignableFrom((Class<?>) provider)) {
             extensionIntrospectionProviders.put(key, (Class<?>) provider);
         } else {
@@ -304,12 +306,12 @@ public final class ProviderManager {
         return Collections.unmodifiableList(providers);
     }
 
-    public static StreamFeatureProvider getStreamFeatureProvider(String elementName, String namespace) {
+    public static PacketExtensionProvider<PacketExtension> getStreamFeatureProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return streamFeatureProviders.get(key);
     }
 
-    public static void addStreamFeatureProvider(String elementName, String namespace, StreamFeatureProvider provider) {
+    public static void addStreamFeatureProvider(String elementName, String namespace, PacketExtensionProvider<PacketExtension> provider) {
         String key = getKey(elementName, namespace);
         streamFeatureProviders.put(key, provider);
     }

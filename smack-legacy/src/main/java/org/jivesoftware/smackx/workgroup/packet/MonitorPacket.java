@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class MonitorPacket extends IQ {
 
@@ -79,13 +82,10 @@ public class MonitorPacket extends IQ {
     /**
      * Packet extension provider for Monitor Packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<MonitorPacket> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
-
+        @Override
+        public MonitorPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             MonitorPacket packet = new MonitorPacket();
 
             boolean done = false;

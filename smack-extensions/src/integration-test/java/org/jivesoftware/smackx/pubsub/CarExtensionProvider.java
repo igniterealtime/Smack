@@ -25,10 +25,10 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Robin Collier
  *
  */
-public class CarExtensionProvider implements PacketExtensionProvider
+public class CarExtensionProvider extends PacketExtensionProvider
 {
 
-	public PacketExtension parseExtension(XmlPullParser parser) throws Exception
+	public PacketExtension parse(XmlPullParser parser, int initialDepth) throws Exception
 	{
 		String color = null;
 		int numTires = 0;

@@ -16,14 +16,17 @@
  */
 package org.jivesoftware.smack.provider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * 
@@ -78,11 +81,12 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Robin Collier
  */
-abstract public class EmbeddedExtensionProvider implements PacketExtensionProvider
+abstract public class EmbeddedExtensionProvider<PE extends PacketExtension> extends PacketExtensionProvider<PE>
 {
 
-	final public PacketExtension parseExtension(XmlPullParser parser) throws Exception
-	{
+    @Override
+    final public PE parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
         String namespace = parser.getNamespace();
         String name = parser.getName();
         Map<String, String> attMap = new HashMap<String, String>();
@@ -92,17 +96,18 @@ abstract public class EmbeddedExtensionProvider implements PacketExtensionProvid
         	attMap.put(parser.getAttributeName(i), parser.getAttributeValue(i));
         }
         List<PacketExtension> extensions = new ArrayList<PacketExtension>();
-        
+
+        int tag;
         do
         {
-            int tag = parser.next();
+            tag = parser.next();
 
             if (tag == XmlPullParser.START_TAG) 
             	extensions.add(PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser));
-        } while (!name.equals(parser.getName()));
+        } while (!(tag == XmlPullParser.END_TAG && parser.getDepth() == initialDepth));
 
 		return createReturnExtension(name, namespace, attMap, extensions);
 	}
 
-	abstract protected PacketExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content);
+	abstract protected PE createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content);
 }

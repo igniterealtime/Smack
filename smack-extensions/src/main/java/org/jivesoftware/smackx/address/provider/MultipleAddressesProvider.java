@@ -17,27 +17,24 @@
 
 package org.jivesoftware.smackx.address.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The MultipleAddressesProvider parses {@link MultipleAddresses} packets.
  *
  * @author Gaston Dombiak
  */
-public class MultipleAddressesProvider implements PacketExtensionProvider {
+public class MultipleAddressesProvider extends PacketExtensionProvider<MultipleAddresses> {
 
-    /**
-     * Creates a new MultipleAddressesProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument
-     * constructor.
-     */
-    public MultipleAddressesProvider() {
-    }
-
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    @Override
+    public MultipleAddresses parse(XmlPullParser parser,
+                    int initialDepth) throws XmlPullParserException,
+                    IOException {
         boolean done = false;
         MultipleAddresses multipleAddresses = new MultipleAddresses();
         while (!done) {

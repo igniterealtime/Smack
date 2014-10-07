@@ -17,9 +17,11 @@
 
 package org.jivesoftware.smackx.jingleold.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.jingleold.JingleActionEnum;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
@@ -27,26 +29,24 @@ import org.jivesoftware.smackx.jingleold.packet.JingleContentInfo;
 import org.jivesoftware.smackx.jingleold.packet.JingleDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The JingleProvider parses Jingle packets.
  * 
  * @author Alvaro Saurin
  */
-public class JingleProvider implements IQProvider {
-
-    /**
-     * Creates a new provider. ProviderManager requires that every
-     * PacketExtensionProvider has a public, no-argument constructor
-     */
-    public JingleProvider() {
-        super();
-    }
+public class JingleProvider extends IQProvider<Jingle> {
 
     /**
      * Parse a iq/jingle element.
+     * @throws IOException 
+     * @throws XmlPullParserException 
+     * @throws SmackException 
      */
-    public IQ parseIQ(final XmlPullParser parser) throws Exception {
+    @Override
+    public Jingle parse(XmlPullParser parser, int intialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
 
         Jingle jingle = new Jingle();
         String sid = "";
@@ -61,7 +61,7 @@ public class JingleProvider implements IQProvider {
         JingleDescriptionProvider jdpAudio = new JingleDescriptionProvider.Audio();
         JingleTransportProvider jtpRawUdp = new JingleTransportProvider.RawUdp();
         JingleTransportProvider jtpIce = new JingleTransportProvider.Ice();
-        JingleContentInfoProvider jmipAudio = new JingleContentInfoProvider.Audio();
+        PacketExtensionProvider jmipAudio = new JingleContentInfoProvider.Audio();
 
         int eventType;
         String elementName;
@@ -91,24 +91,24 @@ public class JingleProvider implements IQProvider {
 
                 if (elementName.equals(JingleContent.NODENAME)) {
                     // Add a new <content> element to the jingle
-                    currentContent = (JingleContent) jcp.parseExtension(parser);
+                    currentContent = (JingleContent) jcp.parse(parser);
                     jingle.addContent(currentContent);
                 } else if (elementName.equals(JingleDescription.NODENAME) && namespace.equals(JingleDescription.Audio.NAMESPACE)) {
                     // Set the <description> element of the <content>
-                    currentContent.setDescription((JingleDescription) jdpAudio.parseExtension(parser));
+                    currentContent.setDescription((JingleDescription) jdpAudio.parse(parser));
                 } else if (elementName.equals(JingleTransport.NODENAME)) {
                     // Add all of the <transport> elements to the <content> of the jingle
 
                     // Parse the possible transport namespaces
                     if (namespace.equals(JingleTransport.RawUdp.NAMESPACE)) {
-                        currentContent.addJingleTransport((JingleTransport) jtpRawUdp.parseExtension(parser));
+                        currentContent.addJingleTransport((JingleTransport) jtpRawUdp.parse(parser));
                     } else if (namespace.equals(JingleTransport.Ice.NAMESPACE)) {
-                        currentContent.addJingleTransport((JingleTransport) jtpIce.parseExtension(parser));
+                        currentContent.addJingleTransport((JingleTransport) jtpIce.parse(parser));
                     } else {
                         throw new SmackException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
                     }
                 } else if (namespace.equals(JingleContentInfo.Audio.NAMESPACE)) {
-                    jingle.setContentInfo((JingleContentInfo) jmipAudio.parseExtension(parser));
+                    jingle.setContentInfo((JingleContentInfo) jmipAudio.parse(parser));
                 } else {
                     throw new SmackException("Unknown combination of namespace \"" + namespace + "\" and element name \""
                             + elementName + "\" in Jingle packet.");

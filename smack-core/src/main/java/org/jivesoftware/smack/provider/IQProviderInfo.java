@@ -34,7 +34,7 @@ public final class IQProviderInfo extends AbstractProviderInfo {
      * @param namespace Namespace that provider parses.
      * @param iqProvider The provider implementation.
      */
-    public IQProviderInfo(String elementName, String namespace, IQProvider iqProvider) {
+    public IQProviderInfo(String elementName, String namespace, IQProvider<IQ> iqProvider) {
         super(elementName, namespace, iqProvider);
     }
 

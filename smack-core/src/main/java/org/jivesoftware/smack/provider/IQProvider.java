@@ -18,27 +18,14 @@
 package org.jivesoftware.smack.provider;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
- * An interface for parsing custom IQ packets. Each IQProvider must be registered with
+ * An abstract class for parsing custom IQ packets. Each IQProvider must be registered with
  * the ProviderManager class for it to be used. Every implementation of this
- * interface <b>must</b> have a public, no-argument constructor.
+ * abstract class <b>must</b> have a public, no-argument constructor.
  *
  * @author Matt Tucker
  */
-public interface IQProvider {
+public abstract class IQProvider<I extends IQ> extends Provider<I> {
 
-    /**
-     * Parse the IQ sub-document and create an IQ instance. Each IQ must have a
-     * single child element. At the beginning of the method call, the xml parser
-     * will be positioned at the opening tag of the IQ child element. At the end
-     * of the method call, the parser <b>must</b> be positioned on the closing tag
-     * of the child element.
-     *
-     * @param parser an XML parser.
-     * @return a new IQ instance.
-     * @throws Exception if an error occurs parsing the XML.
-     */
-    public IQ parseIQ(XmlPullParser parser) throws Exception;
 }

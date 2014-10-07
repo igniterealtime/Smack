@@ -17,9 +17,12 @@
 
 package org.jivesoftware.smackx.offline.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * OfflineMessageInfo is an extension included in the retrieved offline messages requested by
@@ -85,25 +88,20 @@ public class OfflineMessageInfo implements PacketExtension {
         return buf.toString();
     }
 
-    public static class Provider implements PacketExtensionProvider {
-
-        /**
-         * Creates a new Provider.
-         * ProviderManager requires that every PacketExtensionProvider has a public,
-         * no-argument constructor
-         */
-        public Provider() {
-        }
+    public static class Provider extends PacketExtensionProvider<OfflineMessageInfo> {
 
         /**
          * Parses a OfflineMessageInfo packet (extension sub-packet).
          *
          * @param parser the XML parser, positioned at the starting element of the extension.
          * @return a PacketExtension.
-         * @throws Exception if a parsing error occurs.
+         * @throws IOException 
+         * @throws XmlPullParserException 
          */
-        public PacketExtension parseExtension(XmlPullParser parser)
-            throws Exception {
+        @Override
+        public OfflineMessageInfo parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
             OfflineMessageInfo info = new OfflineMessageInfo();
             boolean done = false;
             while (!done) {

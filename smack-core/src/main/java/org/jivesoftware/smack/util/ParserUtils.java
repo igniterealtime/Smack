@@ -31,6 +31,14 @@ public class ParserUtils {
         assert(parser.getEventType() == XmlPullParser.END_TAG);
     }
 
+    public static void forwardToEndTagOfDepth(XmlPullParser parser, int depth)
+                    throws XmlPullParserException, IOException {
+        int event = parser.getEventType();
+        while (!(event == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
+            event = parser.next();
+        }
+    }
+
     /**
      * Get the boolean value of an argument.
      * 

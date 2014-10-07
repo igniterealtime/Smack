@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
+import java.io.IOException;
+
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -25,6 +28,7 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses an <b>item</b> element as is defined in both the {@link PubSubNamespace#BASIC} and
@@ -34,10 +38,11 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Robin Collier
  */
-public class ItemProvider implements PacketExtensionProvider 
+public class ItemProvider extends PacketExtensionProvider<Item> 
 {
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception 
-    {
+    @Override
+    public Item parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
         String id = parser.getAttributeValue(null, "id");
         String node = parser.getAttributeValue(null, "node");
 

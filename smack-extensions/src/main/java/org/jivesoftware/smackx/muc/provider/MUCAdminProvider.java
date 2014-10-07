@@ -17,19 +17,23 @@
 
 package org.jivesoftware.smackx.muc.provider;
 
-import org.jivesoftware.smack.packet.IQ;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The MUCAdminProvider parses MUCAdmin packets. (@see MUCAdmin)
  * 
  * @author Gaston Dombiak
  */
-public class MUCAdminProvider implements IQProvider {
+public class MUCAdminProvider extends IQProvider<MUCAdmin> {
 
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public MUCAdmin parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
         MUCAdmin mucAdmin = new MUCAdmin();
         boolean done = false;
         while (!done) {

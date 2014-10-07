@@ -66,9 +66,10 @@ public class ChatStateExtension implements PacketExtension {
         return xml;
     }
 
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<ChatStateExtension> {
 
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        @Override
+        public ChatStateExtension parse(XmlPullParser parser, int initialDepth) {
             ChatState state;
             try {
                 state = ChatState.valueOf(parser.getName());

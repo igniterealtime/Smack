@@ -17,11 +17,13 @@
 
 package org.jivesoftware.smackx.workgroup.ext.macros;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
+import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -92,13 +94,10 @@ public class Macros extends IQ {
      *
      * @author Derek DeMoro
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<Macros> {
 
-        public InternalProvider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public Macros parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             Macros macroGroup = new Macros();
 
             boolean done = false;
@@ -121,7 +120,7 @@ public class Macros extends IQ {
             return macroGroup;
         }
         
-        public Macro parseMacro(XmlPullParser parser) throws Exception {
+        public Macro parseMacro(XmlPullParser parser) throws XmlPullParserException, IOException {
         	Macro macro = new Macro();
         	 boolean done = false;
             while (!done) {
@@ -150,7 +149,7 @@ public class Macros extends IQ {
         	return macro;
         }
         
-        public MacroGroup parseMacroGroup(XmlPullParser parser) throws Exception {
+        public MacroGroup parseMacroGroup(XmlPullParser parser) throws XmlPullParserException, IOException {
         	MacroGroup group = new MacroGroup();
         	
             boolean done = false;
@@ -176,7 +175,7 @@ public class Macros extends IQ {
         	return group; 
         }
         
-        public MacroGroup parseMacroGroups(String macros) throws Exception {
+        public MacroGroup parseMacroGroups(String macros) throws XmlPullParserException, IOException {
 
         	MacroGroup group = null;
         	XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();

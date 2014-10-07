@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smackx.nick.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A minimalistic implementation of a {@link PacketExtension} for nicknames.
@@ -91,11 +94,12 @@ public class Nick implements PacketExtension {
 		return buf.toString();
 	}
 
-	public static class Provider implements PacketExtensionProvider {
+	public static class Provider extends PacketExtensionProvider<Nick> {
 
-		public PacketExtension parseExtension(XmlPullParser parser)
-				throws Exception {
-			
+        @Override
+        public Nick parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException {
+
             parser.next();
 			final String name = parser.getText();
 

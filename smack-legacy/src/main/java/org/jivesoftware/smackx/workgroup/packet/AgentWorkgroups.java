@@ -20,7 +20,9 @@ package org.jivesoftware.smackx.workgroup.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -96,13 +98,10 @@ public class AgentWorkgroups extends IQ {
      *
      * @author Gaston Dombiak
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<AgentWorkgroups> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public AgentWorkgroups parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             String agentJID = parser.getAttributeValue("", "jid");
             List<String> workgroups = new ArrayList<String>();
 

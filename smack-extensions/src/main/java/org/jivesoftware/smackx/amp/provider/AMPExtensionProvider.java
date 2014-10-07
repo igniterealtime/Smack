@@ -16,35 +16,32 @@
  */
 package org.jivesoftware.smackx.amp.provider;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 
-public class AMPExtensionProvider implements PacketExtensionProvider {
+public class AMPExtensionProvider extends PacketExtensionProvider<AMPExtension> {
     private static final Logger LOGGER = Logger.getLogger(AMPExtensionProvider.class.getName());
-
-    /**
-     * Creates a new AMPExtensionProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument constructor
-     */
-    public AMPExtensionProvider() {}
 
     /**
      * Parses a AMPExtension packet (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws Exception if a parsing error occurs.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
     @Override
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public AMPExtension parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException {
         final String from = parser.getAttributeValue(null, "from");
         final String to = parser.getAttributeValue(null, "to");
         final String statusString = parser.getAttributeValue(null, "status");

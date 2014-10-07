@@ -34,10 +34,10 @@ public class ProviderManagerTest {
         assertTrue(SmackConfiguration.isSmackInitialized());
     }
 
-    public static class TestIQProvider implements IQProvider {
+    public static class TestIQProvider extends IQProvider<IQ> {
 
         @Override
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        public IQ parse(XmlPullParser parser, int initialDepth) {
             return null;
         }
 

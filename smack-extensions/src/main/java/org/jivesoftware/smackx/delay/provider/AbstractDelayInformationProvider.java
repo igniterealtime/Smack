@@ -16,17 +16,22 @@
  */
 package org.jivesoftware.smackx.delay.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
-public abstract class AbstractDelayInformationProvider implements PacketExtensionProvider {
+public abstract class AbstractDelayInformationProvider extends PacketExtensionProvider<DelayInformation> {
 
     @Override
-    public final PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public final DelayInformation parse(XmlPullParser parser,
+                    int initialDepth) throws XmlPullParserException,
+                    IOException, SmackException {
         String stampString = (parser.getAttributeValue("", "stamp"));
         String from = parser.getAttributeValue("", "from");
         String reason = null;
@@ -46,10 +51,14 @@ public abstract class AbstractDelayInformationProvider implements PacketExtensio
         } else {
             parser.next();
         }
-        assert(parser.getEventType() == XmlPullParser.END_TAG);
-        Date stamp = parseDate(stampString);
+        Date stamp;
+        try {
+            stamp = parseDate(stampString);
+        } catch (ParseException e) {
+            throw new SmackException(e);
+        }
         return new DelayInformation(stamp, from, reason);
     }
 
-    protected abstract Date parseDate(String string) throws Exception;
+    protected abstract Date parseDate(String string) throws ParseException;
 }

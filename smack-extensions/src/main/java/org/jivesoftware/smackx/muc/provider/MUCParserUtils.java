@@ -16,14 +16,17 @@
  */
 package org.jivesoftware.smackx.muc.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class MUCParserUtils {
-    public static MUCItem parseItem(XmlPullParser parser) throws Exception {
+    public static MUCItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         int initialDepth = parser.getDepth();
         MUCAffiliation affiliation = MUCAffiliation.fromString(parser.getAttributeValue("", "affiliation"));
         String nick = parser.getAttributeValue("", "nick");
@@ -54,7 +57,7 @@ public class MUCParserUtils {
         return new MUCItem(affiliation, role, actor, reason, jid, nick);
     }
 
-    public static Destroy parseDestroy(XmlPullParser parser) throws Exception {
+    public static Destroy parseDestroy(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         Destroy destroy = new Destroy();
         destroy.setJid(parser.getAttributeValue("", "jid"));

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.provider;
 
+import org.jivesoftware.smack.packet.PacketExtension;
+
 /**
  *
  */
@@ -28,7 +30,8 @@ public final class StreamFeatureProviderInfo extends AbstractProviderInfo {
      * @param namespace Namespace that provider parses.
      * @param extProvider The provider implementation.
      */
-    public StreamFeatureProviderInfo(String elementName, String namespace, StreamFeatureProvider extProvider) {
+    public StreamFeatureProviderInfo(String elementName, String namespace,
+                    PacketExtensionProvider<PacketExtension> extProvider) {
         super(elementName, namespace, extProvider);
     }
 

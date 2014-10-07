@@ -23,11 +23,14 @@ import org.jivesoftware.smackx.workgroup.agent.OfferContent;
 import org.jivesoftware.smackx.workgroup.agent.TransferRequest;
 import org.jivesoftware.smackx.workgroup.agent.UserRequest;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +40,14 @@ import java.util.Map;
  *
  * @author loki der quaeler
  */
-public class OfferRequestProvider implements IQProvider {
+public class OfferRequestProvider extends IQProvider<IQ> {
+    // FIXME It seems because OfferRequestPacket is also defined here, we can
+    // not add it as generic to the provider, the provider and the packet should
+    // be split, but since this is legacy code, I don't think that this will
+    // happen anytime soon.
 
-    public OfferRequestProvider() {
-    }
-
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         int eventType = parser.getEventType();
         String sessionID = null;
         int timeout = -1;

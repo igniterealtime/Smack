@@ -27,27 +27,14 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Alvaro Saurin
  */
-public class JingleContentInfoProvider implements PacketExtensionProvider {
-
-    /**
-     * Creates a new provider. ProviderManager requires that every
-     * PacketExtensionProvider has a public, no-argument constructor
-     */
-    public JingleContentInfoProvider() {
-        super();
-    }
-
-    public PacketExtension parseExtension(final XmlPullParser parser) throws Exception {
-        // This method must be overwritten by subclasses...
-        return null;
-    }
+public class JingleContentInfoProvider {
 
     /**
      * JingleDescription.Audio info provider
      */
-    public static class Audio extends JingleContentInfoProvider {
+    public static class Audio extends PacketExtensionProvider<PacketExtension> {
 
-        private PacketExtension audioInfo;
+        private final PacketExtension audioInfo;
 
         /**
          * Empty constructor.
@@ -69,8 +56,8 @@ public class JingleContentInfoProvider implements PacketExtensionProvider {
         /**
          * Parse a JingleDescription.Audio extension.
          */
-        public PacketExtension parseExtension(final XmlPullParser parser)
-                throws Exception {
+        @Override
+        public PacketExtension parse(XmlPullParser parser, int initialDepth) {
             PacketExtension result = null;
 
             if (audioInfo != null) {

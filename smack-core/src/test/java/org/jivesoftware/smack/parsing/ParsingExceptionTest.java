@@ -72,12 +72,12 @@ public class ParsingExceptionTest {
         assertThat(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", equalsCharSequence(content));
     }
 
-    static class ThrowException implements PacketExtensionProvider {
+    static class ThrowException extends PacketExtensionProvider<PacketExtension> {
         public static final String ELEMENT = "exception";
         public static final String NAMESPACE = "http://smack.jivesoftware.org/exception";
 
         @Override
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        public PacketExtension parse(XmlPullParser parser, int initialDepth) throws SmackException {
             throw new SmackException("Test Exception");
         }
 

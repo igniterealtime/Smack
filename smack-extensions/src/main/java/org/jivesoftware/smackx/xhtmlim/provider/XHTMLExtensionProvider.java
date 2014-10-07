@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.xhtmlim.provider;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -31,12 +30,12 @@ import java.io.IOException;
  *
  * @author Florian Schmaus
  */
-public class XHTMLExtensionProvider implements PacketExtensionProvider {
+public class XHTMLExtensionProvider extends PacketExtensionProvider<XHTMLExtension> {
+
     @Override
-    public PacketExtension parseExtension(XmlPullParser parser) throws IOException, XmlPullParserException {
+    public XHTMLExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
 
-        int startDepth = parser.getDepth();
         while (true) {
             int eventType = parser.getEventType();
             String name = parser.getName();
@@ -45,7 +44,7 @@ public class XHTMLExtensionProvider implements PacketExtensionProvider {
                     xhtmlExtension.addBody(PacketParserUtils.parseElement(parser));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (name.equals(XHTMLExtension.ELEMENT) && parser.getDepth() <= startDepth) {
+                if (parser.getDepth() == initialDepth) {
                     return xhtmlExtension;
                 }
             }

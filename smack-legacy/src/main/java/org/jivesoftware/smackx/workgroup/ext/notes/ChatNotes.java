@@ -17,10 +17,13 @@
 
 package org.jivesoftware.smackx.workgroup.ext.notes;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * IQ packet for retrieving and adding Chat Notes.
@@ -76,13 +79,10 @@ public class ChatNotes extends IQ {
      *
      * @author Derek DeMoro
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<ChatNotes> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public ChatNotes parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             ChatNotes chatNotes = new ChatNotes();
 
             boolean done = false;

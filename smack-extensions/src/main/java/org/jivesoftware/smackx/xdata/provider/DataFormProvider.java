@@ -17,14 +17,15 @@
 
 package org.jivesoftware.smackx.xdata.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,16 +34,10 @@ import java.util.List;
  * 
  * @author Gaston Dombiak
  */
-public class DataFormProvider implements PacketExtensionProvider {
+public class DataFormProvider extends PacketExtensionProvider<DataForm> {
 
-    /**
-     * Creates a new DataFormProvider.
-     * ProviderManager requires that every PacketExtensionProvider has a public, no-argument constructor
-     */
-    public DataFormProvider() {
-    }
-
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    @Override
+    public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         boolean done = false;
         DataForm dataForm = new DataForm(parser.getAttributeValue("", "type"));
         while (!done) {
@@ -76,7 +71,7 @@ public class DataFormProvider implements PacketExtensionProvider {
         return dataForm;
     }
 
-    private FormField parseField(XmlPullParser parser) throws Exception {
+    private FormField parseField(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         FormField formField = new FormField(parser.getAttributeValue("", "var"));
         formField.setLabel(parser.getAttributeValue("", "label"));
@@ -105,7 +100,7 @@ public class DataFormProvider implements PacketExtensionProvider {
         return formField;
     }
 
-    private DataForm.Item parseItem(XmlPullParser parser) throws Exception {
+    private DataForm.Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         List<FormField> fields = new ArrayList<FormField>();
         while (!done) {
@@ -123,7 +118,7 @@ public class DataFormProvider implements PacketExtensionProvider {
         return new DataForm.Item(fields);
     }
 
-    private DataForm.ReportedData parseReported(XmlPullParser parser) throws Exception {
+    private DataForm.ReportedData parseReported(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         List<FormField> fields = new ArrayList<FormField>();
         while (!done) {
@@ -141,7 +136,7 @@ public class DataFormProvider implements PacketExtensionProvider {
         return new DataForm.ReportedData(fields);
     }
 
-    private FormField.Option parseOption(XmlPullParser parser) throws Exception {
+    private FormField.Option parseOption(XmlPullParser parser) throws XmlPullParserException, IOException {
         boolean done = false;
         FormField.Option option = null;
         String label = parser.getAttributeValue("", "label");

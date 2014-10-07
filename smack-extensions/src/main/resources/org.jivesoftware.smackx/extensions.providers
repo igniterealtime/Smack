@@ -194,7 +194,7 @@
     <iqProvider>
       <elementName>data</elementName>
       <namespace>http://jabber.org/protocol/ibb</namespace>
-      <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider</className>
+      <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider$IQProvider</className>
     </iqProvider>
 
     <iqProvider>
@@ -206,7 +206,7 @@
     <extensionProvider>
         <elementName>data</elementName>
         <namespace>http://jabber.org/protocol/ibb</namespace>
-        <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider</className>
+        <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider$PacketExtensionProvider</className>
     </extensionProvider>
 
     <!-- Ad-Hoc Command -->

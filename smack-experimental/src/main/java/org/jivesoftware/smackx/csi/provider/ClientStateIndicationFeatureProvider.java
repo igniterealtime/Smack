@@ -19,16 +19,15 @@ package org.jivesoftware.smackx.csi.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.StreamFeatureProvider;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.csi.packet.ClientStateIndication;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class ClientStateIndicationFeatureProvider implements StreamFeatureProvider {
+public class ClientStateIndicationFeatureProvider extends PacketExtensionProvider<ClientStateIndication.Feature> {
 
     @Override
-    public PacketExtension parseStreamFeature(XmlPullParser parser)
+    public ClientStateIndication.Feature parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException, SmackException {
         return ClientStateIndication.Feature.INSTANCE;
     }

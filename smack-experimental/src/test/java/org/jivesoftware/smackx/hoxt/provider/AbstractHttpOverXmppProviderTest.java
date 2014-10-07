@@ -52,10 +52,10 @@ public class AbstractHttpOverXmppProviderTest {
         expectedHeaders.put("Allow", "OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE");
         expectedHeaders.put("Content-Length", "0");
 
-        AbstractHttpOverXmppProvider provider = new HttpOverXmppRespProvider();
+        HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        IQ iq = provider.parseIQ(parser);
+        IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
         AbstractHttpOverXmpp.AbstractBody body = ((HttpOverXmppResp) iq).getResp();
 
@@ -72,10 +72,10 @@ public class AbstractHttpOverXmppProviderTest {
         Map<String, String> expectedHeaders = new HashMap<String, String>();
         expectedHeaders.put("Host", "clayster.com");
 
-        AbstractHttpOverXmppProvider provider = new HttpOverXmppReqProvider();
+        HttpOverXmppReqProvider provider = new HttpOverXmppReqProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        IQ iq = provider.parseIQ(parser);
+        IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
         AbstractHttpOverXmpp.AbstractBody body = ((HttpOverXmppReq) iq).getReq();
 
@@ -181,10 +181,10 @@ public class AbstractHttpOverXmppProviderTest {
     }
 
     private AbstractHttpOverXmpp.AbstractBody parseAbstractBody(String string, String tag) throws Exception {
-        AbstractHttpOverXmppProvider provider = new HttpOverXmppRespProvider();
+        HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string, tag);
 
-        IQ iq = provider.parseIQ(parser);
+        IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
         AbstractHttpOverXmpp.AbstractBody body = ((HttpOverXmppResp) iq).getResp();
         return body;

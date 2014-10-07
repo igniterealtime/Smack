@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -35,18 +34,15 @@ import java.util.TimeZone;
  *
  * @author Gaston Dombiak
  */
-public class TranscriptsProvider implements IQProvider {
+public class TranscriptsProvider extends IQProvider<Transcripts> {
 
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     static {
         UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
 
-    public TranscriptsProvider() {
-        super();
-    }
-
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public Transcripts parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String userID = parser.getAttributeValue("", "userID");
         List<Transcripts.TranscriptSummary> summaries = new ArrayList<Transcripts.TranscriptSummary>();
 

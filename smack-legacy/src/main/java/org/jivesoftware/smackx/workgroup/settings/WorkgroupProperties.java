@@ -17,10 +17,13 @@
 
 package org.jivesoftware.smackx.workgroup.settings;
 
+import java.io.IOException;
+
 import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class WorkgroupProperties extends IQ {
 
@@ -89,13 +92,10 @@ public class WorkgroupProperties extends IQ {
     /**
      * Packet extension provider for SoundSetting Packets.
      */
-    public static class InternalProvider implements IQProvider {
+    public static class InternalProvider extends IQProvider<WorkgroupProperties> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                throw new IllegalStateException("Parser not in proper position, or bad XML.");
-            }
-
+        @Override
+        public WorkgroupProperties parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             WorkgroupProperties props = new WorkgroupProperties();
 
             boolean done = false;

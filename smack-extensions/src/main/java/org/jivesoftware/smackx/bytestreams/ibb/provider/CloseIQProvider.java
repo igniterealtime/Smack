@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 import org.xmlpull.v1.XmlPullParser;
@@ -26,9 +25,10 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Henning Staib
  */
-public class CloseIQProvider implements IQProvider {
+public class CloseIQProvider extends IQProvider<Close> {
 
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public Close parse(XmlPullParser parser, int initialDepth) {
         String sid = parser.getAttributeValue("", "sid");
         return new Close(sid);
     }

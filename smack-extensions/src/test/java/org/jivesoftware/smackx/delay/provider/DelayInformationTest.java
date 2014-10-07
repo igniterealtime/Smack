@@ -69,7 +69,7 @@ public class DelayInformationTest extends InitExtensions {
             .asString(outputProperties);
 
         parser = PacketParserUtils.getParserFor(control);
-        delayInfo = (DelayInformation) p.parseExtension(parser);
+        delayInfo = (DelayInformation) p.parse(parser);
         
         assertEquals("capulet.com", delayInfo.getFrom());
         assertEquals(date, delayInfo.getStamp());
@@ -85,7 +85,7 @@ public class DelayInformationTest extends InitExtensions {
             .asString(outputProperties);
 
         parser = PacketParserUtils.getParserFor(control);
-        delayInfo = (DelayInformation) p.parseExtension(parser);
+        delayInfo = (DelayInformation) p.parse(parser);
 
         assertEquals("capulet.com", delayInfo.getFrom());
         assertEquals(date, delayInfo.getStamp());
@@ -109,7 +109,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-09-10T23:08:25.12Z")
             .asString(outputProperties);
 
-        delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
+        delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
         
         GregorianCalendar cal = (GregorianCalendar) calendar.clone(); 
         cal.add(Calendar.MILLISECOND, 12);
@@ -122,7 +122,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-09-10T23:08:25Z")
             .asString(outputProperties);
 
-        delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
+        delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
 
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -133,7 +133,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "2002-9-10T23:08:25Z")
             .asString(outputProperties);
         
-        delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
+        delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
     }
@@ -152,7 +152,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "20020910T23:08:25")
             .asString(outputProperties);
         
-        delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
+        delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
         
         assertEquals(calendar.getTime(), delayInfo.getStamp());
 
@@ -172,7 +172,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", dateFormat.format(dateInPast.getTime()))
             .asString(outputProperties);
 
-        delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
+        delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
 
         assertEquals(dateInPast.getTime(), delayInfo.getStamp());
 
@@ -183,7 +183,7 @@ public class DelayInformationTest extends InitExtensions {
             .a("stamp", "200868T09:16:20")
             .asString(outputProperties);
 
-        delayInfo = (DelayInformation) p.parseExtension(PacketParserUtils.getParserFor(control));
+        delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
         Date controlDate = XmppDateTime.parseDate("2008-06-08T09:16:20.0Z");
         
         assertEquals(controlDate, delayInfo.getStamp());

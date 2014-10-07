@@ -89,11 +89,11 @@ public class DeliveryReceipt implements PacketExtension
     /**
      * This Provider parses and returns DeliveryReceipt packets.
      */
-    public static class Provider extends EmbeddedExtensionProvider
+    public static class Provider extends EmbeddedExtensionProvider<DeliveryReceipt>
     {
 
         @Override
-        protected PacketExtension createReturnExtension(String currentElement, String currentNamespace,
+        protected DeliveryReceipt createReturnExtension(String currentElement, String currentNamespace,
                 Map<String, String> attributeMap, List<? extends PacketExtension> content)
         {
             return new DeliveryReceipt(attributeMap.get("id"));

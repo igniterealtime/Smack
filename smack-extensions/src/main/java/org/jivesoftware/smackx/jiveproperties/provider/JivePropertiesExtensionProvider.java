@@ -17,20 +17,21 @@
 package org.jivesoftware.smackx.jiveproperties.provider;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
-public class JivePropertiesExtensionProvider implements PacketExtensionProvider {
+public class JivePropertiesExtensionProvider extends PacketExtensionProvider<JivePropertiesExtension> {
 
     private static final Logger LOGGER = Logger.getLogger(JivePropertiesExtensionProvider.class.getName());
 
@@ -45,10 +46,13 @@ public class JivePropertiesExtensionProvider implements PacketExtensionProvider 
      * 
      * @param parser the XML parser, positioned at the start of a properties sub-packet.
      * @return a map of the properties.
-     * @throws Exception if an error occurs while parsing the properties.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
     @Override
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public JivePropertiesExtension parse(XmlPullParser parser,
+                    int initialDepth) throws XmlPullParserException,
+                    IOException {
         Map<String, Object> properties = new HashMap<String, Object>();
         while (true) {
             int eventType = parser.next();

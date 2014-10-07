@@ -17,9 +17,12 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * IQ packet for retrieving and changing the Agent personal information.
@@ -97,13 +100,10 @@ public class AgentInfo extends IQ {
      *
      * @author Gaston Dombiak
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<AgentInfo> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public AgentInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             AgentInfo answer = new AgentInfo();
 
             boolean done = false;

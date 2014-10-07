@@ -215,7 +215,7 @@ public class Bookmarks implements PrivateData {
             super();
         }
 
-        public PrivateData parsePrivateData(XmlPullParser parser) throws Exception {
+        public PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException {
             Bookmarks storage = new Bookmarks();
 
             boolean done = false;
@@ -265,7 +265,7 @@ public class Bookmarks implements PrivateData {
         return urlStore;
     }
 
-    private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws Exception {
+    private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue("", "name");
         String autojoin = parser.getAttributeValue("", "autojoin");
         String jid = parser.getAttributeValue("", "jid");

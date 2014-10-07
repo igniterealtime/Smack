@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Packet provider for base64 binary chunks.
@@ -27,16 +29,10 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public class Base64BinaryChunkProvider implements PacketExtensionProvider {
-
-    /**
-     * Required no-argument constructor.
-     */
-    public Base64BinaryChunkProvider() {
-    }
+public class Base64BinaryChunkProvider extends PacketExtensionProvider<Base64BinaryChunk> {
 
     @Override
-    public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public Base64BinaryChunk parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String streamId = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_STREAM_ID);
         String nrString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_NR);
         String lastString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_LAST);

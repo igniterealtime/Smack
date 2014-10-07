@@ -17,9 +17,12 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Packet extension for {@link org.jivesoftware.smackx.workgroup.agent.InvitationRequest}.
@@ -138,9 +141,12 @@ public class RoomInvitation implements PacketExtension {
         workgroup
     }
 
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<RoomInvitation> {
 
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+        @Override
+        public RoomInvitation parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
             final RoomInvitation invitation = new RoomInvitation();
             invitation.type = Type.valueOf(parser.getAttributeValue("", "type"));
 

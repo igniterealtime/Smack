@@ -17,9 +17,12 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A packet extension that contains information about the user and agent in a
@@ -65,13 +68,17 @@ public class WorkgroupInformation implements PacketExtension {
         return buf.toString();
     }
 
-    public static class Provider implements PacketExtensionProvider {
+    public static class Provider extends PacketExtensionProvider<WorkgroupInformation> {
 
         /**
          * PacketExtensionProvider implementation
+         * @throws IOException 
+         * @throws XmlPullParserException 
          */
-        public PacketExtension parseExtension (XmlPullParser parser)
-            throws Exception {
+        @Override
+        public WorkgroupInformation parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException {
             String workgroupJID = parser.getAttributeValue("", "jid");
 
             // since this is a start and end tag, and we arrive on the start, this should guarantee

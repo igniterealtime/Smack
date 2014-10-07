@@ -70,7 +70,7 @@ public class AMPExtensionTest {
         assertEquals(XmlPullParser.START_TAG, parser.next());
         assertEquals(AMPExtension.ELEMENT, parser.getName());
 
-        PacketExtension extension = ampProvider.parseExtension(parser);
+        PacketExtension extension = ampProvider.parse(parser);
         assertTrue(extension instanceof AMPExtension);
         AMPExtension amp = (AMPExtension) extension;
 
@@ -89,7 +89,7 @@ public class AMPExtensionTest {
 
         assertEquals(XmlPullParser.START_TAG, parser.next());
         assertEquals(AMPExtension.ELEMENT, parser.getName());
-        PacketExtension extension = ampProvider.parseExtension(parser);
+        PacketExtension extension = ampProvider.parse(parser);
         assertTrue(extension instanceof AMPExtension);
         AMPExtension amp = (AMPExtension) extension;
 

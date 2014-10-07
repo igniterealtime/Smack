@@ -17,18 +17,22 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * An IQProvider class which has savvy about the offer-revoke tag.<br>
  *
  * @author loki der quaeler
  */
-public class OfferRevokeProvider implements IQProvider {
+public class OfferRevokeProvider extends IQProvider<IQ> {
 
-    public IQ parseIQ (XmlPullParser parser) throws Exception {
+    @Override
+    public OfferRevokePacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         // The parser will be positioned on the opening IQ tag, so get the JID attribute.
         String userJID = parser.getAttributeValue("", "jid");
         // Default the userID to the JID.

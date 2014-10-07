@@ -16,15 +16,14 @@
  */
 package org.jivesoftware.smackx.iqregister.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.StreamFeatureProvider;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.xmlpull.v1.XmlPullParser;
 
-public class RegistrationStreamFeatureProvider implements StreamFeatureProvider {
+public class RegistrationStreamFeatureProvider extends PacketExtensionProvider<Registration.Feature> {
 
     @Override
-    public PacketExtension parseStreamFeature(XmlPullParser parser) {
+    public Registration.Feature parse(XmlPullParser parser, int initialDepth) {
         return Registration.Feature.INSTANCE;
     }
 

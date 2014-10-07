@@ -17,11 +17,14 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 
 public class OfferConfirmation extends IQ {
@@ -57,9 +60,11 @@ public class OfferConfirmation extends IQ {
         return buf.toString();
     }
 
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<OfferConfirmation> {
 
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public OfferConfirmation parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException {
             final OfferConfirmation confirmation = new OfferConfirmation();
 
             boolean done = false;

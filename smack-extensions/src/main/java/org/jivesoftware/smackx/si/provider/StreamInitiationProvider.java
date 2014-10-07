@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.si.provider;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
@@ -29,6 +30,7 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation.File;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The StreamInitiationProvider parses StreamInitiation packets.
@@ -36,10 +38,12 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Alexander Wenckus
  * 
  */
-public class StreamInitiationProvider implements IQProvider {
+public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
     private static final Logger LOGGER = Logger.getLogger(StreamInitiationProvider.class.getName());
-    
-	public IQ parseIQ(final XmlPullParser parser) throws Exception {
+
+    @Override
+    public StreamInitiation parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, SmackException {
 		boolean done = false;
 
 		// si
@@ -79,7 +83,7 @@ public class StreamInitiationProvider implements IQProvider {
 					isRanged = true;
 				} else if (elementName.equals("x")
 						&& namespace.equals("jabber:x:data")) {
-					form = (DataForm) dataFormProvider.parseExtension(parser);
+					form = dataFormProvider.parse(parser);
 				}
 			} else if (eventType == XmlPullParser.END_TAG) {
 				if (elementName.equals("si")) {

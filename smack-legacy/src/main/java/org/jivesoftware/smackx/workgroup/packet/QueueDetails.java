@@ -18,10 +18,14 @@
 package org.jivesoftware.smackx.workgroup.packet;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -139,9 +143,12 @@ public class QueueDetails implements PacketExtension {
     /**
      * Provider class for QueueDetails packet extensions.
      */
-    public static class Provider implements PacketExtensionProvider {
-        
-        public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+    public static class Provider extends PacketExtensionProvider<QueueDetails> {
+
+        @Override
+        public QueueDetails parse(XmlPullParser parser,
+                        int initialDepth) throws XmlPullParserException,
+                        IOException, SmackException {
             
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
@@ -174,10 +181,19 @@ public class QueueDetails implements PacketExtension {
                             time = Integer.parseInt(parser.nextText());
                         }
                         else if ("join-time".equals(parser.getName())) {
-                            joinTime = dateFormat.parse(parser.nextText());                            
+                            try {
+                                joinTime = dateFormat.parse(parser.nextText());
+                            } catch (ParseException e) {
+                                throw new SmackException(e);
+                            }
                         }
                         else if( parser.getName().equals( "waitTime" ) ) {
-                            Date wait = dateFormat.parse(parser.nextText());
+                            Date wait;
+                            try {
+                                wait = dateFormat.parse(parser.nextText());
+                            } catch (ParseException e) {
+                                throw new SmackException(e);
+                            }
                             LOGGER.fine(wait.toString());
                         }
 

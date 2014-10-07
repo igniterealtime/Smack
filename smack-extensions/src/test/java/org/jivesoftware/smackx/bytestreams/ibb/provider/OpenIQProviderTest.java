@@ -53,7 +53,7 @@ public class OpenIQProviderTest {
             .asString(outputProperties);
         
         OpenIQProvider oip = new OpenIQProvider();
-        Open open = (Open) oip.parseIQ(getParser(control));
+        Open open = oip.parse(getParser(control));
         
         assertEquals(StanzaType.IQ, open.getStanza());
     }
@@ -68,7 +68,7 @@ public class OpenIQProviderTest {
             .asString(outputProperties);
         
         OpenIQProvider oip = new OpenIQProvider();
-        Open open = (Open) oip.parseIQ(getParser(control));
+        Open open = oip.parse(getParser(control));
         
         assertEquals(StanzaType.MESSAGE, open.getStanza());
     }

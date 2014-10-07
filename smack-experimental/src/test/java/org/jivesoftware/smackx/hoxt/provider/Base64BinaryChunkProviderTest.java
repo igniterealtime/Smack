@@ -39,7 +39,7 @@ public class Base64BinaryChunkProviderTest {
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        PacketExtension extension = provider.parseExtension(parser);
+        PacketExtension extension = provider.parse(parser);
         assertTrue(extension instanceof Base64BinaryChunk);
 
         Base64BinaryChunk chunk = (Base64BinaryChunk) extension;
@@ -57,7 +57,7 @@ public class Base64BinaryChunkProviderTest {
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        PacketExtension extension = provider.parseExtension(parser);
+        PacketExtension extension = provider.parse(parser);
         assertTrue(extension instanceof Base64BinaryChunk);
 
         Base64BinaryChunk chunk = (Base64BinaryChunk) extension;

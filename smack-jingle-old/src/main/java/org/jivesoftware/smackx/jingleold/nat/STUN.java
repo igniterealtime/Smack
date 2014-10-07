@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingleold.nat;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * STUN IQ Packet used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
@@ -119,13 +121,12 @@ public class STUN extends IQ {
      *
      * @author Thiago Rocha
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<STUN> {
 
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public STUN parse(XmlPullParser parser, int initialDepth)
+                        throws SmackException, XmlPullParserException,
+                        IOException {
 
             boolean done = false;
 
@@ -133,7 +134,7 @@ public class STUN extends IQ {
             String elementName;
 
             if (!parser.getNamespace().equals(NAMESPACE))
-                throw new Exception("Not a STUN packet");
+                throw new SmackException("Not a STUN packet");
 
             STUN iq = new STUN();
 

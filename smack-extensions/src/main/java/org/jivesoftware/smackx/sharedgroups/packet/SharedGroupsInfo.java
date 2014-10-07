@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.sharedgroups.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,16 +60,11 @@ public class SharedGroupsInfo extends IQ {
     /**
      * Internal Search service Provider.
      */
-    public static class Provider implements IQProvider {
+    public static class Provider extends IQProvider<SharedGroupsInfo> {
 
-        /**
-         * Provider Constructor.
-         */
-        public Provider() {
-            super();
-        }
-
-        public IQ parseIQ(XmlPullParser parser) throws Exception {
+        @Override
+        public SharedGroupsInfo parse(XmlPullParser parser, int initialDepth)
+                        throws XmlPullParserException, IOException {
             SharedGroupsInfo groupsInfo = new SharedGroupsInfo();
 
             boolean done = false;

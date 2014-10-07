@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.vcardtemp.provider;
 
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -25,14 +25,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,12 +47,13 @@ import java.util.logging.Logger;
  * @author Gaston Dombiak
  * @author Derek DeMoro
  */
-public class VCardProvider implements IQProvider {
+public class VCardProvider extends IQProvider<VCard> {
     private static final Logger LOGGER = Logger.getLogger(VCardProvider.class.getName());
     
     private static final String PREFERRED_ENCODING = "UTF-8";
 
-    public IQ parseIQ(XmlPullParser parser) throws Exception {
+    @Override
+    public VCard parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         final StringBuilder sb = new StringBuilder();
         try {
             int event = parser.getEventType();
@@ -82,7 +86,11 @@ public class VCardProvider implements IQProvider {
         }
 
         String xmlText = sb.toString();
-        return createVCardFromXML(xmlText);
+        try {
+            return createVCardFromXML(xmlText);
+        } catch (SAXException | ParserConfigurationException e) {
+            throw new SmackException(e);
+        }
     }
 
     /**
@@ -90,9 +98,12 @@ public class VCardProvider implements IQProvider {
      *
      * @param xml the xml representing a users vCard.
      * @return the VCard.
-     * @throws Exception if an exception occurs.
+     * @throws IOException 
+     * @throws SAXException 
+     * @throws UnsupportedEncodingException 
+     * @throws ParserConfigurationException 
      */
-    public static VCard createVCardFromXML(String xml) throws Exception {
+    public static VCard createVCardFromXML(String xml) throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
         VCard vCard = new VCard();
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
