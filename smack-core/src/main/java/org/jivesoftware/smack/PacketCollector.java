@@ -45,9 +45,10 @@ public class PacketCollector {
 
     private static final Logger LOGGER = Logger.getLogger(PacketCollector.class.getName());
 
-    private PacketFilter packetFilter;
-    private ArrayBlockingQueue<Packet> resultQueue;
-    private XMPPConnection connection;
+    private final PacketFilter packetFilter;
+    private final ArrayBlockingQueue<Packet> resultQueue;
+    private final XMPPConnection connection;
+
     private boolean cancelled = false;
 
     /**
