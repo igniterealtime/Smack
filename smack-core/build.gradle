@@ -1,12 +1,6 @@
 description = """\
 Smack core components."""
 
-configurations {
-	compression
-	dns
-	sasl
-}
-
 dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
@@ -17,28 +11,6 @@ dependencies {
 	testCompile 'org.powermock:powermock-api-mockito:1.5.5'
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6'
 	testCompile 'net.iharder:base64:2.3.8'
-}
-
-task compressionJar(type: Jar) {
-	appendix = 'compression'
-	dependsOn classes
-	from sourceSets.main.output
-	include('org/jivesoftware/smack/compression/**')
-	include('org/jivesoftware/smack/SmackConfiguration.class')
-}
-
-task dnsJar(type: Jar) {
-	appendix = 'dns'
-	dependsOn classes
-	from sourceSets.main.output
-	include('org/jivesoftware/smack/util/dns/**')
-	include('org/jivesoftware/smack/util/DNSUtil.class')
-	include('org/jivesoftware/smack/initializer/**')
-}
-
-artifacts {
-	compression compressionJar
-	dns dnsJar
 }
 
 class CreateFileTask extends DefaultTask {
