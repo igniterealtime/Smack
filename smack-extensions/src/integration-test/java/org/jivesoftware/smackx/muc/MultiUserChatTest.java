@@ -1772,53 +1772,6 @@ public class MultiUserChatTest extends SmackTestCase {
             }
     }
 
-    /**
-     * Test that deaf occupants do not get broadcasted messages. Deaf occupants is a Jive
-     * extension to MUC so it may not work with other servers.
-     */
-    public void testDeafOccupants() {
-        try {
-            // User2 joins the room as a "normal" occupant
-            MultiUserChat muc2 = new MultiUserChat(getConnection(1), room);
-            muc2.join("testbot2");
-
-            // User3 joins the room as a "deaf" occupant
-            MultiUserChat muc3 = new MultiUserChat(getConnection(2), room);
-            muc3.addPresenceInterceptor(new DeafOccupantInterceptor());
-            muc3.join("testbot3");
-
-            // User1 sends some messages to the room
-            muc.sendMessage("Message 1");
-            muc.sendMessage("Message 2");
-
-            Thread.sleep(500);
-
-            Message msg;
-            // Normal occupant gets first message
-            msg = muc2.nextMessage(1000);
-            assertNotNull("First message is null", msg);
-            // Get second message
-            msg = muc2.nextMessage(1000);
-            assertNotNull("Second message is null", msg);
-            // Try to get a third message
-            msg = muc2.nextMessage(1000);
-            assertNull("Third message is not null", msg);
-
-            // Deaf occupant tries to get a third message
-            msg = muc3.nextMessage(1000);
-            assertNull("Deaf occupant got a broadcast message", msg);
-
-            // User2 leaves the room
-            muc2.leave();
-            // User3 leaves the room
-            muc3.leave();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-    }
-
     private void makeRoomModerated() throws XMPPException {
         // User1 (which is the room owner) converts the instant room into a moderated room
         Form form = muc.getConfigurationForm();
