@@ -22,9 +22,11 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -93,8 +95,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * A collection of ConnectionListeners which listen for connection closing
      * and reconnection events.
      */
-    protected final Collection<ConnectionListener> connectionListeners =
-            new CopyOnWriteArrayList<ConnectionListener>();
+    protected final Set<ConnectionListener> connectionListeners =
+            new CopyOnWriteArraySet<ConnectionListener>();
 
     /**
      * A collection of PacketCollectors which collects packets for a specified filter
@@ -609,9 +611,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (connectionListener == null) {
             return;
         }
-        if (!connectionListeners.contains(connectionListener)) {
-            connectionListeners.add(connectionListener);
-        }
+        connectionListeners.add(connectionListener);
     }
 
     @Override
