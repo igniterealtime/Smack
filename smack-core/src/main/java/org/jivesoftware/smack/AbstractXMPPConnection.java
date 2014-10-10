@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledExecutorService;
@@ -129,8 +128,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * sent to the server. These interceptors may modify the packet before it is being
      * actually sent to the server.
      */
-    protected final Map<PacketInterceptor, InterceptorWrapper> interceptors =
-            new ConcurrentHashMap<PacketInterceptor, InterceptorWrapper>();
+    private final Map<PacketInterceptor, InterceptorWrapper> interceptors =
+            new HashMap<PacketInterceptor, InterceptorWrapper>();
 
     protected final Lock connectionLock = new ReentrantLock();
 
@@ -732,21 +731,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (packetInterceptor == null) {
             throw new NullPointerException("Packet interceptor is null.");
         }
-        interceptors.put(packetInterceptor, new InterceptorWrapper(packetInterceptor, packetFilter));
+        InterceptorWrapper interceptorWrapper = new InterceptorWrapper(packetInterceptor, packetFilter);
+        synchronized (interceptors) {
+            interceptors.put(packetInterceptor, interceptorWrapper);
+        }
     }
 
     @Override
     public void removePacketInterceptor(PacketInterceptor packetInterceptor) {
-        interceptors.remove(packetInterceptor);
-    }
-
-    /**
-     * Get a map of all packet interceptors for sending packets of this connection.
-     * 
-     * @return a map of all packet interceptors for sending packets.
-     */
-    protected Map<PacketInterceptor, InterceptorWrapper> getPacketInterceptors() {
-        return interceptors;
+        synchronized (interceptors) {
+            interceptors.remove(packetInterceptor);
+        }
     }
 
     /**
@@ -758,10 +753,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet that is going to be sent to the server
      */
     private void firePacketInterceptors(Packet packet) {
-        if (packet != null) {
+        List<PacketInterceptor> interceptorsToInvoke = new LinkedList<PacketInterceptor>();
+        synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
-                interceptorWrapper.notifyListener(packet);
+                if (interceptorWrapper.filterMatches(packet)) {
+                    interceptorsToInvoke.add(interceptorWrapper.getInterceptor());
+                }
             }
+        }
+        for (PacketInterceptor interceptor : interceptorsToInvoke) {
+            interceptor.interceptPacket(packet);
         }
     }
 
@@ -956,8 +957,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected static class InterceptorWrapper {
 
-        private PacketInterceptor packetInterceptor;
-        private PacketFilter packetFilter;
+        private final PacketInterceptor packetInterceptor;
+        private final PacketFilter packetFilter;
 
         /**
          * Create a class which associates a packet filter with an interceptor.
@@ -970,29 +971,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             this.packetFilter = packetFilter;
         }
 
-        public boolean equals(Object object) {
-            if (object == null) {
-                return false;
-            }
-            if (object instanceof InterceptorWrapper) {
-                return ((InterceptorWrapper) object).packetInterceptor
-                        .equals(this.packetInterceptor);
-            }
-            else if (object instanceof PacketInterceptor) {
-                return object.equals(this.packetInterceptor);
-            }
-            return false;
+        public boolean filterMatches(Packet packet) {
+            return packetFilter == null || packetFilter.accept(packet);
         }
 
-        /**
-         * Notify and process the packet interceptor if the filter matches the packet.
-         * 
-         * @param packet the packet which will be sent.
-         */
-        public void notifyListener(Packet packet) {
-            if (packetFilter == null || packetFilter.accept(packet)) {
-                packetInterceptor.interceptPacket(packet);
-            }
+        public PacketInterceptor getInterceptor() {
+            return packetInterceptor;
         }
     }
 
