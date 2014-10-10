@@ -102,8 +102,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * A collection of PacketCollectors which collects packets for a specified filter
      * and perform blocking and polling operations on the result queue.
+     * <p>
+     * We use a ConcurrentLinkedQueue here, because its Iterator is weakly
+     * consistent and we want {@link #invokePacketCollectors(Packet)} for-each
+     * loop to be lock free. As drawback, removing a PacketCollector is O(n).
+     * The alternative would be a synchronized HashSet, but this would mean a
+     * synchronized block around every usage of <code>collectors</code>.
+     * </p>
      */
-    protected final Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
+    private final Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
 
     /**
      * List of PacketListeners that will be notified when a new packet was received.
@@ -658,15 +665,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         collectors.remove(collector);
     }
 
-    /**
-     * Get the collection of all packet collectors for this connection.
-     * 
-     * @return a collection of packet collectors for this connection.
-     */
-    protected Collection<PacketCollector> getPacketCollectors() {
-        return collectors;
-    }
-
     @Override
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
         if (packetListener == null) {
@@ -805,6 +803,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
+     * Invoke {@link PacketCollector#processPacket(Packet)} for every
+     * PacketCollector with the given packet.
+     *
+     * @param packet the packet to notify the PacketCollectors about.
+     */
+    protected void invokePacketCollectors(Packet packet) {
+        // Loop through all collectors and notify the appropriate ones.
+        for (PacketCollector collector: collectors) {
+            collector.processPacket(packet);
+        }
+    }
+
+    /**
      * Processes a packet after it's been fully parsed by looping through the installed
      * packet collectors and listeners and letting them examine the packet to see if
      * they are a match with the filter.
@@ -816,10 +827,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return;
         }
 
-        // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector: getPacketCollectors()) {
-            collector.processPacket(packet);
-        }
+        invokePacketCollectors(packet);
 
         // Deliver the incoming packet to listeners.
         executorService.submit(new ListenerNotification(packet));

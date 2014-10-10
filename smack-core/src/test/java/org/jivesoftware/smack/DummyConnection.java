@@ -240,10 +240,7 @@ public class DummyConnection extends AbstractXMPPConnection {
             return;
         }
 
-        // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector: getPacketCollectors()) {
-            collector.processPacket(packet);
-        }
+        invokePacketCollectors(packet);
 
         if (SmackConfiguration.DEBUG_ENABLED) {
             System.out.println("[RECV]: " + packet.toXML());
