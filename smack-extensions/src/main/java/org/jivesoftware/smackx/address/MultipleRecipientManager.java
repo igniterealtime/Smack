@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ import java.util.List;
 public class MultipleRecipientManager {
 
     /**
-     * Sends the specified packet to the list of specified recipients using the
+     * Sends the specified packet to the collection of specified recipients using the
      * specified connection. If the server has support for XEP-33 then only one
      * packet is going to be sent to the server with the multiple recipient instructions.
      * However, if XEP-33 is not supported by the server then the client is going to send
@@ -51,11 +51,11 @@ public class MultipleRecipientManager {
      *
      * @param connection the connection to use to send the packet.
      * @param packet     the packet to send to the list of recipients.
-     * @param to         the list of JIDs to include in the TO list or <tt>null</tt> if no TO
+     * @param to         the collection of JIDs to include in the TO list or <tt>null</tt> if no TO
      *                   list exists.
-     * @param cc         the list of JIDs to include in the CC list or <tt>null</tt> if no CC
+     * @param cc         the collection of JIDs to include in the CC list or <tt>null</tt> if no CC
      *                   list exists.
-     * @param bcc        the list of JIDs to include in the BCC list or <tt>null</tt> if no BCC
+     * @param bcc        the collection of JIDs to include in the BCC list or <tt>null</tt> if no BCC
      *                   list exists.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
@@ -64,22 +64,22 @@ public class MultipleRecipientManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException
+    public static void send(XMPPConnection connection, Packet packet, Collection<String> to, Collection<String> cc, Collection<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException
    {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
 
     /**
-     * Sends the specified packet to the list of specified recipients using the specified
+     * Sends the specified packet to the collection of specified recipients using the specified
      * connection. If the server has support for XEP-33 then only one packet is going to be sent to
      * the server with the multiple recipient instructions. However, if XEP-33 is not supported by
      * the server then the client is going to send the packet to each recipient.
      * 
      * @param connection the connection to use to send the packet.
      * @param packet the packet to send to the list of recipients.
-     * @param to the list of JIDs to include in the TO list or <tt>null</tt> if no TO list exists.
-     * @param cc the list of JIDs to include in the CC list or <tt>null</tt> if no CC list exists.
-     * @param bcc the list of JIDs to include in the BCC list or <tt>null</tt> if no BCC list
+     * @param to the collection of JIDs to include in the TO list or <tt>null</tt> if no TO list exists.
+     * @param cc the collection of JIDs to include in the CC list or <tt>null</tt> if no CC list exists.
+     * @param bcc the collection of JIDs to include in the BCC list or <tt>null</tt> if no BCC list
      *        exists.
      * @param replyTo address to which all replies are requested to be sent or <tt>null</tt>
      *        indicating that they can reply to any address.
@@ -93,7 +93,7 @@ public class MultipleRecipientManager {
      *         server does not support them.
      * @throws NotConnectedException 
      */
-    public static void send(XMPPConnection connection, Packet packet, List<String> to, List<String> cc, List<String> bcc,
+    public static void send(XMPPConnection connection, Packet packet, Collection<String> to, Collection<String> cc, Collection<String> bcc,
             String replyTo, String replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException {
         String serviceAddress = getMultipleRecipienServiceAddress(connection);
         if (serviceAddress != null) {
@@ -149,15 +149,13 @@ public class MultipleRecipientManager {
         }
         else {
             // Send reply to multiple recipients
-            List<String> to = new ArrayList<String>();
-            List<String> cc = new ArrayList<String>();
-            for (Iterator<MultipleAddresses.Address> it = info.getTOAddresses().iterator(); it.hasNext();) {
-                String jid = it.next().getJid();
-                to.add(jid);
+            List<String> to = new ArrayList<String>(info.getTOAddresses().size());
+            List<String> cc = new ArrayList<String>(info.getCCAddresses().size());
+            for (MultipleAddresses.Address jid : info.getTOAddresses()) {
+                to.add(jid.getJid());
             }
-            for (Iterator<MultipleAddresses.Address> it = info.getCCAddresses().iterator(); it.hasNext();) {
-                String jid = it.next().getJid();
-                cc.add(jid);
+            for (MultipleAddresses.Address jid : info.getCCAddresses()) {
+                cc.add(jid.getJid());
             }
             // Add original sender as a 'to' address (if not already present)
             if (!to.contains(original.getFrom()) && !cc.contains(original.getFrom())) {
@@ -171,16 +169,7 @@ public class MultipleRecipientManager {
                 cc.remove(bareJID);
             }
 
-            String serviceAddress = getMultipleRecipienServiceAddress(connection);
-            if (serviceAddress != null) {
-                // Send packet to target users using multiple recipient service provided by the server
-                sendThroughService(connection, reply, to, cc, null, null, null, false,
-                        serviceAddress);
-            }
-            else {
-                // Server does not support XEP-33 so try to send the packet to each recipient
-                sendToIndividualRecipients(connection, reply, to, cc, null);
-            }
+            send(connection, reply, to, cc, null, null, null, false);
         }
     }
 
@@ -200,51 +189,45 @@ public class MultipleRecipientManager {
     }
 
     private static void sendToIndividualRecipients(XMPPConnection connection, Packet packet,
-            List<String> to, List<String> cc, List<String> bcc) throws NotConnectedException {
+            Collection<String> to, Collection<String> cc, Collection<String> bcc) throws NotConnectedException {
         if (to != null) {
-            for (Iterator<String> it = to.iterator(); it.hasNext();) {
-                String jid = it.next();
+            for (String jid : to) {
                 packet.setTo(jid);
                 connection.sendPacket(new PacketCopy(packet.toXML()));
             }
         }
         if (cc != null) {
-            for (Iterator<String> it = cc.iterator(); it.hasNext();) {
-                String jid = it.next();
+            for (String jid : cc) {
                 packet.setTo(jid);
                 connection.sendPacket(new PacketCopy(packet.toXML()));
             }
         }
         if (bcc != null) {
-            for (Iterator<String> it = bcc.iterator(); it.hasNext();) {
-                String jid = it.next();
+            for (String jid : bcc) {
                 packet.setTo(jid);
                 connection.sendPacket(new PacketCopy(packet.toXML()));
             }
         }
     }
 
-    private static void sendThroughService(XMPPConnection connection, Packet packet, List<String> to,
-            List<String> cc, List<String> bcc, String replyTo, String replyRoom, boolean noReply,
+    private static void sendThroughService(XMPPConnection connection, Packet packet, Collection<String> to,
+            Collection<String> cc, Collection<String> bcc, String replyTo, String replyRoom, boolean noReply,
             String serviceAddress) throws NotConnectedException {
         // Create multiple recipient extension
         MultipleAddresses multipleAddresses = new MultipleAddresses();
         if (to != null) {
-            for (Iterator<String> it = to.iterator(); it.hasNext();) {
-                String jid = it.next();
-                multipleAddresses.addAddress(MultipleAddresses.TO, jid, null, null, false, null);
+            for (String jid : to) {
+                multipleAddresses.addAddress(MultipleAddresses.Type.to, jid, null, null, false, null);
             }
         }
         if (cc != null) {
-            for (Iterator<String> it = cc.iterator(); it.hasNext();) {
-                String jid = it.next();
-                multipleAddresses.addAddress(MultipleAddresses.CC, jid, null, null, false, null);
+            for (String jid : cc) {
+                multipleAddresses.addAddress(MultipleAddresses.Type.to, jid, null, null, false, null);
             }
         }
         if (bcc != null) {
-            for (Iterator<String> it = bcc.iterator(); it.hasNext();) {
-                String jid = it.next();
-                multipleAddresses.addAddress(MultipleAddresses.BCC, jid, null, null, false, null);
+            for (String jid : bcc) {
+                multipleAddresses.addAddress(MultipleAddresses.Type.bcc, jid, null, null, false, null);
             }
         }
         if (noReply) {
@@ -253,10 +236,10 @@ public class MultipleRecipientManager {
         else {
             if (replyTo != null && replyTo.trim().length() > 0) {
                 multipleAddresses
-                        .addAddress(MultipleAddresses.REPLY_TO, replyTo, null, null, false, null);
+                        .addAddress(MultipleAddresses.Type.replyto, replyTo, null, null, false, null);
             }
             if (replyRoom != null && replyRoom.trim().length() > 0) {
-                multipleAddresses.addAddress(MultipleAddresses.REPLY_ROOM, replyRoom, null, null,
+                multipleAddresses.addAddress(MultipleAddresses.Type.replyroom, replyRoom, null, null,
                         false, null);
             }
         }

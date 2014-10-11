@@ -98,6 +98,10 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder halfOpenElement(NamedElement namedElement) {
+        return halfOpenElement(namedElement.getElementName());
+    }
+
     public XmlStringBuilder openElement(String name) {
         halfOpenElement(name).rightAngleBracket();
         return this;
@@ -203,6 +207,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     public XmlStringBuilder optLongAttribute(String name, Long value) {
         if (value >= 0) {
             attribute(name, Long.toString(value));
+        }
+        return this;
+    }
+
+    public XmlStringBuilder optBooleanAttribute(String name, boolean bool) {
+        if (bool) {
+            sb.append(' ').append(name).append("='true'");
         }
         return this;
     }

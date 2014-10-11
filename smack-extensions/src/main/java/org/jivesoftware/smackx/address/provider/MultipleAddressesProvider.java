@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
+import org.jivesoftware.smackx.address.packet.MultipleAddresses.Type;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -35,13 +36,16 @@ public class MultipleAddressesProvider extends PacketExtensionProvider<MultipleA
     public MultipleAddresses parse(XmlPullParser parser,
                     int initialDepth) throws XmlPullParserException,
                     IOException {
-        boolean done = false;
         MultipleAddresses multipleAddresses = new MultipleAddresses();
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("address")) {
-                    String type = parser.getAttributeValue("", "type");
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case MultipleAddresses.Address.ELEMENT:
+                    String typeString = parser.getAttributeValue("", "type");
+                    Type type = Type.valueOf(typeString);
                     String jid = parser.getAttributeValue("", "jid");
                     String node = parser.getAttributeValue("", "node");
                     String desc = parser.getAttributeValue("", "desc");
@@ -49,11 +53,14 @@ public class MultipleAddressesProvider extends PacketExtensionProvider<MultipleA
                     String uri = parser.getAttributeValue("", "uri");
                     // Add the parsed address
                     multipleAddresses.addAddress(type, jid, node, desc, delivered, uri);
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(multipleAddresses.getElementName())) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return multipleAddresses;

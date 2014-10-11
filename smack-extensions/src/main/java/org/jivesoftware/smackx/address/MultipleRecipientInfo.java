@@ -42,7 +42,7 @@ public class MultipleRecipientInfo {
      * @return list of primary recipients of the packet.
      */
     public List<MultipleAddresses.Address> getTOAddresses() {
-        return extension.getAddressesOfType(MultipleAddresses.TO);
+        return extension.getAddressesOfType(MultipleAddresses.Type.to);
     }
 
     /**
@@ -52,7 +52,7 @@ public class MultipleRecipientInfo {
      * @return list of secondary recipients of the packet.
      */
     public List<MultipleAddresses.Address> getCCAddresses() {
-        return extension.getAddressesOfType(MultipleAddresses.CC);
+        return extension.getAddressesOfType(MultipleAddresses.Type.cc);
     }
 
     /**
@@ -65,7 +65,7 @@ public class MultipleRecipientInfo {
      *         no specific address was provided.
      */
     public String getReplyRoom() {
-        List<MultipleAddresses.Address> replyRoom = extension.getAddressesOfType(MultipleAddresses.REPLY_ROOM);
+        List<MultipleAddresses.Address> replyRoom = extension.getAddressesOfType(MultipleAddresses.Type.replyroom);
         return replyRoom.isEmpty() ? null : ((MultipleAddresses.Address) replyRoom.get(0)).getJid();
     }
 
@@ -77,7 +77,7 @@ public class MultipleRecipientInfo {
      * @return true if the received packet should not be replied.
      */
     public boolean shouldNotReply() {
-        return !extension.getAddressesOfType(MultipleAddresses.NO_REPLY).isEmpty();
+        return !extension.getAddressesOfType(MultipleAddresses.Type.noreply).isEmpty();
     }
 
     /**
@@ -89,7 +89,7 @@ public class MultipleRecipientInfo {
      *         no specific address was provided.
      */
     public MultipleAddresses.Address getReplyAddress() {
-        List<MultipleAddresses.Address> replyTo = extension.getAddressesOfType(MultipleAddresses.REPLY_TO);
+        List<MultipleAddresses.Address> replyTo = extension.getAddressesOfType(MultipleAddresses.Type.replyto);
         return replyTo.isEmpty() ? null : (MultipleAddresses.Address) replyTo.get(0);
     }
 }

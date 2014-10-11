@@ -17,10 +17,11 @@
 
 package org.jivesoftware.smackx.address.packet;
 
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,13 +34,14 @@ public class MultipleAddresses implements PacketExtension {
     public static final String NAMESPACE = "http://jabber.org/protocol/address";
     public static final String ELEMENT = "addresses";
 
-    public static final String BCC = "bcc";
-    public static final String CC = "cc";
-    public static final String NO_REPLY = "noreply";
-    public static final String REPLY_ROOM = "replyroom";
-    public static final String REPLY_TO = "replyto";
-    public static final String TO = "to";
-
+    public enum Type {
+        bcc,
+        cc,
+        noreply,
+        replyroom,
+        replyto,
+        to,
+    }
 
     private List<Address> addresses = new ArrayList<Address>();
 
@@ -54,7 +56,7 @@ public class MultipleAddresses implements PacketExtension {
      * @param delivered true when the packet was already delivered to this address.
      * @param uri used to specify an external system address, such as a sip:, sips:, or im: URI.
      */
-    public void addAddress(String type, String jid, String node, String desc, boolean delivered,
+    public void addAddress(Type type, String jid, String node, String desc, boolean delivered,
             String uri) {
         // Create a new address with the specificed configuration
         Address address = new Address(type);
@@ -72,7 +74,7 @@ public class MultipleAddresses implements PacketExtension {
      */
     public void setNoReply() {
         // Create a new address with the specificed configuration
-        Address address = new Address(NO_REPLY);
+        Address address = new Address(Type.noreply);
         // Add the new address to the list of multiple recipients
         addresses.add(address);
     }
@@ -84,10 +86,9 @@ public class MultipleAddresses implements PacketExtension {
      * @param type Examples of address type are: TO, CC, BCC, etc.
      * @return the list of addresses that matches the specified type.
      */
-    public List<Address> getAddressesOfType(String type) {
+    public List<Address> getAddressesOfType(Type type) {
         List<Address> answer = new ArrayList<Address>(addresses.size());
-        for (Iterator<Address> it = addresses.iterator(); it.hasNext();) {
-            Address address = (Address) it.next();
+        for (Address address : addresses) {
             if (address.getType().equals(type)) {
                 answer.add(address);
             }
@@ -96,41 +97,44 @@ public class MultipleAddresses implements PacketExtension {
         return answer;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName());
-        buf.append(" xmlns=\"").append(NAMESPACE).append("\">");
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder buf = new XmlStringBuilder(this);
+        buf.rightAngleBracket();
         // Loop through all the addresses and append them to the string buffer
-        for (Iterator<Address> i = addresses.iterator(); i.hasNext();) {
-            Address address = (Address) i.next();
+        for (Address address : addresses) {
             buf.append(address.toXML());
         }
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+        buf.closeElement(this);
+        return buf;
     }
 
-    public static class Address {
+    public static class Address implements NamedElement {
 
-        private String type;
+        public static final String ELEMENT = "address";
+
+        private final Type type;
         private String jid;
         private String node;
         private String description;
         private boolean delivered;
         private String uri;
 
-        private Address(String type) {
+        private Address(Type type) {
             this.type = type;
         }
 
-        public String getType() {
+        public Type getType() {
             return type;
         }
 
@@ -174,32 +178,26 @@ public class MultipleAddresses implements PacketExtension {
             this.uri = uri;
         }
 
-        private String toXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<address type=\"");
-            // Append the address type (e.g. TO/CC/BCC)
-            buf.append(type).append("\"");
-            if (jid != null) {
-                buf.append(" jid=\"");
-                buf.append(jid).append("\"");
-            }
-            if (node != null) {
-                buf.append(" node=\"");
-                buf.append(node).append("\"");
-            }
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder buf = new XmlStringBuilder();
+            buf.halfOpenElement(this).attribute("type", type);
+            buf.optAttribute("jid", jid);
+            buf.optAttribute("node", node);
+            buf.optAttribute("desc", description);
             if (description != null && description.trim().length() > 0) {
                 buf.append(" desc=\"");
                 buf.append(description).append("\"");
             }
-            if (delivered) {
-                buf.append(" delivered=\"true\"");
-            }
-            if (uri != null) {
-                buf.append(" uri=\"");
-                buf.append(uri).append("\"");
-            }
-            buf.append("/>");
-            return buf.toString();
+            buf.optBooleanAttribute("delivered", delivered);
+            buf.optAttribute("uri", uri);
+            buf.closeEmptyElement();
+            return buf;
         }
     }
 }
