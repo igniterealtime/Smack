@@ -23,7 +23,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xdata.Form;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * The UserSearchManager is a facade built upon Jabber Search Services (XEP-055) to allow for searching
@@ -95,7 +95,7 @@ public class UserSearchManager {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      */
-    public Collection<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public List<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         return discoManager.findServices(UserSearch.NAMESPACE, false, false);
     }
