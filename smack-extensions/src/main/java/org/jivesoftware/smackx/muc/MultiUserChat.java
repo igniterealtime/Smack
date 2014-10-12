@@ -55,6 +55,7 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.ToFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -107,9 +108,10 @@ public class MultiUserChat {
             new ArrayList<ParticipantStatusListener>();
     private final Set<MessageListener> messageListeners = new CopyOnWriteArraySet<MessageListener>();
     private final Set<PresenceListener> presenceListeners = new CopyOnWriteArraySet<PresenceListener>();
-    private final Set<PacketListener> presenceInterceptors = new CopyOnWriteArraySet<PacketListener>();
+    private final Set<PresenceListener> presenceInterceptors = new CopyOnWriteArraySet<PresenceListener>();
     private final ConnectionDetachedPacketCollector<Message> messageCollector = new ConnectionDetachedPacketCollector<Message>();
 
+    private final PacketListener presenceInterceptor;
     private final PacketFilter fromRoomFilter;
     private final PacketListener messageListener;
     private final PacketListener presenceListener;
@@ -295,6 +297,16 @@ public class MultiUserChat {
         roomListenerMultiplexor = RoomListenerMultiplexor.getRoomMultiplexor(connection);
 
         roomListenerMultiplexor.addRoom(room, packetMultiplexor);
+
+        presenceInterceptor = new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) {
+                Presence presence = (Presence) packet;
+                for (PresenceListener interceptor : presenceInterceptors) {
+                    interceptor.processPresence(presence);
+                }
+            }
+        };
     }
 
     /**
@@ -451,10 +463,6 @@ public class MultiUserChat {
             mucInitialPresence.setHistory(history.getMUCHistory());
         }
         joinPresence.addExtension(mucInitialPresence);
-        // Invoke presence interceptors so that extra information can be dynamically added
-        for (PacketListener packetInterceptor : presenceInterceptors) {
-            packetInterceptor.processPacket(joinPresence);
-        }
 
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(room + "/"
@@ -473,6 +481,8 @@ public class MultiUserChat {
         connection.addPacketListener(messageListener, new AndFilter(fromRoomFilter,
                         MessageTypeFilter.GROUPCHAT));
         connection.addPacketListener(presenceListener, new AndFilter(fromRoomFilter,
+                        PacketTypeFilter.PRESENCE));
+        connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         PacketTypeFilter.PRESENCE));
         // Update the list of joined rooms through this connection
         List<String> rooms = joinedRooms.get(connection);
@@ -658,10 +668,6 @@ public class MultiUserChat {
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(room + "/" + nickname);
-        // Invoke presence interceptors so that extra information can be dynamically added
-        for (PacketListener packetInterceptor : presenceInterceptors) {
-            packetInterceptor.processPacket(leavePresence);
-        }
         connection.sendPacket(leavePresence);
         // Reset occupant information.
         occupantsMap.clear();
@@ -973,7 +979,7 @@ public class MultiUserChat {
      *
      * @param presenceInterceptor the new packet interceptor that will intercept presence packets.
      */
-    public void addPresenceInterceptor(PacketListener presenceInterceptor) {
+    public void addPresenceInterceptor(PresenceListener presenceInterceptor) {
         presenceInterceptors.add(presenceInterceptor);
     }
 
@@ -1068,10 +1074,6 @@ public class MultiUserChat {
         // We don't have to signal the MUC support again
         Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setTo(room + "/" + nickname);
-        // Invoke presence interceptors so that extra information can be dynamically added
-        for (PacketListener packetInterceptor : presenceInterceptors) {
-            packetInterceptor.processPacket(joinPresence);
-        }
 
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter =
@@ -1113,10 +1115,6 @@ public class MultiUserChat {
         joinPresence.setStatus(status);
         joinPresence.setMode(mode);
         joinPresence.setTo(room + "/" + nickname);
-        // Invoke presence interceptors so that extra information can be dynamically added
-        for (PacketListener packetInterceptor : presenceInterceptors) {
-            packetInterceptor.processPacket(joinPresence);
-        }
 
         // Send join packet.
         connection.sendPacket(joinPresence);
@@ -1925,6 +1923,7 @@ public class MultiUserChat {
         }
         connection.removePacketListener(messageListener);
         connection.removePacketListener(presenceListener);
+        connection.removePacketInterceptor(presenceInterceptor);
         rooms.remove(room);
         cleanup();
     }
