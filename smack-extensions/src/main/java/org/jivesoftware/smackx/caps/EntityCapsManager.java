@@ -90,7 +90,7 @@ public class EntityCapsManager extends Manager {
                     ELEMENT, NAMESPACE));
     private static final PacketFilter PRESENCES_WITHOUT_CAPS = new AndFilter(new PacketTypeFilter(Presence.class), new NotFilter(new PacketExtensionFilter(
                     ELEMENT, NAMESPACE)));
-    private static final PacketFilter PRESENCES = new PacketTypeFilter(Presence.class);
+    private static final PacketFilter PRESENCES = PacketTypeFilter.PRESENCE;
 
     /**
      * Map of (node + '#" + hash algorithm) to DiscoverInfo data
