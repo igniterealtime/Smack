@@ -206,7 +206,7 @@ public class ChatManager extends Manager{
      * @param listener the listener which will listen for new messages from this chat.
      * @return the created chat.
      */
-    public Chat createChat(String userJID, MessageListener listener) {
+    public Chat createChat(String userJID, ChatMessageListener listener) {
         return createChat(userJID, null, listener);
     }
 
@@ -218,7 +218,7 @@ public class ChatManager extends Manager{
      * @param listener the listener to add to the chat
      * @return the created chat.
      */
-    public Chat createChat(String userJID, String thread, MessageListener listener) {
+    public Chat createChat(String userJID, String thread, ChatMessageListener listener) {
         if (thread == null) {
             thread = nextID();
         }

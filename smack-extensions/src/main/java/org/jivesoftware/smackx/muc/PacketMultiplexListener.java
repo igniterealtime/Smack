@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -37,22 +38,16 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 class PacketMultiplexListener implements PacketListener {
 
     private static final PacketFilter PRESENCE_FILTER = new PacketTypeFilter(Presence.class);
-    private static final PacketFilter SUBJECT_FILTER = new PacketFilter() {
-        public boolean accept(Packet packet) {
-            Message msg = (Message) packet;
-            return msg.getSubject() != null;
-        }
-    };
     private static final PacketFilter DECLINES_FILTER = new PacketExtensionFilter(MUCUser.ELEMENT,
                     MUCUser.NAMESPACE);
 
-    private ConnectionDetachedPacketCollector messageCollector;
+    private ConnectionDetachedPacketCollector<Message> messageCollector;
     private PacketListener presenceListener;
     private PacketListener subjectListener;
     private PacketListener declinesListener;
 
     public PacketMultiplexListener(
-            ConnectionDetachedPacketCollector messageCollector,
+            ConnectionDetachedPacketCollector<Message> messageCollector,
             PacketListener presenceListener,
             PacketListener subjectListener, PacketListener declinesListener) {
         if (messageCollector == null) {
@@ -78,9 +73,9 @@ class PacketMultiplexListener implements PacketListener {
             presenceListener.processPacket(p);
         }
         else if (MessageTypeFilter.GROUPCHAT.accept(p)) {
-            messageCollector.processPacket(p);
+            messageCollector.processPacket((Message) p);
 
-            if (SUBJECT_FILTER.accept(p)) {
+            if (MessageWithSubjectFilter.INSTANCE.accept(p)) {
                 subjectListener.processPacket(p);
             }
         }

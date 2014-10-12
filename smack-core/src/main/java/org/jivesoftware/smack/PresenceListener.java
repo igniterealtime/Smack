@@ -17,11 +17,11 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 
 /**
  *
  */
-public interface MessageListener {
-    void processMessage(Message message);
+public interface PresenceListener {
+    void processPresence(Presence presence);
 }

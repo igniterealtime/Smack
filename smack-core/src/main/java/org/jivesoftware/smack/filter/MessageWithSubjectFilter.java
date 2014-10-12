@@ -15,13 +15,25 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Message;
 
 /**
- *
+ * Filters message stanzas which have at least one body
  */
-public interface MessageListener {
-    void processMessage(Message message);
+public class MessageWithSubjectFilter extends FlexiblePacketTypeFilter<Message> {
+
+    public static final PacketFilter INSTANCE = new MessageWithSubjectFilter();
+
+    private MessageWithSubjectFilter() {
+        super(Message.class);
+    }
+
+    @Override
+    protected boolean acceptSpecific(Message message) {
+        // Accept only messages which have a subject set
+        return message.getSubject() != null;
+    }
+
 }

@@ -386,7 +386,7 @@ public class ChatConnectionTest {
 
     class TestChatManagerListener implements ChatManagerListener {
         private Chat newChat;
-        private MessageListener listener;
+        private ChatMessageListener listener;
 
         public TestChatManagerListener(TestMessageListener msgListener) {
             listener = msgListener;
@@ -423,7 +423,7 @@ public class ChatConnectionTest {
         }
     }
 
-    private class TestMessageListener implements MessageListener {
+    private class TestMessageListener implements ChatMessageListener {
         private Chat msgChat;
         private int counter = 0;
         

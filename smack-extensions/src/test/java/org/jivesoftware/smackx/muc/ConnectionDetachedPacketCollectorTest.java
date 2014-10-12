@@ -28,7 +28,7 @@ public class ConnectionDetachedPacketCollectorTest
 	@Test
 	public void verifyRollover()
 	{
-		ConnectionDetachedPacketCollector collector = new ConnectionDetachedPacketCollector(5);
+		ConnectionDetachedPacketCollector<Packet> collector = new ConnectionDetachedPacketCollector<Packet>(5);
 		
 		for (int i=0; i<6; i++)
 		{
@@ -68,7 +68,7 @@ public class ConnectionDetachedPacketCollectorTest
 	public void verifyThreadSafety()
 	{
 		int insertCount = 500;
-		final ConnectionDetachedPacketCollector collector = new ConnectionDetachedPacketCollector(insertCount);
+		final ConnectionDetachedPacketCollector<Packet> collector = new ConnectionDetachedPacketCollector<Packet>(insertCount);
 		
 		Thread consumer1 = new Thread(new Runnable()
 		{

@@ -23,10 +23,10 @@ import java.util.WeakHashMap;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
+import org.jivesoftware.smack.ChatMessageListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
@@ -143,7 +143,7 @@ public class ChatStateManager extends Manager {
     }
 
     private void fireNewChatState(Chat chat, ChatState state) {
-        for (MessageListener listener : chat.getListeners()) {
+        for (ChatMessageListener listener : chat.getListeners()) {
             if (listener instanceof ChatStateListener) {
                 ((ChatStateListener) listener).stateChanged(chat, state);
             }
@@ -164,7 +164,7 @@ public class ChatStateManager extends Manager {
         }
     }
 
-    private class IncomingMessageInterceptor implements ChatManagerListener, MessageListener {
+    private class IncomingMessageInterceptor implements ChatManagerListener, ChatMessageListener {
 
         public void chatCreated(final Chat chat, boolean createdLocally) {
             chat.addMessageListener(this);

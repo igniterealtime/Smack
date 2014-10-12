@@ -35,12 +35,14 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.ChatMessageListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -107,13 +109,16 @@ public class MultiUserChat {
             new ArrayList<UserStatusListener>();
     private final List<ParticipantStatusListener> participantStatusListeners =
             new ArrayList<ParticipantStatusListener>();
+    private final Set<MessageListener> messageListeners = new CopyOnWriteArraySet<MessageListener>();
+    private final Set<PresenceListener> presenceListeners = new CopyOnWriteArraySet<PresenceListener>();
+    private final PacketFilter fromRoomFilter;
+    private final PacketListener messageListener;
+    private final PacketListener presenceListener;
 
-    private PacketFilter presenceFilter;
     private List<PacketInterceptor> presenceInterceptors = new ArrayList<PacketInterceptor>();
-    private PacketFilter messageFilter;
     private RoomListenerMultiplexor roomListenerMultiplexor;
-    private ConnectionDetachedPacketCollector messageCollector;
-    private List<PacketListener> connectionListeners = new ArrayList<PacketListener>();
+    private ConnectionDetachedPacketCollector<Message> messageCollector;
+
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -174,6 +179,27 @@ public class MultiUserChat {
     public MultiUserChat(XMPPConnection connection, String room) {
         this.connection = connection;
         this.room = room.toLowerCase(Locale.US);
+
+        messageListener = new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                Message message = (Message) packet;
+                for (MessageListener listener : messageListeners) {
+                    listener.processMessage(message);
+                }
+            }
+        };
+        presenceListener = new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                Presence presence = (Presence) packet;
+                for (PresenceListener listener : presenceListeners) {
+                    listener.processPresence(presence);
+                }
+            }
+        };
+        fromRoomFilter = FromMatchesFilter.create(room);
+
         init();
     }
 
@@ -349,6 +375,11 @@ public class MultiUserChat {
 
         this.nickname = nickname;
         joined = true;
+        // Setup the messageListeners and presenceListeners
+        connection.addPacketListener(messageListener, new AndFilter(fromRoomFilter,
+                        MessageTypeFilter.GROUPCHAT));
+        connection.addPacketListener(presenceListener, new AndFilter(fromRoomFilter,
+                        PacketTypeFilter.PRESENCE));
         // Update the list of joined rooms through this connection
         List<String> rooms = joinedRooms.get(connection);
         if (rooms == null) {
@@ -1499,22 +1530,22 @@ public class MultiUserChat {
      *
      * @param listener a packet listener that will be notified of any presence packets
      *      sent to the group chat.
+     * @return true if the listener was not already added.
      */
-    public void addParticipantListener(PacketListener listener) {
-        connection.addPacketListener(listener, presenceFilter);
-        connectionListeners.add(listener);
+    public boolean addParticipantListener(PresenceListener listener) {
+        return presenceListeners.add(listener);
     }
 
     /**
-     * Remoces a packet listener that was being notified of any new Presence packets
+     * Removes a packet listener that was being notified of any new Presence packets
      * sent to the group chat.
      *
      * @param listener a packet listener that was being notified of any presence packets
      *      sent to the group chat.
+     * @return true if the listener was removed, otherwise the listener was not added previously.
      */
-    public void removeParticipantListener(PacketListener listener) {
-        connection.removePacketListener(listener);
-        connectionListeners.remove(listener);
+    public boolean removeParticipantListener(PresenceListener listener) {
+        return presenceListeners.remove(listener);
     }
 
     /**
@@ -1668,7 +1699,7 @@ public class MultiUserChat {
      * created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
-    public Chat createPrivateChat(String occupant, MessageListener listener) {
+    public Chat createPrivateChat(String occupant, ChatMessageListener listener) {
         return ChatManager.getInstanceFor(connection).createChat(occupant, listener);
     }
 
@@ -1704,7 +1735,7 @@ public class MultiUserChat {
     *      <tt>null</tt> otherwise.
     */
     public Message pollMessage() {
-        return (Message) messageCollector.pollResult();
+        return messageCollector.pollResult();
     }
 
     /**
@@ -1714,7 +1745,7 @@ public class MultiUserChat {
      * @return the next message.
      */
     public Message nextMessage() {
-        return (Message) messageCollector.nextResult();
+        return  messageCollector.nextResult();
     }
 
     /**
@@ -1727,7 +1758,7 @@ public class MultiUserChat {
      *      message becoming available.
      */
     public Message nextMessage(long timeout) {
-        return (Message) messageCollector.nextResult(timeout);
+        return messageCollector.nextResult(timeout);
     }
 
     /**
@@ -1739,10 +1770,10 @@ public class MultiUserChat {
      * PacketListener.
      *
      * @param listener a packet listener.
+     * @return true if the listener was not already added.
      */
-    public void addMessageListener(PacketListener listener) {
-        connection.addPacketListener(listener, messageFilter);
-        connectionListeners.add(listener);
+    public boolean addMessageListener(MessageListener listener) {
+        return messageListeners.add(listener);
     }
 
     /**
@@ -1751,10 +1782,10 @@ public class MultiUserChat {
      * being delivered to the listener.
      *
      * @param listener a packet listener.
+     * @return true if the listener was removed, otherwise the listener was not added previously.
      */
-    public void removeMessageListener(PacketListener listener) {
-        connection.removePacketListener(listener);
-        connectionListeners.remove(listener);
+    public boolean removeMessageListener(MessageListener listener) {
+        return messageListeners.remove(listener);
     }
 
     /**
@@ -1798,6 +1829,8 @@ public class MultiUserChat {
         if (rooms == null) {
             return;
         }
+        connection.removePacketListener(messageListener);
+        connection.removePacketListener(presenceListener);
         rooms.remove(room);
         cleanup();
     }
@@ -1906,12 +1939,8 @@ public class MultiUserChat {
     }
 
     private void init() {
-        // Create filters
-        messageFilter = new AndFilter(FromMatchesFilter.create(room), MessageTypeFilter.GROUPCHAT);
-        presenceFilter = new AndFilter(FromMatchesFilter.create(room), PacketTypeFilter.PRESENCE);
-
         // Create a collector for incoming messages.
-        messageCollector = new ConnectionDetachedPacketCollector();
+        messageCollector = new ConnectionDetachedPacketCollector<Message>();
 
         // Create a listener for subject updates.
         PacketListener subjectListener = new PacketListener() {
@@ -2324,10 +2353,6 @@ public class MultiUserChat {
         try {
             if (connection != null) {
                 roomListenerMultiplexor.removeRoom(room);
-                // Remove all the PacketListeners added to the connection by this chat
-                for (PacketListener connectionListener : connectionListeners) {
-                    connection.removePacketListener(connectionListener);
-                }
             }
         } catch (Exception e) {
             // Do nothing

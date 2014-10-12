@@ -31,8 +31,8 @@ import org.jivesoftware.smack.packet.Packet;
  *
  * @author Larry Kirschner
  */
-class ConnectionDetachedPacketCollector {
-    private ArrayBlockingQueue<Packet> resultQueue;
+class ConnectionDetachedPacketCollector<P extends Packet> {
+    private ArrayBlockingQueue<P> resultQueue;
 
     /**
      * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
@@ -47,7 +47,7 @@ class ConnectionDetachedPacketCollector {
      * all packets will match this collector.
      */
     public ConnectionDetachedPacketCollector(int maxSize) {
-        this.resultQueue = new ArrayBlockingQueue<Packet>(maxSize);
+        this.resultQueue = new ArrayBlockingQueue<P>(maxSize);
     }
 
     /**
@@ -58,7 +58,7 @@ class ConnectionDetachedPacketCollector {
      * @return the next packet result, or <tt>null</tt> if there are no more
      *      results.
      */
-    public Packet pollResult() {
+    public P pollResult() {
     	return resultQueue.poll();
     }
 
@@ -68,7 +68,7 @@ class ConnectionDetachedPacketCollector {
      *
      * @return the next available packet.
      */
-    public Packet nextResult() {
+    public P nextResult() {
         try {
 			return resultQueue.take();
 		}
@@ -85,7 +85,7 @@ class ConnectionDetachedPacketCollector {
      * @param timeout the amount of time to wait for the next packet (in milleseconds).
      * @return the next available packet.
      */
-    public Packet nextResult(long timeout) {
+    public P nextResult(long timeout) {
         try {
         	return resultQueue.poll(timeout, TimeUnit.MILLISECONDS);
 		}
@@ -100,7 +100,7 @@ class ConnectionDetachedPacketCollector {
      *
      * @param packet the packet to process.
      */
-    protected void processPacket(Packet packet) {
+    protected void processPacket(P packet) {
         if (packet == null) {
             return;
         }

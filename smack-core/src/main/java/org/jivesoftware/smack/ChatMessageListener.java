@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2003-2007 Jive Software.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,6 @@ import org.jivesoftware.smack.packet.Message;
 /**
  *
  */
-public interface MessageListener {
-    void processMessage(Message message);
+public interface ChatMessageListener {
+    void processMessage(Chat chat, Message message);
 }

@@ -18,14 +18,14 @@
 package org.jivesoftware.smackx.chatstates;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.ChatMessageListener;
 
 /**
  * Events for when the state of a user in a chat changes.
  *
  * @author Alexander Wenckus
  */
-public interface ChatStateListener extends MessageListener {
+public interface ChatStateListener extends ChatMessageListener {
 
     /**
      * Fired when the state of a chat with another user changes.
