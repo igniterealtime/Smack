@@ -26,6 +26,12 @@ import org.jivesoftware.smack.packet.Packet;
  * the {@link #processPacket(Packet)} method will be called. This is the
  * opposite approach to the functionality provided by a {@link PacketCollector}
  * which lets you block while waiting for results.
+ * <p>
+ * Additionally you are able to intercept Packets that are going to be send and
+ * make modifications to them. You can register a PacketListener as interceptor
+ * by using {@link XMPPConnection#addPacketInterceptor(PacketListener,
+ * org.jivesoftware.smack.filter.PacketFilter)}
+ * </p>
  *
  * @see XMPPConnection#addPacketListener(PacketListener, org.jivesoftware.smack.filter.PacketFilter)
  * @author Matt Tucker
@@ -33,11 +39,12 @@ import org.jivesoftware.smack.packet.Packet;
 public interface PacketListener {
 
     /**
-     * Process the next packet sent to this packet listener.<p>
-     *
+     * Process the next packet sent to this packet listener.
+     * <p>
      * A single thread is responsible for invoking all listeners, so
      * it's very important that implementations of this method not block
      * for any extended period of time.
+     * </p>
      *
      * @param packet the packet to process.
      */

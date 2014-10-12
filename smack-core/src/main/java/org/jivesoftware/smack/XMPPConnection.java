@@ -225,7 +225,7 @@ public interface XMPPConnection {
      * which packets will be delivered to the listener. If the same packet listener
      * is added again with a different filter, only the new filter will be used.
      * 
-     * NOTE: If you want get a similar callback for outgoing packets, see {@link #addPacketInterceptor(PacketInterceptor, PacketFilter)}.
+     * NOTE: If you want get a similar callback for outgoing packets, see {@link #addPacketInterceptor(PacketListener, PacketFilter)}.
      * 
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter   the packet filter to use.
@@ -272,14 +272,14 @@ public interface XMPPConnection {
      * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
      * @param packetFilter      the packet filter to use.
      */
-    public void addPacketInterceptor(PacketInterceptor packetInterceptor, PacketFilter packetFilter);
+    public void addPacketInterceptor(PacketListener packetInterceptor, PacketFilter packetFilter);
  
     /**
      * Removes a packet interceptor.
      *
      * @param packetInterceptor the packet interceptor to remove.
      */
-    public void removePacketInterceptor(PacketInterceptor packetInterceptor);
+    public void removePacketInterceptor(PacketListener packetInterceptor);
 
     /**
      * Returns the current value of the reply timeout in milliseconds for request for this

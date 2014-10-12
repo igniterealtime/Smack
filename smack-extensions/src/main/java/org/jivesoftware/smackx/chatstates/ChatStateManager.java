@@ -24,15 +24,14 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ChatMessageListener;
+import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -150,10 +149,10 @@ public class ChatStateManager extends Manager {
         }
     }
 
-    private class OutgoingMessageInterceptor implements PacketInterceptor {
+    private class OutgoingMessageInterceptor implements MessageListener {
 
-        public void interceptPacket(Packet packet) {
-            Message message = (Message) packet;
+        @Override
+        public void processMessage(Message message) {
             Chat chat = chatManager.getThreadChat(message.getThread());
             if (chat == null) {
                 return;

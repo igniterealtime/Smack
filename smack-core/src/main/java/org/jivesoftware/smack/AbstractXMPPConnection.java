@@ -124,12 +124,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             new HashMap<PacketListener, ListenerWrapper>();
 
     /**
-     * List of PacketInterceptors that will be notified when a new packet is about to be
+     * List of PacketListeners that will be notified when a new packet is about to be
      * sent to the server. These interceptors may modify the packet before it is being
      * actually sent to the server.
      */
-    private final Map<PacketInterceptor, InterceptorWrapper> interceptors =
-            new HashMap<PacketInterceptor, InterceptorWrapper>();
+    private final Map<PacketListener, InterceptorWrapper> interceptors =
+            new HashMap<PacketListener, InterceptorWrapper>();
 
     protected final Lock connectionLock = new ReentrantLock();
 
@@ -726,7 +726,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addPacketInterceptor(PacketInterceptor packetInterceptor,
+    public void addPacketInterceptor(PacketListener packetInterceptor,
             PacketFilter packetFilter) {
         if (packetInterceptor == null) {
             throw new NullPointerException("Packet interceptor is null.");
@@ -738,7 +738,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void removePacketInterceptor(PacketInterceptor packetInterceptor) {
+    public void removePacketInterceptor(PacketListener packetInterceptor) {
         synchronized (interceptors) {
             interceptors.remove(packetInterceptor);
         }
@@ -753,7 +753,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet that is going to be sent to the server
      */
     private void firePacketInterceptors(Packet packet) {
-        List<PacketInterceptor> interceptorsToInvoke = new LinkedList<PacketInterceptor>();
+        List<PacketListener> interceptorsToInvoke = new LinkedList<PacketListener>();
         synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
                 if (interceptorWrapper.filterMatches(packet)) {
@@ -761,8 +761,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         }
-        for (PacketInterceptor interceptor : interceptorsToInvoke) {
-            interceptor.interceptPacket(packet);
+        for (PacketListener interceptor : interceptorsToInvoke) {
+            try {
+                interceptor.processPacket(packet);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Packet interceptor threw exception", e);
+            }
         }
     }
 
@@ -957,7 +961,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected static class InterceptorWrapper {
 
-        private final PacketInterceptor packetInterceptor;
+        private final PacketListener packetInterceptor;
         private final PacketFilter packetFilter;
 
         /**
@@ -966,7 +970,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
          * @param packetInterceptor the interceptor.
          * @param packetFilter the associated filter or null if it intercepts all packets.
          */
-        public InterceptorWrapper(PacketInterceptor packetInterceptor, PacketFilter packetFilter) {
+        public InterceptorWrapper(PacketListener packetInterceptor, PacketFilter packetFilter) {
             this.packetInterceptor = packetInterceptor;
             this.packetFilter = packetFilter;
         }
@@ -975,7 +979,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return packetFilter == null || packetFilter.accept(packet);
         }
 
-        public PacketInterceptor getInterceptor() {
+        public PacketListener getInterceptor() {
             return packetInterceptor;
         }
     }

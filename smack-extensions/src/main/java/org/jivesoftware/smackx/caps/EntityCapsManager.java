@@ -22,7 +22,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketInterceptor;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -344,8 +343,8 @@ public class EntityCapsManager extends Manager {
         // Intercept presence packages and add caps data when intended.
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
-        PacketInterceptor packetInterceptor = new PacketInterceptor() {
-            public void interceptPacket(Packet packet) {
+        PacketListener packetInterceptor = new PacketListener() {
+            public void processPacket(Packet packet) {
                 if (!entityCapsEnabled)
                     return;
 

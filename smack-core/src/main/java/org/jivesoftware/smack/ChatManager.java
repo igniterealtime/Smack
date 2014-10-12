@@ -130,8 +130,8 @@ public class ChatManager extends Manager{
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();
 
-    private Map<PacketInterceptor, PacketFilter> interceptors
-            = new WeakHashMap<PacketInterceptor, PacketFilter>();
+    private Map<MessageListener, PacketFilter> interceptors
+            = new WeakHashMap<MessageListener, PacketFilter>();
 
     private ChatManager(XMPPConnection connection) {
         super(connection);
@@ -338,10 +338,10 @@ public class ChatManager extends Manager{
     }
 
     void sendMessage(Chat chat, Message message) throws NotConnectedException {
-        for(Map.Entry<PacketInterceptor, PacketFilter> interceptor : interceptors.entrySet()) {
+        for(Map.Entry<MessageListener, PacketFilter> interceptor : interceptors.entrySet()) {
             PacketFilter filter = interceptor.getValue();
             if(filter != null && filter.accept(message)) {
-                interceptor.getKey().interceptPacket(message);
+                interceptor.getKey().processMessage(message);
             }
         }
         // Ensure that messages being sent have a proper FROM value
@@ -359,16 +359,17 @@ public class ChatManager extends Manager{
     /**
      * Adds an interceptor which intercepts any messages sent through chats.
      *
-     * @param packetInterceptor the interceptor.
+     * @param messageInterceptor the interceptor.
      */
-    public void addOutgoingMessageInterceptor(PacketInterceptor packetInterceptor) {
-        addOutgoingMessageInterceptor(packetInterceptor, null);
+    public void addOutgoingMessageInterceptor(MessageListener messageInterceptor) {
+        addOutgoingMessageInterceptor(messageInterceptor, null);
     }
 
-    public void addOutgoingMessageInterceptor(PacketInterceptor packetInterceptor, PacketFilter filter) {
-        if (packetInterceptor != null) {
-            interceptors.put(packetInterceptor, filter);
+    public void addOutgoingMessageInterceptor(MessageListener messageInterceptor, PacketFilter filter) {
+        if (messageInterceptor == null) {
+            return;
         }
+        interceptors.put(messageInterceptor, filter);
     }
     
     /**
