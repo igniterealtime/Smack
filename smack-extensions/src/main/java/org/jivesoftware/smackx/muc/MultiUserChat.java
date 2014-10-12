@@ -94,12 +94,9 @@ public class MultiUserChat {
     private static Map<XMPPConnection, List<String>> joinedRooms =
             new WeakHashMap<XMPPConnection, List<String>>();
 
-    private XMPPConnection connection;
-    private String room;
-    private String subject;
-    private String nickname = null;
-    private boolean joined = false;
-    private Map<String, Presence> occupantsMap = new ConcurrentHashMap<String, Presence>();
+    private final XMPPConnection connection;
+    private final String room;
+    private final Map<String, Presence> occupantsMap = new ConcurrentHashMap<String, Presence>();
 
     private final List<InvitationRejectionListener> invitationRejectionListeners =
             new ArrayList<InvitationRejectionListener>();
@@ -111,14 +108,17 @@ public class MultiUserChat {
             new ArrayList<ParticipantStatusListener>();
     private final Set<MessageListener> messageListeners = new CopyOnWriteArraySet<MessageListener>();
     private final Set<PresenceListener> presenceListeners = new CopyOnWriteArraySet<PresenceListener>();
+    private final Set<PacketInterceptor> presenceInterceptors = new CopyOnWriteArraySet<PacketInterceptor>();
+    private final ConnectionDetachedPacketCollector<Message> messageCollector = new ConnectionDetachedPacketCollector<Message>();
+
     private final PacketFilter fromRoomFilter;
     private final PacketListener messageListener;
     private final PacketListener presenceListener;
+    private final RoomListenerMultiplexor roomListenerMultiplexor;
 
-    private List<PacketInterceptor> presenceInterceptors = new ArrayList<PacketInterceptor>();
-    private RoomListenerMultiplexor roomListenerMultiplexor;
-    private ConnectionDetachedPacketCollector<Message> messageCollector;
-
+    private String subject;
+    private String nickname = null;
+    private boolean joined = false;
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -200,7 +200,102 @@ public class MultiUserChat {
         };
         fromRoomFilter = FromMatchesFilter.create(room);
 
-        init();
+        // Create a listener for subject updates.
+        PacketListener subjectListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Message msg = (Message) packet;
+                // Update the room subject
+                subject = msg.getSubject();
+                // Fire event for subject updated listeners
+                fireSubjectUpdatedListeners(
+                    msg.getSubject(),
+                    msg.getFrom());
+
+            }
+        };
+
+        // Create a listener for all presence updates.
+        PacketListener presenceListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                Presence presence = (Presence) packet;
+                String from = presence.getFrom();
+                String myRoomJID = MultiUserChat.this.room + "/" + nickname;
+                boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
+                if (presence.getType() == Presence.Type.available) {
+                    Presence oldPresence = occupantsMap.put(from, presence);
+                    if (oldPresence != null) {
+                        // Get the previous occupant's affiliation & role
+                        MUCUser mucExtension = MUCUser.from(packet);
+                        MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
+                        MUCRole oldRole = mucExtension.getItem().getRole();
+                        // Get the new occupant's affiliation & role
+                        mucExtension = MUCUser.from(packet);
+                        MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
+                        MUCRole newRole = mucExtension.getItem().getRole();
+                        // Fire role modification events
+                        checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
+                        // Fire affiliation modification events
+                        checkAffiliationModifications(
+                            oldAffiliation,
+                            newAffiliation,
+                            isUserStatusModification,
+                            from);
+                    }
+                    else {
+                        // A new occupant has joined the room
+                        if (!isUserStatusModification) {
+                            List<String> params = new ArrayList<String>();
+                            params.add(from);
+                            fireParticipantStatusListeners("joined", params);
+                        }
+                    }
+                }
+                else if (presence.getType() == Presence.Type.unavailable) {
+                    occupantsMap.remove(from);
+                    MUCUser mucUser = MUCUser.from(packet);
+                    if (mucUser != null && mucUser.getStatus() != null) {
+                        // Fire events according to the received presence code
+                        checkPresenceCode(
+                            mucUser.getStatus(),
+                            presence.getFrom().equals(myRoomJID),
+                            mucUser,
+                            from);
+                    } else {
+                        // An occupant has left the room
+                        if (!isUserStatusModification) {
+                            List<String> params = new ArrayList<String>();
+                            params.add(from);
+                            fireParticipantStatusListeners("left", params);
+                        }
+                    }
+                }
+            }
+        };
+
+        // Listens for all messages that include a MUCUser extension and fire the invitation
+        // rejection listeners if the message includes an invitation rejection.
+        PacketListener declinesListener = new PacketListener() {
+            public void processPacket(Packet packet) {
+                // Get the MUC User extension
+                MUCUser mucUser = MUCUser.from(packet);
+                // Check if the MUCUser informs that the invitee has declined the invitation
+                if (mucUser.getDecline() != null &&
+                        ((Message) packet).getType() != Message.Type.error) {
+                    // Fire event for invitation rejection listeners
+                    fireInvitationRejectionListeners(
+                        mucUser.getDecline().getFrom(),
+                        mucUser.getDecline().getReason());
+                }
+            }
+        };
+
+        PacketMultiplexListener packetMultiplexor = new PacketMultiplexListener(
+                messageCollector, presenceListener, subjectListener,
+                declinesListener);
+
+        roomListenerMultiplexor = RoomListenerMultiplexor.getRoomMultiplexor(connection);
+
+        roomListenerMultiplexor.addRoom(room, packetMultiplexor);
     }
 
     /**
@@ -1936,108 +2031,6 @@ public class MultiUserChat {
         } catch (IllegalAccessException e) {
             LOGGER.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
         }
-    }
-
-    private void init() {
-        // Create a collector for incoming messages.
-        messageCollector = new ConnectionDetachedPacketCollector<Message>();
-
-        // Create a listener for subject updates.
-        PacketListener subjectListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Message msg = (Message) packet;
-                // Update the room subject
-                subject = msg.getSubject();
-                // Fire event for subject updated listeners
-                fireSubjectUpdatedListeners(
-                    msg.getSubject(),
-                    msg.getFrom());
-
-            }
-        };
-
-        // Create a listener for all presence updates.
-        PacketListener presenceListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                Presence presence = (Presence) packet;
-                String from = presence.getFrom();
-                String myRoomJID = room + "/" + nickname;
-                boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
-                if (presence.getType() == Presence.Type.available) {
-                    Presence oldPresence = occupantsMap.put(from, presence);
-                    if (oldPresence != null) {
-                        // Get the previous occupant's affiliation & role
-                        MUCUser mucExtension = MUCUser.from(packet);
-                        MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
-                        MUCRole oldRole = mucExtension.getItem().getRole();
-                        // Get the new occupant's affiliation & role
-                        mucExtension = MUCUser.from(packet);
-                        MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
-                        MUCRole newRole = mucExtension.getItem().getRole();
-                        // Fire role modification events
-                        checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
-                        // Fire affiliation modification events
-                        checkAffiliationModifications(
-                            oldAffiliation,
-                            newAffiliation,
-                            isUserStatusModification,
-                            from);
-                    }
-                    else {
-                        // A new occupant has joined the room
-                        if (!isUserStatusModification) {
-                            List<String> params = new ArrayList<String>();
-                            params.add(from);
-                            fireParticipantStatusListeners("joined", params);
-                        }
-                    }
-                }
-                else if (presence.getType() == Presence.Type.unavailable) {
-                    occupantsMap.remove(from);
-                    MUCUser mucUser = MUCUser.from(packet);
-                    if (mucUser != null && mucUser.getStatus() != null) {
-                        // Fire events according to the received presence code
-                        checkPresenceCode(
-                            mucUser.getStatus(),
-                            presence.getFrom().equals(myRoomJID),
-                            mucUser,
-                            from);
-                    } else {
-                        // An occupant has left the room
-                        if (!isUserStatusModification) {
-                            List<String> params = new ArrayList<String>();
-                            params.add(from);
-                            fireParticipantStatusListeners("left", params);
-                        }
-                    }
-                }
-            }
-        };
-
-        // Listens for all messages that include a MUCUser extension and fire the invitation
-        // rejection listeners if the message includes an invitation rejection.
-        PacketListener declinesListener = new PacketListener() {
-            public void processPacket(Packet packet) {
-                // Get the MUC User extension
-                MUCUser mucUser = MUCUser.from(packet);
-                // Check if the MUCUser informs that the invitee has declined the invitation
-                if (mucUser.getDecline() != null &&
-                        ((Message) packet).getType() != Message.Type.error) {
-                    // Fire event for invitation rejection listeners
-                    fireInvitationRejectionListeners(
-                        mucUser.getDecline().getFrom(),
-                        mucUser.getDecline().getReason());
-                }
-            }
-        };
-
-        PacketMultiplexListener packetMultiplexor = new PacketMultiplexListener(
-                messageCollector, presenceListener, subjectListener,
-                declinesListener);
-
-        roomListenerMultiplexor = RoomListenerMultiplexor.getRoomMultiplexor(connection);
-
-        roomListenerMultiplexor.addRoom(room, packetMultiplexor);
     }
 
     /**
