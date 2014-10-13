@@ -18,8 +18,6 @@
 package org.jivesoftware.smackx.muc;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,14 +102,10 @@ public class MultiUserChat {
     private final String room;
     private final Map<String, Presence> occupantsMap = new ConcurrentHashMap<String, Presence>();
 
-    private final List<InvitationRejectionListener> invitationRejectionListeners =
-            new ArrayList<InvitationRejectionListener>();
-    private final List<SubjectUpdatedListener> subjectUpdatedListeners =
-            new ArrayList<SubjectUpdatedListener>();
-    private final List<UserStatusListener> userStatusListeners =
-            new ArrayList<UserStatusListener>();
-    private final List<ParticipantStatusListener> participantStatusListeners =
-            new ArrayList<ParticipantStatusListener>();
+    private final Set<InvitationRejectionListener> invitationRejectionListeners = new CopyOnWriteArraySet<InvitationRejectionListener>();
+    private final Set<SubjectUpdatedListener> subjectUpdatedListeners = new CopyOnWriteArraySet<SubjectUpdatedListener>();
+    private final Set<UserStatusListener> userStatusListeners = new CopyOnWriteArraySet<UserStatusListener>();
+    private final Set<ParticipantStatusListener> participantStatusListeners = new CopyOnWriteArraySet<ParticipantStatusListener>();
     private final Set<MessageListener> messageListeners = new CopyOnWriteArraySet<MessageListener>();
     private final Set<PresenceListener> presenceListeners = new CopyOnWriteArraySet<PresenceListener>();
     private final Set<PresenceListener> presenceInterceptors = new CopyOnWriteArraySet<PresenceListener>();
@@ -219,10 +213,9 @@ public class MultiUserChat {
                 // Update the room subject
                 subject = msg.getSubject();
                 // Fire event for subject updated listeners
-                fireSubjectUpdatedListeners(
-                    msg.getSubject(),
-                    msg.getFrom());
-
+                for (SubjectUpdatedListener listener : subjectUpdatedListeners) {
+                    listener.subjectUpdated(subject, msg.getFrom());
+                }
             }
         };
 
@@ -256,9 +249,9 @@ public class MultiUserChat {
                     else {
                         // A new occupant has joined the room
                         if (!isUserStatusModification) {
-                            List<String> params = new ArrayList<String>();
-                            params.add(from);
-                            fireParticipantStatusListeners("joined", params);
+                            for (ParticipantStatusListener listener : participantStatusListeners) {
+                                listener.joined(from);
+                            }
                         }
                     }
                 }
@@ -275,9 +268,9 @@ public class MultiUserChat {
                     } else {
                         // An occupant has left the room
                         if (!isUserStatusModification) {
-                            List<String> params = new ArrayList<String>();
-                            params.add(from);
-                            fireParticipantStatusListeners("left", params);
+                            for (ParticipantStatusListener listener : participantStatusListeners) {
+                                listener.left(from);
+                            }
                         }
                     }
                 }
@@ -475,7 +468,7 @@ public class MultiUserChat {
 
         response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
         // Wait up to a certain number of seconds for a reply.
-        Presence presence = (Presence) response.nextResultOrThrow(timeout);
+        Presence presence = response.nextResultOrThrow(timeout);
 
         this.nickname = nickname;
         joined = true;
@@ -698,7 +691,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.get);
 
-        IQ answer = (IQ) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        IQ answer = connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
         return Form.getFormFrom(answer);
     }
 
@@ -742,7 +735,7 @@ public class MultiUserChat {
         reg.setType(IQ.Type.get);
         reg.setTo(room);
 
-        IQ result = (IQ) connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        IQ result = connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
         return Form.getFormFrom(result);
     }
 
@@ -900,13 +893,10 @@ public class MultiUserChat {
      * an invitation is declined.
      *
      * @param listener an invitation rejection listener.
+     * @return true if the listener was not already added.
      */
-    public void addInvitationRejectionListener(InvitationRejectionListener listener) {
-        synchronized (invitationRejectionListeners) {
-            if (!invitationRejectionListeners.contains(listener)) {
-                invitationRejectionListeners.add(listener);
-            }
-        }
+    public boolean addInvitationRejectionListener(InvitationRejectionListener listener) {
+         return invitationRejectionListeners.add(listener);
     }
 
     /**
@@ -914,11 +904,10 @@ public class MultiUserChat {
      * anytime an invitation is declined.
      *
      * @param listener an invitation rejection listener.
+     * @return true if the listener was registered and is now removed.
      */
-    public void removeInvitationRejectionListener(InvitationRejectionListener listener) {
-        synchronized (invitationRejectionListeners) {
-            invitationRejectionListeners.remove(listener);
-        }
+    public boolean removeInvitationRejectionListener(InvitationRejectionListener listener) {
+        return invitationRejectionListeners.remove(listener);
     }
 
     /**
@@ -943,13 +932,10 @@ public class MultiUserChat {
      * the room's subject changes.
      *
      * @param listener a subject updated listener.
+     * @return true if the listener was not already added.
      */
-    public void addSubjectUpdatedListener(SubjectUpdatedListener listener) {
-        synchronized (subjectUpdatedListeners) {
-            if (!subjectUpdatedListeners.contains(listener)) {
-                subjectUpdatedListeners.add(listener);
-            }
-        }
+    public boolean addSubjectUpdatedListener(SubjectUpdatedListener listener) {
+        return subjectUpdatedListeners.add(listener);
     }
 
     /**
@@ -957,25 +943,10 @@ public class MultiUserChat {
      * anytime the room's subject changes.
      *
      * @param listener a subject updated listener.
+     * @return true if the listener was registered and is now removed.
      */
-    public void removeSubjectUpdatedListener(SubjectUpdatedListener listener) {
-        synchronized (subjectUpdatedListeners) {
-            subjectUpdatedListeners.remove(listener);
-        }
-    }
-
-    /**
-     * Fires subject updated listeners.
-     */
-    private void fireSubjectUpdatedListeners(String subject, String from) {
-        SubjectUpdatedListener[] listeners;
-        synchronized (subjectUpdatedListeners) {
-            listeners = new SubjectUpdatedListener[subjectUpdatedListeners.size()];
-            subjectUpdatedListeners.toArray(listeners);
-        }
-        for (SubjectUpdatedListener listener : listeners) {
-            listener.subjectUpdated(subject, from);
-        }
+    public boolean removeSubjectUpdatedListener(SubjectUpdatedListener listener) {
+        return subjectUpdatedListeners.remove(listener);
     }
 
     /**
@@ -1645,50 +1616,50 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns a collection of <code>Affiliate</code> with the room owners.
+     * Returns a list of <code>Affiliate</code> with the room owners.
      *
-     * @return a collection of <code>Affiliate</code> with the room owners.
+     * @return a list of <code>Affiliate</code> with the room owners.
      * @throws XMPPErrorException if you don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<Affiliate> getOwners() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Affiliate> getOwners() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return getAffiliatesByAdmin(MUCAffiliation.owner);
     }
 
     /**
-     * Returns a collection of <code>Affiliate</code> with the room administrators.
+     * Returns a list of <code>Affiliate</code> with the room administrators.
      *
-     * @return a collection of <code>Affiliate</code> with the room administrators.
+     * @return a list of <code>Affiliate</code> with the room administrators.
      * @throws XMPPErrorException if you don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<Affiliate> getAdmins() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Affiliate> getAdmins() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return getAffiliatesByAdmin(MUCAffiliation.admin);
     }
 
     /**
-     * Returns a collection of <code>Affiliate</code> with the room members.
+     * Returns a list of <code>Affiliate</code> with the room members.
      *
-     * @return a collection of <code>Affiliate</code> with the room members.
+     * @return a list of <code>Affiliate</code> with the room members.
      * @throws XMPPErrorException if you don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<Affiliate> getMembers() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public List<Affiliate> getMembers() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         return getAffiliatesByAdmin(MUCAffiliation.member);
     }
 
     /**
-     * Returns a collection of <code>Affiliate</code> with the room outcasts.
+     * Returns a list of <code>Affiliate</code> with the room outcasts.
      *
-     * @return a collection of <code>Affiliate</code> with the room outcasts.
+     * @return a list of <code>Affiliate</code> with the room outcasts.
      * @throws XMPPErrorException if you don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<Affiliate> getOutcasts() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Affiliate> getOutcasts() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return getAffiliatesByAdmin(MUCAffiliation.outcast);
     }
 
@@ -1702,7 +1673,7 @@ public class MultiUserChat {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    private Collection<Affiliate> getAffiliatesByAdmin(MUCAffiliation affiliation) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private List<Affiliate> getAffiliatesByAdmin(MUCAffiliation affiliation) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.get);
@@ -1721,40 +1692,40 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns a collection of <code>Occupant</code> with the room moderators.
+     * Returns a list of <code>Occupant</code> with the room moderators.
      *
-     * @return a collection of <code>Occupant</code> with the room moderators.
+     * @return a list of <code>Occupant</code> with the room moderators.
      * @throws XMPPErrorException if you don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<Occupant> getModerators() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Occupant> getModerators() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return getOccupants(MUCRole.moderator);
     }
 
     /**
-     * Returns a collection of <code>Occupant</code> with the room participants.
+     * Returns a list of <code>Occupant</code> with the room participants.
      * 
-     * @return a collection of <code>Occupant</code> with the room participants.
+     * @return a list of <code>Occupant</code> with the room participants.
      * @throws XMPPErrorException if you don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<Occupant> getParticipants() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<Occupant> getParticipants() throws NoResponseException, XMPPErrorException, NotConnectedException {
         return getOccupants(MUCRole.participant);
     }
 
     /**
-     * Returns a collection of <code>Occupant</code> that have the specified room role.
+     * Returns a list of <code>Occupant</code> that have the specified room role.
      *
      * @param role the role of the occupant in the room.
-     * @return a collection of <code>Occupant</code> that have the specified room role.
+     * @return a list of <code>Occupant</code> that have the specified room role.
      * @throws XMPPErrorException if an error occured while performing the request to the server or you
      *         don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    private Collection<Occupant> getOccupants(MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private List<Occupant> getOccupants(MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException {
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.get);
@@ -1816,6 +1787,8 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void sendMessage(Message message) throws XMPPException, NotConnectedException {
+        message.setTo(room);
+        message.setType(Message.Type.groupchat);
         connection.sendPacket(message);
     }
 
@@ -1948,13 +1921,10 @@ public class MultiUserChat {
      * such as the user being kicked, banned, or granted admin permissions.
      *
      * @param listener a user status listener.
+     * @return true if the user status listener was not already added.
      */
-    public void addUserStatusListener(UserStatusListener listener) {
-        synchronized (userStatusListeners) {
-            if (!userStatusListeners.contains(listener)) {
-                userStatusListeners.add(listener);
-            }
-        }
+    public boolean addUserStatusListener(UserStatusListener listener) {
+        return userStatusListeners.add(listener);
     }
 
     /**
@@ -1962,37 +1932,10 @@ public class MultiUserChat {
      * such as the user being kicked, banned, or granted admin permissions.
      *
      * @param listener a user status listener.
+     * @return true if the listener was registered and is now removed.
      */
-    public void removeUserStatusListener(UserStatusListener listener) {
-        synchronized (userStatusListeners) {
-            userStatusListeners.remove(listener);
-        }
-    }
-
-    private void fireUserStatusListeners(String methodName, Object[] params) {
-        UserStatusListener[] listeners;
-        synchronized (userStatusListeners) {
-            listeners = new UserStatusListener[userStatusListeners.size()];
-            userStatusListeners.toArray(listeners);
-        }
-        // Get the classes of the method parameters
-        Class<?>[] paramClasses = new Class[params.length];
-        for (int i = 0; i < params.length; i++) {
-            paramClasses[i] = params[i].getClass();
-        }
-        try {
-            // Get the method to execute based on the requested methodName and parameters classes
-            Method method = UserStatusListener.class.getDeclaredMethod(methodName, paramClasses);
-            for (UserStatusListener listener : listeners) {
-                method.invoke(listener, params);
-            }
-        } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.SEVERE, "Failed to invoke method on UserStatusListener", e);
-        } catch (InvocationTargetException e) {
-            LOGGER.log(Level.SEVERE, "Failed to invoke method on UserStatusListener", e);
-        } catch (IllegalAccessException e) {
-            LOGGER.log(Level.SEVERE, "Failed to invoke method on UserStatusListener", e);
-        }
+    public boolean removeUserStatusListener(UserStatusListener listener) {
+        return userStatusListeners.remove(listener);
     }
 
     /**
@@ -2000,13 +1943,10 @@ public class MultiUserChat {
      * such as the user being kicked, banned, or granted admin permissions.
      *
      * @param listener a participant status listener.
+     * @return true if the listener was not already added.
      */
-    public void addParticipantStatusListener(ParticipantStatusListener listener) {
-        synchronized (participantStatusListeners) {
-            if (!participantStatusListeners.contains(listener)) {
-                participantStatusListeners.add(listener);
-            }
-        }
+    public boolean addParticipantStatusListener(ParticipantStatusListener listener) {
+        return participantStatusListeners.add(listener);
     }
 
     /**
@@ -2014,36 +1954,10 @@ public class MultiUserChat {
      * such as the user being kicked, banned, or granted admin permissions.
      *
      * @param listener a participant status listener.
+     * @return true if the listener was registered and is now removed.
      */
-    public void removeParticipantStatusListener(ParticipantStatusListener listener) {
-        synchronized (participantStatusListeners) {
-            participantStatusListeners.remove(listener);
-        }
-    }
-
-    private void fireParticipantStatusListeners(String methodName, List<String> params) {
-        ParticipantStatusListener[] listeners;
-        synchronized (participantStatusListeners) {
-            listeners = new ParticipantStatusListener[participantStatusListeners.size()];
-            participantStatusListeners.toArray(listeners);
-        }
-        try {
-            // Get the method to execute based on the requested methodName and parameter
-            Class<?>[] classes = new Class[params.size()];
-            for (int i=0;i<params.size(); i++) {
-                classes[i] = String.class;
-            }
-            Method method = ParticipantStatusListener.class.getDeclaredMethod(methodName, classes);
-            for (ParticipantStatusListener listener : listeners) {
-                method.invoke(listener, params.toArray());
-            }
-        } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
-        } catch (InvocationTargetException e) {
-            LOGGER.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
-        } catch (IllegalAccessException e) {
-            LOGGER.log(Level.SEVERE, "Failed to invoke method on ParticipantStatusListener", e);
-        }
+    public boolean removeParticipantStatusListener(ParticipantStatusListener listener) {
+        return participantStatusListeners.remove(listener);
     }
 
     /**
@@ -2091,12 +2005,14 @@ public class MultiUserChat {
         if (("visitor".equals(oldRole) || "none".equals(oldRole))
             && "participant".equals(newRole)) {
             if (isUserModification) {
-                fireUserStatusListeners("voiceGranted", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.voiceGranted();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("voiceGranted", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.voiceGranted(from);
+                }
             }
         }
         // The participant's voice was revoked from the room
@@ -2104,54 +2020,64 @@ public class MultiUserChat {
             "participant".equals(oldRole)
                 && ("visitor".equals(newRole) || "none".equals(newRole))) {
             if (isUserModification) {
-                fireUserStatusListeners("voiceRevoked", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.voiceRevoked();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("voiceRevoked", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.voiceRevoked(from);
+                }
             }
         }
         // Moderator privileges were granted to a participant
         if (!"moderator".equals(oldRole) && "moderator".equals(newRole)) {
             if ("visitor".equals(oldRole) || "none".equals(oldRole)) {
                 if (isUserModification) {
-                    fireUserStatusListeners("voiceGranted", new Object[] {});
+                    for (UserStatusListener listener : userStatusListeners) {
+                        listener.voiceGranted();
+                    }
                 }
                 else {
-                    List<String> params = new ArrayList<String>();
-                    params.add(from);
-                    fireParticipantStatusListeners("voiceGranted", params);
+                    for (ParticipantStatusListener listener : participantStatusListeners) {
+                        listener.voiceGranted(from);
+                    }
                 }
             }
             if (isUserModification) {
-                fireUserStatusListeners("moderatorGranted", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.moderatorGranted();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("moderatorGranted", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.moderatorGranted(from);
+                }
             }
         }
         // Moderator privileges were revoked from a participant
         else if ("moderator".equals(oldRole) && !"moderator".equals(newRole)) {
             if ("visitor".equals(newRole) || "none".equals(newRole)) {
                 if (isUserModification) {
-                    fireUserStatusListeners("voiceRevoked", new Object[] {});
+                    for (UserStatusListener listener : userStatusListeners) {
+                        listener.voiceRevoked();
+                    }
                 }
                 else {
-                    List<String> params = new ArrayList<String>();
-                    params.add(from);
-                    fireParticipantStatusListeners("voiceRevoked", params);
+                    for (ParticipantStatusListener listener : participantStatusListeners) {
+                        listener.voiceRevoked(from);
+                    }
                 }
             }
             if (isUserModification) {
-                fireUserStatusListeners("moderatorRevoked", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.moderatorRevoked();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("moderatorRevoked", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.moderatorRevoked(from);
+                }
             }
         }
     }
@@ -2207,68 +2133,80 @@ public class MultiUserChat {
         // The user's ownership to the room was revoked
         if ("owner".equals(oldAffiliation) && !"owner".equals(newAffiliation)) {
             if (isUserModification) {
-                fireUserStatusListeners("ownershipRevoked", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.ownershipRevoked();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("ownershipRevoked", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.ownershipRevoked(from);
+                }
             }
         }
         // The user's administrative privileges to the room were revoked
         else if ("admin".equals(oldAffiliation) && !"admin".equals(newAffiliation)) {
             if (isUserModification) {
-                fireUserStatusListeners("adminRevoked", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.adminRevoked();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("adminRevoked", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.adminRevoked(from);
+                }
             }
         }
         // The user's membership to the room was revoked
         else if ("member".equals(oldAffiliation) && !"member".equals(newAffiliation)) {
             if (isUserModification) {
-                fireUserStatusListeners("membershipRevoked", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.membershipRevoked();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("membershipRevoked", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.membershipRevoked(from);
+                }
             }
         }
 
         // The user was granted ownership to the room
         if (!"owner".equals(oldAffiliation) && "owner".equals(newAffiliation)) {
             if (isUserModification) {
-                fireUserStatusListeners("ownershipGranted", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.ownershipGranted();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("ownershipGranted", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.ownershipGranted(from);
+                }
             }
         }
         // The user was granted administrative privileges to the room
         else if (!"admin".equals(oldAffiliation) && "admin".equals(newAffiliation)) {
             if (isUserModification) {
-                fireUserStatusListeners("adminGranted", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.adminGranted();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("adminGranted", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.adminGranted(from);
+                }
             }
         }
         // The user was granted membership to the room
         else if (!"member".equals(oldAffiliation) && "member".equals(newAffiliation)) {
             if (isUserModification) {
-                fireUserStatusListeners("membershipGranted", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.membershipGranted();
+                }
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                fireParticipantStatusListeners("membershipGranted", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.membershipGranted(from);
+                }
             }
         }
     }
@@ -2291,10 +2229,9 @@ public class MultiUserChat {
             // Check if this occupant was kicked
             if (isUserModification) {
                 joined = false;
-
-                fireUserStatusListeners(
-                    "kicked",
-                    new Object[] { mucUser.getItem().getActor(), mucUser.getItem().getReason()});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.kicked(mucUser.getItem().getActor(), mucUser.getItem().getReason());
+                }
 
                 // Reset occupant information.
                 occupantsMap.clear();
@@ -2302,11 +2239,9 @@ public class MultiUserChat {
                 userHasLeft();
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                params.add(mucUser.getItem().getActor());
-                params.add(mucUser.getItem().getReason());
-                fireParticipantStatusListeners("kicked", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.kicked(from, mucUser.getItem().getActor(), mucUser.getItem().getReason());
+                }
             }
         }
         // A user was banned from the room
@@ -2314,10 +2249,9 @@ public class MultiUserChat {
             // Check if this occupant was banned
             if (isUserModification) {
                 joined = false;
-
-                fireUserStatusListeners(
-                    "banned",
-                    new Object[] { mucUser.getItem().getActor(), mucUser.getItem().getReason()});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.banned(mucUser.getItem().getActor(), mucUser.getItem().getReason());
+                }
 
                 // Reset occupant information.
                 occupantsMap.clear();
@@ -2325,11 +2259,9 @@ public class MultiUserChat {
                 userHasLeft();
             }
             else {
-                List<String> params = new ArrayList<String>();
-                params.add(from);
-                params.add(mucUser.getItem().getActor());
-                params.add(mucUser.getItem().getReason());
-                fireParticipantStatusListeners("banned", params);
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.banned(from, mucUser.getItem().getActor(), mucUser.getItem().getReason());
+                }
             }
         }
         // A user's membership was revoked from the room
@@ -2337,8 +2269,9 @@ public class MultiUserChat {
             // Check if this occupant's membership was revoked
             if (isUserModification) {
                 joined = false;
-
-                fireUserStatusListeners("membershipRevoked", new Object[] {});
+                for (UserStatusListener listener : userStatusListeners) {
+                    listener.membershipRevoked();
+                }
 
                 // Reset occupant information.
                 occupantsMap.clear();
@@ -2348,10 +2281,9 @@ public class MultiUserChat {
         }
         // A occupant has changed his nickname in the room
         if (statusCodes.contains(Status.NEW_NICKNAME_303)) {
-            List<String> params = new ArrayList<String>();
-            params.add(from);
-            params.add(mucUser.getItem().getNick());
-            fireParticipantStatusListeners("nicknameChanged", params);
+            for (ParticipantStatusListener listener : participantStatusListeners) {
+                listener.nicknameChanged(from, mucUser.getItem().getNick());
+            }
         }
     }
 
