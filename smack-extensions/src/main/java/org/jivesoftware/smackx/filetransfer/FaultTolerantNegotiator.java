@@ -80,10 +80,9 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     }
 
     public InputStream createIncomingStream(StreamInitiation initiation) throws SmackException {
-        PacketCollector collector = connection.createPacketCollector(
-                getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()));
-
-        connection.sendPacket(super.createInitiationAccept(initiation, getNamespaces()));
+        PacketCollector collector = connection.createPacketCollectorAndSend(
+                        getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()),
+                        super.createInitiationAccept(initiation, getNamespaces()));
 
         ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(2);
         CompletionService<InputStream> service

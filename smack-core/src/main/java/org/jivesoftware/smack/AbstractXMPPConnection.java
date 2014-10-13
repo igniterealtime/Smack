@@ -422,26 +422,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Note that we can not use IQReplyFilter here, since the users full JID is not yet
         // available. It will become available right after the resource has been successfully bound.
         Bind bindResource = Bind.newSet(resource);
-        PacketCollector packetCollector = createPacketCollector(new PacketIDFilter(bindResource));
-        try {
-            sendPacket(bindResource);
-        } catch (NotConnectedException e) {
-            packetCollector.cancel();
-            throw e;
-        }
+        PacketCollector packetCollector = createPacketCollectorAndSend(new PacketIDFilter(bindResource), bindResource);
         Bind response = packetCollector.nextResultOrThrow();
         user = response.getJid();
         setServiceName(XmppStringUtils.parseDomain(user));
 
         if (hasFeature(Session.ELEMENT, Session.NAMESPACE) && !getConfiguration().isLegacySessionDisabled()) {
             Session session = new Session();
-            packetCollector = createPacketCollector(new PacketIDFilter(session));
-            try {
-                sendPacket(session);
-            } catch (NotConnectedException e) {
-                packetCollector.cancel();
-                throw e;
-            }
+            packetCollector = createPacketCollectorAndSend(new PacketIDFilter(session), session);
             packetCollector.nextResultOrThrow();
         }
     }
@@ -639,12 +627,20 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException {
         PacketFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
+        PacketCollector packetCollector = createPacketCollectorAndSend(packetFilter, packet);
+        return packetCollector;
+    }
+
+    @Override
+    public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Packet packet)
+                    throws NotConnectedException {
+        // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollector(packetFilter);
         try {
             // Now we can send the packet as the collector has been created
             sendPacket(packet);
         }
-        catch (NotConnectedException e) {
+        catch (NotConnectedException | RuntimeException e) {
             packetCollector.cancel();
             throw e;
         }

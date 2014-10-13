@@ -469,9 +469,7 @@ public class MultiUserChat {
                         + nickname), new PacketTypeFilter(Presence.class));
         PacketCollector response = null;
 
-        response = connection.createPacketCollector(responseFilter);
-        // Send join packet.
-        connection.sendPacket(joinPresence);
+        response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
         // Wait up to a certain number of seconds for a reply.
         Presence presence = (Presence) response.nextResultOrThrow(timeout);
 
@@ -1080,9 +1078,7 @@ public class MultiUserChat {
             new AndFilter(
                 FromMatchesFilter.createFull(room + "/" + nickname),
                 new PacketTypeFilter(Presence.class));
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Send join packet.
-        connection.sendPacket(joinPresence);
+        PacketCollector response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
         // Wait up to a certain number of seconds for a reply. If there is a negative reply, an
         // exception will be thrown
         response.nextResultOrThrow();
@@ -1905,9 +1901,7 @@ public class MultiUserChat {
                 return subject.equals(msg.getSubject());
             }
         });
-        PacketCollector response = connection.createPacketCollector(responseFilter);
-        // Send change subject packet.
-        connection.sendPacket(message);
+        PacketCollector response = connection.createPacketCollectorAndSend(responseFilter, message);
         // Wait up to a certain number of seconds for a reply.
         response.nextResultOrThrow();
     }

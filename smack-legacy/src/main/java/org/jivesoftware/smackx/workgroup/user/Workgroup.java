@@ -180,10 +180,8 @@ public class Workgroup {
         directedPresence.setTo(workgroupJID);
         PacketFilter typeFilter = new PacketTypeFilter(Presence.class);
         PacketFilter fromFilter = FromMatchesFilter.create(workgroupJID);
-        PacketCollector collector = connection.createPacketCollector(new AndFilter(fromFilter,
-                typeFilter));
-
-        connection.sendPacket(directedPresence);
+        PacketCollector collector = connection.createPacketCollectorAndSend(new AndFilter(fromFilter,
+                typeFilter), directedPresence);
 
         Presence response = (Presence)collector.nextResultOrThrow();
         return Presence.Type.available == response.getType();

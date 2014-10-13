@@ -79,8 +79,7 @@ public abstract class StreamNegotiator {
 
         // establish collector to await response
         PacketCollector collector = connection
-                .createPacketCollector(getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()));
-        connection.sendPacket(response);
+                .createPacketCollectorAndSend(getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()), response);
 
         Packet streamMethodInitiation = collector.nextResultOrThrow();
 

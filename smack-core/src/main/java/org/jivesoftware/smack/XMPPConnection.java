@@ -208,6 +208,26 @@ public interface XMPPConnection {
      * a specific result.
      * 
      * @param packetFilter the packet filter to use.
+     * @param packet the packet to send right after the collector got created
+     * @return a new packet collector.
+     */
+    public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Packet packet)
+                    throws NotConnectedException;
+
+    /**
+     * Creates a new packet collector for this connection. A packet filter
+     * determines which packets will be accumulated by the collector. A
+     * PacketCollector is more suitable to use than a {@link PacketListener}
+     * when you need to wait for a specific result.
+     * <p>
+     * <b>Note:</b> If you send a Packet right after using this method, then
+     * consider using
+     * {@link #createPacketCollectorAndSend(PacketFilter, Packet)} instead.
+     * Otherwise make sure cancel the PacketCollector in every case, e.g. even
+     * if an exception is thrown, or otherwise you may leak the PacketCollector.
+     * </p>
+     * 
+     * @param packetFilter the packet filter to use.
      * @return a new packet collector.
      */
     public PacketCollector createPacketCollector(PacketFilter packetFilter);
