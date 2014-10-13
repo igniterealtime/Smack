@@ -37,12 +37,11 @@ import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
-import org.jivesoftware.smackx.disco.NodeInformationProvider;
+import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
-import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.util.cache.LruCache;
@@ -478,25 +477,17 @@ public class EntityCapsManager extends Manager {
             JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion, "sha-1"));
 
         final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
-        sdm.setNodeInformationProvider(entityNode + '#' + currentCapsVersion, new NodeInformationProvider() {
+        sdm.setNodeInformationProvider(entityNode + '#' + currentCapsVersion, new AbstractNodeInformationProvider() {
             List<String> features = sdm.getFeaturesList();
             List<PacketExtension> packetExtensions = sdm.getExtendedInfoAsList();
-
-            @Override
-            public List<Item> getNodeItems() {
-                return null;
-            }
-
             @Override
             public List<String> getNodeFeatures() {
                 return features;
             }
-
             @Override
             public List<Identity> getNodeIdentities() {
                 return identities;
             }
-
             @Override
             public List<PacketExtension> getNodePacketExtensions() {
                 return packetExtensions;

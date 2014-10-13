@@ -38,16 +38,14 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.Status;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
-import org.jivesoftware.smackx.disco.NodeInformationProvider;
+import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.Form;
 
@@ -143,7 +141,8 @@ public class AdHocCommandManager extends Manager {
         // received
         ServiceDiscoveryManager.getInstanceFor(connection)
                 .setNodeInformationProvider(NAMESPACE,
-                        new NodeInformationProvider() {
+                        new AbstractNodeInformationProvider() {
+                            @Override
                             public List<DiscoverItems.Item> getNodeItems() {
 
                                 List<DiscoverItems.Item> answer = new ArrayList<DiscoverItems.Item>();
@@ -158,19 +157,6 @@ public class AdHocCommandManager extends Manager {
                                 }
 
                                 return answer;
-                            }
-
-                            public List<String> getNodeFeatures() {
-                                return null;
-                            }
-
-                            public List<Identity> getNodeIdentities() {
-                                return null;
-                            }
-
-                            @Override
-                            public List<PacketExtension> getNodePacketExtensions() {
-                                return null;
                             }
                         });
 
@@ -232,11 +218,8 @@ public class AdHocCommandManager extends Manager {
         // Set the NodeInformationProvider that will provide information about
         // the added command
         serviceDiscoveryManager.setNodeInformationProvider(node,
-                new NodeInformationProvider() {
-                    public List<DiscoverItems.Item> getNodeItems() {
-                        return null;
-                    }
-
+                new AbstractNodeInformationProvider() {
+                    @Override
                     public List<String> getNodeFeatures() {
                         List<String> answer = new ArrayList<String>();
                         answer.add(NAMESPACE);
@@ -245,7 +228,7 @@ public class AdHocCommandManager extends Manager {
                         answer.add("jabber:x:data");
                         return answer;
                     }
-
+                    @Override
                     public List<DiscoverInfo.Identity> getNodeIdentities() {
                         List<DiscoverInfo.Identity> answer = new ArrayList<DiscoverInfo.Identity>();
                         DiscoverInfo.Identity identity = new DiscoverInfo.Identity(
@@ -253,12 +236,6 @@ public class AdHocCommandManager extends Manager {
                         answer.add(identity);
                         return answer;
                     }
-
-                    @Override
-                    public List<PacketExtension> getNodePacketExtensions() {
-                        return null;
-                    }
-
                 });
     }
 
