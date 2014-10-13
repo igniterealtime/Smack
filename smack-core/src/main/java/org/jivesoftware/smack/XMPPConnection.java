@@ -154,11 +154,17 @@ public interface XMPPConnection {
     public void sendPacket(Packet packet) throws NotConnectedException;
 
     /**
-     * 
+     * Send a PlainStreamElement.
+     * <p>
+     * <b>This method is not meant for end-user usage!</b> It allows sending plain stream elements, which should not be
+     * done by a user manually. <b>Doing so may result in a unstable or unusable connection.</b> Certain Smack APIs use
+     * this method to send plain stream elements.
+     * </p>
+     *
      * @param element
      * @throws NotConnectedException
      */
-    public void  send(PlainStreamElement element) throws NotConnectedException;
+    public void send(PlainStreamElement element) throws NotConnectedException;
 
     /**
      * Returns the roster for the user.
