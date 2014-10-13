@@ -1,7 +1,7 @@
 Roster and Presence
 ===================
 
-[Back](index.html)
+[Back](index.md)
 
 The roster lets you keep track of the availability ("presence") of other
 users. A roster also allows you to organize users into groups such as
@@ -19,7 +19,7 @@ Every user in a roster is represented by a RosterEntry, which consists of:
   * A name you've assigned to the user (e.g. "Joe").
   * The list of groups in the roster that the entry belongs to. If the roster entry belongs to no groups, it's called an "unfiled entry".  The following code snippet prints all entries in the roster: 
 
-```
+```java
 Roster roster = connection.getRoster();
 Collection<RosterEntry> entries = roster.getEntries();
 for (RosterEntry entry : entries) {
@@ -62,7 +62,7 @@ with the Roster that prints any presence changes in the roster to standard
 out. A normal client would use similar code to update the roster UI with the
 changing information.
 
-```
+```java
 Roster roster = con.getRoster();
 roster.addRosterListener(new RosterListener() {
 	// Ignored events public void entriesAdded(Collection<String> addresses) {}

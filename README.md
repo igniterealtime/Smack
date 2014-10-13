@@ -43,14 +43,14 @@ You can also reach us via the [Smack Users Forum] if you have questions or need 
 Resources
 ---------
 
-- Bug Tracker: http://issues.igniterealtime.org/browse/SMACK
-- Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
-- Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
-- Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
-- User Forum: http://community.igniterealtime.org/community/support/smack_users
-- Dev Forum: http://community.igniterealtime.org/community/developers/smack
-- Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
-- Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
+* [Bug Tracker](http://issues.igniterealtime.org/browse/SMACK)
+* [Nightly Builds](http://www.igniterealtime.org/downloads/nightly_smack.jsp)
+* [Nightly Javadoc](http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/)
+* [Nightly Documentation](http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/)
+* [User Forum](http://community.igniterealtime.org/community/support/smack_users)
+* [Dev Forum](http://community.igniterealtime.org/community/developers/smack)
+* [Maven Releases](https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/)
+* [Maven Snapshots](https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/)
 
 Donate
 ------
@@ -68,8 +68,8 @@ are interested in applying innovative, open-standards-based Real Time Collaborat
 We're aimed at disrupting proprietary, non-open standards-based systems and invite you to participate in what's already one 
 of the biggest and most active Open Source communities.
 
-[Smack]: http://www.igniterealtime.org/projects/smack/index.jsp
-[Ignite Realtime]: http://www.igniterealtime.org
-[XMPP (Jabber)]: http://xmpp.org/
-[Smack Developers Forum]: http://community.igniterealtime.org/community/developers/smack
-[Smack Users Forum]: https://community.igniterealtime.org/community/support/smack_users
+* [Smack](http://www.igniterealtime.org/projects/smack/index.jsp)
+* [Ignite Realtime](http://www.igniterealtime.org)
+* [XMPP (Jabber)](http://xmpp.org/)
+* [Smack Developers Forum](http://community.igniterealtime.org/community/developers/smack)
+* [Smack Users Forum](https://community.igniterealtime.org/community/support/smack_users)

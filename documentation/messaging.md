@@ -1,7 +1,7 @@
 Messaging using Chats
 =====================
 
-[Back](index.html)
+[Back](index.md)
 
 Sending messages back and forth is at the core of instant messaging. Although
 individual messages can be sent and received as packets, it's generally easier
@@ -15,8 +15,8 @@ A chat creates a new thread of messages (using a thread ID) between two users.
 The following code snippet demonstrates how to create a new Chat with a user
 and then send them a text message:
 
-```
-// Assume we've created a XMPPConnection name "connection"._
+```java
+// Assume we've created a XMPPConnection name "connection".
 ChatManager chatmanager = connection.getChatManager();
 Chat newChat = chatmanager.createChat("jsmith@jivesoftware.com", new MessageListener() {
 	public void processMessage(Chat chat, Message message) {
@@ -38,7 +38,7 @@ message. In the case that you wish to set additional values on a Message
 before sending it, use the `Chat.createMessage()` and
 `Chat.sendMessage(Message)` methods, as in the following code snippet:
 
-```
+```java
 Message newMessage = new Message();
 newMessage.setBody("Howdy!");
 message.setProperty("favoriteColor", "red");
@@ -50,11 +50,10 @@ when creating a chat. The listener is notified any time a new message arrives
 from the other user in the chat. The following code snippet uses the listener
 as a parrot-bot -- it echoes back everything the other user types.
 
-```
-// Assume a MessageListener we've setup with a chat._
-
+```java
+// Assume a MessageListener we've setup with a chat.
 public void processMessage(Chat chat, Message message) {
-		// Send back the same text the other user sent us._
+		// Send back the same text the other user sent us.
 		chat.sendMessage(message.getBody());
 }
 ```
@@ -71,8 +70,8 @@ that does match. To get this new chat, you have to register to be notified
 when it happens. You can register a message listener to receive all future
 messages as part of this handler.
 
-```
-_// Assume we've created a XMPPConnection name "connection"._
+```java
+// Assume we've created a XMPPConnection name "connection".
 ChatManager chatmanager = connection.getChatManager().addChatListener(
 	new ChatManagerListener() {
 		@Override

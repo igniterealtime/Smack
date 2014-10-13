@@ -1,5 +1,4 @@
-Entity Capabilities
-===================
+# Entity Capabilities
 
 This section details the usage of Smacks implementation of Entity
 Capabilities.
@@ -10,8 +9,7 @@ Capabilities.
 
 Entity Capabilities is a XMPP Protocol extension, which, in order to minimize
 network impact, caches the capabilities of XMPP entities. Those capabilities
-are determined with the help of the Service Discovery Protocol
-([XEP-0030](http://xmpp.org/extensions/xep-0030.html)).
+are determined with the help of the [XEP-0030 Service Discovery Protocol](http://xmpp.org/extensions/xep-0030.html).
 
 **Usage**
 
@@ -28,7 +26,7 @@ persistent Entity Capabilities cache, which is recommended.
 
 Enable Entity Capabilities
 
-```
+```java
 // Get an instance of entity caps manager for the specified connection
 EntityCapsManager mgr = EntityCapsManager.getInstanceFor(connection);
 // Enable entity capabilities
@@ -37,7 +35,7 @@ mgr.enableEntityCaps();
 
 Configure a persistent cache for Entity Capabilities
 
-```
+```java
 // Get an instance of entity caps manager for the specified connection
 EntityCapsManager mgr = EntityCapsManager.getInstanceFor(connection);
 // Create an cache, see smackx.entitycaps.cache for pre-defined cache implementations

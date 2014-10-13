@@ -1,10 +1,8 @@
-Privacy Lists
-============
+# Privacy Lists
 
 [XEP-0016: Privacy Lists](http://xmpp.org/extensions/xep-0016.html)
 
-What is?
---------
+## What is?
 
 `Privacy` is a method for users to block communications from particular other
 users. In XMPP this is done by managing one's privacy lists.
@@ -22,8 +20,7 @@ cases:
   * Allowing or blocking IQ stanzas based on JID, group, or subscription type (or globally).
   * Allowing or blocking all communications based on JID, group, or subscription type (or globally).
 
-How can I use it?
------------------
+## How can I use it?
 
 The API implementation releases three main public classes:
 
@@ -33,10 +30,10 @@ The API implementation releases three main public classes:
 
 1. Right from the start, a client MAY **get his/her privacy list** that is stored in the server:
 
-```
-// Create a privacy manager for the current connection._
+```java
+// Create a privacy manager for the current connection.
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
-// Retrieve server privacy lists_
+// Retrieve server privacy lists
 PrivacyList[] lists = privacyManager.getPrivacyLists();
 ```
 
@@ -44,12 +41,10 @@ Now the client is able to show every `PrivacyItem` of the server and also for
 every list if it is active, default or none of them. The client is a listener
 of privacy changes.
 
-
-
 2. In order to **add a new list in the server**, the client MAY implement something like:
 
-```
-// Set the name of the list_
+```java
+// Set the name of the list
 String listName = "newList";
 
 // Create the list of PrivacyItem that will allow or deny some privacy aspect_
@@ -67,20 +62,20 @@ item = new PrivacyItem(PrivacyItem.Type.group, groupName, false, 3);
 item.setFilterMessage(true);
 privacyItems.add(item);
 
-// Get the privacy manager for the current connection._
+// Get the privacy manager for the current connection.
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
-// Create the new list._
+// Create the new list.
 privacyManager.createPrivacyList(listName, privacyItems);
 ```
 
 3. To **modify an existent list**, the client code MAY be like:
 
-```
-// Set the name of the list_
+```java
+// Set the name of the list
 String listName = "existingList";
 // Get the privacy manager for the current connection._
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
-// Sent the new list to the server._
+// Sent the new list to the server.
 privacyManager.updatePrivacyList(listName, items);
 ```
 
@@ -89,34 +84,34 @@ in the list (not the "delta").
 
 4. In order to **delete an existing list**, the client MAY perform something like:
 
-```
-// Set the name of the list_
+```java
+// Set the name of the list
 String listName = "existingList";
-// Get the privacy manager for the current connection._
+// Get the privacy manager for the current connection.
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
-// Remove the list._
+// Remove the list.
 privacyManager.deletePrivacyList(listName);
 ```
 
 5. In order to **decline the use of an active list**, the client MAY perform something like:
 
-```
-// Get the privacy manager for the current connection._
+```java
+// Get the privacy manager for the current connection.
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
-// Decline the use of the active list._
+// Decline the use of the active list.
 privacyManager.declineActiveList();
 ```
 
 6. In order to **decline the use of a default list**, the client MAY perform something like:
 
-```
-// Get the privacy manager for the current connection._
+```java
+// Get the privacy manager for the current connection.
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
-// Decline the use of the default list._
+// Decline the use of the default list.
 privacyManager.declineDefaultList();
 ```
 
-Listening for Privacy Changes
+### Listening for Privacy Changes
 
 In order to handle privacy changes, clients SHOULD listen manager's updates.
 When a list is changed the manager notifies every added listener. Listeners
@@ -130,10 +125,11 @@ a privacy list changes its privacy items.
 
 The listener becomes notified after performing:
 
-```
+```java
 // Get the privacy manager for the current connection._
 PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(myConnection);
 // Add the listener (this) to get notified_
 privacyManager.addListener(this);
 ```
+
 Copyright (C) Jive Software 2002-2008

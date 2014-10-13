@@ -1,7 +1,7 @@
 Smack Overview
 ==============
 
-[Back](index.html)
+[Back](index.md)
 
 Smack is a library for communicating with XMPP servers to perform real-time
 communications, including instant messaging and group chat.
@@ -34,8 +34,8 @@ About XMPP
 ----------
 
 XMPP (eXtensible Messaging and Presence Protocol) is an open protocol
-standardized by the IETF and supported and extended by the XMPP Standards
-Foundation (([http://www.xmpp.org](http://www.xmpp.org)).
+standardized by the IETF and supported and extended by the [XMPP Standards
+Foundation](http://www.xmpp.org).
 
 How To Use This Documentation
 -----------------------------

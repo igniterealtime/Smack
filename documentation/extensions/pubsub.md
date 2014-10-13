@@ -1,5 +1,4 @@
-Pubsub
-======
+# Pubsub
 
 This section details the usage of an API designed for accessing an XMPP based
 implementation of a [publish and
@@ -13,10 +12,9 @@ publishing to pubsub nodes.
   * Retrieving persisted pubsub messages
   * Discover pubsub information
 
-**XEP related:** [XEP-0060](http://xmpp.org/extensions/xep-0060.html)
+**XEP related:** [XEP-0060 Publish-Subscribe](http://xmpp.org/extensions/xep-0060.html)
 
-Node creation and configuration
--------------------------------
+## Node creation and configuration
 
 ### Description
 
@@ -33,7 +31,7 @@ or not.
 ### Usage
 
 In order to create a node you will need to first create an instance of
-_**PubSubManager**_. There are several options for node creation which range
+`PubSubManager`. There are several options for node creation which range
 from creating an instant node, default configuration, or a fully configured
 node.
 
@@ -41,20 +39,18 @@ node.
 
 Create an instant node:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Create the node
 LeafNode leaf = mgr.createNode();
 ```
 
 Create a node with default configuration and then configure it:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Create the node
 LeafNode leaf = mgr.createNode("testNode");
 ConfigureForm form = new ConfigureForm(FormType.submit);
@@ -63,16 +59,14 @@ form.setDeliverPayloads(false);
 form.setNotifyRetract(true);
 form.setPersistentItems(true);
 form.setPublishModel(PublishModel.open);
-
 leaf.sendConfigurationForm(form);
 ```
 
 Create and configure a node:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Create the node
 ConfigureForm form = new ConfigureForm(FormType.submit);
 form.setAccessModel(AccessModel.open);
@@ -83,8 +77,7 @@ form.setPublishModel(PublishModel.open);
 LeafNode leaf = mgr.createNode("testNode", form);
 ```
 
-Publishing to a node
---------------------
+## Publishing to a node
 
 **Description**
 
@@ -106,36 +99,30 @@ person to publish to the node will be dependent on its configuration.
 
 In this example we publish an item to a node that does not take payload:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-
 // Publish an Item, let service set the id
 node.send(new Item());
-
 // Publish an Item with the specified id
 node.send(new Item("123abc"));
 ```
 
 In this example we publish an item to a node that does take payload:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-
 // Publish an Item with payload
 node.send(new PayloadItem("test" + System.currentTimeMillis(),
 new SimplePayload("book", "pubsub:test:book", "Two Towers")));
 ```
 
-Receiving pubsub messages
--------------------------
+## Receiving pubsub messages
 
 **Description**
 
@@ -165,20 +152,18 @@ listener may not be processed as expected.
 In this example we can see how to create a listener and register it and then
 subscribe for messages.
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-
-node.addItemEventListener(new ItemEventCoordinator&ltItem;>());
+node.addItemEventListener(new ItemEventCoordinator<Item>());
 node.subscribe(myJid);
 ```
 
 Where the listener is defined like so:
 
-```
+```java
 class ItemEventCoordinator  implements ItemEventListener {
 	@Override
 	public void handlePublishedItems(ItemPublishEvent items) {
@@ -196,21 +181,19 @@ other events that occur on a node as well.
 In this example we can see how to create a listener, register it and then
 subscribe for item deletion messages.
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-
-node.addItemDeleteListener(new ItemDeleteCoordinator&ltItem;>());
+node.addItemDeleteListener(new ItemDeleteCoordinator<Item>());
 node.subscribe(myJid);
 node.deleteItem("id_one");
 ```
 
 Where the handler is defined like so:
 
-```
+```java
 class ItemDeleteCoordinator implements ItemDeleteListener {
 	@Override
 	public void handleDeletedItems(ItemDeleteEvent items) {
@@ -228,29 +211,25 @@ class ItemDeleteCoordinator implements ItemDeleteListener {
 In this example we can see how to create a listener, register it and then
 subscribe for node configuration messages.
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 Node node = mgr.getNode("testNode");
-
 node.addConfigurationListener(new NodeConfigCoordinator());
 node.subscribe(myJid);
-
 ConfigureForm form = new ConfigureForm(FormType.submit);
 form.setAccessModel(AccessModel.open);
 form.setDeliverPayloads(false);
 form.setNotifyRetract(true);
 form.setPersistentItems(true);
 form.setPublishModel(PublishModel.open);
-
 node.sendConfigurationForm(form);
 ```
 
 Where the handler is defined like so:
 
-```
+```java
 class NodeConfigCoordinator implements NodeConfigListener {
 	@Override
 	public void handleNodeConfiguration(ConfigurationEvent config) {
@@ -260,8 +239,7 @@ class NodeConfigCoordinator implements NodeConfigListener {
 }
 ```
 
-Retrieving persisted pubsub messages
-------------------------------------
+## Retrieving persisted pubsub messages
 
 **Description**
 
@@ -278,52 +256,45 @@ specified since this is the means of guaranteeing retrieval of payload.
 **Usage**
 
 To synchronously retrieve existing items from a persistent node, you will have
-to get an instance of a _**LeafNode**_ and call one of the retrieve methods.
+to get an instance of a `LeafNode` and call one of the retrieve methods.
 
 **Examples**
 
 In this example we can see how to retrieve the existing items from a node:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-
 Collection<? extends Item> items = node.getItems();
 ```
 
 In this example we can see how to retrieve the last N existing items:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-
 List<? extends Item> items = node.getItems(100);
 ```
 
 In this example we can see how to retrieve the specified existing items:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the node
 LeafNode node = mgr.getNode("testNode");
-Collection&ltString;> ids = new ArrayList&ltString;>(3);
+Collection<String> ids = new ArrayList<String>(3);
 ids.add("1");
 ids.add("3");
 ids.add("4");
-
 List<? extends Item> items = node.getItems(ids);
 ```
 
-Discover pubsub information
----------------------------
+## Discover pubsub information
 
 **Description**
 
@@ -332,71 +303,65 @@ information.
 
 **Usage**
 
-To retrieve information, a user will simply use either the _**PubSubManager**_
-or _**Node**_ classes depending on what type of information is required.
+To retrieve information, a user will simply use either the `PubSubManager`
+or `Node` classes depending on what type of information is required.
 
 **Examples**
 
 In this example we can see how to get pubsub capabilities:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the pubsub features that are supported
 DiscoverInfo supportedFeatures = mgr.getSupportedFeatures();
 ```
 
 In this example we can see how to get pubsub subscriptions for all nodes:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get all the subscriptions in the pubsub service
-List&ltSubscription;> subscriptions = mgr.getSubscriptions();
+List<Subscription> subscriptions = mgr.getSubscriptions();
 ```
 
 In this example we can see how to get all affiliations for the users bare JID
 on the pubsub service:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
-
 // Get the affiliations for the users bare JID
-List&ltAffiliation;> affiliations = mgr.getAffiliations();
+List<Affiliation> affiliations = mgr.getAffiliations();
 ```
 
 In this example we can see how to get information about the node:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
 Node node = mgr.getNode("testNode");
-
 // Get the node information
 DiscoverInfo nodeInfo = node.discoverInfo();
 ```
 
 In this example we can see how to discover the node items:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
 Node node = mgr.getNode("testNode");
-
 // Discover the node items
 DiscoverItems nodeItems = node.discoverItems();
 ```
 
 In this example we can see how to get node subscriptions:
 
-```
+```java
 // Create a pubsub manager using an existing XMPPConnection
 PubSubManager mgr = new PubSubManager(con);
 Node node = mgr.getNode("testNode");
-
 // Discover the node subscriptions
-List&ltSubscription;> subscriptions = node.getSubscriptions();
+List<Subscription> subscriptions = node.getSubscriptions();
 ```
