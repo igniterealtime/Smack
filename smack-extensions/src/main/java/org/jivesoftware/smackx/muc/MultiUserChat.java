@@ -52,6 +52,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
+import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -83,6 +85,10 @@ import org.jivesoftware.smackx.xdata.Form;
  * are "moderator", "participant", and "visitor". Each role and affiliation guarantees
  * different privileges (e.g. Send messages to all occupants, Kick participants and visitors,
  * Grant voice, Edit member list, etc.).
+ * <p>
+ * <b>Note:</b> Make sure to leave the MUC ({@link #leave()}) before you drop the reference to
+ * it, or otherwise you may leak the instance.
+ * </p>
  *
  * @author Gaston Dombiak, Larry Kirschner
  */
@@ -109,17 +115,29 @@ public class MultiUserChat {
     private final Set<MessageListener> messageListeners = new CopyOnWriteArraySet<MessageListener>();
     private final Set<PresenceListener> presenceListeners = new CopyOnWriteArraySet<PresenceListener>();
     private final Set<PresenceListener> presenceInterceptors = new CopyOnWriteArraySet<PresenceListener>();
-    private final ConnectionDetachedPacketCollector<Message> messageCollector = new ConnectionDetachedPacketCollector<Message>();
+
+    /**
+     * This filter will match all stanzas send from the groupchat or from one if
+     * the groupchat participants, i.e. it filters only the bare JID of the from
+     * attribute against the JID of the MUC.
+     */
+    private final PacketFilter fromRoomFilter;
+
+    /**
+     * Same as {@link #fromRoomFilter} together with {@link MessageTypeFilter#GROUPCHAT}.
+     */
+    private final PacketFilter fromRoomGroupchatFilter;
 
     private final PacketListener presenceInterceptor;
-    private final PacketFilter fromRoomFilter;
     private final PacketListener messageListener;
     private final PacketListener presenceListener;
-    private final RoomListenerMultiplexor roomListenerMultiplexor;
+    private final PacketListener subjectListener;
+    private final PacketListener declinesListener;
 
     private String subject;
     private String nickname = null;
     private boolean joined = false;
+    private PacketCollector messageCollector;
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -181,6 +199,9 @@ public class MultiUserChat {
         this.connection = connection;
         this.room = room.toLowerCase(Locale.US);
 
+        fromRoomFilter = FromMatchesFilter.create(room);
+        fromRoomGroupchatFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.GROUPCHAT);
+
         messageListener = new PacketListener() {
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {
@@ -190,19 +211,9 @@ public class MultiUserChat {
                 }
             }
         };
-        presenceListener = new PacketListener() {
-            @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
-                Presence presence = (Presence) packet;
-                for (PresenceListener listener : presenceListeners) {
-                    listener.processPresence(presence);
-                }
-            }
-        };
-        fromRoomFilter = FromMatchesFilter.create(room);
 
         // Create a listener for subject updates.
-        PacketListener subjectListener = new PacketListener() {
+        subjectListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 Message msg = (Message) packet;
                 // Update the room subject
@@ -216,7 +227,7 @@ public class MultiUserChat {
         };
 
         // Create a listener for all presence updates.
-        PacketListener presenceListener = new PacketListener() {
+        presenceListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 Presence presence = (Presence) packet;
                 String from = presence.getFrom();
@@ -270,33 +281,26 @@ public class MultiUserChat {
                         }
                     }
                 }
+                for (PresenceListener listener : presenceListeners) {
+                    listener.processPresence(presence);
+                }
             }
         };
 
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
-        PacketListener declinesListener = new PacketListener() {
+        declinesListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 // Get the MUC User extension
                 MUCUser mucUser = MUCUser.from(packet);
                 // Check if the MUCUser informs that the invitee has declined the invitation
-                if (mucUser.getDecline() != null &&
-                        ((Message) packet).getType() != Message.Type.error) {
-                    // Fire event for invitation rejection listeners
-                    fireInvitationRejectionListeners(
-                        mucUser.getDecline().getFrom(),
-                        mucUser.getDecline().getReason());
+                if (mucUser.getDecline() == null) {
+                    return;
                 }
+                // Fire event for invitation rejection listeners
+                fireInvitationRejectionListeners(mucUser.getDecline().getFrom(), mucUser.getDecline().getReason());
             }
         };
-
-        PacketMultiplexListener packetMultiplexor = new PacketMultiplexListener(
-                messageCollector, presenceListener, subjectListener,
-                declinesListener);
-
-        roomListenerMultiplexor = RoomListenerMultiplexor.getRoomMultiplexor(connection);
-
-        roomListenerMultiplexor.addRoom(room, packetMultiplexor);
 
         presenceInterceptor = new PacketListener() {
             @Override
@@ -476,12 +480,16 @@ public class MultiUserChat {
         this.nickname = nickname;
         joined = true;
         // Setup the messageListeners and presenceListeners
-        connection.addPacketListener(messageListener, new AndFilter(fromRoomFilter,
-                        MessageTypeFilter.GROUPCHAT));
+        connection.addPacketListener(messageListener, fromRoomGroupchatFilter);
         connection.addPacketListener(presenceListener, new AndFilter(fromRoomFilter,
                         PacketTypeFilter.PRESENCE));
+        connection.addPacketListener(subjectListener, new AndFilter(fromRoomFilter,
+                        MessageWithSubjectFilter.INSTANCE));
+        connection.addPacketListener(declinesListener, new AndFilter(new PacketExtensionFilter(MUCUser.ELEMENT,
+                        MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         PacketTypeFilter.PRESENCE));
+        messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
         // Update the list of joined rooms through this connection
         List<String> rooms = joinedRooms.get(connection);
         if (rooms == null) {
@@ -1821,8 +1829,12 @@ public class MultiUserChat {
     *
     * @return the next message if one is immediately available and
     *      <tt>null</tt> otherwise.
+     * @throws MUCNotJoinedException 
     */
-    public Message pollMessage() {
+    public Message pollMessage() throws MUCNotJoinedException {
+        if (messageCollector == null) {
+            throw new MUCNotJoinedException(this);
+        }
         return messageCollector.pollResult();
     }
 
@@ -1831,8 +1843,12 @@ public class MultiUserChat {
      * (not return) until a message is available.
      *
      * @return the next message.
+     * @throws MUCNotJoinedException 
      */
-    public Message nextMessage() {
+    public Message nextMessage() throws MUCNotJoinedException {
+        if (messageCollector == null) {
+            throw new MUCNotJoinedException(this);
+        }
         return  messageCollector.nextResult();
     }
 
@@ -1844,8 +1860,12 @@ public class MultiUserChat {
      * @param timeout the maximum amount of time to wait for the next message.
      * @return the next message, or <tt>null</tt> if the timeout elapses without a
      *      message becoming available.
+     * @throws MUCNotJoinedException 
      */
-    public Message nextMessage(long timeout) {
+    public Message nextMessage(long timeout) throws MUCNotJoinedException {
+        if (messageCollector == null) {
+            throw new MUCNotJoinedException(this);
+        }
         return messageCollector.nextResult(timeout);
     }
 
@@ -1891,11 +1911,8 @@ public class MultiUserChat {
         Message message = new Message(room, Message.Type.groupchat);
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
-        PacketFilter responseFilter =
-            new AndFilter(
-                FromMatchesFilter.create(room),
-                new PacketTypeFilter(Message.class));
-        responseFilter = new AndFilter(responseFilter, new PacketFilter() {
+        PacketFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new PacketFilter() {
+            @Override
             public boolean accept(Packet packet) {
                 Message msg = (Message) packet;
                 return subject.equals(msg.getSubject());
@@ -1917,9 +1934,13 @@ public class MultiUserChat {
         }
         connection.removePacketListener(messageListener);
         connection.removePacketListener(presenceListener);
+        connection.removePacketListener(declinesListener);
         connection.removePacketInterceptor(presenceInterceptor);
+        if (messageCollector != null) {
+            messageCollector.cancel();
+            messageCollector = null;
+        }
         rooms.remove(room);
-        cleanup();
     }
 
     /**
@@ -2332,21 +2353,6 @@ public class MultiUserChat {
             params.add(mucUser.getItem().getNick());
             fireParticipantStatusListeners("nicknameChanged", params);
         }
-    }
-
-    private void cleanup() {
-        try {
-            if (connection != null) {
-                roomListenerMultiplexor.removeRoom(room);
-            }
-        } catch (Exception e) {
-            // Do nothing
-        }
-    }
-
-    protected void finalize() throws Throwable {
-        cleanup();
-        super.finalize();
     }
 
     /**
