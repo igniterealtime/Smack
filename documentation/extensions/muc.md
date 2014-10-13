@@ -31,8 +31,9 @@ allowed to enter.
 **Usage**
 
 In order to create a room you will need to first create an instance of
-_**MultiUserChat**_. The room name passed to the constructor will be the name
-of the room to create. The next step is to send **create(String nickname)** to
+_**MultiUserChat**_.
+In order to do so, get a instance of `MultiUserChatManager` and call `getMultiUserChat(String)` to retrieve a `MultiUserChat` instance.
+The next step is to send **create(String nickname)** to
 the _**MultiUserChat**_ instance where nickname is the nickname to use when
 joining the room.
 
@@ -46,9 +47,12 @@ configuration form, complete the form and finally send it back to the server.
 
 In this example we can see how to create an instant room:
 
-```
-// Create a MultiUserChat using a XMPPConnection for a room
-MultiUserChat muc = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
+// Get a MultiUserChat using MultiUserChatManager
+MultiUserChat muc = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // Create the room
 muc.create("testbot");
@@ -61,9 +65,12 @@ muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
 In this example we can see how to create a reserved room. The form is
 completed with default values:
 
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using a XMPPConnection for a room
-MultiUserChat muc = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+MultiUserChat muc = = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // Create the room
 muc.create("testbot");
@@ -101,9 +108,10 @@ room is password protected.
 
 **Usage**
 
-In order to join a room you will need to first create an instance of
-_**MultiUserChat**_. The room name passed to the constructor will be the name
-of the room to join. The next step is to send **join(...)** to the
+In order to join a room you will need to first get an instance of
+_**MultiUserChat**_.
+In order to do so, get a instance of `MultiUserChatManager` and call `getMultiUserChat(String)` to retrieve a `MultiUserChat` instance.
+The next step is to send **join(...)** to the
 _**MultiUserChat**_ instance. But first you will have to decide which join
 message to send. If you want to just join the room without a password and
 without specifying the amount of history to receive then you could use
@@ -120,9 +128,13 @@ wait for a response from the server.
 
 In this example we can see how to join a room with a given nickname:
 
-```
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
 // Create a MultiUserChat using a XMPPConnection for a room
-MultiUserChat muc2 = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
+
 // User2 joins the new room
 // The room service will decide the amount of history to send
 muc2.join("testbot2");
@@ -131,9 +143,12 @@ muc2.join("testbot2");
 In this example we can see how to join a room with a given nickname and
 password:
 
-```
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
 // Create a MultiUserChat using a XMPPConnection for a room
-MultiUserChat muc2 = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // User2 joins the new room using a password
 // The room service will decide the amount of history to send
@@ -143,9 +158,12 @@ muc2.join("testbot2", "password");
 In this example we can see how to join a room with a given nickname specifying
 the amount of history to receive:
 
-```
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
 // Create a MultiUserChat using a XMPPConnection for a room
-MultiUserChat muc2 = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // User2 joins the new room using a password and specifying
 // the amount of history to receive. In this example we are requesting the last 5 messages.
@@ -175,7 +193,7 @@ to the room (e.g. hecate@shakespeare.lit) and reason is the reason why the
 user is being invited.
 
 If potential invitees want to listen for room invitations then the invitee
-must add an _**InvitationListener**_ to the _**MultiUserChat**_ class. Since
+must add an _**InvitationListener**_ to the _**MultiUserChatManager**_ class. Since
 the _**InvitationListener**_ is an _interface_, it is necessary to create a
 class that implements this _interface_. If an inviter wants to listen for room
 invitation rejections, just add an _**InvitationRejectionListener**_ to the
@@ -187,9 +205,13 @@ you will need to create a class that implements this interface.
 In this example we can see how to invite another user to the room and lister
 for possible rejections:
 
-```
-// User2 joins the room
-MultiUserChat muc2 = new MultiUserChat(conn2, room);
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
+// Create a MultiUserChat using a XMPPConnection for a room
+MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
+
 muc2.join("testbot2");
 // User2 listens for invitation rejections
 muc2.addInvitationRejectionListener(new InvitationRejectionListener() {
@@ -204,9 +226,9 @@ muc2.invite("user3@host.org/Smack", "Meet me in this excellent room");
 In this example we can see how to listen for room invitations and decline
 invitations:
 
-```
+```java
 // User3 listens for MUC invitations
-MultiUserChat.addInvitationListener(conn3, new InvitationListener() {
+MultiUserChatManager.getInstanceFor(connection).addInvitationListener(new InvitationListener() {
 	public void invitationReceived(XMPPConnection conn, String room, String inviter, String reason, String password) {
 		// Reject the invitation
 		MultiUserChat.decline(conn, room, inviter, "I'm busy right now");
@@ -225,8 +247,8 @@ User Chat protocol.
 **Usage**
 
 In order to discover if one of the user's contacts supports MUC just send
-**isServiceEnabled(XMPPConnection connection, String user)** to the
-_**MultiUserChat**_ class where user is a fully qualified XMPP ID, e.g.
+**isServiceEnabled(String user)** to the
+_**MultiUserChatManager**_ class where user is a fully qualified XMPP ID, e.g.
 jdoe@example.com. You will receive a boolean indicating whether the user
 supports MUC or not.
 
@@ -234,9 +256,9 @@ supports MUC or not.
 
 In this example we can see how to discover support of MUC:
 
-```
+```java
 // Discover whether user3@host.org supports MUC or not
-boolean supports = MultiUserChat.isServiceEnabled(conn, "user3@host.org/Smack");
+boolean supports = MultiUserChatManager.getInstanceFor(connection).isServiceEnabled("user3@host.org/Smack");
 ```
 
 Discover joined rooms
@@ -250,8 +272,8 @@ in.
 **Usage**
 
 In order to get the rooms where a user is in just send
-**getJoinedRooms(XMPPConnection connection, String user)** to the
-_**MultiUserChat**_ class where user is a fully qualified XMPP ID, e.g.
+**getJoinedRooms(String user)** to the
+_**MultiUserChatManager**_ class where user is a fully qualified XMPP ID, e.g.
 jdoe@example.com. You will get an Iterator of Strings as an answer where each
 String represents a room name.
 
@@ -259,9 +281,12 @@ String represents a room name.
 
 In this example we can see how to get the rooms where a user is in:
 
-```
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
 // Get the rooms where user3@host.org has joined
-Iterator joinedRooms = MultiUserChat.getJoinedRooms(conn, "user3@host.org/Smack");
+List<String> joinedRooms = manager.getJoinedRooms("user3@host.org/Smack");
 ```
 
 Discover room information
@@ -276,8 +301,8 @@ rooms.
 **Usage**
 
 In order to discover information about a room just send
-**getRoomInfo(XMPPConnection connection, String room)** to the
-_**MultiUserChat**_ class where room is the XMPP ID of the room, e.g.
+**getRoomInfo(String room)** to the
+_**MultiUserChatManager**_ class where room is the XMPP ID of the room, e.g.
 roomName@conference.myserver. You will get a RoomInfo object that contains the
 discovered room information.
 
@@ -285,9 +310,12 @@ discovered room information.
 
 In this example we can see how to discover information about a room:
 
-```
+```java
+// Get the MultiUserChatManager
+MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
 // Discover information about the room roomName@conference.myserver
-RoomInfo info = MultiUserChat.getRoomInfo(conn, "roomName@conference.myserver");
+RoomInfo info = manager.getRoomInfo("roomName@conference.myserver");
 System.out.println("Number of occupants:" + info.getOccupantsCount());
 System.out.println("Room Subject:" + info.getSubject());
 ```
@@ -440,17 +468,18 @@ These are the triggered events when the role has been downgraded:
 In this example we can see how to grant voice to a visitor and listen for the
 notification events:
 
-```
+```java
 // User1 creates a room
-muc = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+muc = manager.getMultiUserChat("myroom@conference.jabber.org");
 muc.create("testbot");
 // User1 (which is the room owner) configures the room as a moderated room
 Form form = muc.getConfigurationForm();
 Form answerForm = form.createAnswerForm();
 answerForm.setAnswer("muc#roomconfig_moderatedroom", "1");
 muc.sendConfigurationForm(answerForm);
+
 // User2 joins the new room (as a visitor)
-MultiUserChat muc2 = new MultiUserChat(conn2, "myroom@conference.jabber.org");
+MultiUserChat muc2 = manager2.getMultiUserChat("myroom@conference.jabber.org");
 muc2.join("testbot2");
 // User2 will listen for his own "voice" notification events
 muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -463,8 +492,9 @@ muc2.addUserStatusListener(new DefaultUserStatusListener() {
 		...
 	}
 });
+
 // User3 joins the new room (as a visitor)
-MultiUserChat muc3 = new MultiUserChat(conn3, "myroom@conference.jabber.org");
+MultiUserChat muc3 = manager3.getMultiUserChat("myroom@conference.jabber.org");
 muc3.join("testbot3");
 // User3 will lister for other occupants "voice" notification events
 muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {
@@ -578,17 +608,18 @@ These are the triggered events when the affiliation has been downgraded:
 In this example we can see how to grant admin privileges to a user and listen
 for the notification events:
 
-```
+```java
 // User1 creates a room
-muc = new MultiUserChat(conn1, "myroom@conference.jabber.org");
+muc = manager.getMultiUserChat("myroom@conference.jabber.org");
 muc.create("testbot");
 // User1 (which is the room owner) configures the room as a moderated room
 Form form = muc.getConfigurationForm();
 Form answerForm = form.createAnswerForm();
 answerForm.setAnswer("muc#roomconfig_moderatedroom", "1");
 muc.sendConfigurationForm(answerForm);
+
 // User2 joins the new room (as a visitor)
-MultiUserChat muc2 = new MultiUserChat(conn2, "myroom@conference.jabber.org");
+MultiUserChat muc2 = manager2.getMultiUserChat("myroom@conference.jabber.org");
 muc2.join("testbot2");
 // User2 will listen for his own admin privileges
 muc2.addUserStatusListener(new DefaultUserStatusListener() {
@@ -601,8 +632,9 @@ muc2.addUserStatusListener(new DefaultUserStatusListener() {
 		...
 	}
 });
+
 // User3 joins the new room (as a visitor)
-MultiUserChat muc3 = new MultiUserChat(conn3, "myroom@conference.jabber.org");
+MultiUserChat muc3 = manager3.getMultiUserChat("myroom@conference.jabber.org");
 muc3.join("testbot3");
 // User3 will lister for other users admin privileges
 muc3.addParticipantStatusListener(new DefaultParticipantStatusListener() {

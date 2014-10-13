@@ -40,7 +40,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.WorkgroupInvitation;
@@ -128,7 +128,7 @@ public class Workgroup {
         /**
          * Internal handling of an invitation.Recieving an invitation removes the user from the queue.
          */
-        MultiUserChat.addInvitationListener(connection,
+        MultiUserChatManager.getInstanceFor(connection).addInvitationListener(
                 new org.jivesoftware.smackx.muc.InvitationListener() {
                     public void invitationReceived(XMPPConnection conn, String room, String inviter,
                                                    String reason, String password, Message message) {
