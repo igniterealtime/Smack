@@ -68,9 +68,6 @@ public class ConnectionConfiguration implements Cloneable {
 
     private boolean debuggerEnabled = SmackConfiguration.DEBUG_ENABLED;
 
-    // Flag that indicates if a reconnection should be attempted when abruptly disconnected
-    private boolean reconnectionAllowed = true;
-    
     // Holds the socket factory that is used to generate the socket in the connection
     private SocketFactory socketFactory;
     
@@ -431,27 +428,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public void setDebuggerEnabled(boolean debuggerEnabled) {
         this.debuggerEnabled = debuggerEnabled;
-    }
-    
-    /**
-     * Sets if the reconnection mechanism is allowed to be used. By default
-     * reconnection is allowed.
-     *
-     * @param isAllowed if the reconnection mechanism should be enabled for this connection.
-     */
-    public void setReconnectionAllowed(boolean isAllowed) {
-        this.reconnectionAllowed = isAllowed;
-    }
-
-    /**
-     * Returns if the reconnection mechanism is allowed to be used. By default reconnection is
-     * allowed. You can disable the reconnection mechanism with {@link
-     * #setReconnectionAllowed(boolean)}.
-     *
-     * @return true, if the reconnection mechanism is enabled.
-     */
-    public boolean isReconnectionAllowed() {
-        return this.reconnectionAllowed;
     }
 
     /**

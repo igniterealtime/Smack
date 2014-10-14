@@ -19,7 +19,11 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.packet.StreamError;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.Random;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
@@ -35,180 +39,252 @@ import java.util.logging.Logger;
  *
  * @author Francisco Vives
  */
-public class ReconnectionManager extends AbstractConnectionListener {
+public class ReconnectionManager {
     private static final Logger LOGGER = Logger.getLogger(ReconnectionManager.class.getName());
-    
-    // Holds the connection to the server
-    private final AbstractXMPPConnection connection;
-    private Thread reconnectionThread;
-    private int randomBase = new Random().nextInt(11) + 5; // between 5 and 15 seconds
-    
-    // Holds the state of the reconnection
-    boolean done = false;
+
+    private static final Map<AbstractXMPPConnection, ReconnectionManager> INSTANCES = new WeakHashMap<AbstractXMPPConnection, ReconnectionManager>();
+
+    /**
+     * Get a instance of ReconnectionManager for the given connection.
+     * 
+     * @param connection
+     * @return a ReconnectionManager for the connection.
+     */
+    public static synchronized ReconnectionManager getInstanceFor(AbstractXMPPConnection connection) {
+        ReconnectionManager reconnectionManager = INSTANCES.get(connection);
+        if (reconnectionManager == null) {
+            reconnectionManager = new ReconnectionManager(connection);
+            INSTANCES.put(connection, reconnectionManager);
+        }
+        return reconnectionManager;
+    }
 
     static {
-        // Create a new PrivacyListManager on every established connection. In the init()
-        // method of PrivacyListManager, we'll add a listener that will delete the
-        // instance when the connection is closed.
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
                 if (connection instanceof AbstractXMPPConnection) {
-                    connection.addConnectionListener(new ReconnectionManager((AbstractXMPPConnection) connection));
+                    ReconnectionManager.getInstanceFor((AbstractXMPPConnection) connection);
                 }
             }
         });
     }
 
-    private ReconnectionManager(AbstractXMPPConnection connection) {
-        this.connection = connection;
+    private static boolean enabledPerDefault = false;
+
+    /**
+     * Set if the automatic reconnection mechanism will be enabled per default for new XMPP connections. The default is
+     * 'false'.
+     * 
+     * @param enabled
+     */
+    public static void setEnabledPerDefault(boolean enabled) {
+        enabledPerDefault = enabled;
     }
 
+    /**
+     * Get the current default reconnection mechanism setting for new XMPP connections.
+     *
+     * @return true if new connection will come with an enabled reconnection mechanism
+     */
+    public static boolean getEnabledPerDefault() {
+        return enabledPerDefault;
+    }
+
+    // Holds the connection to the server
+    private final WeakReference<AbstractXMPPConnection> weakRefConnection;
+    private final int randomBase = new Random().nextInt(13) + 2; // between 2 and 15 seconds
+    private final Runnable reconnectionRunnable;
+
+    /**
+     * Flag that indicates if a reconnection should be attempted when abruptly disconnected
+     */
+    private boolean automaticReconnectEnabled = false;
+
+    boolean done = false;
+
+    private Thread reconnectionThread;
+
+    private ReconnectionManager(AbstractXMPPConnection connection) {
+        weakRefConnection = new WeakReference<AbstractXMPPConnection>(connection);
+
+        reconnectionRunnable = new Thread() {
+
+            /**
+             * Holds the current number of reconnection attempts
+             */
+            private int attempts = 0;
+
+            /**
+             * Returns the number of seconds until the next reconnection attempt.
+             *
+             * @return the number of seconds until the next reconnection attempt.
+             */
+            private int timeDelay() {
+                attempts++;
+                if (attempts > 13) {
+                    return randomBase * 6 * 5; // between 2.5 and 7.5 minutes (~5 minutes)
+                }
+                if (attempts > 7) {
+                    return randomBase * 6; // between 30 and 90 seconds (~1 minutes)
+                }
+                return randomBase; // 10 seconds
+            }
+
+            /**
+             * The process will try the reconnection until the connection succeed or the user cancel it
+             */
+            public void run() {
+                final AbstractXMPPConnection connection = weakRefConnection.get();
+                if (connection == null) {
+                    return;
+                }
+                // The process will try to reconnect until the connection is established or
+                // the user cancel the reconnection process AbstractXMPPConnection.disconnect().
+                while (isReconnectionPossible(connection)) {
+                    // Find how much time we should wait until the next reconnection
+                    int remainingSeconds = timeDelay();
+                    // Sleep until we're ready for the next reconnection attempt. Notify
+                    // listeners once per second about how much time remains before the next
+                    // reconnection attempt.
+                    while (isReconnectionPossible(connection) && remainingSeconds > 0) {
+                        try {
+                            Thread.sleep(1000);
+                            remainingSeconds--;
+                            for (ConnectionListener listener : connection.connectionListeners) {
+                                listener.reconnectingIn(remainingSeconds);
+                            }
+                        }
+                        catch (InterruptedException e) {
+                            // We don't need to handle spurious interrupts, in the worst case, this will cause to
+                            // reconnect a few seconds earlier, depending on how many (spurious) interrupts arrive while
+                            // sleep() is called.
+                            LOGGER.log(Level.FINE, "Supurious interrupt", e);
+                        }
+                    }
+
+                    // Makes a reconnection attempt
+                    try {
+                        if (isReconnectionPossible(connection)) {
+                            connection.connect();
+                        }
+                    }
+                    catch (Exception e) {
+                        // Fires the failed reconnection notification
+                        for (ConnectionListener listener : connection.connectionListeners) {
+                            listener.reconnectionFailed(e);
+                        }
+                    }
+                }
+            }
+        };
+
+        // If the reconnection mechanism is enable per default, enable it for this ReconnectionManager instance
+        if (getEnabledPerDefault()) {
+            enableAutomaticReconnection();
+        }
+    }
+
+    /**
+     * Enable the automatic reconnection mechanism. Does nothing if already enabled.
+     */
+    public synchronized void enableAutomaticReconnection() {
+        if (automaticReconnectEnabled) {
+            return;
+        }
+        XMPPConnection connection = weakRefConnection.get();
+        if (connection == null) {
+            throw new IllegalStateException("Connection instance no longer available");
+        }
+        connection.addConnectionListener(connectionListener);
+        automaticReconnectEnabled = true;
+    }
+
+    /**
+     * Disable the automatic reconnection mechanism. Does nothing if already disabled.
+     */
+    public synchronized void disableAutomaticReconnection() {
+        if (!automaticReconnectEnabled) {
+            return;
+        }
+        XMPPConnection connection = weakRefConnection.get();
+        if (connection == null) {
+            throw new IllegalStateException("Connection instance no longer available");
+        }
+        connection.removeConnectionListener(connectionListener);
+        automaticReconnectEnabled = false;
+    }
+
+    /**
+     * Returns if the automatic reconnection mechanism is enabled. You can disable the reconnection mechanism with
+     * {@link #disableAutomaticReconnection} and enable the mechanism with {@link #enableAutomaticReconnection()}.
+     *
+     * @return true, if the reconnection mechanism is enabled.
+     */
+    public boolean isAutomaticReconnectEnabled() {
+        return automaticReconnectEnabled;
+    }
 
     /**
      * Returns true if the reconnection mechanism is enabled.
      *
-     * @return true if automatic reconnections are allowed.
+     * @return true if automatic reconnection is allowed.
      */
-    private boolean isReconnectionAllowed() {
+    private boolean isReconnectionPossible(XMPPConnection connection) {
         return !done && !connection.isConnected()
-                && connection.getConfiguration().isReconnectionAllowed();
+                && isAutomaticReconnectEnabled();
     }
 
     /**
      * Starts a reconnection mechanism if it was configured to do that.
      * The algorithm is been executed when the first connection error is detected.
-     * <p/>
-     * The reconnection mechanism will try to reconnect periodically in this way:
-     * <ol>
-     * <li>First it will try 6 times every 10 seconds.
-     * <li>Then it will try 10 times every 1 minute.
-     * <li>Finally it will try indefinitely every 5 minutes.
-     * </ol>
      */
-    synchronized protected void reconnect() {
-        if (this.isReconnectionAllowed()) {
-            // Since there is no thread running, creates a new one to attempt
-            // the reconnection.
-            // avoid to run duplicated reconnectionThread -- fd: 16/09/2010
-            if (reconnectionThread!=null && reconnectionThread.isAlive()) return;
-            
-            reconnectionThread = new Thread() {
-             			
-                /**
-                 * Holds the current number of reconnection attempts
-                 */
-                private int attempts = 0;
-
-                /**
-                 * Returns the number of seconds until the next reconnection attempt.
-                 *
-                 * @return the number of seconds until the next reconnection attempt.
-                 */
-                private int timeDelay() {
-                    attempts++;
-                    if (attempts > 13) {
-                	return randomBase*6*5;      // between 2.5 and 7.5 minutes (~5 minutes)
-                    }
-                    if (attempts > 7) {
-                	return randomBase*6;       // between 30 and 90 seconds (~1 minutes)
-                    }
-                    return randomBase;       // 10 seconds
-                }
-
-                /**
-                 * The process will try the reconnection until the connection succeed or the user
-                 * cancel it
-                 */
-                public void run() {
-                    // The process will try to reconnect until the connection is established or
-                    // the user cancel the reconnection process {@link XMPPConnection#disconnect()}
-                    while (ReconnectionManager.this.isReconnectionAllowed()) {
-                        // Find how much time we should wait until the next reconnection
-                        int remainingSeconds = timeDelay();
-                        // Sleep until we're ready for the next reconnection attempt. Notify
-                        // listeners once per second about how much time remains before the next
-                        // reconnection attempt.
-                        while (ReconnectionManager.this.isReconnectionAllowed() &&
-                                remainingSeconds > 0)
-                        {
-                            try {
-                                Thread.sleep(1000);
-                                remainingSeconds--;
-                                ReconnectionManager.this
-                                        .notifyAttemptToReconnectIn(remainingSeconds);
-                            }
-                            catch (InterruptedException e1) {
-                                LOGGER.warning("Sleeping thread interrupted");
-                                // Notify the reconnection has failed
-                                ReconnectionManager.this.notifyReconnectionFailed(e1);
-                            }
-                        }
-
-                        // Makes a reconnection attempt
-                        try {
-                            if (ReconnectionManager.this.isReconnectionAllowed()) {
-                                connection.connect();
-                            }
-                        }
-                        catch (Exception e) {
-                            // Fires the failed reconnection notification
-                            ReconnectionManager.this.notifyReconnectionFailed(e);
-                        }
-                    }
-                }
-            };
-            reconnectionThread.setName("Smack Reconnection Manager");
-            reconnectionThread.setDaemon(true);
-            reconnectionThread.start();
+    private synchronized void reconnect() {
+        XMPPConnection connection = this.weakRefConnection.get();
+        if (connection == null) {
+            LOGGER.fine("Connection is null, will not reconnect");
+            return;
         }
+        // Since there is no thread running, creates a new one to attempt
+        // the reconnection.
+        // avoid to run duplicated reconnectionThread -- fd: 16/09/2010
+        if (reconnectionThread != null && reconnectionThread.isAlive())
+            return;
+
+        reconnectionThread = new Thread(reconnectionRunnable);
+        reconnectionThread.setName("Smack Reconnection Manager (" + connection.getConnectionCounter() + ')');
+        reconnectionThread.setDaemon(true);
+        reconnectionThread.start();
     }
 
-    /**
-     * Fires listeners when a reconnection attempt has failed.
-     *
-     * @param exception the exception that occured.
-     */
-    protected void notifyReconnectionFailed(Exception exception) {
-        if (isReconnectionAllowed()) {
-            for (ConnectionListener listener : connection.connectionListeners) {
-                listener.reconnectionFailed(exception);
-            }
+    private final ConnectionListener connectionListener = new AbstractConnectionListener() {
+
+        @Override
+        public void connectionClosed() {
+            done = true;
         }
-    }
 
-    /**
-     * Fires listeners when The XMPPConnection will retry a reconnection. Expressed in seconds.
-     *
-     * @param seconds the number of seconds that a reconnection will be attempted in.
-     */
-    protected void notifyAttemptToReconnectIn(int seconds) {
-        if (isReconnectionAllowed()) {
-            for (ConnectionListener listener : connection.connectionListeners) {
-                listener.reconnectingIn(seconds);
-            }
+        @Override
+        public void authenticated(XMPPConnection connection) {
+            done = false;
         }
-    }
 
-    @Override
-    public void connectionClosed() {
-        done = true;
-    }
-
-    @Override
-    public void connectionClosedOnError(Exception e) {
-        done = false;
-        if (e instanceof StreamErrorException) {
-            StreamErrorException xmppEx = (StreamErrorException) e;
-            StreamError error = xmppEx.getStreamError();
-            String reason = error.getCode();
-
-            if ("conflict".equals(reason)) {
+        @Override
+        public void connectionClosedOnError(Exception e) {
+            done = false;
+            if (!isAutomaticReconnectEnabled()) {
                 return;
             }
-        }
+            if (e instanceof StreamErrorException) {
+                StreamErrorException xmppEx = (StreamErrorException) e;
+                StreamError error = xmppEx.getStreamError();
+                String reason = error.getCode();
 
-        if (this.isReconnectionAllowed()) {
-            this.reconnect();
+                if ("conflict".equals(reason)) {
+                    return;
+                }
+            }
+
+            reconnect();
         }
-    }
+    };
 }
