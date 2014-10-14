@@ -286,15 +286,8 @@ public class MultiUserChat {
         // Wait for a presence packet back from the server.
         PacketFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(room + "/"
                         + nickname), new PacketTypeFilter(Presence.class));
-        PacketCollector response = null;
 
-        response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
-        // Wait up to a certain number of seconds for a reply.
-        Presence presence = response.nextResultOrThrow(timeout);
-
-        this.nickname = nickname;
-        joined = true;
-        // Setup the messageListeners and presenceListeners
+        // Setup the messageListeners and presenceListeners *before* the join presence is send.
         connection.addPacketListener(messageListener, fromRoomGroupchatFilter);
         connection.addPacketListener(presenceListener, new AndFilter(fromRoomFilter,
                         PacketTypeFilter.PRESENCE));
@@ -305,6 +298,20 @@ public class MultiUserChat {
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         PacketTypeFilter.PRESENCE));
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
+
+        Presence presence;
+        try {
+            presence = connection.createPacketCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(timeout);
+        }
+        catch (NoResponseException | XMPPErrorException e) {
+            // Ensure that all callbacks are removed if there is an exception
+            removeConnectionCallbacks();
+            throw e;
+        }
+
+        this.nickname = nickname;
+        joined = true;
+
         // Update the list of joined rooms
         multiUserChatManager.addJoinedRoom(room);
         return presence;
@@ -1667,11 +1674,10 @@ public class MultiUserChat {
     }
 
     /**
-     * Notification message that the user has left the room.
+     * Remove the connection callbacks (PacketListener, PacketInterceptor, PacketCollector) used by this MUC from the
+     * connection.
      */
-    private synchronized void userHasLeft() {
-        // Update the list of joined rooms
-        multiUserChatManager.removeJoinedRoom(room);
+    private void removeConnectionCallbacks() {
         connection.removePacketListener(messageListener);
         connection.removePacketListener(presenceListener);
         connection.removePacketListener(declinesListener);
@@ -1680,6 +1686,15 @@ public class MultiUserChat {
             messageCollector.cancel();
             messageCollector = null;
         }
+    }
+
+    /**
+     * Remove all callbacks and resources necessary when the user has left the room for some reason.
+     */
+    private synchronized void userHasLeft() {
+        // Update the list of joined rooms
+        multiUserChatManager.removeJoinedRoom(room);
+        removeConnectionCallbacks();
     }
 
     /**
