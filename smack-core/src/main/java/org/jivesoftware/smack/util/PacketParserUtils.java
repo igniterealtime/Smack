@@ -59,6 +59,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class PacketParserUtils {
     private static final Logger LOGGER = Logger.getLogger(PacketParserUtils.class.getName());
 
+    public static final String FEATURE_XML_ROUNDTRIP = "http://xmlpull.org/v1/doc/features.html#xml-roundtrip";
+
     public static XmlPullParser getParserFor(String stanza) throws XmlPullParserException, IOException {
         return getParserFor(new StringReader(stanza));
     }
@@ -144,6 +146,12 @@ public class PacketParserUtils {
     public static XmlPullParser newXmppParser() throws XmlPullParserException {
         XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        try {
+            parser.setFeature(FEATURE_XML_ROUNDTRIP, true);
+        } catch (XmlPullParserException e) {
+            // Doesn't matter if FEATURE_XML_ROUNDTRIP isn't available
+            LOGGER.log(Level.FINEST, "XmlPullParser does not support XML_ROUNDTRIP", e);
+        }
         return parser;
     }
 
@@ -368,12 +376,14 @@ public class PacketParserUtils {
      * not nested ones, if <code>fullNamespaces</code> is false. If it is true, then namespaces of
      * parent elements will be added to child elements that don't define a different namespace.
      * <p>
-     * This method is able to parse the content with MX- and KXmlParser. In order to achieve
-     * this some trade-off has to be make, because KXmlParser does not support xml-roundtrip (ie.
-     * return a String on getText() on START_TAG and END_TAG). We are therefore required to work
-     * around this limitation, which results in only partial support for XML namespaces ("xmlns"):
-     * Only the outermost namespace of elements will be included in the resulting String, if
-     * <code>fullNamespaces</code> is set to false.
+     * This method is able to parse the content with MX- and KXmlParser. KXmlParser does not support
+     * xml-roundtrip. i.e. return a String on getText() on START_TAG and END_TAG. We check for the
+     * XML_ROUNDTRIP feature. If it's not found we are required to work around this limitation, which
+     * results in only partial support for XML namespaces ("xmlns"): Only the outermost namespace of
+     * elements will be included in the resulting String, if <code>fullNamespaces</code> is set to false.
+     * </p>
+     * <p>
+     * In particular Android's XmlPullParser does not support XML_ROUNDTRIP.
      * </p>
      * 
      * @param parser
@@ -384,6 +394,15 @@ public class PacketParserUtils {
      * @throws IOException
      */
     public static CharSequence parseContentDepth(XmlPullParser parser, int depth, boolean fullNamespaces) throws XmlPullParserException, IOException {
+        if (parser.getFeature(FEATURE_XML_ROUNDTRIP)) {
+            return parseContentDepthWithRoundtrip(parser, depth, fullNamespaces);
+        } else {
+            return parseContentDepthWithoutRoundtrip(parser, depth, fullNamespaces);
+        }
+    }
+
+    private static CharSequence parseContentDepthWithoutRoundtrip(XmlPullParser parser, int depth,
+                    boolean fullNamespaces) throws XmlPullParserException, IOException {
         XmlStringBuilder xml = new XmlStringBuilder();
         int event = parser.getEventType();
         boolean isEmptyElement = false;
@@ -435,6 +454,24 @@ public class PacketParserUtils {
             event = parser.next();
         }
         return xml;
+    }
+
+    private static CharSequence parseContentDepthWithRoundtrip(XmlPullParser parser, int depth, boolean fullNamespaces)
+                    throws XmlPullParserException, IOException {
+        StringBuilder sb = new StringBuilder();
+        int event = parser.getEventType();
+        outerloop: while (true) {
+            // Only append the text if the parser is not on on an empty element' start tag. Empty elements are reported
+            // twice, so in order to prevent duplication we only add their text when we are on their end tag.
+            if (!(event == XmlPullParser.START_TAG && parser.isEmptyElementTag())) {
+                sb.append(parser.getText());
+            }
+            if (event == XmlPullParser.END_TAG && parser.getDepth() <= depth) {
+                break outerloop;
+            }
+            event = parser.next();
+        }
+        return sb;
     }
 
     /**
