@@ -88,10 +88,10 @@ public class RemoteCommand extends AdHocCommand {
 
     /**
      * Executes the default action of the command with the information provided
-     * in the Form. This form must be the anwser form of the previous stage. If
+     * in the Form. This form must be the answer form of the previous stage. If
      * there is a problem executing the command it throws an XMPPException.
      *
-     * @param form the form anwser of the previous stage.
+     * @param form the form answer of the previous stage.
      * @throws XMPPErrorException if an error occurs.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
@@ -115,9 +115,9 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     /**
-     * Executes the <code>action</codo> with the <code>form</code>.
+     * Executes the <code>action</code> with the <code>form</code>.
      * The action could be any of the available actions. The form must
-     * be the anwser of the previous stage. It can be <tt>null</tt> if it is the first stage.
+     * be the answer of the previous stage. It can be <tt>null</tt> if it is the first stage.
      *
      * @param action the action to execute.
      * @param form the form with the information.
