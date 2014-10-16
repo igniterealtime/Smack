@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.disco.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -127,6 +128,39 @@ public class DiscoverInfo extends IQ implements Cloneable {
      */
     public List<Identity> getIdentities() {
         return Collections.unmodifiableList(identities);
+    }
+
+    /**
+     * Returns true if this DiscoverInfo contains at least one Identity of the given category and type.
+     *
+     * @param category the category to look for.
+     * @param type the type to look for.
+     * @return true if this DiscoverInfo contains a Identity of the given category and type.
+     */
+    public boolean hasIdentity(String category, String type) {
+        for (Identity identity : identities) {
+            if (identity.getCategory().equals(category) && identity.getType().equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns all Identities of the given category and type of this DiscoverInfo.
+     *
+     * @param category category the category to look for.
+     * @param type type the type to look for.
+     * @return a list of Identites with the given category and type.
+     */
+    public List<Identity> getIdentities(String category, String type) {
+        List<Identity> res = new ArrayList<Identity>(identities.size());
+        for (Identity identity : identities) {
+            if (identity.getCategory().equals(category) && identity.getType().equals(type)) {
+                res.add(identity);
+            }
+        }
+        return res;
     }
 
     /**

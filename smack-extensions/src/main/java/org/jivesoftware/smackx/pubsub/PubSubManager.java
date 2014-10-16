@@ -171,11 +171,24 @@ final public class PubSubManager
 			info.setNode(id);
 			
 			DiscoverInfo infoReply = (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
-			
-			if (infoReply.getIdentities().get(0).getType().equals(NodeType.leaf.toString()))
-				node = new LeafNode(con, id);
-			else
-				node = new CollectionNode(con, id);
+
+            if (infoReply.hasIdentity(PubSub.ELEMENT, "leaf")) {
+                node = new LeafNode(con, id);
+            }
+            else if (infoReply.hasIdentity(PubSub.ELEMENT, "collection")) {
+                node = new CollectionNode(con, id);
+            }
+            else {
+                // XEP-60 5.3 states that
+                // "The 'disco#info' result MUST include an identity with a category of 'pubsub' and a type of either 'leaf' or 'collection'."
+                // If this is not the case, then we are dealing with an PubSub implementation that doesn't follow the specification.
+                throw new AssertionError(
+                                "PubSub service '"
+                                                + to
+                                                + "' returned disco info result for node '"
+                                                + id
+                                                + "', but it did not contain an Identity of type 'leaf' or 'collection' (and category 'pubsub'), which is not allowed according to XEP-60 5.3.");
+            }
 			node.setTo(to);
 			nodeMap.put(id, node);
 		}
