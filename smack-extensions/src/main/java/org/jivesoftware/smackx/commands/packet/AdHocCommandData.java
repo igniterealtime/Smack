@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.commands.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
@@ -224,10 +223,16 @@ public class AdHocCommandData extends IQ {
         return executeAction;
     }
 
+    /**
+     * Set the 'sessionid' attribute of the command.
+     * <p>
+     * This value can be null or empty for the first command, but MUST be set for subsequent commands. See also <a
+     * href="http://xmpp.org/extensions/xep-0050.html#impl-session">XEP-0050 § 3.3 Session Lifetime</a>.
+     * </p>
+     *
+     * @param sessionID
+     */
     public void setSessionID(String sessionID) {
-        if (StringUtils.isNullOrEmpty(sessionID)) {
-            throw new IllegalArgumentException("session id must not be null or empty");
-        }
         this.sessionID = sessionID;
     }
 
