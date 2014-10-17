@@ -17,7 +17,7 @@ allprojects {
 
 	ext {
 		shortVersion = '4.1.0-alpha4'
-		isSnapshot = true
+		isSnapshot = false
 		gitCommit = getGitCommit()
 		javadocAllDir = new File(buildDir, 'javadoc')
 		documentationDir = new File(buildDir, 'documentation')
