@@ -61,6 +61,35 @@ public class PacketParserUtils {
 
     public static final String FEATURE_XML_ROUNDTRIP = "http://xmlpull.org/v1/doc/features.html#xml-roundtrip";
 
+    private static final XmlPullParserFactory XML_PULL_PARSER_FACTORY;
+
+    /**
+     * True if the XmlPullParser supports the XML_ROUNDTRIP feature.
+     */
+    public static final boolean XML_PULL_PARSER_SUPPORTS_ROUNDTRIP;
+
+    static {
+        XmlPullParser xmlPullParser;
+        boolean roundtrip = false;
+        try {
+            XML_PULL_PARSER_FACTORY = XmlPullParserFactory.newInstance();
+            xmlPullParser = XML_PULL_PARSER_FACTORY.newPullParser();
+            try {
+                xmlPullParser.setFeature(FEATURE_XML_ROUNDTRIP, true);
+                // We could successfully set the feature
+                roundtrip = true;
+            } catch (XmlPullParserException e) {
+                // Doesn't matter if FEATURE_XML_ROUNDTRIP isn't available
+                LOGGER.log(Level.FINEST, "XmlPullParser does not support XML_ROUNDTRIP", e);
+            }
+        }
+        catch (XmlPullParserException e) {
+            // Something really bad happened
+            throw new AssertionError(e);
+        }
+        XML_PULL_PARSER_SUPPORTS_ROUNDTRIP = roundtrip;
+    }
+
     public static XmlPullParser getParserFor(String stanza) throws XmlPullParserException, IOException {
         return getParserFor(new StringReader(stanza));
     }
@@ -146,11 +175,15 @@ public class PacketParserUtils {
     public static XmlPullParser newXmppParser() throws XmlPullParserException {
         XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        try {
-            parser.setFeature(FEATURE_XML_ROUNDTRIP, true);
-        } catch (XmlPullParserException e) {
-            // Doesn't matter if FEATURE_XML_ROUNDTRIP isn't available
-            LOGGER.log(Level.FINEST, "XmlPullParser does not support XML_ROUNDTRIP", e);
+        if (XML_PULL_PARSER_SUPPORTS_ROUNDTRIP) {
+            try {
+                parser.setFeature(FEATURE_XML_ROUNDTRIP, true);
+            }
+            catch (XmlPullParserException e) {
+                LOGGER.log(Level.SEVERE,
+                                "XmlPullParser does not support XML_ROUNDTRIP, although it was first determined to be supported",
+                                e);
+            }
         }
         return parser;
     }
