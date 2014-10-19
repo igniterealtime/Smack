@@ -22,7 +22,7 @@ Confused? Have a look at the [Overview](documentation/overview.md).
 Bug Reporting
 -------------
 
-Only a few usrs have acces for for filling bugs in the tracker. New
+Only a few users have access for for filling bugs in the tracker. New
 users should:
 
 1. [Create a forums account](https://community.igniterealtime.org/login!input.jspa?registerOnly=true) (only e-mail is a requirement, you can skip all the other fields).
@@ -35,7 +35,7 @@ Please search for your issues in the bug tracker before reporting.
 Contact
 -------
 
-The developeres hang around in `#smack` (freenode, IRC) and `open_chat@conference.igniterealtime.org` (XMPP MUC room).
+The developers hang around in `#smack` (freenode, IRC) and `open_chat@conference.igniterealtime.org` (XMPP MUC room).
 Remember that it may take some time (~hours) to get a response.
  
 You can also reach us via the [Smack Users Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
