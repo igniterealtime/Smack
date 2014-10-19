@@ -77,6 +77,9 @@ public class MiniDnsResolver extends SmackAndOsgiInitializer implements DNSResol
     public List<SRVRecord> lookupSRVRecords(String name) {
         List<SRVRecord> res = new LinkedList<SRVRecord>();
         DNSMessage message = client.query(name, TYPE.SRV, CLASS.IN);
+        if (message == null) {
+            return res;
+        }
         for (Record record : message.getAnswers()) {
             SRV srv = (SRV) record.getPayload();
             res.add(new SRVRecord(srv.getName(), srv.getPort(), srv.getPriority(), srv.getWeight()));
