@@ -45,6 +45,12 @@ import java.util.List;
  */
 public class ConnectionConfiguration implements Cloneable {
 
+    static {
+        // Ensure that Smack is initialized when ConnectionConfiguration is used, or otherwise e.g.
+        // SmackConfiguration.DEBUG_ENABLED may not be initialized yet.
+        SmackConfiguration.getVersion();
+    }
+
     /**
      * Hostname of the XMPP server. Usually servers use the same service name as the name
      * of the server. However, there are some servers like google where host would be

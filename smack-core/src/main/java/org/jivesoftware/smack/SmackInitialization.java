@@ -120,7 +120,11 @@ public final class SmackInitialization {
         // Use try block since we may not have permission to get a system
         // property (for example, when an applet).
         try {
-            SmackConfiguration.DEBUG_ENABLED = Boolean.getBoolean("smack.debugEnabled");
+            // Only overwrite DEBUG_ENABLED if it is set via the 'smack.debugEnabled' property. To prevent DEBUG_ENABLED
+            // = true, which could be set e.g. via a static block from user code, from being overwritten by the property not set
+            if (Boolean.getBoolean("smack.debugEnabled")) {
+                SmackConfiguration.DEBUG_ENABLED = true;
+            }
         }
         catch (Exception e) {
             // Ignore.
