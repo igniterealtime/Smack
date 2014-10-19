@@ -111,9 +111,8 @@ public class DNSUtil {
      * @param domain the domain.
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
-     * @throws Exception 
      */
-    public static List<HostAddress> resolveXMPPDomain(String domain) throws Exception {
+    public static List<HostAddress> resolveXMPPDomain(String domain) {
         domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
             LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
@@ -140,9 +139,8 @@ public class DNSUtil {
      * @param domain the domain.
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
-     * @throws Exception 
      */
-    public static List<HostAddress> resolveXMPPServerDomain(String domain) throws Exception {
+    public static List<HostAddress> resolveXMPPServerDomain(String domain) {
         domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
             LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
@@ -153,7 +151,7 @@ public class DNSUtil {
         return resolveDomain(domain, DomainType.Server);
     }
 
-    private static List<HostAddress> resolveDomain(String domain, DomainType domainType) throws Exception {
+    private static List<HostAddress> resolveDomain(String domain, DomainType domainType) {
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
