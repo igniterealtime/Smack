@@ -453,6 +453,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // eventually load the roster. And we should load the roster before we
         // send the initial presence.
         if (config.isSendPresence() && !resumed) {
+            if (!isAnonymous()) {
+                // Make sure that the roster has setup its listeners prior sending the initial presence by calling
+                // getRoster()
+                getRoster();
+            }
             sendPacket(new Presence(Presence.Type.available));
         }
     }
