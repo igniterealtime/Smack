@@ -148,7 +148,7 @@ public class MUCItem implements NamedElement {
         xml.optAttribute("affiliation", getAffiliation());
         xml.optAttribute("jid", getJid());
         xml.optAttribute("nick", getNick());
-        if (role != MUCRole.none) {
+        if (role != null && role != MUCRole.none) {
             xml.attribute("role", getRole());
         }
         xml.rightAngleBracket();
