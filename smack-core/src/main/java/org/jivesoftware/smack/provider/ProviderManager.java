@@ -123,6 +123,7 @@ public final class ProviderManager {
         SmackConfiguration.getVersion();
     }
 
+    @SuppressWarnings("unchecked")
     public static void addLoader(ProviderLoader loader) {
         if (loader.getIQProviderInfo() != null) {
             for (IQProviderInfo info : loader.getIQProviderInfo()) {
@@ -133,6 +134,13 @@ public final class ProviderManager {
         if (loader.getExtensionProviderInfo() != null) {
             for (ExtensionProviderInfo info : loader.getExtensionProviderInfo()) {
                 addExtensionProvider(info.getElementName(), info.getNamespace(), info.getProvider());
+            }
+        }
+
+        if (loader.getStreamFeatureProviderInfo() != null) {
+            for (StreamFeatureProviderInfo info : loader.getStreamFeatureProviderInfo()) {
+                addStreamFeatureProvider(info.getElementName(), info.getNamespace(),
+                                (PacketExtensionProvider<PacketExtension>) info.getProvider());
             }
         }
     }
