@@ -150,11 +150,20 @@ public class MultiUserChatManager extends Manager {
      *        multi-user chat service is running. Make sure to provide a valid JID.
      */
     public synchronized MultiUserChat getMultiUserChat(String jid) {
-        MultiUserChat multiUserChat = multiUserChats.get(jid).get();
-        if (multiUserChat == null) {
-            multiUserChat = new MultiUserChat(connection(), jid, this);
-            multiUserChats.put(jid, new WeakReference<MultiUserChat>(multiUserChat));
+        WeakReference<MultiUserChat> weakRefMultiUserChat = multiUserChats.get(jid);
+        if (weakRefMultiUserChat == null) {
+            return createNewMucAndAddToMap(jid);
         }
+        MultiUserChat multiUserChat = weakRefMultiUserChat.get();
+        if (multiUserChat == null) {
+            return createNewMucAndAddToMap(jid);
+        }
+        return multiUserChat;
+    }
+
+    private MultiUserChat createNewMucAndAddToMap(String jid) {
+        MultiUserChat multiUserChat = new MultiUserChat(connection(), jid, this);
+        multiUserChats.put(jid, new WeakReference<MultiUserChat>(multiUserChat));
         return multiUserChat;
     }
 
