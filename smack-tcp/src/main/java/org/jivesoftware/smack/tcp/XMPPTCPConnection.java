@@ -1010,8 +1010,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             try {
                 initalOpenStreamSend.checkIfSuccessOrWait();
                 int eventType = parser.getEventType();
-                do {
-                    if (eventType == XmlPullParser.START_TAG) {
+                while (!done && eventType != XmlPullParser.END_DOCUMENT) {
+                    switch (eventType) {
+                    case XmlPullParser.START_TAG:
                         final String name = parser.getName();
                         switch (name) {
                         case Message.ELEMENT:
@@ -1199,15 +1200,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                              LOGGER.warning("Unkown top level stream element: " + name);
                              break;
                         }
-                    }
-                    else if (eventType == XmlPullParser.END_TAG) {
+                        break;
+                    case XmlPullParser.END_TAG:
                         if (parser.getName().equals("stream")) {
                             // Disconnect the connection
                             disconnect();
                         }
+                        break;
                     }
                     eventType = parser.next();
-                } while (!done && eventType != XmlPullParser.END_DOCUMENT);
+                }
             }
             catch (Exception e) {
                 // The exception can be ignored if the the connection is 'done'
