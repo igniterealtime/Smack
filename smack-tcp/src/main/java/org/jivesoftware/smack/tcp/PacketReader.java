@@ -160,6 +160,10 @@ class PacketReader {
                             if (callback != null) {
                                 callback.handleUnparsablePacket(message);
                             }
+                            // The parser is now at the end tag of the unparsable stanza. We need to advance to the next
+                            // start tag in order to avoid an exception which would again lead to the execution of the
+                            // catch block becoming effectively an endless loop.
+                            eventType = parser.next();
                             continue;
                         }
                         connection.processPacket(packet);
@@ -174,6 +178,10 @@ class PacketReader {
                             if (callback != null) {
                                 callback.handleUnparsablePacket(message);
                             }
+                            // The parser is now at the end tag of the unparsable stanza. We need to advance to the next
+                            // start tag in order to avoid an exception which would again lead to the execution of the
+                            // catch block becoming effectively an endless loop.
+                            eventType = parser.next();
                             continue;
                         }
                         connection.processPacket(iq);
@@ -188,6 +196,10 @@ class PacketReader {
                             if (callback != null) {
                                 callback.handleUnparsablePacket(message);
                             }
+                            // The parser is now at the end tag of the unparsable stanza. We need to advance to the next
+                            // start tag in order to avoid an exception which would again lead to the execution of the
+                            // catch block becoming effectively an endless loop.
+                            eventType = parser.next();
                             continue;
                         }
                         connection.processPacket(presence);
