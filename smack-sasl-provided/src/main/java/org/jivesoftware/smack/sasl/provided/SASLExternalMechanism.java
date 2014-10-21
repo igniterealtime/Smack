@@ -61,4 +61,9 @@ public class SASLExternalMechanism extends SASLMechanism {
         return new SASLExternalMechanism();
     }
 
+    @Override
+    public void checkIfSuccessfulOrThrow() throws SmackException {
+        // No check performed
+    }
+
 }

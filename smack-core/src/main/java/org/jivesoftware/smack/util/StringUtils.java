@@ -18,8 +18,6 @@
 package org.jivesoftware.smack.util;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Random;
 
@@ -101,11 +99,6 @@ public class StringUtils {
     }
 
     /**
-     * Used by the hash method.
-     */
-    private static MessageDigest digest = null;
-
-    /**
      * Hashes a String using the SHA-1 algorithm and returns the result as a
      * String of hexadecimal numbers. This method is synchronized to avoid
      * excessive MessageDigest object creation. If calling this method becomes
@@ -120,21 +113,11 @@ public class StringUtils {
      *
      * @param data the String to compute the hash of.
      * @return a hashed version of the passed-in String
+     * @deprecated use {@link org.jivesoftware.smack.util.SHA1#hex(String)} instead.
      */
+    @Deprecated
     public synchronized static String hash(String data) {
-        if (digest == null) {
-            try {
-                digest = MessageDigest.getInstance(SHA1);
-            }
-            catch (NoSuchAlgorithmException nsae) {
-                // Smack wont be able to function normally if this exception is thrown, wrap it into
-                // an ISE and make the user aware of the problem.
-                throw new IllegalStateException(nsae);
-            }
-        }
-        // Now, compute hash.
-        digest.update(toBytes(data));
-        return encodeHex(digest.digest());
+        return org.jivesoftware.smack.util.SHA1.hex(data);
     }
 
     /**

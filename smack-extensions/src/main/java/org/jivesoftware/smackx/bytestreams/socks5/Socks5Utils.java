@@ -20,7 +20,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.SHA1;
 
 /**
  * A collection of utility methods for SOcKS5 messages.
@@ -41,7 +41,7 @@ class Socks5Utils {
     public static String createDigest(String sessionID, String initiatorJID, String targetJID) {
         StringBuilder b = new StringBuilder();
         b.append(sessionID).append(initiatorJID).append(targetJID);
-        return StringUtils.hash(b.toString());
+        return SHA1.hex(b.toString());
     }
 
     /**

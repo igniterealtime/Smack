@@ -343,6 +343,7 @@ public class SASLAuthentication {
         if (success.getData() != null) {
             challengeReceived(success.getData(), true);
         }
+        currentMechanism.checkIfSuccessfulOrThrow();
         authenticationSuccessful = true;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {

@@ -23,9 +23,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 
 /**
  * A dummy implementation of {@link XMPPConnection}, intended to be used during
@@ -53,7 +53,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     private String connectionID;
     private Roster roster;
 
-    private final BlockingQueue<Element> queue = new LinkedBlockingQueue<Element>();
+    private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
     public DummyConnection() {
 	this(new ConnectionConfiguration("example.com"));
@@ -211,8 +211,9 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @return a sent packet.
      * @throws InterruptedException
      */
-    public Packet getSentPacket() throws InterruptedException {
-        return (Packet) queue.poll();
+    @SuppressWarnings("unchecked")
+    public <P extends TopLevelStreamElement> P getSentPacket() throws InterruptedException {
+        return (P) queue.poll();
     }
 
     /**
@@ -224,8 +225,9 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @return a sent packet.
      * @throws InterruptedException
      */
-    public Packet getSentPacket(int wait) throws InterruptedException {
-        return (Packet) queue.poll(wait, TimeUnit.SECONDS);
+    @SuppressWarnings("unchecked")
+    public <P extends TopLevelStreamElement> P getSentPacket(int wait) throws InterruptedException {
+        return (P) queue.poll(wait, TimeUnit.SECONDS);
     }
 
     /**

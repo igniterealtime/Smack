@@ -21,6 +21,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
+import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -70,6 +71,22 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     public static final String EXTERNAL = "EXTERNAL";
     public static final String GSSAPI = "GSSAPI";
     public static final String PLAIN = "PLAIN";
+
+    // TODO Remove once Smack's min Android API is 9, where java.text.Normalizer is available
+    private static StringTransformer saslPrepTransformer;
+
+    /**
+     * Set the SASLPrep StringTransformer.
+     * <p>
+     * A simple SASLPrep StringTransformer would be for example: <code>java.text.Normalizer.normalize(string, Form.NFKC);</code>
+     * </p>
+     * 
+     * @param stringTransformer set StringTransformer to use for SASLPrep.
+     * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
+     */
+    public static void setSaslPrepTransformer(StringTransformer stringTransformer) {
+        saslPrepTransformer = stringTransformer;
+    }
 
     protected XMPPConnection connection;
 
@@ -238,6 +255,8 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     public abstract int getPriority();
 
+    public abstract void checkIfSuccessfulOrThrow() throws SmackException;
+
     public SASLMechanism instanceForAuthentication(XMPPConnection connection) {
         SASLMechanism saslMechansim = newInstance();
         saslMechansim.connection = connection;
@@ -248,5 +267,20 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     protected static byte[] toBytes(String string) {
         return StringUtils.toBytes(string);
+    }
+
+    /**
+     * SASLprep the given String.
+     * 
+     * @param string the String to sasl prep.
+     * @return the given String SASL preped
+     * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
+     */
+    protected static String saslPrep(String string) {
+        StringTransformer stringTransformer = saslPrepTransformer;
+        if (stringTransformer != null) {
+            return stringTransformer.transform(string);
+        }
+        return string;
     }
 }

@@ -55,4 +55,9 @@ public class SASLAnonymous extends SASLMechanism {
         return new SASLAnonymous();
     }
 
+    @Override
+    public void checkIfSuccessfulOrThrow() throws SmackException {
+        // SASL Anonymous is always successful :)
+    }
+
 }

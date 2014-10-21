@@ -54,4 +54,9 @@ public class SASLPlainMechanism extends SASLMechanism {
     public SASLPlainMechanism newInstance() {
         return new SASLPlainMechanism();
     }
+
+    @Override
+    public void checkIfSuccessfulOrThrow() throws SmackException {
+        // No check performed
+    }
 }

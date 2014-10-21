@@ -42,6 +42,13 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
     public abstract String getName();
 
     @Override
+    public final void checkIfSuccessfulOrThrow() throws SmackException {
+        if (!sc.isComplete()) {
+            throw new SmackException(getName() + " was not completed");
+        }
+    }
+
+    @Override
     protected void authenticateInternal()
                     throws SmackException {
         String[] mechanisms = { getName() };

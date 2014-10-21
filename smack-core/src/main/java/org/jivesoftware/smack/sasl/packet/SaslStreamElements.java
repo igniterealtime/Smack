@@ -52,6 +52,14 @@ public class SaslStreamElements {
             xml.closeElement(ELEMENT);
             return xml;
         }
+
+        public String getMechanism() {
+            return mechanism;
+        }
+
+        public String getAuthenticationText() {
+            return authenticationText;
+        }
     }
 
     /**
@@ -99,6 +107,10 @@ public class SaslStreamElements {
             xml.optAppend(authenticationText);
             xml.closeElement(ELEMENT);
             return xml;
+        }
+
+        public String getAuthenticationText() {
+            return authenticationText;
         }
     }
 

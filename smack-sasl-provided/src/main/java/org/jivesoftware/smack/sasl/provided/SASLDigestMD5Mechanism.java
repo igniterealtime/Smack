@@ -82,6 +82,14 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         return new SASLDigestMD5Mechanism();
     }
 
+
+    @Override
+    public void checkIfSuccessfulOrThrow() throws SmackException {
+        if (verifyServerResponse && state != State.VALID_SERVER_RESPONSE) {
+            throw new SmackException(NAME + " no valid server response");
+        }
+    }
+
     @Override
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
         if (challenge.length == 0) {

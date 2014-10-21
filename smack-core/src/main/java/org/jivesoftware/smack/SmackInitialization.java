@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.initializer.SmackInitializer;
+import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
 import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -129,6 +130,8 @@ public final class SmackInitialization {
         catch (Exception e) {
             // Ignore.
         }
+
+        SASLAuthentication.registerSASLMechanism(new SCRAMSHA1Mechanism());
 
         SmackConfiguration.smackInitialized = true;
     }
