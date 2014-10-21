@@ -41,6 +41,7 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
@@ -100,7 +101,7 @@ public class MultiUserChatManager extends Manager {
         return multiUserChatManager;
     }
 
-    private static final PacketFilter invitationFilter = new AndFilter(new PacketExtensionFilter(new MUCUser()),
+    private static final PacketFilter INVITATION_FILTER = new AndFilter(PacketTypeFilter.MESSAGE, new PacketExtensionFilter(new MUCUser()),
                     new NotFilter(MessageTypeFilter.ERROR));
 
     private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
@@ -134,7 +135,7 @@ public class MultiUserChatManager extends Manager {
                 }
             }
         };
-        connection.addPacketListener(invitationPacketListener, invitationFilter);
+        connection.addPacketListener(invitationPacketListener, INVITATION_FILTER);
     }
 
     /**
