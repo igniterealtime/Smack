@@ -18,7 +18,7 @@ package org.jivesoftware.smack.initializer.tcp;
 
 import org.jivesoftware.smack.initializer.UrlInitializer;
 
-public class SmackTcpSmackInitalizer extends UrlInitializer {
+public class SmackTcpSmackInitializer extends UrlInitializer {
 
     @Override
     protected String getProvidersUrl() {
