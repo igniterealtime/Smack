@@ -188,7 +188,7 @@ public class PingManager extends Manager {
             connection.createPacketCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }
         catch (XMPPException exc) {
-            return jid.equals(connection().getServiceName());
+            return jid.equals(connection.getServiceName());
         }
         return true;
     }
