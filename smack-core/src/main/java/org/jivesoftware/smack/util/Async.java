@@ -19,8 +19,19 @@ package org.jivesoftware.smack.util;
 public class Async {
 
     public static void go(Runnable runnable) {
+        Thread thread = daemonThreadFrom(runnable);
+        thread.start();
+    }
+
+    public static void go(Runnable runnable, String threadName) {
+        Thread thread = daemonThreadFrom(runnable);
+        thread.setName(threadName);
+        thread.start();
+    }
+
+    public static Thread daemonThreadFrom(Runnable runnable) {
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
-        thread.start();
+        return thread;
     }
 }

@@ -27,6 +27,7 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.ping.PingManager;
 
 import android.app.AlarmManager;
@@ -118,7 +119,21 @@ public class ServerPingWithAlarmManager extends Manager {
 				if (ServerPingWithAlarmManager.getInstanceFor(connection).isEnabled()) {
 					LOGGER.fine("Calling pingServerIfNecessary for connection "
 							+ connection.getConnectionCounter());
-					PingManager.getInstanceFor(connection).pingServerIfNecessary();
+					final PingManager pingManager = PingManager.getInstanceFor(connection);
+					// Android BroadcastReceivers have a timeout of 60 seconds.
+					// The connections reply timeout may be higher, which causes
+					// timeouts of the broadcast receiver and a subsequent ANR
+					// of the App of the broadcast receiver. We therefore need
+					// to call pingServerIfNecessary() in a new thread to avoid
+					// this. It could happen that the device gets back to sleep
+					// until the Thread runs, but that's a risk we are willing
+					// to take into account as it's unlikely.
+					Async.go(new Runnable() {
+						@Override
+						public void run() {
+							pingManager.pingServerIfNecessary();
+						}
+					}, "PingServerIfNecessary (" + connection.getConnectionCounter() + ')');
 				} else {
 					LOGGER.fine("NOT calling pingServerIfNecessary (disabled) on connection "
 							+ connection.getConnectionCounter());
