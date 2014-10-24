@@ -51,7 +51,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public class Message extends Packet {
+public final class Message extends Packet {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
