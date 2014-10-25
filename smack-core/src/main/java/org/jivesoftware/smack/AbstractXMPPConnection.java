@@ -63,6 +63,7 @@ import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.rosterstore.RosterStore;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
@@ -506,9 +507,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // the content of the packet.
         firePacketInterceptors(packet);
         sendPacketInternal(packet);
-        // Process packet writer listeners. Note that we're using the sending thread so it's
-        // expected that listeners are fast.
-        firePacketSendingListeners(packet);
     }
 
     @Override
@@ -703,11 +701,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Process all packet listeners for sending packets.
+     * <p>
+     * Compared to {@link #firePacketInterceptors(Packet)}, the listeners will be invoked in a new thread.
+     * </p>
      * 
      * @param packet the packet to process.
      */
-    private void firePacketSendingListeners(Packet packet) {
-        List<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
+    @SuppressWarnings("javadoc")
+    protected void firePacketSendingListeners(final Packet packet) {
+        final List<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
         synchronized (sendListeners) {
             for (ListenerWrapper listenerWrapper : sendListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -715,15 +717,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         }
-        for (PacketListener listener : listenersToNotify) {
-            try {
-                listener.processPacket(packet);
-            }
-            catch (NotConnectedException e) {
-                LOGGER.log(Level.WARNING, "Got not connected exception, aborting");
-                break;
-            }
+        if (listenersToNotify.isEmpty()) {
+            return;
         }
+        // Notify in a new thread, because we can
+        Async.go(new Runnable() {
+            @Override
+            public void run() {
+                for (PacketListener listener : listenersToNotify) {
+                    try {
+                        listener.processPacket(packet);
+                    }
+                    catch (Exception e) {
+                        LOGGER.log(Level.WARNING, "Sending listener threw exception", e);
+                        continue;
+                    }
+                }
+            }}
+        , "Smack Sending Listeners Notification (" + getConnectionCounter() + ')');
     }
 
     @Override

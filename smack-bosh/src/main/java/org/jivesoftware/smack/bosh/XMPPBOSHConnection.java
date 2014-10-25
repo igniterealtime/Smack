@@ -309,6 +309,9 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     private void sendElement(Element element) {
         try {
             send(ComposableBody.builder().setPayloadXML(element.toXML().toString()).build());
+            if (element instanceof Packet) {
+                firePacketSendingListeners((Packet) element);
+            }
         }
         catch (BOSHException e) {
             LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);

@@ -1347,30 +1347,38 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 initalOpenStreamSend.reportSuccess();
                 // Write out packets from the queue.
                 while (!done()) {
-                    Element packet = nextStreamElement();
-                    if (packet != null) {
-                        // Check if the stream element should be put to the unacknowledgedStanza
-                        // queue. Note that we can not do the put() in sendPacketInternal() and the
-                        // packet order is not stable at this point (sendPacketInternal() can be
-                        // called concurrently).
-                        if (isSmEnabled() && packet instanceof Packet) {
-                            // If the unacknowledgedStanza queue is nearly full, request an new ack
-                            // from the server in order to drain it
-                            if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
-                                writer.write(AckRequest.INSTANCE.toXML().toString());
-                                writer.flush();
-                            }
-                            try {
-                                unacknowledgedStanzas.put((Packet) packet);
-                            }
-                            catch (InterruptedException e) {
-                                throw new IllegalStateException(e);
-                            }
-                        }
-                        writer.write(packet.toXML().toString());
-                        if (queue.isEmpty()) {
+                    Element element = nextStreamElement();
+                    if (element == null) {
+                        continue;
+                    }
+                    Packet packet = null;
+                    if (element instanceof Packet) {
+                        packet = (Packet) element;
+                    }
+                    // Check if the stream element should be put to the unacknowledgedStanza
+                    // queue. Note that we can not do the put() in sendPacketInternal() and the
+                    // packet order is not stable at this point (sendPacketInternal() can be
+                    // called concurrently).
+                    if (isSmEnabled() && packet != null) {
+                        // If the unacknowledgedStanza queue is nearly full, request an new ack
+                        // from the server in order to drain it
+                        if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
+                            writer.write(AckRequest.INSTANCE.toXML().toString());
                             writer.flush();
                         }
+                        try {
+                            unacknowledgedStanzas.put(packet);
+                        }
+                        catch (InterruptedException e) {
+                            throw new IllegalStateException(e);
+                        }
+                    }
+                    writer.write(element.toXML().toString());
+                    if (queue.isEmpty()) {
+                        writer.flush();
+                    }
+                    if (packet != null) {
+                        firePacketSendingListeners(packet);
                     }
                 }
                 if (!instantShutdown) {
