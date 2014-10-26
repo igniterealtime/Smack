@@ -19,6 +19,7 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Filters for packets with a particular type of packet extension.
@@ -39,6 +40,9 @@ public class PacketExtensionFilter implements PacketFilter {
      * @param namespace the XML namespace of the packet extension.
      */
     public PacketExtensionFilter(String elementName, String namespace) {
+        if (StringUtils.isNullOrEmpty(namespace)) {
+            throw new IllegalArgumentException("namespace must not be null or empty");
+        }
         this.elementName = elementName;
         this.namespace = namespace;
     }
@@ -62,6 +66,6 @@ public class PacketExtensionFilter implements PacketFilter {
     }
 
     public boolean accept(Packet packet) {
-        return packet.getExtension(elementName, namespace) != null;
+        return packet.hasExtension(elementName, namespace);
     }
 }

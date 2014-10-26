@@ -69,12 +69,6 @@ public class EntityCapsManagerTest extends InitExtensions {
         assertTrue(di.containsDuplicateIdentities());
     }
 
-    @Test
-    public void testVerificationDuplicateDataForm() {
-        DiscoverInfo di = createMalformedDiscoverInfo();
-        assertTrue(EntityCapsManager.verifyPacketExtensions(di));
-    }
-
     private void testSimpleDirectoryCache(StringEncoder stringEncoder) throws IOException {
 
         EntityCapsPersistentCache cache = new SimpleDirectoryPersistentCache(createTempDirectory());

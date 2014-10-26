@@ -20,13 +20,15 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.util.XmppStringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -54,12 +56,11 @@ public abstract class Packet extends TopLevelStreamElement {
      */
     private static AtomicLong id = new AtomicLong();
 
+    private final Map<String, PacketExtension> packetExtensions = new HashMap<String, PacketExtension>(12);
+
     private String packetID = null;
     private String to = null;
     private String from = null;
-    private final List<PacketExtension> packetExtensions
-            = new CopyOnWriteArrayList<PacketExtension>();
-
     private XMPPError error = null;
 
     /**
@@ -197,15 +198,17 @@ public abstract class Packet extends TopLevelStreamElement {
     }
 
     /**
-     * Returns an unmodifiable collection of the packet extensions attached to the packet.
+     * Returns a copy of the packet extensions attached to the packet.
      *
      * @return the packet extensions.
      */
-    public synchronized Collection<PacketExtension> getExtensions() {
-        if (packetExtensions == null) {
-            return Collections.emptyList();
+    public List<PacketExtension> getExtensions() {
+        synchronized (packetExtensions) {
+            if (packetExtensions.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return new ArrayList<PacketExtension>(packetExtensions.values());
         }
-        return Collections.unmodifiableList(new ArrayList<PacketExtension>(packetExtensions));
     }
 
     /**
@@ -213,9 +216,11 @@ public abstract class Packet extends TopLevelStreamElement {
      *
      * @param namespace the namespace of the extension that is desired.
      * @return the packet extension with the given namespace.
+     * @deprecated use {@link #getExtension(String,String)} instead.
      */
+    @Deprecated
     public PacketExtension getExtension(String namespace) {
-        return getExtension(null, namespace);
+        return PacketUtil.packetExtensionfromCollection(getExtensions(), null, namespace);
     }
 
     /**
@@ -233,11 +238,20 @@ public abstract class Packet extends TopLevelStreamElement {
      * @param namespace the XML element namespace of the packet extension.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
+    @SuppressWarnings("unchecked")
     public <PE extends PacketExtension> PE getExtension(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }
-        return PacketUtil.packetExtensionfromCollection(packetExtensions, elementName, namespace);
+        String key = XmppStringUtils.generateKey(elementName, namespace);
+        PacketExtension packetExtension;
+        synchronized (packetExtensions) {
+            packetExtension = packetExtensions.get(key);
+        }
+        if (packetExtension == null) {
+            return null;
+        }
+        return (PE) packetExtension;
     }
 
     /**
@@ -247,7 +261,10 @@ public abstract class Packet extends TopLevelStreamElement {
      */
     public void addExtension(PacketExtension extension) {
         if (extension == null) return;
-        packetExtensions.add(extension);
+        String key = XmppStringUtils.generateKey(extension.getElementName(), extension.getNamespace());
+        synchronized (packetExtensions) {
+            packetExtensions.put(key, extension);
+        }
     }
 
     /**
@@ -257,16 +274,70 @@ public abstract class Packet extends TopLevelStreamElement {
      */
     public void addExtensions(Collection<PacketExtension> extensions) {
         if (extensions == null) return;
-        packetExtensions.addAll(extensions);
+        for (PacketExtension packetExtension : extensions) {
+            addExtension(packetExtension);
+        }
+    }
+
+    /**
+     * Check if a packet extension with the given element and namespace exists.
+     * <p>
+     * The argument <code>elementName</code> may be null.
+     * </p>
+     *
+     * @param elementName
+     * @param namespace
+     * @return true if a packet extension exists, false otherwise.
+     */
+    public boolean hasExtension(String elementName, String namespace) {
+        if (elementName == null) {
+            return hasExtension(namespace);
+        }
+        String key = XmppStringUtils.generateKey(elementName, namespace);
+        synchronized (packetExtensions) {
+            return packetExtensions.containsKey(key);
+        }
+    }
+
+    /**
+     * Check if a packet extension with the given namespace exists.
+     * 
+     * @param namespace
+     * @return true if a packet extension exists, false otherwise.
+     */
+    public boolean hasExtension(String namespace) {
+        synchronized (packetExtensions) {
+            for (PacketExtension packetExtension : packetExtensions.values()) {
+                if (packetExtension.getNamespace().equals(namespace)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Remove the packet extension with the given elementName and namespace.
+     *
+     * @param elementName
+     * @param namespace
+     * @return the removed packet extension or null.
+     */
+    public PacketExtension removeExtension(String elementName, String namespace) {
+        String key = XmppStringUtils.generateKey(elementName, namespace);
+        synchronized (packetExtensions) {
+            return packetExtensions.remove(key);
+        }
     }
 
     /**
      * Removes a packet extension from the packet.
      *
      * @param extension the packet extension to remove.
+     * @return the removed packet extension or null.
      */
-    public void removeExtension(PacketExtension extension)  {
-        packetExtensions.remove(extension);
+    public PacketExtension removeExtension(PacketExtension extension)  {
+        return removeExtension(extension.getElementName(), extension.getNamespace());
     }
 
     /**
@@ -303,7 +374,9 @@ public abstract class Packet extends TopLevelStreamElement {
 
         if (error != null ? !error.equals(packet.error) : packet.error != null) { return false; }
         if (from != null ? !from.equals(packet.from) : packet.from != null) { return false; }
-        if (!packetExtensions.equals(packet.packetExtensions)) { return false; }
+        synchronized (packetExtensions) {
+            if (!packetExtensions.equals(packet.packetExtensions)) { return false; }
+        }
         if (packetID != null ? !packetID.equals(packet.packetID) : packet.packetID != null) {
             return false;
         }
@@ -317,7 +390,9 @@ public abstract class Packet extends TopLevelStreamElement {
         result = 31 * result + (packetID != null ? packetID.hashCode() : 0);
         result = 31 * result + (to != null ? to.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
-        result = 31 * result + packetExtensions.hashCode();
+        synchronized (packetExtensions) {
+            result = 31 * result + packetExtensions.hashCode();
+        }
         result = 31 * result + (error != null ? error.hashCode() : 0);
         return result;
     }
