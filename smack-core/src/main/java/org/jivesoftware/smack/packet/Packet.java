@@ -48,13 +48,13 @@ public abstract class Packet extends TopLevelStreamElement {
     /**
      * A prefix helps to make sure that ID's are unique across multiple instances.
      */
-    private static String prefix = StringUtils.randomString(5) + "-";
+    private static final String prefix = StringUtils.randomString(5) + "-";
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to
      * forum a unique ID.
      */
-    private static AtomicLong id = new AtomicLong();
+    private static final AtomicLong id = new AtomicLong();
 
     private final Map<String, PacketExtension> packetExtensions = new HashMap<String, PacketExtension>(12);
 

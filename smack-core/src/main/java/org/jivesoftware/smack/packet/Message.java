@@ -480,8 +480,8 @@ public final class Message extends Packet {
      */
     public static class Subject {
 
-        private String subject;
-        private String language;
+        private final String subject;
+        private final String language;
 
         private Subject(String language, String subject) {
             if (language == null) {
@@ -543,8 +543,8 @@ public final class Message extends Packet {
      */
     public static class Body {
 
-        private String message;
-        private String language;
+        private final String message;
+        private final String language;
 
         private Body(String language, String message) {
             if (language == null) {
