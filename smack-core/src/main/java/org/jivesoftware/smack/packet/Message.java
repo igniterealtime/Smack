@@ -441,40 +441,6 @@ public final class Message extends Packet {
         return buf;
     }
 
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Message message = (Message) o;
-
-        if(!super.equals(message)) { return false; }
-        if (bodies.size() != message.bodies.size() || !bodies.containsAll(message.bodies)) {
-            return false;
-        }
-        if (language != null ? !language.equals(message.language) : message.language != null) {
-            return false;
-        }
-        if (subjects.size() != message.subjects.size() || !subjects.containsAll(message.subjects)) {
-            return false;
-        }
-        if (thread != null ? !thread.equals(message.thread) : message.thread != null) {
-            return false;
-        }
-        return type == message.type;
-
-    }
-
-    public int hashCode() {
-        int result;
-        result = (type != null ? type.hashCode() : 0);
-        result = 31 * result + subjects.hashCode();
-        result = 31 * result + (thread != null ? thread.hashCode() : 0);
-        result = 31 * result + (language != null ? language.hashCode() : 0);
-        result = 31 * result + bodies.hashCode();
-        return result;
-    }
-
     /**
      * Represents a message subject, its language and the content of the subject.
      */

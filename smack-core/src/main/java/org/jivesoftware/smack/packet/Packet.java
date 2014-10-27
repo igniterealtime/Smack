@@ -366,38 +366,6 @@ public abstract class Packet extends TopLevelStreamElement {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Packet packet = (Packet) o;
-
-        if (error != null ? !error.equals(packet.error) : packet.error != null) { return false; }
-        if (from != null ? !from.equals(packet.from) : packet.from != null) { return false; }
-        synchronized (packetExtensions) {
-            if (!packetExtensions.equals(packet.packetExtensions)) { return false; }
-        }
-        if (packetID != null ? !packetID.equals(packet.packetID) : packet.packetID != null) {
-            return false;
-        }
-        if (to != null ? !to.equals(packet.to) : packet.to != null)  { return false; }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = 31 * result + (packetID != null ? packetID.hashCode() : 0);
-        result = 31 * result + (to != null ? to.hashCode() : 0);
-        result = 31 * result + (from != null ? from.hashCode() : 0);
-        synchronized (packetExtensions) {
-            result = 31 * result + packetExtensions.hashCode();
-        }
-        result = 31 * result + (error != null ? error.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return toXML().toString();
     }

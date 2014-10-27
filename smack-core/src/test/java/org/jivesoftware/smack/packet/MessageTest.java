@@ -217,44 +217,6 @@ public class MessageTest {
         assertXMLEqual(control, message.toXML().toString());
     }
 
-    @Test
-    public void messageEqualityTest() {
-        Message message = getNewMessage();
-        assertTrue(message.equals(message));
-        //noinspection ObjectEqualsNull
-        assertFalse(message.equals(null));
-        assertFalse(message.equals("test"));
-        Message message2 = getNewMessage();
-
-        assertTrue(message.equals(message2));
-
-        message.setTo("joe@shmoe.com");
-        assertFalse(message.equals(message2));
-        message2.setTo("joe@shmoe.com");
-
-        message.setSubject("subject");
-        assertFalse(message.equals(message2));
-        message2.setSubject("subject");
-
-        message.setThread("thread");
-        assertFalse(message.equals(message2));
-        message2.setThread("thread");
-
-        message.setBody("body1");
-        assertFalse(message.equals(message2));
-        message2.setBody("body1");
-
-        message.setLanguage("language");
-        assertFalse(message.equals(message2));
-        message2.setLanguage("language");
-
-        message.setType(Message.Type.chat);
-        assertFalse(message.equals(message2));
-        message2.setType(Message.Type.chat);
-
-        assertTrue(message.equals(message2));
-    }
-
     private static Message getNewMessage() {
         Message message = new Message();
         message.setPacketID(null);
