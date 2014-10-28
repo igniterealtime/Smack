@@ -1193,9 +1193,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             processHandledCount(ackAnswer.getHandledCount());
                             break;
                         case AckRequest.ELEMENT:
-                            // AckRequest stanzas are trival, no need to parse them
+                            ParseStreamManagement.ackRequest(parser);
                             if (smEnabledSyncPoint.wasSuccessful()) {
-                                packetWriter.sendStreamElement(new AckAnswer(clientHandledStanzasCount));
+                                sendSmAcknowledgementInternal();
                             } else {
                                 LOGGER.warning("SM Ack Request received while SM is not enabled");
                             }
@@ -1497,6 +1497,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     private void requestSmAcknowledgementInternal() throws NotConnectedException {
         packetWriter.sendStreamElement(AckRequest.INSTANCE);
+    }
+
+    public void sendSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException {
+        if (!isSmEnabled()) {
+            throw new StreamManagementException.StreamManagementNotEnabledException();
+        }
+        sendSmAcknowledgementInternal();
+    }
+
+    private void sendSmAcknowledgementInternal() throws NotConnectedException {
+        packetWriter.sendStreamElement(new AckAnswer(clientHandledStanzasCount));
     }
 
     public void addStanzaAcknowledgedListener(PacketListener listener) {

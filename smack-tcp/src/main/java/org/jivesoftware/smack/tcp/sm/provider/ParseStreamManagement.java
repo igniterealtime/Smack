@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.AckAnswer;
+import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.AckRequest;
 import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Enabled;
 import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Failed;
 import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Resumed;
@@ -85,4 +86,10 @@ public class ParseStreamManagement {
         return new AckAnswer(h);
     }
 
+    public static AckRequest ackRequest(XmlPullParser parser) throws XmlPullParserException, IOException {
+        ParserUtils.assertAtStartTag(parser);
+        parser.next();
+        ParserUtils.assertAtEndTag(parser);
+        return AckRequest.INSTANCE;
+    }
 }
