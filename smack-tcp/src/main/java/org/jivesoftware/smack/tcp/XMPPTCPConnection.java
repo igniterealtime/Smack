@@ -487,6 +487,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void shutdown() {
+        if (isSmEnabled()) {
+            try {
+                // Try to send a last SM Acknowledgement. Most servers won't find this information helpful, as the SM
+                // state is dropped after a clean disconnect anyways. OTOH it doesn't hurt much either.
+                sendSmAcknowledgementInternal();
+            } catch (NotConnectedException e) {
+                LOGGER.log(Level.FINE, "Can not send final SM ack as connection is not connected", e);
+            }
+        }
         shutdown(false);
     }
 
