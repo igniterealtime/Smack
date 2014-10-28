@@ -1292,6 +1292,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             return shutdownTimestamp != null;
         }
 
+        private void throwNotConnectedExceptionIfDoneAndResumptionNotPossible() throws NotConnectedException {
+            if (done() && !isSmResumptionPossible()) {
+                // Don't throw a NotConnectedException is there is an resumable stream available
+                throw new NotConnectedException();
+            }
+        }
+
         /**
          * Sends the specified element to the server.
          *
@@ -1299,16 +1306,20 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * @throws NotConnectedException 
          */
         protected void sendStreamElement(Element element) throws NotConnectedException {
-            if (done() && !isSmResumptionPossible()) {
-                // Don't throw a NotConnectedException is there is an resumable stream available
-                throw new NotConnectedException();
-            }
+            throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
 
-            try {
-                queue.put(element);
-            }
-            catch (InterruptedException ie) {
-                throw new NotConnectedException();
+            boolean enqueued = false;
+            while (!enqueued) {
+                try {
+                    queue.put(element);
+                    enqueued = true;
+                }
+                catch (InterruptedException e) {
+                    throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
+                    // If the method above did not throw, we have a spurious interrupt and we should try to enqueue the
+                    // element again
+                    LOGGER.log(Level.FINE, "Spurious interrupt", e);
+                }
             }
         }
 
@@ -1329,23 +1340,21 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         /**
-         * Returns the next available element from the queue for writing.
+         * Maybe return the next available element from the queue for writing. If the queue is shut down <b>or</b> a
+         * spurious interrupt occurs, <code>null</code> is returned. So it is important to check the 'done' condition in
+         * that case.
          *
-         * @return the next element for writing.
+         * @return the next element for writing or null.
          */
         private Element nextStreamElement() {
-            // TODO not sure if nextStreamElement and/or this done() condition still required.
-            // Couldn't this be done in writePackets too?
-            if (done()) {
-                return null;
-            }
-
             Element packet = null;
             try {
                 packet = queue.take();
             }
             catch (InterruptedException e) {
-                // Do nothing
+                if (!queue.isShutdown()) {
+                    LOGGER.log(Level.FINER, "Spurious interrupt", e);
+                }
             }
             return packet;
         }
@@ -1391,9 +1400,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     }
                 }
                 if (!instantShutdown) {
-                    // Flush out the rest of the queue. If the queue is extremely large, it's
-                    // possible we won't have time to entirely flush it before the socket is forced
-                    // closed by the shutdown process.
+                    // Flush out the rest of the queue.
                     try {
                         while (!queue.isEmpty()) {
                             Element packet = queue.remove();
