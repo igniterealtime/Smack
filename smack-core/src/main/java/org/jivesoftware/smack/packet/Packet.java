@@ -32,8 +32,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Base class for XMPP packets. Every packet has a unique ID (which is automatically
+ * Base class for XMPP Stanzas, which are called packets in Smack.
+ * <p>
+ * Every packet has a unique ID (which is automatically
  * generated, but can be overridden). Optionally, the "to" and "from" fields can be set.
+ * </p>
+ * <p>
+ * XMPP Stanzas are {@link Message}, {@link IQ} and {@link Presence}. Which therefore subclass this class.
+ * </p>
  *
  * @author Matt Tucker
  */
