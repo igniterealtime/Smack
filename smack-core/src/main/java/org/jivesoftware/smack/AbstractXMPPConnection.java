@@ -25,11 +25,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -204,8 +206,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * important that we use a <b>single threaded ExecutorService</b> in order to guarantee that the
      * PacketListeners are invoked in the same order the stanzas arrived.
      */
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
-                    new SmackExecutorThreadFactory(connectionCounterValue));
+    private final ThreadPoolExecutor executorService = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(connectionCounterValue));
 
     /**
      * SmackExecutorThreadFactory is a *static* inner class of XMPPConnection. Note that we must not
@@ -840,12 +842,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet to process.
      */
     protected void processPacket(Packet packet) {
-        if (packet == null) {
-            return;
-        }
-
-        invokePacketCollectors(packet);
-
         // Deliver the incoming packet to listeners.
         executorService.submit(new ListenerNotification(packet));
     }
@@ -873,7 +869,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * A runnable to notify all listeners of a packet.
+     * A runnable to notify all listeners and packet collectors of a packet.
      */
     private class ListenerNotification implements Runnable {
 
@@ -884,6 +880,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         public void run() {
+            invokePacketCollectors(packet);
             notifiyReceivedListeners(packet);
         }
     }
