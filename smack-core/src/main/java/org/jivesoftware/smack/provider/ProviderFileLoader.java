@@ -125,6 +125,10 @@ public class ProviderFileLoader implements ProviderLoader {
                                 LOGGER.log(Level.SEVERE, "Could not find provider class", cnfe);
                                 exceptions.add(cnfe);
                             }
+                            catch (InstantiationException ie) {
+                                LOGGER.log(Level.SEVERE, "Could not instanciate " + className, ie);
+                                exceptions.add(ie);
+                            }
                         }
                     }
                     catch (IllegalArgumentException illExc) {

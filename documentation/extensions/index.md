@@ -67,6 +67,8 @@ Experimental Smack Extensions and currently supported XEPs by Smack (smack-exper
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | Message Carbons                             | [XEP-0280](http://xmpp.org/extensions/xep-0280.html) | Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested resources.
 | [HTTP over XMPP transport](hoxt.html)       | [XEP-0332](http://xmpp.org/extensions/xep-0332.html) | Allows to transport HTTP communication over XMPP peer-to-peer networks. |
+| JSON Containers                             | [XEP-0335](http://xmpp.org/extensions/xep-0335.html) | Encapsulation of JSON data within XMPP Stanzas. |
+| Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
 
 

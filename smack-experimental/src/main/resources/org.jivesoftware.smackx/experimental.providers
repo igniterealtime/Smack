@@ -38,4 +38,18 @@
         <className>org.jivesoftware.smackx.csi.provider.ClientStateIndicationFeatureProvider</className>
     </streamFeatureProvider>
 
+    <!-- XEP-0335 JSON Containers -->
+    <extensionProvider>
+        <elementName>json</elementName>
+        <namespace>urn:xmpp:json:0</namespace>
+        <className>org.jivesoftware.smackx.json.provider.JsonExtensionProvider</className>
+    </extensionProvider>
+
+    <!-- GCM JSON payload -->
+    <extensionProvider>
+        <elementName>gcm</elementName>
+        <namespace></namespace>
+        <className>org.jivesoftware.smackx.gcm.provider.GcmExtensionProvider</className>
+    </extensionProvider>
+
 </smackProviders>
