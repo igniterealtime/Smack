@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -202,6 +203,7 @@ public final class ProviderManager {
     public static void addIQProvider(String elementName, String namespace,
             Object provider)
     {
+        validate(elementName, namespace);
         // First remove existing providers
         String key = removeIQProvider(elementName, namespace);
         if (provider instanceof IQProvider) {
@@ -272,6 +274,7 @@ public final class ProviderManager {
     public static void addExtensionProvider(String elementName, String namespace,
             Object provider)
     {
+        validate(elementName, namespace);
         // First remove existing providers
         String key = removeExtensionProvider(elementName, namespace);
         if (provider instanceof PacketExtensionProvider) {
@@ -320,6 +323,7 @@ public final class ProviderManager {
     }
 
     public static void addStreamFeatureProvider(String elementName, String namespace, PacketExtensionProvider<PacketExtension> provider) {
+        validate(elementName, namespace);
         String key = getKey(elementName, namespace);
         streamFeatureProviders.put(key, provider);
     }
@@ -331,5 +335,14 @@ public final class ProviderManager {
 
     private static String getKey(String elementName, String namespace) {
         return XmppStringUtils.generateKey(elementName, namespace);
+    }
+
+    private static void validate(String elementName, String namespace) {
+        if (StringUtils.isNullOrEmpty(elementName)) {
+            throw new IllegalArgumentException("elementName must not be null or empty");
+        }
+        if (StringUtils.isNullOrEmpty(namespace)) {
+            throw new IllegalArgumentException("namespace must not be null or empty");
+        }
     }
 }
