@@ -48,7 +48,7 @@
     <!-- GCM JSON payload -->
     <extensionProvider>
         <elementName>gcm</elementName>
-        <namespace></namespace>
+        <namespace>google:mobile:data</namespace>
         <className>org.jivesoftware.smackx.gcm.provider.GcmExtensionProvider</className>
     </extensionProvider>
 
