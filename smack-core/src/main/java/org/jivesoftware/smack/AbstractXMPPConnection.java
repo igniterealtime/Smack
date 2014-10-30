@@ -822,19 +822,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Invoke {@link PacketCollector#processPacket(Packet)} for every
-     * PacketCollector with the given packet.
-     *
-     * @param packet the packet to notify the PacketCollectors about.
-     */
-    protected void invokePacketCollectors(Packet packet) {
-        // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector: collectors) {
-            collector.processPacket(packet);
-        }
-    }
-
-    /**
      * Processes a packet after it's been fully parsed by looping through the installed
      * packet collectors and listeners and letting them examine the packet to see if
      * they are a match with the filter.
@@ -846,7 +833,36 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         executorService.submit(new ListenerNotification(packet));
     }
 
-    protected void notifiyReceivedListeners(Packet packet) {
+    /**
+     * A runnable to notify all listeners and packet collectors of a packet.
+     */
+    private class ListenerNotification implements Runnable {
+
+        private final Packet packet;
+
+        public ListenerNotification(Packet packet) {
+            this.packet = packet;
+        }
+
+        public void run() {
+            invokePacketCollectorsAndNotifyRecvListeners(packet);
+        }
+    }
+
+
+    /**
+     * Invoke {@link PacketCollector#processPacket(Packet)} for every
+     * PacketCollector with the given packet. Also notify the receive listeners with a matching packet filter about the packet.
+     *
+     * @param packet the packet to notify the PacketCollectors and receive listeners about.
+     */
+    protected void invokePacketCollectorsAndNotifyRecvListeners(Packet packet) {
+        // Loop through all collectors and notify the appropriate ones.
+        for (PacketCollector collector: collectors) {
+            collector.processPacket(packet);
+        }
+
+        // Notify the receive listeners interested in the packet
         List<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
         synchronized (recvListeners) {
             for (ListenerWrapper listenerWrapper : recvListeners.values()) {
@@ -865,23 +881,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
             }
-        }
-    }
-
-    /**
-     * A runnable to notify all listeners and packet collectors of a packet.
-     */
-    private class ListenerNotification implements Runnable {
-
-        private final Packet packet;
-
-        public ListenerNotification(Packet packet) {
-            this.packet = packet;
-        }
-
-        public void run() {
-            invokePacketCollectors(packet);
-            notifiyReceivedListeners(packet);
         }
     }
 

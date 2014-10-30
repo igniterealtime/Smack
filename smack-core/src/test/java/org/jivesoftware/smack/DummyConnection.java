@@ -238,17 +238,10 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param packet the packet to process.
      */
     public void processPacket(Packet packet) {
-        if (packet == null) {
-            return;
-        }
-
-        invokePacketCollectors(packet);
-
         if (SmackConfiguration.DEBUG_ENABLED) {
             System.out.println("[RECV]: " + packet.toXML());
         }
 
-        // Deliver the incoming packet to listeners.
-        notifiyReceivedListeners(packet);
+        invokePacketCollectorsAndNotifyRecvListeners(packet);
     }
 }
