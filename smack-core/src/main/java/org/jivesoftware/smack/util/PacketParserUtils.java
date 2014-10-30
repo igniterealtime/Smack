@@ -31,14 +31,12 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.compress.packet.Compress;
-import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -620,16 +618,6 @@ public class PacketParserUtils {
                 case "error":
                     error = PacketParserUtils.parseError(parser);
                     break;
-                case RosterPacket.ELEMENT:
-                    if (namespace.equals(RosterPacket.NAMESPACE)) {
-                        iqPacket = parseRoster(parser);
-                        break;
-                    }
-                case Bind.ELEMENT:
-                    if (namespace.equals(Bind.NAMESPACE)) {
-                        iqPacket = parseResourceBinding(parser);
-                        break;
-                    }
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 default:
@@ -701,82 +689,6 @@ public class PacketParserUtils {
         iqPacket.setError(error);
 
         return iqPacket;
-    }
-
-    public static RosterPacket parseRoster(XmlPullParser parser) throws XmlPullParserException, IOException {
-        RosterPacket roster = new RosterPacket();
-        boolean done = false;
-        RosterPacket.Item item = null;
-
-        String version = parser.getAttributeValue("", "ver");
-        roster.setVersion(version);
-
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("item")) {
-                    String jid = parser.getAttributeValue("", "jid");
-                    String name = parser.getAttributeValue("", "name");
-                    // Create packet.
-                    item = new RosterPacket.Item(jid, name);
-                    // Set status.
-                    String ask = parser.getAttributeValue("", "ask");
-                    RosterPacket.ItemStatus status = RosterPacket.ItemStatus.fromString(ask);
-                    item.setItemStatus(status);
-                    // Set type.
-                    String subscription = parser.getAttributeValue("", "subscription");
-                    RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription != null ? subscription : "none");
-                    item.setItemType(type);
-                }
-                else if (parser.getName().equals("group") && item!= null) {
-                    final String groupName = parser.nextText();
-                    if (groupName != null && groupName.trim().length() > 0) {
-                        item.addGroupName(groupName);
-                    }
-                }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    roster.addRosterItem(item);
-                }
-                if (parser.getName().equals("query")) {
-                    done = true;
-                }
-            }
-        }
-        return roster;
-    }
-
-    public static Bind parseResourceBinding(XmlPullParser parser) throws IOException,
-                    XmlPullParserException {
-        assert (parser.getEventType() == XmlPullParser.START_TAG);
-        int initalDepth = parser.getDepth();
-        String name;
-        Bind bind = null;
-        outerloop: while (true) {
-            int eventType = parser.next();
-            switch (eventType) {
-            case XmlPullParser.START_TAG:
-                name = parser.getName();
-                switch (name) {
-                case "resource":
-                    bind = Bind.newSet(parser.nextText());
-                    break;
-                case "jid":
-                    bind = Bind.newResult(parser.nextText());
-                    break;
-                }
-                break;
-            case XmlPullParser.END_TAG:
-                name = parser.getName();
-                if (name.equals(Bind.ELEMENT) && parser.getDepth() == initalDepth) {
-                    break outerloop;
-                }
-                break;
-            }
-        }
-        assert (parser.getEventType() == XmlPullParser.END_TAG);
-        return bind;
     }
 
     /**

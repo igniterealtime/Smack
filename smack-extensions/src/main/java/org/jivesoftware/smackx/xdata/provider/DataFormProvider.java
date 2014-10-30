@@ -17,9 +17,10 @@
 
 package org.jivesoftware.smackx.xdata.provider;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.provider.RosterPacketProvider;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.xmlpull.v1.XmlPullParser;
@@ -37,7 +38,8 @@ import java.util.List;
 public class DataFormProvider extends PacketExtensionProvider<DataForm> {
 
     @Override
-    public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
+                    SmackException {
         boolean done = false;
         DataForm dataForm = new DataForm(parser.getAttributeValue("", "type"));
         while (!done) {
@@ -60,7 +62,7 @@ public class DataFormProvider extends PacketExtensionProvider<DataForm> {
                 }
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
                 else if (parser.getName().equals(RosterPacket.ELEMENT) && parser.getNamespace().equals(RosterPacket.NAMESPACE)) {
-                    dataForm.addExtensionElement(PacketParserUtils.parseRoster(parser));
+                    dataForm.addExtensionElement(RosterPacketProvider.INSTANCE.parse(parser));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals(dataForm.getElementName())) {
