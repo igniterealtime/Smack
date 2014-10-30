@@ -599,6 +599,8 @@ public class PacketParserUtils {
      * @throws Exception if an exception occurs while parsing the packet.
      */
     public static IQ parse(XmlPullParser parser, XMPPConnection connection) throws Exception {
+        ParserUtils.assertAtStartTag(parser);
+        final int initialDepth = parser.getDepth();
         IQ iqPacket = null;
         XMPPError error = null;
 
@@ -607,25 +609,30 @@ public class PacketParserUtils {
         final String from = parser.getAttributeValue("", "from");
         final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
 
-        boolean done = false;
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
-                if (elementName.equals("error")) {
+                switch(elementName) {
+                case "error":
                     error = PacketParserUtils.parseError(parser);
-                }
-                else if (elementName.equals(RosterPacket.ELEMENT) && namespace.equals(RosterPacket.NAMESPACE)) {
-                    iqPacket = parseRoster(parser);
-                }
-                else if (elementName.equals(Bind.ELEMENT) && namespace.equals(Bind.NAMESPACE)) {
-                    iqPacket = parseResourceBinding(parser);
-                }
+                    break;
+                case RosterPacket.ELEMENT:
+                    if (namespace.equals(RosterPacket.NAMESPACE)) {
+                        iqPacket = parseRoster(parser);
+                        break;
+                    }
+                case Bind.ELEMENT:
+                    if (namespace.equals(Bind.NAMESPACE)) {
+                        iqPacket = parseResourceBinding(parser);
+                        break;
+                    }
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
-                else {
+                default:
                     IQProvider<IQ> provider = ProviderManager.getIQProvider(elementName, namespace);
                     if (provider != null) {
                             iqPacket = provider.parse(parser);
@@ -645,12 +652,14 @@ public class PacketParserUtils {
                             iqPacket = new UnparsedResultIQ(parseElement(parser));
                         }
                     }
+                    break;
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("iq")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         // Decide what to do when an IQ packet was not understood
