@@ -23,6 +23,10 @@ package org.jivesoftware.smack.packet;
  * extended functionality beyond what is in the base XMPP specification. Examples of
  * packet extensions include message events, message properties, and extra presence data.
  * IQ packets cannot contain packet extensions.
+ * <p>
+ * This class is used primarily for extended content in XMPP Stanzas, to act as so called "extension elements". For more
+ * information see <a href="https://tools.ietf.org/html/rfc6120#section-8.4">RFC 6120 § 8.4 Extended Content</a>.
+ * </p>
  *
  * @see DefaultPacketExtension
  * @see org.jivesoftware.smack.provider.PacketExtensionProvider
