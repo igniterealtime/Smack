@@ -642,7 +642,7 @@ public class PacketParserUtils {
                         else if (IQ.Type.result == type){
                             // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
                             // so that the content of the IQ can be examined later on
-                            iqPacket = new UnparsedResultIQ(parseContent(parser));
+                            iqPacket = new UnparsedResultIQ(parseElement(parser));
                         }
                     }
                 }
