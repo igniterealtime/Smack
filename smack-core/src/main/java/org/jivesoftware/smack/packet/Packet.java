@@ -219,12 +219,13 @@ public abstract class Packet extends TopLevelStreamElement {
 
     /**
      * Returns the first extension of this packet that has the given namespace.
+     * <p>
+     * When possible, use {@link #getExtension(String,String)} instead.
+     * </p>
      *
      * @param namespace the namespace of the extension that is desired.
      * @return the packet extension with the given namespace.
-     * @deprecated use {@link #getExtension(String,String)} instead.
      */
-    @Deprecated
     public PacketExtension getExtension(String namespace) {
         return PacketUtil.packetExtensionfromCollection(getExtensions(), null, namespace);
     }
