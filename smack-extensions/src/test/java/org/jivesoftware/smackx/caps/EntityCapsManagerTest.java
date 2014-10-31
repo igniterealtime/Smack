@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 import org.jivesoftware.smackx.InitExtensions;
@@ -34,10 +35,16 @@ import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class EntityCapsManagerTest extends InitExtensions {
+
+    @Before
+    public void initSmackTestSuite() {
+        SmackTestSuite.init();
+    }
 
     /**
      * <a href="http://xmpp.org/extensions/xep-0115.html#ver-gen-complex">XEP-
@@ -96,11 +103,9 @@ public class EntityCapsManagerTest extends InitExtensions {
         di.setType(IQ.Type.result);
 
         Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
-        DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "Psi 0.11", "pc");
-        i.setLanguage("en");
+        DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "pc", "Psi 0.11", "en");
         identities.add(i);
-        i = new DiscoverInfo.Identity("client", "Ψ 0.11", "pc");
-        i.setLanguage("el");
+        i = new DiscoverInfo.Identity("client", "pc", "Ψ 0.11", "el");
         identities.add(i);
         di.addIdentities(identities);
 
@@ -149,16 +154,13 @@ public class EntityCapsManagerTest extends InitExtensions {
         di.setType(IQ.Type.result);
 
         Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
-        DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "Psi 0.11", "pc");
-        i.setLanguage("en");
+        DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "pc", "Psi 0.11", "en");
         identities.add(i);
-        i = new DiscoverInfo.Identity("client", "Ψ 0.11", "pc");
-        i.setLanguage("el");
+        i = new DiscoverInfo.Identity("client", "pc", "Ψ 0.11", "el");
         identities.add(i);
         di.addIdentities(identities);
         // Failure 1: Duplicate identities
-        i = new DiscoverInfo.Identity("client", "Ψ 0.11", "pc");
-        i.setLanguage("el");
+        i = new DiscoverInfo.Identity("client", "pc", "Ψ 0.11", "el");
         identities.add(i);
         di.addIdentities(identities);
 

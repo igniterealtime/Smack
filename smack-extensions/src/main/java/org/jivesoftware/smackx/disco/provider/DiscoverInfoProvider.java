@@ -66,14 +66,13 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("identity")) {
                     // Create a new identity and add it to the discovered info.
-                    identity = new DiscoverInfo.Identity(category, name, type);
-                    if (lang != null)
-                        identity.setLanguage(lang);
+                    identity = new DiscoverInfo.Identity(category, type, name, lang);
                     discoverInfo.addIdentity(identity);
                 }
                 if (parser.getName().equals("feature")) {
                     // Create a new feature and add it to the discovered info.
-                    discoverInfo.addFeature(variable);
+                    boolean notADuplicateFeature = discoverInfo.addFeature(variable);
+                    assert(notADuplicateFeature);
                 }
                 if (parser.getName().equals("query")) {
                     done = true;

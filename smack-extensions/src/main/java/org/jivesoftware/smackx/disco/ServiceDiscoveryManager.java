@@ -203,18 +203,6 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Sets the name of the client that will be returned when asked for the client identity
-     * in a disco request. The name could be any value you need to identity this client.
-     * 
-     * @param name the name of the client that will be returned when asked for the client identity
-     *          in a disco request.
-     */
-    public void setIdentityName(String name) {
-        identity.setName(name);
-        renewEntityCapsVersion();
-    }
-
-    /**
      * Sets the default identity the client will report.
      *
      * @param identity

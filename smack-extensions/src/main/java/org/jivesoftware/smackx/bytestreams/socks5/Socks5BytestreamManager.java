@@ -49,7 +49,6 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHostUs
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 
@@ -572,20 +571,14 @@ public final class Socks5BytestreamManager implements BytestreamManager {
                 continue;
             }
 
-            // item must have category "proxy" and type "bytestream"
-            for (Identity identity : proxyInfo.getIdentities()) {
-                if ("proxy".equalsIgnoreCase(identity.getCategory())
-                                && "bytestreams".equalsIgnoreCase(identity.getType())) {
-                    proxies.add(item.getEntityID());
-                    break;
-                }
-
+            if (proxyInfo.hasIdentity("proxy", "bytestreams")) {
+                proxies.add(item.getEntityID());
+            } else {
                 /*
                  * server is not a SOCKS5 proxy, blacklist server to skip next time a Socks5
                  * bytestream should be established
                  */
                 this.proxyBlacklist.add(item.getEntityID());
-
             }
         }
 
