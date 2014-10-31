@@ -24,7 +24,6 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**
  * Manages AMP stanzas within messages. A AMPManager provides a high level access to
@@ -111,13 +110,6 @@ public class AMPManager {
     }
 
     private static boolean isFeatureSupportedByServer(XMPPConnection connection, String featureName, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        DiscoverInfo info = discoveryManager.discoverInfo(connection.getServiceName(), node);
-        for (DiscoverInfo.Feature feature : info.getFeatures()){
-            if (featureName.equals(feature.getVar())) {
-                return true;
-            }
-        }
-        return false;
+        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(node, featureName);
     }
 }
