@@ -510,7 +510,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
 
         @Override
         public int hashCode() {
-            return 37 * variable.hashCode();
+            return variable.hashCode();
         }
 
         @Override
