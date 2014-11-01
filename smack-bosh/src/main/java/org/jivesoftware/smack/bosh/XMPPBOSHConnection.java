@@ -86,10 +86,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     private final BOSHConfiguration config;
 
     // Some flags which provides some info about the current state.
-    private boolean connected = false;
-    private boolean authenticated = false;
     private boolean isFirstInitialization = true;
-    private boolean wasAuthenticated = false;
     private boolean done = false;
 
     // The readerPipe and consumer thread are used for the debugger.
@@ -215,18 +212,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         } else {
             return sessionID;
         }
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public boolean isAuthenticated() {
-        return authenticated;
-    }
-
-    public boolean isConnected() {
-        return connected;
     }
 
     public boolean isSecureConnection() {

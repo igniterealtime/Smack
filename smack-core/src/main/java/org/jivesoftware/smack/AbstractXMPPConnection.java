@@ -143,6 +143,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected String user;
 
+    protected boolean connected = false;
+
     /**
      * 
      */
@@ -284,16 +286,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public abstract String getUser();
-
-    @Override
     public abstract String getConnectionID();
-
-    @Override
-    public abstract boolean isConnected();
-
-    @Override
-    public abstract boolean isAuthenticated();
 
     @Override
     public abstract boolean isSecureConnection();
@@ -404,6 +397,22 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException 
      */
     public abstract void loginAnonymously() throws XMPPException, SmackException, IOException;
+
+
+    @Override
+    public final boolean isConnected() {
+        return connected;
+    }
+
+    @Override
+    public final boolean isAuthenticated() {
+        return authenticated;
+    }
+
+    @Override
+    public final String getUser() {
+        return user;
+    }
 
     protected void bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
                     IOException, SmackException {

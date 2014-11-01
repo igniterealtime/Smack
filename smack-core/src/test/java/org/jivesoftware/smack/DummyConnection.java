@@ -45,11 +45,9 @@ import org.jivesoftware.smack.packet.TopLevelStreamElement;
  */
 public class DummyConnection extends AbstractXMPPConnection {
 
-    private boolean authenticated = false;
     private boolean anonymous = false;
     private boolean reconnect = false;
 
-    private String user;
     private String connectionID;
     private Roster roster;
 
@@ -65,6 +63,8 @@ public class DummyConnection extends AbstractXMPPConnection {
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
             listener.connectionCreated(this);
         }
+        connected = true;
+        user = "dummy@" + config.getServiceName() + "/Test";
     }
 
     @Override
@@ -115,26 +115,8 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public String getUser() {
-        if (user == null) {
-            user = "dummy@" + config.getServiceName() + "/Test";
-        }
-        return user;
-    }
-
-    @Override
     public boolean isAnonymous() {
         return anonymous;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return authenticated;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return true;
     }
 
     @Override

@@ -143,7 +143,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private Socket socket;
 
     private String connectionID = null;
-    private boolean connected = false;
 
     /**
      * 
@@ -342,14 +341,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         return connectionID;
     }
 
-    @Override
-    public String getUser() {
-        if (!isAuthenticated()) {
-            return null;
-        }
-        return user;
-    }
-
     /**
      * Install a parsing exception callback, which will be invoked once an exception is encountered while parsing a
      * stanza
@@ -479,22 +470,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public boolean isConnected() {
-        return connected;
-    }
-
-    @Override
     public boolean isSecureConnection() {
         return usingTLS;
     }
 
     public boolean isSocketClosed() {
         return socketClosed;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return authenticated;
     }
 
     /**
