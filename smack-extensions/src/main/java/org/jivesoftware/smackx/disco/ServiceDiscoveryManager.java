@@ -357,23 +357,15 @@ public class ServiceDiscoveryManager extends Manager {
 
     /**
      * Returns the supported features by this XMPP entity.
+     * <p>
+     * The result is a copied modifiable list of the original features.
+     * </p>
      * 
      * @return a List of the supported features by this XMPP entity.
      */
     public List<String> getFeatures() {
         synchronized (features) {
-            return Collections.unmodifiableList(new ArrayList<String>(features));
-        }
-    }
-
-    /**
-     * Returns the supported features by this XMPP entity.
-     * 
-     * @return a copy of the List on the supported features by this XMPP entity.
-     */
-    public List<String> getFeaturesList() {
-        synchronized (features) {
-            return new LinkedList<String>(features);
+            return new ArrayList<String>(features);
         }
     }
 
