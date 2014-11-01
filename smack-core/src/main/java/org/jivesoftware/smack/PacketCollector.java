@@ -89,6 +89,10 @@ public class PacketCollector {
         }
     }
 
+    public boolean isCanceled() {
+        return cancelled;
+    }
+
     /**
      * Returns the packet filter associated with this packet collector. The packet
      * filter is used to determine what packets are queued as results.

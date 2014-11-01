@@ -50,6 +50,7 @@ public abstract class ConnectionConfiguration {
     protected final String host;
     protected final int port;
 
+
     private final String keystorePath;
     private final String keystoreType;
     private final String pkcs11Library;

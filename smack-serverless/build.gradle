@@ -1,0 +1,8 @@
+description = """\
+XEP-0174 Serverless Messaging."""
+
+dependencies {
+    compile 'javax.jmdns:jmdns:3.4.1'
+    compile project(':smack-core')
+    compile project(':smack-extensions')
+}
