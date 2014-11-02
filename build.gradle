@@ -16,8 +16,8 @@ allprojects {
 	apply plugin: 'eclipse'
 
 	ext {
-		shortVersion = '4.1.0-alpha5'
-		isSnapshot = false
+		shortVersion = '4.1.0-alpha6'
+		isSnapshot = true
 		gitCommit = getGitCommit()
 		javadocAllDir = new File(buildDir, 'javadoc')
 		documentationDir = new File(buildDir, 'documentation')
