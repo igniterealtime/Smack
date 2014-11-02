@@ -328,7 +328,7 @@ public class LiteDebugger implements SmackDebugger {
         boolean isAnonymous = "".equals(XmppStringUtils.parseLocalpart(user));
         String title =
             "Smack Debug Window -- "
-                + (isAnonymous ? "" : XmppStringUtils.parseBareAddress(user))
+                + (isAnonymous ? "" : XmppStringUtils.parseBareJid(user))
                 + "@"
                 + connection.getServiceName()
                 + ":"

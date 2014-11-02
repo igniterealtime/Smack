@@ -100,7 +100,7 @@ public class IQReplyFilter implements PacketFilter {
             fromFilter.addFilter(FromMatchesFilter.createBare(local));
             fromFilter.addFilter(FromMatchesFilter.createFull(server));
         }
-        else if (to.equals(XmppStringUtils.parseBareAddress(local))) {
+        else if (to.equals(XmppStringUtils.parseBareJid(local))) {
             fromFilter.addFilter(FromMatchesFilter.createFull(null));
         }
     }

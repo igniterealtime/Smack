@@ -164,7 +164,7 @@ public class MultipleRecipientManager {
             // Remove the sender from the TO/CC list (try with bare JID too)
             String from = connection.getUser();
             if (!to.remove(from) && !cc.remove(from)) {
-                String bareJID = XmppStringUtils.parseBareAddress(from);
+                String bareJID = XmppStringUtils.parseBareJid(from);
                 to.remove(bareJID);
                 cc.remove(bareJID);
             }

@@ -101,7 +101,7 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
     }
 
     private String getUserTitle(String user) {
-        if (("@" + connection.getServiceName()).equals(XmppStringUtils.parseBareAddress(user))) {
+        if (("@" + connection.getServiceName()).equals(XmppStringUtils.parseBareJid(user))) {
             return "<Anonymous>@" + connection.getServiceName();
         } else {
             return user;

@@ -122,7 +122,7 @@ public class RosterGroup {
         }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
-        user = XmppStringUtils.parseBareAddress(user);
+        user = XmppStringUtils.parseBareJid(user);
         String userLowerCase = user.toLowerCase(Locale.US);
         synchronized (entries) {
             for (RosterEntry entry : entries) {

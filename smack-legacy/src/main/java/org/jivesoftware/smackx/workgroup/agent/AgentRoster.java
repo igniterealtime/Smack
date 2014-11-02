@@ -249,7 +249,7 @@ public class AgentRoster {
     private String getPresenceMapKey(String user) {
         String key = user;
         if (!contains(user)) {
-            key = XmppStringUtils.parseBareAddress(user).toLowerCase(Locale.US);
+            key = XmppStringUtils.parseBareJid(user).toLowerCase(Locale.US);
         }
         return key;
     }
@@ -323,7 +323,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = i.next();
-                        if (entry.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(key).toLowerCase())) {
+                        if (entry.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareJid(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }
@@ -344,7 +344,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = (String)i.next();
-                        if (entry.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareAddress(key).toLowerCase())) {
+                        if (entry.toLowerCase(Locale.US).equals(XmppStringUtils.parseBareJid(key).toLowerCase())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }

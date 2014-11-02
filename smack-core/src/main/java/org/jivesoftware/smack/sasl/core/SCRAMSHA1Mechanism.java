@@ -295,7 +295,7 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
      * 
      * @param key
      * @param str
-     * @return
+     * @return the HMAC-SHA1 value of the input.
      * @throws SmackException 
      */
     private static byte[] hmac(byte[] key, byte[] str) throws SmackException {
@@ -317,7 +317,7 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
      * @param str
      * @param salt
      * @param iterations
-     * @return
+     * @return the result of the Hi function.
      * @throws SmackException 
      */
     private static byte[] hi(String str, byte[] salt, int iterations) throws SmackException {

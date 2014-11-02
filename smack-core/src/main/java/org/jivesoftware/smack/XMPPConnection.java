@@ -395,7 +395,7 @@ public interface XMPPConnection {
      * 
      * @param element
      * @param namespace
-     * @return
+     * @return true if the server supports the stream feature.
      */
     public boolean hasFeature(String element, String namespace);
 
