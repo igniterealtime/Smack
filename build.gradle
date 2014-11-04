@@ -11,13 +11,13 @@ buildscript {
 }
 apply plugin: 'org.kordamp.gradle.markdown'
 
+apply from: 'version.gradle'
+
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 
 	ext {
-		shortVersion = '4.1.0-alpha6'
-		isSnapshot = true
 		gitCommit = getGitCommit()
 		javadocAllDir = new File(buildDir, 'javadoc')
 		documentationDir = new File(buildDir, 'documentation')

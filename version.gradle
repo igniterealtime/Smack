@@ -1,0 +1,6 @@
+allprojects {
+	ext {
+		shortVersion = '4.1.0-alpha6'
+		isSnapshot = true
+	}
+}
