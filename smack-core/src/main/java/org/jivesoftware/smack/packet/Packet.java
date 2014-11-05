@@ -25,7 +25,7 @@ import org.jxmpp.util.XmppStringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -62,7 +62,7 @@ public abstract class Packet extends TopLevelStreamElement {
      */
     private static final AtomicLong id = new AtomicLong();
 
-    private final Map<String, PacketExtension> packetExtensions = new HashMap<String, PacketExtension>(12);
+    private final Map<String, PacketExtension> packetExtensions = new LinkedHashMap<String, PacketExtension>(12);
 
     private String packetID = null;
     private String to = null;
