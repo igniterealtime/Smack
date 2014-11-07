@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
+import org.jivesoftware.smack.packet.EmptyResultIQ;
+import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 
@@ -35,17 +37,10 @@ public class IBBPacketUtils {
      * @return an error IQ
      */
     public static IQ createErrorIQ(String from, String to, XMPPError xmppError) {
-        IQ errorIQ = new IQ() {
-
-            public String getChildElementXML() {
-                return null;
-            }
-
-        };
+        IQ errorIQ = new ErrorIQ(xmppError);
         errorIQ.setType(IQ.Type.error);
         errorIQ.setFrom(from);
         errorIQ.setTo(to);
-        errorIQ.setError(xmppError);
         return errorIQ;
     }
 
@@ -57,13 +52,7 @@ public class IBBPacketUtils {
      * @return a result IQ
      */
     public static IQ createResultIQ(String from, String to) {
-        IQ result = new IQ() {
-
-            public String getChildElementXML() {
-                return null;
-            }
-
-        };
+        IQ result = new EmptyResultIQ();
         result.setType(IQ.Type.result);
         result.setFrom(from);
         result.setTo(to);

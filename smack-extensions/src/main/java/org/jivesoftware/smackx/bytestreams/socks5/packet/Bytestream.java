@@ -49,6 +49,7 @@ public class Bytestream extends IQ {
      * The default constructor
      */
     public Bytestream() {
+        super(QUERY_ELEMENT, NAMESPACE);
     }
 
     /**
@@ -58,6 +59,7 @@ public class Bytestream extends IQ {
      * @see #setSessionID(String)
      */
     public Bytestream(final String SID) {
+        this();
         setSessionID(SID);
     }
 
@@ -215,11 +217,7 @@ public class Bytestream extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(QUERY_ELEMENT);
-        xml.xmlnsAttribute(NAMESPACE);
-
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         switch(getType()) {
         case set:
             xml.optAttribute("sid", getSessionID());
@@ -236,25 +234,20 @@ public class Bytestream extends IQ {
             break;
         case result:
             xml.rightAngleBracket();
-            if (getUsedHost() != null) {
-                xml.append(getUsedHost().toXML());
-            }
+            xml.optAppend(getUsedHost());
+            // TODO Bytestream can include either used host *or* streamHosts. Never both. This should be ensured by the
+            // constructions mechanisms of Bytestream
             // A result from the server can also contain stream hosts
-            else if (countStreamHosts() > 0) {
-                for (StreamHost host : streamHosts) {
-                    xml.append(host.toXML());
-                }
+            for (StreamHost host : streamHosts) {
+                xml.append(host.toXML());
             }
             break;
         case get:
-            xml.closeEmptyElement();
-            // Return here so that we don't run into the
-            // closeElement(QUERY_ELEMNT) section
-            return xml;
+            xml.setEmptyElement();
+            break;
         default:
             throw new IllegalStateException();
         }
-        xml.closeElement(QUERY_ELEMENT);
 
         return xml;
     }

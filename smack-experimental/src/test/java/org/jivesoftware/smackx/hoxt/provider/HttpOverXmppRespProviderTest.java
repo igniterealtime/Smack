@@ -39,8 +39,7 @@ public class HttpOverXmppRespProviderTest {
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
-        HttpOverXmppResp castedIq = (HttpOverXmppResp) iq;
-        HttpOverXmppResp.Resp resp = castedIq.getResp();
+        HttpOverXmppResp resp = (HttpOverXmppResp) iq;
 
         assertEquals(resp.getVersion(), "1.1");
         assertEquals(resp.getStatusCode(), 200);
@@ -55,8 +54,7 @@ public class HttpOverXmppRespProviderTest {
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
-        HttpOverXmppResp castedIq = (HttpOverXmppResp) iq;
-        HttpOverXmppResp.Resp resp = castedIq.getResp();
+        HttpOverXmppResp resp = (HttpOverXmppResp) iq;
 
         assertEquals(resp.getVersion(), "1.1");
         assertEquals(resp.getStatusCode(), 200);

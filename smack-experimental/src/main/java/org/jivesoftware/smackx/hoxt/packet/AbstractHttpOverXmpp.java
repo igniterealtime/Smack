@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.hoxt.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 
 /**
@@ -27,97 +29,84 @@ import org.jivesoftware.smackx.shim.packet.HeadersExtension;
  */
 public abstract class AbstractHttpOverXmpp extends IQ {
 
+    public static final String NAMESPACE = "urn:xmpp:http";
+
+    protected AbstractHttpOverXmpp(String element) {
+        super(element, NAMESPACE);
+    }
+
+    private HeadersExtension headers;
+    private Data data;
+
+    protected String version;
+
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        IQChildElementXmlStringBuilder builder = getIQHoxtChildElementBuilder(xml);
+        builder.append(headers.toXML());
+        builder.append(data.toXML());
+
+        return builder;
+    }
+
     /**
-     * Abstract representation of parent of Req and Resp elements.
+     * Returns start tag.
+     *
+     * @return start tag
      */
-    public static abstract class AbstractBody {
+    protected abstract IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder xml);
 
-        private HeadersExtension headers;
-        private Data data;
+    /**
+     * Returns version attribute.
+     *
+     * @return version attribute
+     */
+    public String getVersion() {
+        return version;
+    }
 
-        protected String version;
+    /**
+     * Sets version attribute.
+     *
+     * @param version version attribute
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-        /**
-         * Returns string containing xml representation of this object.
-         *
-         * @return xml representation of this object
-         */
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append(getStartTag());
-            builder.append(headers.toXML());
-            builder.append(data.toXML());
-            builder.append(getEndTag());
-            return builder.toString();
-        }
+    /**
+     * Returns Headers element.
+     *
+     * @return Headers element
+     */
+    public HeadersExtension getHeaders() {
+        return headers;
+    }
 
-        /**
-         * Returns start tag.
-         *
-         * @return start tag
-         */
-        protected abstract String getStartTag();
+    /**
+     * Sets Headers element.
+     *
+     * @param headers Headers element
+     */
+    public void setHeaders(HeadersExtension headers) {
+        this.headers = headers;
+    }
 
-        /**
-         * Returns end tag.
-         *
-         * @return end tag
-         */
-        protected abstract String getEndTag();
+    /**
+     * Returns Data element.
+     *
+     * @return Data element
+     */
+    public Data getData() {
+        return data;
+    }
 
-        /**
-         * Returns version attribute.
-         *
-         * @return version attribute
-         */
-        public String getVersion() {
-            return version;
-        }
-
-        /**
-         * Sets version attribute.
-         *
-         * @param version version attribute
-         */
-        public void setVersion(String version) {
-            this.version = version;
-        }
-
-        /**
-         * Returns Headers element.
-         *
-         * @return Headers element
-         */
-        public HeadersExtension getHeaders() {
-            return headers;
-        }
-
-        /**
-         * Sets Headers element.
-         *
-         * @param headers Headers element
-         */
-        public void setHeaders(HeadersExtension headers) {
-            this.headers = headers;
-        }
-
-        /**
-         * Returns Data element.
-         *
-         * @return Data element
-         */
-        public Data getData() {
-            return data;
-        }
-
-        /**
-         * Sets Data element.
-         *
-         * @param data Headers element
-         */
-        public void setData(Data data) {
-            this.data = data;
-        }
+    /**
+     * Sets Data element.
+     *
+     * @param data Headers element
+     */
+    public void setData(Data data) {
+        this.data = data;
     }
 
     /**
@@ -126,14 +115,14 @@ public abstract class AbstractHttpOverXmpp extends IQ {
      */
     public static class Data {
 
-        private final DataChild child;
+        private final NamedElement child;
 
         /**
          * Creates Data element.
          *
          * @param child element nested by Data
          */
-        public Data(DataChild child) {
+        public Data(NamedElement child) {
             this.child = child;
         }
 
@@ -155,29 +144,18 @@ public abstract class AbstractHttpOverXmpp extends IQ {
          *
          * @return element nested by Data
          */
-        public DataChild getChild() {
+        public NamedElement getChild() {
             return child;
         }
-    }
-
-    /**
-     * Interface for child elements of Data element.
-     */
-    public static interface DataChild {
-
-        /**
-         * Returns string containing xml representation of this object.
-         *
-         * @return xml representation of this object
-         */
-        public String toXML();
     }
 
     /**
      * Representation of Text element.<p>
      * This class is immutable.
      */
-    public static class Text implements DataChild {
+    public static class Text implements NamedElement {
+
+        public static final String ELEMENT = "text";
 
         private final String text;
 
@@ -191,14 +169,12 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         }
 
         @Override
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<text>");
-            if (text != null) {
-                builder.append(text);
-            }
-            builder.append("</text>");
-            return builder.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.rightAngleBracket();
+            xml.optAppend(text);
+            xml.closeElement(this);
+            return xml;
         }
 
         /**
@@ -209,13 +185,20 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         public String getText() {
             return text;
         }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * Representation of Base64 element.<p>
      * This class is immutable.
      */
-    public static class Base64 implements DataChild {
+    public static class Base64 implements NamedElement {
+
+        public static final String ELEMENT = "base64";
 
         private final String text;
 
@@ -229,14 +212,12 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         }
 
         @Override
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<base64>");
-            if (text != null) {
-                builder.append(text);
-            }
-            builder.append("</base64>");
-            return builder.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.rightAngleBracket();
+            xml.optAppend(text);
+            xml.closeElement(this);
+            return xml;
         }
 
         /**
@@ -247,18 +228,25 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         public String getText() {
             return text;
         }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * Representation of Xml element.<p>
      * This class is immutable.
      */
-    public static class Xml implements DataChild {
+    public static class Xml implements NamedElement {
+
+        public static final String ELEMENT = "xml";
 
         private final String text;
 
         /**
-         * Creates this element.
+         * Creates this element.builder.toString();
          *
          * @param text value of text
          */
@@ -267,14 +255,12 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         }
 
         @Override
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<xml>");
-            if (text != null) {
-                builder.append(text);
-            }
-            builder.append("</xml>");
-            return builder.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.rightAngleBracket();
+            xml.optAppend(text);
+            xml.closeElement(this);
+            return xml;
         }
 
         /**
@@ -285,13 +271,20 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         public String getText() {
             return text;
         }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * Representation of ChunkedBase64 element.<p>
      * This class is immutable.
      */
-    public static class ChunkedBase64 implements DataChild {
+    public static class ChunkedBase64 implements NamedElement {
+
+        public static final String ELEMENT = "chunkedBase64";
 
         private final String streamId;
 
@@ -305,12 +298,11 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         }
 
         @Override
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<chunkedBase64 streamId='");
-            builder.append(streamId);
-            builder.append("'/>");
-            return builder.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.attribute("streamId", streamId);
+            xml.closeEmptyElement();
+            return xml;
         }
 
         /**
@@ -321,13 +313,20 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         public String getStreamId() {
             return streamId;
         }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * Representation of Ibb element.<p>
      * This class is immutable.
      */
-    public static class Ibb implements DataChild {
+    public static class Ibb implements NamedElement {
+
+        public static final String ELEMENT = "ibb";
 
         private final String sid;
 
@@ -341,12 +340,11 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         }
 
         @Override
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<ibb sid='");
-            builder.append(sid);
-            builder.append("'/>");
-            return builder.toString();
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.attribute("sid", sid);
+            xml.closeEmptyElement();
+            return xml;
         }
 
         /**
@@ -356,6 +354,11 @@ public abstract class AbstractHttpOverXmpp extends IQ {
          */
         public String getSid() {
             return sid;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
     }
 }

@@ -31,6 +31,9 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  */
 public class StreamInitiation extends IQ {
 
+    public static final String ELEMENT = "si";
+    public static final String NAMESPACE = "http://jabber.org/protocol/si";
+
     private String id;
 
     private String mimeType;
@@ -38,6 +41,10 @@ public class StreamInitiation extends IQ {
     private File file;
 
     private Feature featureNegotiation;
+
+    public StreamInitiation() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * The "id" attribute is an opaque identifier. This attribute MUST be
@@ -127,41 +134,28 @@ public class StreamInitiation extends IQ {
         return featureNegotiation.getData();
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see org.jivesoftware.smack.packet.IQ#getChildElementXML()
-      */
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        if (this.getType().equals(IQ.Type.set)) {
-            buf.append("<si xmlns=\"http://jabber.org/protocol/si\" ");
-            if (getSessionID() != null) {
-                buf.append("id=\"").append(getSessionID()).append("\" ");
-            }
-            if (getMimeType() != null) {
-                buf.append("mime-type=\"").append(getMimeType()).append("\" ");
-            }
-            buf
-                    .append("profile=\"http://jabber.org/protocol/si/profile/file-transfer\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        switch (getType()) {
+        case set:
+            buf.optAttribute("id", getSessionID());
+            buf.optAttribute("mime-type", getMimeType());
+            buf.attribute("profile", NAMESPACE + "/profile/file-transfer");
+            buf.rightAngleBracket();
 
             // Add the file section if there is one.
-            String fileXML = file.toXML();
-            if (fileXML != null) {
-                buf.append(fileXML);
-            }
-        }
-        else if (this.getType().equals(IQ.Type.result)) {
-            buf.append("<si xmlns=\"http://jabber.org/protocol/si\">");
-        }
-        else {
+            buf.optAppend(file.toXML());
+            break;
+        case result:
+            buf.rightAngleBracket();
+            break;
+        default:
             throw new IllegalArgumentException("IQ Type not understood");
         }
         if (featureNegotiation != null) {
             buf.append(featureNegotiation.toXML());
         }
-        buf.append("</si>");
-        return buf.toString();
+        return buf;
     }
 
     /**

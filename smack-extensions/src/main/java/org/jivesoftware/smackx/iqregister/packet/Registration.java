@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents registration packets. An empty GET query will cause the server to return information
@@ -48,6 +47,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class Registration extends IQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:register";
 
     private final String instructions;
@@ -62,6 +62,7 @@ public class Registration extends IQ {
     }
 
     public Registration(String instructions, Map<String, String> attributes) {
+        super(ELEMENT, NAMESPACE);
         this.instructions = instructions;
         this.attributes = attributes;
     }
@@ -87,10 +88,7 @@ public class Registration extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(QUERY_ELEMENT);
-        xml.xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
         xml.optElement("instructions", instructions);
         if (attributes != null && attributes.size() > 0) {
@@ -99,9 +97,6 @@ public class Registration extends IQ {
                 xml.element(name, value);
             }
         }
-        // Add packet extensions, if any are defined.
-        xml.append(getExtensionsXML());
-        xml.closeElement(QUERY_ELEMENT);
         return xml;
     }
 

@@ -17,23 +17,21 @@
 package org.jivesoftware.smackx.ping.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 
-public class Ping extends IQ {
+public class Ping extends SimpleIQ {
 
     public static final String ELEMENT = "ping";
     public static final String NAMESPACE = "urn:xmpp:ping";
 
     public Ping() {
+        super(ELEMENT, NAMESPACE);
     }
 
     public Ping(String to) {
+        this();
         setTo(to);
         setType(IQ.Type.get);
-    }
-
-    @Override
-    public String getChildElementXML() {
-        return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
     }
 
     /**

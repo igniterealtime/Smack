@@ -194,13 +194,16 @@ public class Offer {
     private class RejectPacket extends IQ {
 
         RejectPacket(String workgroup) {
+            super("offer-reject", "http://jabber.org/protocol/workgroup");
             this.setTo(workgroup);
             this.setType(IQ.Type.set);
         }
 
-        public String getChildElementXML() {
-            return "<offer-reject id=\"" + Offer.this.getSessionID() +
-                    "\" xmlns=\"http://jabber.org/protocol/workgroup" + "\"/>";
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+            xml.attribute("id", Offer.this.getSessionID());
+            xml.setEmptyElement();
+            return xml;
         }
     }
 
@@ -210,13 +213,16 @@ public class Offer {
     private class AcceptPacket extends IQ {
 
         AcceptPacket(String workgroup) {
+            super("offer-accept", "http://jabber.org/protocol/workgroup");
             this.setTo(workgroup);
             this.setType(IQ.Type.set);
         }
 
-        public String getChildElementXML() {
-            return "<offer-accept id=\"" + Offer.this.getSessionID() +
-                    "\" xmlns=\"http://jabber.org/protocol/workgroup" + "\"/>";
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+            xml.attribute("id", Offer.this.getSessionID());
+            xml.setEmptyElement();
+            return xml;
         }
     }
 

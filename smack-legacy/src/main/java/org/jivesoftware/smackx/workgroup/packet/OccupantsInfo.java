@@ -60,6 +60,7 @@ public class OccupantsInfo extends IQ {
     private final Set<OccupantInfo> occupants;
 
     public OccupantsInfo(String roomID) {
+        super(ELEMENT_NAME, NAMESPACE);
         this.roomID = roomID;
         this.occupants = new HashSet<OccupantInfo>();
     }
@@ -76,9 +77,8 @@ public class OccupantsInfo extends IQ {
         return Collections.unmodifiableSet(occupants);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE);
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.append("\" roomID=\"").append(roomID).append("\">");
         synchronized (occupants) {
             for (OccupantInfo occupant : occupants) {
@@ -98,8 +98,7 @@ public class OccupantsInfo extends IQ {
                 buf.append("</occupant>");
             }
         }
-        buf.append("</").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+        return buf;
     }
 
     public static class OccupantInfo {

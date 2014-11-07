@@ -75,18 +75,17 @@ public class WorkgroupProperties extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
+    public WorkgroupProperties() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         if (ModelUtil.hasLength(getJid())) {
             buf.append("jid=\"" + getJid() + "\" ");
         }
-        buf.append("></").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+        buf.setEmptyElement();
+        return buf;
     }
 
     /**

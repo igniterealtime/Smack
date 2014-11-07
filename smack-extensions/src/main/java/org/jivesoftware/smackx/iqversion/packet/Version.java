@@ -20,7 +20,6 @@ package org.jivesoftware.smackx.iqversion.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
@@ -49,6 +48,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Gaston Dombiak
  */
 public class Version extends IQ {
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:version";
 
     private final String name;
@@ -56,6 +56,7 @@ public class Version extends IQ {
     private String os;
 
     public Version() {
+        super(ELEMENT, NAMESPACE);
         name = null;
         version = null;
         setType(Type.get);
@@ -83,6 +84,7 @@ public class Version extends IQ {
      * @param os The operating system of the queried entity. This element is OPTIONAL.
      */
     public Version(String name, String version, String os) {
+        super(ELEMENT, NAMESPACE);
         if (name == null)
         {
             throw new IllegalArgumentException("name must not be null");
@@ -141,15 +143,13 @@ public class Version extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        xml.rightAngleBracket();
         // Although not really optional elements, 'name' and 'version' are not set when sending a
         // version request. So we must handle the case that those are 'null' here.
         xml.optElement("name", name);
         xml.optElement("version", version);
         xml.optElement("os", os);
-        xml.closeElement(IQ.QUERY_ELEMENT);
         return xml;
     }
 

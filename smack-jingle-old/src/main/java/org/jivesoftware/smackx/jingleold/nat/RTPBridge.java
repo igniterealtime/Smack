@@ -93,6 +93,7 @@ public class RTPBridge extends IQ {
      * @param sid
      */
     public RTPBridge(String sid) {
+        this();
         this.sid = sid;
     }
 
@@ -102,6 +103,7 @@ public class RTPBridge extends IQ {
      * @param action
      */
     public RTPBridge(BridgeAction action) {
+        this();
         this.bridgeAction = action;
     }
 
@@ -112,6 +114,7 @@ public class RTPBridge extends IQ {
      * @param bridgeAction
      */
     public RTPBridge(String sid, BridgeAction bridgeAction) {
+        this();
         this.sid = sid;
         this.bridgeAction = bridgeAction;
     }
@@ -120,6 +123,7 @@ public class RTPBridge extends IQ {
      * Creates a RTPBridge Packet without Session ID
      */
     public RTPBridge() {
+        super(ELEMENT_NAME, NAMESPACE);
     }
 
     /**
@@ -298,9 +302,9 @@ public class RTPBridge extends IQ {
      *
      * @return the Child Element XML of the Packet
      */
-    public String getChildElementXML() {
-        StringBuilder str = new StringBuilder();
-        str.append("<" + ELEMENT_NAME + " xmlns='" + NAMESPACE + "' sid='").append(sid).append("'>");
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder str) {
+        str.attribute("sid", sid);
+        str.rightAngleBracket();
 
         if (bridgeAction.equals(BridgeAction.create))
             str.append("<candidate/>");
@@ -309,8 +313,7 @@ public class RTPBridge extends IQ {
         else
             str.append("<publicip ").append(getAttributes()).append(" />");
 
-        str.append("</" + ELEMENT_NAME + ">");
-        return str.toString();
+        return str;
     }
 
     /**

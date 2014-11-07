@@ -33,9 +33,23 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class Macros extends IQ {
 
+    /**
+     * Element name of the packet extension.
+     */
+    public static final String ELEMENT_NAME = "macros";
+
+    /**
+     * Namespace of the packet extension.
+     */
+    public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
+
     private MacroGroup rootGroup;
     private boolean personal;
     private MacroGroup personalMacroGroup;
+
+    public Macros() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
 
     public MacroGroup getRootGroup() {
         return rootGroup;
@@ -61,21 +75,10 @@ public class Macros extends IQ {
         this.personalMacroGroup = personalMacroGroup;
     }
 
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
 
-    /**
-     * Element name of the packet extension.
-     */
-    public static final String ELEMENT_NAME = "macros";
-
-    /**
-     * Namespace of the packet extension.
-     */
-    public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
-
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
         if (isPersonal()) {
             buf.append("<personal>true</personal>");
         }
@@ -84,9 +87,8 @@ public class Macros extends IQ {
         	buf.append(StringUtils.escapeForXML(getPersonalMacroGroup().toXML()));
         	buf.append("</personalMacro>");
         }
-        buf.append("</").append(ELEMENT_NAME).append("> ");
 
-        return buf.toString();
+        return buf;
     }
 
     /**

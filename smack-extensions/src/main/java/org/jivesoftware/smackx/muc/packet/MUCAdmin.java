@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * IQ packet that serves for kicking users, granting and revoking voice, banning users, 
@@ -33,9 +32,14 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class MUCAdmin extends IQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#admin";
 
     private final List<MUCItem> items = new ArrayList<MUCItem>();
+
+    public MUCAdmin() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * Returns a List of item childs that holds information about roles, affiliation,
@@ -62,19 +66,15 @@ public class MUCAdmin extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT);
-        xml.xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
+
         synchronized (items) {
             for (MUCItem item : items) {
                 xml.append(item.toXML());
             }
         }
-        // Add packet extensions, if any are defined.
-        xml.append(getExtensionsXML());
-        xml.closeElement(IQ.QUERY_ELEMENT);
+
         return xml;
     }
 }

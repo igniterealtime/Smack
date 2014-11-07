@@ -39,8 +39,15 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         halfOpenElement(e.getElementName());
     }
 
+    public XmlStringBuilder escapedElement(String name, String escapedContent) {
+        assert escapedContent != null;
+        openElement(name);
+        append(escapedContent);
+        closeElement(name);
+        return this;
+    }
+
     /**
-     * Does nothing if content is null.
      *
      * @param name
      * @param content
@@ -94,6 +101,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder halfOpenElement(String name) {
+        assert(StringUtils.isNotEmpty(name));
         sb.append('<').append(name);
         return this;
     }
@@ -235,14 +243,25 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder prelude(PacketExtension pe) {
-        halfOpenElement(pe.getElementName());
-        xmlnsAttribute(pe.getNamespace());
+        return prelude(pe.getElementName(), pe.getNamespace());
+    }
+
+    public XmlStringBuilder prelude(String elementName, String namespace) {
+        halfOpenElement(elementName);
+        xmlnsAttribute(namespace);
         return this;
     }
 
     public XmlStringBuilder optAppend(CharSequence csq) {
         if (csq != null) {
             append(csq);
+        }
+        return this;
+    }
+
+    public XmlStringBuilder optAppend(Element element) {
+        if (element != null) {
+            append(element.toXML());
         }
         return this;
     }

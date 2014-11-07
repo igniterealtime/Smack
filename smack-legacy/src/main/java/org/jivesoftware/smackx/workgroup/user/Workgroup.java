@@ -577,6 +577,7 @@ public class Workgroup {
         private DataForm form;
 
         public JoinQueuePacket(String workgroup, Form answerForm, String userID) {
+            super("join-queue", "http://jabber.org/protocol/workgroup");
             this.userID = userID;
 
             setTo(workgroup);
@@ -586,10 +587,9 @@ public class Workgroup {
             addExtension(form);
         }
 
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append("<join-queue xmlns=\"http://jabber.org/protocol/workgroup\">");
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+            buf.rightAngleBracket();
             buf.append("<queue-notifications/>");
             // Add the user unique identification if the session is anonymous
             if (connection.isAnonymous()) {
@@ -599,9 +599,7 @@ public class Workgroup {
             // Append data form text
             buf.append(form.toXML());
 
-            buf.append("</join-queue>");
-
-            return buf.toString();
+            return buf;
         }
     }
 

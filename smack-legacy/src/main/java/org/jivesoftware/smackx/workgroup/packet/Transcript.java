@@ -42,8 +42,7 @@ public class Transcript extends IQ {
      * @param sessionID the id of the session to get the conversation transcript.
      */
     public Transcript(String sessionID) {
-        this.sessionID = sessionID;
-        this.packets = new ArrayList<Packet>();
+        this(sessionID, new ArrayList<Packet>());
     }
 
     /**
@@ -54,6 +53,7 @@ public class Transcript extends IQ {
      * @param packets the list of messages and presences send to the room.
      */
     public Transcript(String sessionID, List<Packet> packets) {
+        super("transcript", "http://jabber.org/protocol/workgroup");
         this.sessionID = sessionID;
         this.packets = packets;
     }
@@ -77,10 +77,9 @@ public class Transcript extends IQ {
         return Collections.unmodifiableList(packets);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<transcript xmlns=\"http://jivesoftware.com/protocol/workgroup\" sessionID=\"")
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.append(" sessionID=\"")
                 .append(sessionID)
                 .append("\">");
 
@@ -89,8 +88,6 @@ public class Transcript extends IQ {
             buf.append(packet.toXML());
         }
 
-        buf.append("</transcript>");
-
-        return buf.toString();
+        return buf;
     }
 }

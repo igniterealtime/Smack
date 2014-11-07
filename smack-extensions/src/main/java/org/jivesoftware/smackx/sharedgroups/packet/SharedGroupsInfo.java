@@ -36,7 +36,14 @@ import java.util.List;
  */
 public class SharedGroupsInfo extends IQ {
 
+    public static final String ELEMENT = "sharedgroup";
+    public static final String NAMESPACE = "http://www.jivesoftware.org/protocol/sharedgroup";
+
     private List<String> groups = new ArrayList<String>();
+
+    public SharedGroupsInfo() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * Returns a collection with the shared group names returned from the server.
@@ -47,14 +54,13 @@ public class SharedGroupsInfo extends IQ {
         return groups;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<sharedgroup xmlns=\"http://www.jivesoftware.org/protocol/sharedgroup\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
         for (String group : groups) {
-            buf.append("<group>").append(group).append("</group>");
+            buf.element("group", group);
         }
-        buf.append("</sharedgroup>");
-        return buf.toString();
+        return buf;
     }
 
     /**

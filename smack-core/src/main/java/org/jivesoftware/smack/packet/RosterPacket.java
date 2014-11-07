@@ -40,6 +40,10 @@ public class RosterPacket extends IQ {
     private final List<Item> rosterItems = new ArrayList<Item>();
     private String rosterVersion;
 
+    public RosterPacket() {
+        super(ELEMENT, NAMESPACE);
+    }
+
     /**
      * Adds a roster item to the packet.
      *
@@ -74,10 +78,7 @@ public class RosterPacket extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement(ELEMENT);
-        buf.xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.optAttribute("ver", rosterVersion);
         buf.rightAngleBracket();
 
@@ -86,7 +87,6 @@ public class RosterPacket extends IQ {
                 buf.append(entry.toXML());
             }
         }
-        buf.closeElement(ELEMENT);
         return buf;
     }
 

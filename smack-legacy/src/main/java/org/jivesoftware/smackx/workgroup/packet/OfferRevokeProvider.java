@@ -73,6 +73,7 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
         private String reason;
 
         public OfferRevokePacket (String userJID, String userID, String cause, String sessionID) {
+            super("offer-revoke", "http://jabber.org/protocol/workgroup");
             this.userJID = userJID;
             this.userID = userID;
             this.reason = cause;
@@ -95,9 +96,9 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
             return this.sessionID;
         }
 
-        public String getChildElementXML () {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<offer-revoke xmlns=\"http://jabber.org/protocol/workgroup\" jid=\"").append(userID).append("\">");
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+            buf.append(" jid=\"").append(userID).append("\">");
             if (reason != null) {
                 buf.append("<reason>").append(reason).append("</reason>");
             }
@@ -107,8 +108,7 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
             if (userID != null) {
                 buf.append(new UserID(userID).toXML());
             }
-            buf.append("</offer-revoke>");
-            return buf.toString();
+            return buf;
         }
     }
 }

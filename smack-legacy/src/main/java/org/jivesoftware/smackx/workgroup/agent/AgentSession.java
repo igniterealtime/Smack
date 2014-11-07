@@ -781,13 +781,7 @@ public class AgentSession {
         }
         else if (packet instanceof OfferRevokeProvider.OfferRevokePacket) {
             // Acknowledge the IQ set.
-            IQ reply = new IQ() {
-                public String getChildElementXML() {
-                    return null;
-                }
-            };
-            reply.setPacketID(packet.getPacketID());
-            reply.setType(IQ.Type.result);
+            IQ reply = IQ.createResultIQ((OfferRevokeProvider.OfferRevokePacket) packet);
             connection.sendPacket(reply);
 
             fireOfferRevokeEvent((OfferRevokeProvider.OfferRevokePacket)packet);
@@ -962,12 +956,7 @@ public class AgentSession {
     public void sendRoomInvitation(RoomInvitation.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
         final RoomInvitation invitation = new RoomInvitation(type, invitee, sessionID, reason);
-        IQ iq = new IQ() {
-
-            public String getChildElementXML() {
-                return invitation.toXML();
-            }
-        };
+        IQ iq = new RoomInvitation.RoomInvitationIQ(invitation);
         iq.setType(IQ.Type.set);
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
@@ -1004,12 +993,7 @@ public class AgentSession {
     public void sendRoomTransfer(RoomTransfer.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException
             {
         final RoomTransfer transfer = new RoomTransfer(type, invitee, sessionID, reason);
-        IQ iq = new IQ() {
-
-            public String getChildElementXML() {
-                return transfer.toXML();
-            }
-        };
+        IQ iq = new RoomTransfer.RoomTransferIQ(transfer);
         iq.setType(IQ.Type.set);
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());

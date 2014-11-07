@@ -26,7 +26,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -44,7 +44,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Thiago Camargo
  */
-public class STUN extends IQ {
+public class STUN extends SimpleIQ {
 
 	private static final Logger LOGGER = Logger.getLogger(STUN.class.getName());
 
@@ -75,6 +75,7 @@ public class STUN extends IQ {
      * Creates a STUN IQ
      */
     public STUN() {
+        super(ELEMENT_NAME, NAMESPACE);
     }
 
     /**
@@ -102,17 +103,6 @@ public class STUN extends IQ {
      */
     private void setPublicIp(String publicIp) {
         this.publicIp = publicIp;
-    }
-
-    /**
-     * Get the Child Element XML of the Packet
-     *
-     * @return the child element XML
-     */
-    public String getChildElementXML() {
-        StringBuilder str = new StringBuilder();
-        str.append("<" + ELEMENT_NAME + " xmlns='" + NAMESPACE + "'/>");
-        return str.toString();
     }
 
     /**

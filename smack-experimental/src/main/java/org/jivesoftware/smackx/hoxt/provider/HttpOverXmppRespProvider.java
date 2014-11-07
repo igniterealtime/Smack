@@ -31,8 +31,6 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class HttpOverXmppRespProvider extends AbstractHttpOverXmppProvider<HttpOverXmppResp> {
 
-    private static final String ELEMENT_RESP = "resp";
-
     private static final String ATTRIBUTE_STATUS_MESSAGE = "statusMessage";
     private static final String ATTRIBUTE_STATUS_CODE = "statusCode";
 
@@ -44,15 +42,12 @@ public class HttpOverXmppRespProvider extends AbstractHttpOverXmppProvider<HttpO
         String statusCodeString = parser.getAttributeValue("", ATTRIBUTE_STATUS_CODE);
         int statusCode = Integer.parseInt(statusCodeString);
 
-        HttpOverXmppResp.Resp resp = new HttpOverXmppResp.Resp();
+        HttpOverXmppResp resp = new HttpOverXmppResp();
+
         resp.setVersion(version);
         resp.setStatusMessage(statusMessage);
         resp.setStatusCode(statusCode);
-
-        parseHeadersAndData(parser, ELEMENT_RESP, resp);
-
-        HttpOverXmppResp packet = new HttpOverXmppResp();
-        packet.setResp(resp);
-        return packet;
+        parseHeadersAndData(parser, HttpOverXmppResp.ELEMENT, resp);
+        return resp;
     }
 }

@@ -27,6 +27,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
+import org.jivesoftware.smackx.iqprivate.packet.PrivateDataIQ;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -156,18 +157,9 @@ public class PrivateDataManager extends Manager {
     public PrivateData getPrivateData(final String elementName, final String namespace) throws NoResponseException, XMPPErrorException, NotConnectedException
     {
         // Create an IQ packet to get the private data.
-        IQ privateDataGet = new IQ() {
-            public String getChildElementXML() {
-                StringBuilder buf = new StringBuilder();
-                buf.append("<query xmlns=\"jabber:iq:private\">");
-                buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\"/>");
-                buf.append("</query>");
-                return buf.toString();
-            }
-        };
-        privateDataGet.setType(IQ.Type.get);
+        IQ privateDataGet = new PrivateDataIQ(elementName, namespace);
 
-        PrivateDataResult response = (PrivateDataResult) connection().createPacketCollectorAndSend(
+        PrivateDataIQ response = connection().createPacketCollectorAndSend(
                         privateDataGet).nextResultOrThrow();
         return response.getPrivateData();
     }
@@ -184,16 +176,7 @@ public class PrivateDataManager extends Manager {
      */
     public void setPrivateData(final PrivateData privateData) throws NoResponseException, XMPPErrorException, NotConnectedException {
         // Create an IQ packet to set the private data.
-        IQ privateDataSet = new IQ() {
-            public String getChildElementXML() {
-                StringBuilder buf = new StringBuilder();
-                buf.append("<query xmlns=\"jabber:iq:private\">");
-                buf.append(privateData.toXML());
-                buf.append("</query>");
-                return buf.toString();
-            }
-        };
-        privateDataSet.setType(IQ.Type.set);
+        IQ privateDataSet = new PrivateDataIQ(privateData);
 
         connection().createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
     }
@@ -214,10 +197,10 @@ public class PrivateDataManager extends Manager {
     /**
      * An IQ provider to parse IQ results containing private data.
      */
-    public static class PrivateDataIQProvider extends IQProvider<PrivateDataResult> {
+    public static class PrivateDataIQProvider extends IQProvider<PrivateDataIQ> {
 
         @Override
-        public PrivateDataResult parse(XmlPullParser parser, int initialDepth)
+        public PrivateDataIQ parse(XmlPullParser parser, int initialDepth)
                         throws XmlPullParserException, IOException, SmackException {
             PrivateData privateData = null;
             boolean done = false;
@@ -268,33 +251,7 @@ public class PrivateDataManager extends Manager {
                     }
                 }
             }
-            return new PrivateDataResult(privateData);
-        }
-    }
-
-    /**
-     * An IQ packet to hold PrivateData GET results.
-     */
-    private static class PrivateDataResult extends IQ {
-
-        private PrivateData privateData;
-
-        PrivateDataResult(PrivateData privateData) {
-            this.privateData = privateData;
-        }
-
-        public PrivateData getPrivateData() {
-            return privateData;
-        }
-
-        public String getChildElementXML() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("<query xmlns=\"jabber:iq:private\">");
-            if (privateData != null) {
-                buf.append(privateData.toXML());
-            }
-            buf.append("</query>");
-            return buf.toString();
+            return new PrivateDataIQ(privateData);
         }
     }
 }

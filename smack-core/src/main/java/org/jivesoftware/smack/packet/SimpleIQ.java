@@ -14,33 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.carbons.packet;
-
-import org.jivesoftware.smack.packet.SimpleIQ;
+package org.jivesoftware.smack.packet;
 
 /**
- * Carbon IQs
+ * A simple IQ.
+ * <p>
+ * Simple IQs child elements do not contain further attributes besides 'xmlns'. They may contain additional packet
+ * extensions.
+ * </p>
  */
-public class Carbon {
-    public static final String NAMESPACE = "urn:xmpp:carbons:2";
+public abstract class SimpleIQ extends IQ {
 
-    public static class Enable extends SimpleIQ {
-        public static final String ELEMENT = "enable";
-
-        public Enable() {
-            super(ELEMENT, NAMESPACE);
-            setType(Type.set);
-        }
-
+    protected SimpleIQ(String childElementName, String childElementNamespace) {
+        super(childElementName, childElementNamespace);
     }
 
-    public static class Disable extends SimpleIQ {
-        public static final String ELEMENT = "disable";
-
-        public Disable() {
-            super(ELEMENT, NAMESPACE);
-            setType(Type.set);
-        }
-
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        xml.setEmptyElement();
+        return xml;
     }
+
 }

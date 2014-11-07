@@ -43,6 +43,10 @@ public class ChatMetadata extends IQ {
 
     private String sessionID;
 
+    public ChatMetadata() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
+
     public String getSessionID() {
         return sessionID;
     }
@@ -62,15 +66,12 @@ public class ChatMetadata extends IQ {
         return map;
     }
 
-
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
         buf.append("<sessionID>").append(getSessionID()).append("</sessionID>");
-        buf.append("</").append(ELEMENT_NAME).append("> ");
 
-        return buf.toString();
+        return buf;
     }
 
     /**

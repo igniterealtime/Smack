@@ -56,7 +56,7 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
  * @see <a href="http://xmpp.org/extensions/xep-0016.html">XEP-16: Privacy Lists</a>
  */
 public class PrivacyListManager extends Manager {
-    public static final String NAMESPACE = "jabber:iq:privacy";
+    public static final String NAMESPACE = Privacy.NAMESPACE;
 
     private static final PacketFilter PACKET_FILTER = new AndFilter(IQTypeFilter.SET,
                     new PacketExtensionFilter("query", NAMESPACE));

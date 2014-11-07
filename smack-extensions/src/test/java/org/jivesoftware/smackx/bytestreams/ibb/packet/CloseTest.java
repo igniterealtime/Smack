@@ -64,8 +64,8 @@ public class CloseTest {
     @Test
     public void shouldReturnValidIQStanzaXML() throws Exception {
         String control = XMLBuilder.create("iq")
-            .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
+            .a("from", "romeo@montague.lit/orchard")
             .a("id", "us71g45j")
             .a("type", "set")
             .e("close")

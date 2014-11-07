@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.pubsub.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
 
 /**
@@ -36,9 +35,11 @@ public class PubSub extends IQ
 	private PubSubNamespace ns = PubSubNamespace.BASIC;
 
 	public PubSub() {
+        super(ELEMENT, NAMESPACE);
 	}
 
 	public PubSub(String to, Type type) {
+        this();
         setTo(to);
         setType(type);
     }
@@ -119,11 +120,11 @@ public class PubSub extends IQ
      * 
      */
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(getElementName()).xmlnsAttribute(getNamespace()).rightAngleBracket();
-        xml.append(getExtensionsXML());
-        xml.closeElement(getElementName());
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        // N.B. We could use SimpleIQ here, but PubSub IQs will nearly *always* have packet extensions, which means that
+        // SimpleIQs xml.setEmptyElement() is counter-productive in this case and we use xml.rightAngleBracket()
+        // instead, as there are likely sub-elements to follow.
+        xml.rightAngleBracket();
         return xml;
     }
 

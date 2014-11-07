@@ -35,10 +35,15 @@ import java.util.List;
  */
 public class DiscoverItems extends IQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "http://jabber.org/protocol/disco#items";
 
     private final List<Item> items = new LinkedList<Item>();
     private String node;
+
+    public DiscoverItems() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * Adds a new item to the discovered information.
@@ -97,10 +102,8 @@ public class DiscoverItems extends IQ {
         this.node = node;
     }
 
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement("query");
-        xml.xmlnsAttribute(NAMESPACE);
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.optAttribute("node", getNode());
         xml.rightAngleBracket();
 
@@ -108,7 +111,6 @@ public class DiscoverItems extends IQ {
             xml.append(item.toXML());
         }
 
-        xml.closeElement("query");
         return xml;
     }
 

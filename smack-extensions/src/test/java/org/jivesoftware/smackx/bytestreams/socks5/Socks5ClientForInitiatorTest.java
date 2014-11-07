@@ -30,9 +30,10 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.EmptyResultIQ;
+import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 import org.jivesoftware.util.ConnectionUtils;
@@ -197,17 +198,9 @@ public class Socks5ClientForInitiatorTest {
 
         // build error response as reply to the stream activation
         XMPPError xmppError = new XMPPError(XMPPError.Condition.internal_server_error);
-        IQ error = new IQ() {
-
-            public String getChildElementXML() {
-                return null;
-            }
-
-        };
-        error.setType(Type.error);
+        IQ error = new ErrorIQ(xmppError);
         error.setFrom(proxyJID);
         error.setTo(initiatorJID);
-        error.setError(xmppError);
 
         protocol.addResponse(error, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET);
@@ -249,17 +242,10 @@ public class Socks5ClientForInitiatorTest {
     public void shouldSuccessfullyEstablishConnectionAndActivateSocks5Proxy() throws Exception {
 
         // build activation confirmation response
-        IQ activationResponse = new IQ() {
+        IQ activationResponse = new EmptyResultIQ();
 
-            @Override
-            public String getChildElementXML() {
-                return null;
-            }
-
-        };
         activationResponse.setFrom(proxyJID);
         activationResponse.setTo(initiatorJID);
-        activationResponse.setType(IQ.Type.result);
 
         protocol.addResponse(activationResponse, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET, new Verification<Bytestream, IQ>() {

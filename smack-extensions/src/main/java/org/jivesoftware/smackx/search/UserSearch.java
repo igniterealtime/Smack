@@ -24,9 +24,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -43,25 +43,16 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Derek DeMoro
  */
-public class UserSearch extends IQ {
+public class UserSearch extends SimpleIQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:search";
 
     /**
      * Creates a new instance of UserSearch.
      */
     public UserSearch() {
-    }
-
-    @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT);
-        xml.xmlnsAttribute(NAMESPACE);
-        xml.rightAngleBracket();
-        xml.append(getExtensionsXML());
-        xml.closeElement(IQ.QUERY_ELEMENT);
-        return xml;
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

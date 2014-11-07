@@ -60,21 +60,18 @@ public class GenericSettings extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
+    public GenericSettings() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.append(">");
         if (ModelUtil.hasLength(getQuery())) {
             buf.append("<query>" + getQuery() + "</query>");
         }
-        buf.append("</").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+        return buf;
     }
-
 
     /**
      * Packet extension provider for SoundSetting Packets.

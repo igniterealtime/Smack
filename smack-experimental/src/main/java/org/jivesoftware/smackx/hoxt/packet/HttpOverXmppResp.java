@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.hoxt.packet;
 
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.hoxt.HOXTManager;
 
 /**
  * Represents Resp IQ packet.
@@ -27,96 +26,63 @@ import org.jivesoftware.smackx.hoxt.HOXTManager;
  */
 public class HttpOverXmppResp extends AbstractHttpOverXmpp {
 
-    private Resp resp;
+    public static final String ELEMENT = "resp";
+
+
+    public HttpOverXmppResp() {
+        super(ELEMENT);
+    }
+
+    private int statusCode;
+    private String statusMessage = null;
 
     @Override
-    public String getChildElementXML() {
-        return resp.toXML();
+    protected IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder builder) {
+        builder.append(" ");
+        builder.append("version='").append(StringUtils.escapeForXML(version)).append("'");
+        builder.append(" ");
+        builder.append("statusCode='").append(Integer.toString(statusCode)).append("'");
+        if (statusMessage != null) {
+            builder.append(" ");
+            builder.append("statusMessage='").append(StringUtils.escapeForXML(statusMessage)).append("'");
+        }
+        builder.append(">");
+        return builder;
     }
 
     /**
-     * Returns Resp element.
+     * Returns statusCode attribute.
      *
-     * @return Resp element
+     * @return statusCode attribute
      */
-    public Resp getResp() {
-        return resp;
+    public int getStatusCode() {
+        return statusCode;
     }
 
     /**
-     * Sets Resp element.
+     * Sets statusCode attribute.
      *
-     * @param resp Resp element
+     * @param statusCode statusCode attribute
      */
-    public void setResp(Resp resp) {
-        this.resp = resp;
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     /**
-     * Represents Resp element.
+     * Returns statusMessage attribute.
+     *
+     * @return statusMessage attribute
      */
-    public static class Resp extends AbstractBody {
+    public String getStatusMessage() {
+        return statusMessage;
+    }
 
-        private int statusCode;
-        private String statusMessage = null;
-
-        @Override
-        protected String getStartTag() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<resp");
-            builder.append(" ");
-            builder.append("xmlns='").append(HOXTManager.NAMESPACE).append("'");
-            builder.append(" ");
-            builder.append("version='").append(StringUtils.escapeForXML(version)).append("'");
-            builder.append(" ");
-            builder.append("statusCode='").append(Integer.toString(statusCode)).append("'");
-            if (statusMessage != null) {
-                builder.append(" ");
-                builder.append("statusMessage='").append(StringUtils.escapeForXML(statusMessage)).append("'");
-            }
-            builder.append(">");
-            return builder.toString();
-        }
-
-        @Override
-        protected String getEndTag() {
-            return "</resp>";
-        }
-
-        /**
-         * Returns statusCode attribute.
-         *
-         * @return statusCode attribute
-         */
-        public int getStatusCode() {
-            return statusCode;
-        }
-
-        /**
-         * Sets statusCode attribute.
-         *
-         * @param statusCode statusCode attribute
-         */
-        public void setStatusCode(int statusCode) {
-            this.statusCode = statusCode;
-        }
-
-        /**
-         * Returns statusMessage attribute.
-         *
-         * @return statusMessage attribute
-         */
-        public String getStatusMessage() {
-            return statusMessage;
-        }
-
-        /**
-         * Sets statusMessage attribute.
-         *
-         * @param statusMessage statusMessage attribute
-         */
-        public void setStatusMessage(String statusMessage) {
-            this.statusMessage = statusMessage;
-        }
+    /**
+     * Sets statusMessage attribute.
+     *
+     * @param statusMessage statusMessage attribute
+     */
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 }

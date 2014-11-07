@@ -49,11 +49,23 @@ public class ChatSettings extends IQ {
     private String key;
     private int type = -1;
 
+    /**
+     * Element name of the packet extension.
+     */
+    public static final String ELEMENT_NAME = "chat-settings";
+
+    /**
+     * Namespace of the packet extension.
+     */
+    public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
+
     public ChatSettings() {
+        super(ELEMENT_NAME, NAMESPACE);
         settings = new ArrayList<ChatSetting>();
     }
 
     public ChatSettings(String key) {
+        this();
         setKey(key);
     }
 
@@ -94,24 +106,8 @@ public class ChatSettings extends IQ {
         return null;
     }
 
-
-    /**
-     * Element name of the packet extension.
-     */
-    public static final String ELEMENT_NAME = "chat-settings";
-
-    /**
-     * Namespace of the packet extension.
-     */
-    public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
-
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         if (key != null) {
             buf.append(" key=\"" + key + "\"");
         }
@@ -119,9 +115,8 @@ public class ChatSettings extends IQ {
         if (type != -1) {
             buf.append(" type=\"" + type + "\"");
         }
-
-        buf.append("></").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+        buf.setEmptyElement();
+        return buf;
     }
 
     /**

@@ -66,7 +66,7 @@ public class Jingle extends IQ {
      */
     public Jingle(final List<JingleContent> contents, final JingleContentInfo mi,
                   final String sid) {
-        super();
+        this();
 
         if (contents != null) {
             contents.addAll(contents);
@@ -87,7 +87,7 @@ public class Jingle extends IQ {
      * @param content a content
      */
     public Jingle(final JingleContent content) {
-        super();
+        this();
 
         addContent(content);
 
@@ -106,7 +106,7 @@ public class Jingle extends IQ {
      * @param info The content info
      */
     public Jingle(final JingleContentInfo info) {
-        super();
+        this();
 
         setContentInfo(info);
 
@@ -146,7 +146,7 @@ public class Jingle extends IQ {
      * The default constructor
      */
     public Jingle() {
-        super();
+        super(NODENAME, NAMESPACE);
     }
 
     /**
@@ -338,11 +338,7 @@ public class Jingle extends IQ {
      *
      * @return the XML string
      */
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(getElementName());
-        buf.append(" xmlns=\"").append(getNamespace()).append("\"");
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         if (getInitiator() != null) {
             buf.append(" initiator=\"").append(getInitiator()).append("\"");
         }
@@ -350,7 +346,7 @@ public class Jingle extends IQ {
             buf.append(" responder=\"").append(getResponder()).append("\"");
         }
         if (getAction() != null) {
-            buf.append(" action=\"").append(getAction()).append("\"");
+            buf.append(" action=\"").append(getAction().name()).append("\"");
         }
         if (getSid() != null) {
             buf.append(" sid=\"").append(getSid()).append("\"");
@@ -368,7 +364,6 @@ public class Jingle extends IQ {
             buf.append(contentInfo.toXML());
         }
 
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+        return buf;
     }
 }

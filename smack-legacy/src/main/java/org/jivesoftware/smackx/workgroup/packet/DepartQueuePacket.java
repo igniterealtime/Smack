@@ -34,6 +34,10 @@ public class DepartQueuePacket extends IQ {
 
     private String user;
 
+    private DepartQueuePacket() {
+        super("depart-queue", "http://jabber.org/protocol/workgroup");
+    }
+
     /**
      * Creates a depart queue request packet to the specified workgroup.
      *
@@ -51,6 +55,7 @@ public class DepartQueuePacket extends IQ {
      * @param user the user to make depart from the queue.
      */
     public DepartQueuePacket(String workgroup, String user) {
+        this();
         this.user = user;
 
         setTo(workgroup);
@@ -58,16 +63,14 @@ public class DepartQueuePacket extends IQ {
         setFrom(user);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder("<depart-queue xmlns=\"http://jabber.org/protocol/workgroup\"");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
 
         if (this.user != null) {
-            buf.append("><jid>").append(this.user).append("</jid></depart-queue>");
-        }
-        else {
-            buf.append("/>");
+            buf.append("<jid>").append(this.user).append("</jid>");
         }
 
-        return buf.toString();
+        return buf;
     }
 }

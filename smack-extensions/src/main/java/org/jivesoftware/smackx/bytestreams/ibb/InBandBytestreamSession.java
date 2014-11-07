@@ -33,7 +33,6 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
@@ -450,9 +449,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
                 public void processPacket(Packet packet) throws NotConnectedException {
                     // get data packet extension
-                    DataPacketExtension data = (DataPacketExtension) packet.getExtension(
-                                    DataPacketExtension.ELEMENT,
-                                    DataPacketExtension.NAMESPACE);
+                    DataPacketExtension data = ((Data) packet).getDataPacketExtension();
 
                     /*
                      * check if sequence was not used already (see XEP-0047 Section 2.2)
@@ -562,15 +559,20 @@ public class InBandBytestreamSession implements BytestreamSession {
                 return false;
             }
 
-            // stanza contains data packet extension
-            PacketExtension packetExtension = packet.getExtension(DataPacketExtension.ELEMENT,
-                            DataPacketExtension.NAMESPACE);
-            if (packetExtension == null || !(packetExtension instanceof DataPacketExtension)) {
-                return false;
+            DataPacketExtension data;
+            if (packet instanceof Data) {
+                data = ((Data) packet).getDataPacketExtension();
+            } else {
+                // stanza contains data packet extension
+                data = packet.getExtension(
+                        DataPacketExtension.ELEMENT,
+                        DataPacketExtension.NAMESPACE);
+                if (data == null) {
+                    return false;
+                }
             }
 
             // session ID equals this session ID
-            DataPacketExtension data = (DataPacketExtension) packetExtension;
             if (!data.getSessionID().equals(byteStreamRequest.getSessionID())) {
                 return false;
             }

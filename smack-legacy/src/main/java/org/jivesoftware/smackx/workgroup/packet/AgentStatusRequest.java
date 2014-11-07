@@ -50,6 +50,7 @@ public class AgentStatusRequest extends IQ {
     private Set<Item> agents;
 
     public AgentStatusRequest() {
+        super(ELEMENT_NAME, NAMESPACE);
         agents = new HashSet<Item>();
     }
 
@@ -69,9 +70,9 @@ public class AgentStatusRequest extends IQ {
         return NAMESPACE;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
         synchronized (agents) {
             for (Iterator<Item> i=agents.iterator(); i.hasNext(); ) {
                 Item item = (Item) i.next();
@@ -84,8 +85,7 @@ public class AgentStatusRequest extends IQ {
                 buf.append("</agent>");
             }
         }
-        buf.append("</").append(this.getElementName()).append("> ");
-        return buf.toString();
+        return buf;
     }
 
     public static class Item {

@@ -383,9 +383,21 @@ public abstract class Packet extends TopLevelStreamElement {
      * @param xml
      */
     protected void addCommonAttributes(XmlStringBuilder xml) {
-        xml.optAttribute("id", getPacketID());
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
+        xml.optAttribute("id", getPacketID());
         xml.xmllangAttribute(getLanguage());
+    }
+
+    /**
+     * Append an XMPPError is this packet has one set.
+     *
+     * @param xml the XmlStringBuilder to append the error to.
+     */
+    protected void appendErrorIfExists(XmlStringBuilder xml) {
+        XMPPError error = getError();
+        if (error != null) {
+            xml.append(error.toXML());
+        }
     }
 }

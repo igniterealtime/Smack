@@ -35,9 +35,16 @@ import java.util.List;
  */
 public class OfflineMessageRequest extends IQ {
 
+    public static final String ELEMENT = "offline";
+    public static final String NAMESPACE = "http://jabber.org/protocol/offline";
+
     private List<Item> items = new ArrayList<Item>();
     private boolean purge = false;
     private boolean fetch = false;
+
+    public OfflineMessageRequest() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * Returns a List of item childs that holds information about offline messages to
@@ -99,9 +106,10 @@ public class OfflineMessageRequest extends IQ {
         this.fetch = fetch;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<offline xmlns=\"http://jabber.org/protocol/offline\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
+
         synchronized (items) {
             for (int i = 0; i < items.size(); i++) {
                 Item item = items.get(i);
@@ -114,10 +122,8 @@ public class OfflineMessageRequest extends IQ {
         if (fetch) {
             buf.append("<fetch/>");
         }
-        // Add packet extensions, if any are defined.
-        buf.append(getExtensionsXML());
-        buf.append("</offline>");
-        return buf.toString();
+
+        return buf;
     }
 
     /**

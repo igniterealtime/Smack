@@ -32,17 +32,9 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOverXmppReq> {
 
-    private static final String ELEMENT_REQ = "req";
-
     private static final String ATTRIBUTE_METHOD = "method";
     private static final String ATTRIBUTE_RESOURCE = "resource";
     private static final String ATTRIBUTE_MAX_CHUNK_SIZE = "maxChunkSize";
-
-    /**
-     * Mandatory no argument constructor.
-     */
-    public HttpOverXmppReqProvider() {
-    }
 
     @Override
     public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth)
@@ -53,7 +45,7 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
         String maxChunkSize = parser.getAttributeValue("", ATTRIBUTE_MAX_CHUNK_SIZE);
 
         HttpMethod reqMethod = HttpMethod.valueOf(method);
-        HttpOverXmppReq.Req req = new HttpOverXmppReq.Req(reqMethod, resource);
+        HttpOverXmppReq req = new HttpOverXmppReq(reqMethod, resource);
         req.setVersion(version);
 
         Boolean sipub = true;
@@ -83,9 +75,7 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
             req.setMaxChunkSize(maxChunkSizeValue);
         }
 
-        parseHeadersAndData(parser, ELEMENT_REQ, req);
-        HttpOverXmppReq packet = new HttpOverXmppReq();
-        packet.setReq(req);
-        return packet;
+        parseHeadersAndData(parser, HttpOverXmppReq.ELEMENT, req);
+        return req;
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.socks5;
 
+import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -100,17 +101,9 @@ public class Socks5PacketUtils {
      * @return response IQ for a activation request to the proxy
      */
     public static IQ createActivationConfirmation(String from, String to) {
-        IQ response = new IQ() {
-
-            @Override
-            public String getChildElementXML() {
-                return null;
-            }
-
-        };
+        IQ response = new EmptyResultIQ();
         response.setFrom(from);
         response.setTo(to);
-        response.setType(IQ.Type.result);
         return response;
     }
 

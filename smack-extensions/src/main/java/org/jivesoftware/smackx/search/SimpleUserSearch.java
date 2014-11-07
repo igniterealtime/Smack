@@ -35,8 +35,15 @@ import java.util.List;
  */
 class SimpleUserSearch extends IQ {
 
+    public static final String ELEMENT = UserSearch.ELEMENT;
+    public static final String NAMESPACE = UserSearch.NAMESPACE;
+
     private Form form;
     private ReportedData data;
+
+    public SimpleUserSearch() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     public void setForm(Form form) {
         this.form = form;
@@ -46,13 +53,11 @@ class SimpleUserSearch extends IQ {
         return data;
     }
 
-
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"jabber:iq:search\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
         buf.append(getItemsToSearch());
-        buf.append("</query>");
-        return buf.toString();
+        return buf;
     }
 
     private String getItemsToSearch() {

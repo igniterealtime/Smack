@@ -40,6 +40,10 @@ public class AgentWorkgroups extends IQ {
     private String agentJID;
     private List<String> workgroups;
 
+    private AgentWorkgroups() {
+        super("workgroups", "http://jabber.org/protocol/workgroup");
+    }
+
     /**
      * Creates an AgentWorkgroups request for the given agent. This IQ will be sent and an answer
      * will be received with the jid of the workgroups where the agent can work.
@@ -47,6 +51,7 @@ public class AgentWorkgroups extends IQ {
      * @param agentJID the id of the agent to get his workgroups.
      */
     public AgentWorkgroups(String agentJID) {
+        this();
         this.agentJID = agentJID;
         this.workgroups = new ArrayList<String>();
     }
@@ -59,6 +64,7 @@ public class AgentWorkgroups extends IQ {
      * @param workgroups the list of workgroup JIDs where the agent can work.
      */
     public AgentWorkgroups(String agentJID, List<String> workgroups) {
+        this();
         this.agentJID = agentJID;
         this.workgroups = workgroups;
     }
@@ -76,21 +82,16 @@ public class AgentWorkgroups extends IQ {
         return Collections.unmodifiableList(workgroups);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<workgroups xmlns=\"http://jabber.org/protocol/workgroup\" jid=\"")
-                .append(agentJID)
-                .append("\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.attribute("jid", agentJID).rightAngleBracket();
 
         for (Iterator<String> it=workgroups.iterator(); it.hasNext();) {
             String workgroupJID = it.next();
             buf.append("<workgroup jid=\"" + workgroupJID + "\"/>");
         }
 
-        buf.append("</workgroups>");
-
-        return buf.toString();
+        return buf;
     }
 
     /**

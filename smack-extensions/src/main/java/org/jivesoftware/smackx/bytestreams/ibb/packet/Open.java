@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 import java.util.Locale;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 
 /**
@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaTyp
 public class Open extends IQ {
 
     public static final String ELEMENT = "open";
+    public static final String NAMESPACE = DataPacketExtension.NAMESPACE;
 
     /* unique session ID identifying this In-Band Bytestream */
     private final String sessionID;
@@ -54,6 +55,7 @@ public class Open extends IQ {
      * @param stanza stanza type used to encapsulate the data
      */
     public Open(String sessionID, int blockSize, StanzaType stanza) {
+        super(ELEMENT, NAMESPACE);
         if (sessionID == null || "".equals(sessionID)) {
             throw new IllegalArgumentException("Session ID must not be null or empty");
         }
@@ -111,14 +113,11 @@ public class Open extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(ELEMENT);
-        xml.xmlnsAttribute(DataPacketExtension.NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.attribute("block-size", Integer.toString(blockSize));
         xml.attribute("sid", sessionID);
         xml.attribute("stanza", stanza.toString().toLowerCase(Locale.US));
-        xml.closeEmptyElement();
+        xml.setEmptyElement();
         return xml;
     }
 

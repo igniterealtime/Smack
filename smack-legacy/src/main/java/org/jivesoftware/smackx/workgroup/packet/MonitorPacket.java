@@ -55,27 +55,19 @@ public class MonitorPacket extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getElementName() {
-        return ELEMENT_NAME;
+    public MonitorPacket() {
+        super(ELEMENT_NAME, NAMESPACE);
     }
 
-    public String getNamespace() {
-        return NAMESPACE;
-    }
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
-        buf.append(">");
         if (sessionID != null) {
             buf.append("<makeOwner sessionID=\""+sessionID+"\"></makeOwner>");
         }
-        buf.append("</").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+
+        return buf;
     }
 
 

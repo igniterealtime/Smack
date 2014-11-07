@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -135,13 +136,16 @@ public class DataPacketExtension implements PacketExtension {
 
     @Override
     public XmlStringBuilder toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.attribute("seq", Long.toString(seq));
-        xml.attribute("sid", sessionID);
-        xml.rightAngleBracket();
-        xml.append(data);
+        XmlStringBuilder xml = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
         xml.closeElement(this);
         return xml;
     }
 
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        xml.attribute("seq", Long.toString(seq));
+        xml.attribute("sid", sessionID);
+        xml.rightAngleBracket();
+        xml.append(data);
+        return xml;
+    }
 }

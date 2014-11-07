@@ -20,13 +20,13 @@ package org.jivesoftware.smackx.workgroup.ext.forms;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class WorkgroupForm extends IQ {
+public class WorkgroupForm extends SimpleIQ {
 
     /**
      * Element name of the packet extension.
@@ -38,15 +38,8 @@ public class WorkgroupForm extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
-        // Add packet extensions, if any are defined.
-        buf.append(getExtensionsXML());
-        buf.append("</").append(ELEMENT_NAME).append("> ");
-
-        return buf.toString();
+    public WorkgroupForm() {
+        super(ELEMENT_NAME, NAMESPACE);
     }
 
     /**

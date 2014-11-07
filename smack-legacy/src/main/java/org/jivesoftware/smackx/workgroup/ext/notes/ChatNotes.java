@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -40,6 +39,9 @@ public class ChatNotes extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
+    public ChatNotes() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
 
     private String sessionID;
     private String notes;
@@ -60,18 +62,17 @@ public class ChatNotes extends IQ {
         this.notes = notes;
     }
 
-    public String getChildElementXML() {
-        XmlStringBuilder buf = new XmlStringBuilder();
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
         buf.append("<sessionID>").append(getSessionID()).append("</sessionID>");
 
         if (getNotes() != null) {
             buf.element("notes", getNotes());
         }
-        buf.append("</").append(ELEMENT_NAME).append("> ");
 
-        return buf.toString();
+        return buf;
     }
 
     /**

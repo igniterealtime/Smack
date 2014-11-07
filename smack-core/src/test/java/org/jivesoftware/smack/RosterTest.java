@@ -655,14 +655,7 @@ public class RosterTest {
                         connection.processPacket(rosterPush);
 
                         // Create and process the IQ response
-                        final IQ response = new IQ() {
-                            public String getChildElementXML() {
-                                return null;
-                            }
-                        };
-                        response.setPacketID(rosterRequest.getPacketID());
-                        response.setType(Type.result);
-                        response.setTo(connection.getUser());
+                        final IQ response = IQ.createResultIQ(rosterRequest);
                         connection.processPacket(response);
 
                         // Verify the roster update request

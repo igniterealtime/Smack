@@ -43,6 +43,7 @@ public class Time extends IQ {
     private String tzo;
 
     public Time() {
+        super(ELEMENT, NAMESPACE);
         setType(Type.get);
     }
 
@@ -53,6 +54,7 @@ public class Time extends IQ {
      * @param cal the time value.
      */
     public Time(Calendar cal) {
+        super(ELEMENT, NAMESPACE);
         tzo = XmppDateTime.asString(cal.getTimeZone());
         // Convert local time to the UTC time.
         utc = XmppDateTime.formatXEP0082Date(cal.getTime());
@@ -128,14 +130,17 @@ public class Time extends IQ {
         return time;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<" + ELEMENT +  " xmlns='" + NAMESPACE + "'>");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
+
         if (utc != null) {
             buf.append("<utc>").append(utc).append("</utc>");
             buf.append("<tzo>").append(tzo).append("</tzo>");
+        } else {
+            buf.setEmptyElement();
         }
-        buf.append("</" + ELEMENT + ">");
-        return buf.toString();
+
+        return buf;
     }
 }

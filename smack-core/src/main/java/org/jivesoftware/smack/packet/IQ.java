@@ -43,16 +43,27 @@ public abstract class IQ extends Packet {
     public static final String ELEMENT = "iq";
     public static final String QUERY_ELEMENT = "query";
 
-    private Type type = Type.get;
+    private final String childElementName;
+    private final String childElementNamespace;
 
-    public IQ() {
-        super();
-    }
+    protected Type type = Type.get;
 
     public IQ(IQ iq) {
         super(iq);
         type = iq.getType();
+        this.childElementName = iq.childElementName;
+        this.childElementNamespace = iq.childElementNamespace;
     }
+
+    protected IQ(String childElementName) {
+        this(childElementName, null);
+    }
+
+    protected IQ(String childElementName, String childElementNamespace) {
+        this.childElementName = childElementName;
+        this.childElementNamespace = childElementNamespace;
+    }
+
     /**
      * Returns the type of the IQ packet.
      *
@@ -76,8 +87,16 @@ public abstract class IQ extends Packet {
         }
     }
 
+    public final String getChildElementName() {
+        return childElementName;
+    }
+
+    public final String getChildElementNamespace() {
+        return childElementNamespace;
+    }
+
     @Override
-    public CharSequence toXML() {
+    public final XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);
@@ -88,26 +107,84 @@ public abstract class IQ extends Packet {
             buf.attribute("type", type.toString());
         }
         buf.rightAngleBracket();
-        // Add the query section if there is one.
-        buf.optAppend(getChildElementXML());
-        // Add the error sub-packet, if there is one.
-        XMPPError error = getError();
-        if (error != null) {
-            buf.append(error.toXML());
-        }
+        buf.append(getChildElementXML());
         buf.closeElement(ELEMENT);
         return buf;
     }
 
     /**
-     * Returns the sub-element XML section of the IQ packet, or <tt>null</tt> if there
-     * isn't one. Packet extensions <b>must</b> be included, if any are defined.<p>
-     *
-     * Extensions of this class must override this method.
+     * Returns the sub-element XML section of the IQ packet, or the empty String if there
+     * isn't one.
      *
      * @return the child element section of the IQ XML.
      */
-    public abstract CharSequence getChildElementXML();
+    public final XmlStringBuilder getChildElementXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        if (type == Type.error) {
+            // Add the error sub-packet, if there is one.
+            appendErrorIfExists(xml);
+        }
+        else if (childElementName != null) {
+            // Add the query section if there is one.
+            IQChildElementXmlStringBuilder iqChildElement = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
+            if (iqChildElement != null) {
+                xml.append(iqChildElement);
+                XmlStringBuilder extensionsXml = getExtensionsXML();
+                if (iqChildElement.isEmptyElement) {
+                    if (extensionsXml.length() == 0) {
+                         xml.closeEmptyElement();
+                         return xml;
+                    } else {
+                        xml.rightAngleBracket();
+                    }
+                }
+                xml.append(extensionsXml);
+                xml.closeElement(iqChildElement.element);
+            }
+        }
+        return xml;
+    }
+
+    /**
+     * This method must be overwritten by IQ subclasses to create their child content. It is important that the builder
+     * <b>does not include the final end element</b>. This will be done automatically by IQChildelementXmlStringBuilder
+     * after eventual existing packet extensions have been added.
+     * <p>
+     * For example to create an IQ with a extra attribute and an additional child element
+     * </p>
+     * <pre>
+     * {@code
+     * <iq to='foo@example.org' id='123'>
+     *   <bar xmlns='example:bar' extraAttribute='blaz'>
+     *      <extraElement>elementText</extraElement>
+     *   </bar>
+     * </iq>
+     * }
+     * </pre>
+     * the body of the {@code getIQChildElementBuilder} looks like
+     * <pre>
+     * {@code
+     * // The builder 'xml' will already have the child element and the 'xmlns' attribute added
+     * // So the current builder state is "<bar xmlns='example:bar'"
+     * xml.attribute("extraAttribute", "blaz");
+     * xml.rightAngleBracket();
+     * xml.element("extraElement", "elementText");
+     * // Do not close the 'bar' attribute by calling xml.closeElement('bar')
+     * }
+     * </pre>
+     * If your IQ only contains attributes and no child elements, i.e. it can be represented as empty element, then you
+     * can mark it as such.
+     * <pre>
+     * xml.attribute(&quot;myAttribute&quot;, &quot;myAttributeValue&quot;);
+     * xml.setEmptyElement();
+     * </pre>
+     * If your IQ does not contain any attributes or child elements (besides packet extensions), consider sub-classing
+     * {@link SimpleIQ} instead.
+     * 
+     * @param xml a pre-created builder which already has the child element and the 'xmlns' attribute set.
+     * @return the build to create the IQ child content.
+     */
+    protected abstract IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml);
 
     /**
      * Convenience method to create a new empty {@link Type#result IQ.Type.result}
@@ -126,20 +203,7 @@ public abstract class IQ extends Packet {
      * @return a new {@link Type#result IQ.Type.result} IQ based on the originating IQ.
      */
     public static IQ createResultIQ(final IQ request) {
-        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
-            throw new IllegalArgumentException(
-                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
-        }
-        final IQ result = new IQ() {
-            public String getChildElementXML() {
-                return null;
-            }
-        };
-        result.setType(Type.result);
-        result.setPacketID(request.getPacketID());
-        result.setFrom(request.getTo());
-        result.setTo(request.getFrom());
-        return result;
+        return new EmptyResultIQ(request);
     }
 
     /**
@@ -165,17 +229,10 @@ public abstract class IQ extends Packet {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
-        final IQ result = new IQ() {
-            @Override
-            public CharSequence getChildElementXML() {
-                return request.getChildElementXML();
-            }
-        };
-        result.setType(Type.error);
+        final IQ result = new ErrorIQ(error);
         result.setPacketID(request.getPacketID());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
-        result.setError(error);
         return result;
     }
 
@@ -207,6 +264,29 @@ public abstract class IQ extends Packet {
          */
         public static Type fromString(String string) {
             return Type.valueOf(string.toLowerCase(Locale.US));
+        }
+    }
+
+    public static class IQChildElementXmlStringBuilder extends XmlStringBuilder {
+        private final String element;
+
+        private boolean isEmptyElement;
+
+        private IQChildElementXmlStringBuilder(IQ iq) {
+            this(iq.getChildElementName(), iq.getChildElementNamespace());
+        }
+
+        public IQChildElementXmlStringBuilder(PacketExtension pe) {
+            this(pe.getElementName(), pe.getNamespace());
+        }
+
+        private IQChildElementXmlStringBuilder(String element, String namespace) {
+            prelude(element, namespace);
+            this.element = element;
+        }
+
+        public void setEmptyElement() {
+            isEmptyElement = true;
         }
     }
 }

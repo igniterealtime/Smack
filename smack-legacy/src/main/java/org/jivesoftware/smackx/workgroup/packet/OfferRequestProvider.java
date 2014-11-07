@@ -122,6 +122,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
         public OfferRequestPacket(String userJID, String userID, int timeout, Map<String, List<String>> metaData,
                 String sessionID, OfferContent content)
         {
+            super("offer", "http://jabber.org/protocol/workgroup");
             this.userJID = userJID;
             this.userID = userID;
             this.timeout = timeout;
@@ -182,11 +183,10 @@ public class OfferRequestProvider extends IQProvider<IQ> {
             return this.metaData;
         }
 
-        public String getChildElementXML () {
-            StringBuilder buf = new StringBuilder();
-
-            buf.append("<offer xmlns=\"http://jabber.org/protocol/workgroup\" jid=\"").append(userJID).append("\">");
-            buf.append("<timeout>").append(timeout).append("</timeout>");
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+            buf.append(" jid=\"").append(userJID).append("\">");
+            buf.append("<timeout>").append(Integer.toString(timeout)).append("</timeout>");
 
             if (sessionID != null) {
                 buf.append('<').append(SessionID.ELEMENT_NAME);
@@ -206,9 +206,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
                 buf.append(UserID.NAMESPACE).append("\"/>");
             }
 
-            buf.append("</offer>");
-
-            return buf.toString();
+            return buf;
         }
     }
 }

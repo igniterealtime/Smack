@@ -19,13 +19,13 @@ package org.jivesoftware.smackx.workgroup.settings;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class SoundSettings extends IQ {
+public class SoundSettings extends SimpleIQ {
     private String outgoingSound;
     private String incomingSound;
 
@@ -57,17 +57,9 @@ public class SoundSettings extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
-        buf.append("></").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+    public SoundSettings() {
+        super(ELEMENT_NAME, NAMESPACE);
     }
-
 
     /**
      * Packet extension provider for SoundSetting Packets.

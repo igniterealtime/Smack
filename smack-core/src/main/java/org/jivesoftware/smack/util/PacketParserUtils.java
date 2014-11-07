@@ -32,6 +32,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
+import org.jivesoftware.smack.packet.EmptyResultIQ;
+import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
@@ -634,10 +636,12 @@ public class PacketParserUtils {
                         }
                         // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
                         // have to be answered with an IQ error response. See the code a few lines below
+                        // Note that if we reach this code, it is guranteed that the result IQ contained a child element
+                        // (RFC 6120 § 8.2.3 6) because otherwhise we would have reached the END_TAG first.
                         else if (IQ.Type.result == type){
                             // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
                             // so that the content of the IQ can be examined later on
-                            iqPacket = new UnparsedResultIQ(parseElement(parser));
+                            iqPacket = new UnparsedResultIQ(elementName, namespace, parseElement(parser));
                         }
                     }
                     break;
@@ -652,32 +656,28 @@ public class PacketParserUtils {
         }
         // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
-            if (connection != null && (IQ.Type.get == type || IQ.Type.set == type)) {
+            switch (type) {
+            case get:
+            case set:
+                if (connection == null) {
+                    return null;
+                }
                 // If the IQ stanza is of type "get" or "set" containing a child element qualified
                 // by a namespace with no registered Smack provider, then answer an IQ of type
                 // "error" with code 501 ("feature-not-implemented")
-                iqPacket = new IQ() {
-                    @Override
-                    public String getChildElementXML() {
-                        return null;
-                    }
-                };
+                iqPacket = new ErrorIQ(new XMPPError(XMPPError.Condition.feature_not_implemented));
                 iqPacket.setPacketID(id);
                 iqPacket.setTo(from);
                 iqPacket.setFrom(to);
-                iqPacket.setType(IQ.Type.error);
-                iqPacket.setError(new XMPPError(XMPPError.Condition.feature_not_implemented));
                 connection.sendPacket(iqPacket);
                 return null;
-            }
-            else {
-                // If an IQ packet wasn't created above, create an empty IQ packet.
-                iqPacket = new IQ() {
-                    @Override
-                    public String getChildElementXML() {
-                        return null;
-                    }
-                };
+            case error:
+                // If an IQ packet wasn't created above, create an empty error IQ packet.
+                iqPacket = new ErrorIQ(error);
+                break;
+            case result:
+                iqPacket = new EmptyResultIQ();
+                break;
             }
         }
 
@@ -1077,15 +1077,20 @@ public class PacketParserUtils {
      *
      */
     public static class UnparsedResultIQ extends IQ {
-        public UnparsedResultIQ(CharSequence content) {
+        private UnparsedResultIQ(String element, String namespace, CharSequence content) {
+            super(element, namespace);
             this.content = content;
         }
 
         private final CharSequence content;
 
+        public CharSequence getContent() {
+            return content;
+        }
+
         @Override
-        public CharSequence getChildElementXML() {
-            return this.content;
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+            throw new UnsupportedOperationException();
         }
     }
 }

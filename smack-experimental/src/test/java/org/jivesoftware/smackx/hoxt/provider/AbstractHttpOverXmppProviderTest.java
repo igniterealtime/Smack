@@ -57,7 +57,7 @@ public class AbstractHttpOverXmppProviderTest {
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
-        AbstractHttpOverXmpp.AbstractBody body = ((HttpOverXmppResp) iq).getResp();
+        HttpOverXmppResp body = ((HttpOverXmppResp) iq);
 
         checkHeaders(body.getHeaders(), expectedHeaders);
     }
@@ -77,7 +77,7 @@ public class AbstractHttpOverXmppProviderTest {
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
-        AbstractHttpOverXmpp.AbstractBody body = ((HttpOverXmppReq) iq).getReq();
+        HttpOverXmppReq body = ((HttpOverXmppReq) iq);
 
         checkHeaders(body.getHeaders(), expectedHeaders);
     }
@@ -180,14 +180,14 @@ public class AbstractHttpOverXmppProviderTest {
         assertEquals(sid, ibbValue.getSid());
     }
 
-    private AbstractHttpOverXmpp.AbstractBody parseAbstractBody(String string, String tag) throws Exception {
+    // TODO The method name makes no sense after the HOXT re-design, change to parseHttpOverXmppResp()
+    private HttpOverXmppResp parseAbstractBody(String string, String tag) throws Exception {
         HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string, tag);
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
-        AbstractHttpOverXmpp.AbstractBody body = ((HttpOverXmppResp) iq).getResp();
-        return body;
+        return (HttpOverXmppResp) iq;
     }
 
     private void checkHeaders(HeadersExtension headers, Map<String, String> expectedHeaders) {

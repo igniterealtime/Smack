@@ -65,13 +65,11 @@ In this example we are HTTP client, so we send request (POST) and handle the
 response:
 
 ```
-// register listener for IQ packets
-connection.addPacketListener(new IqPacketListener(), new PacketTypeFilter(IQ.class));
 // create a request body
 String urlEncodedMessage = "I_love_you";
 
 // create request
-HttpOverXmppReq.Req req = new HttpOverXmppReq.Req(HttpMethod.POST, "/mailbox");
+HttpOverXmppReq req = new HttpOverXmppReq(HttpMethod.POST, "/mailbox");
 req.setVersion("1.1");
 
 // prepare headers
@@ -86,52 +84,25 @@ AbstractHttpOverXmpp.Text child = new AbstractHttpOverXmpp.Text(urlEncodedMessag
 AbstractHttpOverXmpp.Data data = new AbstractHttpOverXmpp.Data(child);
 req.setData(data);
 
-// create IQ packet
-HttpOverXmppReq packet = new HttpOverXmppReq();
-packet.setReq(req);
-packet.setTo("juliet@capulet.com/balcony");
-packet.setType(IQ.Type.SET);
-packet.setPacketID("42");
+// add to
+req.setTo("juliet@capulet.com/balcony");
 
 // send it
-connection.sendPacket(packet);
-
-
-// then in your PacketListener
-private class IqPacketListener implements PacketListener {
-
-	@Override
-	public void processPacket(Packet packet) {
-	IQ iq = (IQ) packet;
-
-	// verify from and packed ID
-	if (iq.getFrom().equals("juliet@capulet.com/balcony") && (iq.getPacketID().equals("42"))) {
-
-		// ensure it's not ERROR
-		if (iq.getType().equals(IQ.Type.RESULT)) {
-
-			// check if correct IQ implementation arrived
-			if (iq instanceof HttpOverXmppResp) {
-				HttpOverXmppResp resp = (HttpOverXmppResp) iq;
-
-				// check HTTP response code
-				if (resp.getResp().getStatusCode() == 200) {
-
-					// get content of the response
-					AbstractHttpOverXmpp.DataChild child = resp.getResp().getData().getChild();
-
-					// check which type of content of the response arrived
-					if (child instanceof AbstractHttpOverXmpp.Xml) {
-
-						// print the message and anxiously read if from console ;)
-						System.out.println(((AbstractHttpOverXmpp.Xml) child).getText());
-					} else {
-						// process other AbstractHttpOverXmpp.DataChild subtypes
-					}
-				}
+connection.sendIqWithResponseCallback(req, new PacketListener() {
+   public void processPacket(Packet packet) {
+		HttpOverXmppResp resp = (HttpOverXmppResp) iq;
+		// check HTTP response code
+		if (resp.getStatusCode() == 200) {
+			// get content of the response
+			NamedElement child = resp.getData().getChild();
+			// check which type of content of the response arrived
+			if (child instanceof AbstractHttpOverXmpp.Xml) {
+				// print the message and anxiously read if from console ;)
+				System.out.println(((AbstractHttpOverXmpp.Xml) child).getText());
+			} else {
+				// process other AbstractHttpOverXmpp.DataChild subtypes
 			}
 		}
 	}
-}
-}
+});
 ```

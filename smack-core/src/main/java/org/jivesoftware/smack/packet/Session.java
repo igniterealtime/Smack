@@ -30,7 +30,7 @@ package org.jivesoftware.smack.packet;
  *
  * @author Gaston Dombiak
  */
-public class Session extends IQ {
+public class Session extends SimpleIQ {
 
     public static final String ELEMENT = "session";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-session";
@@ -38,12 +38,8 @@ public class Session extends IQ {
     private static final String SESSION = '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
 
     public Session() {
+        super(ELEMENT, NAMESPACE);
         setType(IQ.Type.set);
-    }
-
-    @Override
-    public String getChildElementXML() {
-        return SESSION;
     }
 
     public static class Feature implements PacketExtension {

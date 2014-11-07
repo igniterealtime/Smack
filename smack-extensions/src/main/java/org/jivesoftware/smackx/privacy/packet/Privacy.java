@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.privacy.PrivacyListManager;
 
 /**
  * A Privacy IQ Packet, is used by the {@link org.jivesoftware.smackx.privacy.PrivacyListManager}
@@ -43,6 +42,9 @@ import org.jivesoftware.smackx.privacy.PrivacyListManager;
  * @author Francisco Vives
  */
 public class Privacy extends IQ {
+    public static final String ELEMENT = QUERY_ELEMENT;
+    public static final String NAMESPACE = "jabber:iq:privacy";
+
 	/** declineActiveList is true when the user declines the use of the active list **/
 	private boolean declineActiveList=false;
 	/** activeName is the name associated with the active list set for the session **/
@@ -54,6 +56,10 @@ public class Privacy extends IQ {
 	/** itemLists holds the set of privacy items classified in lists. It is a map where the 
 	 * key is the name of the list and the value a collection with privacy items. **/
 	private Map<String, List<PrivacyItem>> itemLists = new HashMap<String, List<PrivacyItem>>();
+
+    public Privacy() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * Set or update a privacy list with privacy items.
@@ -276,10 +282,10 @@ public class Privacy extends IQ {
 	public Set<String> getPrivacyListNames() {
 		return this.itemLists.keySet();
 	}
-	
-	public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<query xmlns=\"" + PrivacyListManager.NAMESPACE + "\">");
+
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
 
         // Add the active tag
         if (this.isDeclineActiveList()) {
@@ -318,10 +324,7 @@ public class Privacy extends IQ {
 			}
 		}
 
-        // Add packet extensions, if any are defined.
-        buf.append(getExtensionsXML());
-        buf.append("</query>");
-        return buf.toString();
+        return buf;
     }
     
 }

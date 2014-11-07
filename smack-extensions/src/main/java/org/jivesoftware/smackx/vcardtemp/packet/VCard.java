@@ -39,7 +39,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-import org.jivesoftware.smackx.vcardtemp.VCardManager;
 
 /**
  * A VCard class for use with the
@@ -82,6 +81,9 @@ import org.jivesoftware.smackx.vcardtemp.VCardManager;
  * @author Kirill Maximov (kir@maxkir.com)
  */
 public class VCard extends IQ {
+    public static final String ELEMENT = "vCard";
+    public static final String NAMESPACE = "vcard-temp";
+
     private static final Logger LOGGER = Logger.getLogger(VCard.class.getName());
     
     private static final String DEFAULT_MIME_TYPE = "image/jpeg";
@@ -123,6 +125,7 @@ public class VCard extends IQ {
     private Map<String, String> otherUnescapableFields = new HashMap<String, String>();
 
     public VCard() {
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -562,10 +565,87 @@ public class VCard extends IQ {
         copyFieldsFrom(result);
     }
 
-    public String getChildElementXML() {
-        StringBuilder sb = new StringBuilder();
-        new VCardWriter(sb).write();
-        return sb.toString();
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        if (!hasContent()) {
+            xml.setEmptyElement();
+            return xml;
+        }
+        xml.rightAngleBracket();
+        if (hasNameField()) {
+            xml.openElement("N");
+            xml.element("FAMILY", lastName);
+            xml.element("GIVEN", firstName);
+            xml.element("MIDDLE", middleName);
+            xml.closeElement("N");
+        }
+        if (hasOrganizationFields()) {
+            xml.openElement("ORG");
+            xml.element("ORGNAME", organization);
+            xml.element("ORGUNIT", organizationUnit);
+            xml.closeElement("ORG");
+        }
+        for (Entry<String, String> entry : otherSimpleFields.entrySet()) {
+            xml.element(entry.getKey(), entry.getValue());
+        }
+        for (Entry<String, String> entry : otherUnescapableFields.entrySet()) {
+            xml.openElement(entry.getKey());
+            xml.append(entry.getValue());
+            xml.closeElement(entry.getKey());
+        }
+        if (photoBinval != null) {
+            xml.openElement("PHOTO");
+            xml.escapedElement("BINVAL", photoBinval);
+            xml.element("TYPE", photoMimeType);
+            xml.closeElement("PHOTO");
+        }
+        if (emailWork != null) {
+            xml.openElement("EMAIL");
+            xml.emptyElement("WORK");
+            xml.emptyElement("INTERNET");
+            xml.emptyElement("PREF");
+            xml.element("USERID", emailWork);
+            xml.closeElement("EMAIL");
+        }
+        if (emailHome != null) {
+            xml.openElement("EMAIL");
+            xml.emptyElement("HOME");
+            xml.emptyElement("INTERNET");
+            xml.emptyElement("PREF");
+            xml.element("USERID", emailHome);
+            xml.closeElement("EMAIL");
+        }
+        for (Entry<String, String> phone : workPhones.entrySet()) {
+            xml.openElement("TEL");
+            xml.emptyElement("WORK");
+            xml.emptyElement(phone.getKey());
+            xml.element("NUMBER", phone.getValue());
+            xml.closeElement("TEL");
+        }
+        for (Entry<String, String> phone : homePhones.entrySet()) {
+            xml.openElement("TEL");
+            xml.emptyElement("HOME");
+            xml.emptyElement(phone.getKey());
+            xml.element("NUMBER", phone.getValue());
+            xml.closeElement("TEL");
+        }
+        if (!workAddr.isEmpty()) {
+            xml.openElement("ADR");
+            xml.emptyElement("WORK");
+            for (Entry<String, String> entry : workAddr.entrySet()) {
+                xml.element(entry.getKey(), entry.getValue());
+            }
+            xml.closeElement("ADR");
+        }
+        if (!homeAddr.isEmpty()) {
+            xml.openElement("ADR");
+            xml.emptyElement("HOME");
+            for (Entry<String, String> entry : homeAddr.entrySet()) {
+                xml.element(entry.getKey(), entry.getValue());
+            }
+            xml.closeElement("ADR");
+        }
+        return xml;
     }
 
     private void copyFieldsFrom(VCard from) {
@@ -688,173 +768,5 @@ public class VCard extends IQ {
         return result;
     }
 
-    public String toString() {
-        return getChildElementXML();
-    }
-
-    //==============================================================
-
-    private class VCardWriter {
-
-        private final StringBuilder sb;
-
-        VCardWriter(StringBuilder sb) {
-            this.sb = sb;
-        }
-
-        public void write() {
-            appendTag(VCardManager.ELEMENT, "xmlns", VCardManager.NAMESPACE, hasContent(), new ContentBuilder() {
-                public void addTagContent() {
-                    buildActualContent();
-                }
-            });
-        }
-
-        private void buildActualContent() {
-            if (hasNameField()) {
-                appendN();
-            }
-
-            appendOrganization();
-            appendGenericFields();
-            appendPhoto();
-
-            appendEmail(emailWork, "WORK");
-            appendEmail(emailHome, "HOME");
-
-            appendPhones(workPhones, "WORK");
-            appendPhones(homePhones, "HOME");
-
-            appendAddress(workAddr, "WORK");
-            appendAddress(homeAddr, "HOME");
-        }
-
-        private void appendPhoto() {
-            if (photoBinval == null)
-                return;
-
-            appendTag("PHOTO", true, new ContentBuilder() {
-                public void addTagContent() {
-                    appendTag("BINVAL", photoBinval); // No need to escape photoBinval, as it's already Base64 encoded
-                    appendTag("TYPE", StringUtils.escapeForXML(photoMimeType));
-                }
-            });
-        }
-        private void appendEmail(final String email, final String type) {
-            if (email != null) {
-                appendTag("EMAIL", true, new ContentBuilder() {
-                    public void addTagContent() {
-                        appendEmptyTag(type);
-                        appendEmptyTag("INTERNET");
-                        appendEmptyTag("PREF");
-                        appendTag("USERID", StringUtils.escapeForXML(email));
-                    }
-                });
-            }
-        }
-
-        private void appendPhones(Map<String, String> phones, final String code) {
-            for (final Map.Entry<String,String> entry : phones.entrySet()) {
-                appendTag("TEL", true, new ContentBuilder() {
-                    public void addTagContent() {
-                        appendEmptyTag(entry.getKey());
-                        appendEmptyTag(code);
-                        appendTag("NUMBER", StringUtils.escapeForXML(entry.getValue()));
-                    }
-                });
-            }
-        }
-
-        private void appendAddress(final Map<String, String> addr, final String code) {
-            if (addr.size() > 0) {
-                appendTag("ADR", true, new ContentBuilder() {
-                    public void addTagContent() {
-                        appendEmptyTag(code);
-
-                        for (final Entry<String, String> entry : addr.entrySet()) {
-                            appendTag(entry.getKey(), StringUtils.escapeForXML(entry.getValue()));
-                        }
-                    }
-                });
-            }
-        }
-
-        private void appendEmptyTag(Object tag) {
-            sb.append('<').append(tag).append("/>");
-        }
-
-        private void appendGenericFields() {
-            for (Map.Entry<String, String> entry : otherSimpleFields.entrySet()) {
-                appendTag(entry.getKey().toString(),
-                        StringUtils.escapeForXML(entry.getValue()));
-            }
-
-            for (Map.Entry<String, String> entry : otherUnescapableFields.entrySet()) {
-                appendTag(entry.getKey().toString(),entry.getValue());
-            }
-        }
-
-        private void appendOrganization() {
-            if (hasOrganizationFields()) {
-                appendTag("ORG", true, new ContentBuilder() {
-                    public void addTagContent() {
-                        appendTag("ORGNAME", StringUtils.escapeForXML(organization));
-                        appendTag("ORGUNIT", StringUtils.escapeForXML(organizationUnit));
-                    }
-                });
-            }
-        }
-
-        private void appendN() {
-            appendTag("N", true, new ContentBuilder() {
-                public void addTagContent() {
-                    appendTag("FAMILY", StringUtils.escapeForXML(lastName));
-                    appendTag("GIVEN", StringUtils.escapeForXML(firstName));
-                    appendTag("MIDDLE", StringUtils.escapeForXML(middleName));
-                }
-            });
-        }
-
-        private void appendTag(String tag, String attr, String attrValue, boolean hasContent,
-                ContentBuilder builder) {
-            sb.append('<').append(tag);
-            if (attr != null) {
-                sb.append(' ').append(attr).append('=').append('\'').append(attrValue).append('\'');
-            }
-
-            if (hasContent) {
-                sb.append('>');
-                builder.addTagContent();
-                sb.append("</").append(tag).append(">\n");
-            }
-            else {
-                sb.append("/>\n");
-            }
-        }
-
-        private void appendTag(String tag, boolean hasContent, ContentBuilder builder) {
-            appendTag(tag, null, null, hasContent, builder);
-        }
-
-        private void appendTag(String tag, final CharSequence tagText) {
-            if (tagText == null) return;
-            final ContentBuilder contentBuilder = new ContentBuilder() {
-                public void addTagContent() {
-                    sb.append(tagText.toString().trim());
-                }
-            };
-            appendTag(tag, true, contentBuilder);
-        }
-
-    }
-
-    //==============================================================
-
-    private interface ContentBuilder {
-
-        void addTagContent();
-    }
-
-    //==============================================================
 }
 

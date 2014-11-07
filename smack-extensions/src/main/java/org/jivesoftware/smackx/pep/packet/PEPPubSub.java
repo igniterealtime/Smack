@@ -29,37 +29,18 @@ import org.jivesoftware.smack.packet.IQ;
  */
 public class PEPPubSub extends IQ {
     
-    PEPItem item;
+    public static final String ELEMENT = "pubsub";
+    public static final String NAMESPACE = "http://jabber.org/protocol/pubsub";
+
+    private final PEPItem item;
 
     /**
     * Creates a new PubSub.
     *
     */
     public PEPPubSub(PEPItem item) {
-        super();
-        
+        super(ELEMENT, NAMESPACE);
         this.item = item;
-    }
-
-    /**
-    * Returns the XML element name of the extension sub-packet root element.
-    * Always returns "x"
-    *
-    * @return the XML element name of the packet extension.
-    */
-    public String getElementName() {
-        return "pubsub";
-    }
-
-    /** 
-     * Returns the XML namespace of the extension sub-packet root element.
-     * According the specification the namespace is always "jabber:x:roster"
-     * (which is not to be confused with the 'jabber:iq:roster' namespace
-     *
-     * @return the XML namespace of the packet extension.
-     */
-    public String getNamespace() {
-        return "http://jabber.org/protocol/pubsub";
     }
 
     /**
@@ -79,14 +60,15 @@ public class PEPPubSub extends IQ {
      * </pre>
      * 
      */
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\">");
-        buf.append("<publish node=\"").append(item.getNode()).append("\">");
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
+
+        buf.openElement("publish").attribute("node", item.getNode()).rightAngleBracket();
         buf.append(item.toXML());
-        buf.append("</publish>");
-        buf.append("</").append(getElementName()).append(">");
-        return buf.toString();
+        buf.closeElement("publish");
+
+        return buf;
     }
 
 }

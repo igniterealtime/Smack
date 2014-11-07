@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.commands.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.SpecificErrorCondition;
@@ -66,12 +65,11 @@ public class AdHocCommandData extends IQ {
     private AdHocCommand.Action executeAction;
 
     public AdHocCommandData() {
+        super(ELEMENT, NAMESPACE);
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.attribute("node", node);
         xml.optAttribute("sessionid", sessionID);
         xml.optAttribute("status", status);
@@ -108,7 +106,6 @@ public class AdHocCommandData extends IQ {
 //            buf.append(getError().toXML());
 //        }
 
-        xml.closeElement(ELEMENT);
         return xml;
     }
 

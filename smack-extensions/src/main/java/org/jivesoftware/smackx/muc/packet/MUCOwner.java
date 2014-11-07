@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.muc.packet;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,10 +31,15 @@ import java.util.List;
  */
 public class MUCOwner extends IQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#owner";
 
     private final List<MUCItem> items = new ArrayList<MUCItem>();
     private Destroy destroy;
+
+    public MUCOwner() {
+        super(ELEMENT, NAMESPACE);
+    }
 
     /**
      * Returns a List of item childs that holds information about affiliation,
@@ -84,20 +88,16 @@ public class MUCOwner extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT);
-        xml.xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
+
         synchronized (items) {
             for (MUCItem item : items) {
                 xml.append(item.toXML());
             }
         }
         xml.optElement(getDestroy());
-        // Add packet extensions, if any are defined.
-        xml.append(getExtensionsXML());
-        xml.closeElement(IQ.QUERY_ELEMENT);
+
         return xml;
     }
 

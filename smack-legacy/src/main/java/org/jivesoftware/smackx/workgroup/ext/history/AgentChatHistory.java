@@ -33,34 +33,6 @@ import java.util.List;
  * to one or more jids and therefore retrievable.
  */
 public class AgentChatHistory extends IQ {
-    private String agentJID;
-    private int maxSessions;
-    private long startDate;
-
-    private List<AgentChatSession> agentChatSessions = new ArrayList<AgentChatSession>();
-
-    public AgentChatHistory(String agentJID, int maxSessions, Date startDate) {
-        this.agentJID = agentJID;
-        this.maxSessions = maxSessions;
-        this.startDate = startDate.getTime();
-    }
-
-    public AgentChatHistory(String agentJID, int maxSessions) {
-        this.agentJID = agentJID;
-        this.maxSessions = maxSessions;
-        this.startDate = 0;
-    }
-
-    public AgentChatHistory() {
-    }
-
-    public void addChatSession(AgentChatSession chatSession) {
-        agentChatSessions.add(chatSession);
-    }
-
-    public Collection<AgentChatSession> getAgentChatSessions() {
-        return agentChatSessions;
-    }
 
     /**
      * Element name of the packet extension.
@@ -72,19 +44,45 @@ public class AgentChatHistory extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
+    private String agentJID;
+    private int maxSessions;
+    private long startDate;
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
+    private List<AgentChatSession> agentChatSessions = new ArrayList<AgentChatSession>();
+
+    public AgentChatHistory(String agentJID, int maxSessions, Date startDate) {
+        this();
+        this.agentJID = agentJID;
+        this.maxSessions = maxSessions;
+        this.startDate = startDate.getTime();
+    }
+
+    public AgentChatHistory(String agentJID, int maxSessions) {
+        this();
+        this.agentJID = agentJID;
+        this.maxSessions = maxSessions;
+        this.startDate = 0;
+    }
+
+    public AgentChatHistory() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
+
+    public void addChatSession(AgentChatSession chatSession) {
+        agentChatSessions.add(chatSession);
+    }
+
+    public Collection<AgentChatSession> getAgentChatSessions() {
+        return agentChatSessions;
+    }
+
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.append(" agentJID=\"" + agentJID + "\"");
         buf.append(" maxSessions=\"" + maxSessions + "\"");
         buf.append(" startDate=\"" + startDate + "\"");
-
-        buf.append("></").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+        buf.setEmptyElement();
+        return buf;
     }
 
     /**

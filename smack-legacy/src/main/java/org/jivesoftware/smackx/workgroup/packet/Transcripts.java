@@ -50,8 +50,7 @@ public class Transcripts extends IQ {
      * @param userID the id of the user to get his conversations transcripts.
      */
     public Transcripts(String userID) {
-        this.userID = userID;
-        this.summaries = new ArrayList<Transcripts.TranscriptSummary>();
+        this(userID, new ArrayList<Transcripts.TranscriptSummary>());
     }
 
     /**
@@ -62,6 +61,7 @@ public class Transcripts extends IQ {
      * @param summaries the list of TranscriptSummaries.
      */
     public Transcripts(String userID, List<Transcripts.TranscriptSummary> summaries) {
+        super("transcripts", "http://jabber.org/protocol/workgroup");
         this.userID = userID;
         this.summaries = summaries;
     }
@@ -90,10 +90,9 @@ public class Transcripts extends IQ {
         return Collections.unmodifiableList(summaries);
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<transcripts xmlns=\"http://jivesoftware.com/protocol/workgroup\" userID=\"")
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.append(" userID=\"")
                 .append(userID)
                 .append("\">");
 
@@ -101,9 +100,7 @@ public class Transcripts extends IQ {
             buf.append(transcriptSummary.toXML());
         }
 
-        buf.append("</transcripts>");
-
-        return buf.toString();
+        return buf;
     }
 
     /**

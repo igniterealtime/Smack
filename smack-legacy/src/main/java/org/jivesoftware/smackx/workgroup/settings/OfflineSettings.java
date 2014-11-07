@@ -20,12 +20,12 @@ package org.jivesoftware.smackx.workgroup.settings;
 import java.io.IOException;
 
 import org.jivesoftware.smackx.workgroup.util.ModelUtil;
-import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class OfflineSettings extends IQ {
+public class OfflineSettings extends SimpleIQ {
     private String redirectURL;
 
     private String offlineText;
@@ -96,17 +96,9 @@ public class OfflineSettings extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=");
-        buf.append('"');
-        buf.append(NAMESPACE);
-        buf.append('"');
-        buf.append("></").append(ELEMENT_NAME).append("> ");
-        return buf.toString();
+    public OfflineSettings() {
+        super(ELEMENT_NAME, NAMESPACE);
     }
-
 
     /**
      * Packet extension provider for AgentStatusRequest packets.

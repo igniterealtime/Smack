@@ -40,6 +40,7 @@ import java.util.Set;
  */
 public class DiscoverInfo extends IQ implements Cloneable {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "http://jabber.org/protocol/disco#info";
 
     private final List<Feature> features = new LinkedList<Feature>();
@@ -50,7 +51,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
     private boolean containsDuplicateFeatures;
 
     public DiscoverInfo() {
-        super();
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -212,10 +213,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
     }
 
     @Override
-    public CharSequence getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement("query");
-        xml.xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.optAttribute("node", getNode());
         xml.rightAngleBracket();
         for (Identity identity : identities) {
@@ -224,9 +222,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
         for (Feature feature : features) {
             xml.append(feature.toXML());
         }
-        // Add packet extensions, if any are defined.
-        xml.append(getExtensionsXML());
-        xml.closeElement("query");
+
         return xml;
     }
 

@@ -19,12 +19,10 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.junit.Test;
 
@@ -70,16 +68,7 @@ public class DataTest {
                 .t(encodedData)
             .asString(outputProperties);
 
-        DataPacketExtension dpe = mock(DataPacketExtension.class);
-        XmlStringBuilder dataTag = new XmlStringBuilder();
-        dataTag.halfOpenElement(DataPacketExtension.ELEMENT);
-        dataTag.xmlnsAttribute(DataPacketExtension.NAMESPACE);
-        dataTag.attribute("seq", "0");
-        dataTag.attribute("sid", "i781hf64");
-        dataTag.rightAngleBracket();
-        dataTag.escape(encodedData);
-        dataTag.closeElement(DataPacketExtension.ELEMENT);
-        when(dpe.toXML()).thenReturn(dataTag);
+        DataPacketExtension dpe = new DataPacketExtension("i781hf64", 0, encodedData);
         Data data = new Data(dpe);
         data.setFrom("romeo@montague.lit/orchard");
         data.setTo("juliet@capulet.lit/balcony");

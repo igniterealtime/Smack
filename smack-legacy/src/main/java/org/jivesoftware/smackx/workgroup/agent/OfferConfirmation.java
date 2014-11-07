@@ -22,14 +22,19 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 
-public class OfferConfirmation extends IQ {
+public class OfferConfirmation extends SimpleIQ {
     private String userJID;
     private long sessionID;
+
+    public OfferConfirmation() {
+        super("offer-confirmation", "http://jabber.org/protocol/workgroup");
+    }
 
     public String getUserJID() {
         return userJID;
@@ -51,13 +56,6 @@ public class OfferConfirmation extends IQ {
     public void notifyService(XMPPConnection con, String workgroup, String createdRoomName) throws NotConnectedException {
         NotifyServicePacket packet = new NotifyServicePacket(workgroup, createdRoomName);
         con.sendPacket(packet);
-    }
-
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<offer-confirmation xmlns=\"http://jabber.org/protocol/workgroup\">");
-        buf.append("</offer-confirmation>");
-        return buf.toString();
     }
 
     public static class Provider extends IQProvider<OfferConfirmation> {
@@ -103,14 +101,18 @@ public class OfferConfirmation extends IQ {
         String roomName;
 
         NotifyServicePacket(String workgroup, String roomName) {
+            super("offer-confirmation", "http://jabber.org/protocol/workgroup");
             this.setTo(workgroup);
             this.setType(IQ.Type.result);
 
             this.roomName = roomName;
         }
 
-        public String getChildElementXML() {
-            return "<offer-confirmation  roomname=\"" + roomName + "\" xmlns=\"http://jabber.org/protocol/workgroup" + "\"/>";
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+            xml.attribute("roomname", roomName);
+            xml.setEmptyElement();
+            return xml;
         }
     }
 

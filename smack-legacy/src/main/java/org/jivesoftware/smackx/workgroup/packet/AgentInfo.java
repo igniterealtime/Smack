@@ -42,6 +42,10 @@ public class AgentInfo extends IQ {
     private String jid;
     private String name;
 
+    public AgentInfo() {
+        super(ELEMENT_NAME, NAMESPACE);
+    }
+
     /**
      * Returns the Agent's jid.
      *
@@ -80,19 +84,18 @@ public class AgentInfo extends IQ {
         this.name = name;
     }
 
-    public String getChildElementXML() {
-        StringBuilder buf = new StringBuilder();
+    @Override
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.rightAngleBracket();
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
         if (jid != null) {
             buf.append("<jid>").append(getJid()).append("</jid>");
         }
         if (name != null) {
             buf.append("<name>").append(getName()).append("</name>");
         }
-        buf.append("</").append(ELEMENT_NAME).append("> ");
 
-        return buf.toString();
+        return buf;
     }
 
     /**

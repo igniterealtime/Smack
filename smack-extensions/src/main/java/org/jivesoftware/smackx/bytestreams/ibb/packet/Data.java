@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a chunk of data sent over an In-Band Bytestream encapsulated in an
@@ -36,24 +35,17 @@ public class Data extends IQ {
      * @param data data packet extension containing the encoded data
      */
     public Data(DataPacketExtension data) {
+        super(DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE);
         if (data == null) {
             throw new IllegalArgumentException("Data must not be null");
         }
         this.dataPacketExtension = data;
 
-        /*
-         * also set as packet extension so that data packet extension can be
-         * retrieved from IQ stanza and message stanza in the same way
-         */
-        addExtension(data);
         setType(IQ.Type.set);
     }
 
     /**
      * Returns the data packet extension.
-     * <p>
-     * Convenience method for <code>packet.getExtension("data",
-     * "http://jabber.org/protocol/ibb")</code>.
      * 
      * @return the data packet extension
      */
@@ -62,8 +54,8 @@ public class Data extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        return dataPacketExtension.toXML();
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        return dataPacketExtension.getIQChildElementBuilder(xml);
     }
 
 }

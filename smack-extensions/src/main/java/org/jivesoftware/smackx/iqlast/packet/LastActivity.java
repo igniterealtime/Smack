@@ -22,7 +22,6 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -37,12 +36,14 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class LastActivity extends IQ {
 
+    public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:last";
 
     public long lastActivity = -1;
     public String message;
 
     public LastActivity() {
+        super(ELEMENT, NAMESPACE);
         setType(IQ.Type.get);
     }
 
@@ -52,15 +53,12 @@ public class LastActivity extends IQ {
     }
 
     @Override
-    public XmlStringBuilder getChildElementXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(IQ.QUERY_ELEMENT);
-        xml.xmlnsAttribute(NAMESPACE);
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.optLongAttribute("seconds", lastActivity);
 
         // We don't support adding the optional message attribute, because it is usually only added
         // by XMPP servers and not by client entities.
-        xml.closeEmptyElement();
+        xml.setEmptyElement();
         return xml;
     }
 

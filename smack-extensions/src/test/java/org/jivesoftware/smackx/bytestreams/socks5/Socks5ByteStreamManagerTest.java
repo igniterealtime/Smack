@@ -34,9 +34,9 @@ import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -426,14 +426,7 @@ public class Socks5ByteStreamManagerTest {
 
         // build error packet to reject SOCKS5 Bytestream
         XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
-        IQ rejectPacket = new IQ() {
-
-            public String getChildElementXML() {
-                return null;
-            }
-
-        };
-        rejectPacket.setType(Type.error);
+        IQ rejectPacket = new ErrorIQ(xmppError);
         rejectPacket.setFrom(targetJID);
         rejectPacket.setTo(initiatorJID);
         rejectPacket.setError(xmppError);

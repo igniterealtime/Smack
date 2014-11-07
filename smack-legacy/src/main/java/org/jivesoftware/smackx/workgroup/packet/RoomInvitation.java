@@ -19,8 +19,11 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -101,11 +104,15 @@ public class RoomInvitation implements PacketExtension {
         return sessionID;
     }
 
-    public String toXML() {
-        StringBuilder buf = new StringBuilder();
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
+        xml.closeElement(this);
+        return xml;
+    }
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE);
-        buf.append("\" type=\"").append(type).append("\">");
+    public IQ.IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
+        buf.append("\" type=\"").append(type.name()).append("\">");
         buf.append("<session xmlns=\"http://jivesoftware.com/protocol/workgroup\" id=\"").append(sessionID).append("\"></session>");
         if (invitee != null) {
             buf.append("<invitee>").append(invitee).append("</invitee>");
@@ -116,10 +123,8 @@ public class RoomInvitation implements PacketExtension {
         if (reason != null) {
             buf.append("<reason>").append(reason).append("</reason>");
         }
-        // Add packet extensions, if any are defined.
-        buf.append("</").append(ELEMENT_NAME).append("> ");
 
-        return buf.toString();
+        return buf;
     }
 
     /**
@@ -139,6 +144,18 @@ public class RoomInvitation implements PacketExtension {
          * Some agent of the specified workgroup will be invited to the groupchat support session.
          */
         workgroup
+    }
+
+    public static class RoomInvitationIQ extends IQ {
+        private final RoomInvitation roomInvitation;
+        public RoomInvitationIQ(RoomInvitation roomInvitation) {
+            super(ELEMENT_NAME, NAMESPACE);
+            this.roomInvitation = roomInvitation;
+        }
+        @Override
+        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+            return roomInvitation.getIQChildElementBuilder(xml);
+        }
     }
 
     public static class Provider extends PacketExtensionProvider<RoomInvitation> {

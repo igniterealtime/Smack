@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.hoxt.provider;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
@@ -63,7 +64,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
      * @throws XmlPullParserException 
      * @throws SmackException 
      */
-    protected void parseHeadersAndData(XmlPullParser parser, String elementName, AbstractHttpOverXmpp.AbstractBody body) throws XmlPullParserException, IOException, SmackException {
+    protected void parseHeadersAndData(XmlPullParser parser, String elementName, AbstractHttpOverXmpp body) throws XmlPullParserException, IOException, SmackException {
         boolean done = false;
 
         while (!done) {
@@ -110,7 +111,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
     }
 
     private AbstractHttpOverXmpp.Data parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
-        AbstractHttpOverXmpp.DataChild child = null;
+        NamedElement child = null;
         boolean done = false;
 
         while (!done) {

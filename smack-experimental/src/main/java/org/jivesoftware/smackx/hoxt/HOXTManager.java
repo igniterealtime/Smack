@@ -23,6 +23,7 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
 
 /**
  * Manager for HTTP ove XMPP transport (XEP-0332) extension.
@@ -35,7 +36,7 @@ public class HOXTManager {
     /**
      * Namespace for this extension.
      */
-    public static final String NAMESPACE = "urn:xmpp:http";
+    public static final String NAMESPACE = AbstractHttpOverXmpp.NAMESPACE;
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
