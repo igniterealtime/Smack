@@ -441,5 +441,5 @@ public class ChatConnectionTest {
         public int getNumMessages() {
             return counter;
         }
-    };
+    }
 }

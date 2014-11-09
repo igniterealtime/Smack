@@ -61,7 +61,7 @@ public class OfflineMessageManager {
     private final XMPPConnection connection;
 
     private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketExtensionFilter(
-                    new OfflineMessageInfo()), new PacketTypeFilter(Message.class));;
+                    new OfflineMessageInfo()), new PacketTypeFilter(Message.class));
 
     public OfflineMessageManager(XMPPConnection connection) {
         this.connection = connection;

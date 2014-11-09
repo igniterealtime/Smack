@@ -608,7 +608,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         sendPacket(unavailablePresence);
         shutdown();
         callConnectionClosedListener();
-    };
+    }
 
     /**
      * Shuts the current connection down.

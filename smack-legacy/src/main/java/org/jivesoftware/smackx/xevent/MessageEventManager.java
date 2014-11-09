@@ -95,9 +95,7 @@ public class MessageEventManager extends Manager {
                             message.getFrom(),
                             messageEvent.getPacketID(),
                             eventType.concat("Notification"));
-
-            };
-
+            }
         }, PACKET_FILTER);
         INSTANCES.put(connection, this);
     }

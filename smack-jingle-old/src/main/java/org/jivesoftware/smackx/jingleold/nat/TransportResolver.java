@@ -46,8 +46,6 @@ public abstract class TransportResolver {
         rawupd, ice
     }
 
-    ;
-
     public Type getType() {
         return type;
     }

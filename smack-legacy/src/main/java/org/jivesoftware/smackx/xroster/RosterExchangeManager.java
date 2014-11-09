@@ -83,8 +83,7 @@ public class RosterExchangeManager {
                     (RosterExchange) message.getExtension(ELEMENT, NAMESPACE);
                 // Fire event for roster exchange listeners
                 fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
-            };
-
+            }
         };
         connection.addPacketListener(packetListener, PACKET_FILTER);
     }

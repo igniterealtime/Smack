@@ -104,6 +104,6 @@ public class ThreadedDummyConnection extends DummyConnection {
                 e.printStackTrace();
             }
         }
-    };
+    }
 
 }

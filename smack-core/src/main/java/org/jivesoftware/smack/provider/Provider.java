@@ -39,5 +39,5 @@ public abstract class Provider<E extends Element> {
         return e;
     }
 
-    public abstract E parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException;;
+    public abstract E parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException;
 }

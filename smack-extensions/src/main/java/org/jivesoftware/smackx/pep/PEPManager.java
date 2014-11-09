@@ -140,8 +140,7 @@ public class PEPManager {
                 PEPEvent event = (PEPEvent) message.getExtension("event", "http://jabber.org/protocol/pubsub#event");
                 // Fire event for roster exchange listeners
                 firePEPListeners(message.getFrom(), event);
-            };
-
+            }
         };
         connection.addPacketListener(packetListener, packetFilter);
     }
@@ -149,7 +148,6 @@ public class PEPManager {
     public void destroy() {
         if (connection != null)
             connection.removePacketListener(packetListener);
-
     }
 
     protected void finalize() throws Throwable {
