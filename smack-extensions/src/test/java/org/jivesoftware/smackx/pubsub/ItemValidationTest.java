@@ -47,7 +47,7 @@ public class ItemValidationTest extends InitExtensions {
 
 		connection = new ThreadedDummyConnection();
 		connection.connect();
-		connection.login("me", "secret");
+		connection.login();
 	}
 
 	@After

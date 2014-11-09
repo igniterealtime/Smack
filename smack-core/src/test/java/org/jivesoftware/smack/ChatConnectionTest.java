@@ -354,7 +354,7 @@ public class ChatConnectionTest {
         
         try {
             con.connect();
-            con.login("me", "secret");
+            con.login();
         } catch (Exception e) {
             // No need for handling in a dummy connection.
         }

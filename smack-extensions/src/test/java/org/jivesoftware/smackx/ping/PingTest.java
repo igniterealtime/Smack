@@ -53,7 +53,7 @@ public class PingTest extends InitExtensions {
                 + "</iq>";
         // @formatter:on
         DummyConnection con = new DummyConnection();
-        
+        con.connect();
         // Enable ping for this connection
         PingManager.getInstanceFor(con);
         IQ pingRequest = (IQ) PacketParserUtils.parseStanza(control);
@@ -236,7 +236,7 @@ public class PingTest extends InitExtensions {
     private static ThreadedDummyConnection getAuthentiactedDummyConnection() throws SmackException, IOException, XMPPException {
         ThreadedDummyConnection connection = new ThreadedDummyConnection();
         connection.connect();
-        connection.login("foo", "bar");
+        connection.login();
         return connection;
     }
 
@@ -252,7 +252,7 @@ public class PingTest extends InitExtensions {
         DummyConnection con = new DummyConnection();
         con.setPacketReplyTimeout(500);
         con.connect();
-        con.login("foo", "bar");
+        con.login();
         return con;
     }
 }

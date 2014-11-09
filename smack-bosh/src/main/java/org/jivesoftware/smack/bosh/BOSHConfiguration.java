@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.proxy.ProxyInfo;
-import org.jivesoftware.smack.util.dns.HostAddress;
 
 /**
  * Configuration to use while establishing the connection to the XMPP server via
@@ -33,60 +32,17 @@ import org.jivesoftware.smack.util.dns.HostAddress;
  */
 public class BOSHConfiguration extends ConnectionConfiguration {
 
-    private boolean ssl;
-    private String file;
+    private final boolean https;
+    private final String file;
 
-    public BOSHConfiguration(String xmppDomain) {
-        super(xmppDomain, 7070);
-        ssl = false;
-        file = "/http-bind/";
-    }
-
-    public BOSHConfiguration(String xmppDomain, int port) {
-        super(xmppDomain, port);
-        ssl = false;
-        file = "/http-bind/";
-    }
-
-    /**
-     * Create a HTTP Binding configuration.
-     * 
-     * @param https true if you want to use SSL
-     *             (e.g. false for http://domain.lt:7070/http-bind).
-     * @param host the hostname or IP address of the connection manager
-     *             (e.g. domain.lt for http://domain.lt:7070/http-bind).
-     * @param port the port of the connection manager
-     *             (e.g. 7070 for http://domain.lt:7070/http-bind).
-     * @param filePath the file which is described by the URL
-     *             (e.g. /http-bind for http://domain.lt:7070/http-bind).
-     * @param xmppDomain the XMPP service name
-     *             (e.g. domain.lt for the user alice@domain.lt)
-     */
-    public BOSHConfiguration(boolean https, String host, int port, String filePath, String xmppDomain) {
-        super(host, port, xmppDomain);
-        ssl = https;
-        file = (filePath != null ? filePath : "/");
-    }
-
-    /**
-     * Create a HTTP Binding configuration.
-     * 
-     * @param https true if you want to use SSL
-     *             (e.g. false for http://domain.lt:7070/http-bind).
-     * @param host the hostname or IP address of the connection manager
-     *             (e.g. domain.lt for http://domain.lt:7070/http-bind).
-     * @param port the port of the connection manager
-     *             (e.g. 7070 for http://domain.lt:7070/http-bind).
-     * @param filePath the file which is described by the URL
-     *             (e.g. /http-bind for http://domain.lt:7070/http-bind).
-     * @param proxy the configuration of a proxy server.
-     * @param xmppDomain the XMPP service name
-     *             (e.g. domain.lt for the user alice@domain.lt)
-     */
-    public BOSHConfiguration(boolean https, String host, int port, String filePath, ProxyInfo proxy, String xmppDomain) {
-        super(host, port, xmppDomain, proxy);
-        ssl = https;
-        file = (filePath != null ? filePath : "/");
+    private BOSHConfiguration(BOSHConfigurationBuilder builder) {
+        super(builder);
+        https = builder.https;
+        if (builder.file.charAt(0) != '/') {
+            file = '/' + builder.file;
+        } else {
+            file = builder.file;
+        }
     }
 
     public boolean isProxyEnabled() {
@@ -105,24 +61,47 @@ public class BOSHConfiguration extends ConnectionConfiguration {
         return (proxy != null ? proxy.getProxyPort() : 8080);
     }
 
-    public boolean isUsingSSL() {
-        return ssl;
+    public boolean isUsingHTTPS() {
+        return https;
     }
 
     public URI getURI() throws URISyntaxException {
-        if (file.charAt(0) != '/') {
-            file = '/' + file;
+        return new URI((https ? "https://" : "http://") + this.host + ":" + this.port + file);
+    }
+
+    public static BOSHConfigurationBuilder builder() {
+        return new BOSHConfigurationBuilder();
+    }
+
+    public static class BOSHConfigurationBuilder extends ConnectionConfigurationBuilder<BOSHConfigurationBuilder, BOSHConfiguration> {
+        private boolean https;
+        private String file;
+
+        private BOSHConfigurationBuilder() {
         }
-        String host;
-        int port;
-        if (hostAddresses != null) {
-            HostAddress hostAddress = hostAddresses.get(0);
-            host = hostAddress.getFQDN();
-            port = hostAddress.getPort();
-        } else {
-            host = getServiceName();
-            port = 80;
+
+        public BOSHConfigurationBuilder setUseHttps(boolean useHttps) {
+            https = useHttps;
+            return this;
         }
-        return new URI((ssl ? "https://" : "http://") + host + ":" + port + file);
+
+        public BOSHConfigurationBuilder useHttps() {
+            return setUseHttps(true);
+        }
+
+        public BOSHConfigurationBuilder setFile(String file) {
+            this.file = file;
+            return this;
+        }
+
+        @Override
+        public BOSHConfiguration build() {
+            return new BOSHConfiguration(this);
+        }
+
+        @Override
+        protected BOSHConfigurationBuilder getThis() {
+            return this;
+        }
     }
 }

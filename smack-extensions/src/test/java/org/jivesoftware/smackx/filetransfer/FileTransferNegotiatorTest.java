@@ -36,7 +36,7 @@ public class FileTransferNegotiatorTest {
 
         connection = new DummyConnection();
         connection.connect();
-        connection.login("me", "secret");
+        connection.login();
         ServiceDiscoveryManager.getInstanceFor(connection);
     }
 

@@ -70,6 +70,7 @@ public class DeliveryReceiptTest extends InitExtensions {
     @Test
     public void receiptManagerListenerTest() throws Exception {
         DummyConnection c = new DummyConnection();
+        c.connect();
         // Ensure SDM is created for this connection
         ServiceDiscoveryManager.getInstanceFor(c);
         DeliveryReceiptManager drm = DeliveryReceiptManager.getInstanceFor(c);
@@ -101,6 +102,7 @@ public class DeliveryReceiptTest extends InitExtensions {
     @Test
     public void receiptManagerAutoReplyTest() throws Exception {
         DummyConnection c = new DummyConnection();
+        c.connect();
         // Ensure SDM is created for this connection
         ServiceDiscoveryManager.getInstanceFor(c);
         DeliveryReceiptManager drm = DeliveryReceiptManager.getInstanceFor(c);

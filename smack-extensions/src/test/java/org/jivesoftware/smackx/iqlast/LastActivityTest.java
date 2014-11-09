@@ -42,6 +42,7 @@ public class LastActivityTest extends InitExtensions {
                 .namespace(LastActivity.NAMESPACE);
 
         DummyConnection c = new DummyConnection();
+        c.connect();
         IQ lastRequest = (IQ) PacketParserUtils.parseStanza(xml.asString());
         assertTrue(lastRequest instanceof LastActivity);
 

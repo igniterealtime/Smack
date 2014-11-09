@@ -17,33 +17,23 @@
 
 package org.jivesoftware.smack;
 
+import java.util.Locale;
+
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.rosterstore.RosterStore;
-import org.jivesoftware.smack.util.DNSUtil;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.dns.HostAddress;
-import org.jxmpp.util.XmppStringUtils;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.callback.CallbackHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
- * Configuration to use while establishing the connection to the server. It is possible to
- * configure the path to the trustore file that keeps the trusted CA root certificates and
- * enable or disable all or some of the checkings done while verifying server certificates.<p>
- *
- * It is also possible to configure if TLS, SASL, and compression are used or not.
+ * Configuration to use while establishing the connection to the server.
  *
  * @author Gaston Dombiak
  */
-public class ConnectionConfiguration implements Cloneable {
+public abstract class ConnectionConfiguration {
 
     static {
         // Ensure that Smack is initialized when ConnectionConfiguration is used, or otherwise e.g.
@@ -56,168 +46,104 @@ public class ConnectionConfiguration implements Cloneable {
      * of the server. However, there are some servers like google where host would be
      * talk.google.com and the serviceName would be gmail.com.
      */
-    private String serviceName;
+    protected final String serviceName;
+    protected final String host;
+    protected final int port;
 
-    protected List<HostAddress> hostAddresses;
-
-    private String keystorePath;
-    private String keystoreType;
-    private String pkcs11Library;
-    private SSLContext customSSLContext;
-
-    private boolean compressionEnabled = false;
+    private final String keystorePath;
+    private final String keystoreType;
+    private final String pkcs11Library;
+    private final SSLContext customSSLContext;
 
     /**
      * Used to get information from the user
      */
-    private CallbackHandler callbackHandler;
+    private final CallbackHandler callbackHandler;
 
-    private boolean debuggerEnabled = SmackConfiguration.DEBUG_ENABLED;
+    private final boolean debuggerEnabled;
 
     // Holds the socket factory that is used to generate the socket in the connection
-    private SocketFactory socketFactory;
-    
-    // Holds the authentication information for future reconnections
-    private String username;
-    private String password;
-    private String resource;
-    private boolean sendPresence = true;
-    private boolean rosterLoadedAtLogin = true;
-    private boolean legacySessionDisabled = false;
-    private boolean useDnsSrvRr = true;
-    private SecurityMode securityMode = SecurityMode.enabled;
+    private final SocketFactory socketFactory;
+
+    private final String username;
+    private final String password;
+    private final String resource;
+    private final boolean sendPresence;
+    private final boolean rosterLoadedAtLogin;
+    private final boolean legacySessionDisabled;
+    private final SecurityMode securityMode;
 
     /**
      * 
      */
-    private String[] enabledSSLProtocols;
+    private final String[] enabledSSLProtocols;
 
     /**
      * 
      */
-    private String[] enabledSSLCiphers;
+    private final String[] enabledSSLCiphers;
 
-    private HostnameVerifier hostnameVerifier;
+    private final HostnameVerifier hostnameVerifier;
 
     /**
      * Permanent store for the Roster, needed for roster versioning
      */
-    private RosterStore rosterStore;
+    private final RosterStore rosterStore;
 
     // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
-    protected ProxyInfo proxy;
+    protected final ProxyInfo proxy;
 
-    /**
-     * Creates a new ConnectionConfiguration for the specified service name.
-     * A DNS SRV lookup will be performed to find out the actual host address
-     * and port to use for the connection.
-     *
-     * @param serviceName the name of the service provided by an XMPP server.
-     */
-    public ConnectionConfiguration(String serviceName) {
-        init(serviceName, ProxyInfo.forDefaultProxy());
-    }
-
-     /**
-     * Creates a new ConnectionConfiguration for the specified service name 
-     * with specified proxy.
-     * A DNS SRV lookup will be performed to find out the actual host address
-     * and port to use for the connection.
-     *
-     * @param serviceName the name of the service provided by an XMPP server.
-     * @param proxy the proxy through which XMPP is to be connected
-     */
-    public ConnectionConfiguration(String serviceName,ProxyInfo proxy) {
-        init(serviceName, proxy);
-    }
-
-    /**
-     * Creates a new ConnectionConfiguration using the specified host, port and
-     * service name. This is useful for manually overriding the DNS SRV lookup
-     * process that's used with the {@link #ConnectionConfiguration(String)}
-     * constructor. For example, say that an XMPP server is running at localhost
-     * in an internal network on port 5222 but is configured to think that it's
-     * "example.com" for testing purposes. This constructor is necessary to connect
-     * to the server in that case since a DNS SRV lookup for example.com would not
-     * point to the local testing server.
-     *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
-     * @param serviceName the name of the service provided by an XMPP server.
-     */
-    public ConnectionConfiguration(String host, int port, String serviceName) {
-        initHostAddresses(host, port);
-        init(serviceName, ProxyInfo.forDefaultProxy());
-    }
-	
-	/**
-     * Creates a new ConnectionConfiguration using the specified host, port and
-     * service name. This is useful for manually overriding the DNS SRV lookup
-     * process that's used with the {@link #ConnectionConfiguration(String)}
-     * constructor. For example, say that an XMPP server is running at localhost
-     * in an internal network on port 5222 but is configured to think that it's
-     * "example.com" for testing purposes. This constructor is necessary to connect
-     * to the server in that case since a DNS SRV lookup for example.com would not
-     * point to the local testing server.
-     *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
-     * @param serviceName the name of the service provided by an XMPP server.
-     * @param proxy the proxy through which XMPP is to be connected
-     */
-    public ConnectionConfiguration(String host, int port, String serviceName, ProxyInfo proxy) {
-        initHostAddresses(host, port);
-        init(serviceName, proxy);
-    }
-
-    /**
-     * Creates a new ConnectionConfiguration for a connection that will connect
-     * to the desired host and port.
-     *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
-     */
-    public ConnectionConfiguration(String host, int port) {
-        initHostAddresses(host, port);
-        init(host, ProxyInfo.forDefaultProxy());
-    }
-	
-	/**
-     * Creates a new ConnectionConfiguration for a connection that will connect
-     * to the desired host and port with desired proxy.
-     *
-     * @param host the host where the XMPP server is running.
-     * @param port the port where the XMPP is listening.
-     * @param proxy the proxy through which XMPP is to be connected
-     */
-    public ConnectionConfiguration(String host, int port, ProxyInfo proxy) {
-        initHostAddresses(host, port);
-        init(host, proxy);
-    }
-
-    protected void init(String serviceName, ProxyInfo proxy) {
-        if (StringUtils.isEmpty(serviceName)) {
-            throw new IllegalArgumentException("serviceName must not be the empty String");
+    protected ConnectionConfiguration(ConnectionConfigurationBuilder<?,?> builder) {
+        if (builder.username != null) {
+            // Do partial version of nameprep on the username.
+            username = builder.username.toLowerCase(Locale.US).trim();
+        } else {
+            username = null;
         }
-        this.serviceName = serviceName;
-        this.proxy = proxy;
+        password = builder.password;
+        callbackHandler = builder.callbackHandler;
+        if (callbackHandler == null && (password == null || username == null) && !builder.anonymous) {
+            throw new IllegalArgumentException(
+                            "Must provide either a username and password, a callback handler or set the connection configuration anonymous");
+        }
 
-        keystorePath = System.getProperty("javax.net.ssl.keyStore");
-        keystoreType = "jks";
-        pkcs11Library = "pkcs11.config";
-		
-		//Setting the SocketFactory according to proxy supplied
-        socketFactory = proxy.getSocketFactory();
+        // Resource can be null, this means that the server must provide one
+        resource = builder.resource;
+
+        serviceName = builder.serviceName;
+        if (serviceName == null) {
+            throw new IllegalArgumentException("Must provide XMPP service name");
+        }
+        host = builder.host;
+        port = builder.port;
+
+        proxy = builder.proxy;
+        if (proxy != null) {
+            if (builder.socketFactory != null) {
+                throw new IllegalArgumentException("Can not use proxy together with custom socket factory");
+            }
+            socketFactory = proxy.getSocketFactory();
+        } else {
+            socketFactory = builder.socketFactory;
+        }
+
+        securityMode = builder.securityMode;
+        keystoreType = builder.keystoreType;
+        keystorePath = builder.keystorePath;
+        pkcs11Library = builder.pkcs11Library;
+        customSSLContext = builder.customSSLContext;
+        enabledSSLProtocols = builder.enabledSSLProtocols;
+        enabledSSLCiphers = builder.enabledSSLCiphers;
+        hostnameVerifier = builder.hostnameVerifier;
+        sendPresence = builder.sendPresence;
+        rosterLoadedAtLogin = builder.rosterLoadedAtLogin;
+        legacySessionDisabled = builder.legacySessionDisabled;
+        rosterStore = builder.rosterStore;
+        debuggerEnabled = builder.debuggerEnabled;
     }
 
-    /**
-     * Sets the server name, also known as XMPP domain of the target server.
-     *
-     * @param serviceName the XMPP domain of the target server.
-     */
-    void setServiceName(String serviceName) {
-        serviceName = XmppStringUtils.parseDomain(serviceName);
-        this.serviceName = serviceName;
+    public boolean isAnonymous() {
+        return username == null && callbackHandler == null;
     }
 
     /**
@@ -240,16 +166,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the TLS security mode used when making the connection. By default,
-     * the mode is {@link SecurityMode#enabled}.
-     *
-     * @param securityMode the security mode.
-     */
-    public void setSecurityMode(SecurityMode securityMode) {
-        this.securityMode = securityMode;
-    }
-
-    /**
      * Retuns the path to the keystore file. The key store file contains the 
      * certificates that may be used to authenticate the client to the server,
      * in the event the server requests or requires it.
@@ -258,17 +174,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public String getKeystorePath() {
         return keystorePath;
-    }
-
-    /**
-     * Sets the path to the keystore file. The key store file contains the 
-     * certificates that may be used to authenticate the client to the server,
-     * in the event the server requests or requires it.
-     *
-     * @param keystorePath the path to the keystore file.
-     */
-    public void setKeystorePath(String keystorePath) {
-        this.keystorePath = keystorePath;
     }
 
     /**
@@ -281,16 +186,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the keystore type.
-     *
-     * @param keystoreType the keystore type.
-     */
-    public void setKeystoreType(String keystoreType) {
-        this.keystoreType = keystoreType;
-    }
-
-
-    /**
      * Returns the PKCS11 library file location, needed when the
      * Keystore type is PKCS11.
      *
@@ -301,45 +196,13 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets the PKCS11 library file location, needed when the
-     * Keystore type is PKCS11
-     *
-     * @param pkcs11Library the path to the PKCS11 library file
-     */
-    public void setPKCS11Library(String pkcs11Library) {
-        this.pkcs11Library = pkcs11Library;
-    }
-
-    /**
-     * Gets the custom SSLContext previously set with {@link #setCustomSSLContext(SSLContext)} for
+     * Gets the custom SSLContext previously set with {@link ConnectionConfigurationBuilder#setCustomSSLContext(SSLContext)} for
      * SSL sockets. This is null by default.
      *
      * @return the custom SSLContext or null.
      */
     public SSLContext getCustomSSLContext() {
         return this.customSSLContext;
-    }
-
-    /**
-     * Sets a custom SSLContext for creating SSL sockets.
-     * <p>
-     * For more information on how to create a SSLContext see <a href=
-     * "http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager"
-     * >Java Secure Socket Extension (JSEE) Reference Guide: Creating Your Own X509TrustManager</a>
-     *
-     * @param context the custom SSLContext for new sockets
-     */
-    public void setCustomSSLContext(SSLContext context) {
-        this.customSSLContext = context;
-    }
-
-    /**
-     * Set the enabled SSL/TLS protocols.
-     *
-     * @param enabledSSLProtocols
-     */
-    public void setEnabledSSLProtocols(String[] enabledSSLProtocols) {
-        this.enabledSSLProtocols = enabledSSLProtocols;
     }
 
     /**
@@ -352,31 +215,12 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Set the enabled SSL/TLS ciphers.
-     * 
-     * @param enabledSSLCiphers the enabled SSL/TLS ciphers 
-     */
-    public void setEnabledSSLCiphers(String[] enabledSSLCiphers) {
-        this.enabledSSLCiphers = enabledSSLCiphers;
-    }
-
-    /**
      * Return the enabled SSL/TLS ciphers.
      *
      * @return the enabled SSL/TLS ciphers
      */
     public String[] getEnabledSSLCiphers() {
         return enabledSSLCiphers;
-    }
-
-    /**
-     * Set the HostnameVerifier used to verify the hostname of SSLSockets used by XMPP connections
-     * created with this ConnectionConfiguration.
-     * 
-     * @param verifier
-     */
-    public void setHostnameVerifier(HostnameVerifier verifier) {
-        hostnameVerifier = verifier;
     }
 
     /**
@@ -393,30 +237,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Returns true if the connection is going to use stream compression. Stream compression
-     * will be requested after TLS was established (if TLS was enabled) and only if the server
-     * offered stream compression. With stream compression network traffic can be reduced
-     * up to 90%. By default compression is disabled.
-     *
-     * @return true if the connection is going to use stream compression.
-     */
-    public boolean isCompressionEnabled() {
-        return compressionEnabled;
-    }
-
-    /**
-     * Sets if the connection is going to use stream compression. Stream compression
-     * will be requested after TLS was established (if TLS was enabled) and only if the server
-     * offered stream compression. With stream compression network traffic can be reduced
-     * up to 90%. By default compression is disabled.
-     *
-     * @param compressionEnabled if the connection is going to use stream compression.
-     */
-    public void setCompressionEnabled(boolean compressionEnabled) {
-        this.compressionEnabled = compressionEnabled;
-    }
-
-    /**
      * Returns true if the new connection about to be establish is going to be debugged. By
      * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
      *
@@ -424,38 +244,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public boolean isDebuggerEnabled() {
         return debuggerEnabled;
-    }
-
-    /**
-     * Sets if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
-     *
-     * @param debuggerEnabled if the new connection about to be establish is going to be debugged.
-     */
-    public void setDebuggerEnabled(boolean debuggerEnabled) {
-        this.debuggerEnabled = debuggerEnabled;
-    }
-
-    /**
-     * Sets the socket factory used to create new xmppConnection sockets.
-     * This is useful when connecting through SOCKS5 proxies.
-     *
-     * @param socketFactory used to create new sockets.
-     */
-    public void setSocketFactory(SocketFactory socketFactory) {
-        this.socketFactory = socketFactory;
-    }
-
-    /**
-     * Sets if an initial available presence will be sent to the server. By default
-     * an available presence will be sent to the server indicating that this presence
-     * is not online and available to receive messages. If you want to log in without
-     * being 'noticed' then pass a <tt>false</tt> value.
-     *
-     * @param sendPresence true if an initial available presence will be sent while logging in.
-     */
-    public void setSendPresence(boolean sendPresence) {
-        this.sendPresence = sendPresence;
     }
 
     /**
@@ -470,17 +258,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets if the roster will be loaded from the server when logging in. This
-     * is the common behaviour for clients but sometimes clients may want to differ this
-     * or just never do it if not interested in rosters.
-     *
-     * @param rosterLoadedAtLogin if the roster will be loaded from the server when logging in.
-     */
-    public void setRosterLoadedAtLogin(boolean rosterLoadedAtLogin) {
-        this.rosterLoadedAtLogin = rosterLoadedAtLogin;
-    }
-
-    /**
      * Returns true if a {@link Session} will be requested on login if the server
      * supports it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't
      * even mention this part of the protocol.
@@ -489,17 +266,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public boolean isLegacySessionDisabled() {
         return legacySessionDisabled;
-    }
-
-    /**
-     * Sets if a {@link Session} will be requested on login if the server supports
-     * it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't even
-     * mention this part of the protocol.
-     *
-     * @param legacySessionDisabled if a session has to be requested when logging in.
-     */
-    public void setLegacySessionDisabled(boolean legacySessionDisabled) {
-        this.legacySessionDisabled = legacySessionDisabled;
     }
 
     /**
@@ -516,19 +282,6 @@ public class ConnectionConfiguration implements Cloneable {
     }
 
     /**
-     * Sets a CallbackHandler to obtain information, such as the password or
-     * principal information during the SASL authentication. A CallbackHandler
-     * will be used <b>ONLY</b> if no password was specified during the login while
-     * using SASL authentication.
-     *
-     * @param callbackHandler to obtain information, such as the password or
-     * principal information during the SASL authentication.
-     */
-    public void setCallbackHandler(CallbackHandler callbackHandler) {
-        this.callbackHandler = callbackHandler;
-    }
-
-    /**
      * Returns the socket factory used to create new xmppConnection sockets.
      * This is useful when connecting through SOCKS5 proxies.
      * 
@@ -536,17 +289,6 @@ public class ConnectionConfiguration implements Cloneable {
      */
     public SocketFactory getSocketFactory() {
         return this.socketFactory;
-    }
-
-    public List<HostAddress> getHostAddresses() {
-        return Collections.unmodifiableList(hostAddresses);
-    }
-
-    /**
-     * Set the permanent roster store
-     */
-    public void setRosterStore(RosterStore store) {
-        rosterStore = store;
     }
 
     /**
@@ -620,25 +362,319 @@ public class ConnectionConfiguration implements Cloneable {
         return sendPresence;
     }
 
-    void setLoginInfo(String username, String password, String resource) {
-        this.username = username;
-        this.password = password;
-        this.resource = resource;
+    /**
+     * Returns true if the connection is going to use stream compression. Stream compression
+     * will be requested after TLS was established (if TLS was enabled) and only if the server
+     * offered stream compression. With stream compression network traffic can be reduced
+     * up to 90%. By default compression is disabled.
+     *
+     * @return true if the connection is going to use stream compression.
+     */
+    public boolean isCompressionEnabled() {
+        // Compression for non-TCP connections is always disabled
+        return false;
     }
 
-    void maybeResolveDns() throws Exception {
-        if (!useDnsSrvRr) return;
-        hostAddresses = DNSUtil.resolveXMPPDomain(serviceName);
-    }
+    /**
+     * A builder for XMPP connection configurations.
+     * <p>
+     * This is an abstract class that uses the builder design pattern and the "getThis() trick" to recover the type of
+     * the builder in a class hierarchies with a self-referential generic supertype. Otherwise chaining of build
+     * instructions from the superclasses followed by build instructions of a sublcass would not be possible, because
+     * the superclass build instructions would return the builder of the superclass and not the one of the subclass. You
+     * can read more about it a Angelika Langer's Generics FAQ, especially the entry <a
+     * href="http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ206">What is the
+     * "getThis()" trick?</a>.
+     * </p>
+     *
+     * @param <B> the builder type parameter.
+     * @param <C> the resulting connection configuration type parameter.
+     */
+    public static abstract class ConnectionConfigurationBuilder<B extends ConnectionConfigurationBuilder<B, C>, C extends ConnectionConfiguration> {
+        private SecurityMode securityMode = SecurityMode.enabled;
+        private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
+        private String keystoreType = "jks";
+        private String pkcs11Library = "pkcs11.config";
+        private SSLContext customSSLContext;
+        private String[] enabledSSLProtocols;
+        private String[] enabledSSLCiphers;
+        private HostnameVerifier hostnameVerifier;
+        private String username;
+        private String password;
+        private boolean anonymous;
+        private String resource = "Smack";
+        private boolean sendPresence = true;
+        private boolean rosterLoadedAtLogin = true;
+        private boolean legacySessionDisabled = false;
+        private RosterStore rosterStore;
+        private ProxyInfo proxy;
+        private CallbackHandler callbackHandler;
+        private boolean debuggerEnabled = SmackConfiguration.DEBUG_ENABLED;
+        private SocketFactory socketFactory;
+        private String serviceName;
+        private String host;
+        private int port = 5222;
 
-    private void initHostAddresses(String host, int port) {
-        if (StringUtils.isEmpty(host)) {
-            throw new IllegalArgumentException("host must not be the empty String");
+        protected ConnectionConfigurationBuilder() {
         }
-        hostAddresses = new ArrayList<HostAddress>(1);
-        HostAddress hostAddress;
-        hostAddress = new HostAddress(host, port);
-        hostAddresses.add(hostAddress);
-        useDnsSrvRr = false;
+
+        /**
+         * Set the XMPP entities username and password.
+         * <p>
+         * The username is the localpart of the entities JID, e.g. <code>localpart@example.org</code>. In order to
+         * create an anonymous connection, call {@link #makeAnonymous} instead.
+         * </p>
+         *
+         * @param username
+         * @param password
+         * @return a reference to this builder.
+         */
+        public B setUsernameAndPassword(String username, String password) {
+            this.username = username;
+            this.password = password;
+            return getThis();
+        }
+
+        /**
+         * Create a configuration for a anonymous XMPP connection.
+         * <p>
+         * Anonyous connections don't provide a username or other authentification credentials like a password. Instead
+         * the XMPP server, if supporting anonymous connections, will assign a username to the client.
+         * </p>
+         *
+         * @return a reference to this builder.
+         */
+        public B makeAnonymous() {
+            this.username = null;
+            this.password = null;
+            anonymous = true;
+            return getThis();
+        }
+
+        /**
+         * Set the service name of this XMPP service (i.e., the XMPP domain).
+         *
+         * @param serviceName the service name
+         * @return a reference to this builder.
+         */
+        public B setServiceName(String serviceName) {
+            this.serviceName = serviceName;
+            return getThis();
+        }
+
+        /**
+         * Set the resource to use.
+         * <p>
+         * If <code>resource</code> is <code>null</code>, then the server will automatically create a resource for the
+         * client. Default resource is "Smack".
+         * </p>
+         *
+         * @param resource the resource to use.
+         * @return a reference to this builder.
+         */
+        public B setResource(String resource) {
+            this.resource = resource;
+            return getThis();
+        }
+
+        public B setHost(String host) {
+            this.host = host;
+            return getThis();
+        }
+
+        public B setPort(int port) {
+            this.port = port;
+            return getThis();
+        }
+
+        /**
+         * Sets a CallbackHandler to obtain information, such as the password or
+         * principal information during the SASL authentication. A CallbackHandler
+         * will be used <b>ONLY</b> if no password was specified during the login while
+         * using SASL authentication.
+         *
+         * @param callbackHandler to obtain information, such as the password or
+         * principal information during the SASL authentication.
+         * @return a reference to this builder.
+         */
+        public B setCallbackHandler(CallbackHandler callbackHandler) {
+            this.callbackHandler = callbackHandler;
+            return getThis();
+        }
+
+        /**
+         * Sets the TLS security mode used when making the connection. By default,
+         * the mode is {@link SecurityMode#enabled}.
+         *
+         * @param securityMode the security mode.
+         * @return a reference to this builder.
+         */
+        public B setSecurityMode(SecurityMode securityMode) {
+            this.securityMode = securityMode;
+            return getThis();
+        }
+
+        /**
+         * Sets the path to the keystore file. The key store file contains the 
+         * certificates that may be used to authenticate the client to the server,
+         * in the event the server requests or requires it.
+         *
+         * @param keystorePath the path to the keystore file.
+         * @return a reference to this builder.
+         */
+        public B setKeystorePath(String keystorePath) {
+            this.keystorePath = keystorePath;
+            return getThis();
+        }
+
+        /**
+         * Sets the keystore type.
+         *
+         * @param keystoreType the keystore type.
+         * @return a reference to this builder.
+         */
+        public B setKeystoreType(String keystoreType) {
+            this.keystoreType = keystoreType;
+            return getThis();
+        }
+
+        /**
+         * Sets the PKCS11 library file location, needed when the
+         * Keystore type is PKCS11
+         *
+         * @param pkcs11Library the path to the PKCS11 library file.
+         * @return a reference to this builder.
+         */
+        public B setPKCS11Library(String pkcs11Library) {
+            this.pkcs11Library = pkcs11Library;
+            return getThis();
+        }
+
+        /**
+         * Sets a custom SSLContext for creating SSL sockets.
+         * <p>
+         * For more information on how to create a SSLContext see <a href=
+         * "http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager"
+         * >Java Secure Socket Extension (JSEE) Reference Guide: Creating Your Own X509TrustManager</a>
+         *
+         * @param context the custom SSLContext for new sockets.
+         * @return a reference to this builder.
+         */
+        public B setCustomSSLContext(SSLContext context) {
+            this.customSSLContext = context;
+            return getThis();
+        }
+
+        /**
+         * Set the enabled SSL/TLS protocols.
+         *
+         * @param enabledSSLProtocols
+         * @return a reference to this builder.
+         */
+        public B setEnabledSSLProtocols(String[] enabledSSLProtocols) {
+            this.enabledSSLProtocols = enabledSSLProtocols;
+            return getThis();
+        }
+
+        /**
+         * Set the enabled SSL/TLS ciphers.
+         * 
+         * @param enabledSSLCiphers the enabled SSL/TLS ciphers 
+         * @return a reference to this builder.
+         */
+        public B setEnabledSSLCiphers(String[] enabledSSLCiphers) {
+            this.enabledSSLCiphers = enabledSSLCiphers;
+            return getThis();
+        }
+
+        /**
+         * Set the HostnameVerifier used to verify the hostname of SSLSockets used by XMPP connections
+         * created with this ConnectionConfiguration.
+         * 
+         * @param verifier
+         * @return a reference to this builder.
+         */
+        public B setHostnameVerifier(HostnameVerifier verifier) {
+            hostnameVerifier = verifier;
+            return getThis();
+        }
+
+        /**
+         * Sets if a {@link Session} will be requested on login if the server supports
+         * it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't even
+         * mention this part of the protocol.
+         *
+         * @param legacySessionDisabled if a session has to be requested when logging in.
+         * @return a reference to this builder.
+         */
+        public B setLegacySessionDisabled(boolean legacySessionDisabled) {
+            this.legacySessionDisabled = legacySessionDisabled;
+            return getThis();
+        }
+
+        /**
+         * Sets if the roster will be loaded from the server when logging in. This
+         * is the common behaviour for clients but sometimes clients may want to differ this
+         * or just never do it if not interested in rosters.
+         *
+         * @param rosterLoadedAtLogin if the roster will be loaded from the server when logging in.
+         * @return a reference to this builder.
+         */
+        public B setRosterLoadedAtLogin(boolean rosterLoadedAtLogin) {
+            this.rosterLoadedAtLogin = rosterLoadedAtLogin;
+            return getThis();
+        }
+
+        /**
+         * Sets if an initial available presence will be sent to the server. By default
+         * an available presence will be sent to the server indicating that this presence
+         * is not online and available to receive messages. If you want to log in without
+         * being 'noticed' then pass a <tt>false</tt> value.
+         *
+         * @param sendPresence true if an initial available presence will be sent while logging in.
+         * @return a reference to this builder.
+         */
+        public B setSendPresence(boolean sendPresence) {
+            this.sendPresence = sendPresence;
+            return getThis();
+        }
+
+        /**
+         * Set the permanent roster store.
+         * 
+         * @return a reference to this builder.
+         */
+        public B setRosterStore(RosterStore store) {
+            rosterStore = store;
+            return getThis();
+        }
+
+        /**
+         * Sets if the new connection about to be establish is going to be debugged. By
+         * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
+         *
+         * @param debuggerEnabled if the new connection about to be establish is going to be debugged.
+         * @return a reference to this builder.
+         */
+        public B setDebuggerEnabled(boolean debuggerEnabled) {
+            this.debuggerEnabled = debuggerEnabled;
+            return getThis();
+        }
+
+        /**
+         * Sets the socket factory used to create new xmppConnection sockets.
+         * This is useful when connecting through SOCKS5 proxies.
+         *
+         * @param socketFactory used to create new sockets.
+         * @return a reference to this builder.
+         */
+        public B setSocketFactory(SocketFactory socketFactory) {
+            this.socketFactory = socketFactory;
+            return getThis();
+        }
+
+        public abstract C build();
+
+        protected abstract B getThis();
     }
 }

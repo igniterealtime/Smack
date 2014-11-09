@@ -34,9 +34,7 @@ receive the roster entries.
 In this example we can see how user1 sends his roster to user2.
 
 ```
-// Connect to the server and log in
-conn1 = new XMPPConnection(host);
-conn1.login(server_user1, pass1);
+XMPPConnection conn1 = …
 
 // Create a new roster exchange manager on conn1
 RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
@@ -64,9 +62,7 @@ the id of the user that will receive the roster entries.
 In this example we can see how user1 sends his roster groups to user2.
 
 ```
-// Connect to the server and log in
-conn1 = new XMPPConnection(host);
-conn1.login(server_user1, pass1);
+XMPPConnection conn1 = …
 
 // Create a new roster exchange manager on conn1
 RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
@@ -95,9 +91,7 @@ the id of the user that will receive the roster entries.
 In this example we can see how user1 sends a roster entry to user2.
 
 ```
-// Connect to the server and log in
-conn1 = new XMPPConnection(host);
-conn1.login(server_user1, pass1);
+XMPPConnection conn1 = …
 
 // Create a new roster exchange manager on conn1
 RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
@@ -127,10 +121,9 @@ adds the received entries to his roster.
 
 ```
 // Connect to the server and log in the users
-conn1 = new XMPPConnection(host);
-conn1.login(server_user1, pass1);
-conn2 = new XMPPConnection(host);
-conn2.login(server_user2, pass2);
+XMPPConnection conn1 = …
+XMPPConnection conn2 = …
+
 final Roster user2_roster = conn2.getRoster();
 
 // Create a RosterExchangeManager that will help user2 to listen and accept

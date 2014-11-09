@@ -61,7 +61,7 @@ public class RosterTest {
 
         connection = new DummyConnection();
         connection.connect();
-        connection.login("rostertest", "secret");
+        connection.login();
         rosterListener = new TestRosterListener();
         connection.getRoster().addRosterListener(rosterListener);
     }

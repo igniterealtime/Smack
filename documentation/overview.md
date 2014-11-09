@@ -12,9 +12,9 @@ Smack Key Advantages
   * Extremely simple to use, yet powerful API. Sending a text message to a user can be accomplished in only a few lines of code: 
 
     ```java
-    AbstractXMPPConnection connection = new XMPPTCPConnection("jabber.org");
+    AbstractXMPPConnection connection = new XMPPTCPConnection("mtucker", "password", "jabber.org");
     connection.connect();
-    connection.login("mtucker", "password");
+    connection.login();
     Chat chat = ChatManager.getInstanceFor(connection)
         .createChat("jsmith@jivesoftware.com", new MessageListener() {
 

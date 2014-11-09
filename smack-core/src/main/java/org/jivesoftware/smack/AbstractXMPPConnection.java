@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,7 +40,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.ConnectionConfiguration.ConnectionConfigurationBuilder;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
+import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
@@ -66,7 +70,9 @@ import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -255,8 +261,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected boolean wasAuthenticated = false;
 
-    private boolean anonymous = false;
-
     /**
      * Create a new XMPPConnection to a XMPP server.
      * 
@@ -272,6 +276,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public String getServiceName() {
+        if (serviceName != null) {
+            return serviceName;
+        }
         return config.getServiceName();
     }
 
@@ -312,6 +319,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws ConnectionException with detailed information about the failed connection.
      */
     public void connect() throws SmackException, IOException, XMPPException {
+        throwAlreadyConnectedExceptionIfAppropriate();
         saslAuthentication.init();
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
@@ -340,64 +348,31 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Before logging in (i.e. authenticate) to the server the connection must be connected.
      * 
      * It is possible to log in without sending an initial available presence by using
-     * {@link ConnectionConfiguration#setSendPresence(boolean)}. If this connection is
+     * {@link ConnectionConfigurationBuilder#setSendPresence(boolean)}. If this connection is
      * not interested in loading its roster upon login then use
-     * {@link ConnectionConfiguration#setRosterLoadedAtLogin(boolean)}.
+     * {@link ConnectionConfigurationBuilder#setRosterLoadedAtLogin(boolean)}.
      * Finally, if you want to not pass a password and instead use a more advanced mechanism
      * while using SASL then you may be interested in using
-     * {@link ConnectionConfiguration#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
+     * {@link ConnectionConfigurationBuilder#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
      * For more advanced login settings see {@link ConnectionConfiguration}.
      * 
-     * @param username the username.
-     * @param password the password or <tt>null</tt> if using a CallbackHandler.
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
      * @throws IOException 
      */
-    public void login(String username, String password) throws XMPPException, SmackException, IOException {
-        login(username, password, "Smack");
+    public void login() throws XMPPException, SmackException, IOException {
+        throwNotConnectedExceptionIfAppropriate();
+        throwAlreadyLoggedInExceptionIfAppropriate();
+        if (isAnonymous()) {
+            loginAnonymously();
+        } else {
+            loginNonAnonymously();
+        }
     }
 
-    /**
-     * Logs in to the server using the strongest authentication mode supported by
-     * the server, then sets presence to available. If the server supports SASL authentication 
-     * then the user will be authenticated using SASL if not Non-SASL authentication will 
-     * be tried. If more than five seconds (default timeout) elapses in each step of the 
-     * authentication process without a response from the server, or if an error occurs, a 
-     * XMPPException will be thrown.<p>
-     * 
-     * Before logging in (i.e. authenticate) to the server the connection must be connected.
-     * 
-     * It is possible to log in without sending an initial available presence by using
-     * {@link ConnectionConfiguration#setSendPresence(boolean)}. If this connection is
-     * not interested in loading its roster upon login then use
-     * {@link ConnectionConfiguration#setRosterLoadedAtLogin(boolean)}.
-     * Finally, if you want to not pass a password and instead use a more advanced mechanism
-     * while using SASL then you may be interested in using
-     * {@link ConnectionConfiguration#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
-     * For more advanced login settings see {@link ConnectionConfiguration}.
-     * 
-     * @param username the username.
-     * @param password the password or <tt>null</tt> if using a CallbackHandler.
-     * @param resource the resource.
-     * @throws XMPPException if an error occurs on the XMPP protocol level.
-     * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
-     * @throws IOException 
-     */
-    public abstract void login(String username, String password, String resource) throws XMPPException, SmackException, IOException;
+    protected abstract void loginNonAnonymously() throws XMPPException, SmackException, IOException;
 
-    /**
-     * Logs in to the server anonymously. Very few servers are configured to support anonymous
-     * authentication, so it's fairly likely logging in anonymously will fail. If anonymous login
-     * does succeed, your XMPP address will likely be in the form "123ABC@server/789XYZ" or
-     * "server/123ABC" (where "123ABC" and "789XYZ" is a random value generated by the server).
-     * 
-     * @throws XMPPException if an error occurs on the XMPP protocol level.
-     * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
-     * @throws IOException 
-     */
-    public abstract void loginAnonymously() throws XMPPException, SmackException, IOException;
-
+    protected abstract void loginAnonymously() throws XMPPException, SmackException, IOException;
 
     @Override
     public final boolean isConnected() {
@@ -437,7 +412,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         PacketCollector packetCollector = createPacketCollectorAndSend(new PacketIDFilter(bindResource), bindResource);
         Bind response = packetCollector.nextResultOrThrow();
         user = response.getJid();
-        setServiceName(XmppStringUtils.parseDomain(user));
+        serviceName = XmppStringUtils.parseDomain(user);
 
         if (hasFeature(Session.ELEMENT, Session.NAMESPACE) && !getConfiguration().isLegacySessionDisabled()) {
             Session session = new Session();
@@ -446,10 +421,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected void afterSuccessfulLogin(final boolean anonymous, final boolean resumed) throws NotConnectedException {
+    protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException {
         // Indicate that we're now authenticated.
         this.authenticated = true;
-        this.anonymous = anonymous;
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
@@ -476,33 +450,53 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public boolean isAnonymous() {
-        return anonymous;
+        return config.isAnonymous();
     }
 
-    protected void setServiceName(String serviceName) {
-        config.setServiceName(serviceName);
-    }
+    private String serviceName;
 
-    protected void setLoginInfo(String username, String password, String resource) {
-        config.setLoginInfo(username, password, resource);
-    }
+    protected List<HostAddress> hostAddresses;
 
-    protected void maybeResolveDns() throws Exception {
-        config.maybeResolveDns();
+    protected void populateHostAddresses() throws Exception {
+        // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
+        if (config.host != null) {
+            hostAddresses = new ArrayList<HostAddress>(1);
+            HostAddress hostAddress;
+            hostAddress = new HostAddress(config.host, config.port);
+            hostAddresses.add(hostAddress);
+        } else {
+            hostAddresses = DNSUtil.resolveXMPPDomain(config.serviceName);
+        }
     }
 
     protected Lock getConnectionLock() {
         return connectionLock;
     }
 
-    @Override
-    public void sendPacket(Packet packet) throws NotConnectedException {
+    protected void throwNotConnectedExceptionIfAppropriate() throws NotConnectedException {
         if (!isConnected()) {
             throw new NotConnectedException();
         }
+    }
+
+    protected void throwAlreadyConnectedExceptionIfAppropriate() throws AlreadyConnectedException {
+        if (isConnected()) {
+            throw new AlreadyConnectedException();
+        }
+    }
+
+    protected void throwAlreadyLoggedInExceptionIfAppropriate() throws AlreadyLoggedInException {
+        if (isAuthenticated()) {
+            throw new AlreadyLoggedInException();
+        }
+    }
+
+    @Override
+    public void sendPacket(Packet packet) throws NotConnectedException {
         if (packet == null) {
             throw new IllegalArgumentException("Packet must not be null");
         }
+        throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
         case OMITTED:
             packet.setFrom(null);
@@ -897,9 +891,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Sets whether the connection has already logged in the server. This method assures that the
      * {@link #wasAuthenticated} flag is never reset once it has ever been set.
      * 
-     * @param authenticated true if the connection has already been authenticated.
      */
-    protected void setWasAuthenticated(boolean authenticated) {
+    protected void setWasAuthenticated() {
         // Never reset the flag if the connection has ever been authenticated
         if (!wasAuthenticated) {
             wasAuthenticated = authenticated;
@@ -1229,4 +1222,5 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected void reportStanzaReceived() {
         this.lastStanzaReceived = System.currentTimeMillis();
     }
+
 }

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +29,6 @@ import javax.security.sasl.SaslException;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
@@ -106,6 +104,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     /**
      * Create a HTTP Binding connection to a XMPP server.
      * 
+     * @param username the username to use.
+     * @param password the password to use.
      * @param https true if you want to use SSL
      *             (e.g. false for http://domain.lt:7070/http-bind).
      * @param host the hostname or IP address of the connection manager
@@ -117,9 +117,10 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * @param xmppDomain the XMPP service name
      *             (e.g. domain.lt for the user alice@domain.lt)
      */
-    public XMPPBOSHConnection(boolean https, String host, int port, String filePath, String xmppDomain) {
-        super(new BOSHConfiguration(https, host, port, filePath, xmppDomain));
-        this.config = (BOSHConfiguration) getConfiguration();
+    public XMPPBOSHConnection(String username, String password, boolean https, String host, int port, String filePath, String xmppDomain) {
+        this(BOSHConfiguration.builder().setUseHttps(https).setHost(host)
+                .setPort(port).setFile(filePath).setServiceName(xmppDomain)
+                .setUsernameAndPassword(username, password).build());
     }
 
     /**
@@ -134,9 +135,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     @Override
     protected void connectInternal() throws SmackException {
-        if (connected) {
-            throw new IllegalStateException("Already connected to a server.");
-        }
         done = false;
         try {
             // Ensure a clean starting state
@@ -224,18 +222,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         return false;
     }
 
-    public void login(String username, String password, String resource)
+    @Override
+    protected void loginNonAnonymously()
             throws XMPPException, SmackException, IOException {
-        if (!isConnected()) {
-            throw new NotConnectedException();
-        }
-        if (authenticated) {
-            throw new AlreadyLoggedInException();
-        }
-
-        // Do partial version of nameprep on the username.
-        username = username.toLowerCase(Locale.US).trim();
-
+        String password = config.getPassword();
+        String resource = config.getResource();
+        String username = config.getUsername();
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
@@ -249,19 +241,11 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
         bindResourceAndEstablishSession(resource);
 
-        // Stores the authentication for future reconnection
-        setLoginInfo(username, password, resource);
-        afterSuccessfulLogin(false, false);
+        afterSuccessfulLogin(false);
     }
 
-    public void loginAnonymously() throws XMPPException, SmackException, IOException {
-        if (!isConnected()) {
-            throw new NotConnectedException();
-        }
-        if (authenticated) {
-            throw new AlreadyLoggedInException();
-        }
-
+    @Override
+    protected void loginAnonymously() throws XMPPException, SmackException, IOException {
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
@@ -275,7 +259,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
         bindResourceAndEstablishSession(null);
 
-        afterSuccessfulLogin(true, false);
+        afterSuccessfulLogin(false);
     }
 
     @Override
@@ -313,7 +297,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void shutdown() {
-        setWasAuthenticated(authenticated);
+        setWasAuthenticated();
         authID = null;
         sessionID = null;
         done = true;
@@ -508,10 +492,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     else {
                         try {
                             if (wasAuthenticated) {
-                                connection.login(
-                                        config.getUsername(),
-                                        config.getPassword(),
-                                        config.getResource());
+                                connection.login();
                             }
                             for (ConnectionListener listener : getConnectionListeners()) {
                                  listener.reconnectionSuccessful();

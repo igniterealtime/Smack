@@ -23,6 +23,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.ConnectionConfiguration.ConnectionConfigurationBuilder;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
@@ -53,8 +54,13 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
+    public static ConnectionConfigurationBuilder<?,?> getDummyConfigurationBuilder() {
+        return DummyConnectionConfiguration.builder().setServiceName("example.org").setUsernameAndPassword("dummy",
+                        "dummypass");
+    }
+
     public DummyConnection() {
-	this(new ConnectionConfiguration("example.com"));
+        this(getDummyConfigurationBuilder().build());
     }
 
     public DummyConnection(ConnectionConfiguration configuration) {
@@ -63,12 +69,16 @@ public class DummyConnection extends AbstractXMPPConnection {
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
             listener.connectionCreated(this);
         }
-        connected = true;
-        user = "dummy@" + config.getServiceName() + "/Test";
+        user = config.getUsername()
+                        + "@"
+                        + config.getServiceName()
+                        + "/"
+                        + (config.getResource() != null ? config.getResource() : "Test");
     }
 
     @Override
     protected void connectInternal() {
+        connected = true;
         connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {
@@ -130,19 +140,13 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public void login(String username, String password, String resource)
+    protected void loginNonAnonymously()
             throws XMPPException {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (isAuthenticated()) {
-            throw new IllegalStateException("Already logged in to server.");
-        }
-        user = (username != null ? username : "dummy")
+        user = config.getUsername()
                 + "@"
                 + config.getServiceName()
                 + "/" 
-                + (resource != null ? resource : "Test");
+                + (config.getResource() != null ? config.getResource() : "Test");
         roster = new Roster(this);
         anonymous = false;
         authenticated = true;
@@ -225,5 +229,33 @@ public class DummyConnection extends AbstractXMPPConnection {
         }
 
         invokePacketCollectorsAndNotifyRecvListeners(packet);
+    }
+
+    public static class DummyConnectionConfiguration extends ConnectionConfiguration {
+        protected DummyConnectionConfiguration(DummyConnectionConfigurationBuilder builder) {
+            super(builder);
+        }
+
+        public static DummyConnectionConfigurationBuilder builder() {
+            return new DummyConnectionConfigurationBuilder();
+        }
+
+        public static class DummyConnectionConfigurationBuilder
+                        extends
+                        ConnectionConfigurationBuilder<DummyConnectionConfigurationBuilder, DummyConnectionConfiguration> {
+
+            private DummyConnectionConfigurationBuilder() {
+            }
+
+            @Override
+            public DummyConnectionConfiguration build() {
+                return new DummyConnectionConfiguration(this);
+            }
+
+            @Override
+            protected DummyConnectionConfigurationBuilder getThis() {
+                return this;
+            }
+        }
     }
 }

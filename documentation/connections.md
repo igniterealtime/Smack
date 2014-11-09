@@ -28,18 +28,21 @@ Connect and Disconnect
 ----------------------
 
 ```
-// Create the configuration for this new connection_
-ConnectionConfiguration config = new ConnectionConfiguration("jabber.org", 5222);
+// Create the configuration for this new connection
+XMPPTCPConnectionConfigurationBuilder configBuilder = XMPPTCPConnectionConfiguration.builder();
+configBuilder.setUsernameAndPassword("username", "password");
+configBuilder.setResource("SomeResource");
+configBuilder.setServiceName("jabber.org");
 
-AbstractXMPPConnection connection = new XMPPTCPConnection(config);
-// Connect to the server_
+AbstractXMPPConnection connection = new XMPPTCPConnection(configBuilder.build());
+// Connect to the server
 connection.connect();
-// Log into the server_
-connection.login("username", "password", "SomeResource");
+// Log into the server
+connection.login();
 
 ...
 
-// Disconnect from the server_
+// Disconnect from the server
 connection.disconnect();
 ```
 

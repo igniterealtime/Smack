@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.jivesoftware.smack.ConnectionConfiguration.ConnectionConfigurationBuilder;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
@@ -64,12 +65,12 @@ public class RosterVersioningTest {
         DirectoryRosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder("store"));
         populateStore(store);
 
-        ConnectionConfiguration conf = new ConnectionConfiguration("dummy");
-        conf.setRosterStore(store);
-        connection = new DummyConnection(conf);
+        ConnectionConfigurationBuilder<?, ?> builder = DummyConnection.getDummyConfigurationBuilder();
+        builder.setRosterStore(store);
+        connection = new DummyConnection(builder.build());
         connection.connect();
 
-        connection.login("rostertest", "secret");
+        connection.login();
     }
 
     @After

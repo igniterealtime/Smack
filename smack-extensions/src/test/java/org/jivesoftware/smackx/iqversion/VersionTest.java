@@ -35,6 +35,7 @@ public class VersionTest {
                 + "</iq>";
         // @formatter:on
         DummyConnection con = new DummyConnection();
+        con.connect();
 
         // Enable version replys for this connection
         VersionManager.setAutoAppendSmackVersion(false);

@@ -86,7 +86,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
 import java.io.BufferedReader;
@@ -115,7 +114,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -256,81 +254,36 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private final Set<PacketFilter> requestAckPredicates = new LinkedHashSet<PacketFilter>();
 
+    private final XMPPTCPConnectionConfiguration config;
+
     /**
-     * Creates a new connection to the specified XMPP server. A DNS SRV lookup will be
-     * performed to determine the IP address and port corresponding to the
-     * service name; if that lookup fails, it's assumed that server resides at
-     * <tt>serviceName</tt> with the default port of 5222. Encrypted connections (TLS)
-     * will be used if available, stream compression is disabled, and standard SASL
-     * mechanisms will be used for authentication.<p>
-     * <p/>
+     * Creates a new XMPP connection over TCP (optionally using proxies).
+     * <p>
+     * Note that XMPPTCPConnection constructors do not establish a connection to the server
+     * and you must call {@link #connect()}.
+     * </p>
+     *
+     * @param config the connection configuration.
+     */
+    public XMPPTCPConnection(XMPPTCPConnectionConfiguration config) {
+        super(config);
+        this.config = config;
+    }
+
+    /**
+     * Creates a new XMPP connection over TCP.
+     * <p>
      * This is the simplest constructor for connecting to an XMPP server. Alternatively,
      * you can get fine-grained control over connection settings using the
-     * {@link #XMPPTCPConnection(ConnectionConfiguration)} constructor.<p>
-     * <p/>
-     * Note that XMPPTCPConnection constructors do not establish a connection to the server
-     * and you must call {@link #connect()}.<p>
-     * <p/>
-     * The CallbackHandler will only be used if the connection requires the client provide
-     * an SSL certificate to the server. The CallbackHandler must handle the PasswordCallback
-     * to prompt for a password to unlock the keystore containing the SSL certificate.
-     *
-     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
-     * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
+     * {@link #XMPPTCPConnection(XMPPTCPConnectionConfiguration)} constructor.
+     * </p>
+     * @param username
+     * @param password
+     * @param serviceName
      */
-    public XMPPTCPConnection(String serviceName, CallbackHandler callbackHandler) {
-        // Create the configuration for this new connection
-        super(new ConnectionConfiguration(serviceName));
-        config.setCallbackHandler(callbackHandler);
-    }
-
-    /**
-     * Creates a new XMPP connection in the same way {@link #XMPPTCPConnection(String,CallbackHandler)} does, but
-     * with no callback handler for password prompting of the keystore.  This will work
-     * in most cases, provided the client is not required to provide a certificate to 
-     * the server.
-     *
-     * @param serviceName the name of the XMPP server to connect to; e.g. <tt>example.com</tt>.
-     */
-    public XMPPTCPConnection(String serviceName) {
-        // Create the configuration for this new connection
-        super(new ConnectionConfiguration(serviceName));
-    }
-
-    /**
-     * Creates a new XMPP connection in the same way {@link #XMPPTCPConnection(ConnectionConfiguration,CallbackHandler)} does, but
-     * with no callback handler for password prompting of the keystore.  This will work
-     * in most cases, provided the client is not required to provide a certificate to 
-     * the server.
-     *
-     *
-     * @param config the connection configuration.
-     */
-    public XMPPTCPConnection(ConnectionConfiguration config) {
-        super(config);
-    }
-
-    /**
-     * Creates a new XMPP connection using the specified connection configuration.<p>
-     * <p/>
-     * Manually specifying connection configuration information is suitable for
-     * advanced users of the API. In many cases, using the
-     * {@link #XMPPTCPConnection(String)} constructor is a better approach.<p>
-     * <p/>
-     * Note that XMPPTCPConnection constructors do not establish a connection to the server
-     * and you must call {@link #connect()}.<p>
-     * <p/>
-     *
-     * The CallbackHandler will only be used if the connection requires the client provide
-     * an SSL certificate to the server. The CallbackHandler must handle the PasswordCallback
-     * to prompt for a password to unlock the keystore containing the SSL certificate.
-     *
-     * @param config the connection configuration.
-     * @param callbackHandler the CallbackHandler used to prompt for the password to the keystore.
-     */
-    public XMPPTCPConnection(ConnectionConfiguration config, CallbackHandler callbackHandler) {
-        super(config);
-        config.setCallbackHandler(callbackHandler);
+    public XMPPTCPConnection(String username, String password, String serviceName) {
+        this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setServiceName(
+                                        serviceName).build());
     }
 
     @Override
@@ -361,19 +314,36 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public synchronized void login(String username, String password, String resource) throws XMPPException, SmackException, IOException {
-        if (!isConnected()) {
-            throw new NotConnectedException();
+    protected void throwNotConnectedExceptionIfAppropriate() throws NotConnectedException {
+        packetWriter.throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
+    }
+
+    @Override
+    protected void throwAlreadyConnectedExceptionIfAppropriate() throws AlreadyConnectedException {
+        if (isConnected() && !disconnectedButResumeable) {
+            throw new AlreadyConnectedException();
         }
-        if (authenticated && !disconnectedButResumeable) {
+    }
+
+    @Override
+    protected void throwAlreadyLoggedInExceptionIfAppropriate() throws AlreadyLoggedInException {
+        if (isAuthenticated() && !disconnectedButResumeable) {
             throw new AlreadyLoggedInException();
         }
+    }
 
-        // Do partial version of nameprep on the username.
-        if (username != null) {
-            username = username.toLowerCase(Locale.US).trim();
-        }
+    @Override
+    protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException {
+        // Reset the flag in case it was set
+        disconnectedButResumeable = false;
+        super.afterSuccessfulLogin(resumed);
+    }
 
+    @Override
+    protected synchronized void loginNonAnonymously() throws XMPPException, SmackException, IOException {
+        String password = config.getPassword();
+        String resource = config.getResource();
+        String username = config.getUsername();
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
@@ -396,7 +366,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             smResumedSyncPoint.sendAndWaitForResponse(new Resume(clientHandledStanzasCount, smSessionId));
             if (smResumedSyncPoint.wasSuccessful()) {
                 // We successfully resumed the stream, be done here
-                afterSuccessfulLogin(false, true);
+                afterSuccessfulLogin(true);
                 return;
             }
             // SM resumption failed, what Smack does here is to report success of
@@ -435,20 +405,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             sendPacketInternal(stanza);
         }
 
-        // Stores the authentication for future reconnection
-        setLoginInfo(username, password, resource);
-        afterSuccessfulLogin(false, false);
+        afterSuccessfulLogin(false);
     }
 
     @Override
     public synchronized void loginAnonymously() throws XMPPException, SmackException, IOException {
-        if (!isConnected()) {
-            throw new NotConnectedException();
-        }
-        if (authenticated) {
-            throw new AlreadyLoggedInException();
-        }
-
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
@@ -466,7 +427,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         bindResourceAndEstablishSession(null);
 
-        afterSuccessfulLogin(true, false);
+        afterSuccessfulLogin(false);
     }
 
     @Override
@@ -499,11 +460,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * Performs an unclean disconnect and shutdown of the connection. Does not send a closing stream stanza.
      */
-    public void instantShutdown() {
+    public synchronized void instantShutdown() {
         shutdown(true);
     }
 
     private void shutdown(boolean instant) {
+        if (disconnectedButResumeable) {
+            return;
+        }
         if (packetReader != null) {
                 packetReader.shutdown();
         }
@@ -522,7 +486,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 LOGGER.log(Level.WARNING, "shutdown", e);
         }
 
-        setWasAuthenticated(authenticated);
+        setWasAuthenticated();
         // If we are able to resume the stream, then don't set
         // connected/authenticated/usingTLS to false since we like behave like we are still
         // connected (e.g. sendPacket should not throw a NotConnectedException).
@@ -563,12 +527,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     private void connectUsingConfiguration(ConnectionConfiguration config) throws SmackException, IOException {
         try {
-            maybeResolveDns();
+            populateHostAddresses();
         }
         catch (Exception e) {
             throw new SmackException(e);
         }
-        Iterator<HostAddress> it = config.getHostAddresses().iterator();
+        Iterator<HostAddress> it = hostAddresses.iterator();
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
         while (it.hasNext()) {
             Exception exception = null;
@@ -853,9 +817,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException {
-        if (connected && !disconnectedButResumeable) {
-            throw new AlreadyConnectedException();
-        }
+        throwAlreadyConnectedExceptionIfAppropriate();
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
 
@@ -869,14 +831,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Automatically makes the login if the user was previously connected successfully
         // to the server and the connection was terminated abruptly
         if (wasAuthenticated) {
-            // Make the login
-            if (isAnonymous()) {
-                // Make the anonymous login
-                loginAnonymously();
-            }
-            else {
-                login(config.getUsername(), config.getPassword(), config.getResource());
-            }
+            login();
             notifyReconnection();
         }
     }
@@ -1052,21 +1007,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         case "stream":
                             // We found an opening stream.
                             if ("jabber:client".equals(parser.getNamespace(null))) {
-                                // Get the connection id.
-                                for (int i=0; i<parser.getAttributeCount(); i++) {
-                                    if (parser.getAttributeName(i).equals("id")) {
-                                        // Save the connectionID
-                                        connectionID = parser.getAttributeValue(i);
-                                    }
-                                    // According to RFC 6120 4.7.1 response
-                                    // stream headers in c2s and s2s of the
-                                    // receiving entity MUST include the 'from'
-                                    // attribute.
-                                    else if (parser.getAttributeName(i).equals("from")) {
-                                        // Use the server name that the server says that it is.
-                                        setServiceName(parser.getAttributeValue(i));
-                                    }
-                                }
+                                connectionID = parser.getAttributeValue("", "id");
+                                String reportedServiceName = parser.getAttributeValue("", "from");
+                                assert(reportedServiceName.equals(config.getServiceName()));
                             }
                             break;
                         case "error":
@@ -1290,7 +1233,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             return shutdownTimestamp != null;
         }
 
-        private void throwNotConnectedExceptionIfDoneAndResumptionNotPossible() throws NotConnectedException {
+        protected void throwNotConnectedExceptionIfDoneAndResumptionNotPossible() throws NotConnectedException {
             if (done() && !isSmResumptionPossible()) {
                 // Don't throw a NotConnectedException is there is an resumable stream available
                 throw new NotConnectedException();

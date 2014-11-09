@@ -44,13 +44,19 @@ The `XMPPTCPConnection` class is used to create a connection to an XMPP
 server. Below are code examples for making a connection:
 
 ```
-// Create a connection to the jabber.org server._
-XMPPConnection conn1 = **new** XMPPTCPConnection("jabber.org");
+// Create a connection to the jabber.org server.
+AbstractXMPPConnection conn1 = **new** XMPPTCPConnection("username", "password" "jabber.org");
 conn1.connect();
 
-// Create a connection to the jabber.org server on a specific port._
-ConnectionConfiguration config = new ConnectionConfiguration("jabber.org", 5222);
-XMPPConnection conn2 = **new** XMPPTCPConnection(config);
+// Create a connection to the jabber.org server on a specific port.
+XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
+  .setUsernameAndPassword("username", "password")
+  .setServiceName("jabber.org")
+  .setHost("earl.jabber.org")
+  .setPort("8222")
+  .build();
+
+AbstractXMPPConnection conn2 = **new** XMPPTCPConnection(config);
 conn2.connect();
 ```
 
@@ -60,10 +66,10 @@ ConnectionConfiguration class provides advanced control over the connection
 created, such as the ability to disable or require encryption. See
 [XMPPConnection Management](connections.html) for full details.
 
-Once you've created a connection, you should login using a username and
-password with the `XMPPConnection.login(String username, String password)`
-method. Once you've logged in, you can being chatting with other users by
-creating new `Chat` or `GroupChat` objects.
+Once you've created a connection, you should login with the
+`XMPPConnection.login()` method. Once you've logged in, you can being
+chatting with other users by creating new `Chat` or `GroupChat`
+objects.
 
 Working with the Roster
 ----------------------

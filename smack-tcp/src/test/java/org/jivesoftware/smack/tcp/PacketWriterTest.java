@@ -45,7 +45,7 @@ public class PacketWriterTest {
     @SuppressWarnings("javadoc")
     @Test
     public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException {
-        XMPPTCPConnection connection = new XMPPTCPConnection("foobar.com");
+        XMPPTCPConnection connection = new XMPPTCPConnection("user", "pass", "example.org");
         final PacketWriter pw = connection.new PacketWriter();
         connection.packetWriter = pw;
         connection.packetReader = connection.new PacketReader();
