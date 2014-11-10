@@ -25,6 +25,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.util.XmppStringUtils;
@@ -95,6 +96,15 @@ public class MultipleRecipientManager {
      */
     public static void send(XMPPConnection connection, Packet packet, Collection<String> to, Collection<String> cc, Collection<String> bcc,
             String replyTo, String replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException {
+        // Check if *only* 'to' is set and contains just *one* entry, in this case extended stanzas addressing is not
+        // required at all and we can send it just as normal stanza without needing to add the extension element
+        if (to != null && to.size() == 1 && (cc == null || cc.isEmpty()) && (bcc == null || bcc.isEmpty()) && !noReply
+                        && StringUtils.isNullOrEmpty(replyTo) && StringUtils.isNullOrEmpty(replyRoom)) {
+            String toJid = to.iterator().next();
+            packet.setTo(toJid);
+            connection.sendPacket(packet);
+            return;
+        }
         String serviceAddress = getMultipleRecipienServiceAddress(connection);
         if (serviceAddress != null) {
             // Send packet to target users using multiple recipient service provided by the server
