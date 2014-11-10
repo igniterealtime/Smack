@@ -26,7 +26,6 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | Last Activity                               | [XEP-0012](http://xmpp.org/extensions/xep-0012.html)     | Communicating information about the last activity associated with an XMPP entity. |
 | Flexible Offline Message Retrieval          | [XEP-0013](http://xmpp.org/extensions/xep-0013.html)  | Extension for flexible, POP3-like handling of offline messages. |
 | [Privacy Lists](privacy.html)               | [XEP-0016](http://xmpp.org/extensions/xep-0016.html) | Enabling or disabling communication with other entities. |
-| [Message Events](messageevents.html)        | [XEP-0022](http://xmpp.org/extensions/xep-0022.html) | Requests and responds to message events. |
 | [Service Discovery](disco.html)             | [XEP-0030](http://xmpp.org/extensions/xep-0030.html) | Allows to discover services in XMPP entities. |
 | Extended Stanza Addressing                  | [XEP-0033](http://xmpp.org/extensions/xep-0033.html) | Allows to include headers in stanzas in order to specifiy multiple recipients or sub-addresses. |
 | [Multi User Chat](muc.html)                 | [XEP-0045](http://xmpp.org/extensions/xep-0045.html) | Allows configuration of, participation in, and administration of individual text-based conference rooms. |
@@ -79,4 +78,6 @@ If a XEP becomes 'Deprecated' or 'Obsolete' the code will be moved to the *smack
 
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [Message Events](messageevents.html)        | [XEP-0022](http://xmpp.org/extensions/xep-0022.html) | Requests and responds to message events. |
+
 | [Roster Item Exchange](rosterexchange.html) | [XEP-0093](http://xmpp.org/extensions/xep-0093.html) | Allows roster data to be shared between users. |
