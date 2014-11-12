@@ -596,7 +596,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
         if (!isConnected()) {
-            return;
+            throw new NotConnectedException();
         }
 
         sendPacket(unavailablePresence);
