@@ -54,8 +54,9 @@ public class SmackException extends Exception {
     }
 
     /**
-     * Exception thrown always when there was no response to an (IQ) request within the packet reply
-     * timeout of the used connection instance.
+     * Exception thrown always when there was no response to an request within the packet reply timeout of the used
+     * connection instance. You can modify (e.g. increase) the packet reply timeout with
+     * {@link XMPPConnection#setPacketReplyTimeout(long)}.
      */
     public static class NoResponseException extends SmackException {
         /**
@@ -63,8 +64,9 @@ public class SmackException extends Exception {
          */
         private static final long serialVersionUID = -6523363748984543636L;
 
-        public NoResponseException() {
-            super("No response received within packet reply timeout");
+        public NoResponseException(XMPPConnection connection) {
+            super("No response received within packet reply timeout. Timeout was " + connection.getPacketReplyTimeout()
+                            + "ms (~" + connection.getPacketReplyTimeout() / 1000 + "s)");
         }
     }
 

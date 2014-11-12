@@ -191,7 +191,7 @@ public class PacketCollector {
         P result = nextResult(timeout);
         cancel();
         if (result == null) {
-            throw new NoResponseException();
+            throw new NoResponseException(connection);
         }
 
         XMPPErrorException.ifHasErrorThenThrow(result);

@@ -1185,7 +1185,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 // If the packetListener got removed, then it was never run and
                 // we never received a response, inform the exception callback
                 if (removed && exceptionCallback != null) {
-                    exceptionCallback.processException(new NoResponseException());
+                    exceptionCallback.processException(new NoResponseException(AbstractXMPPConnection.this));
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);

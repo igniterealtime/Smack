@@ -48,9 +48,9 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
  */
 public class FaultTolerantNegotiator extends StreamNegotiator {
 
-    private StreamNegotiator primaryNegotiator;
-    private StreamNegotiator secondaryNegotiator;
-    private XMPPConnection connection;
+    private final StreamNegotiator primaryNegotiator;
+    private final StreamNegotiator secondaryNegotiator;
+    private final XMPPConnection connection;
     private PacketFilter primaryFilter;
     private PacketFilter secondaryFilter;
 
@@ -178,7 +178,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         public InputStream call() throws XMPPErrorException, InterruptedException, SmackException {
             Packet streamInitiation = collector.nextResult();
             if (streamInitiation == null) {
-                throw new NoResponseException();
+                throw new NoResponseException(connection);
             }
             StreamNegotiator negotiator = determineNegotiator(streamInitiation);
             return negotiator.negotiateIncomingStream(streamInitiation);
