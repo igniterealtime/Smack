@@ -971,7 +971,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             try {
                 initalOpenStreamSend.checkIfSuccessOrWait();
                 int eventType = parser.getEventType();
-                while (!done) {
+                outerloop: while (!done) {
                     switch (eventType) {
                     case XmlPullParser.START_TAG:
                         final String name = parser.getName();
@@ -1162,10 +1162,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         }
                         break;
                     case XmlPullParser.END_DOCUMENT:
-                        // This should not happen, log a warning and disconnect()
-                        LOGGER.warning("Got END_DOCUMENT, aborting parsing");
-                        disconnect();
-                        break;
+                        LOGGER.warning("Got END_DOCUMENT, aborting parsing and calling instantShutdown");
+                        // Use instantShutdown() because we want to keep the stream state if possible
+                        instantShutdown();
+                        break outerloop;
                     }
                     eventType = parser.next();
                 }
