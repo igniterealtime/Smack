@@ -21,6 +21,7 @@ import javax.security.auth.callback.CallbackHandler;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
+import org.jivesoftware.smack.util.MD5;
 import org.jivesoftware.smack.util.StringUtils;
 
 public class SASLDigestMD5Mechanism extends SASLMechanism {
@@ -124,12 +125,12 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
                 throw new SmackException("nonce value not present in initial challenge");
             }
             // RFC 2831 2.1.2.1 defines A1, A2, KD and response-value
-            byte[] a1FirstPart = ByteUtils.md5(toBytes(authenticationId + ':' + serviceName + ':'
-                            + password));
+            byte[] a1FirstPart = MD5.bytes(authenticationId + ':' + serviceName + ':'
+                            + password);
             cnonce = StringUtils.randomString(32);
             byte[] a1 = ByteUtils.concact(a1FirstPart, toBytes(':' + nonce + ':' + cnonce));
             digestUri = "xmpp/" + serviceName;
-            hex_hashed_a1 = StringUtils.encodeHex(ByteUtils.md5(a1));
+            hex_hashed_a1 = StringUtils.encodeHex(MD5.bytes(a1));
             String responseValue = calcResponse(DigestType.ClientResponse);
             // @formatter:off
             // See RFC 2831 2.1.2 digest-response
@@ -189,7 +190,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         }
         a2.append(':');
         a2.append(digestUri);
-        String hex_hashed_a2 = StringUtils.encodeHex(ByteUtils.md5(toBytes(a2.toString())));
+        String hex_hashed_a2 = StringUtils.encodeHex(MD5.bytes(a2.toString()));
 
         StringBuilder kd_argument = new StringBuilder();
         kd_argument.append(hex_hashed_a1);
@@ -203,7 +204,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         kd_argument.append(QOP_VALUE);
         kd_argument.append(':');
         kd_argument.append(hex_hashed_a2);
-        byte[] kd = ByteUtils.md5(toBytes(kd_argument.toString()));
+        byte[] kd = MD5.bytes(kd_argument.toString());
         String responseValue = StringUtils.encodeHex(kd);
         return responseValue;
     }
