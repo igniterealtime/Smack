@@ -654,7 +654,10 @@ public class EntityCapsManager extends Manager {
         // encoded using Base64 as specified in Section 4 of RFC 4648
         // (note: the Base64 output MUST NOT include whitespace and MUST set
         // padding bits to zero).
-        byte[] digest = md.digest(sb.toString().getBytes());
+        byte[] digest;
+        synchronized(md) {
+            digest = md.digest(sb.toString().getBytes());
+        }
         return Base64.encodeBytes(digest);
     }
 
