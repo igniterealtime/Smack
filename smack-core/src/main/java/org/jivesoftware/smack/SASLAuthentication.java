@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * <p>This class is responsible authenticating the user using SASL, binding the resource
@@ -56,6 +57,8 @@ import java.util.Set;
  * @author Jay Kline
  */
 public class SASLAuthentication {
+
+    private static final Logger LOGGER = Logger.getLogger(SASLAuthentication.class.getName());
 
     private static final List<SASLMechanism> REGISTERED_MECHANISMS = new ArrayList<SASLMechanism>();
 
@@ -408,6 +411,10 @@ public class SASLAuthentication {
 
     private List<String> serverMechanisms() {
         Mechanisms mechanisms = connection.getFeature(Mechanisms.ELEMENT, Mechanisms.NAMESPACE);
+        if (mechanisms == null) {
+            LOGGER.warning("Server did not report any SASL mechanisms");
+            return Collections.emptyList();
+        }
         return mechanisms.getMechanisms();
     }
 }
