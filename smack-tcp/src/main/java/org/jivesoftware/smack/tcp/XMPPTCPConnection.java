@@ -493,11 +493,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (isSmResumptionPossible() && instant) {
             disconnectedButResumeable = true;
         } else {
-            authenticated = false;
-            connected = false;
-            usingTLS = false;
             disconnectedButResumeable = false;
         }
+        authenticated = false;
+        connected = false;
+        usingTLS = false;
         reader = null;
         writer = null;
         maybeCompressFeaturesReceived.init();
