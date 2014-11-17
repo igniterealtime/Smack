@@ -1095,8 +1095,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 // Mark this a aon-resumable stream by setting smSessionId to null
                                 smSessionId = null;
                             }
-                            smEnabledSyncPoint.reportSuccess();
                             smWasEnabledAtLeastOnce = true;
+                            smEnabledSyncPoint.reportSuccess();
                             LOGGER.fine("Stream Management (XEP-198): succesfully enabled");
                             break;
                         case Failed.ELEMENT:
