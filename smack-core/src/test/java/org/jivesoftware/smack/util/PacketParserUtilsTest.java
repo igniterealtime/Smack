@@ -32,12 +32,14 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.sasl.SASLError;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.test.util.XmlUnitUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
@@ -745,11 +747,9 @@ public class PacketParserUtilsTest {
                 .a("xml:lang", "sp")
                 .t("This is a test of the emergency broadcast system, 3.")
             .asString(outputProperties);
-        
+
         Packet message = PacketParserUtils.parseStanza(control);
-        Diff xmlDiff = new Diff(control, message.toXML().toString());
-        xmlDiff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
-        assertTrue(xmlDiff.similar());
+        XmlUnitUtils.assertSimilar(control, message.toXML());
     }
 
     @Test
@@ -811,6 +811,41 @@ public class PacketParserUtilsTest {
         XmlPullParser parser = TestUtils.getParser(stanza, "outer");
         CharSequence result = PacketParserUtils.parseElement(parser, true);
         assertXMLEqual(stanza, result.toString());
+    }
+
+    @Test
+    public void parseSASLFailureSimple() throws FactoryConfigurationError, SAXException, IOException,
+                    TransformerException, ParserConfigurationException, XmlPullParserException {
+        // @formatter:off
+        final String saslFailureString = XMLBuilder.create(SASLFailure.ELEMENT, SaslStreamElements.NAMESPACE)
+                        .e(SASLError.account_disabled.toString())
+                        .asString();
+        // @formatter:on
+        XmlPullParser parser = TestUtils.getParser(saslFailureString, SASLFailure.ELEMENT);
+        SASLFailure saslFailure = PacketParserUtils.parseSASLFailure(parser);
+        assertXMLEqual(saslFailureString, saslFailure.toString());
+    }
+
+    @Test
+    public void parseSASLFailureExtended() throws FactoryConfigurationError, TransformerException,
+                    ParserConfigurationException, XmlPullParserException, IOException, SAXException {
+        // @formatter:off
+        final String saslFailureString = XMLBuilder.create(SASLFailure.ELEMENT, SaslStreamElements.NAMESPACE)
+                        .e(SASLError.account_disabled.toString())
+                        .up()
+                        .e("text").a("xml:lang", "en")
+                            .t("Call 212-555-1212 for assistance.")
+                        .up()
+                        .e("text").a("xml:lang", "de")
+                            .t("Bitte wenden sie sich an (04321) 123-4444")
+                        .up()
+                        .e("text")
+                            .t("Wusel dusel")
+                        .asString();
+        // @formatter:on
+        XmlPullParser parser = TestUtils.getParser(saslFailureString, SASLFailure.ELEMENT);
+        SASLFailure saslFailure = PacketParserUtils.parseSASLFailure(parser);
+        XmlUnitUtils.assertSimilar(saslFailureString, saslFailure.toXML());
     }
 
     private String determineNonDefaultLanguage() {

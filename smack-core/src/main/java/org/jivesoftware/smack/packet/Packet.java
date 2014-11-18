@@ -372,11 +372,6 @@ public abstract class Packet extends TopLevelStreamElement {
         return DEFAULT_LANGUAGE;
     }
 
-    @Override
-    public String toString() {
-        return toXML().toString();
-    }
-
     /**
      * Add to, from, id and 'xml:lang' attributes
      *

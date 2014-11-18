@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smack.sasl.packet;
 
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.util.StringUtils;
@@ -159,8 +163,18 @@ public class SaslStreamElements {
 
         private final SASLError saslError;
         private final String saslErrorString;
+        private final Map<String, String> descriptiveTexts;
 
         public SASLFailure(String saslError) {
+            this(saslError, null);
+        }
+
+        public SASLFailure(String saslError, Map<String, String> descriptiveTexts) {
+            if (descriptiveTexts != null) {
+                this.descriptiveTexts = descriptiveTexts;
+            } else {
+                this.descriptiveTexts = Collections.emptyMap();
+            }
             SASLError error = SASLError.fromString(saslError);
             if (error == null) {
                 // RFC6120 6.5 states that unknown condition must be treat as generic authentication
@@ -189,11 +203,48 @@ public class SaslStreamElements {
             return saslErrorString;
         }
 
+        /**
+         * Get the descriptive text of this SASLFailure.
+         * <p>
+         * Returns the descriptive text of this SASLFailure in the system default language if possible. May return null.
+         * </p>
+         * 
+         * @return the descriptive text or null.
+         */
+        public String getDescriptiveText() {
+            String defaultLocale = Locale.getDefault().getLanguage();
+            String descriptiveText = getDescriptiveText(defaultLocale);
+            if (descriptiveText == null) {
+                descriptiveText = getDescriptiveText(null);
+            }
+            return descriptiveText;
+        }
+
+        /**
+         * Get the descriptive test of this SASLFailure.
+         * <p>
+         * Returns the descriptive text of this SASLFailure in the given language. May return null if not available.
+         * </p>
+         * 
+         * @param xmllang the language.
+         * @return the descriptive text or null.
+         */
+        public String getDescriptiveText(String xmllang) {
+            return descriptiveTexts.get(xmllang);
+        }
+
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(ELEMENT).rightAngleBracket();
+            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.emptyElement(saslErrorString);
+            for (Map.Entry<String, String> entry : descriptiveTexts.entrySet()) {
+                String xmllang = entry.getKey();
+                String text = entry.getValue();
+                xml.halfOpenElement("text").xmllangAttribute(xmllang).rightAngleBracket();
+                xml.escape(text);
+                xml.closeElement("text");
+            }
             xml.closeElement(ELEMENT);
             return xml;
         }

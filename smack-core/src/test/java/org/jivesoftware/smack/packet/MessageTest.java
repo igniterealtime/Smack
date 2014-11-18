@@ -21,8 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
+import org.jivesoftware.smack.test.util.XmlUnitUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -150,9 +149,7 @@ public class MessageTest {
         message.addBody(null, messageBody1);
         message.addBody(lang2, messageBody2);
         message.addBody(lang3, messageBody3);
-        Diff xmlDiff = new Diff(control, message.toXML().toString());
-        xmlDiff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
-        assertTrue(xmlDiff.similar());
+        XmlUnitUtils.assertSimilar(control, message.toXML());
 
         Collection<String> languages = message.getBodyLanguages();
         List<String> controlLanguages = new ArrayList<String>();

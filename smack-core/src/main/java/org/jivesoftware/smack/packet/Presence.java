@@ -230,18 +230,6 @@ public final class Presence extends Packet {
         return buf;
     }
 
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(type);
-        if (mode != null) {
-            buf.append(": ").append(mode);
-        }
-        if (getStatus() != null) {
-            buf.append(" (").append(getStatus()).append(")");
-        }
-        return buf.toString();
-    }
-
     /**
      * An enum to represent the presence type. Note that presence type is often confused
      * with presence mode. Generally, if a user is signed in to a server, they have a presence

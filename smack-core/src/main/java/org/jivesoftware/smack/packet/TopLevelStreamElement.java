@@ -23,4 +23,9 @@ package org.jivesoftware.smack.packet;
  */
 public abstract class TopLevelStreamElement implements Element {
 
+    @Override
+    public final String toString() {
+        return toXML().toString();
+    }
+
 }

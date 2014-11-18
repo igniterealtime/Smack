@@ -22,9 +22,11 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -765,26 +767,37 @@ public class PacketParserUtils {
      * 
      * @param parser the XML parser.
      * @return a SASL Failure packet.
-     * @throws Exception if an exception occurs while parsing the packet.
+     * @throws IOException 
+     * @throws XmlPullParserException 
      */
-    public static SASLFailure parseSASLFailure(XmlPullParser parser) throws Exception {
+    public static SASLFailure parseSASLFailure(XmlPullParser parser) throws XmlPullParserException, IOException {
+        final int initialDepth = parser.getDepth();
         String condition = null;
-        boolean done = false;
-        while (!done) {
+        Map<String, String> descriptiveTexts = new HashMap<String, String>();
+        outerloop: while (true) {
             int eventType = parser.next();
-
-            if (eventType == XmlPullParser.START_TAG) {
-                if (!parser.getName().equals("failure")) {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                if (name.equals("text")) {
+                    String xmllang = getLanguageAttribute(parser);
+                    String text = parser.nextText();
+                    String previousValue = descriptiveTexts.put(xmllang, text);
+                    assert(previousValue == null);
+                }
+                else {
+                    assert(condition == null);
                     condition = parser.getName();
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("failure")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
-        return new SASLFailure(condition);
+        return new SASLFailure(condition, descriptiveTexts);
     }
 
     /**

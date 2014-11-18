@@ -201,12 +201,6 @@ public class PacketCollectorTest
 		}
 
 		@Override
-		public String toString()
-		{
-			return toXML();
-		}
-
-		@Override
 		public String toXML()
 		{
 			return "<packetId>" + getPacketID() + "</packetId>";
