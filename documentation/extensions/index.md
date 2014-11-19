@@ -49,6 +49,7 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | [SI File Transfer](filetransfer.html)       | [XEP-0096](http://xmpp.org/extensions/xep-0096.html) | Transfer files between two users over XMPP. |
 | [Entity Capabilities](caps.html)            | [XEP-0115](http://xmpp.org/extensions/xep-0115.html) | Broadcasting and dynamic discovery of entity capabilities. |
 | Stream Compression                          | [XEP-0138](http://xmpp.org/extensions/xep-0138.html) | Support for optional compression of the XMPP stream.
+| Data Forms Layout                           | [XEP-0141](http://xmpp.org/extensions/xep-0141.html) | Enables an application to specify form layouts. |
 | Personal Eventing Protocol                  | [XEP-0163](http://xmpp.org/extensions/xep-0163.html) | Using the XMPP publish-subscribe protocol to broadcast state change events associated with a XMPP account. |
 | Message Delivery Receipts                   | [XEP-0184](http://xmpp.org/extensions/xep-0184.html) | Extension for message delivery receipts. The sender can request notification that the message has been delivered. |
 | XMPP Ping                                   | [XEP-0199](http://xmpp.org/extensions/xep-0199.html) | Sending application-level pings over XML streams.

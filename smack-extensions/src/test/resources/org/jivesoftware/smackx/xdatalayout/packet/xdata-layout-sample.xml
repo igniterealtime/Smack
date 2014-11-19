@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x xmlns='jabber:x:data' type='form'>
+  <page xmlns='http://jabber.org/protocol/xdata-layout' label='Label - &amp; é á '>
+    <fieldref var='testField1' />
+    <section label='section Label - &amp; é á '>
+      <text>SectionText - &amp; é á </text>
+    </section>
+    <text>PageText - &amp; é á </text>
+    <section
+      label='&lt;html&gt;Number of Persons by&lt;br/&gt; Nationality and Status&lt;/html&gt;'>
+      <reportedref />
+    </section>
+    <text><![CDATA[<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>]]></text>
+  </page>
+</x>
