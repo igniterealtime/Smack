@@ -68,7 +68,7 @@ public class DataFormProvider extends PacketExtensionProvider<DataForm> {
                 }
                 // See XEP-141 Data Forms Layout
                 else if (parser.getName().equals(DataLayout.ELEMENT) && parser.getNamespace().equals(DataLayout.NAMESPACE)) {
-                    dataForm.addExtensionElement(DataLayoutProvider.INSTANCE.parse(parser));
+                    dataForm.addExtensionElement(DataLayoutProvider.parse(parser));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals(dataForm.getElementName())) {

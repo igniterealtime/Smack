@@ -66,11 +66,9 @@ public class DataLayoutTest {
         logger.finest(output);
         assertEquals(TEST_OUTPUT_2, output);
         
-        DataLayoutProvider pr = DataLayoutProvider.INSTANCE;
-        
         XmlPullParser parser = getParser(output);
         
-        layout = pr.parse(parser);
+        layout = DataLayoutProvider.parse(parser);
         
         assertEquals(3 , layout.getPageLayout().size());
         assertEquals("Label", layout.getLabel());
@@ -106,11 +104,9 @@ public class DataLayoutTest {
         logger.finest(output);
         assertEquals(TEST_OUTPUT_SPECIAL, output);
         
-        DataLayoutProvider pr = DataLayoutProvider.INSTANCE;
-        
         XmlPullParser parser = getParser(output);
         
-        layout = pr.parse(parser);
+        layout = DataLayoutProvider.parse(parser);
         
         assertEquals(5 , layout.getPageLayout().size());
         assertEquals("Label - & \u00E9 \u00E1 ", layout.getLabel());

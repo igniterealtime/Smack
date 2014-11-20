@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.DataFormLayoutElement;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
@@ -36,16 +35,9 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Anno van Vliet
  *
  */
-public class DataLayoutProvider extends PacketExtensionProvider<DataLayout> {
+public class DataLayoutProvider {
 
-    public static final DataLayoutProvider INSTANCE = new DataLayoutProvider();
-
-    
-    /* (non-Javadoc)
-     * @see org.jivesoftware.smack.provider.Provider#parse(org.xmlpull.v1.XmlPullParser, int)
-     */
-    @Override
-    public DataLayout parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
+    public static DataLayout parse(XmlPullParser parser) throws XmlPullParserException, IOException,
                     SmackException {
         DataLayout dataLayout = new DataLayout(parser.getAttributeValue("", "label"));
         parseLayout(dataLayout.getPageLayout(), parser);

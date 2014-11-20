@@ -481,12 +481,4 @@
        <namespace>http://jabber.org/protocol/rsm</namespace>
        <className>org.jivesoftware.smackx.rsm.provider.RSMSetProvider</className>
     </extensionProvider>
-    
-    <!-- XEP-141: Data Forms Layout-->
-    <extensionProvider>
-        <elementName>page</elementName>
-        <namespace>http://jabber.org/protocol/xdata-layout</namespace>
-        <className>org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider</className>
-    </extensionProvider>
-    
 </smackProviders>
