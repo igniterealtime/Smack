@@ -12,5 +12,7 @@
         <className>org.jivesoftware.smackx.privacy.PrivacyListManager</className>
         <className>org.jivesoftware.smackx.time.EntityTimeManager</className>
         <className>org.jivesoftware.smackx.vcardtemp.VCardManager</className>
+        <className>org.jivesoftware.smackx.xdata.XDataManager</className>
+        <className>org.jivesoftware.smackx.xdatalayout.XDataLayoutManager</className>
     </startupClasses>
 </smack>
