@@ -42,122 +42,155 @@ public class DataFormProvider extends PacketExtensionProvider<DataForm> {
     @Override
     public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
                     SmackException {
-        boolean done = false;
         DataForm dataForm = new DataForm(parser.getAttributeValue("", "type"));
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("instructions")) { 
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                String namespace = parser.getNamespace();
+                switch (name) {
+                case "instructions":
                     dataForm.addInstruction(parser.nextText());
-                }
-                else if (parser.getName().equals("title")) {                    
+                    break;
+                case "title":
                     dataForm.setTitle(parser.nextText());
-                }
-                else if (parser.getName().equals("field")) {                    
+                    break;
+                case "field":
                     dataForm.addField(parseField(parser));
-                }
-                else if (parser.getName().equals("item")) {                    
+                    break;
+                case "item":
                     dataForm.addItem(parseItem(parser));
-                }
-                else if (parser.getName().equals("reported")) {                    
+                    break;
+                case "reported":
                     dataForm.setReportedData(parseReported(parser));
-                }
+                    break;
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
-                else if (parser.getName().equals(RosterPacket.ELEMENT) && parser.getNamespace().equals(RosterPacket.NAMESPACE)) {
-                    dataForm.addExtensionElement(RosterPacketProvider.INSTANCE.parse(parser));
-                }
+                case RosterPacket.ELEMENT:
+                    if (namespace.equals(RosterPacket.NAMESPACE)) {
+                        dataForm.addExtensionElement(RosterPacketProvider.INSTANCE.parse(parser));
+                    }
+                    break;
                 // See XEP-141 Data Forms Layout
-                else if (parser.getName().equals(DataLayout.ELEMENT) && parser.getNamespace().equals(DataLayout.NAMESPACE)) {
-                    dataForm.addExtensionElement(DataLayoutProvider.parse(parser));
+                case DataLayout.ELEMENT:
+                    if (namespace.equals(DataLayout.NAMESPACE)) {
+                        dataForm.addExtensionElement(DataLayoutProvider.parse(parser));
+                    }
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(dataForm.getElementName())) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return dataForm;
     }
 
     private FormField parseField(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
+        final int initialDepth = parser.getDepth();
         FormField formField = new FormField(parser.getAttributeValue("", "var"));
         formField.setLabel(parser.getAttributeValue("", "label"));
         formField.setType(parser.getAttributeValue("", "type"));
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("desc")) { 
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "desc":
                     formField.setDescription(parser.nextText());
-                }
-                else if (parser.getName().equals("value")) {                    
+                    break;
+                case "value":
                     formField.addValue(parser.nextText());
-                }
-                else if (parser.getName().equals("required")) {                    
+                    break;
+                case "required":
                     formField.setRequired(true);
-                }
-                else if (parser.getName().equals("option")) {                    
+                    break;
+                case "option":
                     formField.addOption(parseOption(parser));
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("field")) {
-                    done = true;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return formField;
     }
 
     private DataForm.Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
+        final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<FormField>();
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("field")) { 
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "field":
                     fields.add(parseField(parser));
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("item")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return new DataForm.Item(fields);
     }
 
     private DataForm.ReportedData parseReported(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
+        final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<FormField>();
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("field")) { 
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "field":
                     fields.add(parseField(parser));
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("reported")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return new DataForm.ReportedData(fields);
     }
 
     private FormField.Option parseOption(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
+        final int initialDepth = parser.getDepth();
         FormField.Option option = null;
         String label = parser.getAttributeValue("", "label");
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("value")) {
-                    option = new FormField.Option(label, parser.nextText());                     
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "value":
+                    option = new FormField.Option(label, parser.nextText());
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("option")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return option;
