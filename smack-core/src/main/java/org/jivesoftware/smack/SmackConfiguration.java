@@ -296,6 +296,25 @@ public final class SmackConfiguration {
         disabledSmackClasses.add(className);
     }
 
+    public static boolean isDisabledSmackClass(String className) {
+        for (String disabledClassOrPackage : disabledSmackClasses) {
+            if (disabledClassOrPackage.equals(className)) {
+                return true;
+            }
+            int lastDotIndex = disabledClassOrPackage.lastIndexOf('.');
+            // Security check to avoid NPEs if someone entered 'foo.bar.'
+            if (disabledClassOrPackage.length() > lastDotIndex
+                            // disabledClassOrPackage is not an Class
+                            && !Character.isUpperCase(disabledClassOrPackage.charAt(lastDotIndex + 1))
+                            // classToLoad startsWith the package disabledClassOrPackage disables
+                            && className.startsWith(disabledClassOrPackage)) {
+                // Skip the class because the whole package was disabled
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Check if Smack was successfully initialized.
      * 

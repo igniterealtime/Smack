@@ -188,21 +188,8 @@ public final class SmackInitialization {
             name = parser.getName();
             if (eventType == XmlPullParser.START_TAG && "className".equals(name)) {
                 String classToLoad = parser.nextText();
-                for (String disabledClassOrPackage : SmackConfiguration.disabledSmackClasses) {
-                    if (disabledClassOrPackage.equals(classToLoad)) {
-                        // Skip disabled class
-                        continue outerloop;
-                    }
-                    int lastDotIndex = disabledClassOrPackage.lastIndexOf('.');
-                    // Security check to avoid NPEs if someone entered 'foo.bar.'
-                    if (disabledClassOrPackage.length() > lastDotIndex
-                                    // disabledClassOrPackage is not an Class
-                                    && !Character.isUpperCase(disabledClassOrPackage.charAt(lastDotIndex + 1))
-                                    // classToLoad startsWith the package disabledClassOrPackage disables
-                                    && classToLoad.startsWith(disabledClassOrPackage)) {
-                        // Skip the class because the whole package was disabled
-                        continue outerloop;
-                    }
+                if (SmackConfiguration.isDisabledSmackClass(classToLoad)) {
+                    continue outerloop;
                 }
 
                 try {

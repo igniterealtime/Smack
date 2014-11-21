@@ -18,6 +18,7 @@
 
 package org.jivesoftware.smack.debugger;
 
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 
 import java.io.Reader;
@@ -36,6 +37,7 @@ public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
      */
     private static final String[] DEFAULT_DEBUGGERS = new String[] {
             "org.jivesoftware.smackx.debugger.EnhancedDebugger",
+            "org.jivesoftware.smack.debugger.JulDebugger",
             "org.jivesoftware.smackx.debugger.android.AndroidDebugger",
             "org.jivesoftware.smack.debugger.LiteDebugger",
             "org.jivesoftware.smack.debugger.ConsoleDebugger" };
@@ -103,6 +105,9 @@ public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
     @SuppressWarnings("unchecked")
     private static Class<SmackDebugger> getOneOfDefaultDebuggerClasses() {
         for (String debugger : DEFAULT_DEBUGGERS) {
+            if (SmackConfiguration.isDisabledSmackClass(debugger)) {
+                continue;
+            }
             try {
                 return (Class<SmackDebugger>) Class.forName(debugger);
             } catch (ClassNotFoundException cnfe) {

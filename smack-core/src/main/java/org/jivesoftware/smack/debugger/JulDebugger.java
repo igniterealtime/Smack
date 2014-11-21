@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ import org.jivesoftware.smack.XMPPConnection;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use
@@ -34,20 +33,17 @@ import java.util.Date;
  *
  * @author Gaston Dombiak
  */
-public class ConsoleDebugger extends AbstractDebugger {
-    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
+public class JulDebugger extends AbstractDebugger {
 
-    public ConsoleDebugger(XMPPConnection connection, Writer writer, Reader reader) {
+    private static final Logger LOGGER = Logger.getLogger(JulDebugger.class.getName());
+
+    public JulDebugger(XMPPConnection connection, Writer writer, Reader reader) {
         super(connection, writer, reader);
     }
 
     @Override
     protected void log(String logMessage) {
-        String formatedDate;
-        synchronized (dateFormatter) {
-            formatedDate = dateFormatter.format(new Date());
-        }
-        System.out.println(formatedDate + ' ' + logMessage);
+        LOGGER.fine(logMessage);
     }
 
 }
