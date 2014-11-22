@@ -206,14 +206,14 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * Add the given attribute if value => 0
+     * Add the given attribute if value not null and value => 0.
      *
      * @param name
      * @param value
      * @return a reference to this object
      */
     public XmlStringBuilder optLongAttribute(String name, Long value) {
-        if (value >= 0) {
+        if (value != null && value >= 0) {
             attribute(name, Long.toString(value));
         }
         return this;

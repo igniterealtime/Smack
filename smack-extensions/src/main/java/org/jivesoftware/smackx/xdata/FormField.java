@@ -17,11 +17,12 @@
 
 package org.jivesoftware.smackx.xdata;
 
-import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 
 /**
  * Represents a field of a form. The field could be used to represent a question to complete,
@@ -124,6 +125,7 @@ public class FormField {
     private Type type;
     private final List<Option> options = new ArrayList<Option>();
     private final List<String> values = new ArrayList<String>();
+    private ValidateElement validateElement;
 
     /**
      * Creates a new FormField with the variable name that uniquely identifies the field
@@ -220,6 +222,13 @@ public class FormField {
     }
 
     /**
+     * @return the validateElement
+     */
+    public ValidateElement getValidateElement() {
+        return validateElement;
+    }
+
+    /**
      * Sets a description that provides extra clarification about the question. This information
      * could be presented to the user either in tool-tip, help button, or as a section of text
      * before the question.<p>
@@ -249,6 +258,14 @@ public class FormField {
      */
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    /**
+     * @param validateElement the validateElement to set
+     */
+    public void setValidateElement(ValidateElement validateElement) {
+        validateElement.checkConsistency(this);
+        this.validateElement = validateElement;
     }
 
     /**
@@ -325,6 +342,7 @@ public class FormField {
         for (Option option : getOptions()) {
             buf.append(option.toXML());
         }
+        buf.optElement(validateElement);
         buf.closeElement(ELEMENT);
         return buf;
     }

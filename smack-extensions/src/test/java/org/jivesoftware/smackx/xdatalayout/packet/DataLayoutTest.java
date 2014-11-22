@@ -21,8 +21,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -47,12 +45,9 @@ public class DataLayoutTest {
     private static final String TEST_OUTPUT_2 = "<page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page>";
     private static final String TEST_OUTPUT_SPECIAL = "<page xmlns='http://jabber.org/protocol/xdata-layout' label='Label - &amp; \u00E9 \u00E1 '><fieldref var='testField1'/><section label='section Label - &amp; \u00E9 \u00E1 '><text>SectionText - &amp; \u00E9 \u00E1 </text></section><text>PageText - &amp; \u00E9 \u00E1 </text><section label='&lt;html&gt;Number of Persons by&lt;br/&gt; Nationality and Status&lt;/html&gt;'><reportedref/></section><text>&lt;html&gt;&lt;font color=&apos;red&apos;&gt;&lt;em&gt;DO NOT DELAY&lt;/em&gt;&lt;/font&gt;&lt;br/&gt;supply further information&lt;/html&gt;</text></page>";
     private static final String TEST_INPUT_1 = "xdata-layout-sample.xml";
-    private static Logger logger = Logger.getLogger(DataLayoutTest.class.getName());
 
- 
     @Test
     public void testLayout() throws XmlPullParserException, IOException, SmackException {
-        
         DataLayout layout = new DataLayout("Label");
         Fieldref reffield = new Fieldref("testField1");
         layout.getPageLayout().add(reffield);
@@ -63,10 +58,9 @@ public class DataLayoutTest {
         
         assertNotNull( layout.toXML());
         String output = layout.toXML().toString();
-        logger.finest(output);
         assertEquals(TEST_OUTPUT_2, output);
         
-        XmlPullParser parser = getParser(output);
+        XmlPullParser parser = PacketParserUtils.getParserFor(output);
         
         layout = DataLayoutProvider.parse(parser);
         
@@ -75,10 +69,7 @@ public class DataLayoutTest {
 
         assertNotNull( layout.toXML());
         output = layout.toXML().toString();
-        logger.finest(output);
         assertEquals(TEST_OUTPUT_2, output);
-
-        
     }
 
     @Test
@@ -101,10 +92,9 @@ public class DataLayoutTest {
         
         assertNotNull( layout.toXML());
         String output = layout.toXML().toString();
-        logger.finest(output);
         assertEquals(TEST_OUTPUT_SPECIAL, output);
         
-        XmlPullParser parser = getParser(output);
+        XmlPullParser parser = PacketParserUtils.getParserFor(output);
         
         layout = DataLayoutProvider.parse(parser);
         
@@ -122,16 +112,11 @@ public class DataLayoutTest {
         
         assertNotNull( layout.toXML());
         output = layout.toXML().toString();
-        logger.finest(output);
         assertEquals(TEST_OUTPUT_SPECIAL, output);
-
-        
     }
 
     @Test
     public void testLayoutFromFile() throws XmlPullParserException, IOException, SmackException {
-        
-        
         DataFormProvider pr = new DataFormProvider();
         
         XmlPullParser parser = PacketParserUtils.newXmppParser();
@@ -158,24 +143,6 @@ public class DataLayoutTest {
         
         assertNotNull( layout.toXML());
         String output = layout.toXML().toString();
-        logger.finest(output);
         assertEquals(TEST_OUTPUT_SPECIAL, output);
-
-        
-    }
-
-    
-    /**
-     * @param output
-     * @return
-     * @throws XmlPullParserException 
-     * @throws IOException 
-     */
-    private XmlPullParser getParser(String output) throws XmlPullParserException, IOException {
-        logger.finest("getParser");
-        XmlPullParser parser = PacketParserUtils.newXmppParser();
-        parser.setInput(new StringReader(output));
-        parser.next();
-        return parser;
     }
 }
