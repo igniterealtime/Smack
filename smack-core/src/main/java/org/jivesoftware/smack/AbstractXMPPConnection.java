@@ -1064,7 +1064,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         streamFeature = RosterVer.INSTANCE;
                     }
                     else {
-                        LOGGER.severe("Unkown Roster Versioning Namespace: "
+                        LOGGER.severe("Unknown Roster Versioning Namespace: "
                                         + namespace
                                         + ". Roster versioning not enabled");
                     }

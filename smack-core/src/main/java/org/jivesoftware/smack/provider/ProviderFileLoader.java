@@ -118,7 +118,7 @@ public class ProviderFileLoader implements ProviderLoader {
                                                     (PacketExtensionProvider<PacketExtension>) provider.newInstance()));
                                     break;
                                 default:
-                                    LOGGER.warning("Unkown provider type: " + typeName);
+                                    LOGGER.warning("Unknown provider type: " + typeName);
                                 }
                             }
                             catch (ClassNotFoundException cnfe) {

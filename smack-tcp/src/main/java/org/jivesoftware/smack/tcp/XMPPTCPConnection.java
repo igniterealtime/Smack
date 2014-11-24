@@ -1151,7 +1151,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             break;
                          default:
-                             LOGGER.warning("Unkown top level stream element: " + name);
+                             LOGGER.warning("Unknown top level stream element: " + name);
                              break;
                         }
                         break;
