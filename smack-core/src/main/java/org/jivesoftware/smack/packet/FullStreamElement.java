@@ -23,6 +23,6 @@ package org.jivesoftware.smack.packet;
  * 
  * @author Florian Schmaus
  */
-public abstract class FullStreamElement extends PlainStreamElement implements PacketExtension {
+public abstract class FullStreamElement implements PlainStreamElement, PacketExtension {
 
 }

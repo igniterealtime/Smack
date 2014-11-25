@@ -44,7 +44,7 @@ public class ParseStreamManagement {
     public static Failed failed(XmlPullParser parser) throws XmlPullParserException, IOException {
         ParserUtils.assertAtStartTag(parser);
         String name;
-        String condition = "unknown";
+        XMPPError.Condition condition = null;
         outerloop:
         while(true) {
             int event = parser.next();
@@ -53,7 +53,7 @@ public class ParseStreamManagement {
                 name = parser.getName();
                 String namespace = parser.getNamespace();
                 if (XMPPError.NAMESPACE.equals(namespace)) {
-                    condition = name;
+                    condition = XMPPError.Condition.fromString(name);
                 }
                 break;
             case XmlPullParser.END_TAG:
@@ -65,8 +65,7 @@ public class ParseStreamManagement {
             }
         }
         ParserUtils.assertAtEndTag(parser);
-        XMPPError error = new XMPPError(condition);
-        return new Failed(error);
+        return new Failed(condition);
     }
 
     public static Resumed resumed(XmlPullParser parser) throws XmlPullParserException, IOException {

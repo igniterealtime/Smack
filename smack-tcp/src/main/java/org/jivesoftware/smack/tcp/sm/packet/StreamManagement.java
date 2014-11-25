@@ -189,25 +189,26 @@ public class StreamManagement {
     public static class Failed extends FullStreamElement {
         public static final String ELEMENT = "failed";
 
-        private XMPPError error;
+        private XMPPError.Condition condition;
 
         public Failed() {
         }
 
-        public Failed(XMPPError error) {
-            this.error = error;
+        public Failed(XMPPError.Condition condition) {
+            this.condition = condition;
         }
 
-        public XMPPError getXMPPError() {
-            return error;
+        public XMPPError.Condition getXMPPErrorCondition() {
+            return condition;
         }
 
         @Override
         public CharSequence toXML() {
             XmlStringBuilder xml = new XmlStringBuilder(this);
-            if (error != null) {
+            if (condition != null) {
                 xml.rightAngleBracket();
-                xml.append(error.toXML());
+                xml.append(condition.toString());
+                xml.xmlnsAttribute(XMPPError.NAMESPACE);
                 xml.closeElement(ELEMENT);
             }
             else {

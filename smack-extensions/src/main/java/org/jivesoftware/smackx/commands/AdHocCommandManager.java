@@ -593,8 +593,7 @@ public class AdHocCommandManager extends Manager {
     private void respondError(AdHocCommandData response, XMPPError.Condition condition,
             AdHocCommand.SpecificErrorCondition specificCondition) throws NotConnectedException
     {
-        XMPPError error = new XMPPError(condition);
-        error.addExtension(new AdHocCommandData.SpecificError(specificCondition));
+        XMPPError error = new XMPPError(condition, new AdHocCommandData.SpecificError(specificCondition));
         respondError(response, error);
     }
 

@@ -120,7 +120,7 @@ public class InBandBytestreamManagerTest {
             fail("exception should be thrown");
         }
         catch (XMPPErrorException e) {
-            assertEquals(XMPPError.Condition.feature_not_implemented.toString(),
+            assertEquals(XMPPError.Condition.feature_not_implemented,
                             e.getXMPPError().getCondition());
         }
 

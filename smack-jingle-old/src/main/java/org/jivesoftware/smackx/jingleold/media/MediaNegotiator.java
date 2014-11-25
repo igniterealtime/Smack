@@ -113,7 +113,7 @@ public class MediaNegotiator extends JingleNegotiator {
             setNegotiatorState(JingleNegotiatorState.FAILED);
             triggerMediaClosed(getBestCommonAudioPt());
             // This next line seems wrong, and may subvert the normal closing process.
-            throw new JingleException(iq.getError().getMessage());
+            throw new JingleException(iq.getError().getDescriptiveText());
         } else if (iq.getType().equals(IQ.Type.result)) {
             // Process ACKs
             if (isExpectedId(iq.getPacketID())) {

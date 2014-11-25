@@ -29,6 +29,6 @@ package org.jivesoftware.smack.packet;
  * 
  * @author Florian Schmaus
  */
-public abstract class PlainStreamElement extends TopLevelStreamElement {
+public interface PlainStreamElement extends TopLevelStreamElement {
 
 }

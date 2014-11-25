@@ -341,16 +341,15 @@ public class OutgoingFileTransfer extends FileTransfer {
 	private void handleXMPPException(XMPPErrorException e) {
 		XMPPError error = e.getXMPPError();
 		if (error != null) {
-			String condition = error.getCondition();
-			if (XMPPError.Condition.forbidden.equals(condition)) {
+			switch (error.getCondition()) {
+			case forbidden:
 				setStatus(Status.refused);
 				return;
-			}
-            else if (XMPPError.Condition.bad_request.equals(condition)) {
+			case bad_request:
 				setStatus(Status.error);
 				setError(Error.not_acceptable);
-            }
-            else {
+				break;
+            default:
                 setStatus(FileTransfer.Status.error);
             }
         }

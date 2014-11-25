@@ -16,14 +16,12 @@
  */
 package org.jivesoftware.smack.packet;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -32,85 +30,76 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * error condition as well as as an optional text explanation. Typical errors are:<p>
  *
  * <table border=1>
- *      <hr><td><b>XMPP Error</b></td><td><b>Type</b></td></hr>
- *      <tr><td>internal-server-error</td><td>WAIT</td></tr>
- *      <tr><td>forbidden</td><td>AUTH</td></tr>
- *      <tr><td>bad-request</td><td>MODIFY</td></tr>
- *      <tr><td>item-not-found</td><td>CANCEL</td></tr>
- *      <tr><td>conflict</td><td>CANCEL</td></tr>
- *      <tr><td>feature-not-implemented</td><td>CANCEL</td></tr>
- *      <tr><td>gone</td><td>MODIFY</td></tr>
- *      <tr><td>jid-malformed</td><td>MODIFY</td></tr>
- *      <tr><td>not-acceptable</td><td> MODIFY</td></tr>
- *      <tr><td>not-allowed</td><td>CANCEL</td></tr>
- *      <tr><td>not-authorized</td><td>AUTH</td></tr>
- *      <tr><td>payment-required</td><td>AUTH</td></tr>
- *      <tr><td>recipient-unavailable</td><td>WAIT</td></tr>
- *      <tr><td>redirect</td><td>MODIFY</td></tr>
- *      <tr><td>registration-required</td><td>AUTH</td></tr>
- *      <tr><td>remote-server-not-found</td><td>CANCEL</td></tr>
- *      <tr><td>remote-server-timeout</td><td>WAIT</td></tr>
- *      <tr><td>remote-server-error</td><td>CANCEL</td></tr>
- *      <tr><td>resource-constraint</td><td>WAIT</td></tr>
- *      <tr><td>service-unavailable</td><td>CANCEL</td></tr>
- *      <tr><td>subscription-required</td><td>AUTH</td></tr>
- *      <tr><td>undefined-condition</td><td>WAIT</td></tr>
- *      <tr><td>unexpected-condition</td><td>WAIT</td></tr>
- *      <tr><td>request-timeout</td><td>CANCEL</td></tr>
+ *      <hr><td><b>XMPP Error Condition</b></td><td><b>Type</b></td><td><b>RFC 6120 Section</b></td></hr>
+ *      <tr><td>bad-request</td><td>MODIFY</td><td>8.3.3.1</td></tr>
+ *      <tr><td>conflict</td><td>CANCEL</td><td>8.3.3.2</td></tr>
+ *      <tr><td>feature-not-implemented</td><td>CANCEL</td><td>8.3.3.3</td></tr>
+ *      <tr><td>forbidden</td><td>AUTH</td><td>8.3.3.4</td></tr>
+ *      <tr><td>gone</td><td>MODIFY</td><td>8.3.3.5</td></tr>
+ *      <tr><td>internal-server-error</td><td>WAIT</td><td>8.3.3.6</td></tr>
+ *      <tr><td>item-not-found</td><td>CANCEL</td><td>8.3.3.7</td></tr>
+ *      <tr><td>jid-malformed</td><td>MODIFY</td><td>8.3.3.8</td></tr>
+ *      <tr><td>not-acceptable</td><td> MODIFY</td><td>8.3.3.9</td></tr>
+ *      <tr><td>not-allowed</td><td>CANCEL</td><td>8.3.3.10</td></tr>
+ *      <tr><td>not-authorized</td><td>AUTH</td><td>8.3.3.11</td></tr>
+ *      <tr><td>policy-violation</td><td>AUTH</td><td>8.3.3.12</td></tr>
+ *      <tr><td>recipient-unavailable</td><td>WAIT</td><td>8.3.3.13</td></tr>
+ *      <tr><td>redirect</td><td>MODIFY</td><td>8.3.3.14</td></tr>
+ *      <tr><td>registration-required</td><td>AUTH</td><td>8.3.3.15</td></tr>
+ *      <tr><td>remote-server-not-found</td><td>CANCEL</td><td>8.3.3.16</td></tr>
+ *      <tr><td>remote-server-timeout</td><td>WAIT</td><td>8.3.3.17</td></tr>
+ *      <tr><td>resource-constraint</td><td>WAIT</td><td>8.3.3.18</td></tr>
+ *      <tr><td>service-unavailable</td><td>CANCEL</td><td>8.3.3.19</td></tr>
+ *      <tr><td>subscription-required</td><td>AUTH</td><td>8.3.3.20</td></tr>
+ *      <tr><td>undefined-condition</td><td>WAIT</td><td>8.3.3.21</td></tr>
+ *      <tr><td>unexpected-request</td><td>WAIT</td><td>8.3.3.22</td></tr>
  * </table>
  *
  * @author Matt Tucker
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-syntax">RFC 6120 - 8.3.2 Syntax: The Syntax of XMPP error stanzas</a>
  */
-public class XMPPError {
+public class XMPPError extends AbstractError {
 
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-stanzas";
     public static final String ERROR = "error";
 
+    private static final Logger LOGGER = Logger.getLogger(XMPPError.class.getName());
+    private static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
+
+    static {
+        CONDITION_TO_TYPE.put(Condition.bad_request, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.conflict, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.feature_not_implemented, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.forbidden, Type.AUTH);
+        CONDITION_TO_TYPE.put(Condition.gone, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.internal_server_error, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.item_not_found, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.jid_malformed, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.not_acceptable, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.not_allowed, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.not_authorized, Type.AUTH);
+        CONDITION_TO_TYPE.put(Condition.policy_violation, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.recipient_unavailable, Type.WAIT);
+        CONDITION_TO_TYPE.put(Condition.redirect, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.registration_required, Type.AUTH);
+        CONDITION_TO_TYPE.put(Condition.remote_server_not_found, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.remote_server_timeout, Type.WAIT);
+        CONDITION_TO_TYPE.put(Condition.resource_constraint, Type.WAIT);
+        CONDITION_TO_TYPE.put(Condition.service_unavailable, Type.WAIT);
+        CONDITION_TO_TYPE.put(Condition.subscription_required, Type.WAIT);
+        CONDITION_TO_TYPE.put(Condition.unexpected_request, Type.MODIFY);
+    }
+    private final Condition condition;
+    private final String conditionText;
+    private final String errorGenerator;
     private final Type type;
-    private final String condition;
-    private String message;
-    private List<PacketExtension> applicationExtensions = null;
 
-    public XMPPError(String condition) {
-        this(new Condition(condition));
-    }
-
-    /**
-     * Creates a new error with the specified condition inferring the type.
-     * If the Condition is predefined, client code should be like:
-     *     new XMPPError(XMPPError.Condition.remote_server_timeout);
-     * If the Condition is not predefined, invocations should be like 
-     *     new XMPPError(new XMPPError.Condition("my_own_error"));
-     * 
-     * @param condition the error condition.
-     */
     public XMPPError(Condition condition) {
-        // Look for the condition and its default type
-        ErrorSpecification defaultErrorSpecification = ErrorSpecification.specFor(condition);
-        this.condition = condition.value;
-        if (defaultErrorSpecification != null) {
-            // If there is a default error specification for the received condition,
-            // it get configured with the inferred type.
-            type = defaultErrorSpecification.getType();
-        } else {
-            type = null;
-        }
+        this(condition, null, null, null, null, null);
     }
 
-    /**
-     * Creates a new error with the specified condition and message infering the type.
-     * If the Condition is predefined, client code should be like:
-     *     new XMPPError(XMPPError.Condition.remote_server_timeout, "Error Explanation");
-     * If the Condition is not predefined, invocations should be like 
-     *     new XMPPError(new XMPPError.Condition("my_own_error"), "Error Explanation");
-     *
-     * @param condition the error condition.
-     * @param messageText a message describing the error.
-     */
-    public XMPPError(Condition condition, String messageText) {
-        this(condition);
-        this.message = messageText;
+    public XMPPError(Condition condition, PacketExtension applicationSpecificCondition) {
+        this(condition, null, null, null, null, Arrays.asList(applicationSpecificCondition));
     }
 
     /**
@@ -121,15 +110,36 @@ public class XMPPError {
      * 
      * @param type the error type.
      * @param condition the error condition.
-     * @param message a message describing the error.
-     * @param extension list of packet extensions
+     * @param descriptiveTexts 
+     * @param extensions list of packet extensions
      */
-    public XMPPError(Type type, String condition, String message,
-            List<PacketExtension> extension) {
-        this.type = type;
+    public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
+            List<PacketExtension> extensions) {
+        super(descriptiveTexts, NAMESPACE, extensions);
         this.condition = condition;
-        this.message = message;
-        this.applicationExtensions = extension;
+        if (conditionText != null) {
+            switch (condition) {
+            case gone:
+            case redirect:
+                break;
+            default:
+                throw new IllegalArgumentException(
+                                "Condition text can only be set with condtion types 'gone' and 'redirect', not "
+                                                + condition);
+            }
+        }
+        this.conditionText = conditionText;
+        this.errorGenerator = errorGenerator;
+        if (type == null) {
+            Type determinedType = CONDITION_TO_TYPE.get(condition);
+            if (determinedType == null) {
+                LOGGER.warning("Could not determine type for condition: " + condition);
+                determinedType = Type.CANCEL;
+            }
+            this.type = determinedType;
+        } else {
+            this.type = type;
+        }
     }
 
     /**
@@ -137,7 +147,7 @@ public class XMPPError {
      *
      * @return the error condition.
      */
-    public String getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 
@@ -150,13 +160,12 @@ public class XMPPError {
         return type;
     }
 
-    /**
-     * Returns the message describing the error, or null if there is no message.
-     *
-     * @return the message describing the error, or null if there is no message.
-     */
-    public String getMessage() {
-        return message;
+    public String getErrorGenerator() {
+        return errorGenerator;
+    }
+
+    public String getConditionText() {
+        return conditionText;
     }
 
     /**
@@ -167,93 +176,24 @@ public class XMPPError {
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(ERROR);
-        xml.optAttribute("type", type.name().toLowerCase(Locale.US));
+        xml.attribute("type", type.toString());
+        xml.optAttribute("by", errorGenerator);
         xml.rightAngleBracket();
 
-        if (condition != null) {
-            xml.halfOpenElement(condition);
-            xml.xmlnsAttribute(NAMESPACE);
-            xml.closeEmptyElement();
-        }
-        if (message != null) {
-            xml.halfOpenElement(Packet.TEXT);
-            xml.xmllangAttribute("en");
-            xml.xmlnsAttribute(NAMESPACE);
-            xml.rightAngleBracket();
-            xml.escape(message);
-            xml.closeElement(Packet.TEXT);
-        }
-        for (PacketExtension element : this.getExtensions()) {
-            xml.append(element.toXML());
-        }
+        xml.halfOpenElement(condition.toString());
+        xml.xmlnsAttribute(NAMESPACE);
+        xml.closeEmptyElement();
+
+        addDescriptiveTextsAndExtensions(xml);
+
         xml.closeElement(ERROR);
         return xml;
     }
 
-    public String toString() {
-        StringBuilder txt = new StringBuilder();
-        if (condition != null) {
-            txt.append(condition);
-        }
-        if (message != null) {
-            txt.append(" ").append(message);
-        }
-        return txt.toString();
-    }
-
-    /**
-     * Returns a List of the error extensions attached to the xmppError.
-     * An application MAY provide application-specific error information by including a 
-     * properly-namespaced child in the error element.
-     *
-     * @return a List of the error extensions.
-     */
-    public synchronized List<PacketExtension> getExtensions() {
-        if (applicationExtensions == null) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(applicationExtensions);
-    }
-
-    /**
-     * Returns the first packet extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist. 
-     *
-     * @param elementName the XML element name of the packet extension.
-     * @param namespace the XML element namespace of the packet extension.
-     * @return the extension, or <tt>null</tt> if it doesn't exist.
-     */
-    public synchronized PacketExtension getExtension(String elementName, String namespace) {
-        if (applicationExtensions == null || elementName == null || namespace == null) {
-            return null;
-        }
-        for (PacketExtension ext : applicationExtensions) {
-            if (elementName.equals(ext.getElementName()) && namespace.equals(ext.getNamespace())) {
-                return ext;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Adds a packet extension to the error.
-     *
-     * @param extension a packet extension.
-     */
-    public synchronized void addExtension(PacketExtension extension) {
-        if (applicationExtensions == null) {
-            applicationExtensions = new ArrayList<PacketExtension>();
-        }
-        applicationExtensions.add(extension);
-    }
-
-    /**
-     * Set the packet extension to the error.
-     *
-     * @param extension a packet extension.
-     */
-    public synchronized void setExtension(List<PacketExtension> extension) {
-        applicationExtensions = extension;
+    public static XMPPError from(Condition condition, String descriptiveText) {
+        Map<String, String> descriptiveTexts = new HashMap<String, String>();
+        descriptiveTexts.put("en", descriptiveText);
+        return new XMPPError(condition, null, null, null, descriptiveTexts, null);
     }
 
     /**
@@ -272,161 +212,60 @@ public class XMPPError {
         CANCEL,
         MODIFY,
         AUTH,
-        CONTINUE
-    }
+        CONTINUE;
 
-    /**
-     * A class to represent predefined error conditions.
-     */
-    public static class Condition implements CharSequence {
-
-        public static final Condition internal_server_error = new Condition("internal-server-error");
-        public static final Condition forbidden = new Condition("forbidden");
-        public static final Condition bad_request = new Condition("bad-request");
-        public static final Condition conflict = new Condition("conflict");
-        public static final Condition feature_not_implemented = new Condition("feature-not-implemented");
-        public static final Condition gone = new Condition("gone");
-        public static final Condition item_not_found = new Condition("item-not-found");
-        public static final Condition jid_malformed = new Condition("jid-malformed");
-        public static final Condition not_acceptable = new Condition("not-acceptable");
-        public static final Condition not_allowed = new Condition("not-allowed");
-        public static final Condition not_authorized = new Condition("not-authorized");
-        public static final Condition payment_required = new Condition("payment-required");
-        public static final Condition recipient_unavailable = new Condition("recipient-unavailable");
-        public static final Condition redirect = new Condition("redirect");
-        public static final Condition registration_required = new Condition("registration-required");
-        public static final Condition remote_server_error = new Condition("remote-server-error");
-        public static final Condition remote_server_not_found = new Condition("remote-server-not-found");
-        public static final Condition remote_server_timeout = new Condition("remote-server-timeout");
-        public static final Condition resource_constraint = new Condition("resource-constraint");
-        public static final Condition service_unavailable = new Condition("service-unavailable");
-        public static final Condition subscription_required = new Condition("subscription-required");
-        public static final Condition undefined_condition = new Condition("undefined-condition");
-        public static final Condition unexpected_request = new Condition("unexpected-request");
-        public static final Condition request_timeout = new Condition("request-timeout");
-
-        private final String value;
-
-        public Condition(String value) {
-            this.value = value;
-        }
-
-        @Override 
+        @Override
         public String toString() {
-            return value;
+            // Locale.US not required, since Type consists only of ASCII chars
+            return name().toLowerCase();
         }
 
+        public static Type fromString(String string) {
+            // Locale.US not required, since Type consists only of ASCII chars
+            string = string.toUpperCase();
+            return Type.valueOf(string);
+        }
+    }
+
+    public enum Condition {
+        bad_request,
+        conflict,
+        feature_not_implemented,
+        forbidden,
+        gone,
+        internal_server_error,
+        item_not_found,
+        jid_malformed,
+        not_acceptable,
+        not_allowed,
+        not_authorized,
+        policy_violation,
+        recipient_unavailable,
+        redirect,
+        registration_required,
+        remote_server_not_found,
+        remote_server_timeout,
+        resource_constraint,
+        service_unavailable,
+        subscription_required,
+        undefined_condition,
+        unexpected_request;
+
         @Override
-        public boolean equals(Object other) {
-            if (other == null) {
-                return false;
+        public String toString() {
+            return this.name().replace('_', '-');
+        }
+
+        public static Condition fromString(String string) {
+            string = string.replace('-', '_');
+            Condition condition = null;
+            try {
+                condition = Condition.valueOf(string);
+            } catch (Exception e) {
+                throw new IllegalStateException("Could not transform string '" + string + "' to XMPPErrorConditoin", e);
             }
-            return toString().equals(other.toString());
-        }
-
-        public boolean equals(CharSequence other) {
-            return StringUtils.nullSafeCharSequenceEquals(this, other);
-        }
-
-        @Override
-        public int hashCode() {
-            return value.hashCode();
-        }
-
-        @Override
-        public int length() {
-            return value.length();
-        }
-
-        @Override
-        public char charAt(int index) {
-            return value.charAt(index);
-        }
-
-        @Override
-        public CharSequence subSequence(int start, int end) {
-            return value.subSequence(start, end);
+            return condition;
         }
     }
 
-
-    /**
-     * A class to represent the error specification used to infer common usage.
-     */
-    private static class ErrorSpecification {
-        private static Map<Condition, ErrorSpecification> instances = new HashMap<Condition, ErrorSpecification>();
-
-        private final Type type;
-        @SuppressWarnings("unused")
-        private final Condition condition;
-
-        private ErrorSpecification(Condition condition, Type type) {
-            this.type = type;
-            this.condition = condition;
-        }
-
-        static {
-            instances.put(Condition.internal_server_error, new ErrorSpecification(
-                    Condition.internal_server_error, Type.WAIT));
-            instances.put(Condition.forbidden, new ErrorSpecification(Condition.forbidden,
-                    Type.AUTH));
-            instances.put(Condition.bad_request, new XMPPError.ErrorSpecification(
-                    Condition.bad_request, Type.MODIFY));
-            instances.put(Condition.item_not_found, new XMPPError.ErrorSpecification(
-                    Condition.item_not_found, Type.CANCEL));
-            instances.put(Condition.conflict, new XMPPError.ErrorSpecification(
-                    Condition.conflict, Type.CANCEL));
-            instances.put(Condition.feature_not_implemented, new XMPPError.ErrorSpecification(
-                    Condition.feature_not_implemented, Type.CANCEL));
-            instances.put(Condition.gone, new XMPPError.ErrorSpecification(
-                    Condition.gone, Type.MODIFY));
-            instances.put(Condition.jid_malformed, new XMPPError.ErrorSpecification(
-                    Condition.jid_malformed, Type.MODIFY));
-            instances.put(Condition.not_acceptable, new XMPPError.ErrorSpecification(
-                    Condition.not_acceptable, Type.MODIFY));
-            instances.put(Condition.not_allowed, new XMPPError.ErrorSpecification(
-                    Condition.not_allowed, Type.CANCEL));
-            instances.put(Condition.not_authorized, new XMPPError.ErrorSpecification(
-                    Condition.not_authorized, Type.AUTH));
-            instances.put(Condition.payment_required, new XMPPError.ErrorSpecification(
-                    Condition.payment_required, Type.AUTH));
-            instances.put(Condition.recipient_unavailable, new XMPPError.ErrorSpecification(
-                    Condition.recipient_unavailable, Type.WAIT));
-            instances.put(Condition.redirect, new XMPPError.ErrorSpecification(
-                    Condition.redirect, Type.MODIFY));
-            instances.put(Condition.registration_required, new XMPPError.ErrorSpecification(
-                    Condition.registration_required, Type.AUTH));
-            instances.put(Condition.remote_server_not_found, new XMPPError.ErrorSpecification(
-                    Condition.remote_server_not_found, Type.CANCEL));
-            instances.put(Condition.remote_server_timeout, new XMPPError.ErrorSpecification(
-                    Condition.remote_server_timeout, Type.WAIT));
-            instances.put(Condition.remote_server_error, new XMPPError.ErrorSpecification(
-                    Condition.remote_server_error, Type.CANCEL));
-            instances.put(Condition.resource_constraint, new XMPPError.ErrorSpecification(
-                    Condition.resource_constraint, Type.WAIT));
-            instances.put(Condition.service_unavailable, new XMPPError.ErrorSpecification(
-                    Condition.service_unavailable, Type.CANCEL));
-            instances.put(Condition.subscription_required, new XMPPError.ErrorSpecification(
-                    Condition.subscription_required, Type.AUTH));
-            instances.put(Condition.undefined_condition, new XMPPError.ErrorSpecification(
-                    Condition.undefined_condition, Type.WAIT));
-            instances.put(Condition.unexpected_request, new XMPPError.ErrorSpecification(
-                    Condition.unexpected_request, Type.WAIT));
-            instances.put(Condition.request_timeout, new XMPPError.ErrorSpecification(
-                    Condition.request_timeout, Type.CANCEL));
-        }
-
-        protected static ErrorSpecification specFor(Condition condition) {
-            return instances.get(condition);
-        }
-
-        /**
-         * Returns the error type.
-         *
-         * @return the error type.
-         */
-        protected Type getType() {
-            return type;
-        }
-    }
 }

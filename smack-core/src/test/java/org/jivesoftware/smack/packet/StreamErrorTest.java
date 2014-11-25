@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import org.jivesoftware.smack.packet.StreamError.Condition;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
@@ -44,7 +45,7 @@ public class StreamErrorTest {
             fail(e.getMessage());
         }
         assertNotNull(error);
-        assertEquals("conflict", error.getCode());
+        assertEquals(Condition.conflict, error.getCondition());
     }
 
     @Test
@@ -68,8 +69,8 @@ public class StreamErrorTest {
             fail(e.getMessage());
         }
         assertNotNull(error);
-        assertEquals("conflict", error.getCode());
-        assertEquals("Replaced by new connection", error.getText());
+        assertEquals(Condition.conflict, error.getCondition());
+        assertEquals("Replaced by new connection", error.getDescriptiveText());
     }
 
     @Test
@@ -84,7 +85,7 @@ public class StreamErrorTest {
                 "<text xml:lang='' xmlns='urn:ietf:params:xml:ns:xmpp-streams'>" +
                     "Replaced by new connection" +
                 "</text>" +
-                "<appSpecificElement>" +
+                "<appSpecificElement xmlns='myns'>" +
                     "Text contents of application-specific condition element: Foo Bar" +
                 "</appSpecificElement>" +
                 "</stream:error>" +
@@ -96,10 +97,10 @@ public class StreamErrorTest {
             fail(e.getMessage());
         }
         assertNotNull(error);
-        assertEquals("conflict", error.getCode());
-        assertEquals("Replaced by new connection", error.getText());
-        // As of now, Smack ignores application-specific condition elements, so we don't
-        // test them.
+        assertEquals(Condition.conflict, error.getCondition());
+        assertEquals("Replaced by new connection", error.getDescriptiveText());
+        PacketExtension appSpecificElement = error.getExtension("appSpecificElement", "myns");
+        assertNotNull(appSpecificElement);
     }
 
 }

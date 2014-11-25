@@ -75,7 +75,7 @@ public class DataListenerTest {
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
         assertEquals(IQ.Type.error, argument.getValue().getType());
-        assertEquals(XMPPError.Condition.item_not_found.toString(),
+        assertEquals(XMPPError.Condition.item_not_found,
                         argument.getValue().getError().getCondition());
 
     }

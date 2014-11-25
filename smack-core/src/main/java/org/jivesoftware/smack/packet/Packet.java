@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Matt Tucker
  */
-public abstract class Packet extends TopLevelStreamElement {
+public abstract class Packet implements TopLevelStreamElement {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";

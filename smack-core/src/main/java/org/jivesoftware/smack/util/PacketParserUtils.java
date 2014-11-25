@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -762,6 +761,18 @@ public class PacketParserUtils {
         return new Compress.Feature(methods);
     }
 
+    public static Map<String, String> parseDescriptiveTexts(XmlPullParser parser, Map<String, String> descriptiveTexts)
+                    throws XmlPullParserException, IOException {
+        if (descriptiveTexts == null) {
+            descriptiveTexts = new HashMap<String, String>();
+        }
+        String xmllang = getLanguageAttribute(parser);
+        String text = parser.nextText();
+        String previousValue = descriptiveTexts.put(xmllang, text);
+        assert (previousValue == null);
+        return descriptiveTexts;
+    }
+
     /**
      * Parses SASL authentication error packets.
      * 
@@ -773,17 +784,14 @@ public class PacketParserUtils {
     public static SASLFailure parseSASLFailure(XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
         String condition = null;
-        Map<String, String> descriptiveTexts = new HashMap<String, String>();
+        Map<String, String> descriptiveTexts = null;
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:
                 String name = parser.getName();
                 if (name.equals("text")) {
-                    String xmllang = getLanguageAttribute(parser);
-                    String text = parser.nextText();
-                    String previousValue = descriptiveTexts.put(xmllang, text);
-                    assert(previousValue == null);
+                    descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
                 }
                 else {
                     assert(condition == null);
@@ -806,37 +814,51 @@ public class PacketParserUtils {
      * @param parser the XML parser.
      * @return an stream error packet.
      * @throws XmlPullParserException if an exception occurs while parsing the packet.
+     * @throws SmackException 
      */
-    public static StreamError parseStreamError(XmlPullParser parser) throws IOException,
-            XmlPullParserException {
-    final int depth = parser.getDepth();
-    boolean done = false;
-    String code = null;
-    String text = null;
-    while (!done) {
-        int eventType = parser.next();
-
-        if (eventType == XmlPullParser.START_TAG) {
-            String namespace = parser.getNamespace();
-            if (StreamError.NAMESPACE.equals(namespace)) {
+    public static StreamError parseStreamError(XmlPullParser parser) throws IOException, XmlPullParserException,
+                    SmackException {
+        final int initialDepth = parser.getDepth();
+        List<PacketExtension> extensions = new ArrayList<PacketExtension>();
+        Map<String, String> descriptiveTexts = null;
+        StreamError.Condition condition = null;
+        String conditionText = null;
+        outerloop: while (true) {
+            int eventType = parser.next();
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
                 String name = parser.getName();
-                if (name.equals(Packet.TEXT) && !parser.isEmptyElementTag()) {
-                    parser.next();
-                    text = parser.getText();
+                String namespace = parser.getNamespace();
+                switch (namespace) {
+                case StreamError.NAMESPACE:
+                    switch (name) {
+                    case "text":
+                        descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
+                        break;
+                    default:
+                        // If it's not a text element, that is qualified by the StreamError.NAMESPACE,
+                        // then it has to be the stream error code
+                        condition = StreamError.Condition.fromString(name);
+                        if (!parser.isEmptyElementTag()) {
+                            conditionText = parser.nextText();
+                        }
+                        break;
+                    }
+                    break;
+                default:
+                    PacketParserUtils.addPacketExtension(extensions, parser, name, namespace);
+                    break;
                 }
-                else {
-                    // If it's not a text element, that is qualified by the StreamError.NAMESPACE,
-                    // then it has to be the stream error code
-                    code = name;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
-        else if (eventType == XmlPullParser.END_TAG && depth == parser.getDepth()) {
-            done = true;
-        }
+        return new StreamError(condition, conditionText, descriptiveTexts, extensions);
     }
-    return new StreamError(code, text);
-}
 
     /**
      * Parses error sub-packets.
@@ -849,50 +871,47 @@ public class PacketParserUtils {
      */
     public static XMPPError parseError(XmlPullParser parser)
                     throws XmlPullParserException, IOException, SmackException {
-        String type = null;
-        String message = null;
-        String condition = null;
+        final int initialDepth = parser.getDepth();
+        Map<String, String> descriptiveTexts = null;
+        XMPPError.Condition condition = null;
+        String conditionText = null;
         List<PacketExtension> extensions = new ArrayList<PacketExtension>();
 
         // Parse the error header
-        type = parser.getAttributeValue("", "type");
-        // Parse the text and condition tags
-        outerloop:
-        while (true) {
+        XMPPError.Type errorType = XMPPError.Type.fromString(parser.getAttributeValue("", "type"));
+        String errorGenerator = parser.getAttributeValue("", "by");
+
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals(Packet.TEXT)) {
-                    message = parser.nextText();
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                String namespace = parser.getNamespace();
+                switch (namespace) {
+                case XMPPError.NAMESPACE:
+                    switch (name) {
+                    case Packet.TEXT:
+                        descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
+                        break;
+                    default:
+                        condition = XMPPError.Condition.fromString(name);
+                        if (!parser.isEmptyElementTag()) {
+                            conditionText = parser.nextText();
+                        }
+                        break;
+                    }
+                    break;
+                default:
+                    PacketParserUtils.addPacketExtension(extensions, parser, name, namespace);
                 }
-                else {
-                	// Condition tag, it can be xmpp error or an application defined error.
-                    String elementName = parser.getName();
-                    String namespace = parser.getNamespace();
-                    if (namespace.equals(XMPPError.NAMESPACE)) {
-                    	condition = elementName;
-                    }
-                     else {
-                        PacketParserUtils.addPacketExtension(extensions, parser, elementName, namespace);
-                    }
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
             }
-                else if (eventType == XmlPullParser.END_TAG) {
-                    if (parser.getName().equals("error")) {
-                        break outerloop;
-                    }
-                }
         }
-        // Parse the error type.
-        XMPPError.Type errorType = XMPPError.Type.CANCEL;
-        try {
-            if (type != null) {
-                errorType = XMPPError.Type.valueOf(type.toUpperCase(Locale.US));
-            }
-        }
-        catch (IllegalArgumentException iae) {
-            LOGGER.log(Level.SEVERE, "Could not find error type for " + type.toUpperCase(Locale.US), iae);
-        }
-        return new XMPPError(errorType, condition, message, extensions);
+        return new XMPPError(condition, conditionText, errorGenerator, errorType, descriptiveTexts, extensions);
     }
 
     /**

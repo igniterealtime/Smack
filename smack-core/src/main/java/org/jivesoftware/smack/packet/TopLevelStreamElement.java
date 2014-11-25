@@ -21,11 +21,6 @@ package org.jivesoftware.smack.packet;
  * A XMPP top level stream element. This is either a stanza ({@link Packet}) or
  * just a plain stream element ({@link PlainStreamElement}).
  */
-public abstract class TopLevelStreamElement implements Element {
-
-    @Override
-    public final String toString() {
-        return toXML().toString();
-    }
+public interface TopLevelStreamElement extends Element {
 
 }

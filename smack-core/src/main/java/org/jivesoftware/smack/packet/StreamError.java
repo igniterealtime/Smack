@@ -17,6 +17,11 @@
 
 package org.jivesoftware.smack.packet;
 
+import java.util.List;
+import java.util.Map;
+
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents a stream error packet. Stream errors are unrecoverable errors where the server
  * will close the unrelying TCP connection after the stream error was sent to the client.
@@ -73,48 +78,114 @@ package org.jivesoftware.smack.packet;
  *      <tr><td> not-well-formed </td><td> the initiating entity has sent XML that is not
  *          well-formed. </td></tr>
  * </table>
+ * <p>
+ * Stream error syntax:
+ * <pre>
+ * {@code
+ * <stream:error>
+ *   <defined-condition xmlns='urn:ietf:params:xml:ns:xmpp-streams'/>
+ *   [<text xmlns='urn:ietf:params:xml:ns:xmpp-streams'
+ *      xml:lang='langcode'>
+ *   OPTIONAL descriptive text
+ *   </text>]
+ *   [OPTIONAL application-specific condition element]
+ * </stream:error>
+ * }
+ * </pre>
  *
  * @author Gaston Dombiak
  */
-public class StreamError {
+public class StreamError extends AbstractError implements PlainStreamElement {
 
+    public static final String ELEMENT = "stream:error";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-streams";
 
-    private String code;
-    private String text;
+    private final Condition condition;
+    private final String conditionText;
 
-    public StreamError(String code) {
-        super();
-        this.code = code;
+    public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<PacketExtension> extensions) {
+        super(descriptiveTexts, extensions);
+        if (conditionText != null) {
+            switch (condition) {
+            case see_other_host:
+                break;
+            default:
+                throw new IllegalArgumentException("The given condition '" + condition
+                                + "' can not contain a conditionText");
+            }
+        }
+        this.condition = condition;
+        this.conditionText = conditionText;
     }
 
-    public StreamError(String code, String text) {
-        this(code);
-        this.text = text;
+    public Condition getCondition() {
+        return condition;
     }
 
-    /**
-     * Returns the error code.
-     *
-     * @return the error code.
-     */
-    public String getCode() {
-        return code;
+    public String getConditionText() {
+        return conditionText;
     }
 
-    /**
-     * Returns the error text, which may be null.
-     *
-     * @return the error text.
-     */
-    public String getText() {
-        return text;
-    }
-
+    @Override
     public String toString() {
-        StringBuilder txt = new StringBuilder();
-        txt.append("stream:error (").append(code).append(")");
-        if (text != null) txt.append(" text: ").append(text);
-        return txt.toString();
+        return toXML().toString();
+    }
+
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.openElement(ELEMENT);
+        xml.rightAngleBracket().append(condition.toString()).xmlnsAttribute(NAMESPACE).closeEmptyElement();
+        addDescriptiveTextsAndExtensions(xml);
+        xml.closeElement(ELEMENT);
+        return xml;
+    }
+
+    /**
+     * The defined stream error condtions, see RFC 6120 § 4.9.3
+     *
+     */
+    public enum Condition {
+        bad_format,
+        bad_namespace_prefix,
+        conflict,
+        connection_timeout,
+        host_gone,
+        host_unkown,
+        improper_addressing,
+        internal_server_error,
+        invalid_from,
+        invalid_namespace,
+        invalid_xml,
+        not_authorized,
+        not_well_formed,
+        policy_violation,
+        remote_connection_failed,
+        reset,
+        resource_constraint,
+        restricted_xml,
+        see_other_host,
+        system_shutdown,
+        undeficed_condition,
+        unsupported_encoding,
+        unsupported_feature,
+        unsupported_stanza_type,
+        unsupported_version;
+
+        @Override
+        public String toString() {
+            return this.name().replace('_', '-');
+        }
+
+        public static Condition fromString(String string) {
+            string = string.replace('-', '_');
+            Condition condition = null;
+            try {
+                condition = Condition.valueOf(string);
+            } catch (Exception e) {
+                throw new IllegalStateException("Could not transform string '" + string + "' to XMPPErrorConditoin", e);
+            }
+            return condition;
+        }
     }
 }

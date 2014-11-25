@@ -113,7 +113,7 @@ public class Socks5ByteStreamRequestTest {
         assertTrue(IQ.class.isInstance(targetResponse));
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-        assertEquals(XMPPError.Condition.item_not_found.toString(),
+        assertEquals(XMPPError.Condition.item_not_found,
                         ((IQ) targetResponse).getError().getCondition());
 
     }
@@ -157,7 +157,7 @@ public class Socks5ByteStreamRequestTest {
         assertTrue(IQ.class.isInstance(targetResponse));
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-        assertEquals(XMPPError.Condition.item_not_found.toString(),
+        assertEquals(XMPPError.Condition.item_not_found,
                         ((IQ) targetResponse).getError().getCondition());
 
     }
@@ -205,7 +205,7 @@ public class Socks5ByteStreamRequestTest {
             assertTrue(IQ.class.isInstance(targetResponse));
             assertEquals(initiatorJID, targetResponse.getTo());
             assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-            assertEquals(XMPPError.Condition.item_not_found.toString(),
+            assertEquals(XMPPError.Condition.item_not_found,
                             ((IQ) targetResponse).getError().getCondition());
         }
 
@@ -297,7 +297,7 @@ public class Socks5ByteStreamRequestTest {
             assertTrue(IQ.class.isInstance(targetResponse));
             assertEquals(initiatorJID, targetResponse.getTo());
             assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-            assertEquals(XMPPError.Condition.item_not_found.toString(),
+            assertEquals(XMPPError.Condition.item_not_found,
                             ((IQ) targetResponse).getError().getCondition());
         }
 

@@ -16,10 +16,9 @@
  */
 package org.jivesoftware.smack.sasl.packet;
 
-import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 
+import org.jivesoftware.smack.packet.AbstractError;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.util.StringUtils;
@@ -31,7 +30,7 @@ public class SaslStreamElements {
     /**
      * Initiating SASL authentication by select a mechanism.
      */
-    public static class AuthMechanism extends PlainStreamElement {
+    public static class AuthMechanism implements PlainStreamElement {
         public static final String ELEMENT = "auth";
 
         private final String mechanism;
@@ -69,7 +68,7 @@ public class SaslStreamElements {
     /**
      * A SASL challenge stream element.
      */
-    public static class Challenge extends PlainStreamElement {
+    public static class Challenge implements PlainStreamElement {
         public static final String ELEMENT = "challenge";
 
         private final String data;
@@ -91,7 +90,7 @@ public class SaslStreamElements {
     /**
      * A SASL response stream element.
      */
-    public static class Response extends PlainStreamElement {
+    public static class Response implements PlainStreamElement {
         public static final String ELEMENT = "response";
 
         private final String authenticationText;
@@ -121,7 +120,7 @@ public class SaslStreamElements {
     /**
      * A SASL success stream element.
      */
-    public static class Success extends PlainStreamElement {
+    public static class Success implements PlainStreamElement {
         public static final String ELEMENT = "success";
 
         final private String data;
@@ -156,25 +155,21 @@ public class SaslStreamElements {
     }
 
     /**
-     * A SASL failure stream element.
+     * A SASL failure stream element, also called "SASL Error"
+     * @see <a href="http://xmpp.org/rfcs/rfc6120.html#sasl-errors">RFC 6120 6.5 SASL Errors</a>
      */
-    public static class SASLFailure extends PlainStreamElement {
+    public static class SASLFailure extends AbstractError implements PlainStreamElement {
         public static final String ELEMENT = "failure";
 
         private final SASLError saslError;
         private final String saslErrorString;
-        private final Map<String, String> descriptiveTexts;
 
         public SASLFailure(String saslError) {
             this(saslError, null);
         }
 
         public SASLFailure(String saslError, Map<String, String> descriptiveTexts) {
-            if (descriptiveTexts != null) {
-                this.descriptiveTexts = descriptiveTexts;
-            } else {
-                this.descriptiveTexts = Collections.emptyMap();
-            }
+            super(descriptiveTexts);
             SASLError error = SASLError.fromString(saslError);
             if (error == null) {
                 // RFC6120 6.5 states that unknown condition must be treat as generic authentication
@@ -203,50 +198,19 @@ public class SaslStreamElements {
             return saslErrorString;
         }
 
-        /**
-         * Get the descriptive text of this SASLFailure.
-         * <p>
-         * Returns the descriptive text of this SASLFailure in the system default language if possible. May return null.
-         * </p>
-         * 
-         * @return the descriptive text or null.
-         */
-        public String getDescriptiveText() {
-            String defaultLocale = Locale.getDefault().getLanguage();
-            String descriptiveText = getDescriptiveText(defaultLocale);
-            if (descriptiveText == null) {
-                descriptiveText = getDescriptiveText(null);
-            }
-            return descriptiveText;
-        }
-
-        /**
-         * Get the descriptive test of this SASLFailure.
-         * <p>
-         * Returns the descriptive text of this SASLFailure in the given language. May return null if not available.
-         * </p>
-         * 
-         * @param xmllang the language.
-         * @return the descriptive text or null.
-         */
-        public String getDescriptiveText(String xmllang) {
-            return descriptiveTexts.get(xmllang);
-        }
-
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.emptyElement(saslErrorString);
-            for (Map.Entry<String, String> entry : descriptiveTexts.entrySet()) {
-                String xmllang = entry.getKey();
-                String text = entry.getValue();
-                xml.halfOpenElement("text").xmllangAttribute(xmllang).rightAngleBracket();
-                xml.escape(text);
-                xml.closeElement("text");
-            }
+            addDescriptiveTextsAndExtensions(xml);
             xml.closeElement(ELEMENT);
             return xml;
+        }
+
+        @Override
+        public String toString() {
+            return toXML().toString();
         }
     }
 }

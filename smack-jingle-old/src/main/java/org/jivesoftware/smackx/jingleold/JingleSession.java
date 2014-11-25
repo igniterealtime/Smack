@@ -33,7 +33,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleMediaListener;
@@ -1030,9 +1029,8 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public IQ createJingleError(IQ iq, JingleError jingleError) {
         IQ errorPacket = null;
         if (jingleError != null) {
-            List<PacketExtension> extList = new ArrayList<PacketExtension>();
-            extList.add(jingleError);
-            XMPPError error = new XMPPError(XMPPError.Type.CANCEL, jingleError.toString(), "", extList);
+            // TODO This is wrong according to XEP-166 § 10, but this jingle implementation is deprecated anyways
+            XMPPError error = new XMPPError(XMPPError.Condition.undefined_condition, jingleError);
 
             errorPacket = IQ.createErrorResponse(iq, error);
 

@@ -368,7 +368,7 @@ public class InBandBytestreamSessionTest {
         protocol.addResponse(null, Verification.requestTypeERROR, new Verification<IQ, IQ>() {
 
             public void verify(IQ request, IQ response) {
-                assertEquals(XMPPError.Condition.unexpected_request.toString(),
+                assertEquals(XMPPError.Condition.unexpected_request,
                                 request.getError().getCondition());
             }
 
@@ -406,7 +406,7 @@ public class InBandBytestreamSessionTest {
         protocol.addResponse(null, Verification.requestTypeERROR, new Verification<IQ, IQ>() {
 
             public void verify(IQ request, IQ response) {
-                assertEquals(XMPPError.Condition.bad_request.toString(),
+                assertEquals(XMPPError.Condition.bad_request,
                                 request.getError().getCondition());
             }
 

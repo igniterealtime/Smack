@@ -19,6 +19,7 @@
 package org.jivesoftware.smack.tcp.sm.provider;
 
 import com.jamesmurty.utils.XMLBuilder;
+
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.tcp.sm.packet.StreamManagement;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -34,6 +35,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ParseStreamManagementTest {
     private static final Properties outputProperties = initOutputProperties();
@@ -83,19 +85,16 @@ public class ParseStreamManagementTest {
                 PacketParserUtils.getParserFor(failedStanza));
 
         assertThat(failedPacket, is(notNullValue()));
-        XMPPError error = failedPacket.getXMPPError();
-
-        assertThat(error, is(notNullValue()));
-        assertThat(error.getCondition(), equalTo("unknown"));
+        assertTrue(failedPacket.getXMPPErrorCondition() == null);
     }
 
     @Test
     public void testParseFailedError() throws Exception {
-        String errorCondition = "failure";
+        XMPPError.Condition errorCondition = XMPPError.Condition.unexpected_request;
 
         String failedStanza = XMLBuilder.create("failed")
                 .a("xmlns", "urn:xmpp:sm:3")
-                .element(errorCondition, XMPPError.NAMESPACE)
+                .element(errorCondition.toString(), XMPPError.NAMESPACE)
                 .asString(outputProperties);
 
         System.err.println(failedStanza);
@@ -104,10 +103,7 @@ public class ParseStreamManagementTest {
                 PacketParserUtils.getParserFor(failedStanza));
 
         assertThat(failedPacket, is(notNullValue()));
-        XMPPError error = failedPacket.getXMPPError();
-
-        assertThat(error, is(notNullValue()));
-        assertThat(error.getCondition(), equalTo(errorCondition));
+        assertTrue(failedPacket.getXMPPErrorCondition() == errorCondition);
     }
 
     @Test

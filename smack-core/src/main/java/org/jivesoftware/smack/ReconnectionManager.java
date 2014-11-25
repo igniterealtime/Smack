@@ -277,9 +277,8 @@ public class ReconnectionManager {
             if (e instanceof StreamErrorException) {
                 StreamErrorException xmppEx = (StreamErrorException) e;
                 StreamError error = xmppEx.getStreamError();
-                String reason = error.getCode();
 
-                if ("conflict".equals(reason)) {
+                if (StreamError.Condition.conflict == error.getCondition()) {
                     return;
                 }
             }

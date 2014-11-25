@@ -280,7 +280,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      */
     private void cancelRequest() throws XMPPErrorException, NotConnectedException {
         String errorMessage = "Could not establish socket with any provided host";
-        XMPPError error = new XMPPError(XMPPError.Condition.item_not_found, errorMessage);
+        XMPPError error = XMPPError.from(XMPPError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);
         this.manager.getConnection().sendPacket(errorIQ);
         throw new XMPPErrorException(errorMessage, error);
