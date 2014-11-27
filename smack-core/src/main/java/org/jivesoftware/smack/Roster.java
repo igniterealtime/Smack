@@ -502,10 +502,13 @@ public class Roster {
             // Find the resource with the highest priority
             // Might be changed to use the resource with the highest availability instead.
             Presence presence = null;
+            // This is used in case no available presence is found
+            Presence unavailable = null;
 
             for (String resource : userPresences.keySet()) {
                 Presence p = userPresences.get(resource);
                 if (!p.isAvailable()) {
+                    unavailable = p;
                     continue;
                 }
                 // Chose presence with highest priority first.
@@ -530,9 +533,14 @@ public class Roster {
                 }
             }
             if (presence == null) {
-                presence = new Presence(Presence.Type.unavailable);
-                presence.setFrom(user);
-                return presence;
+                if (unavailable != null) {
+                    return unavailable;
+                }
+                else {
+                    presence = new Presence(Presence.Type.unavailable);
+                    presence.setFrom(user);
+                    return presence;
+                }
             }
             else {
                 return presence;
@@ -593,13 +601,21 @@ public class Roster {
         }
         else {
             List<Presence> answer = new ArrayList<Presence>();
+            // Used in case no available presence is found
+            Presence unavailable = null;
             for (Presence presence : userPresences.values()) {
                 if (presence.isAvailable()) {
                     answer.add(presence);
                 }
+                else {
+                    unavailable = presence;
+                }
             }
             if (!answer.isEmpty()) {
                 res = answer;
+            }
+            else if (unavailable != null) {
+                res = Arrays.asList(unavailable);
             }
             else {
                 Presence presence = new Presence(Presence.Type.unavailable);
