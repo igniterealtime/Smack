@@ -276,9 +276,15 @@ public class PingManager extends Manager {
     }
 
     /**
-     * Set the interval between the server is automatic pinged. A negative value disables automatic server pings.
+     * Set the interval in seconds between a automated server ping is send. A negative value disables automatic server
+     * pings. All settings take effect immediately. If there is an active scheduled server ping it will be canceled and,
+     * if <code>pingInterval</code> is positive, a new one will be scheduled in pingInterval seconds.
+     * <p>
+     * If the ping fails after 3 attempts waiting the connections reply timeout for an answer, then the ping failed
+     * listeners will be invoked.
+     * </p>
      *
-     * @param pingInterval the interval between the ping
+     * @param pingInterval the interval in seconds between the automated server pings
      */
     public void setPingInterval(int pingInterval) {
         this.pingInterval = pingInterval;
