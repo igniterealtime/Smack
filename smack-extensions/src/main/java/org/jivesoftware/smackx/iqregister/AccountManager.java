@@ -17,10 +17,10 @@
 
 package org.jivesoftware.smackx.iqregister;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
@@ -141,7 +141,7 @@ public class AccountManager extends Manager {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      */
-    public Collection<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException  {
         if (info == null) {
             getRegistrationInfo();
         }

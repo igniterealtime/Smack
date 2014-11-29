@@ -18,9 +18,8 @@
 package org.jivesoftware.smack;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -99,13 +98,13 @@ public class RosterGroup {
     }
 
     /**
-     * Returns an unmodifiable collection of all entries in the group.
+     * Returns an copied list of all entries in the group.
      *
      * @return all entries in the group.
      */
-    public Collection<RosterEntry> getEntries() {
+    public List<RosterEntry> getEntries() {
         synchronized (entries) {
-            return Collections.unmodifiableList(new ArrayList<RosterEntry>(entries));
+            return new ArrayList<RosterEntry>(entries);
         }
     }
 

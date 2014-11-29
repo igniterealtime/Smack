@@ -31,12 +31,11 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
  */
 public class HostedRoom {
 
-    private String jid;
+    private final String jid;
 
-    private String name;
+    private final String name;
 
     public HostedRoom(DiscoverItems.Item item) {
-        super();
         jid = item.getEntityID();
         name = item.getName();
     }

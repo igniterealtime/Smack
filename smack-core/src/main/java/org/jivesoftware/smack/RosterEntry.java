@@ -19,7 +19,6 @@ package org.jivesoftware.smack;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -112,11 +111,11 @@ public class RosterEntry {
     }
 
     /**
-     * Returns an unmodifiable collection of the roster groups that this entry belongs to.
+     * Returns an copied list of the roster groups that this entry belongs to.
      *
      * @return an iterator for the groups this entry belongs to.
      */
-    public Collection<RosterGroup> getGroups() {
+    public List<RosterGroup> getGroups() {
         List<RosterGroup> results = new ArrayList<RosterGroup>();
         // Loop through all roster groups and find the ones that contain this
         // entry. This algorithm should be fine
@@ -125,7 +124,7 @@ public class RosterEntry {
                 results.add(group);
             }
         }
-        return Collections.unmodifiableCollection(results);
+        return results;
     }
 
     /**

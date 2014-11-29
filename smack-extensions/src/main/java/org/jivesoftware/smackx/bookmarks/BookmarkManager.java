@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.bookmarks;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -95,9 +94,9 @@ public class BookmarkManager {
      * @throws NotConnectedException 
      * @see BookmarkedConference
      */
-    public Collection<BookmarkedConference> getBookmarkedConferences() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<BookmarkedConference> getBookmarkedConferences() throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
-        return Collections.unmodifiableCollection(bookmarks.getBookmarkedConferences());
+        return Collections.unmodifiableList(bookmarks.getBookmarkedConferences());
     }
 
     /**
@@ -171,9 +170,9 @@ public class BookmarkManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public Collection<BookmarkedURL> getBookmarkedURLs() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<BookmarkedURL> getBookmarkedURLs() throws NoResponseException, XMPPErrorException, NotConnectedException {
         retrieveBookmarks();
-        return Collections.unmodifiableCollection(bookmarks.getBookmarkedURLS());
+        return Collections.unmodifiableList(bookmarks.getBookmarkedURLS());
     }
 
     /**

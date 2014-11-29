@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smack;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -322,14 +321,14 @@ public class ChatManager extends Manager{
     }
 
     /**
-     * Returns an unmodifiable collection of all chat listeners currently registered with this
+     * Returns an unmodifiable set of all chat listeners currently registered with this
      * manager.
      *
      * @return an unmodifiable collection of all chat listeners currently registered with this
      * manager.
      */
-    public Collection<ChatManagerListener> getChatListeners() {
-        return Collections.unmodifiableCollection(chatManagerListeners);
+    public Set<ChatManagerListener> getChatListeners() {
+        return Collections.unmodifiableSet(chatManagerListeners);
     }
 
     private void deliverMessage(Chat chat, Message message) {

@@ -369,12 +369,12 @@ public class Roster {
     }
 
     /**
-     * Returns an unmodifiable collection of all entries in the roster, including entries
+     * Returns a set of all entries in the roster, including entries
      * that don't belong to any groups.
      *
      * @return all entries in the roster.
      */
-    public Collection<RosterEntry> getEntries() {
+    public Set<RosterEntry> getEntries() {
         Set<RosterEntry> allEntries = new HashSet<RosterEntry>();
         // Loop through all roster groups and add their entries to the answer
         for (RosterGroup rosterGroup : getGroups()) {
@@ -383,7 +383,7 @@ public class Roster {
         // Add the roster unfiled entries to the answer
         allEntries.addAll(unfiledEntries);
 
-        return Collections.unmodifiableCollection(allEntries);
+        return allEntries;
     }
 
     /**
@@ -402,7 +402,7 @@ public class Roster {
      *
      * @return the unfiled roster entries.
      */
-    public Collection<RosterEntry> getUnfiledEntries() {
+    public List<RosterEntry> getUnfiledEntries() {
         return Collections.unmodifiableList(unfiledEntries);
     }
 

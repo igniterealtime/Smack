@@ -21,7 +21,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 
 import java.util.Set;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -141,12 +140,12 @@ public class Chat {
     }
 
     /**
-     * Returns an unmodifiable collection of all of the listeners registered with this chat.
+     * Returns an unmodifiable set of all of the listeners registered with this chat.
      *
-     * @return an unmodifiable collection of all of the listeners registered with this chat.
+     * @return an unmodifiable set of all of the listeners registered with this chat.
      */
-    public Collection<ChatMessageListener> getListeners() {
-        return Collections.unmodifiableCollection(listeners);
+    public Set<ChatMessageListener> getListeners() {
+        return Collections.unmodifiableSet(listeners);
     }
 
     /**

@@ -20,7 +20,6 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -67,13 +66,13 @@ public class RosterPacket extends IQ {
     }
 
     /**
-     * Returns an unmodifiable collection for the roster items in the packet.
+     * Returns a copied list of the roster items in the packet.
      *
-     * @return an unmodifiable collection for the roster items in the packet.
+     * @return a copied list of the roster items in the packet.
      */
-    public Collection<Item> getRosterItems() {
+    public List<Item> getRosterItems() {
         synchronized (rosterItems) {
-            return Collections.unmodifiableList(new ArrayList<Item>(rosterItems));
+            return new ArrayList<Item>(rosterItems);
         }
     }
 

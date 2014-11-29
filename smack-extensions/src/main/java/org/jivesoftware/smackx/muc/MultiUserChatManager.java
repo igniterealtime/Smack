@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.muc;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -203,11 +202,12 @@ public class MultiUserChatManager extends Manager {
      */
     public List<String> getJoinedRooms(String user) throws NoResponseException, XMPPErrorException,
                     NotConnectedException {
-        ArrayList<String> answer = new ArrayList<String>();
         // Send the disco packet to the user
         DiscoverItems result = ServiceDiscoveryManager.getInstanceFor(connection()).discoverItems(user, DISCO_NODE);
+        List<DiscoverItems.Item> items = result.getItems();
+        List<String> answer = new ArrayList<String>(items.size());
         // Collect the entityID for each returned item
-        for (DiscoverItems.Item item : result.getItems()) {
+        for (DiscoverItems.Item item : items) {
             answer.add(item.getEntityID());
         }
         return answer;
@@ -242,7 +242,7 @@ public class MultiUserChatManager extends Manager {
     }
 
     /**
-     * Returns a collection of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
+     * Returns a List of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
      * Once discovered the rooms hosted by a chat service it is possible to discover more detailed room information or
      * join the room.
      *
@@ -252,12 +252,13 @@ public class MultiUserChatManager extends Manager {
      * @throws NoResponseException
      * @throws NotConnectedException
      */
-    public Collection<HostedRoom> getHostedRooms(String serviceName) throws NoResponseException, XMPPErrorException,
+    public List<HostedRoom> getHostedRooms(String serviceName) throws NoResponseException, XMPPErrorException,
                     NotConnectedException {
-        List<HostedRoom> answer = new ArrayList<HostedRoom>();
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection());
-        DiscoverItems items = discoManager.discoverItems(serviceName);
-        for (DiscoverItems.Item item : items.getItems()) {
+        DiscoverItems discoverItems = discoManager.discoverItems(serviceName);
+        List<DiscoverItems.Item> items = discoverItems.getItems();
+        List<HostedRoom> answer = new ArrayList<HostedRoom>(items.size());
+        for (DiscoverItems.Item item : items) {
             answer.add(new HostedRoom(item));
         }
         return answer;

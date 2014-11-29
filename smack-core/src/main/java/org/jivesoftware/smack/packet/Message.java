@@ -18,7 +18,6 @@
 package org.jivesoftware.smack.packet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -154,8 +153,8 @@ public final class Message extends Packet {
      *
      * @return a collection of all subjects in this message.
      */
-    public Collection<Subject> getSubjects() {
-        return Collections.unmodifiableCollection(subjects);
+    public Set<Subject> getSubjects() {
+        return Collections.unmodifiableSet(subjects);
     }
 
     /**
@@ -218,7 +217,7 @@ public final class Message extends Packet {
      *
      * @return the languages being used for the subjects.
      */
-    public Collection<String> getSubjectLanguages() {
+    public List<String> getSubjectLanguages() {
         Subject defaultSubject = getMessageSubject(null);
         List<String> languages = new ArrayList<String>();
         for (Subject subject : subjects) {
@@ -226,7 +225,7 @@ public final class Message extends Packet {
                 languages.add(subject.language);
             }
         }
-        return Collections.unmodifiableCollection(languages);
+        return Collections.unmodifiableList(languages);
     }
 
     /**
@@ -274,8 +273,8 @@ public final class Message extends Packet {
      * @return a collection of all bodies in this Message.
      * @since 3.0.2
      */
-    public Collection<Body> getBodies() {
-        return Collections.unmodifiableCollection(bodies);
+    public Set<Body> getBodies() {
+        return Collections.unmodifiableSet(bodies);
     }
 
     /**
@@ -340,7 +339,7 @@ public final class Message extends Packet {
      * @return the languages being used for the bodies.
      * @since 3.0.2
      */
-    public Collection<String> getBodyLanguages() {
+    public List<String> getBodyLanguages() {
         Body defaultBody = getMessageBody(null);
         List<String> languages = new ArrayList<String>();
         for (Body body : bodies) {
@@ -348,7 +347,7 @@ public final class Message extends Packet {
                 languages.add(body.language);
             }
         }
-        return Collections.unmodifiableCollection(languages);
+        return Collections.unmodifiableList(languages);
     }
 
     /**
