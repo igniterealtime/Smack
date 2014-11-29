@@ -5,5 +5,5 @@ javax.naming API (e.g. Android)."""
 
 dependencies {
 	compile project(path: ':smack-core')
-	compile 'dnsjava:dnsjava:2.1.+'
+	compile 'dnsjava:dnsjava:2.1.6'
 }
