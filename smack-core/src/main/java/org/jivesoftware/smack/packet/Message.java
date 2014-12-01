@@ -88,6 +88,17 @@ public final class Message extends Packet {
     }
 
     /**
+     * Creates a new message to the specified recipient and with the specified body.
+     *
+     * @param to the user to send the message to.
+     * @param body the body of the message.
+     */
+    public Message(String to, String body) {
+        this(to);
+        setBody(body);
+    }
+
+    /**
      * Returns the type of the message. If no type has been set this method will return {@link
      * org.jivesoftware.smack.packet.Message.Type#normal}.
      *
