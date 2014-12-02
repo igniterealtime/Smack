@@ -373,6 +373,7 @@ public abstract class LLService {
      * @throws XMPPException if binding failed on all allowed ports.
      */
     private static ServerSocket bindRange(int min, int max) throws XMPPException {
+        // TODO this method exists also for the local socks5 proxy code and should be factored out into a util
         int port = 0;
         for (int try_port = min; try_port <= max; try_port++) {
             try {

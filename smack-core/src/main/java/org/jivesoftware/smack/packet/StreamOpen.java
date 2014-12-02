@@ -46,12 +46,16 @@ public class StreamOpen extends FullStreamElement {
 
     @Override
     public XmlStringBuilder toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.attribute("to", service);
-        xml.attribute("xmlns:stream", "http://etherx.jabber.org/streams");
-        xml.attribute("version", VERSION);
+        XmlStringBuilder xml = getBasicStreamOpen();
         xml.rightAngleBracket();
         return xml;
     }
 
+    protected final XmlStringBuilder getBasicStreamOpen() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.attribute("to", service);
+        xml.attribute("xmlns:stream", "http://etherx.jabber.org/streams");
+        xml.attribute("version", VERSION);
+        return xml;
+    }
 }
