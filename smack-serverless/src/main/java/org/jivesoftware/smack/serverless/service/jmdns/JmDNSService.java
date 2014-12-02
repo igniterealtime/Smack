@@ -23,7 +23,6 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.serverless.LLPresence;
 import org.jivesoftware.smack.serverless.service.LLPresenceDiscoverer;
 import org.jivesoftware.smack.serverless.service.LLService;
-import org.jivesoftware.smack.util.Tuple;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
@@ -33,7 +32,6 @@ import javax.jmdns.impl.JmDNSImpl;
 
 import java.net.InetAddress;
 import java.io.IOException;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -104,29 +102,15 @@ public class JmDNSService extends LLService implements ServiceListener {
     }
 
     protected void updateText() {
-        Hashtable<String,String> ht = new Hashtable<String,String>();
-        
-        for (Tuple<String,String> t : presence.toList()) {
-            if (t.a != null && t.b != null) {
-                ht.put(t.a, t.b);
-            }
-        }
-
-        serviceInfo.setText(ht);
+        serviceInfo.setText(presence.toMap());
     }
 
     /**
      * Register the DNS-SD service with the daemon.
      */
     protected void registerService() throws XMPPException {
-        Hashtable<String,String> ht = new Hashtable<String,String>();
-        
-        for (Tuple<String,String> t : presence.toList()) {
-            if (t.a != null && t.b != null)
-                ht.put(t.a, t.b);
-        }
         serviceInfo = ServiceInfo.create(SERVICE_TYPE,
-                presence.getServiceName(), presence.getPort(), 0, 0, ht);
+                presence.getServiceName(), presence.getPort(), 0, 0, presence.toMap());
         jmdns.addServiceListener(SERVICE_TYPE, this);
         try {
             String originalServiceName = serviceInfo.getName();

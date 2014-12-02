@@ -21,15 +21,16 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.serverless.LLPresence;
 import org.jivesoftware.smack.serverless.service.LLPresenceDiscoverer;
-import org.jivesoftware.smack.util.Tuple;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceListener;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Map;
 
 
 /**
@@ -80,20 +81,20 @@ class JmDNSPresenceDiscoverer extends LLPresenceDiscoverer {
 
     /**
      * Convert a TXT field list bundled with a '_presence._tcp' service to a
-     * String,String tuple. The TXT field list looks as following:
-     * "key=value" which is converted into the tuple (key, value).
+     * Map of Strings to Strings. The TXT field list looks as following:
+     * "key=value" which is converted into the a map of (key, value).
      *
      * @param strings the TXT fields.
-     * @return a list of key,value tuples.
+     * @return a map from key to value.
      */
-    private static List<Tuple<String,String>> TXTListToXMPPRecords(List<String> strings) {
-        // records :: [(String, String)]
-        List<Tuple<String,String>> records = new LinkedList<Tuple<String,String>>();
+    private static Map<String,String> TXTListToXMPPRecords(List<String> strings) {
+        Map<String,String> records = new HashMap<>(strings.size());
         for (String s : strings) {
             String[] record = s.split("=", 2);
             // check if valid
-            if (record.length == 2)
-                records.add(new Tuple<String, String>(record[0], record[1]));
+            if (record.length == 2) {
+                records.put(record[0], record[1]);
+            }
         }
         return records;
     }
