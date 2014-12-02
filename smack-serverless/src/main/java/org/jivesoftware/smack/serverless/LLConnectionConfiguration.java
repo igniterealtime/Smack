@@ -45,11 +45,11 @@ public class LLConnectionConfiguration extends ConnectionConfiguration implement
      * @param local LLPresence for the local user
      * @param remote LLPresence for the remote user
      */
-    public LLConnectionConfiguration(LLPresence local, LLPresence remote) {
-        super(remote.getServiceName());
-        this.localPresence = local;
-        this.remotePresence = remote;
-    }
+//    public LLConnectionConfiguration(LLPresence local, LLPresence remote) {
+////        super(remote.getServiceName());
+//        this.localPresence = local;
+//        this.remotePresence = remote;
+//    }
 
     /** 
      * Instantiate a link-local configuration when the connection is acting as
@@ -64,13 +64,13 @@ public class LLConnectionConfiguration extends ConnectionConfiguration implement
         this.socket = remoteSocket;
     }
 
-    @Override
-    public void setServiceName(String serviceName) {
-        // ConnectionConfiguration#setServiceName extracts the domain from the serviceName
-        // e.g "david@guardian" -> "guardian"
-        // This is not the behavior we want for XEP-0174 clients
-        this.serviceName = serviceName;
-    }
+//    @Override
+//    public void setServiceName(String serviceName) {
+//        // ConnectionConfiguration#setServiceName extracts the domain from the serviceName
+//        // e.g "david@guardian" -> "guardian"
+//        // This is not the behavior we want for XEP-0174 clients
+//        this.serviceName = serviceName;
+//    }
 
     /**
      * Tells if the connection is the initiating one.

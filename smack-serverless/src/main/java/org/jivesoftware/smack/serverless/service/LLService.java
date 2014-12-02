@@ -159,44 +159,44 @@ public abstract class LLService {
         presenceDiscoverer = discoverer;
         service = this;
 
-        XMPPLLConnection.addLLConnectionListener(new AbstractConnectionListener() {
-
-            @Override
-            public void connected(XMPPConnection xmppConnection) {
-                if (! (xmppConnection instanceof XMPPLLConnection)) {
-                    return;
-                }
-                XMPPLLConnection connection = (XMPPLLConnection) xmppConnection;
-                // We only care about this connection if we were the one
-                // creating it
-                if (isAssociatedConnection(connection)) {
-                    if (connection.isInitiator()) {
-                        addOutgoingConnection(connection);
-                    }
-                    else {
-                        addIngoingConnection(connection);
-                    }
-
-                    connection.addConnectionListener(new ConnectionActivityListener(connection));
-
-                    // Notify listeners that a new connection associated with this
-                    // service has been created.
-                    notifyNewServiceConnection(connection);
-
-
-                    // add other existing packet filters associated with this service
-                    for (ListenerWrapper wrapper : listeners.values()) {
-                        connection.addPacketListener(wrapper.getPacketListener(),
-                                wrapper.getPacketFilter());
-                    }
-
-                    // add packet collectors
-                    for (CollectorWrapper cw : collectorWrappers) {
-                        cw.createPacketCollector(connection);
-                    }
-                }
-            }
-        });
+//        XMPPLLConnection.addLLConnectionListener(new AbstractConnectionListener() {
+//
+//            @Override
+//            public void connected(XMPPConnection xmppConnection) {
+//                if (! (xmppConnection instanceof XMPPLLConnection)) {
+//                    return;
+//                }
+//                XMPPLLConnection connection = (XMPPLLConnection) xmppConnection;
+//                // We only care about this connection if we were the one
+//                // creating it
+//                if (isAssociatedConnection(connection)) {
+//                    if (connection.isInitiator()) {
+//                        addOutgoingConnection(connection);
+//                    }
+//                    else {
+//                        addIngoingConnection(connection);
+//                    }
+//
+//                    connection.addConnectionListener(new ConnectionActivityListener(connection));
+//
+//                    // Notify listeners that a new connection associated with this
+//                    // service has been created.
+//                    notifyNewServiceConnection(connection);
+//
+//
+//                    // add other existing packet filters associated with this service
+//                    for (ListenerWrapper wrapper : listeners.values()) {
+//                        connection.addPacketListener(wrapper.getPacketListener(),
+//                                wrapper.getPacketFilter());
+//                    }
+//
+//                    // add packet collectors
+//                    for (CollectorWrapper cw : collectorWrappers) {
+//                        cw.createPacketCollector(connection);
+//                    }
+//                }
+//            }
+//        });
 
         notifyServiceListeners(this);
     }
@@ -267,7 +267,7 @@ public abstract class LLService {
     public void init() throws XMPPException {
         // allocate a new port for remote clients to connect to
         socket = bindRange(DEFAULT_MIN_PORT, DEFAULT_MAX_PORT);
-        presence.setPort(socket.getLocalPort());
+//        presence.setPort(socket.getLocalPort());
 
         // register service on the allocated port
         registerService();
@@ -299,23 +299,23 @@ public abstract class LLService {
     public void close() throws IOException {
         done = true;
 
-        // close incoming connections
-        for (XMPPLLConnection connection : ingoing.values()) {
-            try {
-                connection.shutdown();
-            } catch (Exception e) {
-                // ignore
-            }
-        }
+//        // close incoming connections
+//        for (XMPPLLConnection connection : ingoing.values()) {
+//            try {
+//                connection.shutdown();
+//            } catch (Exception e) {
+//                // ignore
+//            }
+//        }
 
-        // close outgoing connections
-        for (XMPPLLConnection connection : outgoing.values()) {
-            try {
-                connection.shutdown();
-            } catch (Exception e) {
-                // ignore
-            }
-        }
+//        // close outgoing connections
+//        for (XMPPLLConnection connection : outgoing.values()) {
+//            try {
+//                connection.shutdown();
+//            } catch (Exception e) {
+//                // ignore
+//            }
+//        }
         try {
             socket.close();
         } catch (IOException ioe) {
@@ -337,19 +337,19 @@ public abstract class LLService {
 
                 LLConnectionConfiguration config =
                     new LLConnectionConfiguration(presence, s);
-                XMPPLLConnection connection = new XMPPLLConnection(this, config);
+//                XMPPLLConnection connection = new XMPPLLConnection(this, config);
 
                 // Associate the new connection with this service
-                addAssociatedConnection(connection);
+//                addAssociatedConnection(connection);
 
                 // Spawn new thread to handle the connecting.
                 // The reason for spawning a new thread is to let two remote clients
-                // be able to connect at the same time.
-                Thread connectionInitiatorThread =
-                    new ConnectionInitiatorThread(connection);
-                connectionInitiatorThread.setName("Smack Link-local Connection Initiator");
-                connectionInitiatorThread.setDaemon(true);
-                connectionInitiatorThread.start();
+//                // be able to connect at the same time.
+//                Thread connectionInitiatorThread =
+//                    new ConnectionInitiatorThread(connection);
+//                connectionInitiatorThread.setName("Smack Link-local Connection Initiator");
+//                connectionInitiatorThread.setDaemon(true);
+//                connectionInitiatorThread.start();
             }
             catch (SocketException se) {
                 // If we are closing down, it's probably closed socket exception.
@@ -693,9 +693,9 @@ public abstract class LLService {
                     new XMPPError(XMPPError.Condition.recipient_unavailable));
         }
 
-        LLConnectionConfiguration config =
-            new LLConnectionConfiguration(presence, remotePresence);
-        connection = new XMPPLLConnection(this, config);
+//        LLConnectionConfiguration config =
+//            new LLConnectionConfiguration(presence, remotePresence);
+//        connection = new XMPPLLConnection(this, config);
         // Associate the new connection with this service
         addAssociatedConnection(connection);
         connection.connect();
@@ -784,7 +784,7 @@ public abstract class LLService {
      * @throws XMPPException if an error occurs
      */
     public void updateLocalPresence(LLPresence presence) throws XMPPException {
-        this.presence.update(presence);
+//        this.presence.update(presence);
 
         if (initiated) {
             updateText();
@@ -860,13 +860,13 @@ public abstract class LLService {
         }
 
         public void run() {
-            try {
-                connection.initListen();
-            }
-            catch (XMPPException | SmackException | IOException e) {
-                // ignore, since its an incoming connection
-                // there is nothing to save
-            }
+//            try {
+//                connection.initListen();
+//            }
+//            catch (XMPPException | SmackException | IOException e) {
+//                // ignore, since its an incoming connection
+//                // there is nothing to save
+//            }
         }
     }
 

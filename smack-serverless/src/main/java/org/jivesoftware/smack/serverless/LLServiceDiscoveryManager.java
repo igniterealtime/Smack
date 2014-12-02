@@ -70,13 +70,13 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
         Please let me know (dbro@dbro.pro) if you've any thoughts on this matter.
      */
     static {
-        XMPPLLConnection.addLLConnectionListener(new AbstractConnectionListener<XMPPLLConnection>() {
-
-            @Override
-            public void connected(XMPPLLConnection connection) {
-                addLLServiceDiscoveryManager(getInstanceFor(connection));
-            }
-        });
+//        XMPPLLConnection.addLLConnectionListener(new AbstractConnectionListener<XMPPLLConnection>() {
+//
+//            @Override
+//            public void connected(XMPPLLConnection connection) {
+//                addLLServiceDiscoveryManager(getInstanceFor(connection));
+//            }
+//        });
     }
 
     protected LLServiceDiscoveryManager(LLService llservice, XMPPConnection connection) {
@@ -218,9 +218,9 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
         for (String feature : getFeatures()) {
             response.addFeature(feature);
         }
-        if (extendedInfo != null) {
-            response.addExtension(extendedInfo);
-        }
+//        if (extendedInfo != null) {
+//            response.addExtension(extendedInfo);
+//        }
     }
 
     /**
@@ -236,9 +236,9 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
         // Add discover info
         addDiscoverInfoTo(di);
         
-        for (String feature : features) {
-            di.addFeature(feature);
-        }
+//        for (String feature : features) {
+//            di.addFeature(feature);
+//        }
 
         return di;
     }
@@ -281,7 +281,7 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
      */
     @Override
     public void setExtendedInfo(DataForm info) {
-        extendedInfo = info;
+//        extendedInfo = info;
 
         // set for already active connections
         for (XMPPLLConnection connection : service.getConnections())
@@ -299,7 +299,7 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
      */
     @Override
     public void removeExtendedInfo() {
-        extendedInfo = null;
+//        extendedInfo = null;
 
         // remove for already active connections
         for (XMPPLLConnection connection : service.getConnections())
@@ -330,7 +330,7 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
         try {
             result = service.getIQResponse(disco);
         } catch (XMPPException | IOException | SmackException e) {
-            throw new SmackException.NoResponseException();
+//            throw new SmackException.NoResponseException();
         }
         if (result == null) {
             throw new XMPPException.XMPPErrorException("No response from the server.", new XMPPError(XMPPError.Condition.remote_server_timeout));
@@ -366,7 +366,7 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
         try {
             result = service.getIQResponse(disco);
         } catch (XMPPException | IOException | SmackException e) {
-            throw new SmackException.NoResponseException();
+//            throw new SmackException.NoResponseException();
         }
         if (result == null) {
             throw new XMPPException.XMPPErrorException("No response from the server.", new XMPPError(XMPPError.Condition.remote_server_timeout));
@@ -440,16 +440,16 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
     }
 
 
-    /**
-     * Returns true if the specified feature is registered in the ServiceDiscoveryManager.
-     *
-     * @param feature the feature to look for.
-     * @return a boolean indicating if the specified featured is registered or not.
-     */
-    @Override
-    public boolean includesFeature(String feature) {
-        return features.contains(feature);
-    }
+//    /**
+//     * Returns true if the specified feature is registered in the ServiceDiscoveryManager.
+//     *
+//     * @param feature the feature to look for.
+//     * @return a boolean indicating if the specified featured is registered or not.
+//     */
+//    @Override
+//    public boolean includesFeature(String feature) {
+//        return features.contains(feature);
+//    }
 
     /**
      * Returns true if the server supports publishing of items. A client may wish to publish items
@@ -507,14 +507,14 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
         }
     }
 
-    private String getEntityCapsVersion() {
-        if (capsManager != null) {
-            return capsManager.getCapsVersion();
-        }
-        else {
-            return null;
-        }
-    }
+//    private String getEntityCapsVersion() {
+//        if (capsManager != null) {
+//            return capsManager.getCapsVersion();
+//        }
+//        else {
+//            return null;
+//        }
+//    }
 
 
     /**
@@ -531,19 +531,19 @@ public class LLServiceDiscoveryManager extends ServiceDiscoveryManager {
             // Set Entity Capabilities Manager
             manager.setEntityCapsManager(capsManager);
 
-            // Set extended info
-            manager.setExtendedInfo(extendedInfo);
-
-            // Set node information providers
-            for (Map.Entry<String,NodeInformationProvider> entry :
-                    nodeInformationProviders.entrySet()) {
-                manager.setNodeInformationProvider(entry.getKey(), entry.getValue());
-            }
-
-            // add features
-            for (String feature : features) {
-                manager.addFeature(feature);
-            }
+//            // Set extended info
+//            manager.setExtendedInfo(extendedInfo);
+//
+//            // Set node information providers
+//            for (Map.Entry<String,NodeInformationProvider> entry :
+//                    nodeInformationProviders.entrySet()) {
+//                manager.setNodeInformationProvider(entry.getKey(), entry.getValue());
+//            }
+//
+//            // add features
+//            for (String feature : features) {
+//                manager.addFeature(feature);
+//            }
         }
     }
 

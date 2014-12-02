@@ -26,9 +26,6 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.serverless.service.LLService;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketReader;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.BufferedReader;
@@ -138,15 +135,15 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
         return initiator;
     }
 
-    /**
-     * Return the user name of the remote peer (service name).
-     *
-     * @return the remote hosts service name / username
-     */
-    public String getUser() {
-        // username is the service name of the local presence
-        return localPresence.getServiceName();
-    }
+//    /**
+//     * Return the user name of the remote peer (service name).
+//     *
+//     * @return the remote hosts service name / username
+//     */
+//    public String getUser() {
+//        // username is the service name of the local presence
+//        return localPresence.getServiceName();
+//    }
 
     /**
      * Sets the name of the service provided in the <stream:stream ...> from the remote peer.
@@ -154,7 +151,7 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
      * @param serviceName the name of the service
      */
     public void setServiceName(String serviceName) {
-        ((LLConnectionConfiguration)config).setServiceName(serviceName);
+//        ((LLConnectionConfiguration)config).setServiceName(serviceName);
         //((LLConnectionConfiguration)config).setServiceName(remotePresence.getServiceName());
         //LLConnectionConfiguration llconfig = new LLConnectionConfiguration(localPresence, remotePresence);
         //llconfig.setServiceName("Test");
@@ -188,19 +185,22 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
 
         try {
             socket = new Socket(host, port);
+        } catch (Exception e) {
+            // TODO
+            throw new SmackException(e);
         }
-        catch (UnknownHostException uhe) {
-            String errorMessage = "Could not connect to " + host + ":" + port + ".";
-            throw new XMPPException.XMPPErrorException(errorMessage, new XMPPError(
-                    XMPPError.Condition.remote_server_timeout, errorMessage),
-                    uhe);
-        }
-        catch (IOException ioe) {
-            String errorMessage = "Error connecting to " + host + ":"
-                    + port + ".";
-            throw new XMPPException.XMPPErrorException(errorMessage, new XMPPError(
-                    XMPPError.Condition.remote_server_error, errorMessage), ioe);
-        }
+//        catch (UnknownHostException uhe) {
+//            String errorMessage = "Could not connect to " + host + ":" + port + ".";
+//            throw new XMPPException.XMPPErrorException(errorMessage, new XMPPError(
+//                    XMPPError.Condition.remote_server_timeout, errorMessage),
+//                    uhe);
+//        }
+//        catch (IOException ioe) {
+//            String errorMessage = "Error connecting to " + host + ":"
+//                    + port + ".";
+//            throw new XMPPException.XMPPErrorException(errorMessage, new XMPPError(
+//                    XMPPError.Condition.remote_server_error, errorMessage), ioe);
+//        }
         initConnection();
 
         notifyLLListenersConnected();
@@ -215,13 +215,14 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
         if (config.getServiceName() == null) {
             shutdown();
         } else {
-            packetWriter = new LLPacketWriter();
+//            packetWriter = new LLPacketWriter();
             if (debugger != null) {
                 if (debugger.getWriterListener() != null) {
                     addPacketListener(debugger.getWriterListener(), null);
                 }
             }
-            packetWriter.startup();
+            // TODO
+//            packetWriter.startup();
             notifyLLListenersConnected();
         }
     }
@@ -268,11 +269,11 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
             // Don't initialize packet writer until we know it's a valid connection
             // unless we are the initiator. If we are NOT the initializer, we instead
             // wait for a stream initiation before doing anything.
-            if (isInitiator())
-                packetWriter = new LLPacketWriter();
+//            if (isInitiator())
+//                packetWriter = new LLPacketWriter();
 
-            // Initialize packet reader
-            packetReader = new LLPacketReader();
+//            // Initialize packet reader
+//            packetReader = new LLPacketReader();
 
             // If debugging is enabled, we should start the thread that will listen for
             // all packets and then log them.
@@ -287,13 +288,14 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
             // If we are the initiator start the packet writer. This will open a XMPP
             // stream to the server. If not, a packet writer will be started after
             // receiving an initial stream start tag.
-            if (isInitiator())
-                packetWriter.startup();
+            // TODO
+//            if (isInitiator())
+//                packetWriter.startup();
             // Start the packet reader. The startup() method will block until we
             // get an opening stream packet back from server.
-            packetReader.startup();
+//            packetReader.startup();
         }
-        catch (XMPPException.XMPPErrorException | IOException | SmackException ex) {
+        catch (XMPPException.XMPPErrorException ex) {
             // An exception occurred in setting up the connection. Make sure we shut down the
             // readers and writers and close the socket.
 
@@ -306,14 +308,14 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
     private void shutdownPacketReadersAndWritersAndCloseSocket() {
         if (packetWriter != null) {
             try {
-                packetWriter.shutdown();
+//                packetWriter.shutdown();
             }
             catch (Throwable ignore) { /* ignore */ }
             packetWriter = null;
         }
         if (packetReader != null) {
             try {
-                packetReader.shutdown();
+//                packetReader.shutdown();
             }
             catch (Throwable ignore) { /* ignore */ }
             packetReader = null;
@@ -351,11 +353,13 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
                     new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
         }
         catch (IOException ioe) {
-            throw new XMPPException.XMPPErrorException(
-                    "XMPPError establishing connection with server.",
-                    new XMPPError(XMPPError.Condition.remote_server_error,
-                            "XMPPError establishing connection with server."),
-                    ioe);
+            // TODO
+            throw new RuntimeException(ioe);
+//            throw new XMPPException.XMPPErrorException(
+//                    "XMPPError establishing connection with server.",
+//                    new XMPPError(XMPPError.Condition.remote_server_error,
+//                            "XMPPError establishing connection with server."),
+//                    ioe);
         }
 
         // If debugging is enabled, we open a window and write out all network traffic.
@@ -365,10 +369,10 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
     protected void shutdown() {
         connection = null;
 
-        if (packetReader != null)
-            packetReader.shutdown();
-        if (packetWriter != null)
-            packetWriter.shutdown();
+//        if (packetReader != null)
+//            packetReader.shutdown();
+//        if (packetWriter != null)
+//            packetWriter.shutdown();
 
         // Wait 150 ms for processes to clean-up, then shutdown.
         try {
@@ -414,110 +418,104 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
         packetReader = null;
     }
 
-    protected class LLPacketReader extends PacketReader {
-
-        private boolean mGotStreamOpenedStanza = false;
-
-        LLPacketReader() throws SmackException {
-        }
-
-        public synchronized void startup() throws IOException, SmackException {
-            readerThread.start();
-
-            try {
-                // Wait until either:
-                // - the remote peer's stream initialization stanza has been parsed
-                // - an exception is thrown while parsing
-                // - the timeout occurs
-                if (connection.isInitiator())
-                    wait(getPacketReplyTimeout());
-            }
-            catch (InterruptedException ie) {
-                // Ignore.
-                ie.printStackTrace();
-            }
-            if (connection.isInitiator() && !mGotStreamOpenedStanza) {
-                throwConnectionExceptionOrNoResponse();
-            }
-        }
-
-        @Override
-        protected void handleStreamOpened(XmlPullParser parser) throws Exception {
-            super.handleStreamOpened(parser);
-
-            // if we are the initiator, this means stream has been initiated
-            // if we aren't the initiator, this means we have to respond with
-            // stream initiator.
-            if (connection.isInitiator()) {
-                mGotStreamOpenedStanza = true;
-                connection.connectionID = connection.getServiceName();
-                //releaseConnectionIDLock();
-            }
-            else {
-                // Check if service name is a known entity
-                // if it is, open the stream and keep it open
-                // otherwise open and immediately close it
-                if (connection.getServiceName() == null) {
-                    System.err.println("No service name specified in stream initiation, canceling.");
-                    shutdown();
-                } else {
-                    // Check if service name is known, if so
-                    // we will continue the session
-                    LLPresence presence = service.getPresenceByServiceName(connection.getServiceName());
-                    if (presence != null) {
-                        connection.setRemotePresence(presence);
-                        connectionID = connection.getServiceName();
-                        connection.streamInitiatingReceived();
-                        //releaseConnectionIDLock();
-                    } else {
-                        System.err.println("Unknown service name '" +
-                                connection.getServiceName() +
-                                "' specified in stream initation, canceling.");
-                        shutdown();
-                    }
-                }
-            }
-        }
-    }
-
-    protected class LLPacketWriter extends PacketWriter {
-
-
-        @Override
-        protected void openStream() throws IOException {
-            // Unlike traditional XMPP Stream initiation,
-            // we must provide our XEP-0174 Service Name
-            // in a "from" attribute
-            StringBuilder stream = new StringBuilder();
-            stream.append("<stream:stream");
-            stream.append(" to=\"").append(getServiceName()).append("\"");
-            if (initiator)
-                stream.append(" from=\"").append(((LLConnectionConfiguration) config).getLocalPresence().getServiceName()).append("\"");
-            else {
-                // TODO: We should be able to access the service name from the
-                // stream opening stanza that this is a response to.
-                String localServiceName = ((LLConnectionConfiguration) config).getLocalPresence().getJID();
-                localServiceName = localServiceName.substring(0, localServiceName.lastIndexOf("."));
-                stream.append(" from=\"").append(localServiceName).append("\"");
-            }
-            stream.append(" xmlns=\"jabber:client\"");
-            stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\"");
-            stream.append(" version=\"1.0\">");
-            writer.write(stream.toString());
-            writer.flush();
-        }
-    }
+//    protected class LLPacketReader extends PacketReader {
+//
+//        private boolean mGotStreamOpenedStanza = false;
+//
+//        LLPacketReader() throws SmackException {
+//        }
+//
+//        public synchronized void startup() throws IOException, SmackException {
+//            readerThread.start();
+//
+//            try {
+//                // Wait until either:
+//                // - the remote peer's stream initialization stanza has been parsed
+//                // - an exception is thrown while parsing
+//                // - the timeout occurs
+//                if (connection.isInitiator())
+//                    wait(getPacketReplyTimeout());
+//            }
+//            catch (InterruptedException ie) {
+//                // Ignore.
+//                ie.printStackTrace();
+//            }
+//            if (connection.isInitiator() && !mGotStreamOpenedStanza) {
+//                throwConnectionExceptionOrNoResponse();
+//            }
+//        }
+//
+//        @Override
+//        protected void handleStreamOpened(XmlPullParser parser) throws Exception {
+//            super.handleStreamOpened(parser);
+//
+//            // if we are the initiator, this means stream has been initiated
+//            // if we aren't the initiator, this means we have to respond with
+//            // stream initiator.
+//            if (connection.isInitiator()) {
+//                mGotStreamOpenedStanza = true;
+//                connection.connectionID = connection.getServiceName();
+//                //releaseConnectionIDLock();
+//            }
+//            else {
+//                // Check if service name is a known entity
+//                // if it is, open the stream and keep it open
+//                // otherwise open and immediately close it
+//                if (connection.getServiceName() == null) {
+//                    System.err.println("No service name specified in stream initiation, canceling.");
+//                    shutdown();
+//                } else {
+//                    // Check if service name is known, if so
+//                    // we will continue the session
+//                    LLPresence presence = service.getPresenceByServiceName(connection.getServiceName());
+//                    if (presence != null) {
+//                        connection.setRemotePresence(presence);
+//                        connectionID = connection.getServiceName();
+//                        connection.streamInitiatingReceived();
+//                        //releaseConnectionIDLock();
+//                    } else {
+//                        System.err.println("Unknown service name '" +
+//                                connection.getServiceName() +
+//                                "' specified in stream initation, canceling.");
+//                        shutdown();
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    protected class LLPacketWriter extends PacketWriter {
+//
+//
+//        @Override
+//        protected void openStream() throws IOException {
+//            // Unlike traditional XMPP Stream initiation,
+//            // we must provide our XEP-0174 Service Name
+//            // in a "from" attribute
+//            StringBuilder stream = new StringBuilder();
+//            stream.append("<stream:stream");
+//            stream.append(" to=\"").append(getServiceName()).append("\"");
+//            if (initiator)
+//                stream.append(" from=\"").append(((LLConnectionConfiguration) config).getLocalPresence().getServiceName()).append("\"");
+//            else {
+//                // TODO: We should be able to access the service name from the
+//                // stream opening stanza that this is a response to.
+//                String localServiceName = ((LLConnectionConfiguration) config).getLocalPresence().getJID();
+//                localServiceName = localServiceName.substring(0, localServiceName.lastIndexOf("."));
+//                stream.append(" from=\"").append(localServiceName).append("\"");
+//            }
+//            stream.append(" xmlns=\"jabber:client\"");
+//            stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\"");
+//            stream.append(" version=\"1.0\">");
+//            writer.write(stream.toString());
+//            writer.flush();
+//        }
+//    }
 
 	@Override
 	public String getConnectionID() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean isAuthenticated() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -553,16 +551,16 @@ public class XMPPLLConnection extends AbstractXMPPConnection {
 	}
 
 	@Override
-	public void login(String username, String password, String resource)
-			throws XMPPException, SmackException, IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void loginAnonymously() throws XMPPException, SmackException,
 			IOException {
 		// TODO Auto-generated method stub
 		
 	}
+
+    @Override
+    protected void loginNonAnonymously() throws XMPPException, SmackException,
+            IOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

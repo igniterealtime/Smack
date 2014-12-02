@@ -43,8 +43,8 @@ class JmDNSPresenceDiscoverer extends LLPresenceDiscoverer {
 
     JmDNSPresenceDiscoverer() throws XMPPException {
         jmdns = JmDNSService.jmdns;
-        if (jmdns == null)
-            throw new XMPPException.XMPPErrorException(new XMPPError(XMPPError.Condition.undefined_condition, "Failed to fully initiate mDNS daemon."));
+//        if (jmdns == null)
+//            throw new XMPPException.XMPPErrorException(new XMPPError(XMPPError.Condition.undefined_condition, "Failed to fully initiate mDNS daemon."));
 
         jmdns.addServiceListener(JmDNSService.SERVICE_TYPE, new PresenceServiceListener());
     }

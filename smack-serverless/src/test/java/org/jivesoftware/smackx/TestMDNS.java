@@ -17,13 +17,10 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.ChatManagerListener;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.serverless.LLChat;
 import org.jivesoftware.smack.serverless.LLPresence;
 import org.jivesoftware.smack.serverless.LLServiceDiscoveryManager;
 import org.jivesoftware.smack.serverless.service.LLService;
@@ -115,12 +112,12 @@ public class TestMDNS {
 //            }
 
             System.out.println("Adding three default features to service discovery manager...");
-            LLServiceDiscoveryManager.addDefaultFeature("http://www.jabber.org/extensions/lalal");
-            LLServiceDiscoveryManager.addDefaultFeature("http://www.jabber.org/extenions/thetetteet");
-            LLServiceDiscoveryManager.addDefaultFeature("urn:xmpp:hejhoppextension");
+//            LLServiceDiscoveryManager.addDefaultFeature("http://www.jabber.org/extensions/lalal");
+//            LLServiceDiscoveryManager.addDefaultFeature("http://www.jabber.org/extenions/thetetteet");
+//            LLServiceDiscoveryManager.addDefaultFeature("urn:xmpp:hejhoppextension");
 
             // Start listen for Link-local chats
-            service.addLLChatListener(new MyChatListener());
+//            service.addLLChatListener(new MyChatListener());
 
             // Add hook for doing a clean shut down
             Runtime.getRuntime().addShutdownHook(new CloseDownService(service));
@@ -148,14 +145,14 @@ public class TestMDNS {
                         String user = stdIn.readLine();
                         System.out.print("Enter message: ");
                         String message = stdIn.readLine();
-                        LLChat chat = service.getChat(user);
-                        chat.sendMessage(message);
+//                        LLChat chat = service.getChat(user);
+//                        chat.sendMessage(message);
                         System.out.println("Message sent.");
                     }
                     else if ("addfeature".equals(line)) {
                         System.out.print("Enter new feature: ");
                         String feature = stdIn.readLine();
-                        LLServiceDiscoveryManager.addDefaultFeature(feature);
+//                        LLServiceDiscoveryManager.addDefaultFeature(feature);
                     }
                     else if ("disco".equals(line)) {
                         System.out.print("Enter user service name e.g (dave@service): ");
@@ -226,42 +223,42 @@ public class TestMDNS {
         }
     }
 
-    private class MyChatListener implements ChatManagerListener<LLChat> {
-        public MyChatListener() {}
-
-        @Override
-        public void chatCreated(LLChat chat, boolean createdLocally) {
-            System.out.println("Discovered new chat being created.");
-            chat.addMessageListener(new MyMessageListener(chat));
-        }
-    }
-
-    private class MyMessageListener implements MessageListener<LLChat> {
-        LLChat chat;
-
-        MyMessageListener(LLChat chat) {
-            this.chat = chat;
-        }
-
-        @Override
-        public void processMessage(LLChat chat, Message message) {
-            try {
-                if (message.getBody().equals("ping")) {
-                    chat.sendMessage("pong");
-                    System.out.println("### received a ping, replied with pong.");
-                }
-                else if (message.getBody().equals("spam")) {
-                    service.spam();
-                }
-                else {
-                    System.out.println("### <" + chat.getParticipant() +
-                            "> " + message.getBody());
-                }
-            }
-            catch (SmackException | XMPPException xe) {
-                System.out.println("Caught XMPPException in message listener: " + xe);
-                xe.printStackTrace();
-            }
-        }
-    }
+//    private class MyChatListener implements ChatManagerListener<LLChat> {
+//        public MyChatListener() {}
+//
+//        @Override
+//        public void chatCreated(LLChat chat, boolean createdLocally) {
+//            System.out.println("Discovered new chat being created.");
+//            chat.addMessageListener(new MyMessageListener(chat));
+//        }
+//    }
+//
+//    private class MyMessageListener implements MessageListener<LLChat> {
+//        LLChat chat;
+//
+//        MyMessageListener(LLChat chat) {
+//            this.chat = chat;
+//        }
+//
+//        @Override
+//        public void processMessage(LLChat chat, Message message) {
+//            try {
+//                if (message.getBody().equals("ping")) {
+//                    chat.sendMessage("pong");
+//                    System.out.println("### received a ping, replied with pong.");
+//                }
+//                else if (message.getBody().equals("spam")) {
+//                    service.spam();
+//                }
+//                else {
+//                    System.out.println("### <" + chat.getParticipant() +
+//                            "> " + message.getBody());
+//                }
+//            }
+//            catch (SmackException | XMPPException xe) {
+//                System.out.println("Caught XMPPException in message listener: " + xe);
+//                xe.printStackTrace();
+//            }
+//        }
+//    }
 }
