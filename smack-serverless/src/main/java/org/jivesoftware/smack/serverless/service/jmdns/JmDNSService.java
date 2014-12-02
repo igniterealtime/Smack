@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.serverless;
+package org.jivesoftware.smack.serverless.service.jmdns;
 
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.serverless.LLPresence;
+import org.jivesoftware.smack.serverless.service.LLPresenceDiscoverer;
+import org.jivesoftware.smack.serverless.service.LLService;
 import org.jivesoftware.smack.util.Tuple;
 
 import javax.jmdns.JmDNS;

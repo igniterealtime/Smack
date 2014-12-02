@@ -25,6 +25,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.serverless.service.LLService;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketReader;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.serverless;
+package org.jivesoftware.smack.serverless.service;
 
 
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -38,6 +38,9 @@ import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.serverless.LLConnectionConfiguration;
+import org.jivesoftware.smack.serverless.LLPresence;
+import org.jivesoftware.smack.serverless.XMPPLLConnection;
 
 import java.net.ServerSocket;
 import java.net.Socket;

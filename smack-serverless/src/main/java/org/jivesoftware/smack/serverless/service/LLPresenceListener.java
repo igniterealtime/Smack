@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2014 Jive Software.
+ * Copyright 2009 Jonas Ådahl.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.serverless;
+
+package org.jivesoftware.smack.serverless.service;
+
+import org.jivesoftware.smack.serverless.LLPresence;
 
 
 /**
- * Notification for new Link-local services created.
+ * Interface for receiving notifications about presence changes.
  */
-public interface LLServiceListener {
-
+public interface LLPresenceListener {
     /**
-     * The function called when a new Link-local service is created.
-     *
-     * @param service the new service
+     * New link-local presence has been discovered.
+     * 
+     * @param presence information about the new presence
      */
-    public void serviceCreated(LLService service);
+
+    public void presenceNew(LLPresence presence);
+    /**
+     * A link-local presence has gone offline.
+     * @param presence the presence which went offline.
+     */
+    public void presenceRemove(LLPresence presence);
 }

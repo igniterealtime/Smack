@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.serverless;
+package org.jivesoftware.smack.serverless.service;
 
 
 import org.jivesoftware.smack.packet.Message;

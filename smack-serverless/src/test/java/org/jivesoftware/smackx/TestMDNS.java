@@ -23,12 +23,12 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.serverless.JmDNSService;
 import org.jivesoftware.smack.serverless.LLChat;
 import org.jivesoftware.smack.serverless.LLPresence;
-import org.jivesoftware.smack.serverless.LLService;
 import org.jivesoftware.smack.serverless.LLServiceDiscoveryManager;
-import org.jivesoftware.smack.serverless.LLServiceStateListener;
+import org.jivesoftware.smack.serverless.service.LLService;
+import org.jivesoftware.smack.serverless.service.LLServiceStateListener;
+import org.jivesoftware.smack.serverless.service.jmdns.JmDNSService;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 import java.io.BufferedReader;

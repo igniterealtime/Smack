@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.serverless;
+package org.jivesoftware.smack.serverless.service;
 
 
 import java.util.Set;
@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.jivesoftware.smack.serverless.LLPresence;
 
 /**
  * Link-local presence discoverer. XEP-0174 describes how to use mDNS/DNS-SD.

@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -30,6 +29,10 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.serverless.service.LLPresenceListener;
+import org.jivesoftware.smack.serverless.service.LLService;
+import org.jivesoftware.smack.serverless.service.LLServiceConnectionListener;
+import org.jivesoftware.smack.serverless.service.LLServiceStateListener;
 import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
