@@ -494,7 +494,7 @@ public class EntityCapsManager extends Manager {
             }
         });
 
-        // Send an empty presence, and let the packet intercepter
+        // Send an empty presence, and let the packet interceptor
         // add a <c/> node to it.
         // See http://xmpp.org/extensions/xep-0115.html#advertise
         // We only send a presence packet if there was already one send
