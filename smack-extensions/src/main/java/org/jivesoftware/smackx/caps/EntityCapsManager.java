@@ -34,6 +34,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
@@ -76,6 +77,12 @@ public class EntityCapsManager extends Manager {
     public static final String ELEMENT = CapsExtension.ELEMENT;
 
     private static final Map<String, MessageDigest> SUPPORTED_HASHES = new HashMap<String, MessageDigest>();
+
+    /**
+     * The default hash. Currently 'sha-1'.
+     */
+    private static final String DEFAULT_HASH = StringUtils.SHA1;
+
     private static String DEFAULT_ENTITY_NODE = "http://www.igniterealtime.org/projects/smack";
 
     protected static EntityCapsPersistentCache persistentCache;
@@ -92,7 +99,7 @@ public class EntityCapsManager extends Manager {
     private static final PacketFilter PRESENCES = PacketTypeFilter.PRESENCE;
 
     /**
-     * Map of (node + '#" + hash algorithm) to DiscoverInfo data
+     * Map of "node + '#' + hash" to DiscoverInfo data
      */
     private static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<String, DiscoverInfo>(1000);
 
@@ -112,8 +119,8 @@ public class EntityCapsManager extends Manager {
         });
 
         try {
-            MessageDigest sha1MessageDigest = MessageDigest.getInstance("SHA-1");
-            SUPPORTED_HASHES.put("sha-1", sha1MessageDigest);
+            MessageDigest sha1MessageDigest = MessageDigest.getInstance(DEFAULT_HASH);
+            SUPPORTED_HASHES.put(DEFAULT_HASH, sha1MessageDigest);
         } catch (NoSuchAlgorithmException e) {
             // Ignore
         }
@@ -238,9 +245,12 @@ public class EntityCapsManager extends Manager {
     }
 
     private static void addCapsExtensionInfo(String from, CapsExtension capsExtension) {
-        String hash = capsExtension.getHash().toLowerCase(Locale.US);
-        if (!SUPPORTED_HASHES.containsKey(hash))
+        String capsExtensionHash = capsExtension.getHash();
+        String hashInUppercase = capsExtensionHash.toUpperCase(Locale.US);
+        // SUPPORTED_HASHES uses the format of MessageDigest, which is uppercase, e.g. "SHA-1" instead of "sha-1"
+        if (!SUPPORTED_HASHES.containsKey(hashInUppercase))
             return;
+        String hash = capsExtensionHash.toLowerCase(Locale.US);
 
         String node = capsExtension.getNode();
         String ver = capsExtension.getVer();
@@ -248,12 +258,12 @@ public class EntityCapsManager extends Manager {
         JID_TO_NODEVER_CACHE.put(from, new NodeVerHash(node, ver, hash));
     }
 
-    private final Queue<String> lastLocalCapsVersions = new ConcurrentLinkedQueue<String>();
+    private final Queue<CapsVersionAndHash> lastLocalCapsVersions = new ConcurrentLinkedQueue<>();
 
     private final ServiceDiscoveryManager sdm;
 
     private boolean entityCapsEnabled;
-    private String currentCapsVersion;
+    private CapsVersionAndHash currentCapsVersion;
     private boolean presenceSend = false;
 
     /**
@@ -346,8 +356,8 @@ public class EntityCapsManager extends Manager {
             public void processPacket(Packet packet) {
                 if (!entityCapsEnabled)
                     return;
-
-                CapsExtension caps = new CapsExtension(entityNode, getCapsVersion(), "sha-1");
+                CapsVersionAndHash capsVersionAndHash = getCapsVersion();
+                CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
                 packet.addExtension(caps);
             }
         };
@@ -407,7 +417,7 @@ public class EntityCapsManager extends Manager {
      * 
      * @return our own caps version
      */
-    public String getCapsVersion() {
+    public CapsVersionAndHash getCapsVersion() {
         return currentCapsVersion;
     }
 
@@ -464,17 +474,16 @@ public class EntityCapsManager extends Manager {
             discoverInfo.setFrom(connection.getUser());
         sdm.addDiscoverInfoTo(discoverInfo);
 
-        currentCapsVersion = generateVerificationString(discoverInfo, "sha-1");
+        currentCapsVersion = generateVerificationString(discoverInfo);
         addDiscoverInfoByNode(entityNode + '#' + currentCapsVersion, discoverInfo);
         if (lastLocalCapsVersions.size() > 10) {
-            String oldCapsVersion = lastLocalCapsVersions.poll();
-            sdm.removeNodeInformationProvider(entityNode + '#' + oldCapsVersion);
+            CapsVersionAndHash oldCapsVersion = lastLocalCapsVersions.poll();
+            sdm.removeNodeInformationProvider(entityNode + '#' + oldCapsVersion.version);
         }
         lastLocalCapsVersions.add(currentCapsVersion);
 
-        CAPS_CACHE.put(currentCapsVersion, discoverInfo);
         if (connection != null)
-            JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion, "sha-1"));
+            JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion));
 
         final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(entityNode + '#' + currentCapsVersion, new AbstractNodeInformationProvider() {
@@ -535,7 +544,7 @@ public class EntityCapsManager extends Manager {
         if (verifyPacketExtensions(info))
             return false;
 
-        String calculatedVer = generateVerificationString(info, hash);
+        String calculatedVer = generateVerificationString(info, hash).version;
 
         if (!ver.equals(calculatedVer))
             return false;
@@ -567,6 +576,10 @@ public class EntityCapsManager extends Manager {
         return false;
     }
 
+    protected static CapsVersionAndHash generateVerificationString(DiscoverInfo discoverInfo) {
+        return generateVerificationString(discoverInfo, null);
+    }
+
     /**
      * Generates a XEP-115 Verification String
      * 
@@ -575,12 +588,15 @@ public class EntityCapsManager extends Manager {
      * 
      * @param discoverInfo
      * @param hash
-     *            the used hash function
+     *            the used hash function, if null, default hash will be used
      * @return The generated verification String or null if the hash is not
      *         supported
      */
-    protected static String generateVerificationString(DiscoverInfo discoverInfo, String hash) {
-        MessageDigest md = SUPPORTED_HASHES.get(hash.toLowerCase(Locale.US));
+    protected static CapsVersionAndHash generateVerificationString(DiscoverInfo discoverInfo, String hash) {
+        if (hash == null) {
+            hash = DEFAULT_HASH;
+        }
+        MessageDigest md = SUPPORTED_HASHES.get(hash.toUpperCase(Locale.US));
         if (md == null)
             return null;
 
@@ -682,7 +698,8 @@ public class EntityCapsManager extends Manager {
         synchronized(md) {
             digest = md.digest(sb.toString().getBytes());
         }
-        return Base64.encodeToString(digest);
+        String version = Base64.encodeToString(digest);
+        return new CapsVersionAndHash(version, hash);
     }
 
     private static void formFieldValuesToCaps(List<String> i, StringBuilder sb) {
@@ -701,6 +718,10 @@ public class EntityCapsManager extends Manager {
         private String hash;
         private String ver;
         private String nodeVer;
+
+        NodeVerHash(String node, CapsVersionAndHash capsVersionAndHash) {
+            this(node, capsVersionAndHash.version, capsVersionAndHash.hash);
+        }
 
         NodeVerHash(String node, String ver, String hash) {
             this.node = node;
