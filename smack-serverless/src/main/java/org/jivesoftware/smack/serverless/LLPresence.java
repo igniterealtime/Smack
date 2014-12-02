@@ -17,19 +17,15 @@
 
 package org.jivesoftware.smack.serverless;
 
-
-import org.jivesoftware.smack.util.Tuple;
-
-import java.util.List;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class for describing a Link-local presence information according to XEP-0174.
  * XEP-0174 describes how to represent XMPP presences using mDNS/DNS-SD.
  * The presence information is stored as TXT fields; example from the documentation
  * follows:
+ * <pre>
  *        juliet IN TXT "txtvers=1"
  *        juliet IN TXT "1st=Juliet"
  *        juliet IN TXT "email=juliet@capulet.lit"
@@ -44,21 +40,28 @@ import java.util.concurrent.ConcurrentHashMap;
  *        juliet IN TXT "status=avail"
  *        juliet IN TXT "vc=CA!"
  *        juliet IN TXT "ver=66/0NaeaBKkwk85efJTGmU47vXI="
+ * </pre>
  */
 public class LLPresence {
     // Service info, gathered from the TXT fields
     private String firstName, lastName, email, msg, nick, jid;
     // caps version
     private String hash, ver, node;
-    // XEP-0174 specifies that if status is not specified it is equal to "avail".
+
+    /**
+     * XEP-0174 specifies that if status is not specified it is equal to "avail".
+     */
     private Mode status = Mode.avail;
 
-    // The unknown
-    private Map<String,String> rest =
-        new ConcurrentHashMap<String,String>();
+    /**
+     *  The unknown
+     */
+    private final Map<String,String> rest = new HashMap<>();
 
     public static enum Mode {
-        avail, away, dnd
+        avail,
+        away,
+        dnd
     }
 
     // Host details
@@ -77,67 +80,69 @@ public class LLPresence {
     }
 
     public LLPresence(String serviceName, String host, int port,
-            List<Tuple<String,String>> records) {
+            Map<String,String> records) {
         this(serviceName, host, port);
 
-        // Parse the tuple list (originating from the TXT fields) and put them
+        // Parse the map (originating from the TXT fields) and put them
         // in variables
-        for (Tuple<String,String> t : records) {
-            if (t.a.equals("1st"))
-                setFirstName(t.b);
-            else if (t.a.equals("last"))
-                setLastName(t.b);
-            else if (t.a.equals("email"))
-                setEMail(t.b);
-            else if (t.a.equals("jid"))
-                setJID(t.b);
-            else if (t.a.equals("nick"))
-                setNick(t.b);
-            else if (t.a.equals("hash"))
-                setHash(t.b);
-            else if (t.a.equals("node"))
-                setNode(t.b);
-            else if (t.a.equals("ver"))
-                setVer(t.b);
-            else if (t.a.equals("status")) {
-                try {
-                    setStatus(Mode.valueOf(t.b));
-                }
-                catch (IllegalArgumentException iae) {
-                    System.err.println("Found invalid presence status (" +
-                            t.b + ") in TXT entry.");
-                }
-            }
-            else if (t.a.equals("msg"))
-                setMsg(t.b);
-            else {
-                // Unknown key
-                if (!rest.containsKey(t.a))
-                    rest.put(t.a, t.b);
+        for (Map.Entry<String, String> entry : records.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            switch (key) {
+            case "1st":
+                setFirstName(value);
+                break;
+            case "last":
+                setLastName(value);
+                break;
+            case "email":
+                setEMail(value);
+                break;
+            case "jid":
+                setJID(value);
+                break;
+            case "nick":
+                setNick(value);
+                break;
+            case "hash":
+                setHash(value);
+                break;
+            case "node":
+                setNode(value);
+                break;
+            case "ver":
+                setVer(value);
+                break;
+            case "status":
+                setStatus(Mode.valueOf(value));
+                break;
+            case "msg":
+                setMsg(value);
+                break;
+            default:
+                rest.put(key, value);
             }
         }
     }
 
-    public List<Tuple<String, String>> toList() {
-        LinkedList<Tuple<String, String>> list = new LinkedList<>();
-        list.add(new Tuple<>("txtvers", "1"));
-        list.add(new Tuple<>("1st", firstName));
-        list.add(new Tuple<>("last", lastName));
-        list.add(new Tuple<>("email", email));
-        list.add(new Tuple<>("jid", jid));
-        list.add(new Tuple<>("nick", nick));
-        list.add(new Tuple<>("status", status.toString()));
-        list.add(new Tuple<>("msg", msg));
-        list.add(new Tuple<>("hash", hash));
-        list.add(new Tuple<>("node", node));
-        list.add(new Tuple<>("ver", ver));
-        list.add(new Tuple<>("port.p2ppj", Integer.toString(port)));
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap<>(rest.size() + 20);
+        map.put("txtvers", "1");
+        map.put("1st", firstName);
+        map.put("last", lastName);
+        map.put("email", email);
+        map.put("jid", jid);
+        map.put("nick", nick);
+        map.put("status", status.toString());
+        map.put("msg", msg);
+        map.put("hash", hash);
+        map.put("node", node);
+        map.put("ver", ver);
+        map.put("port.p2ppj", Integer.toString(port));
 
-        for (Map.Entry<String,String> e : rest.entrySet()) {
-            list.add(new Tuple<>(e.getKey(), e.getValue()));
-        }
+        map.putAll(rest);
 
-        return list;
+        return map;
     }
 
     /**
@@ -265,6 +270,7 @@ public class LLPresence {
         rest.put(key, value);
     }
 
+    // TODO check where equals/hashcode are used
     public boolean equals(Object o) {
         if (o instanceof LLPresence) {
             LLPresence p = (LLPresence)o;
