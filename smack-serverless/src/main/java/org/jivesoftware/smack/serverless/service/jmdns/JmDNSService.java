@@ -21,8 +21,8 @@ package org.jivesoftware.smack.serverless.service.jmdns;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.serverless.LLPresence;
+import org.jivesoftware.smack.serverless.LLService;
 import org.jivesoftware.smack.serverless.service.LLPresenceDiscoverer;
-import org.jivesoftware.smack.serverless.service.LLService;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.serverless.service;
 
+import org.jivesoftware.smack.serverless.LLService;
+
 
 
 /**

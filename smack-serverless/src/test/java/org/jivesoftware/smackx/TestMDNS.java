@@ -18,15 +18,12 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.serverless.LLPresence;
-import org.jivesoftware.smack.serverless.LLServiceDiscoveryManager;
-import org.jivesoftware.smack.serverless.service.LLService;
+import org.jivesoftware.smack.serverless.LLService;
 import org.jivesoftware.smack.serverless.service.LLServiceStateListener;
 import org.jivesoftware.smack.serverless.service.jmdns.JmDNSService;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -154,12 +151,12 @@ public class TestMDNS {
                         String feature = stdIn.readLine();
 //                        LLServiceDiscoveryManager.addDefaultFeature(feature);
                     }
-                    else if ("disco".equals(line)) {
-                        System.out.print("Enter user service name e.g (dave@service): ");
-                        String user = stdIn.readLine();
-                        DiscoverInfo info = LLServiceDiscoveryManager.getInstanceFor(service).discoverInfo(user);
-                        System.out.println(" # Discovered: " + info.toXML());
-                    }
+//                    else if ("disco".equals(line)) {
+//                        System.out.print("Enter user service name e.g (dave@service): ");
+//                        String user = stdIn.readLine();
+//                        DiscoverInfo info = LLServiceDiscoveryManager.getInstanceFor(service).discoverInfo(user);
+//                        System.out.println(" # Discovered: " + info.toXML());
+//                    }
                     else if ("status".equals(line)) {
                         System.out.print("Enter new status: ");
                         String status = stdIn.readLine();
@@ -181,15 +178,6 @@ public class TestMDNS {
                     System.out.println("Caught IOException: " + ioe);
                     ioe.printStackTrace();
                     done = true;
-                } catch (SmackException.NotConnectedException e) {
-                    System.out.println("Caught NotConnectedException: " + e);
-                    e.printStackTrace();
-                } catch (SmackException.NoResponseException e) {
-                    System.out.println("Caught NoResponseException: " + e);
-                    e.printStackTrace();
-                } catch (SmackException e) {
-                    System.out.println("Caught SmackException: " + e);
-                    e.printStackTrace();
                 }
             }
             System.exit(0);

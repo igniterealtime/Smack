@@ -265,7 +265,7 @@ public class EntityCapsManager extends Manager {
         CAPS_CACHE.clear();
     }
 
-    private static void addCapsExtensionInfo(String from, CapsExtension capsExtension) {
+    protected static void addCapsExtensionInfo(String from, CapsExtension capsExtension) {
         String capsExtensionHash = capsExtension.getHash();
         String hashInUppercase = capsExtensionHash.toUpperCase(Locale.US);
         // SUPPORTED_HASHES uses the format of MessageDigest, which is uppercase, e.g. "SHA-1" instead of "sha-1"
@@ -291,6 +291,11 @@ public class EntityCapsManager extends Manager {
      * The entity node String used by this EntityCapsManager instance.
      */
     private String entityNode = DEFAULT_ENTITY_NODE;
+
+    protected EntityCapsManager() {
+        super(null);
+        throw new UnsupportedOperationException();
+    }
 
     private EntityCapsManager(XMPPConnection connection) {
         super(connection);
