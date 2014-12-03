@@ -27,6 +27,7 @@ import java.util.LinkedList;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 import org.jivesoftware.smackx.InitExtensions;
@@ -54,8 +55,8 @@ public class EntityCapsManagerTest extends InitExtensions {
     public void testComplexGenerationExample() {
         DiscoverInfo di = createComplexSamplePacket();
 
-        String ver = EntityCapsManager.generateVerificationString(di, "sha-1");
-        assertEquals("q07IKJEyjvHSyhy//CH0CxmKi8w=", ver);
+        CapsVersionAndHash versionAndHash = EntityCapsManager.generateVerificationString(di, StringUtils.SHA1);
+        assertEquals("q07IKJEyjvHSyhy//CH0CxmKi8w=", versionAndHash.version);
     }
 
     @Test
@@ -82,7 +83,8 @@ public class EntityCapsManagerTest extends InitExtensions {
         EntityCapsManager.setPersistentCache(cache);
 
         DiscoverInfo di = createComplexSamplePacket();
-        String nodeVer = di.getNode() + "#" + EntityCapsManager.generateVerificationString(di, "sha-1");
+        CapsVersionAndHash versionAndHash = EntityCapsManager.generateVerificationString(di, StringUtils.SHA1);
+        String nodeVer = di.getNode() + "#" + versionAndHash.version;
 
         // Save the data in EntityCapsManager
         EntityCapsManager.addDiscoverInfoByNode(nodeVer, di);
