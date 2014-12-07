@@ -194,6 +194,17 @@ public class OfflineMessageManager {
             Message message = messageCollector.nextResult();
             while (message != null) {
                 messages.add(message);
+                // It is important that we query the resultCollector before the messageCollector
+                Packet result = resultCollector.pollResultOrThrow();
+                message = messageCollector.pollResult();
+                if (message == null && result != null) {
+                    // No new messages, but we have a non-error IQ response, we are done
+                    return messages;
+                } else if (message != null) {
+                    // We have received a message without waiting, great, continue to add this message and proceed with
+                    // the loop
+                    continue;
+                }
                 message = messageCollector.nextResult();
             }
             resultCollector.nextResultOrThrow();

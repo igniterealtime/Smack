@@ -113,6 +113,25 @@ public class PacketCollector {
     }
 
     /**
+     * Polls to see if a packet is currently available and returns it, or
+     * immediately returns <tt>null</tt> if no packets are currently in the
+     * result queue.
+     * <p>
+     * Throws an XMPPErrorException in case the polled stanzas did contain an XMPPError.
+     * </p>
+     * 
+     * @return the next available packet.
+     * @throws XMPPErrorException in case an error response.
+     */
+    public <P extends Packet> P pollResultOrThrow() throws XMPPErrorException {
+        P result = pollResult();
+        if (result != null) {
+            XMPPErrorException.ifHasErrorThenThrow(result);
+        }
+        return result;
+    }
+
+    /**
      * Returns the next available packet. The method call will block (not return) until a packet is
      * available.
      * 
