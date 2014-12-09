@@ -17,11 +17,11 @@
 package org.jivesoftware.smackx.privacy;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -33,8 +33,8 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -59,13 +59,12 @@ public class PrivacyListManager extends Manager {
     public static final String NAMESPACE = Privacy.NAMESPACE;
 
     private static final PacketFilter PACKET_FILTER = new AndFilter(IQTypeFilter.SET,
-                    new PacketExtensionFilter("query", NAMESPACE));
+                    new PacketTypeFilter(Privacy.class));
 
     // Keep the list of instances of this class.
-    private static final Map<XMPPConnection, PrivacyListManager> instances = Collections
-            .synchronizedMap(new WeakHashMap<XMPPConnection, PrivacyListManager>());
+    private static final Map<XMPPConnection, PrivacyListManager> INSTANCES = new WeakHashMap<XMPPConnection, PrivacyListManager>();
 
-	private final List<PrivacyListListener> listeners = new ArrayList<PrivacyListListener>();
+    private final Set<PrivacyListListener> listeners = new CopyOnWriteArraySet<PrivacyListListener>();
 
     static {
         // Create a new PrivacyListManager on every established connection.
@@ -85,8 +84,6 @@ public class PrivacyListManager extends Manager {
      */
 	private PrivacyListManager(final XMPPConnection connection) {
         super(connection);
-        // Register the new instance and associate it with the connection 
-        instances.put(connection, this);
 
         connection.addPacketListener(new PacketListener() {
             @Override
@@ -94,17 +91,16 @@ public class PrivacyListManager extends Manager {
                 Privacy privacy = (Privacy) packet;
 
                 // Notifies the event to the listeners.
-                synchronized (listeners) {
-                    for (PrivacyListListener listener : listeners) {
-                        // Notifies the created or updated privacy lists
-                        for (Map.Entry<String,List<PrivacyItem>> entry : privacy.getItemLists().entrySet()) {
-                            String listName = entry.getKey();
-                            List<PrivacyItem> items = entry.getValue();
-                            if (items.isEmpty()) {
-                                listener.updatedPrivacyList(listName);
-                            } else {
-                                listener.setPrivacyList(listName, items);
-                            }
+                for (PrivacyListListener listener : listeners) {
+                    // Notifies the created or updated privacy lists
+                    for (Map.Entry<String, List<PrivacyItem>> entry : privacy.getItemLists().entrySet()) {
+                        String listName = entry.getKey();
+                        List<PrivacyItem> items = entry.getValue();
+                        if (items.isEmpty()) {
+                            listener.updatedPrivacyList(listName);
+                        }
+                        else {
+                            listener.setPrivacyList(listName, items);
                         }
                     }
                 }
@@ -116,13 +112,6 @@ public class PrivacyListManager extends Manager {
         }, PACKET_FILTER);
     }
 
-	/** Answer the connection userJID that owns the privacy.
-	 * @return the userJID that owns the privacy
-	 */
-	private String getUser() {
-		return connection().getUser();
-	}
-
     /**
      * Returns the PrivacyListManager instance associated with a given XMPPConnection.
      * 
@@ -130,8 +119,12 @@ public class PrivacyListManager extends Manager {
      * @return the PrivacyListManager associated with a given XMPPConnection.
      */
     public static synchronized PrivacyListManager getInstanceFor(XMPPConnection connection) {
-        PrivacyListManager plm = instances.get(connection);
-        if (plm == null) plm = new PrivacyListManager(connection);
+        PrivacyListManager plm = INSTANCES.get(connection);
+        if (plm == null) {
+            plm = new PrivacyListManager(connection);
+            // Register the new instance and associate it with the connection
+            INSTANCES.put(connection, plm);
+        }
         return plm;
     }
 
@@ -149,10 +142,8 @@ public class PrivacyListManager extends Manager {
 	private Privacy getRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException  {
 		// The request is a get iq type
 		requestPrivacy.setType(Privacy.Type.get);
-		requestPrivacy.setFrom(this.getUser());
 
-        Privacy privacyAnswer = (Privacy) connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
-        return privacyAnswer;
+        return connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
 	}
 
     /**
@@ -169,7 +160,6 @@ public class PrivacyListManager extends Manager {
     private Packet setRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         // The request is a get iq type
         requestPrivacy.setType(Privacy.Type.set);
-        requestPrivacy.setFrom(this.getUser());
 
         return connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
     }
@@ -267,19 +257,15 @@ public class PrivacyListManager extends Manager {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      */ 
-    public PrivacyList[] getPrivacyLists() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        Privacy privacyAnswer = this.getPrivacyWithListNames();
+    public List<PrivacyList> getPrivacyLists() throws NoResponseException, XMPPErrorException, NotConnectedException {
+        Privacy privacyAnswer = getPrivacyWithListNames();
         Set<String> names = privacyAnswer.getPrivacyListNames();
-        PrivacyList[] lists = new PrivacyList[names.size()];
-        boolean isActiveList;
-        boolean isDefaultList;
-        int index=0;
+        List<PrivacyList> lists = new ArrayList<>(names.size());
         for (String listName : names) {
-            isActiveList = listName.equals(privacyAnswer.getActiveName());
-            isDefaultList = listName.equals(privacyAnswer.getDefaultName());
-            lists[index] = new PrivacyList(isActiveList, isDefaultList,
-                    listName, getPrivacyListItems(listName));
-            index = index + 1;
+            boolean isActiveList = listName.equals(privacyAnswer.getActiveName());
+            boolean isDefaultList = listName.equals(privacyAnswer.getDefaultName());
+            lists.add(new PrivacyList(isActiveList, isDefaultList, listName,
+                            getPrivacyListItems(listName)));
         }
         return lists;
     }
@@ -399,17 +385,24 @@ public class PrivacyListManager extends Manager {
 	}
 
     /**
-     * Adds a packet listener that will be notified of any new update in the user
+     * Adds a privacy list listener that will be notified of any new update in the user
      * privacy communication.
      *
-     * @param listener a packet listener.
+     * @param listener a privacy list listener.
+     * @return true, if the listener was not already added.
      */
-    public void addListener(PrivacyListListener listener) {
-        // Keep track of the listener so that we can manually deliver extra
-        // messages to it later if needed.
-        synchronized (listeners) {
-            listeners.add(listener);
-        }
+    public boolean addListener(PrivacyListListener listener) {
+        return listeners.add(listener);
+    }
+
+    /**
+     * Removes the privacy list listener.
+     *
+     * @param listener
+     * @return true, if the listener was removed.
+     */
+    public boolean removeListener(PrivacyListListener listener) {
+        return listeners.remove(listener);
     }
 
     /**
