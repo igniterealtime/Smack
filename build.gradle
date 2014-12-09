@@ -33,8 +33,6 @@ allprojects {
 		// build, causing unnecessary rebuilds.
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
-		jxmppVersion = "0.4.0"
-		smackMinAndroidSdk = 8
 		androidProjects = [':smack-tcp',':smack-core', ':smack-resolver-minidns', ':smack-sasl-provided', ':smack-extensions', ':smack-experimental'].collect{ project(it) }
 		androidBootClasspath = getAndroidRuntimeJar()
 		androidJavadocOffline = getAndroidJavadocOffline()
