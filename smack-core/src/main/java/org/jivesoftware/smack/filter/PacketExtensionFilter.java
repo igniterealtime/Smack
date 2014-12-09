@@ -57,12 +57,13 @@ public class PacketExtensionFilter implements PacketFilter {
         this(null, namespace);
     }
 
+    /**
+     * Creates a new packet extension filter for the given packet extension.
+     *
+     * @param packetExtension
+     */
     public PacketExtensionFilter(PacketExtension packetExtension) {
         this(packetExtension.getElementName(), packetExtension.getNamespace());
-    }
-
-    public PacketExtensionFilter(Class<? extends PacketExtension> packetExtensionClass) throws InstantiationException, IllegalAccessException {
-        this(packetExtensionClass.newInstance());
     }
 
     public boolean accept(Packet packet) {
