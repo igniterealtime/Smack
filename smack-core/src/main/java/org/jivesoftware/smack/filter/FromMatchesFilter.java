@@ -32,11 +32,12 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public class FromMatchesFilter implements PacketFilter {
 
-    private String address;
+    private final String address;
+
     /**
      * Flag that indicates if the checking will be done against bare JID addresses or full JIDs.
      */
-    private boolean matchBareJID = false;
+    private final boolean matchBareJID;
 
     /**
      * Creates a filter matching on the "from" field. The from address must be the same as the

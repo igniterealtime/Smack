@@ -19,6 +19,7 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Filters for message packets with a particular thread value.
@@ -27,7 +28,7 @@ import org.jivesoftware.smack.packet.Message;
  */
 public class ThreadFilter implements PacketFilter {
 
-    private String thread;
+    private final String thread;
 
     /**
      * Creates a new thread filter using the specified thread value.
@@ -35,8 +36,8 @@ public class ThreadFilter implements PacketFilter {
      * @param thread the thread value to filter for.
      */
     public ThreadFilter(String thread) {
-        if (thread == null) {
-            throw new IllegalArgumentException("Thread must not be null.");
+        if (StringUtils.isNullOrEmpty(thread)) {
+            throw new IllegalArgumentException("Thread must not be null or empty.");
         }
         this.thread = thread;
     }

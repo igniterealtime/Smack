@@ -37,7 +37,7 @@ public class PacketTypeFilter implements PacketFilter {
     public static final PacketTypeFilter PRESENCE = new PacketTypeFilter(Presence.class);
     public static final PacketTypeFilter MESSAGE = new PacketTypeFilter(Message.class);
 
-    Class<? extends Packet> packetType;
+    private final Class<? extends Packet> packetType;
 
     /**
      * Creates a new packet type filter that will filter for packets that are the

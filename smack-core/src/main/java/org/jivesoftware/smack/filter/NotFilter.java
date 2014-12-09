@@ -27,7 +27,7 @@ import org.jivesoftware.smack.packet.Packet;
  */
 public class NotFilter implements PacketFilter {
 
-    private PacketFilter filter;
+    private final PacketFilter filter;
 
     /**
      * Creates a NOT filter using the specified filter.

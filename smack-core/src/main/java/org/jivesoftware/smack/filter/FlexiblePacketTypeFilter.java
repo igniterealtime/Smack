@@ -28,7 +28,7 @@ import org.jivesoftware.smack.packet.Packet;
  */
 public abstract class FlexiblePacketTypeFilter<P extends Packet> implements PacketFilter {
 
-    final Class<P> packetType;
+    protected final Class<P> packetType;
 
     public FlexiblePacketTypeFilter(Class<P> packetType) {
         this.packetType = packetType;

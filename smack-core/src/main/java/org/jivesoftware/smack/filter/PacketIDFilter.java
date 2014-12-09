@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Filters for packets with a particular packet ID.
@@ -26,7 +27,7 @@ import org.jivesoftware.smack.packet.Packet;
  */
 public class PacketIDFilter implements PacketFilter {
 
-    private String packetID;
+    private final String packetID;
 
     /**
      * Creates a new packet ID filter using the specified packet's ID.
@@ -43,8 +44,8 @@ public class PacketIDFilter implements PacketFilter {
      * @param packetID the packet ID to filter for.
      */
     public PacketIDFilter(String packetID) {
-        if (packetID == null) {
-            throw new IllegalArgumentException("Packet ID must not be null.");
+        if (StringUtils.isNullOrEmpty(packetID)) {
+            throw new IllegalArgumentException("Packet ID must not be null or empty.");
         }
         this.packetID = packetID;
     }
