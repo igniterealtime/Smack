@@ -20,6 +20,7 @@ package org.jivesoftware.smack.packet;
 import java.util.List;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -105,6 +106,12 @@ public class StreamError extends AbstractError implements PlainStreamElement {
 
     public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<PacketExtension> extensions) {
         super(descriptiveTexts, extensions);
+        // Some implementations may send the condition as non-empty element containing the empty string, that is
+        // <condition xmlns='foo'></condition>, in this case the parser may calls this constructor with the empty string
+        // as conditionText, therefore reset it to null if it's the empty string
+        if (StringUtils.isNullOrEmpty(conditionText)) {
+            conditionText = null;
+        }
         if (conditionText != null) {
             switch (condition) {
             case see_other_host:

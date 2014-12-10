@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -117,6 +118,12 @@ public class XMPPError extends AbstractError {
             List<PacketExtension> extensions) {
         super(descriptiveTexts, NAMESPACE, extensions);
         this.condition = condition;
+        // Some implementations may send the condition as non-empty element containing the empty string, that is
+        // <condition xmlns='foo'></condition>, in this case the parser may calls this constructor with the empty string
+        // as conditionText, therefore reset it to null if it's the empty string
+        if (StringUtils.isNullOrEmpty(conditionText)) {
+            conditionText = null;
+        }
         if (conditionText != null) {
             switch (condition) {
             case gone:
