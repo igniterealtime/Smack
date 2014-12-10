@@ -19,7 +19,6 @@ package org.jivesoftware.smack.util;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -627,23 +626,15 @@ public class PacketParserUtils {
                     IQProvider<IQ> provider = ProviderManager.getIQProvider(elementName, namespace);
                     if (provider != null) {
                             iqPacket = provider.parse(parser);
-                    } else {
-                        Class<?> introspectionProvider = ProviderManager.getIQIntrospectionProvider(
-                                        elementName, namespace);
-                        if (introspectionProvider != null) {
-                        iqPacket = (IQ) PacketParserUtils.parseWithIntrospection(
-                                        elementName, introspectionProvider,
-                                        parser);
-                        }
-                        // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
-                        // have to be answered with an IQ error response. See the code a few lines below
-                        // Note that if we reach this code, it is guranteed that the result IQ contained a child element
-                        // (RFC 6120 § 8.2.3 6) because otherwhise we would have reached the END_TAG first.
-                        else if (IQ.Type.result == type){
-                            // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
-                            // so that the content of the IQ can be examined later on
-                            iqPacket = new UnparsedResultIQ(elementName, namespace, parseElement(parser));
-                        }
+                    }
+                    // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
+                    // have to be answered with an IQ error response. See the code a few lines below
+                    // Note that if we reach this code, it is guranteed that the result IQ contained a child element
+                    // (RFC 6120 § 8.2.3 6) because otherwhise we would have reached the END_TAG first.
+                    else if (IQ.Type.result == type) {
+                        // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
+                        // so that the content of the IQ can be examined later on
+                        iqPacket = new UnparsedResultIQ(elementName, namespace, parseElement(parser));
                     }
                     break;
                 }
@@ -931,18 +922,6 @@ public class PacketParserUtils {
         if (provider != null) {
                 return provider.parse(parser);
         }
-        Class<?> introspectionProvider = ProviderManager.getExtensionIntrospectionProvider(elementName, namespace);
-        if (introspectionProvider != null) {
-            try {
-                return (PacketExtension)parseWithIntrospection(elementName, introspectionProvider, parser);
-            } catch (NoSuchMethodException | SecurityException
-                            | InstantiationException | IllegalAccessException
-                            | IllegalArgumentException
-                            | InvocationTargetException
-                            | ClassNotFoundException e) {
-                throw new SmackException(e);
-            }
-        }
 
         final int initialDepth = parser.getDepth();
         // No providers registered, so use a default extension.
@@ -1013,37 +992,6 @@ public class PacketParserUtils {
     	return null;
     }
 
-    public static Object parseWithIntrospection(String elementName, Class<?> objectClass,
-                    XmlPullParser parser) throws NoSuchMethodException, SecurityException,
-                    InstantiationException, IllegalAccessException, XmlPullParserException,
-                    IOException, IllegalArgumentException, InvocationTargetException,
-                    ClassNotFoundException {
-        boolean done = false;
-        Object object = objectClass.newInstance();
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                String name = parser.getName();
-                String stringValue = parser.nextText();
-                Class<?> propertyType = object.getClass().getMethod(
-                                "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1)).getReturnType();
-                // Get the value of the property by converting it from a
-                // String to the correct object type.
-                Object value = decode(propertyType, stringValue);
-                // Set the value of the bean.
-                object.getClass().getMethod(
-                                "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1),
-                                propertyType).invoke(object, value);
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(elementName)) {
-                    done = true;
-                }
-            }
-        }
-        return object;
-    }
-
     public static void addPacketExtension(Packet packet, XmlPullParser parser) throws XmlPullParserException,
                     IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
@@ -1065,40 +1013,6 @@ public class PacketParserUtils {
                     String elementName, String namespace) throws XmlPullParserException, IOException, SmackException {
         PacketExtension packetExtension = parsePacketExtension(elementName, namespace, parser);
         collection.add(packetExtension);
-    }
-
-    /**
-     * Decodes a String into an object of the specified type. If the object
-     * type is not supported, null will be returned.
-     *
-     * @param type the type of the property.
-     * @param value the encode String value to decode.
-     * @return the String value decoded into the specified type.
-     * @throws ClassNotFoundException 
-     */
-    private static Object decode(Class<?> type, String value) throws ClassNotFoundException {
-        if (type.getName().equals("java.lang.String")) {
-            return value;
-        }
-        if (type.getName().equals("boolean")) {
-            return Boolean.valueOf(value);
-        }
-        if (type.getName().equals("int")) {
-            return Integer.valueOf(value);
-        }
-        if (type.getName().equals("long")) {
-            return Long.valueOf(value);
-        }
-        if (type.getName().equals("float")) {
-            return Float.valueOf(value);
-        }
-        if (type.getName().equals("double")) {
-            return Double.valueOf(value);
-        }
-        if (type.getName().equals("java.lang.Class")) {
-            return Class.forName(value);
-        }
-        return null;
     }
 
     /**

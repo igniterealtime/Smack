@@ -13,7 +13,7 @@
     <iqProvider> 
         <elementName>time</elementName>
         <namespace>urn:xmpp:time</namespace>
-        <className>org.jivesoftware.smackx.time.packet.Time</className>
+        <className>org.jivesoftware.smackx.time.provider.TimeProvider</className>
     </iqProvider>
 
     <!-- Chat State -->

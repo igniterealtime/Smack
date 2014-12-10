@@ -85,13 +85,8 @@ public class ProviderFileLoader implements ProviderLoader {
                                     if (IQProvider.class.isAssignableFrom(provider)) {
                                         iqProviders.add(new IQProviderInfo(elementName, namespace, (IQProvider<IQ>) provider.newInstance()));
                                     }
-                                    else if (IQ.class.isAssignableFrom(provider)) {
-                                        iqProviders.add(new IQProviderInfo(elementName, namespace, (Class<? extends IQ>)provider));
-                                    }
                                     else {
-                                        exceptions.add(new IllegalArgumentException(
-                                                        className
-                                                                        + " is neither IQProvider or IQ class"));
+                                        exceptions.add(new IllegalArgumentException(className + " is not a IQProvider"));
                                     }
                                     break;
                                 case "extensionProvider":
@@ -103,13 +98,9 @@ public class ProviderFileLoader implements ProviderLoader {
                                     if (PacketExtensionProvider.class.isAssignableFrom(provider)) {
                                         extProviders.add(new ExtensionProviderInfo(elementName, namespace, (PacketExtensionProvider<PacketExtension>) provider.newInstance()));
                                     }
-                                    else if (PacketExtension.class.isAssignableFrom(provider)) {
-                                        extProviders.add(new ExtensionProviderInfo(elementName, namespace, provider));
-                                    }
                                     else {
-                                        exceptions.add(new IllegalArgumentException(
-                                                        className
-                                                                        + " is neither PacketExtensionProvider or PacketExtension class"));
+                                        exceptions.add(new IllegalArgumentException(className
+                                                        + " is not a PacketExtensionProvider"));
                                     }
                                     break;
                                 case "streamFeatureProvider":

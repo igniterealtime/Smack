@@ -37,15 +37,4 @@ public final class IQProviderInfo extends AbstractProviderInfo {
     public IQProviderInfo(String elementName, String namespace, IQProvider<IQ> iqProvider) {
         super(elementName, namespace, iqProvider);
     }
-
-    /**
-     * Defines an IQ class which can be used as a provider via introspection.
-     * 
-     * @param elementName Element that provider parses.
-     * @param namespace Namespace that provider parses.
-     * @param iqProviderClass The IQ class being parsed.
-     */
-    public IQProviderInfo(String elementName, String namespace, Class<? extends IQ> iqProviderClass) {
-        super(elementName, namespace, iqProviderClass);
-    }
 }

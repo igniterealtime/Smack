@@ -17,14 +17,11 @@
 package org.jivesoftware.smackx.time.packet;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.junit.Test;
 
@@ -57,38 +54,5 @@ public class TimeTest extends InitExtensions {
         Time time = new Time(calendar);
 
         assertEquals("+8:30", time.getTzo());
-    }
-
-    @Test
-    public void parseTimeWithIntrospectionTest() throws Exception {
-        // @formatter:off
-        final String request =
-        "<iq type='get'"
-          + "from='romeo@montague.net/orchard'"
-          + "to='juliet@capulet.com/balcony'"
-          + "id='time_1'>"
-          + "<time xmlns='urn:xmpp:time'/>"
-          + "</iq>";
-        // @formatter:on
-        IQ iqRequest = (IQ) PacketParserUtils.parseStanza(request);
-        assertTrue(iqRequest instanceof Time);
-
-        // @formatter:off
-        final String response =
-        "<iq type='result'"
-          + "from='juliet@capulet.com/balcony'"
-          + "to='romeo@montague.net/orchard'"
-          + "id='time_1'>"
-          + "<time xmlns='urn:xmpp:time'>"
-          + "<tzo>-06:00</tzo>"
-          + "<utc>2006-12-19T17:58:35Z</utc>"
-          + "</time>"
-          + "</iq>";
-        // @formatter:on
-        IQ iqResponse = (IQ) PacketParserUtils.parseStanza(response);
-        assertTrue(iqResponse instanceof Time);
-        Time time = (Time) iqResponse;
-        assertEquals("-06:00", time.getTzo());
-        assertEquals("2006-12-19T17:58:35Z", time.getUtc());
     }
 }

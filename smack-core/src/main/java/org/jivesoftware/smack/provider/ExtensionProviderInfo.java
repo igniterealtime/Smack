@@ -38,14 +38,4 @@ public final class ExtensionProviderInfo extends AbstractProviderInfo {
         super(elementName, namespace, extProvider);
     }
 
-    /**
-     * Defines an extension provider which is adheres to the JavaBean spec for parsing the extension.
-     * 
-     * @param elementName Element that provider parses.
-     * @param namespace Namespace that provider parses.
-     * @param beanClass The provider bean class.
-     */
-    public ExtensionProviderInfo(String elementName, String namespace, Class<?> beanClass) {
-        super(elementName, namespace, beanClass);
-    }
 }
