@@ -105,7 +105,7 @@ public class StreamError extends AbstractError implements PlainStreamElement {
 
     public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<PacketExtension> extensions) {
         super(descriptiveTexts, extensions);
-        if (conditionText != null && !conditionText.isEmpty()) {
+        if (conditionText != null && !"".equals(conditionText)) {
             switch (condition) {
             case see_other_host:
                 break;
