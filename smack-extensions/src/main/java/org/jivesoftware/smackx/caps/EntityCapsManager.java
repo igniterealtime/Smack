@@ -596,9 +596,14 @@ public class EntityCapsManager extends Manager {
         if (hash == null) {
             hash = DEFAULT_HASH;
         }
+        // SUPPORTED_HASHES uses the format of MessageDigest, which is uppercase, e.g. "SHA-1" instead of "sha-1"
         MessageDigest md = SUPPORTED_HASHES.get(hash.toUpperCase(Locale.US));
         if (md == null)
             return null;
+        // Then transform the hash to lowercase, as this value will be put on the wire within the caps element's hash
+        // attribute. I'm not sure if the standard is case insensitive here, but let's assume that even it is, there could
+        // be "broken" implementation in the wild, so we *always* transform to lowercase.
+        hash = hash.toLowerCase(Locale.US);
 
         DataForm extendedInfo =  DataForm.from(discoverInfo);
 
