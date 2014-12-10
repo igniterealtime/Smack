@@ -475,7 +475,7 @@ public class EntityCapsManager extends Manager {
         sdm.addDiscoverInfoTo(discoverInfo);
 
         currentCapsVersion = generateVerificationString(discoverInfo);
-        addDiscoverInfoByNode(entityNode + '#' + currentCapsVersion, discoverInfo);
+        addDiscoverInfoByNode(entityNode + '#' + currentCapsVersion.version, discoverInfo);
         if (lastLocalCapsVersions.size() > 10) {
             CapsVersionAndHash oldCapsVersion = lastLocalCapsVersions.poll();
             sdm.removeNodeInformationProvider(entityNode + '#' + oldCapsVersion.version);
