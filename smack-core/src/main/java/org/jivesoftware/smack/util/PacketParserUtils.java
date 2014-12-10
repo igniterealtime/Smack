@@ -443,8 +443,9 @@ public class PacketParserUtils {
         // it. This 'flag' ensures that when a namespace is set for an element, it won't be set again
         // in a nested element. It's an ugly workaround that has the potential to break things.
         String namespaceElement = null;
-        while (true) {
-            if (event == XmlPullParser.START_TAG) {
+        outerloop: while (true) {
+            switch (event) {
+            case XmlPullParser.START_TAG:
                 xml.halfOpenElement(parser.getName());
                 if (namespaceElement == null || fullNamespaces) {
                     String namespace = parser.getNamespace();
@@ -463,8 +464,8 @@ public class PacketParserUtils {
                 else {
                     xml.rightAngleBracket();
                 }
-            }
-            else if (event == XmlPullParser.END_TAG) {
+                break;
+            case XmlPullParser.END_TAG:
                 if (isEmptyElement) {
                     // Do nothing as the element was already closed, just reset the flag
                     isEmptyElement = false;
@@ -478,11 +479,12 @@ public class PacketParserUtils {
                 }
                 if (parser.getDepth() <= depth) {
                     // Abort parsing, we are done
-                    break;
+                    break outerloop;
                 }
-            }
-            else if (event == XmlPullParser.TEXT) {
+                break;
+            case XmlPullParser.TEXT:
                 xml.append(parser.getText());
+                break;
             }
             event = parser.next();
         }
