@@ -142,7 +142,7 @@ public class StreamError extends AbstractError implements PlainStreamElement {
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement(ELEMENT);
-        xml.rightAngleBracket().append(condition.toString()).xmlnsAttribute(NAMESPACE).closeEmptyElement();
+        xml.halfOpenElement(condition.toString()).xmlnsAttribute(NAMESPACE).closeEmptyElement();
         addDescriptiveTextsAndExtensions(xml);
         xml.closeElement(ELEMENT);
         return xml;
