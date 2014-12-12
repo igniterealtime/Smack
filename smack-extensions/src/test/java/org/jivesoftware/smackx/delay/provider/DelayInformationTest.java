@@ -112,7 +112,7 @@ public class DelayInformationTest extends InitExtensions {
         delayInfo = (DelayInformation) p.parse(PacketParserUtils.getParserFor(control));
         
         GregorianCalendar cal = (GregorianCalendar) calendar.clone(); 
-        cal.add(Calendar.MILLISECOND, 12);
+        cal.add(Calendar.MILLISECOND, 120);
         assertEquals(cal.getTime(), delayInfo.getStamp());
 
         // XEP-0082 date format without milliseconds
