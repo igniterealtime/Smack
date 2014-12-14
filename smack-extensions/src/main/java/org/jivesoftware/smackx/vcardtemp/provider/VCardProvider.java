@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,6 +52,52 @@ public class VCardProvider extends IQProvider<VCard> {
     private static final Logger LOGGER = Logger.getLogger(VCardProvider.class.getName());
     
     private static final String PREFERRED_ENCODING = "UTF-8";
+
+    private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY;
+
+    static {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        try {
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        } catch (ParserConfigurationException e) {
+            LOGGER.log(Level.FINER, "Could not disallow doctype decl", e);
+            // If we can't disable DTDs, then at least try the following
+            // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
+            // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
+            try {
+                documentBuilderFactory.setFeature( "http://xml.org/sax/features/external-general-entities", false);
+                documentBuilderFactory.setFeature( "http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (ParserConfigurationException e1) {
+                LOGGER.log(Level.FINER, "Could not disallow external entities for xerces parser", e1);
+            }
+        }
+        // Android throws an UnsupportedOperationException when calling setXIncludeAware() and for some dumb reason also
+        // when calling isXIncludeWare(), while it defaults according to the docs to 'false'.
+        boolean isXIncludeAware;
+        try {
+            isXIncludeAware = documentBuilderFactory.isXIncludeAware();
+        } catch (UnsupportedOperationException e) {
+            // Assume we are on Android where isXIncludeAware defaults to 'false'
+            isXIncludeAware = false;
+        }
+        if (isXIncludeAware) {
+            documentBuilderFactory.setXIncludeAware(false);
+        }
+        documentBuilderFactory.setExpandEntityReferences(false);
+
+        // Harden the parser even further
+        documentBuilderFactory.setIgnoringComments(true);
+        documentBuilderFactory.setCoalescing(false);
+        documentBuilderFactory.setValidating(false);
+
+        try {
+            documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (ParserConfigurationException e) {
+            LOGGER.log(Level.INFO, "Could not enable secure processing parsing feature", e);
+        }
+
+        DOCUMENT_BUILDER_FACTORY = documentBuilderFactory;
+    }
 
     @Override
     public VCard parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
@@ -106,8 +153,7 @@ public class VCardProvider extends IQProvider<VCard> {
     public static VCard createVCardFromXML(String xml) throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
         VCard vCard = new VCard();
 
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder();
         Document document = documentBuilder.parse(
                 new ByteArrayInputStream(xml.getBytes(PREFERRED_ENCODING)));
 
