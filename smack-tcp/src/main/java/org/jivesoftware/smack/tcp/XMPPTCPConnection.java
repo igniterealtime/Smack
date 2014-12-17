@@ -72,7 +72,6 @@ import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.StreamManagementFea
 import org.jivesoftware.smack.tcp.sm.predicates.Predicate;
 import org.jivesoftware.smack.tcp.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
-import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
@@ -1694,7 +1693,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // Only spawn a new thread if there is a chance that some listener is invoked
         if (atLeastOneStanzaIdAcknowledgedListener || !stanzaAcknowledgedListeners.isEmpty()) {
-            Async.go(new Runnable() {
+            asyncGo(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -1715,7 +1714,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         LOGGER.log(Level.FINER, "Received not connected exception, aborting", e);
                     }
                 }
-            }, "Stanza Acknowledged Listener Executor Thread " + handledCount + " (" + getConnectionCounter() + ')');
+            });
         }
 
         serverHandledStanzasCount = handledCount;
