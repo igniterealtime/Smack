@@ -4,5 +4,5 @@ Allow to compress the XMPP stream with help of jzlib."""
 
 dependencies {
 	compile project(path: ':smack-core')
-	compile 'com.jcraft:jzlib:1.1.3'
+	compile 'com.jcraft:jzlib:(1.1,1.2]'
 }
