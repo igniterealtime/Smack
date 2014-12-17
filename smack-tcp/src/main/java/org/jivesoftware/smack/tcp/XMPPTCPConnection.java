@@ -1625,6 +1625,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
+     * Returns true if the stream was successfully resumed with help of Stream Management.
+     * 
+     * @return true if the stream was resumed.
+     */
+    public boolean streamWasResumed() {
+        return smResumedSyncPoint.wasSuccessful();
+    }
+
+    /**
      * Returns true if the connection is disconnected by a Stream resumption via Stream Management is possible.
      * 
      * @return true if disconnected but resumption possible.
