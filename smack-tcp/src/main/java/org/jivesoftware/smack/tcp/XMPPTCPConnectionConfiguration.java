@@ -22,7 +22,7 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
 
     private final boolean compressionEnabled;
 
-    private XMPPTCPConnectionConfiguration(XMPPTCPConnectionConfigurationBuilder builder) {
+    private XMPPTCPConnectionConfiguration(Builder builder) {
         super(builder);
         compressionEnabled = builder.compressionEnabled;
     }
@@ -40,14 +40,14 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
         return compressionEnabled;
     }
 
-    public static XMPPTCPConnectionConfigurationBuilder builder() {
-        return new XMPPTCPConnectionConfigurationBuilder();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public static class XMPPTCPConnectionConfigurationBuilder extends ConnectionConfigurationBuilder<XMPPTCPConnectionConfigurationBuilder, XMPPTCPConnectionConfiguration> {
+    public static class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
         private boolean compressionEnabled = false;
 
-        private XMPPTCPConnectionConfigurationBuilder() {
+        private Builder() {
         }
 
         /**
@@ -58,13 +58,13 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
          *
          * @param compressionEnabled if the connection is going to use stream compression.
          */
-        public XMPPTCPConnectionConfigurationBuilder setCompressionEnabled(boolean compressionEnabled) {
+        public Builder setCompressionEnabled(boolean compressionEnabled) {
             this.compressionEnabled = compressionEnabled;
             return this;
         }
 
         @Override
-        protected XMPPTCPConnectionConfigurationBuilder getThis() {
+        protected Builder getThis() {
             return this;
         }
 

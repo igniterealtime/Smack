@@ -23,7 +23,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.jivesoftware.smack.ConnectionConfiguration.ConnectionConfigurationBuilder;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
@@ -54,7 +53,7 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
-    public static ConnectionConfigurationBuilder<?,?> getDummyConfigurationBuilder() {
+    public static ConnectionConfiguration.Builder<?,?> getDummyConfigurationBuilder() {
         return DummyConnectionConfiguration.builder().setServiceName("example.org").setUsernameAndPassword("dummy",
                         "dummypass");
     }
@@ -232,19 +231,19 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     public static class DummyConnectionConfiguration extends ConnectionConfiguration {
-        protected DummyConnectionConfiguration(DummyConnectionConfigurationBuilder builder) {
+        protected DummyConnectionConfiguration(Builder builder) {
             super(builder);
         }
 
-        public static DummyConnectionConfigurationBuilder builder() {
-            return new DummyConnectionConfigurationBuilder();
+        public static Builder builder() {
+            return new Builder();
         }
 
-        public static class DummyConnectionConfigurationBuilder
+        public static class Builder
                         extends
-                        ConnectionConfigurationBuilder<DummyConnectionConfigurationBuilder, DummyConnectionConfiguration> {
+                        ConnectionConfiguration.Builder<Builder, DummyConnectionConfiguration> {
 
-            private DummyConnectionConfigurationBuilder() {
+            private Builder() {
             }
 
             @Override
@@ -253,7 +252,7 @@ public class DummyConnection extends AbstractXMPPConnection {
             }
 
             @Override
-            protected DummyConnectionConfigurationBuilder getThis() {
+            protected Builder getThis() {
                 return this;
             }
         }

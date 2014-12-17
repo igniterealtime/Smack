@@ -35,7 +35,7 @@ public class BOSHConfiguration extends ConnectionConfiguration {
     private final boolean https;
     private final String file;
 
-    private BOSHConfiguration(BOSHConfigurationBuilder builder) {
+    private BOSHConfiguration(Builder builder) {
         super(builder);
         https = builder.https;
         if (builder.file.charAt(0) != '/') {
@@ -69,27 +69,27 @@ public class BOSHConfiguration extends ConnectionConfiguration {
         return new URI((https ? "https://" : "http://") + this.host + ":" + this.port + file);
     }
 
-    public static BOSHConfigurationBuilder builder() {
-        return new BOSHConfigurationBuilder();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public static class BOSHConfigurationBuilder extends ConnectionConfigurationBuilder<BOSHConfigurationBuilder, BOSHConfiguration> {
+    public static class Builder extends ConnectionConfiguration.Builder<Builder, BOSHConfiguration> {
         private boolean https;
         private String file;
 
-        private BOSHConfigurationBuilder() {
+        private Builder() {
         }
 
-        public BOSHConfigurationBuilder setUseHttps(boolean useHttps) {
+        public Builder setUseHttps(boolean useHttps) {
             https = useHttps;
             return this;
         }
 
-        public BOSHConfigurationBuilder useHttps() {
+        public Builder useHttps() {
             return setUseHttps(true);
         }
 
-        public BOSHConfigurationBuilder setFile(String file) {
+        public Builder setFile(String file) {
             this.file = file;
             return this;
         }
@@ -100,7 +100,7 @@ public class BOSHConfiguration extends ConnectionConfiguration {
         }
 
         @Override
-        protected BOSHConfigurationBuilder getThis() {
+        protected Builder getThis() {
             return this;
         }
     }

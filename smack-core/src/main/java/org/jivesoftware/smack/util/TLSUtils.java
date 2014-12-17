@@ -30,7 +30,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.jivesoftware.smack.ConnectionConfiguration.ConnectionConfigurationBuilder;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException.SecurityNotPossibleException;
 
 
@@ -55,7 +55,7 @@ public class TLSUtils {
      * 
      * @param builder the configuration builder to apply this setting to
      */
-    public static <B extends ConnectionConfigurationBuilder<B,?>> B setTLSOnly(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<B,?>> B setTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1 });
         return builder;
     }
@@ -72,7 +72,7 @@ public class TLSUtils {
      * 
      * @param builder the configuration builder to apply this setting to
      */
-    public static <B extends ConnectionConfigurationBuilder<B,?>> B setSSLv3AndTLSOnly(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<B,?>> B setSSLv3AndTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1, PROTO_SSL3 });
         return builder;
     }
@@ -88,7 +88,7 @@ public class TLSUtils {
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
-    public static <B extends ConnectionConfigurationBuilder<B,?>> B acceptAllCertificates(B builder) throws NoSuchAlgorithmException, KeyManagementException {
+    public static <B extends ConnectionConfiguration.Builder<B,?>> B acceptAllCertificates(B builder) throws NoSuchAlgorithmException, KeyManagementException {
         SSLContext context = SSLContext.getInstance(TLS);
         context.init(null, new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
         builder.setCustomSSLContext(context);

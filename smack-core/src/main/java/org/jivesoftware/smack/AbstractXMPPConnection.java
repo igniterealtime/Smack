@@ -40,7 +40,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.ConnectionConfiguration.ConnectionConfigurationBuilder;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
@@ -348,12 +347,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Before logging in (i.e. authenticate) to the server the connection must be connected.
      * 
      * It is possible to log in without sending an initial available presence by using
-     * {@link ConnectionConfigurationBuilder#setSendPresence(boolean)}. If this connection is
+     * {@link ConnectionConfiguration.Builder#setSendPresence(boolean)}. If this connection is
      * not interested in loading its roster upon login then use
-     * {@link ConnectionConfigurationBuilder#setRosterLoadedAtLogin(boolean)}.
+     * {@link ConnectionConfiguration.Builder#setRosterLoadedAtLogin(boolean)}.
      * Finally, if you want to not pass a password and instead use a more advanced mechanism
      * while using SASL then you may be interested in using
-     * {@link ConnectionConfigurationBuilder#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
+     * {@link ConnectionConfiguration.Builder#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
      * For more advanced login settings see {@link ConnectionConfiguration}.
      * 
      * @throws XMPPException if an error occurs on the XMPP protocol level.
