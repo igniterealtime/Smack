@@ -36,6 +36,8 @@ public class SynchronizationPoint<E extends Exception> {
     private final Lock connectionLock;
     private final Condition condition;
 
+    // Note that there is no need to make 'state' and 'failureException' volatile. Since 'lock' and 'unlock' have the
+    // same memory synchronization effects as synchronization block enter and leave.
     private State state;
     private E failureException;
 
@@ -47,8 +49,10 @@ public class SynchronizationPoint<E extends Exception> {
     }
 
     public void init() {
+        connectionLock.lock();
         state = State.Initial;
         failureException = null;
+        connectionLock.unlock();
     }
 
     public void sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
@@ -138,11 +142,23 @@ public class SynchronizationPoint<E extends Exception> {
     }
 
     public boolean wasSuccessful() {
-        return state == State.Success;
+        connectionLock.lock();
+        try {
+            return state == State.Success;
+        }
+        finally {
+            connectionLock.unlock();
+        }
     }
 
     public boolean requestSent() {
-        return state == State.RequestSent;
+        connectionLock.lock();
+        try {
+            return state == State.RequestSent;
+        }
+        finally {
+            connectionLock.unlock();
+        }
     }
 
     private void waitForConditionOrTimeout() {
@@ -156,7 +172,7 @@ public class SynchronizationPoint<E extends Exception> {
                     break;
                 }
             } catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "was interrupted while waiting, this should not happen", e);
+                LOGGER.log(Level.FINE, "Spurious interrupt while waiting for condition or timeout", e);
             }
         }
     }
