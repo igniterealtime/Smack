@@ -10,5 +10,5 @@ repositories {
 
 dependencies {
 	compile project(':smack-core')
-	compile 'org.igniterealtime.jbosh:jbosh:0.8.0'
+	compile 'org.igniterealtime.jbosh:jbosh:[0.8,0.9)'
 }
