@@ -38,25 +38,22 @@ public class PubSubProvider extends IQProvider<PubSub>
     @Override
     public PubSub parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException, SmackException {
-        PubSub pubsub = new PubSub();
         String namespace = parser.getNamespace();
-        pubsub.setPubSubNamespace(PubSubNamespace.valueOfFromXmlns(namespace));
-        boolean done = false;
+        PubSubNamespace pubSubNamespace = PubSubNamespace.valueOfFromXmlns(namespace);
+        PubSub pubsub = new PubSub(pubSubNamespace);
 
-        while (!done) 
+        outerloop: while (true) 
         {
             int eventType = parser.next();
-            
-            if (eventType == XmlPullParser.START_TAG) 
-            {
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
                 PacketParserUtils.addPacketExtension(pubsub, parser);
-            }
-            else if (eventType == XmlPullParser.END_TAG) 
-            {
-                if (parser.getName().equals("pubsub")) 
-                {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
+                break;
             }
         }
         return pubsub;

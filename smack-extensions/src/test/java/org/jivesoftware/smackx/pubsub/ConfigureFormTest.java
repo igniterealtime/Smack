@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.pubsub;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
@@ -47,9 +49,9 @@ public class ConfigureFormTest
 	}
 	
 	@Test
-	public void getConfigFormWithInsufficientPriviliges() throws XMPPException, SmackException
+	public void getConfigFormWithInsufficientPriviliges() throws XMPPException, SmackException, IOException
 	{
-		ThreadedDummyConnection con = new ThreadedDummyConnection();
+		ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
 		PubSubManager mgr = new PubSubManager(con);
 		DiscoverInfo info = new DiscoverInfo();
 		Identity ident = new Identity("pubsub", null, "leaf");

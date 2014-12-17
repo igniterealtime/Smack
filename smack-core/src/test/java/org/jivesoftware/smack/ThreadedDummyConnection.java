@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack;
 
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -37,13 +38,8 @@ public class ThreadedDummyConnection extends DummyConnection {
     private volatile boolean timeout = false;
 
     @Override
-    public void sendPacket(Packet packet) {
-        try {
-            super.sendPacket(packet);
-        }
-        catch (NotConnectedException e) {
-            e.printStackTrace();
-        }
+    public void sendPacket(Packet packet) throws NotConnectedException {
+        super.sendPacket(packet);
 
         if (packet instanceof IQ && !timeout) {
             timeout = false;
@@ -104,6 +100,12 @@ public class ThreadedDummyConnection extends DummyConnection {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static ThreadedDummyConnection newInstance() throws SmackException, IOException, XMPPException {
+        ThreadedDummyConnection threadedDummyConnection = new ThreadedDummyConnection();
+        threadedDummyConnection.connect();
+        return threadedDummyConnection;
     }
 
 }
