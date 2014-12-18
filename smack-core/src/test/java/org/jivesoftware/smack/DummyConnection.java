@@ -45,7 +45,6 @@ import org.jivesoftware.smack.packet.TopLevelStreamElement;
  */
 public class DummyConnection extends AbstractXMPPConnection {
 
-    private boolean anonymous = false;
     private boolean reconnect = false;
 
     private String connectionID;
@@ -93,7 +92,6 @@ public class DummyConnection extends AbstractXMPPConnection {
         connectionID = null;
         roster = null;
         authenticated = false;
-        anonymous = false;
         
         for (ConnectionListener listener : getConnectionListeners()) {
             listener.connectionClosed();
@@ -124,11 +122,6 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public boolean isAnonymous() {
-        return anonymous;
-    }
-
-    @Override
     public boolean isSecureConnection() {
         return false;
     }
@@ -139,15 +132,14 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginNonAnonymously()
+    protected void loginNonAnonymously(String username, String password, String resource)
             throws XMPPException {
-        user = config.getUsername()
+        user = username
                 + "@"
                 + config.getServiceName()
                 + "/" 
-                + (config.getResource() != null ? config.getResource() : "Test");
+                + (resource != null ? resource : "Test");
         roster = new Roster(this);
-        anonymous = false;
         authenticated = true;
     }
 
@@ -159,7 +151,6 @@ public class DummyConnection extends AbstractXMPPConnection {
         if (isAuthenticated()) {
             throw new IllegalStateException("Already logged in to server.");
         }
-        anonymous = true;
         authenticated = true;
     }
 

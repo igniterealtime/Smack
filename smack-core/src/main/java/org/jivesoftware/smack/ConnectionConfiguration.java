@@ -102,10 +102,6 @@ public abstract class ConnectionConfiguration {
         }
         password = builder.password;
         callbackHandler = builder.callbackHandler;
-        if (callbackHandler == null && (password == null || username == null) && !builder.anonymous) {
-            throw new IllegalArgumentException(
-                            "Must provide either a username and password, a callback handler or set the connection configuration anonymous");
-        }
 
         // Resource can be null, this means that the server must provide one
         resource = builder.resource;
@@ -140,10 +136,6 @@ public abstract class ConnectionConfiguration {
         legacySessionDisabled = builder.legacySessionDisabled;
         rosterStore = builder.rosterStore;
         debuggerEnabled = builder.debuggerEnabled;
-    }
-
-    public boolean isAnonymous() {
-        return username == null && callbackHandler == null;
     }
 
     /**
@@ -401,7 +393,6 @@ public abstract class ConnectionConfiguration {
         private HostnameVerifier hostnameVerifier;
         private String username;
         private String password;
-        private boolean anonymous;
         private String resource = "Smack";
         private boolean sendPresence = true;
         private boolean rosterLoadedAtLogin = true;
@@ -421,8 +412,7 @@ public abstract class ConnectionConfiguration {
         /**
          * Set the XMPP entities username and password.
          * <p>
-         * The username is the localpart of the entities JID, e.g. <code>localpart@example.org</code>. In order to
-         * create an anonymous connection, call {@link #makeAnonymous} instead.
+         * The username is the localpart of the entities JID, e.g. <code>localpart@example.org</code>.
          * </p>
          *
          * @param username
@@ -432,22 +422,6 @@ public abstract class ConnectionConfiguration {
         public B setUsernameAndPassword(String username, String password) {
             this.username = username;
             this.password = password;
-            return getThis();
-        }
-
-        /**
-         * Create a configuration for a anonymous XMPP connection.
-         * <p>
-         * Anonyous connections don't provide a username or other authentification credentials like a password. Instead
-         * the XMPP server, if supporting anonymous connections, will assign a username to the client.
-         * </p>
-         *
-         * @return a reference to this builder.
-         */
-        public B makeAnonymous() {
-            this.username = null;
-            this.password = null;
-            anonymous = true;
             return getThis();
         }
 

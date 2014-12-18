@@ -73,6 +73,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
@@ -359,6 +360,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected abstract void connectInternal() throws SmackException, IOException, XMPPException;
 
+    private String usedUsername, usedPassword, usedResource;
+
     /**
      * Logs in to the server using the strongest authentication mode supported by
      * the server, then sets presence to available. If the server supports SASL authentication 
@@ -388,11 +391,56 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (isAnonymous()) {
             loginAnonymously();
         } else {
-            loginNonAnonymously();
+            // The previously used username, password and resource take over precedence over the
+            // ones from the connection configuration
+            String username = usedUsername != null ? usedUsername : config.getUsername();
+            String password = usedPassword != null ? usedPassword : config.getPassword();
+            String resource = usedResource != null ? usedResource : config.getResource();
+            login(username, password, resource);
         }
     }
 
-    protected abstract void loginNonAnonymously() throws XMPPException, SmackException, IOException;
+    /**
+     * Same as {@link #login(String, String, String)}, but takes the resource from the connection
+     * configuration.
+     * 
+     * @param username
+     * @param password
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws IOException
+     * @see #login
+     */
+    public void login(String username, String password) throws XMPPException, SmackException,
+                    IOException {
+        login(username, password, config.getResource());
+    }
+
+    /**
+     * Login with the given username. You may omit the password if a callback handler is used. If
+     * resource is null, then the server will generate one.
+     * 
+     * @param username
+     * @param password
+     * @param resource
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws IOException
+     * @see #login
+     */
+    public void login(String username, String password, String resource) throws XMPPException,
+                    SmackException, IOException {
+        if (StringUtils.isNullOrEmpty(username)) {
+            throw new IllegalArgumentException("Username must not be null or empty");
+        }
+        usedUsername = username;
+        usedPassword = password;
+        usedResource = resource;
+        loginNonAnonymously(username, password, resource);
+    }
+
+    protected abstract void loginNonAnonymously(String username, String password, String resource)
+                    throws XMPPException, SmackException, IOException;
 
     protected abstract void loginAnonymously() throws XMPPException, SmackException, IOException;
 
@@ -471,8 +519,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public boolean isAnonymous() {
-        return config.isAnonymous();
+    public final boolean isAnonymous() {
+        return config.getUsername() == null && usedUsername == null;
     }
 
     private String serviceName;

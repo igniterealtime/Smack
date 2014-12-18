@@ -223,11 +223,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginNonAnonymously()
+    protected void loginNonAnonymously(String username, String password, String resource)
             throws XMPPException, SmackException, IOException {
-        String password = config.getPassword();
-        String resource = config.getResource();
-        String username = config.getUsername();
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {

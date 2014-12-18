@@ -339,10 +339,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected synchronized void loginNonAnonymously() throws XMPPException, SmackException, IOException {
-        String password = config.getPassword();
-        String resource = config.getResource();
-        String username = config.getUsername();
+    protected synchronized void loginNonAnonymously(String username, String password, String resource) throws XMPPException, SmackException, IOException {
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
