@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.initializer;
+package org.jivesoftware.smack.legacy;
 
-import java.util.List;
+import org.jivesoftware.smack.initializer.UrlInitializer;
 
-public abstract class SimpleSmackInitializer implements SmackInitializer {
-
-    @Override
-    public abstract List<Exception> initialize();
+public class LegacyInitializer extends UrlInitializer {
 
     @Override
-    public List<Exception> initialize(ClassLoader classLoader) {
-        return initialize();
+    protected String getProvidersUrl() {
+        return "classpath:org.jivesoftware.smack.legacy/legacy.providers";
     }
-
 }

@@ -19,7 +19,7 @@ package org.jivesoftware.smack.util.dns.dnsjava;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.initializer.SmackAndOsgiInitializer;
+import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.SRVRecord;
@@ -32,7 +32,7 @@ import org.xbill.DNS.Type;
  * This implementation uses the <a href="http://www.dnsjava.org/">dnsjava</a> implementation for resolving DNS addresses.
  *
  */
-public class DNSJavaResolver extends SmackAndOsgiInitializer implements DNSResolver {
+public class DNSJavaResolver implements SmackInitializer, DNSResolver {
     
     private static DNSJavaResolver instance = new DNSJavaResolver();
 

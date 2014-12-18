@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright © 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.initializer;
+package org.jivesoftware.smack.tcp;
 
-import java.util.List;
+import org.jivesoftware.smack.initializer.UrlInitializer;
 
-public abstract class SmackAndOsgiInitializer implements SmackInitializer {
-
-    /**
-     * A simple wrapper around {@link #initialize} for OSGi, as the activate method of a component
-     * must have a void return type.
-     */
-    public final void activate() {
-        initialize();
-    }
+public class TCPInitializer extends UrlInitializer {
 
     @Override
-    public List<Exception> initialize(ClassLoader classLoader) {
-        return initialize();
+    protected String getProvidersUrl() {
+        return "classpath:org.jivesoftware.smack.tcp/smacktcp.providers";
     }
 
 }

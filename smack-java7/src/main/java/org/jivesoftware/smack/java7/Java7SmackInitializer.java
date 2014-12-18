@@ -19,13 +19,13 @@ package org.jivesoftware.smack.java7;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.initializer.SmackAndOsgiInitializer;
+import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
 import org.jivesoftware.smack.util.stringencoder.java7.Java7Base64Encoder;
 import org.jivesoftware.smack.util.stringencoder.java7.Java7Base64UrlSafeEncoder;
 
-public class Java7SmackInitializer extends SmackAndOsgiInitializer {
+public class Java7SmackInitializer implements SmackInitializer {
 
     @Override
     public List<Exception> initialize() {

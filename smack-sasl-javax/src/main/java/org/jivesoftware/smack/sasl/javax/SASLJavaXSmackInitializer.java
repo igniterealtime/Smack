@@ -19,9 +19,9 @@ package org.jivesoftware.smack.sasl.javax;
 import java.util.List;
 
 import org.jivesoftware.smack.SASLAuthentication;
-import org.jivesoftware.smack.initializer.SmackAndOsgiInitializer;
+import org.jivesoftware.smack.initializer.SmackInitializer;
 
-public class SASLJavaXSmackInitializer extends SmackAndOsgiInitializer {
+public class SASLJavaXSmackInitializer implements SmackInitializer {
 
     @Override
     public List<Exception> initialize() {
@@ -32,11 +32,6 @@ public class SASLJavaXSmackInitializer extends SmackAndOsgiInitializer {
         SASLAuthentication.registerSASLMechanism(new SASLPlainMechanism());
 
         return null;
-    }
-
-    @Override
-    public List<Exception> initialize(ClassLoader classLoader) {
-        return initialize();
     }
 
 }

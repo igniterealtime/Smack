@@ -34,17 +34,13 @@ import org.jivesoftware.smack.util.FileUtils;
  * 
  * @author Florian Schmaus
  */
-public abstract class UrlInitializer extends SmackAndOsgiInitializer {
+public abstract class UrlInitializer implements SmackInitializer {
     private static final Logger LOGGER = Logger.getLogger(UrlInitializer.class.getName());
 
     @Override
     public List<Exception> initialize() {
-        return initialize(this.getClass().getClassLoader());
-    }
-
-    @Override
-    public List<Exception> initialize(ClassLoader classLoader) {
         InputStream is;
+        final ClassLoader classLoader = this.getClass().getClassLoader();
         final List<Exception> exceptions = new LinkedList<Exception>();
         final String providerUrl = getProvidersUrl();
         if (providerUrl != null) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2014 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.initializer.tcp;
+package org.jivesoftware.smack.experimental;
 
 import org.jivesoftware.smack.initializer.UrlInitializer;
 
-public class SmackTcpSmackInitializer extends UrlInitializer {
+/**
+ * Initializes the providers in the experimental code stream.
+ * 
+ * @author Florian Schmaus
+ */
+public class ExperimentalInitializer extends UrlInitializer {
 
     @Override
     protected String getProvidersUrl() {
-        return "classpath:org.jivesoftware.smack/smacktcp.providers";
+        return "classpath:org.jivesoftware.smack.experimental/experimental.providers";
     }
 
+    @Override
+    protected String getConfigUrl() {
+        return "classpath:org.jivesoftware.smack.experimental/experimental.xml";
+    }
 }

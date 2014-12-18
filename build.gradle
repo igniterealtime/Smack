@@ -272,26 +272,6 @@ subprojects {
 	}
 }
 
-['smack-extensions', 'smack-experimental', 'smack-legacy'].each { name ->
-	project(":$name") {
-		jar {
-			manifest {
-				instruction 'Service-Component', "org.jivesoftware.smackx/$name-components.xml"
-			}
-		}
-	}
-}
-
-['smack-resolver-javax', 'smack-resolver-dnsjava', 'smack-resolver-minidns', 'smack-sasl-javax', 'smack-sasl-provided', 'smack-java7'] .each { name ->
-	project(":$name") {
-		jar {
-			manifest {
-				instruction 'Service-Component', "org.jivesoftware.smack/$name-components.xml"
-			}
-		}
-	}
-}
-
 subprojects*.jar {
    manifest {
        from sharedManifest

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.initializer.extensions.ExtensionsInitializer;
+import org.jivesoftware.smack.extensions.ExtensionsInitializer;
 
 public class InitExtensions {
 

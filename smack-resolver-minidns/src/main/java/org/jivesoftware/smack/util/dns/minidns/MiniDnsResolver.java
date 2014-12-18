@@ -19,7 +19,7 @@ package org.jivesoftware.smack.util.dns.minidns;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jivesoftware.smack.initializer.SmackAndOsgiInitializer;
+import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.SRVRecord;
@@ -39,7 +39,7 @@ import de.measite.minidns.record.SRV;
  * This implementation uses the <a href="https://github.com/rtreffer/minidns/">minidns</a> implementation for
  * resolving DNS addresses.
  */
-public class MiniDnsResolver extends SmackAndOsgiInitializer implements DNSResolver {
+public class MiniDnsResolver implements SmackInitializer, DNSResolver {
 
     private static final long ONE_DAY = 24*60*60*1000;
     private static final MiniDnsResolver instance = new MiniDnsResolver();

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.initializer.extensions;
+package org.jivesoftware.smack.extensions;
 
 import org.jivesoftware.smack.initializer.UrlInitializer;
 
@@ -27,11 +27,11 @@ public class ExtensionsInitializer extends UrlInitializer {
 
     @Override
     protected String getProvidersUrl() {
-        return "classpath:org.jivesoftware.smackx/extensions.providers";
+        return "classpath:org.jivesoftware.smack.extensions/extensions.providers";
     }
 
     @Override
     protected String getConfigUrl() {
-        return "classpath:org.jivesoftware.smackx/extensions.xml";
+        return "classpath:org.jivesoftware.smack.extensions/extensions.xml";
     }
 }
