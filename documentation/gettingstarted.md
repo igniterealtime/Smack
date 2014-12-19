@@ -14,6 +14,7 @@ library ships as several JAR files to provide more flexibility over which
 features applications require:
 
   * `smack-core.jar` -- provides core XMPP functionality. All XMPP features that are part of the XMPP RFCs are included.
+  * `smack-tcp.jar` -- support for XMPP over TCP. Includes XMPPTCPConnection class, which you usually want to use
   * `smack-extensions.jar` -- support for many of the extensions (XEPs) defined by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc. The extensions are documented in the [extensions manual](extensions/index.html).
   * `smack-experimental.jar` -- support for experimental extensions (XEPs) defined by the XMPP Standards Foundation. The API and functionality of those extensions should be considered as unstable.
   * `smack-legacy.jar` -- support for legacy extensions (XEPs) defined by the XMPP Standards Foundation.
