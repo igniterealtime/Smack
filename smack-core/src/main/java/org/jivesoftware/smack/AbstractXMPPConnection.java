@@ -1057,6 +1057,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     protected void finalize() throws Throwable {
+        LOGGER.fine("finalizing XMPPConnection ( " + getConnectionCounter()
+                        + "): Shutting down executor services");
         try {
             // It's usually not a good idea to rely on finalize. But this is the easiest way to
             // avoid the "Smack Listener Processor" leaking. The thread(s) of the executor have a

@@ -404,9 +404,13 @@ public class PingManager extends Manager {
 
     @Override
     protected void finalize() throws Throwable {
+        LOGGER.fine("finalizing PingManager: Shutting down executor service");
         try {
             executorService.shutdown();
-        } finally {
+        } catch (Throwable t) {
+            LOGGER.log(Level.WARNING, "finalize() threw throwable", t);
+        }
+        finally {
             super.finalize();
         }
     }
