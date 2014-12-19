@@ -35,7 +35,11 @@ public abstract class XMPPInputOutputStream {
         XMPPInputOutputStream.flushMethod = flushMethod;
     }
 
-    protected String compressionMethod;
+    protected final String compressionMethod;
+
+    protected XMPPInputOutputStream(String compressionMethod) {
+        this.compressionMethod = compressionMethod;
+    }
 
     public String getCompressionMethod() {
         return compressionMethod;

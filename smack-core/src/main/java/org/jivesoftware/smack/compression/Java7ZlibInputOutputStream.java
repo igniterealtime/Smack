@@ -63,7 +63,7 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
     }
 
     public Java7ZlibInputOutputStream() {
-        compressionMethod = "zlib";
+        super("zlib");
     }
 
     @Override

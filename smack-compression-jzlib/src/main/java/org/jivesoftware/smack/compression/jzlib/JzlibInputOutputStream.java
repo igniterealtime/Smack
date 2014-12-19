@@ -40,7 +40,7 @@ public class JzlibInputOutputStream extends XMPPInputOutputStream {
     }
 
     public JzlibInputOutputStream() {
-        compressionMethod = "zlib";
+        super("zlib");
     }
 
     @Override
