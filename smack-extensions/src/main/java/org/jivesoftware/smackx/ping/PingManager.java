@@ -24,7 +24,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +44,7 @@ import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
 
@@ -106,22 +106,6 @@ public class PingManager extends Manager {
 
     private final ScheduledExecutorService executorService;
 
-    private static class PingExecutorThreadFactory implements ThreadFactory {
-        private final int connectionCounterValue;
-
-        public PingExecutorThreadFactory(int connectionCounterValue) {
-            this.connectionCounterValue = connectionCounterValue;
-        }
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable, "Smack Scheduled Ping Executor Service ("
-                            + connectionCounterValue + ")");
-            thread.setDaemon(true);
-            return thread;
-        }
-
-    }
     /**
      * The interval in seconds between pings are send to the users server.
      */
@@ -132,7 +116,7 @@ public class PingManager extends Manager {
     private PingManager(XMPPConnection connection) {
         super(connection);
         executorService = new ScheduledThreadPoolExecutor(1,
-                        new PingExecutorThreadFactory(connection.getConnectionCounter()));
+                        new SmackExecutorThreadFactory(connection.getConnectionCounter(), "Ping"));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);
         INSTANCES.put(connection, this);

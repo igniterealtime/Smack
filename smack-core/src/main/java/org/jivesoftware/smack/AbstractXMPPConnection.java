@@ -34,7 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -73,6 +72,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.util.XmppStringUtils;
@@ -237,29 +237,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                                     )
                     // @formatter:on
                     );
-
-    /**
-     * SmackExecutorThreadFactory is a *static* inner class of XMPPConnection. Note that we must not
-     * use anonymous classes in order to prevent threads from leaking.
-     */
-    private static final class SmackExecutorThreadFactory implements ThreadFactory {
-        private final int connectionCounterValue;
-        private final String name;
-        private int count = 0;
-
-        private SmackExecutorThreadFactory(int connectionCounterValue, String name) {
-            this.connectionCounterValue = connectionCounterValue;
-            this.name = name;
-        }
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable);
-            thread.setName("Smack Executor - " + name + ' ' + count++ + " (" + connectionCounterValue + ")");
-            thread.setDaemon(true);
-            return thread;
-        }
-    }
 
     private Roster roster;
 
