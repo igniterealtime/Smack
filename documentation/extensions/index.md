@@ -32,8 +32,8 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | In-Band Bytestreams                         | [XEP-0047](http://xmpp.org/extensions/xep-0047.html) | Enables any two entities to establish a one-to-one bytestream between themselves using plain XMPP. |
 | Bookmarks                                   | [XEP-0048](http://xmpp.org/extensions/xep-0048.html)     | Bookmarks, for e.g. MUC and web pages. |
 | [Private Data](privatedata.html)            | [XEP-0049](http://xmpp.org/extensions/xep-0049.html) | Manages private data. |
-| Ad-Hoc Commands                             | [XEP-0050](http://xmpp.org/extensions/xep-0049.html) | Advertising and executing application-specific commands. |
-| vcard-temp                                  | [XEP-0054](http://xmpp.org/extensions/xep-0049.html) | The vCard-XML format currently in use. |
+| Ad-Hoc Commands                             | [XEP-0050](http://xmpp.org/extensions/xep-0050.html) | Advertising and executing application-specific commands. |
+| vcard-temp                                  | [XEP-0054](http://xmpp.org/extensions/xep-0054.html) | The vCard-XML format currently in use. |
 | Jabber Search                               | [XEP-0055](http://xmpp.org/extensions/xep-0055.html) | Search information repositories on the XMPP network. |
 | Result Set Management                       | [XEP-0059](http://xmpp.org/extensions/xep-0059.html) | Page through and otherwise manage the receipt of large result sets |
 | [PubSub](pubsub.html)                       | [XEP-0060](http://xmpp.org/extensions/xep-0060.html) | Generic publish and subscribe functionality. |
