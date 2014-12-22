@@ -43,6 +43,6 @@ public class PresenceTypeFilter extends FlexiblePacketTypeFilter<Presence> {
 
     @Override
     protected boolean acceptSpecific(Presence presence) {
-        return presence.getType().equals(type);
+        return presence.getType() == type;
     }
 }

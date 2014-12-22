@@ -42,6 +42,6 @@ public class IQTypeFilter extends FlexiblePacketTypeFilter<IQ> {
 
     @Override
     protected boolean acceptSpecific(IQ iq) {
-        return iq.getType().equals(type);
+        return iq.getType() == type;
     }
 }

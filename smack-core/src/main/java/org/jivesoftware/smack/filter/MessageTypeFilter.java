@@ -49,7 +49,7 @@ public class MessageTypeFilter extends FlexiblePacketTypeFilter<Message> {
 
     @Override
     protected boolean acceptSpecific(Message message) {
-        return message.getType().equals(this.type);
+        return message.getType() == type;
     }
 
 }
