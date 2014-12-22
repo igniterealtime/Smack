@@ -159,7 +159,8 @@ public class MultiUserChat {
                 String from = presence.getFrom();
                 String myRoomJID = MultiUserChat.this.room + "/" + nickname;
                 boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
-                if (presence.getType() == Presence.Type.available) {
+                switch (presence.getType()) {
+                case available:
                     Presence oldPresence = occupantsMap.put(from, presence);
                     if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
@@ -187,8 +188,8 @@ public class MultiUserChat {
                             }
                         }
                     }
-                }
-                else if (presence.getType() == Presence.Type.unavailable) {
+                    break;
+                case unavailable:
                     occupantsMap.remove(from);
                     MUCUser mucUser = MUCUser.from(packet);
                     if (mucUser != null && mucUser.getStatus() != null) {
@@ -206,6 +207,9 @@ public class MultiUserChat {
                             }
                         }
                     }
+                    break;
+                default:
+                    break;
                 }
                 for (PresenceListener listener : presenceListeners) {
                     listener.processPresence(presence);
