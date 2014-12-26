@@ -51,8 +51,12 @@ import org.jivesoftware.smackx.ping.packet.Ping;
 /**
  * Implements the XMPP Ping as defined by XEP-0199. The XMPP Ping protocol allows one entity to
  * ping any other entity by simply sending a ping to the appropriate JID. PingManger also
- * periodically sends XMPP pings to the server every 30 minutes to avoid NAT timeouts and to test
+ * periodically sends XMPP pings to the server to avoid NAT timeouts and to test
  * the connection status.
+ * <p>
+ * The default server ping interval is 30 minutes and can be modified with
+ * {@link #setDefaultPingInterval(int)} and {@link #setPingInterval(int)}.
+ * </p>
  * 
  * @author Florian Schmaus
  * @see <a href="http://www.xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP Ping</a>
@@ -90,6 +94,9 @@ public class PingManager extends Manager {
         return pingManager;
     }
 
+    /**
+     * The default ping interval in seconds used by new PingManager instances. The default is 30 minutes.
+     */
     private static int defaultPingInterval = 60 * 30;
 
     /**
