@@ -60,8 +60,7 @@ import org.jivesoftware.smackx.ping.packet.Ping;
 public class PingManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
 
-    private static final Map<XMPPConnection, PingManager> INSTANCES = Collections
-            .synchronizedMap(new WeakHashMap<XMPPConnection, PingManager>());
+    private static final Map<XMPPConnection, PingManager> INSTANCES = new WeakHashMap<XMPPConnection, PingManager>();
 
     private static final PacketFilter PING_PACKET_FILTER = new AndFilter(
                     new PacketTypeFilter(Ping.class), IQTypeFilter.GET);
@@ -86,6 +85,7 @@ public class PingManager extends Manager {
         PingManager pingManager = INSTANCES.get(connection);
         if (pingManager == null) {
             pingManager = new PingManager(connection);
+            INSTANCES.put(connection, pingManager);
         }
         return pingManager;
     }
@@ -119,7 +119,6 @@ public class PingManager extends Manager {
                         new SmackExecutorThreadFactory(connection.getConnectionCounter(), "Ping"));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);
-        INSTANCES.put(connection, this);
 
         connection.addPacketListener(new PacketListener() {
             // Send a Pong for every Ping
