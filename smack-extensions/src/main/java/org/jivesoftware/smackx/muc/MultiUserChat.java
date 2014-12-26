@@ -358,23 +358,43 @@ public class MultiUserChat {
     }
 
     /**
+     * Same as {@link #createOrJoin(String, String, DiscussionHistory, long)}, but without a password, specifying a
+     * discussion history and using the connections default reply timeout.
+     * 
+     * @param nickname
+     * @return true if the room creation was acknowledged by the service, false otherwise.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws SmackException
+     * @see #createOrJoin(String, String, DiscussionHistory, long)
+     */
+    public synchronized boolean createOrJoin(String nickname) throws NoResponseException, XMPPErrorException,
+                    SmackException {
+        return createOrJoin(nickname, null, null, connection.getPacketReplyTimeout());
+    }
+
+    /**
      * Like {@link #create(String)}, but will return true if the room creation was acknowledged by
      * the service (with an 201 status code). It's up to the caller to decide, based on the return
      * value, if he needs to continue sending the room configuration. If false is returned, the room
      * already existed and the user is able to join right away, without sending a form.
      *
      * @param nickname the nickname to use.
+     * @param password the password to use.
+     * @param history the amount of discussion history to receive while joining a room.
+     * @param timeout the amount of time to wait for a reply from the MUC service(in milliseconds).
      * @return true if the room creation was acknowledged by the service, false otherwise.
      * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
      *         the user is not allowed to create the room)
      * @throws NoResponseException if there was no response from the server.
      */
-    public synchronized boolean createOrJoin(String nickname) throws NoResponseException, XMPPErrorException, SmackException {
+    public synchronized boolean createOrJoin(String nickname, String password, DiscussionHistory history, long timeout)
+                    throws NoResponseException, XMPPErrorException, SmackException {
         if (joined) {
             throw new IllegalStateException("Creation failed - User already joined the room.");
         }
 
-        Presence presence = enter(nickname, null, null, connection.getPacketReplyTimeout());
+        Presence presence = enter(nickname, password, history, timeout);
 
         // Look for confirmation of room creation from the server
         MUCUser mucUser = MUCUser.from(presence);
