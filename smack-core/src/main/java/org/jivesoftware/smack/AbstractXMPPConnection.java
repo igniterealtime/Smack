@@ -878,6 +878,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet to process.
      */
     protected void processPacket(Packet packet) {
+        lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
         executorService.submit(new ListenerNotification(packet));
     }
@@ -1268,10 +1269,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     public long getLastStanzaReceived() {
         return lastStanzaReceived;
-    }
-
-    protected void reportStanzaReceived() {
-        this.lastStanzaReceived = System.currentTimeMillis();
     }
 
     protected final void asyncGo(Runnable runnable) {

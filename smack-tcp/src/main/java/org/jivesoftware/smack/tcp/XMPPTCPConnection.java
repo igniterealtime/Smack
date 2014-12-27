@@ -996,7 +996,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 continue;
                             } finally {
                                 clientHandledStanzasCount = SMUtils.incrementHeight(clientHandledStanzasCount);
-                                reportStanzaReceived();
                             }
                             processPacket(packet);
                             break;
