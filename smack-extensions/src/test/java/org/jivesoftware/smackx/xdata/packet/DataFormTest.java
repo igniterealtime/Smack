@@ -32,6 +32,9 @@ import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Section;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
+import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
+import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,7 +48,8 @@ import org.xmlpull.v1.XmlPullParserException;
 public class DataFormTest {
     private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='SUBMIT'><instructions>InstructionTest1</instructions><field var='testField1'></field></x>";
     private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='SUBMIT'><instructions>InstructionTest1</instructions><field var='testField1'></field><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
-    private static Logger logger = Logger.getLogger(DataFormTest.class.getName());
+    private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='SUBMIT'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
+    private static final Logger LOGGER = Logger.getLogger(DataFormTest.class.getName());
 
     @Test
     public void test() throws XmlPullParserException, IOException, SmackException {
@@ -59,7 +63,7 @@ public class DataFormTest {
         
         assertNotNull( df.toXML());
         String output = df.toXML().toString();
-        logger.finest(output);
+        LOGGER.finest(output);
         assertEquals(TEST_OUTPUT_1, output);
         
         DataFormProvider pr = new DataFormProvider();
@@ -75,7 +79,7 @@ public class DataFormTest {
 
         assertNotNull( df.toXML());
         output = df.toXML().toString();
-        logger.finest(output);
+        LOGGER.finest(output);
         assertEquals(TEST_OUTPUT_1, output);
 
         
@@ -104,7 +108,7 @@ public class DataFormTest {
         
         assertNotNull( df.toXML());
         String output = df.toXML().toString();
-        logger.finest(output);
+        LOGGER.finest(output);
         assertEquals(TEST_OUTPUT_2, output);
         
         DataFormProvider pr = new DataFormProvider();
@@ -124,8 +128,49 @@ public class DataFormTest {
 
         assertNotNull( df.toXML());
         output = df.toXML().toString();
-        logger.finest(output);
+        LOGGER.finest(output);
         assertEquals(TEST_OUTPUT_2, output);
+
+        
+    }
+
+    @Test
+    public void testValidation() throws XmlPullParserException, IOException, SmackException {
+        
+        //Build a Form
+        DataForm df = new DataForm("SUBMIT");
+        String instruction = "InstructionTest1";
+        df.addInstruction(instruction);
+        FormField field = new FormField("testField1");
+        df.addField(field);
+
+        ValidateElement dv = new RangeValidateElement("xs:integer","1111", "9999");
+        field.setValidateElement(dv);
+        
+        assertNotNull( df.toXML());
+        String output = df.toXML().toString();
+        LOGGER.finest(output);
+        assertEquals(TEST_OUTPUT_3, output);
+        
+        DataFormProvider pr = new DataFormProvider();
+        
+        XmlPullParser parser = getParser(output);
+        
+        df = pr.parse(parser);
+        
+        assertNotNull(df);
+        assertNotNull(df.getFields());
+        assertEquals(1 , df.getFields().size() );
+        Element element = df.getFields().get(0).getValidateElement();
+        assertNotNull(element);
+        dv = (ValidateElement) element;
+        
+        assertEquals("xs:integer" , dv.getDatatype());
+
+        assertNotNull( df.toXML());
+        output = df.toXML().toString();
+        LOGGER.finest(output);
+        assertEquals(TEST_OUTPUT_3, output);
 
         
     }
@@ -137,7 +182,7 @@ public class DataFormTest {
      * @throws IOException 
      */
     private XmlPullParser getParser(String output) throws XmlPullParserException, IOException {
-        logger.finest("getParser");
+        LOGGER.finest("getParser");
         XmlPullParser parser = PacketParserUtils.newXmppParser();
         parser.setInput(new StringReader(output));
         parser.next();
