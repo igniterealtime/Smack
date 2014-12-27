@@ -347,6 +347,12 @@ public abstract class Packet implements TopLevelStreamElement {
         return removeExtension(extension.getElementName(), extension.getNamespace());
     }
 
+    @Override
+    // NOTE When Smack is using Java 8, then this method should be moved in Element as "Default Method".
+    public String toString() {
+        return toXML().toString();
+    }
+
     /**
      * Returns the extension sub-packets (including properties data) as an XML
      * String, or the Empty String if there are no packet extensions.
