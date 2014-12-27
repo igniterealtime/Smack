@@ -47,7 +47,6 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.util.cache.LruCache;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,8 +88,7 @@ public class EntityCapsManager extends Manager {
 
     private static boolean autoEnableEntityCaps = true;
 
-    private static Map<XMPPConnection, EntityCapsManager> instances = Collections
-            .synchronizedMap(new WeakHashMap<XMPPConnection, EntityCapsManager>());
+    private static Map<XMPPConnection, EntityCapsManager> instances = new WeakHashMap<>();
 
     private static final PacketFilter PRESENCES_WITH_CAPS = new AndFilter(new PacketTypeFilter(Presence.class), new PacketExtensionFilter(
                     ELEMENT, NAMESPACE));

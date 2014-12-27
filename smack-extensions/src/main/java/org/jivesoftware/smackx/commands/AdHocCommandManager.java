@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -71,8 +70,7 @@ public class AdHocCommandManager extends Manager {
      * Map a XMPPConnection with it AdHocCommandManager. This map have a key-value
      * pair for every active connection.
      */
-    private static Map<XMPPConnection, AdHocCommandManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, AdHocCommandManager>());
+    private static Map<XMPPConnection, AdHocCommandManager> instances = new WeakHashMap<>();
 
     /**
      * Register the listener for all the connection creations. When a new
@@ -96,7 +94,10 @@ public class AdHocCommandManager extends Manager {
      */
     public static synchronized AdHocCommandManager getAddHocCommandsManager(XMPPConnection connection) {
         AdHocCommandManager ahcm = instances.get(connection);
-        if (ahcm == null) ahcm = new AdHocCommandManager(connection);
+        if (ahcm == null) {
+            ahcm = new AdHocCommandManager(connection);
+            instances.put(connection, ahcm);
+        }
         return ahcm;
     }
 
@@ -125,9 +126,6 @@ public class AdHocCommandManager extends Manager {
     private AdHocCommandManager(XMPPConnection connection) {
         super(connection);
         this.serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        
-        // Register the new instance and associate it with the connection
-        instances.put(connection, this);
 
         // Add the feature to the service discovery manage to show that this
         // connection supports the AdHoc-Commands protocol.

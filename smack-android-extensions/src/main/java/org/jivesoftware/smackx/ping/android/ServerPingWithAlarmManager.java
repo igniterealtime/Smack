@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.ping.android;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -67,8 +66,7 @@ public class ServerPingWithAlarmManager extends Manager {
 
 	private static final String PING_ALARM_ACTION = "org.igniterealtime.smackx.ping.ACTION";
 
-	private static final Map<XMPPConnection, ServerPingWithAlarmManager> INSTANCES = Collections
-			.synchronizedMap(new WeakHashMap<XMPPConnection, ServerPingWithAlarmManager>());
+	private static final Map<XMPPConnection, ServerPingWithAlarmManager> INSTANCES = new WeakHashMap<XMPPConnection, ServerPingWithAlarmManager>();
 
 	static {
 		XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {

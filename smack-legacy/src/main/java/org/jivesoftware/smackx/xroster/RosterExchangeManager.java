@@ -50,8 +50,7 @@ public class RosterExchangeManager {
     public final static String NAMESPACE = "jabber:x:roster";
     public final static String ELEMENT = "x";
 
-    private final static Map<XMPPConnection, RosterExchangeManager> INSTANCES =
-                    Collections.synchronizedMap(new WeakHashMap<XMPPConnection, RosterExchangeManager>());
+    private final static Map<XMPPConnection, RosterExchangeManager> INSTANCES = new WeakHashMap<>();
 
     private final static PacketFilter PACKET_FILTER = new PacketExtensionFilter(ELEMENT, NAMESPACE);
 
@@ -64,6 +63,7 @@ public class RosterExchangeManager {
         RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
         if (rosterExchangeManager == null) {
             rosterExchangeManager = new RosterExchangeManager(connection);
+            INSTANCES.put(connection, rosterExchangeManager);
         }
         return rosterExchangeManager;
     }

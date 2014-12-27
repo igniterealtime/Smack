@@ -18,7 +18,6 @@
 package org.jivesoftware.smackx.xevent;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -51,8 +50,7 @@ import org.jivesoftware.smackx.xevent.packet.MessageEvent;
 public class MessageEventManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(MessageEventManager.class.getName());
     
-    private static final Map<XMPPConnection, MessageEventManager> INSTANCES = Collections
-                    .synchronizedMap(new WeakHashMap<XMPPConnection, MessageEventManager>());
+    private static final Map<XMPPConnection, MessageEventManager> INSTANCES = new WeakHashMap<>();
 
     private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketExtensionFilter(
                     new MessageEvent()), new NotFilter(MessageTypeFilter.ERROR));
@@ -64,6 +62,7 @@ public class MessageEventManager extends Manager {
         MessageEventManager messageEventManager = INSTANCES.get(connection);
         if (messageEventManager == null) {
             messageEventManager = new MessageEventManager(connection);
+            INSTANCES.put(connection, messageEventManager);
         }
         return messageEventManager;
     }
@@ -97,7 +96,6 @@ public class MessageEventManager extends Manager {
                             eventType.concat("Notification"));
             }
         }, PACKET_FILTER);
-        INSTANCES.put(connection, this);
     }
 
     /**

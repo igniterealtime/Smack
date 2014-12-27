@@ -82,8 +82,7 @@ public class ServiceDiscoveryManager extends Manager {
 
     private EntityCapsManager capsManager;
 
-    private static Map<XMPPConnection, ServiceDiscoveryManager> instances =
-            Collections.synchronizedMap(new WeakHashMap<XMPPConnection, ServiceDiscoveryManager>());
+    private static Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
     private final Set<String> features = new HashSet<String>();
     private DataForm extendedInfo = null;
