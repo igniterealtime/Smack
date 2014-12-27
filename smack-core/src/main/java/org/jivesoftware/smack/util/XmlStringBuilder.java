@@ -186,7 +186,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     public XmlStringBuilder optAttribute(String name, Enum<?> value) {
         if (value != null) {
-            attribute(name, value.name());
+            attribute(name, value.toString());
         }
         return this;
     }

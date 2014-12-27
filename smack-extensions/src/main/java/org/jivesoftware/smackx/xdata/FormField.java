@@ -34,22 +34,94 @@ public class FormField {
 
     public static final String ELEMENT = "field";
 
-    public static final String TYPE_BOOLEAN = "boolean";
-    public static final String TYPE_FIXED = "fixed";
-    public static final String TYPE_HIDDEN = "hidden";
-    public static final String TYPE_JID_MULTI = "jid-multi";
-    public static final String TYPE_JID_SINGLE = "jid-single";
-    public static final String TYPE_LIST_MULTI = "list-multi";
-    public static final String TYPE_LIST_SINGLE = "list-single";
-    public static final String TYPE_TEXT_MULTI = "text-multi";
-    public static final String TYPE_TEXT_PRIVATE = "text-private";
-    public static final String TYPE_TEXT_SINGLE = "text-single";
+    /**
+     * Form Field Types as defined in XEP-4 § 3.3.
+     * 
+     * @see <a href="http://xmpp.org/extensions/xep-0004.html#protocol-fieldtypes">XEP-4 § 3.3 Field Types</a>
+     */
+    public enum Type {
+
+        /**
+         * Boolean type. Can be 0 or 1, true or false, yes or no. Default value is 0.
+         * <p>
+         * Note that in XEP-4 this type is called 'boolean', but since that String is a restricted keyword in Java, it
+         * is named 'bool' in Smack.
+         * </p>
+         */
+        bool,
+
+        /**
+         * Fixed for putting in text to show sections, or just advertise your web site in the middle of the form
+         */
+        fixed,
+
+        /**
+         * Is not given to the user at all, but returned with the questionnaire
+         */
+        hidden,
+
+        /**
+         * multiple entries for JIDs
+         */
+        jid_multi,
+
+        /**
+         * Jabber ID - choosing a JID from your roster, and entering one based on the rules for a JID.
+         */
+        jid_single,
+
+        /**
+         * Given a list of choices, pick one or more.
+         */
+        list_multi,
+
+        /**
+         * Given a list of choices, pick one.
+         */
+        list_single,
+
+        /**
+         * Multiple lines of text entry.
+         */
+        text_multi,
+
+        /**
+         * Instead of showing the user what they typed, you show ***** to protect it.
+         */
+        text_private,
+
+        /**
+         * Single line or word of text.
+         */
+        text_single,
+        ;
+
+        @Override
+        public String toString() {
+            switch (this) {
+            case bool:
+                return "boolean";
+            default:
+                return this.name().replace('_', '-');
+            }
+        }
+
+        public static Type fromString(String string) {
+            switch (string) {
+            case "boolean":
+                return bool;
+            default:
+                string = string.replace('-', '_');
+                return Type.valueOf(string);
+            }
+        }
+    }
 
     private String description;
     private boolean required = false;
     private String label;
     private String variable;
-    private String type;
+    private Type type;
     private final List<Option> options = new ArrayList<Option>();
     private final List<String> values = new ArrayList<String>();
 
@@ -68,7 +140,7 @@ public class FormField {
      * name.
      */
     public FormField() {
-        this.type = FormField.TYPE_FIXED;
+        this.type = Type.fixed;
     }
 
     /**
@@ -116,27 +188,12 @@ public class FormField {
     }
 
     /**
-     * Returns an indicative of the format for the data to answer. Valid formats are:
-     * <p/>
-     * <ul>
-     * <li>text-single -> single line or word of text
-     * <li>text-private -> instead of showing the user what they typed, you show ***** to
-     * protect it
-     * <li>text-multi -> multiple lines of text entry
-     * <li>list-single -> given a list of choices, pick one
-     * <li>list-multi -> given a list of choices, pick one or more
-     * <li>boolean -> 0 or 1, true or false, yes or no. Default value is 0
-     * <li>fixed -> fixed for putting in text to show sections, or just advertise your web
-     * site in the middle of the form
-     * <li>hidden -> is not given to the user at all, but returned with the questionnaire
-     * <li>jid-single -> Jabber ID - choosing a JID from your roster, and entering one based
-     * on the rules for a JID.
-     * <li>jid-multi -> multiple entries for JIDs
-     * </ul>
+     * Returns an indicative of the format for the data to answer.
      *
      * @return format for the data to answer.
+     * @see Type
      */
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
@@ -195,27 +252,12 @@ public class FormField {
     }
 
     /**
-     * Sets an indicative of the format for the data to answer. Valid formats are:
-     * <p/>
-     * <ul>
-     * <li>text-single -> single line or word of text
-     * <li>text-private -> instead of showing the user what they typed, you show ***** to
-     * protect it
-     * <li>text-multi -> multiple lines of text entry
-     * <li>list-single -> given a list of choices, pick one
-     * <li>list-multi -> given a list of choices, pick one or more
-     * <li>boolean -> 0 or 1, true or false, yes or no. Default value is 0
-     * <li>fixed -> fixed for putting in text to show sections, or just advertise your web
-     * site in the middle of the form
-     * <li>hidden -> is not given to the user at all, but returned with the questionnaire
-     * <li>jid-single -> Jabber ID - choosing a JID from your roster, and entering one based
-     * on the rules for a JID.
-     * <li>jid-multi -> multiple entries for JIDs
-     * </ul>
+     * Sets an indicative of the format for the data to answer.
      *
      * @param type an indicative of the format for the data to answer.
+     * @see Type
      */
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

@@ -388,7 +388,7 @@ public class Workgroup {
             String value = metadata.get(name).toString();
 
             FormField field = new FormField(name);
-            field.setType(FormField.TYPE_TEXT_SINGLE);
+            field.setType(FormField.Type.text_single);
             form.addField(field);
             form.setAnswer(name, value);
         }

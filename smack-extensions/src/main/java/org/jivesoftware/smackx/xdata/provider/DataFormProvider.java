@@ -93,7 +93,10 @@ public class DataFormProvider extends PacketExtensionProvider<DataForm> {
         final int initialDepth = parser.getDepth();
         FormField formField = new FormField(parser.getAttributeValue("", "var"));
         formField.setLabel(parser.getAttributeValue("", "label"));
-        formField.setType(parser.getAttributeValue("", "type"));
+        String typeString = parser.getAttributeValue("", "type");
+        if (typeString != null) {
+            formField.setType(FormField.Type.fromString(typeString));
+        }
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {

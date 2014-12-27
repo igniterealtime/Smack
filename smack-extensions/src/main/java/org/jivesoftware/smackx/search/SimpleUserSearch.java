@@ -93,7 +93,7 @@ class SimpleUserSearch extends IQ {
 
     protected void parseItems(XmlPullParser parser) throws XmlPullParserException, IOException {
         ReportedData data = new ReportedData();
-        data.addColumn(new ReportedData.Column("JID", "jid", "text-single"));
+        data.addColumn(new ReportedData.Column("JID", "jid", FormField.Type.text_single));
 
         boolean done = false;
 
@@ -135,7 +135,7 @@ class SimpleUserSearch extends IQ {
 
                 // Column name should be the same
                 if (!exists) {
-                    ReportedData.Column column = new ReportedData.Column(name, name, "text-single");
+                    ReportedData.Column column = new ReportedData.Column(name, name, FormField.Type.text_single);
                     data.addColumn(column);
                 }
             }

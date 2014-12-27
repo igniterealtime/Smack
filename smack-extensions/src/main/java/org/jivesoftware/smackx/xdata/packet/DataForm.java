@@ -215,8 +215,10 @@ public class DataForm implements PacketExtension {
     public boolean hasHiddenFormTypeField() {
         boolean found = false;
         for (FormField f : fields) {
-            if (f.getVariable().equals("FORM_TYPE") && f.getType() != null && f.getType().equals("hidden"))
+            if (f.getVariable().equals("FORM_TYPE") && f.getType() == FormField.Type.hidden) {
                 found = true;
+                break;
+            }
         }
         return found;
     }

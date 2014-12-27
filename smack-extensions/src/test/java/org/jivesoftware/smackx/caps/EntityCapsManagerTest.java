@@ -123,7 +123,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         df.addField(ff);
 
         ff = new FormField("FORM_TYPE");
-        ff.setType("hidden");
+        ff.setType(FormField.Type.hidden);
         ff.addValue("urn:xmpp:dataforms:softwareinfo");
         df.addField(ff);
 
@@ -180,7 +180,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         df.addField(ff);
 
         ff = new FormField("FORM_TYPE");
-        ff.setType("hidden");
+        ff.setType(FormField.Type.hidden);
         ff.addValue("urn:xmpp:dataforms:softwareinfo");
         df.addField(ff);
 
@@ -208,7 +208,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         df = new DataForm("result");
 
         ff = new FormField("FORM_TYPE");
-        ff.setType("hidden");
+        ff.setType(FormField.Type.hidden);
         ff.addValue("urn:xmpp:dataforms:softwareinfo");
         df.addField(ff);
 

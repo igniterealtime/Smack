@@ -185,7 +185,7 @@ public class UserSearch extends SimpleIQ {
                     field.setLabel("Nickname");
                 }
 
-                field.setType(FormField.TYPE_TEXT_SINGLE);
+                field.setType(FormField.Type.text_single);
                 dataForm.addField(field);
             }
             else if (eventType == XmlPullParser.END_TAG) {

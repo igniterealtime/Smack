@@ -92,7 +92,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setAccessModel(AccessModel accessModel)
 	{
-		addField(ConfigureNodeFields.access_model, FormField.TYPE_LIST_SINGLE);
+		addField(ConfigureNodeFields.access_model, FormField.Type.list_single);
 		setAnswer(ConfigureNodeFields.access_model.getFieldName(), getListSingle(accessModel.toString()));
 	}
 
@@ -115,7 +115,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setBodyXSLT(String bodyXslt)
 	{
-		addField(ConfigureNodeFields.body_xslt, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.body_xslt, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.body_xslt.getFieldName(), bodyXslt);
 	}
 	
@@ -136,7 +136,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setChildren(List<String> children)
 	{
-		addField(ConfigureNodeFields.children, FormField.TYPE_TEXT_MULTI);
+		addField(ConfigureNodeFields.children, FormField.Type.text_multi);
 		setAnswer(ConfigureNodeFields.children.getFieldName(), children);
 	}
 	
@@ -162,7 +162,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setChildrenAssociationPolicy(ChildrenAssociationPolicy policy)
 	{
-		addField(ConfigureNodeFields.children_association_policy, FormField.TYPE_LIST_SINGLE);
+		addField(ConfigureNodeFields.children_association_policy, FormField.Type.list_single);
         List<String> values = new ArrayList<String>(1);
         values.add(policy.toString());
         setAnswer(ConfigureNodeFields.children_association_policy.getFieldName(), values);
@@ -189,7 +189,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setChildrenAssociationWhitelist(List<String> whitelist)
 	{
-		addField(ConfigureNodeFields.children_association_whitelist, FormField.TYPE_JID_MULTI);
+		addField(ConfigureNodeFields.children_association_whitelist, FormField.Type.jid_multi);
 		setAnswer(ConfigureNodeFields.children_association_whitelist.getFieldName(), whitelist);
 	}
 
@@ -210,7 +210,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setChildrenMax(int max)
 	{
-		addField(ConfigureNodeFields.children_max, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.children_max, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.children_max.getFieldName(), max);
 	}
 
@@ -231,7 +231,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setCollection(String collection)
 	{
-		addField(ConfigureNodeFields.collection, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.collection, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.collection.getFieldName(), collection);
 	}
 
@@ -256,7 +256,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setDataformXSLT(String url)
 	{
-		addField(ConfigureNodeFields.dataform_xslt, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.dataform_xslt, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.dataform_xslt.getFieldName(), url);
 	}
 
@@ -277,7 +277,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setDeliverPayloads(boolean deliver)
 	{
-		addField(ConfigureNodeFields.deliver_payloads, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.deliver_payloads, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.deliver_payloads.getFieldName(), deliver);
 	}
 
@@ -303,7 +303,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setItemReply(ItemReply reply)
 	{
-		addField(ConfigureNodeFields.itemreply, FormField.TYPE_LIST_SINGLE);
+		addField(ConfigureNodeFields.itemreply, FormField.Type.list_single);
 		setAnswer(ConfigureNodeFields.itemreply.getFieldName(), getListSingle(reply.toString()));
 	}
 
@@ -326,7 +326,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setMaxItems(int max)
 	{
-		addField(ConfigureNodeFields.max_items, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.max_items, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.max_items.getFieldName(), max);
 	}
 	
@@ -347,7 +347,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setMaxPayloadSize(int max)
 	{
-		addField(ConfigureNodeFields.max_payload_size, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.max_payload_size, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.max_payload_size.getFieldName(), max);
 	}
 	
@@ -373,7 +373,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setNodeType(NodeType type)
 	{
-		addField(ConfigureNodeFields.node_type, FormField.TYPE_LIST_SINGLE);
+		addField(ConfigureNodeFields.node_type, FormField.Type.list_single);
 		setAnswer(ConfigureNodeFields.node_type.getFieldName(), getListSingle(type.toString()));
 	}
 
@@ -394,7 +394,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setNotifyConfig(boolean notify)
 	{
-		addField(ConfigureNodeFields.notify_config, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.notify_config, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.notify_config.getFieldName(), notify);
 	}
 
@@ -415,7 +415,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setNotifyDelete(boolean notify) 
 	{
-		addField(ConfigureNodeFields.notify_delete, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.notify_delete, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.notify_delete.getFieldName(), notify);
 	}
 
@@ -438,7 +438,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setNotifyRetract(boolean notify) 
 	{
-		addField(ConfigureNodeFields.notify_retract, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.notify_retract, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.notify_retract.getFieldName(), notify);
 	}
 	
@@ -459,7 +459,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setPersistentItems(boolean persist) 
 	{
-		addField(ConfigureNodeFields.persist_items, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.persist_items, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.persist_items.getFieldName(), persist);
 	}
 
@@ -480,7 +480,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setPresenceBasedDelivery(boolean presenceBased) 
 	{
-		addField(ConfigureNodeFields.presence_based_delivery, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.presence_based_delivery, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.presence_based_delivery.getFieldName(), presenceBased);
 	}
 
@@ -506,7 +506,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setPublishModel(PublishModel publish) 
 	{
-		addField(ConfigureNodeFields.publish_model, FormField.TYPE_LIST_SINGLE);
+		addField(ConfigureNodeFields.publish_model, FormField.Type.list_single);
 		setAnswer(ConfigureNodeFields.publish_model.getFieldName(), getListSingle(publish.toString()));
 	}
 	
@@ -527,7 +527,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setReplyRoom(List<String> replyRooms) 
 	{
-		addField(ConfigureNodeFields.replyroom, FormField.TYPE_LIST_MULTI);
+		addField(ConfigureNodeFields.replyroom, FormField.Type.list_multi);
 		setAnswer(ConfigureNodeFields.replyroom.getFieldName(), replyRooms);
 	}
 	
@@ -548,7 +548,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setReplyTo(List<String> replyTos)
 	{
-		addField(ConfigureNodeFields.replyto, FormField.TYPE_LIST_MULTI);
+		addField(ConfigureNodeFields.replyto, FormField.Type.list_multi);
 		setAnswer(ConfigureNodeFields.replyto.getFieldName(), replyTos);
 	}
 	
@@ -569,7 +569,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setRosterGroupsAllowed(List<String> groups)
 	{
-		addField(ConfigureNodeFields.roster_groups_allowed, FormField.TYPE_LIST_MULTI);
+		addField(ConfigureNodeFields.roster_groups_allowed, FormField.Type.list_multi);
 		setAnswer(ConfigureNodeFields.roster_groups_allowed.getFieldName(), groups);
 	}
 	
@@ -601,7 +601,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setSubscribe(boolean subscribe)
 	{
-		addField(ConfigureNodeFields.subscribe, FormField.TYPE_BOOLEAN);
+		addField(ConfigureNodeFields.subscribe, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.subscribe.getFieldName(), subscribe);
 	}
 	
@@ -622,7 +622,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setTitle(String title) 
 	{
-		addField(ConfigureNodeFields.title, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.title, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.title.getFieldName(), title);
 	}
 	
@@ -643,7 +643,7 @@ public class ConfigureForm extends Form
 	 */
 	public void setDataType(String type) 
 	{
-		addField(ConfigureNodeFields.type, FormField.TYPE_TEXT_SINGLE);
+		addField(ConfigureNodeFields.type, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.type.getFieldName(), type);
 	}
 	
@@ -695,7 +695,7 @@ public class ConfigureForm extends Form
 		return formField.getValues();
 	}
 
-	private void addField(ConfigureNodeFields nodeField, String type)
+	private void addField(ConfigureNodeFields nodeField, FormField.Type type)
 	{
 		String fieldName = nodeField.getFieldName();
 		

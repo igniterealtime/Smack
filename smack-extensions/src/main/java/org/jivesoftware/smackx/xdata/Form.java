@@ -125,11 +125,14 @@ public class Form {
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
         }
-        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
-            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
-            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())
-            && !FormField.TYPE_JID_SINGLE.equals(field.getType())
-            && !FormField.TYPE_HIDDEN.equals(field.getType())) {
+        switch (field.getType()) {
+        case text_multi:
+        case text_private:
+        case text_single:
+        case jid_single:
+        case hidden:
+            break;
+        default:
             throw new IllegalArgumentException("This field is not of type String.");
         }
         setAnswer(field, value);
@@ -151,11 +154,7 @@ public class Form {
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
         }
-        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
-            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
-            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
-            throw new IllegalArgumentException("This field is not of type int.");
-        }
+        validateThatFieldIsText(field);
         setAnswer(field, value);
     }
 
@@ -175,11 +174,7 @@ public class Form {
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
         }
-        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
-            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
-            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
-            throw new IllegalArgumentException("This field is not of type long.");
-        }
+        validateThatFieldIsText(field);
         setAnswer(field, value);
     }
 
@@ -199,11 +194,7 @@ public class Form {
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
         }
-        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
-            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
-            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
-            throw new IllegalArgumentException("This field is not of type float.");
-        }
+        validateThatFieldIsText(field);
         setAnswer(field, value);
     }
 
@@ -223,12 +214,19 @@ public class Form {
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
         }
-        if (!FormField.TYPE_TEXT_MULTI.equals(field.getType())
-            && !FormField.TYPE_TEXT_PRIVATE.equals(field.getType())
-            && !FormField.TYPE_TEXT_SINGLE.equals(field.getType())) {
-            throw new IllegalArgumentException("This field is not of type double.");
-        }
+        validateThatFieldIsText(field);
         setAnswer(field, value);
+    }
+
+    private static void validateThatFieldIsText(FormField field) {
+        switch(field.getType()) {
+        case text_multi:
+        case text_private:
+        case text_single:
+            break;
+        default:
+            throw new IllegalArgumentException("This field is not of type text (multi, private or single).");
+        }
     }
 
     /**
@@ -247,7 +245,7 @@ public class Form {
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
         }
-        if (!FormField.TYPE_BOOLEAN.equals(field.getType())) {
+        if (field.getType() != FormField.Type.bool) {
             throw new IllegalArgumentException("This field is not of type boolean.");
         }
         setAnswer(field, (value ? "1" : "0"));
@@ -300,11 +298,14 @@ public class Form {
         FormField field = getField(variable);
         if (field != null) {
             // Check that the field can accept a collection of values
-            if (!FormField.TYPE_JID_MULTI.equals(field.getType())
-                && !FormField.TYPE_LIST_MULTI.equals(field.getType())
-                && !FormField.TYPE_LIST_SINGLE.equals(field.getType())
-                && !FormField.TYPE_TEXT_MULTI.equals(field.getType())
-                && !FormField.TYPE_HIDDEN.equals(field.getType())) {
+            switch (field.getType()) {
+            case jid_multi:
+            case list_multi:
+            case list_single:
+            case text_multi:
+            case hidden:
+                break;
+            default:
                 throw new IllegalArgumentException("This field only accept list of values.");
             }
             // Clear the old values 
@@ -520,7 +521,7 @@ public class Form {
                 newField.setType(field.getType());
                 form.addField(newField);
                 // Set the answer ONLY to the hidden fields 
-                if (FormField.TYPE_HIDDEN.equals(field.getType())) {
+                if (field.getType() == FormField.Type.hidden) {
                     // Since a hidden field could have many values we need to collect them 
                     // in a list
                     List<String> values = new ArrayList<String>();

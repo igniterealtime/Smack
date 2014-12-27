@@ -72,7 +72,7 @@ public class SubscribeForm extends Form
 	 */
 	public void setDeliverOn(boolean deliverNotifications)
 	{
-		addField(SubscribeOptionFields.deliver, FormField.TYPE_BOOLEAN);
+		addField(SubscribeOptionFields.deliver, FormField.Type.bool);
 		setAnswer(SubscribeOptionFields.deliver.getFieldName(), deliverNotifications);
 	}
 
@@ -93,7 +93,7 @@ public class SubscribeForm extends Form
 	 */
 	public void setDigestOn(boolean digestOn)
 	{
-		addField(SubscribeOptionFields.deliver, FormField.TYPE_BOOLEAN);
+		addField(SubscribeOptionFields.deliver, FormField.Type.bool);
 		setAnswer(SubscribeOptionFields.deliver.getFieldName(), digestOn);
 	}
 
@@ -114,7 +114,7 @@ public class SubscribeForm extends Form
 	 */
 	public void setDigestFrequency(int frequency)
 	{
-		addField(SubscribeOptionFields.digest_frequency, FormField.TYPE_TEXT_SINGLE);
+		addField(SubscribeOptionFields.digest_frequency, FormField.Type.text_single);
 		setAnswer(SubscribeOptionFields.digest_frequency.getFieldName(), frequency);
 	}
 
@@ -145,7 +145,7 @@ public class SubscribeForm extends Form
 	 */
 	public void setExpiry(Date expire)
 	{
-		addField(SubscribeOptionFields.expire, FormField.TYPE_TEXT_SINGLE);
+		addField(SubscribeOptionFields.expire, FormField.Type.text_single);
 		setAnswer(SubscribeOptionFields.expire.getFieldName(), XmppDateTime.formatXEP0082Date(expire));
 	}
 	
@@ -168,7 +168,7 @@ public class SubscribeForm extends Form
 	 */
 	public void setIncludeBody(boolean include)
 	{
-		addField(SubscribeOptionFields.include_body, FormField.TYPE_BOOLEAN);
+		addField(SubscribeOptionFields.include_body, FormField.Type.bool);
 		setAnswer(SubscribeOptionFields.include_body.getFieldName(), include);
 	}
 
@@ -203,7 +203,7 @@ public class SubscribeForm extends Form
 		{
 			values.add(state.toString());
 		}
-		addField(SubscribeOptionFields.show_values, FormField.TYPE_LIST_MULTI);
+		addField(SubscribeOptionFields.show_values, FormField.Type.list_multi);
 		setAnswer(SubscribeOptionFields.show_values.getFieldName(), values);
 	}
 	
@@ -227,7 +227,7 @@ public class SubscribeForm extends Form
 		return formField.getValues();
 	}
 
-	private void addField(SubscribeOptionFields nodeField, String type)
+	private void addField(SubscribeOptionFields nodeField, FormField.Type type)
 	{
 		String fieldName = nodeField.getFieldName();
 		
