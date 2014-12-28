@@ -146,7 +146,7 @@ public class PacketParserUtils {
      * @throws Exception
      */
     public static Packet parseStanza(XmlPullParser parser, XMPPConnection connection) throws Exception {
-        assert(parser.getEventType() == XmlPullParser.START_TAG);
+        ParserUtils.assertAtStartTag(parser);
         final String name = parser.getName();
         switch (name) {
         case Message.ELEMENT:
