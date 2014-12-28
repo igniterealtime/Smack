@@ -161,7 +161,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             }
             client = BOSHClient.create(cfgBuilder.build());
 
-            client.addBOSHClientConnListener(new BOSHConnectionListener(this));
+            client.addBOSHClientConnListener(new BOSHConnectionListener());
             client.addBOSHClientResponseListener(new BOSHPacketReader());
 
             // Initialize the debugger
@@ -459,12 +459,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      */
     private class BOSHConnectionListener implements BOSHClientConnListener {
 
-        private final XMPPBOSHConnection connection;
-
-        public BOSHConnectionListener(XMPPBOSHConnection connection) {
-            this.connection = connection;
-        }
-
         /**
          * Notify the BOSHConnection about connection state changes.
          * Process the connection listeners and try to login if the
@@ -477,13 +471,13 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     if (isFirstInitialization) {
                         isFirstInitialization = false;
                         for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
-                            listener.connectionCreated(connection);
+                            listener.connectionCreated(XMPPBOSHConnection.this);
                         }
                     }
                     else {
                         try {
                             if (wasAuthenticated) {
-                                connection.login();
+                                login();
                             }
                             for (ConnectionListener listener : getConnectionListeners()) {
                                  listener.reconnectionSuccessful();
@@ -513,8 +507,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 }
             }
             finally {
-                synchronized (connection) {
-                    connection.notifyAll();
+                synchronized (XMPPBOSHConnection.this) {
+                    XMPPBOSHConnection.this.notifyAll();
                 }
             }
         }
