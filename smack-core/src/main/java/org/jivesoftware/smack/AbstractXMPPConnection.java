@@ -905,6 +905,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet to process.
      */
     protected void processPacket(Packet packet) {
+        assert(packet != null);
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
         executorService.submit(new ListenerNotification(packet));

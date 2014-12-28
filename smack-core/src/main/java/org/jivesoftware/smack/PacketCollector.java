@@ -225,10 +225,6 @@ public class PacketCollector {
      * @param packet the packet to process.
      */
     protected void processPacket(Packet packet) {
-        if (packet == null) {
-            return;
-        }
-        
         if (packetFilter == null || packetFilter.accept(packet)) {
         	while (!resultQueue.offer(packet)) {
         		// Since we know the queue is full, this poll should never actually block.
