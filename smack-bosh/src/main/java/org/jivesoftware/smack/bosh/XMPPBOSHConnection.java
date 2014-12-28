@@ -20,6 +20,7 @@ package org.jivesoftware.smack.bosh;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,18 +31,25 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
-import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+import org.igniterealtime.jbosh.AbstractBody;
 import org.igniterealtime.jbosh.BOSHClient;
 import org.igniterealtime.jbosh.BOSHClientConfig;
 import org.igniterealtime.jbosh.BOSHClientConnEvent;
@@ -154,7 +162,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             client = BOSHClient.create(cfgBuilder.build());
 
             client.addBOSHClientConnListener(new BOSHConnectionListener(this));
-            client.addBOSHClientResponseListener(new BOSHPacketReader(this));
+            client.addBOSHClientResponseListener(new BOSHPacketReader());
 
             // Initialize the debugger
             if (config.isDebuggerEnabled()) {
@@ -443,20 +451,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         callConnectionClosedOnErrorListener(e);
     }
 
-    @Override
-    protected void processPacket(Packet packet) {
-        super.processPacket(packet);
-    }
-
-    @Override
-    protected SASLAuthentication getSASLAuthentication() {
-        return super.getSASLAuthentication();
-    }
-
-    void parseFeatures0(XmlPullParser parser) throws Exception {
-        parseFeatures(parser);
-    }
-
     /**
      * A listener class which listen for a successfully established connection
      * and connection errors and notifies the BOSHConnection.
@@ -521,6 +515,84 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             finally {
                 synchronized (connection) {
                     connection.notifyAll();
+                }
+            }
+        }
+    }
+
+    /**
+     * Listens for XML traffic from the BOSH connection manager and parses it into
+     * packet objects.
+     *
+     * @author Guenther Niess
+     */
+    private class BOSHPacketReader implements BOSHClientResponseListener {
+
+        /**
+         * Parse the received packets and notify the corresponding connection.
+         *
+         * @param event the BOSH client response which includes the received packet.
+         */
+        public void responseReceived(BOSHMessageEvent event) {
+            AbstractBody body = event.getBody();
+            if (body != null) {
+                try {
+                    if (sessionID == null) {
+                        sessionID = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "sid"));
+                    }
+                    if (authID == null) {
+                        authID = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "authid"));
+                    }
+                    final XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+                    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+                    parser.setInput(new StringReader(body.toXML()));
+                    int eventType = parser.getEventType();
+                    do {
+                        eventType = parser.next();
+                        switch (eventType) {
+                        case XmlPullParser.START_TAG:
+                            String name = parser.getName();
+                            switch (name) {
+                            case Message.ELEMENT:
+                            case IQ.ELEMENT:
+                            case Presence.ELEMENT:
+                                parseAndProcessStanza(parser);
+                                break;
+                            case "challenge":
+                                // The server is challenging the SASL authentication
+                                // made by the client
+                                final String challengeData = parser.nextText();
+                                getSASLAuthentication().challengeReceived(challengeData);
+                                break;
+                            case "success":
+                                send(ComposableBody.builder().setNamespaceDefinition("xmpp",
+                                                XMPPBOSHConnection.XMPP_BOSH_NS).setAttribute(
+                                                BodyQName.createWithPrefix(XMPPBOSHConnection.XMPP_BOSH_NS, "restart",
+                                                                "xmpp"), "true").setAttribute(
+                                                BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"), getServiceName()).build());
+                                Success success = new Success(parser.nextText());
+                                getSASLAuthentication().authenticated(success);
+                            case "features":
+                                parseFeatures(parser);
+                                break;
+                            case "failure":
+                                if ("urn:ietf:params:xml:ns:xmpp-sasl".equals(parser.getNamespace(null))) {
+                                    final SASLFailure failure = PacketParserUtils.parseSASLFailure(parser);
+                                    getSASLAuthentication().authenticationFailed(failure);
+                                }
+                                break;
+                            case "error":
+                                throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                            }
+                            break;
+                        }
+                    }
+                    while (eventType != XmlPullParser.END_DOCUMENT);
+                }
+                catch (Exception e) {
+                    if (isConnected()) {
+                        notifyConnectionError(e);
+                    }
                 }
             }
         }

@@ -67,11 +67,14 @@ import org.jivesoftware.smack.packet.RosterVer;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
@@ -210,6 +213,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private FromMode fromMode = FromMode.OMITTED;
 
     protected XMPPInputOutputStream compressionHandler;
+
+    private ParsingExceptionCallback parsingExceptionCallback = SmackConfiguration.getDefaultParsingExceptionCallback();
 
     /**
      * ExecutorService used to invoke the PacketListeners on newly arrived and parsed stanzas. It is
@@ -870,6 +875,28 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         packetReplyTimeout = timeout;
     }
 
+    protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {
+        ParserUtils.assertAtStartTag(parser);
+        int parserDepth = parser.getDepth();
+        Packet stanza = null;
+        try {
+            stanza = PacketParserUtils.parseStanza(parser, this);
+        }
+        catch (Exception e) {
+            CharSequence content = PacketParserUtils.parseContentDepth(parser,
+                            parserDepth);
+            UnparsablePacket message = new UnparsablePacket(content, e);
+            ParsingExceptionCallback callback = getParsingExceptionCallback();
+            if (callback != null) {
+                callback.handleUnparsablePacket(message);
+            }
+        }
+        ParserUtils.assertAtEndTag(parser);
+        if (stanza != null) {
+            processPacket(stanza);
+        }
+    }
+
     /**
      * Processes a packet after it's been fully parsed by looping through the installed
      * packet collectors and listeners and letting them examine the packet to see if
@@ -1271,7 +1298,27 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return lastStanzaReceived;
     }
 
+    /**
+     * Install a parsing exception callback, which will be invoked once an exception is encountered while parsing a
+     * stanza
+     * 
+     * @param callback the callback to install
+     */
+    public void setParsingExceptionCallback(ParsingExceptionCallback callback) {
+        parsingExceptionCallback = callback;
+    }
+
+    /**
+     * Get the current active parsing exception callback.
+     *  
+     * @return the active exception callback or null if there is none
+     */
+    public ParsingExceptionCallback getParsingExceptionCallback() {
+        return parsingExceptionCallback;
+    }
+
     protected final void asyncGo(Runnable runnable) {
         cachedExecutorService.execute(runnable);
     }
+
 }
