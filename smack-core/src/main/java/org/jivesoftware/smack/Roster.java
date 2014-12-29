@@ -845,6 +845,23 @@ public class Roster {
      */
     private class PresencePacketListener implements PacketListener {
 
+        /**
+         * Retrieve the user presences (a map from resource to {@link Presence}) for a given key (usually a JID without
+         * a resource). If the {@link #presenceMap} does not contain already a user presence map, then it will be
+         * created.
+         * 
+         * @param key the presence map key
+         * @return the user presences
+         */
+        private Map<String, Presence> getUserPresences(String key) {
+            Map<String, Presence> userPresences = presenceMap.get(key);
+            if (userPresences == null) {
+                userPresences = new ConcurrentHashMap<>();
+                presenceMap.put(key, userPresences);
+            }
+            return userPresences;
+        }
+
         public void processPacket(Packet packet) throws NotConnectedException {
             Presence presence = (Presence) packet;
             String from = presence.getFrom();
@@ -858,13 +875,7 @@ public class Roster {
             switch (presence.getType()) {
             case available:
                 // Get the user presence map
-                if (presenceMap.get(key) == null) {
-                    userPresences = new ConcurrentHashMap<String, Presence>();
-                    presenceMap.put(key, userPresences);
-                }
-                else {
-                    userPresences = presenceMap.get(key);
-                }
+                userPresences = getUserPresences(key);
                 // See if an offline presence was being stored in the map. If so, remove
                 // it since we now have an online presence.
                 userPresences.remove("");
@@ -881,13 +892,7 @@ public class Roster {
                 // a roster presence flood. In that case, we store it.
                 if ("".equals(XmppStringUtils.parseResource(from))) {
                     // Get the user presence map
-                    if (presenceMap.get(key) == null) {
-                        userPresences = new ConcurrentHashMap<String, Presence>();
-                        presenceMap.put(key, userPresences);
-                    }
-                    else {
-                        userPresences = presenceMap.get(key);
-                    }
+                    userPresences = getUserPresences(key);
                     userPresences.put("", presence);
                 }
                 // Otherwise, this is a normal offline presence.
@@ -939,15 +944,10 @@ public class Roster {
                 if (!"".equals(XmppStringUtils.parseResource(from))) {
                     break;
                 }
-                if (!presenceMap.containsKey(key)) {
-                    userPresences = new ConcurrentHashMap<String, Presence>();
-                    presenceMap.put(key, userPresences);
-                }
-                else {
-                    userPresences = presenceMap.get(key);
-                    // Any other presence data is invalidated by the error packet.
-                    userPresences.clear();
-                }
+                userPresences = getUserPresences(key);
+                // Any other presence data is invalidated by the error packet.
+                userPresences.clear();
+
                 // Set the new presence using the empty resource as a key.
                 userPresences.put("", presence);
                 // If the user is in the roster, fire an event.
