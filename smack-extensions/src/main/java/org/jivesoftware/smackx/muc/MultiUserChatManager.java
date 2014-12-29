@@ -127,8 +127,9 @@ public class MultiUserChatManager extends Manager {
                 // Check if the MUCUser extension includes an invitation
                 if (mucUser.getInvite() != null) {
                     // Fire event for invitation listeners
+                    MultiUserChat muc = getMultiUserChat(packet.getFrom());
                     for (InvitationListener listener : invitationsListeners) {
-                        listener.invitationReceived(connection(), packet.getFrom(), mucUser.getInvite().getFrom(),
+                        listener.invitationReceived(connection(), muc, mucUser.getInvite().getFrom(),
                                         mucUser.getInvite().getReason(), mucUser.getPassword(), message);
                     }
                 }

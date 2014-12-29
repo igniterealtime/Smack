@@ -40,7 +40,7 @@ public interface InvitationListener {
      * @param password the password to use when joining the room.
      * @param message the message used by the inviter to send the invitation.
      */
-    public abstract void invitationReceived(XMPPConnection conn, String room, String inviter, String reason,
+    public abstract void invitationReceived(XMPPConnection conn, MultiUserChat room, String inviter, String reason,
                                             String password, Message message);
 
 }
