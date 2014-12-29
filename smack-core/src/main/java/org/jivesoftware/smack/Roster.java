@@ -850,7 +850,6 @@ public class Roster {
             String from = presence.getFrom();
             String key = getPresenceMapKey(from);
             Map<String, Presence> userPresences;
-            RosterEntry entry;
             Presence response = null;
 
             // If an "available" presence, add it to the presence map. Each presence
@@ -872,8 +871,7 @@ public class Roster {
                 // Add the new presence, using the resources as a key.
                 userPresences.put(XmppStringUtils.parseResource(from), presence);
                 // If the user is in the roster, fire an event.
-                entry = entries.get(key);
-                if (entry != null) {
+                if (entries.containsKey(key)) {
                     fireRosterPresenceEvent(presence);
                 }
                 break;
@@ -900,8 +898,7 @@ public class Roster {
                     userPresences.put(XmppStringUtils.parseResource(from), presence);
                 }
                 // If the user is in the roster, fire an event.
-                entry = entries.get(key);
-                if (entry != null) {
+                if (entries.containsKey(key)) {
                     fireRosterPresenceEvent(presence);
                 }
                 break;
@@ -954,8 +951,7 @@ public class Roster {
                 // Set the new presence using the empty resource as a key.
                 userPresences.put("", presence);
                 // If the user is in the roster, fire an event.
-                entry = entries.get(key);
-                if (entry != null) {
+                if (entries.containsKey(key)) {
                     fireRosterPresenceEvent(presence);
                 }
                 break;
