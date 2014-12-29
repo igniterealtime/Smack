@@ -580,6 +580,46 @@ public class Roster {
     }
 
     /**
+     * Returns a List of Presence objects for all of a user's current presences if no presence information is available,
+     * such as when you are not subscribed to the user's presence updates.
+     *
+     * @param bareJid a XMPP ID, e.g. jdoe@example.com.
+     * @return a List of Presence objects for all the user's current presences, or an unavailable presence if no
+     *         presence information is available.
+     */
+    public List<Presence> getAllPresences(String bareJid) {
+        Map<String, Presence> userPresences = presenceMap.get(getPresenceMapKey(bareJid));
+        List<Presence> res;
+        if (userPresences == null) {
+            // Create an unavailable presence if none was found
+            Presence unavailable = new Presence(Presence.Type.unavailable);
+            unavailable.setFrom(bareJid);
+            res = new ArrayList<>(Arrays.asList(unavailable));
+        } else {
+            res = new ArrayList<>(userPresences.values());
+        }
+        return res;
+    }
+
+    /**
+     * Returns a List of all <b>available</b> Presence Objects for the given bare JID. If there are no available
+     * presences, then the empty list will be returned.
+     *
+     * @param bareJid the bare JID from which the presences should be retrieved.
+     * @return available presences for the bare JID.
+     */
+    public List<Presence> getAvailablePresences(String bareJid) {
+        List<Presence> allPresences = getAllPresences(bareJid);
+        List<Presence> res = new ArrayList<>(allPresences.size());
+        for (Presence presence : allPresences) {
+            if (presence.isAvailable()) {
+                res.add(presence);
+            }
+        }
+        return res;
+    }
+
+    /**
      * Returns a List of Presence objects for all of a user's current presences
      * or an unavailable presence if the user is unavailable (offline) or if no presence
      * information is available, such as when you are not subscribed to the user's presence
