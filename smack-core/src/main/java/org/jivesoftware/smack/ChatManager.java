@@ -202,7 +202,17 @@ public class ChatManager extends Manager{
      * Creates a new chat and returns it.
      *
      * @param userJID the user this chat is with.
-     * @param listener the listener which will listen for new messages from this chat.
+     * @return the created chat.
+     */
+    public Chat createChat(String userJID) {
+        return createChat(userJID, null);
+    }
+
+    /**
+     * Creates a new chat and returns it.
+     *
+     * @param userJID the user this chat is with.
+     * @param listener the optional listener which will listen for new messages from this chat.
      * @return the created chat.
      */
     public Chat createChat(String userJID, ChatMessageListener listener) {
@@ -214,7 +224,7 @@ public class ChatManager extends Manager{
      * 
      * @param userJID the jid of the user this chat is with
      * @param thread the thread of the created chat.
-     * @param listener the listener to add to the chat
+     * @param listener the optional listener to add to the chat
      * @return the created chat.
      */
     public Chat createChat(String userJID, String thread, ChatMessageListener listener) {

@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.Set;
 import java.util.Collections;
@@ -49,6 +50,9 @@ public class Chat {
      * @param threadID the thread ID to use.
      */
     Chat(ChatManager chatManager, String participant, String threadID) {
+        if (StringUtils.isEmpty(threadID)) {
+            throw new IllegalArgumentException("Thread ID must not be null");
+        }
         this.chatManager = chatManager;
         this.participant = participant;
         this.threadID = threadID;
@@ -89,10 +93,9 @@ public class Chat {
      * @throws NotConnectedException 
      */
     public void sendMessage(String text) throws XMPPException, NotConnectedException {
-        Message message = new Message(participant, Message.Type.chat);
-        message.setThread(threadID);
+        Message message = new Message();
         message.setBody(text);
-        chatManager.sendMessage(this, message);
+        sendMessage(message);
     }
 
     /**
