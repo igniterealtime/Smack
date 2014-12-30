@@ -2091,4 +2091,9 @@ public class MultiUserChat {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "MUC: " + room + "(" + connection.getUser() + ")";
+    }
 }
