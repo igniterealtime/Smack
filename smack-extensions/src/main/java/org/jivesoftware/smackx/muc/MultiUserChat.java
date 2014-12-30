@@ -1551,7 +1551,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void sendMessage(String text) throws XMPPException, NotConnectedException {
-        Message message = new Message(room, Message.Type.groupchat);
+        Message message = createMessage();
         message.setBody(text);
         connection.sendPacket(message);
     }
@@ -1682,7 +1682,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void changeSubject(final String subject) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        Message message = new Message(room, Message.Type.groupchat);
+        Message message = createMessage();
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
         PacketFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new PacketFilter() {
