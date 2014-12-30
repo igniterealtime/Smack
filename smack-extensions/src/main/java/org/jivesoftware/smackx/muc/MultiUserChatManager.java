@@ -43,6 +43,7 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -121,16 +122,21 @@ public class MultiUserChatManager extends Manager {
         // listeners if the message includes an invitation.
         invitationPacketListener = new PacketListener() {
             public void processPacket(Packet packet) {
-                Message message = (Message) packet;
+                final Message message = (Message) packet;
                 // Get the MUCUser extension
-                MUCUser mucUser = MUCUser.from(message);
+                final MUCUser mucUser = MUCUser.from(message);
                 // Check if the MUCUser extension includes an invitation
                 if (mucUser.getInvite() != null) {
                     // Fire event for invitation listeners
-                    MultiUserChat muc = getMultiUserChat(packet.getFrom());
-                    for (InvitationListener listener : invitationsListeners) {
-                        listener.invitationReceived(connection(), muc, mucUser.getInvite().getFrom(),
-                                        mucUser.getInvite().getReason(), mucUser.getPassword(), message);
+                    final MultiUserChat muc = getMultiUserChat(packet.getFrom());
+                    for (final InvitationListener listener : invitationsListeners) {
+                        Async.go(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.invitationReceived(connection(), muc, mucUser.getInvite().getFrom(),
+                                                mucUser.getInvite().getReason(), mucUser.getPassword(), message);
+                            }
+                        });
                     }
                 }
             }
