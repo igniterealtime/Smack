@@ -107,7 +107,7 @@ public class PrivacyListManager extends Manager {
 
                 // Send a result package acknowledging the reception of a privacy package.
                 IQ iq = IQ.createResultIQ(privacy);
-                connection.sendPacket(iq);
+                connection().sendPacket(iq);
             }
         }, PACKET_FILTER);
     }
