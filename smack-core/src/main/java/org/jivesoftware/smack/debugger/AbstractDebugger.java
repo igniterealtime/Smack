@@ -50,7 +50,7 @@ public abstract class AbstractDebugger implements SmackDebugger {
         this.reader = new ObservableReader(reader);
         readerListener = new ReaderListener() {
             public void read(String str) {
-                log("RECV  (" + connection.getConnectionCounter() + "): " + str);
+                log("RECV (" + connection.getConnectionCounter() + "): " + str);
             }
         };
         this.reader.addReaderListener(readerListener);
