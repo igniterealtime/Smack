@@ -466,7 +466,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         user = response.getJid();
         serviceName = XmppStringUtils.parseDomain(user);
 
-        if (hasFeature(Session.ELEMENT, Session.NAMESPACE) && !getConfiguration().isLegacySessionDisabled()) {
+        Session.Feature sessionFeature = getFeature(Session.ELEMENT, Session.NAMESPACE);
+        // Only bind the session if it's announced as stream feature by the server, is not optional and not disabled
+        // For more information see http://tools.ietf.org/html/draft-cridland-xmpp-session-01
+        if (sessionFeature != null && !sessionFeature.isOptional() && !getConfiguration().isLegacySessionDisabled()) {
             Session session = new Session();
             packetCollector = createPacketCollectorAndSend(new PacketIDFilter(session), session);
             packetCollector.nextResultOrThrow();
@@ -1137,7 +1140,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     streamFeature = Bind.Feature.INSTANCE;
                     break;
                 case Session.ELEMENT:
-                    streamFeature = Session.Feature.INSTANCE;
+                    streamFeature = PacketParserUtils.parseSessionFeature(parser);
                     break;
                 case RosterVer.ELEMENT:
                     if(namespace.equals(RosterVer.NAMESPACE)) {

@@ -39,6 +39,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -982,6 +983,32 @@ public class PacketParserUtils {
         return new StartTls(required);
     }
 
+    public static Session.Feature parseSessionFeature(XmlPullParser parser) throws XmlPullParserException, IOException {
+        ParserUtils.assertAtStartTag(parser);
+        final int initialDepth = parser.getDepth();
+        boolean optional = false;
+        if (!parser.isEmptyElementTag()) {
+        outerloop: while(true) {
+            int event = parser.next();
+            switch (event) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                    case Session.Feature.OPTIONAL_ELEMENT:
+                        optional = true;
+                        break;
+                }
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+            }
+        }
+        }
+        return new Session.Feature(optional);
+
+    }
     private static String getLanguageAttribute(XmlPullParser parser) {
     	for (int i = 0; i < parser.getAttributeCount(); i++) {
             String attributeName = parser.getAttributeName(i);
