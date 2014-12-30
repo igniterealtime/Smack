@@ -26,7 +26,6 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -74,21 +73,12 @@ public class FileTransferManager extends Manager {
 		super(connection);
 		this.fileTransferNegotiator = FileTransferNegotiator
 				.getInstanceFor(connection);
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 StreamInitiation si = (StreamInitiation) packet;
                 final FileTransferRequest request = new FileTransferRequest(FileTransferManager.this, si);
                 for (final FileTransferListener listener : listeners) {
-                    // Those listeners need to be called asynchronously, in
-                    // order to not block further processing of incoming
-                    // stanzas. They also may send further requests, whose
-                    // responses are not processed if we do not call them
-                    // asynchronously.
-                    Async.go(new Runnable() {
-                        public void run() {
                             listener.fileTransferRequest(request);
-                        }
-                    });
                 }
             }
         }, new AndFilter(new PacketTypeFilter(StreamInitiation.class), IQTypeFilter.SET));

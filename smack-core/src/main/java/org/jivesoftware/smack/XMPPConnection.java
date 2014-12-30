@@ -267,6 +267,29 @@ public interface XMPPConnection {
     public boolean removePacketListener(PacketListener packetListener);
 
     /**
+     * Registers an <b>asynchronous</b> packet listener with this connection. A packet listener will be invoked only
+     * when an incoming packet is received. A packet filter determines which packets will be delivered to the listener.
+     * If the same packet listener is added again with a different filter, only the new filter will be used.
+     * <p>
+     * Unlike {@link #addPacketListener(PacketListener, PacketFilter)} packet listeners added with this method will be
+     * invoked asynchronously in their own thread. Use this method if the order of the packet listeners must not depend
+     * on the order how the stanzas where received.
+     * </p>
+     * 
+     * @param packetListener the packet listener to notify of new received packets.
+     * @param packetFilter the packet filter to use.
+     */
+    public void addAsyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
+
+    /**
+     * Removes an <b>asynchronous</b> packet listener for received packets from this connection.
+     * 
+     * @param packetListener the packet listener to remove.
+     * @return true if the packet listener was removed
+     */
+    public boolean removeAsyncPacketListener(PacketListener packetListener);
+
+    /**
      * Registers a packet listener with this connection. The listener will be
      * notified of every packet that this connection sends. A packet filter determines
      * which packets will be delivered to the listener. Note that the thread

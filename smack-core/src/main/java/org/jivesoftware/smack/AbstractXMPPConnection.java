@@ -131,6 +131,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Map<PacketListener, ListenerWrapper> recvListeners =
             new HashMap<PacketListener, ListenerWrapper>();
 
+    private final Map<PacketListener, ListenerWrapper> asyncRecvListeners = new HashMap<>();
+
     /**
      * List of PacketListeners that will be notified when a new packet was sent.
      */
@@ -742,6 +744,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    public void addAsyncPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
+        if (packetListener == null) {
+            throw new NullPointerException("Packet listener is null.");
+        }
+        ListenerWrapper wrapper = new ListenerWrapper(packetListener, packetFilter);
+        synchronized (asyncRecvListeners) {
+            asyncRecvListeners.put(packetListener, wrapper);
+        }
+    }
+
+    @Override
+    public boolean removeAsyncPacketListener(PacketListener packetListener) {
+        synchronized (asyncRecvListeners) {
+            return asyncRecvListeners.remove(packetListener) != null;
+        }
+    }
+
+    @Override
     public void addPacketSendingListener(PacketListener packetListener, PacketFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
@@ -937,14 +957,39 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      * @param packet the packet to notify the PacketCollectors and receive listeners about.
      */
-    protected void invokePacketCollectorsAndNotifyRecvListeners(Packet packet) {
+    protected void invokePacketCollectorsAndNotifyRecvListeners(final Packet packet) {
+        // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
+        // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
+        // their own thread.
+        Collection<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
+        synchronized (asyncRecvListeners) {
+            for (ListenerWrapper listenerWrapper : asyncRecvListeners.values()) {
+                if (listenerWrapper.filterMatches(packet)) {
+                    listenersToNotify.add(listenerWrapper.getListener());
+                }
+            }
+        }
+
+        for (final PacketListener listener : listenersToNotify) {
+            asyncGo(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        listener.processPacket(packet);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "Exception in async packet listener", e);
+                    }
+                }
+            });
+        }
+
         // Loop through all collectors and notify the appropriate ones.
         for (PacketCollector collector: collectors) {
             collector.processPacket(packet);
         }
 
         // Notify the receive listeners interested in the packet
-        List<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
+        listenersToNotify = new LinkedList<PacketListener>();
         synchronized (recvListeners) {
             for (ListenerWrapper listenerWrapper : recvListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {

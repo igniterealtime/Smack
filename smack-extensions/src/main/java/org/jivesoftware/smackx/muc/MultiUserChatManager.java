@@ -43,7 +43,6 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -114,13 +113,11 @@ public class MultiUserChatManager extends Manager {
      */
     private final Map<String, WeakReference<MultiUserChat>> multiUserChats = new HashMap<String, WeakReference<MultiUserChat>>();
 
-    private final PacketListener invitationPacketListener;
-
     private MultiUserChatManager(XMPPConnection connection) {
         super(connection);
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
-        invitationPacketListener = new PacketListener() {
+        PacketListener invitationPacketListener = new PacketListener() {
             public void processPacket(Packet packet) {
                 final Message message = (Message) packet;
                 // Get the MUCUser extension
@@ -130,18 +127,13 @@ public class MultiUserChatManager extends Manager {
                     // Fire event for invitation listeners
                     final MultiUserChat muc = getMultiUserChat(packet.getFrom());
                     for (final InvitationListener listener : invitationsListeners) {
-                        Async.go(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.invitationReceived(connection(), muc, mucUser.getInvite().getFrom(),
-                                                mucUser.getInvite().getReason(), mucUser.getPassword(), message);
-                            }
-                        });
+                        listener.invitationReceived(connection(), muc, mucUser.getInvite().getFrom(),
+                                        mucUser.getInvite().getReason(), mucUser.getPassword(), message);
                     }
                 }
             }
         };
-        connection.addPacketListener(invitationPacketListener, INVITATION_FILTER);
+        connection.addAsyncPacketListener(invitationPacketListener, INVITATION_FILTER);
     }
 
     /**
