@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.Collection;
+
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -269,6 +271,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     public XmlStringBuilder append(XmlStringBuilder xsb) {
         assert xsb != null;
         sb.append(xsb.sb);
+        return this;
+    }
+
+    public XmlStringBuilder append(Collection<? extends Element> elements) {
+        for (Element element : elements) {
+            append(element.toXML());
+        }
         return this;
     }
 

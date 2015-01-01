@@ -28,23 +28,23 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author Robin Collier
  */
-public class HeaderProvider extends PacketExtensionProvider<Header>
-{
+public class HeaderProvider extends PacketExtensionProvider<Header> {
     @Override
-    public Header parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException {
-		String name = parser.getAttributeValue(null, "name");
-		String value = null;
-		
-		parser.next();
-		
-		if (parser.getEventType() == XmlPullParser.TEXT)
-			value = parser.getText();
-		
-		while(parser.getEventType() != XmlPullParser.END_TAG)
-			parser.next();
-		
-		return new Header(name, value);
-	}
+    public Header parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        String name = parser.getAttributeValue(null, "name");
+        String value = null;
+
+        parser.next();
+
+        if (parser.getEventType() == XmlPullParser.TEXT) {
+            value = parser.getText();
+        }
+
+        while (parser.getEventType() != XmlPullParser.END_TAG) {
+            parser.next();
+        }
+
+        return new Header(name, value);
+    }
 
 }

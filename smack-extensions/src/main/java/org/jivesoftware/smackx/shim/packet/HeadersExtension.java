@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smackx.shim.packet;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Extension representing a list of headers as specified in <a href="http://xmpp.org/extensions/xep-0131">Stanza Headers and Internet Metadata (SHIM)</a>
@@ -28,44 +30,48 @@ import org.jivesoftware.smack.packet.PacketExtension;
  * 
  * @author Robin Collier
  */
-public class HeadersExtension implements PacketExtension
-{
-	public static final String NAMESPACE = "http://jabber.org/protocol/shim";
-	
-	private Collection<Header> headers = Collections.emptyList();
-	
-	public HeadersExtension(Collection<Header> headerList)
-	{
-		if (headerList != null)
-			headers = headerList;
-	}
-	
-	public Collection<Header> getHeaders()
-	{
-		return headers;
-	}
+public class HeadersExtension implements PacketExtension {
+    public static final String ELEMENT = "headers";
+    public static final String NAMESPACE = "http://jabber.org/protocol/shim";
 
-	public String getElementName()
-	{
-		return "headers";
-	}
+    private final List<Header> headers;
 
-	public String getNamespace()
-	{
-		return NAMESPACE;
-	}
+    public HeadersExtension(List<Header> headerList) {
+        if (headerList != null) {
+            headers = Collections.unmodifiableList(headerList);
+        } else {
+            headers = Collections.emptyList();
+        }
+    }
 
-	public String toXML()
-	{
-		StringBuilder builder = new StringBuilder("<" + getElementName() + " xmlns='" + getNamespace() + "'>");
-		
-		for (Header header : headers)
-		{
-			builder.append(header.toXML());
-		}
-		builder.append("</" + getElementName() + '>');
+    public List<Header> getHeaders() {
+        return headers;
+    }
 
-		return builder.toString();
-	}
+    public String getElementName() {
+        return ELEMENT;
+    }
 
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngleBracket();
+        xml.append(headers);
+        xml.closeElement(this);
+        return xml;
+    }
+
+    /**
+     * Return the SHIM headers extension of this stanza or null if there is none.
+     *
+     * @param packet
+     * @return the headers extension or null.
+     */
+    public static HeadersExtension from(Packet packet) {
+        return packet.getExtension(ELEMENT, NAMESPACE);
+    }
 }

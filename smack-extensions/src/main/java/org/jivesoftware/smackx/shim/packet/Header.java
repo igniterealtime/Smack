@@ -16,47 +16,50 @@
  */
 package org.jivesoftware.smackx.shim.packet;
 
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a <b>Header</b> entry as specified by the <a href="http://xmpp.org/extensions/xep-031.html">Stanza Headers and Internet Metadata (SHIM)</a>
 
  * @author Robin Collier
  */
-public class Header implements PacketExtension
-{
-	private String name;
-	private String value;
-	
-	public Header(String name, String value)
-	{
-		this.name = name;
-		this.value = value;
-	}
-	
-	public String getName()
-	{
-		return name;
-	}
+public class Header implements PacketExtension {
+    public static final String ELEMENT = "header";
 
-	public String getValue()
-	{
-		return value;
-	}
+    private final String name;
+    private final String value;
 
-	public String getElementName()
-	{
-		return "header";
-	}
+    public Header(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
-	public String getNamespace()
-	{
-		return HeadersExtension.NAMESPACE;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String toXML()
-	{
-		return "<header name='" + name + "'>" + value + "</header>";
-	}
+    public String getValue() {
+        return value;
+    }
 
+    public String getElementName() {
+        return ELEMENT;
+    }
+
+    public String getNamespace() {
+        return HeadersExtension.NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML() {
+        // Upcast to NamedElement since we don't want a xmlns attribute
+        XmlStringBuilder xml = new XmlStringBuilder((NamedElement) this);
+        xml.attribute("name", name);
+        xml.rightAngleBracket();
+        xml.escape(value);
+        xml.closeElement(this);
+        return xml;
+    }
 }
