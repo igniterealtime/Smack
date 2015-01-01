@@ -63,9 +63,7 @@ public class MUCUser implements PacketExtension {
         xml.optElement(getDecline());
         xml.optElement(getItem());
         xml.optElement("password", getPassword());
-        for (Status status : statusCodes) {
-            xml.element(status);
-        }
+        xml.append(statusCodes);
         xml.optElement(getDestroy());
         xml.closeElement(this);
         return xml;
