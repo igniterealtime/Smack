@@ -339,6 +339,18 @@
         <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
     </extensionProvider>
 
+	<extensionProvider>
+		<elementName>subscriptions</elementName>
+		<namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+		<className>org.jivesoftware.smackx.pubsub.provider.SubscriptionsProvider</className>
+	</extensionProvider>
+
+	<extensionProvider>
+		<elementName>subscription</elementName>
+		<namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+		<className>org.jivesoftware.smackx.pubsub.provider.SubscriptionProvider</className>
+	</extensionProvider>
+
     <!-- XEP-0060 pubsub#event -->
     <extensionProvider>
     	<elementName>event</elementName>

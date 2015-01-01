@@ -166,8 +166,56 @@ abstract public class Node
      */
     public List<Subscription> getSubscriptions(List<PacketExtension> additionalExtensions, Collection<PacketExtension> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
-                        PubSubElementType.SUBSCRIPTIONS, getId()));
+        return getSubscriptions(additionalExtensions, returnedExtensions, null);
+    }
+
+    /**
+     * Get the subscriptions currently associated with this node as owner.
+     *
+     * @return List of {@link Subscription}
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @see #getSubscriptionsAsOwner(List, Collection)
+     * @since 4.1
+     */
+    public List<Subscription> getSubscriptionsAsOwner() throws NoResponseException, XMPPErrorException,
+                    NotConnectedException {
+        return getSubscriptionsAsOwner(null, null);
+    }
+
+    /**
+     * Get the subscriptions currently associated with this node as owner.
+     * <p>
+     * Unlike {@link #getSubscriptions(List, Collection)}, which only retrieves the subscriptions of the current entity
+     * ("user"), this method returns a list of <b>all</b> subscriptions. This requires the entity to have the sufficient
+     * privileges to manage subscriptions.
+     * </p>
+     * <p>
+     * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
+     * {@code returnedExtensions} will be filled with the packet extensions found in the answer.
+     * </p>
+     *
+     * @param additionalExtensions
+     * @param returnedExtensions a collection that will be filled with the returned packet extensions
+     * @return List of {@link Subscription}
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve">XEP-60 § 8.8.1 -
+     *      Retrieve Subscriptions List</a>
+     * @since 4.1
+     */
+    public List<Subscription> getSubscriptionsAsOwner(List<PacketExtension> additionalExtensions,
+                    Collection<PacketExtension> returnedExtensions) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException {
+        return getSubscriptions(additionalExtensions, returnedExtensions, PubSubNamespace.OWNER);
+    }
+
+    private List<Subscription> getSubscriptions(List<PacketExtension> additionalExtensions,
+                    Collection<PacketExtension> returnedExtensions, PubSubNamespace pubSubNamespace)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS, getId()), pubSubNamespace);
         if (additionalExtensions != null) {
             for (PacketExtension pe : additionalExtensions) {
                 pubSub.addExtension(pe);
