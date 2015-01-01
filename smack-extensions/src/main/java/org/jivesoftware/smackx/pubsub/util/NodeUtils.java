@@ -38,9 +38,8 @@ public class NodeUtils
 	 */
 	public static ConfigureForm getFormFromPacket(Packet packet, PubSubElementType elem)
 	{
-		FormNode config = (FormNode)packet.getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
+		FormNode config = packet.getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
 		Form formReply = config.getForm();
 		return new ConfigureForm(formReply);
-
 	}
 }

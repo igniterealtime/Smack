@@ -221,7 +221,7 @@ abstract public class Node
                 pubSub.addExtension(pe);
             }
         }
-        PubSub reply = (PubSub) sendPubsubPacket(pubSub);
+        PubSub reply = sendPubsubPacket(pubSub);
         if (returnedExtensions != null) {
             returnedExtensions.addAll(reply.getExtensions());
         }
@@ -265,7 +265,7 @@ abstract public class Node
                 pubSub.addExtension(pe);
             }
         }
-        PubSub reply = (PubSub) sendPubsubPacket(pubSub);
+        PubSub reply = sendPubsubPacket(pubSub);
         if (returnedExtensions != null) {
             returnedExtensions.addAll(reply.getExtensions());
         }
@@ -293,8 +293,8 @@ abstract public class Node
 	public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 	    PubSub pubSub = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
-		PubSub reply = (PubSub)sendPubsubPacket(pubSub);
-		return (Subscription)reply.getExtension(PubSubElementType.SUBSCRIPTION);
+		PubSub reply = sendPubsubPacket(pubSub);
+		return reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
 	
 	/**
@@ -319,8 +319,8 @@ abstract public class Node
 	{
 	    PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
 		request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
-		PubSub reply = (PubSub)PubSubManager.sendPubsubPacket(con, request);
-		return (Subscription)reply.getExtension(PubSubElementType.SUBSCRIPTION);
+		PubSub reply = PubSubManager.sendPubsubPacket(con, request);
+		return reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
 
 	/**
@@ -382,8 +382,8 @@ abstract public class Node
 	 */
 	public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-		PubSub packet = (PubSub)sendPubsubPacket(createPubsubPacket(Type.get, new OptionsExtension(jid, getId(), subscriptionId)));
-		FormNode ext = (FormNode)packet.getExtension(PubSubElementType.OPTIONS);
+		PubSub packet = sendPubsubPacket(createPubsubPacket(Type.get, new OptionsExtension(jid, getId(), subscriptionId)));
+		FormNode ext = packet.getExtension(PubSubElementType.OPTIONS);
 		return new SubscribeForm(ext.getForm());
 	}
 
@@ -486,7 +486,7 @@ abstract public class Node
 		return PubSub.createPubsubPacket(to, type, ext, ns);
 	}
 
-	protected Packet sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException
+	protected PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
 		return PubSubManager.sendPubsubPacket(con, packet);
 	}
