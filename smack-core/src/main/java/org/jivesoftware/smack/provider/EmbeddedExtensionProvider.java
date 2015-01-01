@@ -81,33 +81,33 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author Robin Collier
  */
-abstract public class EmbeddedExtensionProvider<PE extends PacketExtension> extends PacketExtensionProvider<PE>
-{
+public abstract class EmbeddedExtensionProvider<PE extends PacketExtension> extends PacketExtensionProvider<PE> {
 
     @Override
-    final public PE parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
-        String namespace = parser.getNamespace();
-        String name = parser.getName();
-        Map<String, String> attMap = new HashMap<String, String>();
-        
-        for(int i=0; i<parser.getAttributeCount(); i++)
-        {
-        	attMap.put(parser.getAttributeName(i), parser.getAttributeValue(i));
+    public final PE parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
+                    SmackException {
+        final String namespace = parser.getNamespace();
+        final String name = parser.getName();
+        final int attributeCount = parser.getAttributeCount();
+        Map<String, String> attMap = new HashMap<>(attributeCount);
+
+        for (int i = 0; i < attributeCount; i++) {
+            attMap.put(parser.getAttributeName(i), parser.getAttributeValue(i));
         }
-        List<PacketExtension> extensions = new ArrayList<PacketExtension>();
 
-        int tag;
-        do
-        {
-            tag = parser.next();
+        List<PacketExtension> extensions = new ArrayList<>();
+        int event;
+        do {
+            event = parser.next();
 
-            if (tag == XmlPullParser.START_TAG)
+            if (event == XmlPullParser.START_TAG)
                 PacketParserUtils.addPacketExtension(extensions, parser);
-        } while (!(tag == XmlPullParser.END_TAG && parser.getDepth() == initialDepth));
+        }
+        while (!(event == XmlPullParser.END_TAG && parser.getDepth() == initialDepth));
 
-		return createReturnExtension(name, namespace, attMap, extensions);
-	}
+        return createReturnExtension(name, namespace, attMap, extensions);
+    }
 
-	abstract protected PE createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content);
+    protected abstract PE createReturnExtension(String currentElement, String currentNamespace,
+                    Map<String, String> attributeMap, List<? extends PacketExtension> content);
 }
