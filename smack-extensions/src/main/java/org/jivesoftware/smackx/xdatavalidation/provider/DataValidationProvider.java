@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
-import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.EmptyValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.OpenValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
@@ -81,7 +80,9 @@ public class DataValidationProvider {
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     if (dataValidation == null) {
-                        dataValidation = new EmptyValidateElement(dataType); 
+                        // XEP-122 § 3.2 states that "If no validation method is specified,
+                        // form processors MUST assume <basic/> validation."
+                        dataValidation = new BasicValidateElement(dataType);
                     }
                     dataValidation.setListRange(listRange);
                     break outerloop;

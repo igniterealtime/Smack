@@ -118,32 +118,6 @@ public abstract class ValidateElement implements PacketExtension {
     public abstract void checkConsistency(FormField formField);
 
     /**
-     * 
-     * This defines the empty validate element that does only specify a 'datatype' attribute.
-     *
-     */
-    public static class EmptyValidateElement extends ValidateElement {
-
-        /**
-         * @param dataType
-         * @see #getDatatype()
-         */
-        public EmptyValidateElement(String dataType) {
-            super(dataType);
-        }
-
-        @Override
-        protected void appendXML(XmlStringBuilder buf) {
-            // The empty validate element does not contain any further elements or text, it is empty.
-        }
-
-        @Override
-        public void checkConsistency(FormField formField) {
-            // Since we can't know all possible datatypes, we can not perform any validation here
-        }
-    }
-
-    /**
      * Validation only against the datatype itself. Indicates that the value(s) should simply match the field type and
      * datatype constraints.
      * 

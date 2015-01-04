@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
-import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.EmptyValidateElement;
+import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 import org.junit.Test;
@@ -38,7 +38,8 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  */
 public class DataValidationTest {
-    private static final String TEST_OUTPUT_MIN = "<validate xmlns='http://jabber.org/protocol/xdata-validate'></validate>";
+    private static final String TEST_INPUT_MIN = "<validate xmlns='http://jabber.org/protocol/xdata-validate'></validate>";
+    private static final String TEST_OUTPUT_MIN = "<validate xmlns='http://jabber.org/protocol/xdata-validate'><basic/></validate>";
     private static final String TEST_OUTPUT_RANGE = "<validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:string'><range min='min-val' max='max-val'/><list-range min='111' max='999'/></validate>";
     private static final String TEST_OUTPUT_RANGE2 = "<validate xmlns='http://jabber.org/protocol/xdata-validate'><range/></validate>";
     private static final String TEST_OUTPUT_FAIL = "<validate xmlns='http://jabber.org/protocol/xdata-validate'><list-range min='1-1-1' max='999'/></validate>";
@@ -46,19 +47,19 @@ public class DataValidationTest {
     @Test
     public void testMin() throws XmlPullParserException, IOException, SmackException {
         
-        ValidateElement dv = new EmptyValidateElement(null);
+        ValidateElement dv = new BasicValidateElement(null);
         
         assertNotNull( dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_MIN, output);
 
-        XmlPullParser parser = getParser(output);
+        XmlPullParser parser = getParser(TEST_INPUT_MIN);
         
         dv = DataValidationProvider.parse(parser);
 
         assertNotNull(dv);
         assertEquals("xs:string", dv.getDatatype());
-        assertTrue( dv instanceof EmptyValidateElement);
+        assertTrue( dv instanceof BasicValidateElement);
                 
         assertNotNull( dv.toXML());
         output = dv.toXML().toString();
