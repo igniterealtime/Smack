@@ -519,12 +519,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             else {
                 socket = config.getSocketFactory().createSocket();
             }
+            LOGGER.finer("Trying to establish TCP connection to " + host + " at port " + port);
             try {
                 socket.connect(new InetSocketAddress(host, port), config.getConnectTimeout());
             } catch (Exception e) {
                 exception = e;
             }
             if (exception == null) {
+                LOGGER.finer("Established TCP connection to " + host + " at port " + port);
                 // We found a host to connect to, break here
                 this.host = host;
                 this.port = port;
