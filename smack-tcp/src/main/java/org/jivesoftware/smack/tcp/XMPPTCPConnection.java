@@ -77,6 +77,7 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -95,6 +96,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
@@ -107,6 +109,7 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -508,37 +511,46 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         Iterator<HostAddress> it = hostAddresses.iterator();
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
-        while (it.hasNext()) {
-            Exception exception = null;
+        SocketFactory socketFactory = config.getSocketFactory();
+        if (socketFactory == null) {
+            socketFactory = SocketFactory.getDefault();
+        }
+        outerloop: while (it.hasNext()) {
             HostAddress hostAddress = it.next();
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
-            if (config.getSocketFactory() == null) {
-                socket = new Socket();
-            }
-            else {
-                socket = config.getSocketFactory().createSocket();
-            }
-            LOGGER.finer("Trying to establish TCP connection to " + host + " at port " + port);
+            socket = socketFactory.createSocket();
             try {
-                socket.connect(new InetSocketAddress(host, port), config.getConnectTimeout());
-            } catch (Exception e) {
-                exception = e;
+                Iterator<InetAddress> inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
+                innerloop: while (inetAddresses.hasNext()) {
+                    final InetAddress inetAddress = inetAddresses.next();
+                    final String inetAddressAndPort = inetAddress + "at port " + port;
+                    LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
+                    try {
+                        socket.connect(new InetSocketAddress(inetAddress, port), config.getConnectTimeout());
+                    } catch (Exception e) {
+                        if (inetAddresses.hasNext()) {
+                            continue innerloop;
+                        } else {
+                            throw e;
+                        }
+                    }
+                    LOGGER.finer("Established TCP connection to " + inetAddressAndPort);
+                    // We found a host to connect to, break here
+                    this.host = host;
+                    this.port = port;
+                    break outerloop;
+                }
             }
-            if (exception == null) {
-                LOGGER.finer("Established TCP connection to " + host + " at port " + port);
-                // We found a host to connect to, break here
-                this.host = host;
-                this.port = port;
-                break;
-            }
-            hostAddress.setException(exception);
-            failedAddresses.add(hostAddress);
-            if (!it.hasNext()) {
-                // There are no more host addresses to try
-                // throw an exception and report all tried
-                // HostAddresses in the exception
-                throw ConnectionException.from(failedAddresses);
+            catch (Exception e) {
+                hostAddress.setException(e);
+                failedAddresses.add(hostAddress);
+                if (!it.hasNext()) {
+                    // There are no more host addresses to try
+                    // throw an exception and report all tried
+                    // HostAddresses in the exception
+                    throw ConnectionException.from(failedAddresses);
+                }
             }
         }
         socketClosed = false;
