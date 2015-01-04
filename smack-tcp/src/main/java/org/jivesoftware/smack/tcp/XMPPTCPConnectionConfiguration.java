@@ -20,11 +20,23 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 
 public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
 
+    /**
+     * The default connect timeout in milliseconds. Preinitialized with 30000 (30 seconds). If this value is changed,
+     * new Builder instances will use the new value as default.
+     */
+    public static int DEFAULT_CONNECT_TIMEOUT = 30000;
+
     private final boolean compressionEnabled;
+
+    /**
+     * How long the socket will wait until a TCP connection is established (in milliseconds).
+     */
+    private final int connectTimeout;
 
     private XMPPTCPConnectionConfiguration(Builder builder) {
         super(builder);
         compressionEnabled = builder.compressionEnabled;
+        connectTimeout = builder.connectTimeout;
     }
 
     /**
@@ -40,12 +52,22 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
         return compressionEnabled;
     }
 
+    /**
+     * How long the socket will wait until a TCP connection is established (in milliseconds). Defaults to {@link #DEFAULT_CONNECT_TIMEOUT}.
+     *
+     * @return the timeout value in milliseconds.
+     */
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
         private boolean compressionEnabled = false;
+        private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
         private Builder() {
         }
@@ -57,9 +79,21 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
          * up to 90%. By default compression is disabled.
          *
          * @param compressionEnabled if the connection is going to use stream compression.
+         * @return a reference to this object.
          */
         public Builder setCompressionEnabled(boolean compressionEnabled) {
             this.compressionEnabled = compressionEnabled;
+            return this;
+        }
+
+        /**
+         * Set how long the socket will wait until a TCP connection is established (in milliseconds).
+         *
+         * @param connectTimeout the timeout value to be used in milliseconds.
+         * @return a reference to this object.
+         */
+        public Builder setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
             return this;
         }
 

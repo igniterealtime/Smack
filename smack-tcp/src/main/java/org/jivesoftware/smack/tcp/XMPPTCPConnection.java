@@ -95,6 +95,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -498,7 +499,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
     }
 
-    private void connectUsingConfiguration(ConnectionConfiguration config) throws SmackException, IOException {
+    private void connectUsingConfiguration(XMPPTCPConnectionConfiguration config) throws SmackException, IOException {
         try {
             populateHostAddresses();
         }
@@ -512,13 +513,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             HostAddress hostAddress = it.next();
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
+            if (config.getSocketFactory() == null) {
+                socket = new Socket();
+            }
+            else {
+                socket = config.getSocketFactory().createSocket();
+            }
             try {
-                if (config.getSocketFactory() == null) {
-                    this.socket = new Socket(host, port);
-                }
-                else {
-                    this.socket = config.getSocketFactory().createSocket(host, port);
-                }
+                socket.connect(new InetSocketAddress(host, port), config.getConnectTimeout());
             } catch (Exception e) {
                 exception = e;
             }
