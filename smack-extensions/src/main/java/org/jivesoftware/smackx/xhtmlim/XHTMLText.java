@@ -240,6 +240,15 @@ public class XHTMLText {
     }
 
     /**
+     * Appends a tag that indicates that a line item section ends.
+     *
+     */
+    public XHTMLText appendCloseLineItemTag() {
+        text.closeElement(LI);
+        return this;
+    }
+
+    /**
      * Appends a tag that creates an ordered list. "Ordered" means that the order of the items 
      * in the list is important. To show this, browsers automatically number the list. 
      * 
