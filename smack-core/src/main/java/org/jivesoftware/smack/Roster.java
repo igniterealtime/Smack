@@ -844,10 +844,15 @@ public class Roster {
      * This is used by {@link RosterPushListener} and {@link RosterResultListener}.
      * */
     private static boolean hasValidSubscriptionType(RosterPacket.Item item) {
-        return item.getItemType().equals(RosterPacket.ItemType.none)
-                || item.getItemType().equals(RosterPacket.ItemType.from)
-                || item.getItemType().equals(RosterPacket.ItemType.to)
-                || item.getItemType().equals(RosterPacket.ItemType.both);
+        switch (item.getItemType()) {
+            case none:
+            case from:
+            case to:
+            case both:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private boolean isRosterVersioningSupported() {
