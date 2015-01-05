@@ -121,6 +121,10 @@ public class AdHocCommandManager extends Manager {
     /**
      * Thread that reaps stale sessions.
      */
+    // FIXME The session sweeping is horrible implemented. The thread will never stop running. A different approach must
+    // be implemented. For example one that does stop reaping sessions and the thread if there are no more, and restarts
+    // the reaping process on demand. Or for every command a scheduled task should be created that removes the session
+    // if it's timed out. See SMACK-624.
     private Thread sessionsSweeper;
 
     private AdHocCommandManager(XMPPConnection connection) {
