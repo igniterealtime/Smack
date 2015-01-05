@@ -23,16 +23,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -61,10 +66,15 @@ import org.jivesoftware.smackx.xdata.Form;
 public class AdHocCommandManager extends Manager {
     public static final String NAMESPACE = "http://jabber.org/protocol/commands";
 
+    private static final Logger LOGGER = Logger.getLogger(AdHocCommandManager.class.getName());
+
     /**
      * The session time out in seconds.
      */
     private static final int SESSION_TIMEOUT = 2 * 60;
+
+    private static final PacketFilter AD_HOC_COMMAND_FILTER = new AndFilter(
+                    new PacketTypeFilter(AdHocCommandData.class), IQTypeFilter.SET);
 
     /**
      * Map a XMPPConnection with it AdHocCommandManager. This map have a key-value
@@ -170,14 +180,13 @@ public class AdHocCommandManager extends Manager {
                 try {
                     processAdHocCommand(requestData);
                 }
-                catch (SmackException e) {
-                    return;
+                catch (NotConnectedException | NoResponseException e) {
+                    LOGGER.log(Level.INFO, "processAdHocCommand threw exceptino", e);
                 }
             }
         };
 
-        PacketFilter filter = new PacketTypeFilter(AdHocCommandData.class);
-        connection.addPacketListener(listener, filter);
+        connection.addAsyncPacketListener(listener, AD_HOC_COMMAND_FILTER);
 
         sessionsSweeper = null;
     }
@@ -313,14 +322,10 @@ public class AdHocCommandManager extends Manager {
      *
      * @param requestData
      *            the packet to process.
-     * @throws SmackException if there was no response from the server.
+     * @throws NotConnectedException
+     * @throws NoResponseException
      */
-    private void processAdHocCommand(AdHocCommandData requestData) throws SmackException {
-        // Only process requests of type SET
-        if (requestData.getType() != IQ.Type.set) {
-            return;
-        }
-
+    private void processAdHocCommand(AdHocCommandData requestData) throws NotConnectedException, NoResponseException {
         // Creates the response with the corresponding data
         AdHocCommandData response = new AdHocCommandData();
         response.setTo(requestData.getFrom());
