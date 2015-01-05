@@ -403,7 +403,6 @@ public class XHTMLText {
      * @return the text of the XHTMLText   
      */
     public String toString() {
-        appendCloseBodyTag();
         return text.toString();
     }
 
