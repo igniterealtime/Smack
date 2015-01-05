@@ -398,8 +398,6 @@ public class XHTMLText {
     /**
      * Returns the text of the XHTMLText.
      * 
-     * Note: Automatically adds the closing body tag.
-     * 
      * @return the text of the XHTMLText   
      */
     public String toString() {
