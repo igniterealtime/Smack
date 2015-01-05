@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.xhtmlim.packet;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -122,4 +123,7 @@ public class XHTMLExtension implements PacketExtension {
         }
     }
 
+    public static XHTMLExtension from(Message message) {
+        return message.getExtension(ELEMENT, NAMESPACE);
+    }
 }
