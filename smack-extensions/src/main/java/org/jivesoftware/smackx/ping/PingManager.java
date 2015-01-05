@@ -127,7 +127,7 @@ public class PingManager extends Manager {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             // Send a Pong for every Ping
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {

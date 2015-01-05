@@ -246,16 +246,20 @@ public interface XMPPConnection {
     public void removePacketCollector(PacketCollector collector);
 
     /**
-     * Registers a packet listener with this connection. A packet listener will be invoked only
-     * when an incoming packet is received. A packet filter determines
-     * which packets will be delivered to the listener. If the same packet listener
-     * is added again with a different filter, only the new filter will be used.
-     * 
-     * NOTE: If you want get a similar callback for outgoing packets, see {@link #addPacketInterceptor(PacketListener, PacketFilter)}.
-     * 
+     * Registers a packet listener with this connection.
+     * <p>
+     * This method has been deprecated. It is important to differentiate between using an asynchronous packet listener
+     * (preferred where possible) and a synchronous packet lister. Refer
+     * {@link #addAsyncPacketListener(PacketListener, PacketFilter)} and
+     * {@link #addSyncPacketListener(PacketListener, PacketFilter)} for more information.
+     * </p>
+     *
      * @param packetListener the packet listener to notify of new received packets.
-     * @param packetFilter   the packet filter to use.
+     * @param packetFilter the packet filter to use.
+     * @deprecated use {@link #addAsyncPacketListener(PacketListener, PacketFilter)} or
+     *             {@link #addSyncPacketListener(PacketListener, PacketFilter)}.
      */
+    @Deprecated
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter);
 
     /**
@@ -263,22 +267,54 @@ public interface XMPPConnection {
      * 
      * @param packetListener the packet listener to remove.
      * @return true if the packet listener was removed
+     * @deprecated use {@link #removeAsyncPacketListener(PacketListener)} or {@link #removeSyncPacketListener(PacketListener)}.
      */
+    @Deprecated
     public boolean removePacketListener(PacketListener packetListener);
+
+    /**
+     * Registers a <b>synchronous</b> packet listener with this connection. A packet listener will be invoked only when
+     * an incoming packet is received. A packet filter determines which packets will be delivered to the listener. If
+     * the same packet listener is added again with a different filter, only the new filter will be used.
+     * <p>
+     * <b>Important:</b> This packet listeners will be called in the same <i>single</i> thread that processes all
+     * incoming stanzas. Only use this kind of packet filter if it does not perform any XMPP activity that waits for a
+     * response. Consider using {@link #addAsyncPacketListener(PacketListener, PacketFilter)} when possible, i.e. when
+     * the invocation order doesn't have to be the same as the order of the arriving packets. If the order of the
+     * arriving packets, consider using a {@link PacketCollector} when possible.
+     * </p>
+     *
+     * @param packetListener the packet listener to notify of new received packets.
+     * @param packetFilter the packet filter to use.
+     * @see {@link #addPacketInterceptor(PacketListener, PacketFilter)} for a similar callback for outgoing stanzas.
+     * @since 4.1
+     */
+    public void addSyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
+
+    /**
+     * Removes a packet listener for received packets from this connection.
+     *
+     * @param packetListener the packet listener to remove.
+     * @return true if the packet listener was removed
+     * @since 4.1
+     */
+    public boolean removeSyncPacketListener(PacketListener packetListener);
 
     /**
      * Registers an <b>asynchronous</b> packet listener with this connection. A packet listener will be invoked only
      * when an incoming packet is received. A packet filter determines which packets will be delivered to the listener.
      * If the same packet listener is added again with a different filter, only the new filter will be used.
      * <p>
-     * Unlike {@link #addPacketListener(PacketListener, PacketFilter)} packet listeners added with this method will be
+     * Unlike {@link #addAsyncPacketListener(PacketListener, PacketFilter)} packet listeners added with this method will be
      * invoked asynchronously in their own thread. Use this method if the order of the packet listeners must not depend
      * on the order how the stanzas where received.
      * </p>
      * 
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter the packet filter to use.
-     */
+     * @see {@link #addPacketInterceptor(PacketListener, PacketFilter)} for a similar callback for outgoing stanzas.
+     * @since 4.1
+    */
     public void addAsyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
 
     /**
@@ -286,6 +322,7 @@ public interface XMPPConnection {
      * 
      * @param packetListener the packet listener to remove.
      * @return true if the packet listener was removed
+     * @since 4.1
      */
     public boolean removeAsyncPacketListener(PacketListener packetListener);
 
@@ -316,7 +353,7 @@ public interface XMPPConnection {
      * will be delivered to the interceptor.
      * 
      * <p>
-     * NOTE: For a similar functionality on incoming packets, see {@link #addPacketListener(PacketListener, PacketFilter)}.
+     * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncPacketListener(PacketListener, PacketFilter)}.
      *
      * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
      * @param packetFilter      the packet filter to use.

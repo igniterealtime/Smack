@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -189,7 +190,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      */
     @SuppressWarnings("unchecked")
     public <P extends TopLevelStreamElement> P getSentPacket() throws InterruptedException {
-        return (P) queue.poll();
+        return (P) queue.poll(5, TimeUnit.MINUTES);
     }
 
     /**
@@ -219,6 +220,18 @@ public class DummyConnection extends AbstractXMPPConnection {
         }
 
         invokePacketCollectorsAndNotifyRecvListeners(packet);
+    }
+
+    public static DummyConnection newConnectedDummyConnection() {
+        DummyConnection dummyConnection = new DummyConnection();
+        try {
+            dummyConnection.connect();
+            dummyConnection.login();
+        }
+        catch (SmackException | IOException | XMPPException e) {
+            throw new IllegalStateException(e);
+        }
+        return dummyConnection;
     }
 
     public static class DummyConnectionConfiguration extends ConnectionConfiguration {

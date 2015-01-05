@@ -399,7 +399,7 @@ abstract public class Node
 	{
 		PacketListener conListener = new ItemEventTranslator(listener); 
 		itemEventToListenerMap.put(listener, conListener);
-		con.addPacketListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
+		con.addSyncPacketListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
 	}
 
 	/**
@@ -412,7 +412,7 @@ abstract public class Node
 		PacketListener conListener = itemEventToListenerMap.remove(listener);
 		
 		if (conListener != null)
-			con.removePacketListener(conListener);
+			con.removeSyncPacketListener(conListener);
 	}
 
 	/**
@@ -425,7 +425,7 @@ abstract public class Node
 	{
 		PacketListener conListener = new NodeConfigTranslator(listener); 
 		configEventToListenerMap.put(listener, conListener);
-		con.addPacketListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
+		con.addSyncPacketListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
 	}
 
 	/**
@@ -438,7 +438,7 @@ abstract public class Node
 		PacketListener conListener = configEventToListenerMap .remove(listener);
 		
 		if (conListener != null)
-			con.removePacketListener(conListener);
+			con.removeSyncPacketListener(conListener);
 	}
 	
 	/**
@@ -454,7 +454,7 @@ abstract public class Node
 		EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
 		EventContentFilter purge = new EventContentFilter(EventElementType.purge.toString());
 		
-		con.addPacketListener(delListener, new OrFilter(deleteItem, purge));
+		con.addSyncPacketListener(delListener, new OrFilter(deleteItem, purge));
 	}
 
 	/**
@@ -467,7 +467,7 @@ abstract public class Node
 		PacketListener conListener = itemDeleteToListenerMap .remove(listener);
 		
 		if (conListener != null)
-			con.removePacketListener(conListener);
+			con.removeSyncPacketListener(conListener);
 	}
 
 	@Override

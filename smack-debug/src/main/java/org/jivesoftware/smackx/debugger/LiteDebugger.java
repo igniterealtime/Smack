@@ -278,7 +278,7 @@ public class LiteDebugger implements SmackDebugger {
      * @param evt the event that indicates that the root window is closing 
      */
     public void rootWindowClosing(WindowEvent evt) {
-        connection.removePacketListener(listener);
+        connection.removeAsyncPacketListener(listener);
         ((ObservableReader)reader).removeReaderListener(readerListener);
         ((ObservableWriter)writer).removeWriterListener(writerListener);
     }

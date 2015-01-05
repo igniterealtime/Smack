@@ -292,12 +292,12 @@ public class MultiUserChat {
                         + nickname), new PacketTypeFilter(Presence.class));
 
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
-        connection.addPacketListener(messageListener, fromRoomGroupchatFilter);
-        connection.addPacketListener(presenceListener, new AndFilter(fromRoomFilter,
+        connection.addSyncPacketListener(messageListener, fromRoomGroupchatFilter);
+        connection.addSyncPacketListener(presenceListener, new AndFilter(fromRoomFilter,
                         PacketTypeFilter.PRESENCE));
-        connection.addPacketListener(subjectListener, new AndFilter(fromRoomFilter,
+        connection.addSyncPacketListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE));
-        connection.addPacketListener(declinesListener, new AndFilter(new PacketExtensionFilter(MUCUser.ELEMENT,
+        connection.addSyncPacketListener(declinesListener, new AndFilter(new PacketExtensionFilter(MUCUser.ELEMENT,
                         MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         PacketTypeFilter.PRESENCE));
@@ -1702,9 +1702,9 @@ public class MultiUserChat {
      * connection.
      */
     private void removeConnectionCallbacks() {
-        connection.removePacketListener(messageListener);
-        connection.removePacketListener(presenceListener);
-        connection.removePacketListener(declinesListener);
+        connection.removeSyncPacketListener(messageListener);
+        connection.removeSyncPacketListener(presenceListener);
+        connection.removeSyncPacketListener(declinesListener);
         connection.removePacketInterceptor(presenceInterceptor);
         if (messageCollector != null) {
             messageCollector.cancel();

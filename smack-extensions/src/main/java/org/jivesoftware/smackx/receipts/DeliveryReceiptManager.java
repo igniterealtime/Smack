@@ -62,7 +62,7 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
 
         // register listener for delivery receipts and requests
-        connection.addPacketListener(this, new PacketExtensionFilter(DeliveryReceipt.NAMESPACE));
+        connection.addAsyncPacketListener(this, new PacketExtensionFilter(DeliveryReceipt.NAMESPACE));
     }
 
     /**

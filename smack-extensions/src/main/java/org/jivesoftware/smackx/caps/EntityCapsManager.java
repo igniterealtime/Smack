@@ -315,7 +315,7 @@ public class EntityCapsManager extends Manager {
         if (autoEnableEntityCaps)
             enableEntityCaps();
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             // Listen for remote presence stanzas with the caps extension
             // If we receive such a stanza, record the JID and nodeVer
             @Override
@@ -330,7 +330,7 @@ public class EntityCapsManager extends Manager {
 
         }, PRESENCES_WITH_CAPS);
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             @Override
             public void processPacket(Packet packet) {
                 // always remove the JID from the map, even if entityCaps are

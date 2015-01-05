@@ -101,7 +101,7 @@ public class MessageEventTest extends SmackTestCase {
                 }
             }
         };
-        getConnection(0).addPacketListener(packetListener, packetFilter);
+        getConnection(0).addAsyncPacketListener(packetListener, packetFilter);
 
         // Create the message to send with the roster
         Message msg = new Message();

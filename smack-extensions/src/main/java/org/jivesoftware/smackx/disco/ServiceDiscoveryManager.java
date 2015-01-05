@@ -148,7 +148,7 @@ public class ServiceDiscoveryManager extends Manager {
                 connection().sendPacket(response);
             }
         };
-        connection.addPacketListener(packetListener, GET_DISCOVER_ITEMS);
+        connection.addAsyncPacketListener(packetListener, GET_DISCOVER_ITEMS);
 
         // Listen for disco#info requests and answer the client's supported features 
         // To add a new feature as supported use the #addFeature message        
@@ -187,7 +187,7 @@ public class ServiceDiscoveryManager extends Manager {
                 connection().sendPacket(response);
             }
         };
-        connection.addPacketListener(packetListener, GET_DISCOVER_INFO);
+        connection.addAsyncPacketListener(packetListener, GET_DISCOVER_INFO);
     }
 
     /**

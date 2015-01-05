@@ -159,7 +159,7 @@ public class JingleManagerTest extends SmackTestCase {
         };
 
         // Start a packet listener for session initiation requests
-        getConnection(0).addPacketListener(new PacketListener() {
+        getConnection(0).addAsyncPacketListener(new PacketListener() {
             public void processPacket(final Packet packet) {
                 System.out.println("Packet detected... ");
                 incCounter();

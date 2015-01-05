@@ -85,9 +85,11 @@ public class Roster {
     private final List<RosterEntry> unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
     private final List<RosterListener> rosterListeners = new CopyOnWriteArrayList<RosterListener>();
     private final Map<String, Map<String, Presence>> presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
+
     // The roster is marked as initialized when at least a single roster packet
     // has been received and processed.
-    boolean rosterInitialized = false;
+    private boolean loaded = false;
+
     private final PresencePacketListener presencePacketListener = new PresencePacketListener();
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
@@ -124,10 +126,13 @@ public class Roster {
     Roster(final XMPPConnection connection) {
         this.connection = connection;
         rosterStore = connection.getRosterStore();
+
+        // Note that we use sync packet listeners because RosterListeners should be invoked in the same order as the
+        // roster stanzas arrive.
         // Listen for any roster packets.
-        connection.addPacketListener(new RosterPushListener(), ROSTER_PUSH_FILTER);
+        connection.addSyncPacketListener(new RosterPushListener(), ROSTER_PUSH_FILTER);
         // Listen for any presence packets.
-        connection.addPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
+        connection.addSyncPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
         // Listen for connection events
         connection.addConnectionListener(new AbstractConnectionListener() {
@@ -151,22 +156,12 @@ public class Roster {
 
             public void connectionClosed() {
                 // Changes the presence available contacts to unavailable
-                try {
-                    setOfflinePresences();
-                }
-                catch (NotConnectedException e) {
-                    LOGGER.log(Level.SEVERE, "Not connected exception" ,e);
-                }
+                setOfflinePresencesAndResetLoaded();
             }
 
             public void connectionClosedOnError(Exception e) {
                 // Changes the presence available contacts to unavailable
-                try {
-                    setOfflinePresences();
-                }
-                catch (NotConnectedException e1) {
-                    LOGGER.log(Level.SEVERE, "Not connected exception" ,e);
-                }
+                setOfflinePresencesAndResetLoaded();
             }
 
         });
@@ -236,6 +231,40 @@ public class Roster {
                 LOGGER.log(Level.SEVERE, "Exception reloading roster" , exception);
             }
         });
+    }
+
+    protected boolean waitUntilLoaded() {
+        long waitTime = connection.getPacketReplyTimeout();
+        long start = System.currentTimeMillis();
+        while (!loaded) {
+            if (waitTime <= 0) {
+                break;
+            }
+            try {
+                synchronized (this) {
+                    if (!loaded) {
+                        wait(waitTime);
+                    }
+                }
+            }
+            catch (InterruptedException e) {
+                LOGGER.log(Level.FINE, "spurious interrupt", e);
+            }
+            long now = System.currentTimeMillis();
+            waitTime -= now - start;
+            start = now;
+        }
+        return isLoaded();
+    }
+
+    /**
+     * Check if the roster is loaded.
+     *
+     * @return true if the roster is loaded.
+     * @since 4.1
+     */
+    public boolean isLoaded() {
+        return loaded;
     }
 
     /**
@@ -696,7 +725,7 @@ public class Roster {
      * to offline.
      * @throws NotConnectedException 
      */
-    private void setOfflinePresences() throws NotConnectedException {
+    private void setOfflinePresencesAndResetLoaded() {
         Presence packetUnavailable;
         for (String user : presenceMap.keySet()) {
             Map<String, Presence> resources = presenceMap.get(user);
@@ -704,10 +733,18 @@ public class Roster {
                 for (String resource : resources.keySet()) {
                     packetUnavailable = new Presence(Presence.Type.unavailable);
                     packetUnavailable.setFrom(user + "/" + resource);
-                    presencePacketListener.processPacket(packetUnavailable);
+                    try {
+                        presencePacketListener.processPacket(packetUnavailable);
+                    }
+                    catch (NotConnectedException e) {
+                        throw new IllegalStateException(
+                                        "presencePakcetListener should never throw a NotConnectedException when processPacket is called with a presence of type unavailable",
+                                        e);
+                    }
                 }
             }
         }
+        loaded = false;
     }
 
     /**
@@ -719,8 +756,8 @@ public class Roster {
      * @param updatedEntries the collection of address of the updated contacts.
      * @param deletedEntries the collection of address of the deleted contacts.
      */
-    private void fireRosterChangedEvent(Collection<String> addedEntries, Collection<String> updatedEntries,
-            Collection<String> deletedEntries) {
+    private void fireRosterChangedEvent(final Collection<String> addedEntries, final Collection<String> updatedEntries,
+                    final Collection<String> deletedEntries) {
         for (RosterListener listener : rosterListeners) {
             if (!addedEntries.isEmpty()) {
                 listener.entriesAdded(addedEntries);
@@ -739,7 +776,7 @@ public class Roster {
      *
      * @param presence the presence change.
      */
-    private void fireRosterPresenceEvent(Presence presence) {
+    private void fireRosterPresenceEvent(final Presence presence) {
         for (RosterListener listener : rosterListeners) {
             listener.presenceChanged(presence);
         }
@@ -1068,7 +1105,7 @@ public class Roster {
                 }
             }
 
-            rosterInitialized = true;
+            loaded = true;
             synchronized (Roster.this) {
                 Roster.this.notifyAll();
             }

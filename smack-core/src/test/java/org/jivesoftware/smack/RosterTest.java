@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -36,6 +37,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.packet.RosterPacket.ItemType;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -52,6 +54,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class RosterTest {
 
     private DummyConnection connection;
+    private Roster roster;
     private TestRosterListener rosterListener;
 
     @Before
@@ -63,7 +66,9 @@ public class RosterTest {
         connection.connect();
         connection.login();
         rosterListener = new TestRosterListener();
-        connection.getRoster().addRosterListener(rosterListener);
+        roster = connection.getRoster();
+        roster.addRosterListener(rosterListener);
+        connection.setPacketReplyTimeout(1000 * 60 * 5);
     }
 
     @After
@@ -83,19 +88,17 @@ public class RosterTest {
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
      */
-    @Test(timeout=5000)
+    @Test
     public void testSimpleRosterInitialization() throws Exception {
-        // Setup
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
-        assertFalse("Roster shouldn't be already initialized!",
-                roster.rosterInitialized);
+        assertFalse("Roster shouldn't be already loaded!",
+                roster.isLoaded());
 
         // Perform roster initialization
-        initRoster(connection, roster);
+        initRoster();
 
         // Verify roster
-        assertTrue("Roster can't be initialized!", roster.rosterInitialized);
+        assertTrue("Roster can't be loaded!", roster.waitUntilLoaded());
         verifyRomeosEntry(roster.getEntry("romeo@example.net"));
         verifyMercutiosEntry(roster.getEntry("mercutio@example.com"));
         verifyBenvoliosEntry(roster.getEntry("benvolio@example.net"));
@@ -121,7 +124,7 @@ public class RosterTest {
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-add"
      *     >RFC3921: Adding a Roster Item</a>.
      */
-    @Test(timeout=5000)
+    @Test
     public void testAddRosterItem() throws Throwable {
         // Constants for the new contact
         final String contactJID = "nurse@example.com";
@@ -129,9 +132,8 @@ public class RosterTest {
         final String[] contactGroup = {"Servants"};
 
         // Setup
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
-        initRoster(connection, roster);
+        initRoster();
         rosterListener.reset();
 
         // Adding the new roster item
@@ -161,6 +163,7 @@ public class RosterTest {
         if (exception != null) {
             throw exception;
         }
+        rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the new contact
         final RosterEntry addedEntry = roster.getEntry(contactJID);
@@ -192,7 +195,7 @@ public class RosterTest {
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-update"
      *     >RFC3921: Updating a Roster Item</a>.
      */
-    @Test(timeout=5000)
+    @Test
     public void testUpdateRosterItem() throws Throwable {
         // Constants for the updated contact
         final String contactJID = "romeo@example.net";
@@ -200,9 +203,8 @@ public class RosterTest {
         final String[] contactGroups = {"Friends", "Lovers"};
 
         // Setup
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
-        initRoster(connection, roster);
+        initRoster();
         rosterListener.reset();
 
         // Updating the roster item
@@ -235,6 +237,7 @@ public class RosterTest {
         if (exception != null) {
             throw exception;
         }
+        rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the updated contact
         final RosterEntry addedEntry = roster.getEntry(contactJID);
@@ -267,15 +270,14 @@ public class RosterTest {
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-delete"
      *     >RFC3921: Deleting a Roster Item</a>.
      */
-    @Test(timeout=5000)
+    @Test
     public void testDeleteRosterItem() throws Throwable {
         // The contact which should be deleted
         final String contactJID = "romeo@example.net";
 
         // Setup
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
-        initRoster(connection, roster);
+        initRoster();
         rosterListener.reset();
 
         // Delete a roster item
@@ -296,6 +298,7 @@ public class RosterTest {
         if (exception != null) {
             throw exception;
         }
+        rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify
         final RosterEntry deletedEntry = roster.getEntry(contactJID);
@@ -314,10 +317,9 @@ public class RosterTest {
      * <a href="http://xmpp.org/internet-drafts/draft-ietf-xmpp-3921bis-03.html#roster-syntax-actions-push"
      *     >RFC3921bis-03: Roster Push</a>.
      */
-    @Test(timeout=5000)
+    @Test
     public void testSimpleRosterPush() throws Throwable {
         final String contactJID = "nurse@example.com";
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
         final StringBuilder sb = new StringBuilder();
         sb.append("<iq id=\"rostertest1\" type=\"set\" ")
@@ -328,11 +330,12 @@ public class RosterTest {
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
         final IQ rosterPush = PacketParserUtils.parse(parser, connection);
-        initRoster(connection, roster);
+        initRoster();
         rosterListener.reset();
 
         // Simulate receiving the roster push
         connection.processPacket(rosterPush);
+        rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the new contact
         final RosterEntry addedEntry = roster.getEntry(contactJID);
@@ -358,7 +361,7 @@ public class RosterTest {
      *
      * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-syntax-actions-push">RFC 6121, Section 2.1.6</a>
      */
-    @Test(timeout=5000)
+    @Test
     public void testIgnoreInvalidFrom() {
         RosterPacket packet = new RosterPacket();
         packet.setType(Type.set);
@@ -366,8 +369,11 @@ public class RosterTest {
         packet.setFrom("mallory@example.com");
         packet.addRosterItem(new Item("spam@example.com", "Cool products!"));
 
+        WaitForPacketListener waitForPacketListener = new WaitForPacketListener();
+        connection.addAsyncPacketListener(waitForPacketListener, null);
         // Simulate receiving the roster push
         connection.processPacket(packet);
+        waitForPacketListener.waitUntilInvocationOrTimeout();
 
         assertNull("Contact was added to roster", connection.getRoster().getEntry("spam@example.com"));
     }
@@ -386,9 +392,8 @@ public class RosterTest {
         final String[] contactGroup = {""};
 
         // Setup
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
-        initRoster(connection, roster);
+        initRoster();
         rosterListener.reset();
 
         // Adding the new roster item
@@ -416,6 +421,7 @@ public class RosterTest {
         if (exception != null) {
             throw exception;
         }
+        rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the new contact
         final RosterEntry addedEntry = roster.getEntry(contactJID);
@@ -445,10 +451,9 @@ public class RosterTest {
      * 
      * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
      */
-    @Test(timeout=5000)
+    @Test
     public void testEmptyGroupRosterPush() throws Throwable {
         final String contactJID = "nurse@example.com";
-        final Roster roster = connection.getRoster();
         assertNotNull("Can't get the roster from the provided connection!", roster);
         final StringBuilder sb = new StringBuilder();
         sb.append("<iq id=\"rostertest2\" type=\"set\" ")
@@ -461,11 +466,12 @@ public class RosterTest {
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
         final IQ rosterPush = PacketParserUtils.parse(parser, connection);
-        initRoster(connection, roster);
+        initRoster();
         rosterListener.reset();
 
         // Simulate receiving the roster push
         connection.processPacket(rosterPush);
+        rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the new contact
         final RosterEntry addedEntry = roster.getEntry(contactJID);
@@ -520,7 +526,7 @@ public class RosterTest {
      * @param roster the roster (or buddy list) which should be initialized.
      * @throws SmackException 
      */
-    public static void initRoster(DummyConnection connection, Roster roster) throws InterruptedException, XMPPException, SmackException {
+    private void initRoster() throws InterruptedException, XMPPException, SmackException {
         roster.reload();
         while (true) {
             final Packet sentPacket = connection.getSentPacket();
@@ -558,6 +564,8 @@ public class RosterTest {
                 break;
             }
         }
+        roster.waitUntilLoaded();
+        rosterListener.waitUntilInvocationOrTimeout();
     }
 
     /**
@@ -687,10 +695,10 @@ public class RosterTest {
     /**
      * This class can be used to check if the RosterListener was invoked.
      */
-    public static class TestRosterListener implements RosterListener {
-        private CopyOnWriteArrayList<String> addressesAdded = new CopyOnWriteArrayList<String>();
-        private CopyOnWriteArrayList<String> addressesDeleted = new CopyOnWriteArrayList<String>();
-        private CopyOnWriteArrayList<String> addressesUpdated = new CopyOnWriteArrayList<String>();
+    public static class TestRosterListener extends WaitForPacketListener implements RosterListener {
+        private final List<String> addressesAdded = new CopyOnWriteArrayList<>();
+        private final List<String> addressesDeleted = new CopyOnWriteArrayList<>();
+        private final List<String> addressesUpdated = new CopyOnWriteArrayList<>();
 
         public synchronized void entriesAdded(Collection<String> addresses) {
             addressesAdded.addAll(addresses);
@@ -699,6 +707,7 @@ public class RosterTest {
                     System.out.println("Roster entry for " + address + " added.");
                 }
             }
+            reportInvoked();
         }
 
         public synchronized void entriesDeleted(Collection<String> addresses) {
@@ -708,6 +717,7 @@ public class RosterTest {
                     System.out.println("Roster entry for " + address + " deleted.");
                 }
             }
+            reportInvoked();
         }
 
         public synchronized void entriesUpdated(Collection<String> addresses) {
@@ -717,12 +727,14 @@ public class RosterTest {
                     System.out.println("Roster entry for " + address + " updated.");
                 }
             }
+            reportInvoked();
         }
 
         public void presenceChanged(Presence presence) {
             if (SmackConfiguration.DEBUG_ENABLED) {
                 System.out.println("Roster presence changed: " + presence.toXML());
             }
+            reportInvoked();
         }
 
         /**
@@ -756,6 +768,7 @@ public class RosterTest {
          * Reset the lists of added, deleted or updated items.
          */
         public synchronized void reset() {
+            super.reset();
             addressesAdded.clear();
             addressesDeleted.clear();
             addressesUpdated.clear();

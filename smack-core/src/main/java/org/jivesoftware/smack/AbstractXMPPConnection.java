@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -126,12 +127,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
 
     /**
-     * List of PacketListeners that will be notified when a new packet was received.
+     * List of PacketListeners that will be notified synchronously when a new packet was received.
      */
-    private final Map<PacketListener, ListenerWrapper> recvListeners =
-            new HashMap<PacketListener, ListenerWrapper>();
+    private final Map<PacketListener, ListenerWrapper> syncRecvListeners = new LinkedHashMap<>();
 
-    private final Map<PacketListener, ListenerWrapper> asyncRecvListeners = new HashMap<>();
+    /**
+     * List of PacketListeners that will be notified asynchronously when a new packet was received.
+     */
+    private final Map<PacketListener, ListenerWrapper> asyncRecvListeners = new LinkedHashMap<>();
 
     /**
      * List of PacketListeners that will be notified when a new packet was sent.
@@ -244,6 +247,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                                     )
                     // @formatter:on
                     );
+
+    /**
+     * A executor service used to invoke the callbacks of synchronous packet listeners. We use a executor service to
+     * decouple incoming stanza processing from callback invocation. It is important that order of callback invocation
+     * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
+     */
+    private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor(new SmackExecutorThreadFactory(
+                    getConnectionCounter(), "Sync PacketListener Callback"));
 
     private Roster roster;
 
@@ -593,27 +604,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // changes to the roster. Note: because of this waiting logic, internal
         // Smack code should be wary about calling the getRoster method, and may need to
         // access the roster object directly.
-        // Also only check for rosterInitalized is isRosterLoadedAtLogin is set, otherwise the user
+        // Also only check for rosterIsLoaded is isRosterLoadedAtLogin is set, otherwise the user
         // has to manually call Roster.reload() before he can expect a initialized roster.
-        if (!roster.rosterInitialized && config.isRosterLoadedAtLogin()) {
-            try {
-                synchronized (roster) {
-                    long waitTime = getPacketReplyTimeout();
-                    long start = System.currentTimeMillis();
-                    while (!roster.rosterInitialized) {
-                        if (waitTime <= 0) {
-                            break;
-                        }
-                        roster.wait(waitTime);
-                        long now = System.currentTimeMillis();
-                        waitTime -= now - start;
-                        start = now;
-                    }
-                }
-            }
-            catch (InterruptedException ie) {
-                // Ignore.
-            }
+        if (!roster.isLoaded() && config.isRosterLoadedAtLogin()) {
+            roster.waitUntilLoaded();
         }
         return roster;
     }
@@ -727,19 +721,29 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
-        if (packetListener == null) {
-            throw new NullPointerException("Packet listener is null.");
-        }
-        ListenerWrapper wrapper = new ListenerWrapper(packetListener, packetFilter);
-        synchronized (recvListeners) {
-            recvListeners.put(packetListener, wrapper);
-        }
+        addAsyncPacketListener(packetListener, packetFilter);
     }
 
     @Override
     public boolean removePacketListener(PacketListener packetListener) {
-        synchronized (recvListeners) {
-            return recvListeners.remove(packetListener) != null;
+        return removeAsyncPacketListener(packetListener);
+    }
+
+    @Override
+    public void addSyncPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
+        if (packetListener == null) {
+            throw new NullPointerException("Packet listener is null.");
+        }
+        ListenerWrapper wrapper = new ListenerWrapper(packetListener, packetFilter);
+        synchronized (syncRecvListeners) {
+            syncRecvListeners.put(packetListener, wrapper);
+        }
+    }
+
+    @Override
+    public boolean removeSyncPacketListener(PacketListener packetListener) {
+        synchronized (syncRecvListeners) {
+            return syncRecvListeners.remove(packetListener) != null;
         }
     }
 
@@ -961,7 +965,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
         // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
         // their own thread.
-        Collection<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
+        final Collection<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
         synchronized (asyncRecvListeners) {
             for (ListenerWrapper listenerWrapper : asyncRecvListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -989,25 +993,33 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         // Notify the receive listeners interested in the packet
-        listenersToNotify = new LinkedList<PacketListener>();
-        synchronized (recvListeners) {
-            for (ListenerWrapper listenerWrapper : recvListeners.values()) {
+        listenersToNotify.clear();
+        synchronized (syncRecvListeners) {
+            for (ListenerWrapper listenerWrapper : syncRecvListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
                     listenersToNotify.add(listenerWrapper.getListener());
                 }
             }
         }
 
-        for (PacketListener listener : listenersToNotify) {
-            try {
-                listener.processPacket(packet);
-            } catch(NotConnectedException e) {
-                LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
-                break;
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
+        // Decouple incoming stanza processing from listener invocation. Unlike async listeners, this uses a single
+        // threaded executor service and therefore keeps the order.
+        singleThreadedExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (PacketListener listener : listenersToNotify) {
+                    try {
+                        listener.processPacket(packet);
+                    } catch(NotConnectedException e) {
+                        LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
+                        break;
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
+                    }
+                }
             }
-        }
+        });
+
     }
 
     /**
@@ -1145,6 +1157,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             executorService.shutdownNow();
             cachedExecutorService.shutdown();
             removeCallbacksService.shutdownNow();
+            singleThreadedExecutorService.shutdownNow();
         } catch (Throwable t) {
             LOGGER.log(Level.WARNING, "finalize() threw trhowable", t);
         }
@@ -1302,14 +1315,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     }
                 }
                 finally {
-                    removePacketListener(this);
+                    removeAsyncPacketListener(this);
                 }
             }
         };
         removeCallbacksService.schedule(new Runnable() {
             @Override
             public void run() {
-                boolean removed = removePacketListener(packetListener);
+                boolean removed = removeAsyncPacketListener(packetListener);
                 // If the packetListener got removed, then it was never run and
                 // we never received a response, inform the exception callback
                 if (removed && exceptionCallback != null) {
@@ -1317,7 +1330,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);
-        addPacketListener(packetListener, replyFilter);
+        addAsyncPacketListener(packetListener, replyFilter);
         sendPacket(stanza);
     }
 

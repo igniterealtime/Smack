@@ -461,7 +461,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSessionRequestListeners = new ArrayList<JingleSessionRequestListener>();
 
         // Start a packet listener for session initiation requests
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 triggerSessionRequested((Jingle) packet);
             }

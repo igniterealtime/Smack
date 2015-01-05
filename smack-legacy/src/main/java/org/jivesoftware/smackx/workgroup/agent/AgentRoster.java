@@ -74,9 +74,9 @@ public class AgentRoster {
         presenceMap = new HashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
         PacketFilter rosterFilter = new PacketTypeFilter(AgentStatusRequest.class);
-        connection.addPacketListener(new AgentStatusListener(), rosterFilter);
+        connection.addAsyncPacketListener(new AgentStatusListener(), rosterFilter);
         // Listen for any presence packets.
-        connection.addPacketListener(new PresencePacketListener(),
+        connection.addAsyncPacketListener(new PresencePacketListener(),
                 new PacketTypeFilter(Presence.class));
 
         // Send request for roster.

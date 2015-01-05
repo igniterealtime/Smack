@@ -142,7 +142,7 @@ public class Workgroup {
         // Register a packet listener for all the messages sent to this client.
         PacketFilter typeFilter = new PacketTypeFilter(Message.class);
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 handlePacket(packet);
             }

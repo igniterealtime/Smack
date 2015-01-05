@@ -33,7 +33,7 @@ import org.jivesoftware.smack.packet.Packet;
  * org.jivesoftware.smack.filter.PacketFilter)}
  * </p>
  *
- * @see XMPPConnection#addPacketListener(PacketListener, org.jivesoftware.smack.filter.PacketFilter)
+ * @see XMPPConnection#addAsyncPacketListener(PacketListener, org.jivesoftware.smack.filter.PacketFilter)
  * @author Matt Tucker
  */
 public interface PacketListener {

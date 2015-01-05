@@ -654,9 +654,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     /**
      * Remove the packet listener used for processing packet.
      */
-    protected void removePacketListener() {
+    protected void removeAsyncPacketListener() {
         if (packetListener != null) {
-            getConnection().removePacketListener(packetListener);
+            getConnection().removeAsyncPacketListener(packetListener);
 
             LOGGER.fine("JINGLE SESSION: REMOVE PACKET LISTENER");
         }
@@ -667,7 +667,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * to any packet that we receive...
      */
     protected void updatePacketListener() {
-        removePacketListener();
+        removeAsyncPacketListener();
 
         LOGGER.fine("UpdatePacketListener");
 
@@ -728,7 +728,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             }
         };
 
-        getConnection().addPacketListener(packetListener, packetFilter);
+        getConnection().addAsyncPacketListener(packetListener, packetFilter);
     }
 
     // Listeners
@@ -1002,7 +1002,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
             contentNegotiator.close();
         }
-        removePacketListener();
+        removeAsyncPacketListener();
         removeConnectionListener();
         getConnection().removeConnectionListener(connectionListener);
         LOGGER.fine("Negotiation Closed: " + getConnection().getUser() + " " + sid);

@@ -75,7 +75,7 @@ public class MessageEventManager extends Manager {
     private MessageEventManager(XMPPConnection connection) {
         super(connection);
         // Listens for all message event packets and fire the proper message event listeners.
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 Message message = (Message) packet;
                 MessageEvent messageEvent =

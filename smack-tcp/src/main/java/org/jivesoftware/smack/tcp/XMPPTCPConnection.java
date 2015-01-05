@@ -568,7 +568,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // If debugging is enabled, we should start the thread that will listen for
                 // all packets and then log them.
                 if (config.isDebuggerEnabled()) {
-                    addPacketListener(debugger.getReaderListener(), null);
+                    addAsyncPacketListener(debugger.getReaderListener(), null);
                     if (debugger.getWriterListener() != null) {
                         addPacketSendingListener(debugger.getWriterListener(), null);
                     }

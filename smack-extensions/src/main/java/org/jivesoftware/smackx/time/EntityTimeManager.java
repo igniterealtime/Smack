@@ -72,7 +72,7 @@ public class EntityTimeManager extends Manager {
         if (autoEnable)
             enable();
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {
                 if (!enabled)

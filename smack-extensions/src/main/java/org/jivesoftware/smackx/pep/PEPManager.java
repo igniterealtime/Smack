@@ -142,12 +142,12 @@ public class PEPManager {
                 firePEPListeners(message.getFrom(), event);
             }
         };
-        connection.addPacketListener(packetListener, packetFilter);
+        connection.addSyncPacketListener(packetListener, packetFilter);
     }
 
     public void destroy() {
         if (connection != null)
-            connection.removePacketListener(packetListener);
+            connection.removeSyncPacketListener(packetListener);
     }
 
     protected void finalize() throws Throwable {

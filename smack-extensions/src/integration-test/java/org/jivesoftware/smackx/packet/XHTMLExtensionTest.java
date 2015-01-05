@@ -150,7 +150,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
 
 	    }
 	};
-	getConnection(1).addPacketListener(packetListener, packetFilter);
+	getConnection(1).addAsyncPacketListener(packetListener, packetFilter);
 
         // User1 creates a message to send to user2
         Message msg = new Message();

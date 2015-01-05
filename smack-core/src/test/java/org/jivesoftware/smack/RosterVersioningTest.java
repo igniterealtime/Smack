@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.jivesoftware.smack.ConnectionConfiguration.Builder;
+import org.jivesoftware.smack.RosterTest.TestRosterListener;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
@@ -53,15 +54,14 @@ import org.junit.rules.TemporaryFolder;
 public class RosterVersioningTest {
 
     private DummyConnection connection;
+    private Roster roster;
+    private TestRosterListener rosterListener;
 
     @Rule
     public TemporaryFolder tmpFolder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
-        // Uncomment this to enable debug output
-        //XMPPConnection.DEBUG_ENABLED = true;
-
         DirectoryRosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder("store"));
         populateStore(store);
 
@@ -69,13 +69,20 @@ public class RosterVersioningTest {
         builder.setRosterStore(store);
         connection = new DummyConnection(builder.build());
         connection.connect();
-
         connection.login();
+        rosterListener = new TestRosterListener();
+        roster = connection.getRoster();
+        roster.addRosterListener(rosterListener);
+        roster.reload();
     }
 
     @After
     public void tearDown() throws Exception {
         if (connection != null) {
+            if (rosterListener != null && roster != null) {
+                roster.removeRosterListener(rosterListener);
+                rosterListener = null;
+            }
             connection.disconnect();
             connection = null;
         }
@@ -89,10 +96,9 @@ public class RosterVersioningTest {
      */
     @Test(timeout = 5000)
     public void testEqualVersionStored() throws InterruptedException, IOException, XMPPException, SmackException {
-        connection.getRoster().reload();
         answerWithEmptyRosterResult();
+        roster.waitUntilLoaded();
 
-        Roster roster = connection.getRoster();
         Collection<RosterEntry> entries = roster.getEntries();
         assertSame("Size of the roster", 3, entries.size());
 
@@ -124,8 +130,6 @@ public class RosterVersioningTest {
      */
     @Test(timeout = 5000)
     public void testOtherVersionStored() throws InterruptedException, XMPPException, SmackException {
-        connection.getRoster().reload();
-
         Item vaglafItem = vaglafItem();
 
         // We expect that the roster request is the only packet sent. This is not part of the specification,
@@ -141,7 +145,9 @@ public class RosterVersioningTest {
             answer.setVersion("newVersion");
             answer.addRosterItem(vaglafItem);
 
+            rosterListener.reset();
             connection.processPacket(answer);
+            rosterListener.waitUntilInvocationOrTimeout();
         } else {
             assertTrue("Expected to get a RosterPacket ", false);
         }
@@ -164,11 +170,10 @@ public class RosterVersioningTest {
      */
     @Test(timeout = 5000)
     public void testRosterVersioningWithCachedRosterAndPushes() throws Throwable {
-        connection.getRoster().reload();
         answerWithEmptyRosterResult();
+        rosterListener.waitAndReset();
 
         RosterStore store = connection.getConfiguration().getRosterStore();
-        Roster roster = connection.getRoster();
 
         // Simulate a roster push adding vaglaf
         {
@@ -179,7 +184,9 @@ public class RosterVersioningTest {
 
             Item pushedItem = vaglafItem();
             rosterPush.addRosterItem(pushedItem);
+            rosterListener.reset();
             connection.processPacket(rosterPush);
+            rosterListener.waitAndReset();
 
             assertEquals("Expect store version after push", "v97", store.getRosterVersion());
 
@@ -204,7 +211,9 @@ public class RosterVersioningTest {
             Item item = new Item("vaglaf@example.com", "vaglaf the only");
             item.setItemType(ItemType.remove);
             rosterPush.addRosterItem(item);
+            rosterListener.reset();
             connection.processPacket(rosterPush);
+            rosterListener.waitAndReset();
 
             assertNull("Store doses not contain vaglaf", store.getEntry("vaglaf@example.com"));
             assertEquals("Expect store version after push", "v98", store.getRosterVersion());

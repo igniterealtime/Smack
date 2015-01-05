@@ -85,7 +85,7 @@ public class PrivacyListManager extends Manager {
 	private PrivacyListManager(final XMPPConnection connection) {
         super(connection);
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addSyncPacketListener(new PacketListener() {
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {
                 Privacy privacy = (Privacy) packet;

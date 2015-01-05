@@ -157,7 +157,7 @@ public class AgentSession {
                 }
             }
         };
-        connection.addPacketListener(packetListener, filter);
+        connection.addAsyncPacketListener(packetListener, filter);
         // Create the agent associated to this session
         agent = new Agent(connection, workgroupJID);
     }
@@ -167,7 +167,7 @@ public class AgentSession {
      * packet listeners that were added by this agent session will be removed.
      */
     public void close() {
-        connection.removePacketListener(packetListener);
+        connection.removeAsyncPacketListener(packetListener);
     }
 
     /**

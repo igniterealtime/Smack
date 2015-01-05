@@ -264,7 +264,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         public IBBInputStream() {
             // add data packet listener to connection
             this.dataPacketListener = getDataPacketListener();
-            connection.addPacketListener(this.dataPacketListener, getDataPacketFilter());
+            connection.addSyncPacketListener(this.dataPacketListener, getDataPacketFilter());
         }
 
         /**
@@ -431,7 +431,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * Invoked if the session is closed.
          */
         private void cleanup() {
-            connection.removePacketListener(this.dataPacketListener);
+            connection.removeSyncPacketListener(this.dataPacketListener);
         }
 
     }

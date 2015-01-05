@@ -160,7 +160,7 @@ public class LastActivityManager extends Manager {
         }, PacketTypeFilter.MESSAGE);
 
         // Register a listener for a last activity query
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
 
             public void processPacket(Packet packet) throws NotConnectedException {
                 if (!enabled) return;

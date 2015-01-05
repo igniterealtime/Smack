@@ -85,7 +85,7 @@ public class RosterExchangeManager {
                 fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
             }
         };
-        connection.addPacketListener(packetListener, PACKET_FILTER);
+        connection.addAsyncPacketListener(packetListener, PACKET_FILTER);
     }
 
     /**

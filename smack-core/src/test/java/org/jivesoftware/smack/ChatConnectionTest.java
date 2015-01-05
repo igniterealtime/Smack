@@ -27,102 +27,108 @@ import org.jivesoftware.smack.ChatManager.MatchMode;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ChatConnectionTest {
 
-    private DummyConnection connection;
+    private DummyConnection dc;
+    private ChatManager cm;
+    private TestChatManagerListener listener;
+    private WaitForPacketListener waitListener;
 
     @Before
     public void setUp() throws Exception {
-        connection = getConnection();
+        // Defaults
+        ChatManager.setDefaultIsNormalIncluded(true);
+        ChatManager.setDefaultMatchMode(MatchMode.BARE_JID);
+
+        dc = DummyConnection.newConnectedDummyConnection();
+        cm = ChatManager.getInstanceFor(dc);
+        listener = new TestChatManagerListener();
+        cm.addChatListener(listener);
+        waitListener = new WaitForPacketListener();
+        dc.addSyncPacketListener(waitListener, null);
     }
 
     @After
     public void tearDown() throws Exception {
-        if (connection != null)
-            connection.disconnect();
+        if (dc != null) {
+            dc.disconnect();
+        }
     }
 
     @Test
-    public void validateDefaultSetNormalIncluded() {
+    public void validateDefaultSetNormalIncludedFalse() {
         ChatManager.setDefaultIsNormalIncluded(false);
-        assertFalse(ChatManager.getInstanceFor(getConnection()).isNormalIncluded());
-        
+        assertFalse(ChatManager.getInstanceFor(new DummyConnection()).isNormalIncluded());
+    }
+
+    @Test
+    public void validateDefaultSetNormalIncludedTrue() {
         ChatManager.setDefaultIsNormalIncluded(true);
-        assertTrue(ChatManager.getInstanceFor(getConnection()).isNormalIncluded());
+        assertTrue(ChatManager.getInstanceFor(new DummyConnection()).isNormalIncluded());
     }
-    
+
     @Test
-    public void validateDefaultSetMatchMode() {
+    public void validateDefaultSetMatchModeNone() {
         ChatManager.setDefaultMatchMode(MatchMode.NONE);
-        assertEquals(MatchMode.NONE, ChatManager.getInstanceFor(getConnection()).getMatchMode());
-        
+        assertEquals(MatchMode.NONE, ChatManager.getInstanceFor(new DummyConnection()).getMatchMode());
+    }
+
+    @Test
+    public void validateDefaultSetMatchModeBareJid() {
         ChatManager.setDefaultMatchMode(MatchMode.BARE_JID);
-        assertEquals(MatchMode.BARE_JID, ChatManager.getInstanceFor(getConnection()).getMatchMode());
+        assertEquals(MatchMode.BARE_JID, ChatManager.getInstanceFor(new DummyConnection()).getMatchMode());
     }
 
     @Test
-    public void validateMessageTypeWithDefaults() {
-        DummyConnection dc = getConnection();
-        ChatManager cm = ChatManager.getInstanceFor(dc);
-        TestChatManagerListener listener = new TestChatManagerListener(); 
-        cm.addChatListener(listener);
+    public void validateMessageTypeWithDefaults1() {
         Message incomingChat = createChatPacket("134", true);
         incomingChat.setType(Type.chat);
-        processServerMessage(incomingChat, dc);
+        processServerMessage(incomingChat);
         assertNotNull(listener.getNewChat());
+    }
 
-        dc = getConnection();
-        cm = ChatManager.getInstanceFor(dc);
-        listener = new TestChatManagerListener(); 
-        cm.addChatListener(listener);
-        incomingChat = createChatPacket("134", true);
+    @Test
+    public void validateMessageTypeWithDefaults2() {
+        Message incomingChat = createChatPacket("134", true);
         incomingChat.setType(Type.normal);
-        processServerMessage(incomingChat, dc);
+        processServerMessage(incomingChat);
         assertNotNull(listener.getNewChat());
-
-        dc = getConnection();
-        cm = ChatManager.getInstanceFor(dc);
-        listener = new TestChatManagerListener(); 
-        cm.addChatListener(listener);
-        incomingChat = createChatPacket("134", true);
+    }
+    @Test
+    public void validateMessageTypeWithDefaults3() {
+        Message incomingChat = createChatPacket("134", true);
         incomingChat.setType(Type.groupchat);
-        processServerMessage(incomingChat, dc);
-        assertNull(listener.getNewChat());
-
-        dc = getConnection();
-        cm = ChatManager.getInstanceFor(dc);
-        listener = new TestChatManagerListener(); 
-        cm.addChatListener(listener);
-        incomingChat = createChatPacket("134", true);
-        incomingChat.setType(Type.headline);
-        processServerMessage(incomingChat, dc);
+        processServerMessage(incomingChat);
         assertNull(listener.getNewChat());
     }
-    
+
     @Test
-    public void validateMessageTypeWithNoNormal() {
-        DummyConnection dc = getConnection();
-        ChatManager cm = ChatManager.getInstanceFor(dc);
+    public void validateMessageTypeWithDefaults4() {
+        Message incomingChat = createChatPacket("134", true);
+        incomingChat.setType(Type.headline);
+        assertNull(listener.getNewChat());
+    }
+
+    @Test
+    public void validateMessageTypeWithNoNormal1() {
         cm.setNormalIncluded(false);
-        TestChatManagerListener listener = new TestChatManagerListener(); 
-        cm.addChatListener(listener);
         Message incomingChat = createChatPacket("134", true);
         incomingChat.setType(Type.chat);
-        processServerMessage(incomingChat, dc);
+        processServerMessage(incomingChat);
         assertNotNull(listener.getNewChat());
+    }
 
-        dc = getConnection();
-        cm = ChatManager.getInstanceFor(dc);
+    @Test
+    public void validateMessageTypeWithNoNormal2() {
         cm.setNormalIncluded(false);
-        listener = new TestChatManagerListener(); 
-        cm.addChatListener(listener);
-        incomingChat = createChatPacket("134", true);
+        Message incomingChat = createChatPacket("134", true);
         incomingChat.setType(Type.normal);
-        processServerMessage(incomingChat, dc);
+        processServerMessage(incomingChat);
         assertNull(listener.getNewChat());
     }
 
@@ -130,65 +136,59 @@ public class ChatConnectionTest {
     @Test
     public void chatMatchedOnJIDWhenNoThreadBareMode() {
         // MatchMode.BARE_JID is the default, so setting required.
-        DummyConnection con = getConnection();
         TestMessageListener msgListener = new TestMessageListener();
         TestChatManagerListener listener = new TestChatManagerListener(msgListener);
-        ChatManager cm = ChatManager.getInstanceFor(con);
         cm.addChatListener(listener);
         Packet incomingChat = createChatPacket(null, true);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         Chat newChat = listener.getNewChat();
         assertNotNull(newChat);
 
         // Should match on chat with full jid
         incomingChat = createChatPacket(null, true);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         assertEquals(2, msgListener.getNumMessages());
 
         // Should match on chat with bare jid
         incomingChat = createChatPacket(null, false);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         assertEquals(3, msgListener.getNumMessages());
     }
 
     @Test
     public void chatMatchedOnJIDWhenNoThreadJidMode() {
-        DummyConnection con = getConnection();
         TestMessageListener msgListener = new TestMessageListener();
         TestChatManagerListener listener = new TestChatManagerListener(msgListener);
-        ChatManager cm = ChatManager.getInstanceFor(con);
         cm.setMatchMode(MatchMode.SUPPLIED_JID);
         cm.addChatListener(listener);
         Packet incomingChat = createChatPacket(null, true);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         Chat newChat = listener.getNewChat();
         assertNotNull(newChat);
         cm.removeChatListener(listener);
 
         // Should match on chat with full jid
         incomingChat = createChatPacket(null, true);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         assertEquals(2, msgListener.getNumMessages());
 
         // Should not match on chat with bare jid
         TestChatManagerListener listener2 = new TestChatManagerListener();
         cm.addChatListener(listener2);
         incomingChat = createChatPacket(null, false);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         assertEquals(2, msgListener.getNumMessages());
         assertNotNull(listener2.getNewChat());
     }
 
     @Test
     public void chatMatchedOnJIDWhenNoThreadNoneMode() {
-        DummyConnection con = getConnection();
         TestMessageListener msgListener = new TestMessageListener();
         TestChatManagerListener listener = new TestChatManagerListener(msgListener);
-        ChatManager cm = ChatManager.getInstanceFor(con);
         cm.setMatchMode(MatchMode.NONE);
         cm.addChatListener(listener);
         Packet incomingChat = createChatPacket(null, true);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         Chat newChat = listener.getNewChat();
         assertNotNull(newChat);
         assertEquals(1, msgListener.getNumMessages());
@@ -198,7 +198,7 @@ public class ChatConnectionTest {
         TestChatManagerListener listener2 = new TestChatManagerListener();
         cm.addChatListener(listener2);
         incomingChat = createChatPacket(null, true);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         assertEquals(1, msgListener.getNumMessages());
         assertNotNull(newChat);
         cm.removeChatListener(listener2);
@@ -207,7 +207,7 @@ public class ChatConnectionTest {
         TestChatManagerListener listener3 = new TestChatManagerListener();
         cm.addChatListener(listener3);
         incomingChat = createChatPacket(null, false);
-        processServerMessage(incomingChat, con);
+        processServerMessage(incomingChat);
         assertEquals(1, msgListener.getNumMessages());
         assertNotNull(listener3.getNewChat());
     }
@@ -218,9 +218,6 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWhenNoThreadFullJid() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        ChatManager cm = ChatManager.getInstanceFor(connection);
-        cm.addChatListener(listener);
         Chat outgoing = cm.createChat("you@testserver", null);
 
         Packet incomingChat = createChatPacket(null, true);
@@ -237,9 +234,6 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWhenNoThreadBaseJid() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        ChatManager cm = ChatManager.getInstanceFor(connection);
-        cm.addChatListener(listener);
         Chat outgoing = cm.createChat("you@testserver", null);
 
         Packet incomingChat = createChatPacket(null, false);
@@ -256,9 +250,6 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWithSameThreadFullJid() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        ChatManager cm = ChatManager.getInstanceFor(connection);
-        cm.addChatListener(listener);
         Chat outgoing = cm.createChat("you@testserver", null);
 
         Packet incomingChat = createChatPacket(outgoing.getThreadID(), true);
@@ -275,9 +266,6 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWithSameThreadBaseJid() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        ChatManager cm = ChatManager.getInstanceFor(connection);
-        cm.addChatListener(listener);
         Chat outgoing = cm.createChat("you@testserver", null);
 
         Packet incomingChat = createChatPacket(outgoing.getThreadID(), false);
@@ -294,9 +282,6 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatNotFoundWithDiffThreadBaseJid() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        ChatManager cm = ChatManager.getInstanceFor(connection);
-        cm.addChatListener(listener);
         Chat outgoing = cm.createChat("you@testserver", null);
 
         Packet incomingChat = createChatPacket(outgoing.getThreadID() + "ff", false);
@@ -313,9 +298,6 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatNotFoundWithDiffThreadFullJid() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        ChatManager cm = ChatManager.getInstanceFor(connection);
-        cm.addChatListener(listener);
         Chat outgoing = cm.createChat("you@testserver", null);
 
         Packet incomingChat = createChatPacket(outgoing.getThreadID() + "ff", true);
@@ -328,11 +310,7 @@ public class ChatConnectionTest {
 
     @Test
     public void chatNotMatchedWithTypeNormal() {
-        TestChatManagerListener listener = new TestChatManagerListener();
-        DummyConnection con = getConnection();
-        ChatManager cm = ChatManager.getInstanceFor(con);
         cm.setNormalIncluded(false);
-        cm.addChatListener(listener);
 
         Message incomingChat = createChatPacket(null, false);
         incomingChat.setType(Type.normal);
@@ -341,50 +319,26 @@ public class ChatConnectionTest {
         assertNull(listener.getNewChat());
     }
 
-    @SuppressWarnings("unused")
-    private ChatManager getChatManager(boolean includeNormal, MatchMode mode) {
-        ChatManager cm = ChatManager.getInstanceFor(getConnection());
-        cm.setMatchMode(mode);
-        cm.setNormalIncluded(includeNormal);
-        return cm;
-    }
-    
-    private DummyConnection getConnection() {
-        DummyConnection con = new DummyConnection();
-        
-        try {
-            con.connect();
-            con.login();
-        } catch (Exception e) {
-            // No need for handling in a dummy connection.
-        }
-        return con;
-    }
     private Message createChatPacket(final String threadId, final boolean isFullJid) {
         Message chatMsg = new Message("me@testserver", Message.Type.chat);
         chatMsg.setBody("the body message - " + System.currentTimeMillis());
         chatMsg.setFrom("you@testserver" + (isFullJid ? "/resource" : ""));
-
-        if (threadId != null)
-            chatMsg.setThread(threadId);
+        chatMsg.setThread(threadId);
         return chatMsg;
     }
 
     private void processServerMessage(Packet incomingChat) {
-        processServerMessage(incomingChat, connection);
-    }
-    
-    private void processServerMessage(Packet incomingChat, DummyConnection con) {
-        TestChatServer chatServer = new TestChatServer(incomingChat, con);
+        TestChatServer chatServer = new TestChatServer(incomingChat, dc);
         chatServer.start();
         try {
             chatServer.join();
         } catch (InterruptedException e) {
             fail();
         }
+        waitListener.waitAndReset();
     }
 
-    class TestChatManagerListener implements ChatManagerListener {
+    class TestChatManagerListener extends WaitForPacketListener implements ChatManagerListener {
         private Chat newChat;
         private ChatMessageListener listener;
 
@@ -401,6 +355,7 @@ public class ChatConnectionTest {
             
             if (listener != null)
                 newChat.addMessageListener(listener);
+            reportInvoked();
         }
 
         public Chat getNewChat() {

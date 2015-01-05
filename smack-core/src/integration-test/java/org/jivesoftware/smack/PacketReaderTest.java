@@ -107,7 +107,7 @@ public class PacketReaderTest extends SmackTestCase {
         // Keep number of current listeners
         int listenersSize = getConnection(0).getPacketListeners().size();
         // Add a new listener
-        getConnection(0).addPacketListener(listener, new MockPacketFilter(true));
+        getConnection(0).addAsyncPacketListener(listener, new MockPacketFilter(true));
         // Check that the listener was added
         assertEquals("Listener was not added", listenersSize + 1,
                 getConnection(0).getPacketListeners().size());
@@ -117,7 +117,7 @@ public class PacketReaderTest extends SmackTestCase {
         getConnection(1).sendPacket(msg);
 
         // Remove the listener
-        getConnection(0).removePacketListener(listener);
+        getConnection(0).removeAsyncPacketListener(listener);
         // Check that the number of listeners is correct (i.e. the listener was removed)
         assertEquals("Listener was not removed", listenersSize,
                 getConnection(0).getPacketListeners().size());
@@ -134,7 +134,7 @@ public class PacketReaderTest extends SmackTestCase {
         packet.setBody("aloha");
 
         // User1 will always reply to user0 when a message is received
-        getConnection(1).addPacketListener(new PacketListener() {
+        getConnection(1).addAsyncPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 System.out.println(new Date() + " " + packet);
 
@@ -203,8 +203,8 @@ public class PacketReaderTest extends SmackTestCase {
                 }
             };
 
-            getConnection(0).addPacketListener(listener0, pf0);
-            getConnection(1).addPacketListener(listener1, pf1);
+            getConnection(0).addAsyncPacketListener(listener0, pf0);
+            getConnection(1).addAsyncPacketListener(listener1, pf1);
 
             // Check that the listener was added
 
@@ -225,8 +225,8 @@ public class PacketReaderTest extends SmackTestCase {
             }
 
             // Remove the listener
-            getConnection(0).removePacketListener(listener0);
-            getConnection(1).removePacketListener(listener1);
+            getConnection(0).removeAsyncPacketListener(listener0);
+            getConnection(1).removeAsyncPacketListener(listener1);
 
             try {
                 Thread.sleep(300);

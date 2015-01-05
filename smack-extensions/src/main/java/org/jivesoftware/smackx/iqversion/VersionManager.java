@@ -86,7 +86,7 @@ public class VersionManager extends Manager {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Version.NAMESPACE);
 
-        connection.addPacketListener(new PacketListener() {
+        connection.addAsyncPacketListener(new PacketListener() {
             /**
              * Sends a Version reply on request
              * @throws NotConnectedException 

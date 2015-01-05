@@ -137,7 +137,7 @@ public class ChatManager extends Manager{
 
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
-        connection.addPacketListener(new PacketListener() {
+        connection.addSyncPacketListener(new PacketListener() {
             public void processPacket(Packet packet) {
                 Message message = (Message) packet;
                 Chat chat;

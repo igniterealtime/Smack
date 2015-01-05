@@ -289,7 +289,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     public synchronized void disableService() {
 
         // remove initiation packet listener
-        this.connection.removePacketListener(this.initiationListener);
+        this.connection.removeAsyncPacketListener(this.initiationListener);
 
         // shutdown threads
         this.initiationListener.shutdown();
@@ -718,7 +718,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      */
     private void activate() {
         // register bytestream initiation packet listener
-        this.connection.addPacketListener(this.initiationListener,
+        this.connection.addAsyncPacketListener(this.initiationListener,
                         this.initiationListener.getFilter());
 
         // enable SOCKS5 feature
