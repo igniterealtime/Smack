@@ -32,6 +32,7 @@ public class IQTypeFilter extends FlexiblePacketTypeFilter<IQ> {
     public static final PacketFilter SET = new IQTypeFilter(Type.set);
     public static final PacketFilter RESULT = new IQTypeFilter(Type.result);
     public static final PacketFilter ERROR = new IQTypeFilter(Type.error);
+    public static final PacketFilter GET_OR_SET = new OrFilter(GET, SET);
 
 	private final IQ.Type type;
 
