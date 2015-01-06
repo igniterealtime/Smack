@@ -1023,8 +1023,6 @@ public class Roster {
                 // Non-empty roster result. This stanza contains all the roster elements.
                 RosterPacket rosterPacket = (RosterPacket) packet;
 
-                String version = rosterPacket.getVersion();
-
                 // Ignore items without valid subscription type
                 ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
                 for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
@@ -1052,6 +1050,7 @@ public class Roster {
                 }
 
                 if (rosterStore != null) {
+                    String version = rosterPacket.getVersion();
                     rosterStore.resetEntries(validItems, version);
                 }
 
@@ -1086,15 +1085,13 @@ public class Roster {
         public void processPacket(Packet packet) throws NotConnectedException {
             RosterPacket rosterPacket = (RosterPacket) packet;
 
-            String version = rosterPacket.getVersion();
-
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
             String jid = XmppStringUtils.parseBareJid(connection.getUser());
-            if (rosterPacket.getFrom() != null &&
-                    !rosterPacket.getFrom().equals(jid)) {
-                LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid=" + jid
-                                + " from=" + rosterPacket.getFrom());
+            String from = rosterPacket.getFrom();
+            if (from != null && !from.equals(jid)) {
+                LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
+                                + "'");
                 return;
             }
 
@@ -1110,11 +1107,12 @@ public class Roster {
             Collection<String> deletedEntries = new ArrayList<String>();
             Collection<String> unchangedEntries = new ArrayList<String>();
 
-            // We assured abouve that the size of items is exaclty 1, therefore we are able to
+            // We assured above that the size of items is exaclty 1, therefore we are able to
             // safely retrieve this single item here.
             Item item = items.iterator().next();
             RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
                             item.getItemType(), item.getItemStatus(), Roster.this, connection);
+            String version = rosterPacket.getVersion();
 
             if (item.getItemType().equals(RosterPacket.ItemType.remove)) {
                 deleteEntry(deletedEntries, entry);
