@@ -124,7 +124,9 @@ public final class FileUtils {
     public static String readFile(File file) {
         try {
             return readFileOrThrow(file);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.FINE, "readFile", e);
+        } catch (IOException e) {
             LOGGER.log(Level.WARNING, "readFile", e);
         }
         return null;
