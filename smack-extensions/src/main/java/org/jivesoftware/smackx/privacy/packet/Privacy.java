@@ -292,7 +292,7 @@ public class Privacy extends IQ {
         	buf.append("<active/>");
         } else {
         	if (this.getActiveName() != null) {
-            	buf.append("<active name=\"").append(this.getActiveName()).append("\"/>");
+                buf.append("<active name=\"").escape(getActiveName()).append("\"/>");
             }
         }
         // Add the default tag
@@ -300,7 +300,7 @@ public class Privacy extends IQ {
         	buf.append("<default/>");
         } else {
 	        if (this.getDefaultName() != null) {
-	        	buf.append("<default name=\"").append(this.getDefaultName()).append("\"/>");
+                buf.append("<default name=\"").escape(getDefaultName()).append("\"/>");
 	        }
         }
         
@@ -310,9 +310,9 @@ public class Privacy extends IQ {
           List<PrivacyItem> items = entry.getValue();
 			// Begin the list tag
 			if (items.isEmpty()) {
-				buf.append("<list name=\"").append(listName).append("\"/>");
+                buf.append("<list name=\"").escape(listName).append("\"/>");
 			} else {
-				buf.append("<list name=\"").append(listName).append("\">");
+                buf.append("<list name=\"").escape(listName).append("\">");
 			}
 	        for (PrivacyItem item : items) {
 	        	// Append the item xml representation

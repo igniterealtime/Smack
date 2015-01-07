@@ -70,4 +70,8 @@ public class PrivacyList {
         return items;
     }
 
+    @Override
+    public String toString() {
+        return "Privacy List: " + listName + "(active:" + isActiveList + ", default:" + isDefaultList + ")";
+    }
 }

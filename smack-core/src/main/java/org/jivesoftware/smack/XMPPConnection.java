@@ -557,6 +557,15 @@ public interface XMPPConnection {
                     throws NotConnectedException;
 
     /**
+     * Add a callback that is called exactly once and synchronously with the incoming stanza that matches the given
+     * packet filter.
+     * 
+     * @param callback the callback invoked once the packet filter matches a stanza.
+     * @param packetFilter the filter to match stanzas or null to match all.
+     */
+    public void addOneTimeSyncCallback(PacketListener callback, PacketFilter packetFilter);
+
+    /**
      * Returns the timestamp in milliseconds when the last stanza was received.
      * 
      * @return the timestamp in milliseconds

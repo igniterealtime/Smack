@@ -1371,6 +1371,27 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
 
+    @Override
+    public void addOneTimeSyncCallback(final PacketListener callback, final PacketFilter packetFilter) {
+        final PacketListener packetListener = new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                try {
+                    callback.processPacket(packet);
+                } finally {
+                    removeSyncPacketListener(this);
+                }
+            }
+        };
+        addSyncPacketListener(packetListener, packetFilter);
+        removeCallbacksService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                removeSyncPacketListener(packetListener);
+            }
+        }, getPacketReplyTimeout(), TimeUnit.MILLISECONDS);
+    }
+
     private long lastStanzaReceived;
 
     public long getLastStanzaReceived() {
