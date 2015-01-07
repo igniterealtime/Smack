@@ -137,7 +137,7 @@ public class PingManager extends Manager {
         }, PING_PACKET_FILTER);
         connection.addConnectionListener(new AbstractConnectionClosedListener() {
             @Override
-            public void authenticated(XMPPConnection connection) {
+            public void authenticated(XMPPConnection connection, boolean resumed) {
                 maybeSchedulePingServerTask();
             }
             @Override

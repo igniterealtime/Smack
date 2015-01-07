@@ -36,7 +36,7 @@ class SLF4JLoggingConnectionListener implements ConnectionListener {
     }
 
     @Override
-    public void authenticated(XMPPConnection connection) {
+    public void authenticated(XMPPConnection connection, boolean resumed) {
         logger.debug("({}) Connection authenticated as {}", connection.hashCode(), connection.getUser());
     }
 

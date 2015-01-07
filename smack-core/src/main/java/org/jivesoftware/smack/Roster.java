@@ -138,7 +138,7 @@ public class Roster {
         connection.addConnectionListener(new AbstractConnectionClosedListener() {
 
             @Override
-            public void authenticated(XMPPConnection connection) {
+            public void authenticated(XMPPConnection connection, boolean resumed) {
                 // Anonymous users can't have a roster, but it is possible that a Roster instance is
                 // retrieved if getRoster() is called *before* connect(). So we have to check here
                 // again if it's an anonymous connection.
@@ -146,6 +146,10 @@ public class Roster {
                     return;
                 if (!connection.isRosterLoadedAtLogin())
                     return;
+                // We are done here if the connection was resumed
+                if (resumed) {
+                    return;
+                }
                 try {
                     Roster.this.reload();
                 }

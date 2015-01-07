@@ -500,7 +500,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);
         }
-        callConnectionAuthenticatedListener();
+        callConnectionAuthenticatedListener(resumed);
 
         // Set presence to online. It is important that this is done after
         // callConnectionAuthenticatedListener(), as this call will also
@@ -1040,9 +1040,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected void callConnectionAuthenticatedListener() {
+    protected void callConnectionAuthenticatedListener(boolean resumed) {
         for (ConnectionListener listener : getConnectionListeners()) {
-            listener.authenticated(this);
+            try {
+                listener.authenticated(this, resumed);
+            } catch (Exception e) {
+                // Catch and print any exception so we can recover
+                // from a faulty listener and finish the shutdown process
+                LOGGER.log(Level.SEVERE, "Exception in authenticated listener", e);
+            }
         }
     }
 

@@ -186,7 +186,11 @@ public class PrivacyListManager extends Manager {
         }, PRIVACY_RESULT);
         connection.addConnectionListener(new AbstractConnectionListener() {
             @Override
-            public void reconnectionSuccessful() {
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                // No need to reset the cache if the connection got resumed.
+                if (resumed) {
+                    return;
+                }
                 cachedActiveListName = cachedDefaultListName = null;
             }
         });

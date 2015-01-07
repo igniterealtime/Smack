@@ -264,7 +264,7 @@ public class ReconnectionManager {
         }
 
         @Override
-        public void authenticated(XMPPConnection connection) {
+        public void authenticated(XMPPConnection connection, boolean resumed) {
             done = false;
         }
 

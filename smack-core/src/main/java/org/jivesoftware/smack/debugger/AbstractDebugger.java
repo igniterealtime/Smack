@@ -80,8 +80,12 @@ public abstract class AbstractDebugger implements SmackDebugger {
                 log("XMPPConnection connected ("
                                 + connection.getConnectionCounter() + ")");
             }
-            public void authenticated(XMPPConnection connection) {
-                log("XMPPConnection authenticated (" + connection.getConnectionCounter() + ")");
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                String logString = "XMPPConnection authenticated (" + connection.getConnectionCounter() + ")";
+                if (resumed) {
+                    logString += " and resumed";
+                }
+                log(logString);
             }
             public void connectionClosed() {
                 log(

@@ -38,7 +38,7 @@ public interface ConnectionListener {
      * TODO
      * @param connection
      */
-    public void authenticated(XMPPConnection connection);
+    public void authenticated(XMPPConnection connection, boolean resumed);
 
     /**
      * Notification that the connection was closed normally or that the reconnection

@@ -31,7 +31,7 @@ public class AbstractConnectionListener implements ConnectionListener {
     }
 
     @Override
-    public void authenticated(XMPPConnection connection) {
+    public void authenticated(XMPPConnection connection, boolean resumed) {
         // do nothing
     }
 

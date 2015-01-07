@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.caps;
 
-import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -274,7 +274,7 @@ public class EntityCapsManager extends Manager {
         this.sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         instances.put(connection, this);
 
-        connection.addConnectionListener(new AbstractConnectionClosedListener() {
+        connection.addConnectionListener(new AbstractConnectionListener() {
             @Override
             public void connected(XMPPConnection connection) {
                 // It's not clear when a server would report the caps stream
@@ -283,17 +283,17 @@ public class EntityCapsManager extends Manager {
                 processCapsStreamFeatureIfAvailable(connection);
             }
             @Override
-            public void authenticated(XMPPConnection connection) {
+            public void authenticated(XMPPConnection connection, boolean resumed) {
                 // It's not clear when a server would report the caps stream
                 // feature, so we try to process it after we are connected and
                 // once after we are authenticated.
                 processCapsStreamFeatureIfAvailable(connection);
-            }
-            @Override
-            public void connectionTerminated() {
-                presenceSend = false;
-            }
 
+                // Reset presenceSend when the connection was not resumed
+                if (!resumed) {
+                    presenceSend = false;
+                }
+            }
             private void processCapsStreamFeatureIfAvailable(XMPPConnection connection) {
                 CapsExtension capsExtension = connection.getFeature(
                                 CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
