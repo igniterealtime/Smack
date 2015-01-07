@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
@@ -100,15 +100,10 @@ public final class Socks5BytestreamManager implements BytestreamManager {
                 Socks5BytestreamManager.getBytestreamManager(connection);
 
                 // register shutdown listener
-                connection.addConnectionListener(new AbstractConnectionListener() {
+                connection.addConnectionListener(new AbstractConnectionClosedListener() {
 
                     @Override
-                    public void connectionClosed() {
-                        Socks5BytestreamManager.getBytestreamManager(connection).disableService();
-                    }
-
-                    @Override
-                    public void connectionClosedOnError(Exception e) {
+                    public void connectionTerminated() {
                         Socks5BytestreamManager.getBytestreamManager(connection).disableService();
                     }
 

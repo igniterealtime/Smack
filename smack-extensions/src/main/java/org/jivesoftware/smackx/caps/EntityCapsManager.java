@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.caps;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -274,7 +274,7 @@ public class EntityCapsManager extends Manager {
         this.sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         instances.put(connection, this);
 
-        connection.addConnectionListener(new AbstractConnectionListener() {
+        connection.addConnectionListener(new AbstractConnectionClosedListener() {
             @Override
             public void connected(XMPPConnection connection) {
                 // It's not clear when a server would report the caps stream
@@ -290,11 +290,7 @@ public class EntityCapsManager extends Manager {
                 processCapsStreamFeatureIfAvailable(connection);
             }
             @Override
-            public void connectionClosed() {
-                presenceSend = false;
-            }
-            @Override
-            public void connectionClosedOnError(Exception e) {
+            public void connectionTerminated() {
                 presenceSend = false;
             }
 

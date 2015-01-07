@@ -135,8 +135,9 @@ public class Roster {
         connection.addSyncPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
         // Listen for connection events
-        connection.addConnectionListener(new AbstractConnectionListener() {
-            
+        connection.addConnectionListener(new AbstractConnectionClosedListener() {
+
+            @Override
             public void authenticated(XMPPConnection connection) {
                 // Anonymous users can't have a roster, but it is possible that a Roster instance is
                 // retrieved if getRoster() is called *before* connect(). So we have to check here
@@ -154,12 +155,8 @@ public class Roster {
                 }
             }
 
-            public void connectionClosed() {
-                // Changes the presence available contacts to unavailable
-                setOfflinePresencesAndResetLoaded();
-            }
-
-            public void connectionClosedOnError(Exception e) {
+            @Override
+            public void connectionTerminated() {
                 // Changes the presence available contacts to unavailable
                 setOfflinePresencesAndResetLoaded();
             }

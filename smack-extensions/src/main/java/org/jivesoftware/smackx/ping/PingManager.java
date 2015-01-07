@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012-2014 Florian Schmaus
+ * Copyright 2012-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -135,17 +135,13 @@ public class PingManager extends Manager {
                 connection().sendPacket(ping.getPong());
             }
         }, PING_PACKET_FILTER);
-        connection.addConnectionListener(new AbstractConnectionListener() {
+        connection.addConnectionListener(new AbstractConnectionClosedListener() {
             @Override
             public void authenticated(XMPPConnection connection) {
                 maybeSchedulePingServerTask();
             }
             @Override
-            public void connectionClosed() {
-                maybeStopPingServerTask();
-            }
-            @Override
-            public void connectionClosedOnError(Exception arg0) {
+            public void connectionTerminated() {
                 maybeStopPingServerTask();
             }
         });

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -107,15 +107,10 @@ public class InBandBytestreamManager implements BytestreamManager {
                 InBandBytestreamManager.getByteStreamManager(connection);
 
                 // register shutdown listener
-                connection.addConnectionListener(new AbstractConnectionListener() {
+                connection.addConnectionListener(new AbstractConnectionClosedListener() {
 
                     @Override
-                    public void connectionClosed() {
-                        InBandBytestreamManager.getByteStreamManager(connection).disableService();
-                    }
-
-                    @Override
-                    public void connectionClosedOnError(Exception e) {
+                    public void connectionTerminated() {
                         InBandBytestreamManager.getByteStreamManager(connection).disableService();
                     }
 
