@@ -20,7 +20,6 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
@@ -841,23 +840,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // Notify connection listeners of the error.
         callConnectionClosedOnErrorListener(e);
-    }
-
-    /**
-     * Sends a notification indicating that the connection was reconnected successfully.
-     */
-    private void notifyReconnection() {
-        // Notify connection listeners of the reconnection.
-        for (ConnectionListener listener : getConnectionListeners()) {
-            try {
-                listener.reconnectionSuccessful();
-            }
-            catch (Exception e) {
-                // Catch and print any exception so we can recover
-                // from a faulty listener
-                LOGGER.log(Level.WARNING, "notifyReconnection()", e);
-            }
-        }
     }
 
     /**

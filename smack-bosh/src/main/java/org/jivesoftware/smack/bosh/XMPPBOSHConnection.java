@@ -479,9 +479,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                             if (wasAuthenticated) {
                                 login();
                             }
-                            for (ConnectionListener listener : getConnectionListeners()) {
-                                 listener.reconnectionSuccessful();
-                            }
+                            notifyReconnection();
                         }
                         catch (Exception e) {
                             for (ConnectionListener listener : getConnectionListeners()) {

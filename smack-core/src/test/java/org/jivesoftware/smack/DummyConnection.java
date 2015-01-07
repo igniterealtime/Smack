@@ -81,9 +81,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {
-            for (ConnectionListener listener : getConnectionListeners()) {
-                listener.reconnectionSuccessful();
-            }
+            notifyReconnection();
         }
     }
 
