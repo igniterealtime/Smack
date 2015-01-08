@@ -35,4 +35,5 @@ public class ErrorIQ extends SimpleIQ {
         type = IQ.Type.error;
         setError(xmppError);
     }
+
 }

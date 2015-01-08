@@ -210,8 +210,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // register bytestream open packet listener
         this.initiationListener = new InitiationListener(this);
-        this.connection.addAsyncPacketListener(this.initiationListener,
-                        this.initiationListener.getFilter());
+        connection.registerIQRequestHandler(initiationListener);
 
         // register bytestream data packet listener
         this.dataListener = new DataListener(this);
@@ -219,8 +218,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // register bytestream close packet listener
         this.closeListener = new CloseListener(this);
-        this.connection.addSyncPacketListener(this.closeListener, this.closeListener.getFilter());
-
+        connection.registerIQRequestHandler(closeListener);
     }
 
     /**
@@ -543,9 +541,9 @@ public class InBandBytestreamManager implements BytestreamManager {
         managers.remove(connection);
 
         // remove all listeners registered by this manager
-        this.connection.removeAsyncPacketListener(this.initiationListener);
+        connection.unregisterIQRequestHandler(initiationListener);
         this.connection.removeSyncPacketListener(this.dataListener);
-        this.connection.removeSyncPacketListener(this.closeListener);
+        connection.unregisterIQRequestHandler(closeListener);
 
         // shutdown threads
         this.initiationListener.shutdown();

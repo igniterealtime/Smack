@@ -36,16 +36,18 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.RosterVer;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -66,9 +68,6 @@ import org.jxmpp.util.XmppStringUtils;
 public class Roster {
 
     private static final Logger LOGGER = Logger.getLogger(Roster.class.getName());
-
-    private static final PacketFilter ROSTER_PUSH_FILTER = new AndFilter(new PacketTypeFilter(
-                    RosterPacket.class), IQTypeFilter.SET);
 
     private static final PacketFilter PRESENCE_PACKET_FILTER = new PacketTypeFilter(Presence.class);
 
@@ -130,7 +129,7 @@ public class Roster {
         // Note that we use sync packet listeners because RosterListeners should be invoked in the same order as the
         // roster stanzas arrive.
         // Listen for any roster packets.
-        connection.addSyncPacketListener(new RosterPushListener(), ROSTER_PUSH_FILTER);
+        connection.registerIQRequestHandler(new RosterPushListener());
         // Listen for any presence packets.
         connection.addSyncPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
@@ -1118,10 +1117,15 @@ public class Roster {
     /**
      * Listens for all roster pushes and processes them.
      */
-    private class RosterPushListener implements PacketListener {
+    private class RosterPushListener extends AbstractIqRequestHandler {
 
-        public void processPacket(Packet packet) throws NotConnectedException {
-            RosterPacket rosterPacket = (RosterPacket) packet;
+        private RosterPushListener() {
+            super(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, Type.set, Mode.sync);
+        }
+
+        @Override
+        public IQ handleIQRequest(IQ iqRequest) {
+            RosterPacket rosterPacket = (RosterPacket) iqRequest;
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
@@ -1130,14 +1134,14 @@ public class Roster {
             if (from != null && !from.equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
                                 + "'");
-                return;
+                return IQ.createErrorResponse(iqRequest, new XMPPError(Condition.service_unavailable));
             }
 
             // A roster push must contain exactly one entry
             Collection<Item> items = rosterPacket.getRosterItems();
             if (items.size() != 1) {
                 LOGGER.warning("Ignoring roster push with not exaclty one entry. size=" + items.size());
-                return;
+                return IQ.createErrorResponse(iqRequest, new XMPPError(Condition.bad_request));
             }
 
             Collection<String> addedEntries = new ArrayList<String>();
@@ -1164,12 +1168,13 @@ public class Roster {
                     rosterStore.addEntry(item, version);
                 }
             }
-            connection.sendPacket(IQ.createResultIQ(rosterPacket));
 
             removeEmptyGroups();
 
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
+
+            return IQ.createResultIQ(rosterPacket);
         }
     }
 }

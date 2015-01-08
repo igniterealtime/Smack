@@ -21,13 +21,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -66,9 +63,6 @@ import java.util.logging.Logger;
 public class ServiceDiscoveryManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
-
-    private static final PacketFilter GET_DISCOVER_ITEMS = new AndFilter(IQTypeFilter.GET, new PacketTypeFilter(DiscoverItems.class));
-    private static final PacketFilter GET_DISCOVER_INFO = new AndFilter(IQTypeFilter.GET, new PacketTypeFilter(DiscoverInfo.class));
 
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
@@ -122,9 +116,10 @@ public class ServiceDiscoveryManager extends Manager {
         addFeature(DiscoverItems.NAMESPACE);
 
         // Listen for disco#items requests and answer with an empty result        
-        PacketListener packetListener = new PacketListener() {
-            public void processPacket(Packet packet) throws NotConnectedException {
-                DiscoverItems discoverItems = (DiscoverItems) packet;
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(DiscoverItems.ELEMENT, DiscoverItems.NAMESPACE, IQ.Type.get, Mode.async) {
+            @Override
+            public IQ handleIQRequest(IQ iqRequest) {
+                DiscoverItems discoverItems = (DiscoverItems) iqRequest;
                 DiscoverItems response = new DiscoverItems();
                 response.setType(IQ.Type.result);
                 response.setTo(discoverItems.getFrom());
@@ -145,16 +140,16 @@ public class ServiceDiscoveryManager extends Manager {
                     response.setType(IQ.Type.error);
                     response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                 }
-                connection().sendPacket(response);
+                return response;
             }
-        };
-        connection.addAsyncPacketListener(packetListener, GET_DISCOVER_ITEMS);
+        });
 
         // Listen for disco#info requests and answer the client's supported features 
         // To add a new feature as supported use the #addFeature message        
-        packetListener = new PacketListener() {
-            public void processPacket(Packet packet) throws NotConnectedException {
-                DiscoverInfo discoverInfo = (DiscoverInfo) packet;
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(DiscoverInfo.ELEMENT, DiscoverInfo.NAMESPACE, IQ.Type.get, Mode.async) {
+            @Override
+            public IQ handleIQRequest(IQ iqRequest) {
+                DiscoverInfo discoverInfo = (DiscoverInfo) iqRequest;
                 // Answer the client's supported features if the request is of the GET type
                 DiscoverInfo response = new DiscoverInfo();
                 response.setType(IQ.Type.result);
@@ -184,10 +179,9 @@ public class ServiceDiscoveryManager extends Manager {
                         response.setError(new XMPPError(XMPPError.Condition.item_not_found));
                     }
                 }
-                connection().sendPacket(response);
+                return response;
             }
-        };
-        connection.addAsyncPacketListener(packetListener, GET_DISCOVER_INFO);
+        });
     }
 
     /**

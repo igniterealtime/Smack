@@ -184,11 +184,9 @@ public class DummyConnection extends AbstractXMPPConnection {
      * and that has not been returned by earlier calls to this method.
      * 
      * @return a sent packet.
-     * @throws InterruptedException
      */
-    @SuppressWarnings("unchecked")
-    public <P extends TopLevelStreamElement> P getSentPacket() throws InterruptedException {
-        return (P) queue.poll(5, TimeUnit.MINUTES);
+    public <P extends TopLevelStreamElement> P getSentPacket() {
+        return getSentPacket(5 * 60);
     }
 
     /**
@@ -198,11 +196,16 @@ public class DummyConnection extends AbstractXMPPConnection {
      * have been sent yet.
      * 
      * @return a sent packet.
-     * @throws InterruptedException
      */
     @SuppressWarnings("unchecked")
-    public <P extends TopLevelStreamElement> P getSentPacket(int wait) throws InterruptedException {
-        return (P) queue.poll(wait, TimeUnit.SECONDS);
+    public <P extends TopLevelStreamElement> P getSentPacket(int wait) {
+        try {
+            return (P) queue.poll(wait, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e) {
+            // TODO handle spurious interrupts
+            throw new IllegalStateException(e);
+        }
     }
 
     /**

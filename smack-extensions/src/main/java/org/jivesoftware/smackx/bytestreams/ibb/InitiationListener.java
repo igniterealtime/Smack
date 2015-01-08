@@ -21,12 +21,9 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -44,15 +41,11 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
  * 
  * @author Henning Staib
  */
-class InitiationListener implements PacketListener {
+class InitiationListener extends AbstractIqRequestHandler {
     private static final Logger LOGGER = Logger.getLogger(InitiationListener.class.getName());
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;
-
-    /* packet filter for all In-Band Bytestream requests */
-    private final PacketFilter initFilter = new AndFilter(new PacketTypeFilter(Open.class),
-                    IQTypeFilter.SET);
 
     /* executor service to process incoming requests concurrently */
     private final ExecutorService initiationListenerExecutor;
@@ -63,11 +56,13 @@ class InitiationListener implements PacketListener {
      * @param manager the In-Band Bytestream manager
      */
     protected InitiationListener(InBandBytestreamManager manager) {
+        super(Open.ELEMENT, Open.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
         initiationListenerExecutor = Executors.newCachedThreadPool();
-    }
+     }
 
-    public void processPacket(final Packet packet) {
+    @Override
+    public IQ handleIQRequest(final IQ packet) {
         initiationListenerExecutor.execute(new Runnable() {
 
             public void run() {
@@ -79,6 +74,7 @@ class InitiationListener implements PacketListener {
                 }
             }
         });
+        return null;
     }
 
     private void processRequest(Packet packet) throws NotConnectedException {
@@ -118,15 +114,6 @@ class InitiationListener implements PacketListener {
              */
             this.manager.replyRejectPacket(ibbRequest);
         }
-    }
-
-    /**
-     * Returns the packet filter for In-Band Bytestream open requests.
-     * 
-     * @return the packet filter for In-Band Bytestream open requests
-     */
-    protected PacketFilter getFilter() {
-        return this.initFilter;
     }
 
     /**

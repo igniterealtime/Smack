@@ -58,7 +58,9 @@ import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.Bind;
+import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Packet;
@@ -68,6 +70,7 @@ import org.jivesoftware.smack.packet.RosterVer;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
@@ -278,6 +281,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * to the server was closed (abruptly or not).
      */
     protected boolean wasAuthenticated = false;
+
+    private final Map<String, IQRequestHandler> setIqRequestHandler = new HashMap<>();
+    private final Map<String, IQRequestHandler> getIqRequestHandler = new HashMap<>();
 
     /**
      * Create a new XMPPConnection to a XMPP server.
@@ -907,7 +913,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         int parserDepth = parser.getDepth();
         Packet stanza = null;
         try {
-            stanza = PacketParserUtils.parseStanza(parser, this);
+            stanza = PacketParserUtils.parseStanza(parser);
         }
         catch (Exception e) {
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
@@ -962,6 +968,81 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet to notify the PacketCollectors and receive listeners about.
      */
     protected void invokePacketCollectorsAndNotifyRecvListeners(final Packet packet) {
+        if (packet instanceof IQ) {
+            final IQ iq = (IQ) packet;
+            final IQ.Type type = iq.getType();
+            switch (type) {
+            case set:
+            case get:
+                final String key = XmppStringUtils.generateKey(iq.getChildElementName(), iq.getChildElementNamespace());
+                IQRequestHandler iqRequestHandler = null;
+                switch (type) {
+                case set:
+                    synchronized (setIqRequestHandler) {
+                        iqRequestHandler = setIqRequestHandler.get(key);
+                    }
+                    break;
+                case get:
+                    synchronized (getIqRequestHandler) {
+                        iqRequestHandler = getIqRequestHandler.get(key);
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException("Should only encounter IQ type 'get' or 'set'");
+                }
+                if (iqRequestHandler == null) {
+                    // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
+                    // IQ of type "error" with code 501 ("feature-not-implemented")
+                    ErrorIQ errorIQ = IQ.createErrorResponse(iq, new XMPPError(
+                                    XMPPError.Condition.feature_not_implemented));
+                    try {
+                        sendPacket(errorIQ);
+                    }
+                    catch (NotConnectedException e) {
+                        LOGGER.log(Level.WARNING, "NotConnectedException while sending error IQ to unkown IQ request", e);
+                    }
+                } else {
+                    ExecutorService executorService = null;
+                    switch (iqRequestHandler.getMode()) {
+                    case sync:
+                        executorService = singleThreadedExecutorService;
+                        break;
+                    case async:
+                        executorService = cachedExecutorService;
+                        break;
+                    }
+                    final IQRequestHandler finalIqRequestHandler = iqRequestHandler;
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            IQ response = finalIqRequestHandler.handleIQRequest(iq);
+                            if (response == null) {
+                                // It is not ideal if the IQ request handler does not return an IQ response, because RFC
+                                // 6120 § 8.1.2 does specify that a response is mandatory. But some APIs, mostly the
+                                // file transfer one, does not always return a result, so we need to handle this case
+                                // gracefully for now
+                                // TODO Add a warning if response is null once all APIs using handleIQRequest return an
+                                // IQ response. Later consider throwing an IllegalStateException
+                                return;
+                            }
+                            try {
+                                sendPacket(response);
+                            }
+                            catch (NotConnectedException e) {
+                                LOGGER.log(Level.WARNING, "NotConnectedException while sending response to IQ request", e);
+                            }
+                        }
+                    });
+                    // The following returns makes it impossible for packet listeners and collectors to
+                    // filter for IQ request stanzas, i.e. IQs of type 'set' or 'get'. This is the
+                    // desired behavior.
+                    return;
+                }
+            default:
+                break;
+            }
+        }
+
         // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
         // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
         // their own thread.
@@ -1396,6 +1477,46 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 removeSyncPacketListener(packetListener);
             }
         }, getPacketReplyTimeout(), TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public IQRequestHandler registerIQRequestHandler(final IQRequestHandler iqRequestHandler) {
+        final String key = XmppStringUtils.generateKey(iqRequestHandler.getElement(), iqRequestHandler.getNamespace());
+        switch (iqRequestHandler.getType()) {
+        case set:
+            synchronized (setIqRequestHandler) {
+                return setIqRequestHandler.put(key, iqRequestHandler);
+            }
+        case get:
+            synchronized (getIqRequestHandler) {
+                return getIqRequestHandler.put(key, iqRequestHandler);
+            }
+        default:
+            throw new IllegalArgumentException("Only IQ type of 'get' and 'set' allowed");
+        }
+    }
+
+    @Override
+    public final IQRequestHandler unregisterIQRequestHandler(IQRequestHandler iqRequestHandler) {
+        return unregisterIQRequestHandler(iqRequestHandler.getElement(), iqRequestHandler.getNamespace(),
+                        iqRequestHandler.getType());
+    }
+
+    @Override
+    public IQRequestHandler unregisterIQRequestHandler(String element, String namespace, IQ.Type type) {
+        final String key = XmppStringUtils.generateKey(element, namespace);
+        switch (type) {
+        case set:
+            synchronized (setIqRequestHandler) {
+                return setIqRequestHandler.remove(key);
+            }
+        case get:
+            synchronized (getIqRequestHandler) {
+                return getIqRequestHandler.remove(key);
+            }
+        default:
+            throw new IllegalArgumentException("Only IQ type of 'get' and 'set' allowed");
+        }
     }
 
     private long lastStanzaReceived;

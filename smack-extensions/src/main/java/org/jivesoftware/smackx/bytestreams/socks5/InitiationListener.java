@@ -21,12 +21,9 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -39,15 +36,11 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
  * 
  * @author Henning Staib
  */
-final class InitiationListener implements PacketListener {
+final class InitiationListener extends AbstractIqRequestHandler {
     private static final Logger LOGGER = Logger.getLogger(InitiationListener.class.getName());
 
     /* manager containing the listeners and the XMPP connection */
     private final Socks5BytestreamManager manager;
-
-    /* packet filter for all SOCKS5 Bytestream requests */
-    private final PacketFilter initFilter = new AndFilter(new PacketTypeFilter(Bytestream.class),
-                    IQTypeFilter.SET);
 
     /* executor service to process incoming requests concurrently */
     private final ExecutorService initiationListenerExecutor;
@@ -58,11 +51,14 @@ final class InitiationListener implements PacketListener {
      * @param manager the SOCKS5 Bytestream manager
      */
     protected InitiationListener(Socks5BytestreamManager manager) {
+        super(Bytestream.ELEMENT, Bytestream.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
         initiationListenerExecutor = Executors.newCachedThreadPool();
     }
 
-    public void processPacket(final Packet packet) {
+
+    @Override
+    public IQ handleIQRequest(final IQ packet) {
         initiationListenerExecutor.execute(new Runnable() {
 
             public void run() {
@@ -74,6 +70,8 @@ final class InitiationListener implements PacketListener {
                 }
             }
         });
+
+        return null;
     }
 
     private void processRequest(Packet packet) throws NotConnectedException {
@@ -109,15 +107,6 @@ final class InitiationListener implements PacketListener {
              */
             this.manager.replyRejectPacket(byteStreamRequest);
         }
-    }
-
-    /**
-     * Returns the packet filter for SOCKS5 Bytestream initialization requests.
-     * 
-     * @return the packet filter for SOCKS5 Bytestream initialization requests
-     */
-    protected PacketFilter getFilter() {
-        return this.initFilter;
     }
 
     /**

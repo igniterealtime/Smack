@@ -224,12 +224,12 @@ public abstract class IQ extends Packet {
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
-    public static IQ createErrorResponse(final IQ request, final XMPPError error) {
+    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError error) {
         if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
-        final IQ result = new ErrorIQ(error);
+        final ErrorIQ result = new ErrorIQ(error);
         result.setPacketID(request.getPacketID());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());

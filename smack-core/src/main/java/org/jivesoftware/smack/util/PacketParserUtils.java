@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
@@ -42,6 +41,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.packet.UnparsedIQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
@@ -128,12 +128,8 @@ public class PacketParserUtils {
         return parser;
     }
 
-    public static Packet parseStanza(String stanza) throws Exception {
+    public static Packet parseStanza(String stanza) throws XmlPullParserException, IOException, SmackException {
         return parseStanza(getParserFor(stanza));
-    }
-
-    public static Packet parseStanza(XmlPullParser parser) throws Exception {
-        return parseStanza(parser, null);
     }
 
     /**
@@ -142,18 +138,19 @@ public class PacketParserUtils {
      * connection is optional and is used to return feature-not-implemented errors for unknown IQ stanzas.
      *
      * @param parser
-     * @param connection
      * @return a packet which is either a Message, IQ or Presence.
-     * @throws Exception
+     * @throws XmlPullParserException 
+     * @throws SmackException 
+     * @throws IOException 
      */
-    public static Packet parseStanza(XmlPullParser parser, XMPPConnection connection) throws Exception {
+    public static Packet parseStanza(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
         final String name = parser.getName();
         switch (name) {
         case Message.ELEMENT:
             return parseMessage(parser);
         case IQ.ELEMENT:
-            return parse(parser, connection);
+            return parseIQ(parser);
         case Presence.ELEMENT:
             return parsePresence(parser);
         default:
@@ -597,11 +594,12 @@ public class PacketParserUtils {
      * Parses an IQ packet.
      *
      * @param parser the XML parser, positioned at the start of an IQ packet.
-     * @param connection the optional XMPPConnection used to send feature-not-implemented replies.
      * @return an IQ object.
-     * @throws Exception if an exception occurs while parsing the packet.
+     * @throws XmlPullParserException 
+     * @throws IOException 
+     * @throws SmackException 
      */
-    public static IQ parse(XmlPullParser parser, XMPPConnection connection) throws Exception {
+    public static IQ parseIQ(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         IQ iqPacket = null;
@@ -630,14 +628,12 @@ public class PacketParserUtils {
                     if (provider != null) {
                             iqPacket = provider.parse(parser);
                     }
-                    // Only handle unknown IQs of type result. Types of 'get' and 'set' which are not understood
-                    // have to be answered with an IQ error response. See the code a few lines below
                     // Note that if we reach this code, it is guranteed that the result IQ contained a child element
                     // (RFC 6120 § 8.2.3 6) because otherwhise we would have reached the END_TAG first.
-                    else if (IQ.Type.result == type) {
+                    else {
                         // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
                         // so that the content of the IQ can be examined later on
-                        iqPacket = new UnparsedResultIQ(elementName, namespace, parseElement(parser));
+                        iqPacket = new UnparsedIQ(elementName, namespace, parseElement(parser));
                     }
                     break;
                 }
@@ -652,26 +648,14 @@ public class PacketParserUtils {
         // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
             switch (type) {
-            case get:
-            case set:
-                if (connection == null) {
-                    return null;
-                }
-                // If the IQ stanza is of type "get" or "set" containing a child element qualified
-                // by a namespace with no registered Smack provider, then answer an IQ of type
-                // "error" with code 501 ("feature-not-implemented")
-                iqPacket = new ErrorIQ(new XMPPError(XMPPError.Condition.feature_not_implemented));
-                iqPacket.setPacketID(id);
-                iqPacket.setTo(from);
-                iqPacket.setFrom(to);
-                connection.sendPacket(iqPacket);
-                return null;
             case error:
                 // If an IQ packet wasn't created above, create an empty error IQ packet.
                 iqPacket = new ErrorIQ(error);
                 break;
             case result:
                 iqPacket = new EmptyResultIQ();
+                break;
+            default:
                 break;
             }
         }
@@ -1044,28 +1028,4 @@ public class PacketParserUtils {
         collection.add(packetExtension);
     }
 
-    /**
-     * This class represents and unparsed IQ of the type 'result'. Usually it's created when no IQProvider
-     * was found for the IQ element.
-     * 
-     * The child elements can be examined with the getChildElementXML() method.
-     *
-     */
-    public static class UnparsedResultIQ extends IQ {
-        private UnparsedResultIQ(String element, String namespace, CharSequence content) {
-            super(element, namespace);
-            this.content = content;
-        }
-
-        private final CharSequence content;
-
-        public CharSequence getContent() {
-            return content;
-        }
-
-        @Override
-        protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-            throw new UnsupportedOperationException();
-        }
-    }
 }

@@ -16,13 +16,9 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
-import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 
 /**
@@ -34,14 +30,10 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
  * 
  * @author Henning Staib
  */
-class CloseListener implements PacketListener {
+class CloseListener extends AbstractIqRequestHandler {
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;
-
-    /* packet filter for all In-Band Bytestream close requests */
-    private final PacketFilter closeFilter = new AndFilter(new PacketTypeFilter(
-                    Close.class), IQTypeFilter.SET);
 
     /**
      * Constructor.
@@ -49,30 +41,33 @@ class CloseListener implements PacketListener {
      * @param manager the In-Band Bytestream manager
      */
     protected CloseListener(InBandBytestreamManager manager) {
+        super(Close.ELEMENT, Close.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
     }
 
-    public void processPacket(Packet packet) throws NotConnectedException {
-        Close closeRequest = (Close) packet;
+    @Override
+    public IQ handleIQRequest(IQ iqRequest) {
+        Close closeRequest = (Close) iqRequest;
         InBandBytestreamSession ibbSession = this.manager.getSessions().get(
                         closeRequest.getSessionID());
         if (ibbSession == null) {
-            this.manager.replyItemNotFoundPacket(closeRequest);
+            try {
+                this.manager.replyItemNotFoundPacket(closeRequest);
+            }
+            catch (NotConnectedException e) {
+                return null;
+            }
         }
         else {
-            ibbSession.closeByPeer(closeRequest);
+            try {
+                ibbSession.closeByPeer(closeRequest);
+            }
+            catch (NotConnectedException e) {
+                return null;
+            }
             this.manager.getSessions().remove(closeRequest.getSessionID());
         }
-
-    }
-
-    /**
-     * Returns the packet filter for In-Band Bytestream close requests.
-     * 
-     * @return the packet filter for In-Band Bytestream close requests
-     */
-    protected PacketFilter getFilter() {
-        return this.closeFilter;
+        return null;
     }
 
 }

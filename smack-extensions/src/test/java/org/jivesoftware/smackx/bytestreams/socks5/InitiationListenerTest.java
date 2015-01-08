@@ -86,7 +86,7 @@ public class InitiationListenerTest {
     public void shouldRespondWithError() throws Exception {
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -116,7 +116,7 @@ public class InitiationListenerTest {
         byteStreamManager.addIncomingBytestreamListener(listener);
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -144,7 +144,7 @@ public class InitiationListenerTest {
         byteStreamManager.addIncomingBytestreamListener(listener, initiatorJID);
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -172,7 +172,7 @@ public class InitiationListenerTest {
         byteStreamManager.addIncomingBytestreamListener(listener, "other_" + initiatorJID);
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -210,7 +210,7 @@ public class InitiationListenerTest {
         byteStreamManager.addIncomingBytestreamListener(userRequestsListener, initiatorJID);
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -244,7 +244,7 @@ public class InitiationListenerTest {
                         + initiatorJID);
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -279,7 +279,7 @@ public class InitiationListenerTest {
         byteStreamManager.ignoreBytestreamRequestOnce(sessionID);
 
         // run the listener with the initiation packet
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
@@ -293,7 +293,7 @@ public class InitiationListenerTest {
         verify(allRequestsListener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // run the listener with the initiation packet again
-        initiationListener.processPacket(initBytestream);
+        initiationListener.handleIQRequest(initBytestream);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);

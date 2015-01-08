@@ -35,15 +35,13 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
@@ -65,9 +63,6 @@ public class PingManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
 
     private static final Map<XMPPConnection, PingManager> INSTANCES = new WeakHashMap<XMPPConnection, PingManager>();
-
-    private static final PacketFilter PING_PACKET_FILTER = new AndFilter(
-                    new PacketTypeFilter(Ping.class), IQTypeFilter.GET);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -127,14 +122,13 @@ public class PingManager extends Manager {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);
 
-        connection.addAsyncPacketListener(new PacketListener() {
-            // Send a Pong for every Ping
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(Ping.ELEMENT, Ping.NAMESPACE, Type.get, Mode.async) {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
-                Ping ping = (Ping) packet;
-                connection().sendPacket(ping.getPong());
+            public IQ handleIQRequest(IQ iqRequest) {
+                Ping ping = (Ping) iqRequest;
+                return ping.getPong();
             }
-        }, PING_PACKET_FILTER);
+        });
         connection.addConnectionListener(new AbstractConnectionClosedListener() {
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {

@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -36,6 +38,7 @@ import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -329,7 +332,7 @@ public class RosterTest {
                 .append("</query>")
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
-        final IQ rosterPush = PacketParserUtils.parse(parser, connection);
+        final IQ rosterPush = PacketParserUtils.parseIQ(parser);
         initRoster();
         rosterListener.reset();
 
@@ -369,11 +372,14 @@ public class RosterTest {
         packet.setFrom("mallory@example.com");
         packet.addRosterItem(new Item("spam@example.com", "Cool products!"));
 
-        WaitForPacketListener waitForPacketListener = new WaitForPacketListener();
-        connection.addAsyncPacketListener(waitForPacketListener, null);
+        final String requestId = packet.getPacketID();
         // Simulate receiving the roster push
         connection.processPacket(packet);
-        waitForPacketListener.waitUntilInvocationOrTimeout();
+
+        // Smack should reply with an error IQ
+        ErrorIQ errorIQ = (ErrorIQ) connection.getSentPacket();
+        assertEquals(requestId, errorIQ.getPacketID());
+        assertEquals(Condition.service_unavailable, errorIQ.getError().getCondition());
 
         assertNull("Contact was added to roster", connection.getRoster().getEntry("spam@example.com"));
     }
@@ -465,7 +471,7 @@ public class RosterTest {
                 .append("</query>")
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
-        final IQ rosterPush = PacketParserUtils.parse(parser, connection);
+        final IQ rosterPush = PacketParserUtils.parseIQ(parser);
         initRoster();
         rosterListener.reset();
 

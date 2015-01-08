@@ -61,7 +61,7 @@ public class CloseListenerTest {
         close.setFrom(initiatorJID);
         close.setTo(targetJID);
 
-        closeListener.processPacket(close);
+        closeListener.handleIQRequest(close);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);

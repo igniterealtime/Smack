@@ -21,6 +21,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -564,6 +565,34 @@ public interface XMPPConnection {
      * @param packetFilter the filter to match stanzas or null to match all.
      */
     public void addOneTimeSyncCallback(PacketListener callback, PacketFilter packetFilter);
+
+    /**
+     * Register an IQ request handler with this connection.
+     * <p>
+     * IQ request handler process incoming IQ requests, i.e. incoming IQ stanzas of type 'get' or 'set', and return a result.
+     * </p>
+     * @param iqRequestHandler the IQ request handler to register.
+     * @return the previously registered IQ request handler or null.
+     */
+    public IQRequestHandler registerIQRequestHandler(IQRequestHandler iqRequestHandler);
+
+    /**
+     * Convenience method for {@link #unregisterIQRequestHandler(String, String, org.jivesoftware.smack.packet.IQ.Type)}.
+     *
+     * @param iqRequestHandler
+     * @return the previously registered IQ request handler or null.
+     */
+    public IQRequestHandler unregisterIQRequestHandler(IQRequestHandler iqRequestHandler);
+
+    /**
+     * Unregister an IQ request handler with this connection.
+     * 
+     * @param element the IQ element the IQ request handler is responsible for.
+     * @param namespace the IQ namespace the IQ request handler is responsible for.
+     * @param type the IQ type the IQ request handler is responsible for.
+     * @return the previously registered IQ request handler or null.
+     */
+    public IQRequestHandler unregisterIQRequestHandler(String element, String namespace, IQ.Type type);
 
     /**
      * Returns the timestamp in milliseconds when the last stanza was received.

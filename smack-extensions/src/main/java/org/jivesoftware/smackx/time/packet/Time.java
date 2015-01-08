@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.time.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
 import org.jxmpp.util.XmppDateTime;
 
 import java.util.Calendar;
@@ -123,7 +122,7 @@ public class Time extends IQ {
         this.tzo = tzo;
     }
 
-    public static Time createResponse(Packet request) {
+    public static Time createResponse(IQ request) {
         Time time = new Time(Calendar.getInstance());
         time.setType(Type.result);
         time.setTo(request.getFrom());

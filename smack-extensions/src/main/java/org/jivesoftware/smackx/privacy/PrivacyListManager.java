@@ -37,6 +37,8 @@ import org.jivesoftware.smack.filter.IQResultReplyFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -64,8 +66,6 @@ public class PrivacyListManager extends Manager {
     public static final String NAMESPACE = Privacy.NAMESPACE;
 
     public static final PacketFilter PRIVACY_FILTER = new PacketTypeFilter(Privacy.class);
-
-    private static final PacketFilter PRIVACY_SET = new AndFilter(IQTypeFilter.SET, PRIVACY_FILTER);
 
     private static final PacketFilter PRIVACY_RESULT = new AndFilter(IQTypeFilter.RESULT, PRIVACY_FILTER);
 
@@ -97,10 +97,11 @@ public class PrivacyListManager extends Manager {
 	private PrivacyListManager(XMPPConnection connection) {
         super(connection);
 
-        connection.addSyncPacketListener(new PacketListener() {
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(Privacy.ELEMENT, Privacy.NAMESPACE,
+                        IQ.Type.set, Mode.sync) {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
-                Privacy privacy = (Privacy) packet;
+            public IQ handleIQRequest(IQ iqRequest) {
+                Privacy privacy = (Privacy) iqRequest;
 
                 // Notifies the event to the listeners.
                 for (PrivacyListListener listener : listeners) {
@@ -117,11 +118,9 @@ public class PrivacyListManager extends Manager {
                     }
                 }
 
-                // Send a result package acknowledging the reception of a privacy package.
-                IQ iq = IQ.createResultIQ(privacy);
-                connection().sendPacket(iq);
+                return IQ.createResultIQ(privacy);
             }
-        }, PRIVACY_SET);
+        });
 
         // cached(Active|Default)ListName handling
         connection.addPacketSendingListener(new PacketListener() {
