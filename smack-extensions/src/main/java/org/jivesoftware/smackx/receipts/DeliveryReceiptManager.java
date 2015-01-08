@@ -29,7 +29,10 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -40,8 +43,14 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * automatic DeliveryReceipt transmission.
  *
  * @author Georg Lukas
+ * @see <a href="http://xmpp.org/extensions/xep-0184.html">XEP-0184: Message Delivery Receipts</a>
  */
-public class DeliveryReceiptManager extends Manager implements PacketListener {
+public class DeliveryReceiptManager extends Manager {
+
+    private static final PacketFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(PacketTypeFilter.MESSAGE,
+                    new PacketExtensionFilter(new DeliveryReceiptRequest()));
+    private static final PacketFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(PacketTypeFilter.MESSAGE,
+                    new PacketExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
 
     private static Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<XMPPConnection, DeliveryReceiptManager>();
 
@@ -61,8 +70,31 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
 
-        // register listener for delivery receipts and requests
-        connection.addAsyncPacketListener(this, new PacketExtensionFilter(DeliveryReceipt.NAMESPACE));
+        // Add the packet listener to handling incoming delivery receipts
+        connection.addAsyncPacketListener(new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                DeliveryReceipt dr = DeliveryReceipt.from(packet);
+                // notify listeners of incoming receipt
+                for (ReceiptReceivedListener l : receiptReceivedListeners) {
+                    l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId(), packet);
+                }
+            }
+        }, MESSAGES_WITH_DELIVERY_RECEIPT);
+
+        // Add the packet listener to handle incoming delivery receipt requests
+        connection.addAsyncPacketListener(new PacketListener() {
+            @Override
+            public void processPacket(Packet packet) throws NotConnectedException {
+                // if enabled, automatically send a receipt
+                if (!auto_receipts_enabled) {
+                    return;
+                }
+                Message ack = new Message(packet.getFrom(), Message.Type.normal);
+                ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
+                connection().sendPacket(ack);
+            }
+        }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
     }
 
     /**
@@ -94,29 +126,6 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
     public boolean isSupported(String jid) throws SmackException, XMPPException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
                         DeliveryReceipt.NAMESPACE);
-    }
-
-    // handle incoming receipts and receipt requests
-    @Override
-    public void processPacket(Packet packet) throws NotConnectedException {
-        DeliveryReceipt dr = DeliveryReceipt.from(packet);
-        if (dr != null) {
-            // notify listeners of incoming receipt
-            for (ReceiptReceivedListener l : receiptReceivedListeners) {
-                l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId(), packet);
-            }
-        }
-
-        // if enabled, automatically send a receipt
-        if (auto_receipts_enabled) {
-            DeliveryReceiptRequest drr = DeliveryReceiptRequest.from(packet);
-            if (drr != null) {
-                XMPPConnection connection = connection();
-                Message ack = new Message(packet.getFrom(), Message.Type.normal);
-                ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
-                connection.sendPacket(ack);
-            }
-        }
     }
 
     /**
@@ -170,14 +179,14 @@ public class DeliveryReceiptManager extends Manager implements PacketListener {
     }
 
     /**
-     * Test if a packet requires a delivery receipt.
+     * Test if a message requires a delivery receipt.
      *
-     * @param p Packet object to check for a DeliveryReceiptRequest
+     * @param message Packet object to check for a DeliveryReceiptRequest
      *
      * @return true if a delivery receipt was requested
      */
-    public static boolean hasDeliveryReceiptRequest(Packet p) {
-        return (DeliveryReceiptRequest.from(p) != null);
+    public static boolean hasDeliveryReceiptRequest(Message message) {
+        return (DeliveryReceiptRequest.from(message) != null);
     }
 
     /**
