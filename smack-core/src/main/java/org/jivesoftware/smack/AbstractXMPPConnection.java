@@ -230,7 +230,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * PacketListeners are invoked in the same order the stanzas arrived.
      */
     private final ThreadPoolExecutor executorService = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(connectionCounterValue, "IncomingNotifier"));
+                    new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(connectionCounterValue, "Incoming Processor"));
 
     /**
      * Creates an executor service just as {@link Executors#newCachedThreadPool()} would do, but with a keep alive time
@@ -246,7 +246,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     new SynchronousQueue<Runnable>(),  // workQueue
                     new SmackExecutorThreadFactory(    // threadFactory
                                     connectionCounterValue,
-                                    "CachedExecutor"
+                                    "Cached Executor"
                                     )
                     // @formatter:on
                     );
@@ -257,7 +257,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
      */
     private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor(new SmackExecutorThreadFactory(
-                    getConnectionCounter(), "Sync PacketListener Callback"));
+                    getConnectionCounter(), "Single Threaded Executor"));
 
     private Roster roster;
 
@@ -1375,7 +1375,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     private final ScheduledExecutorService removeCallbacksService = new ScheduledThreadPoolExecutor(1,
-                    new SmackExecutorThreadFactory(connectionCounterValue, "RemoveCallbacks"));
+                    new SmackExecutorThreadFactory(connectionCounterValue, "Remove Callbacks"));
 
     @Override
     public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
