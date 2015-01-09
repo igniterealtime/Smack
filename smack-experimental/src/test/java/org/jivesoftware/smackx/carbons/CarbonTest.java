@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.ExperimentalInitializerTest;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider;
-import org.jivesoftware.smackx.forward.Forwarded;
+import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

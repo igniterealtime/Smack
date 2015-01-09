@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.carbons.packet;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.forward.Forwarded;
+import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 /**
  * Packet extension for XEP-0280: Message Carbons. The extension

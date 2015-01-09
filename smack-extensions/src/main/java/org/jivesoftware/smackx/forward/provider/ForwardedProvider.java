@@ -17,13 +17,16 @@
 package org.jivesoftware.smackx.forward.provider;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.forward.Forwarded;
+import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
+import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -35,24 +38,42 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class ForwardedProvider extends PacketExtensionProvider<Forwarded> {
 
+    private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
+
     @Override
     public Forwarded parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         DelayInformation di = null;
         Packet packet = null;
 
-        boolean done = false;
-        while (!done) {
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("delay"))
-                    di = (DelayInformation)PacketParserUtils.parsePacketExtension(parser.getName(), parser.getNamespace(), parser);
-                else if (parser.getName().equals("message"))
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                String namespace = parser.getNamespace();
+                switch (name) {
+                case DelayInformation.ELEMENT:
+                    if (DelayInformation.NAMESPACE.equals(namespace)) {
+                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth());
+                    } else {
+                        LOGGER.warning("Namespace '" + namespace + "' does not match expected namespace '"
+                                        + DelayInformation.NAMESPACE + "'");
+                    }
+                    break;
+                case Message.ELEMENT:
                     packet = PacketParserUtils.parseMessage(parser);
-                else throw new SmackException("Unsupported forwarded packet type: " + parser.getName());
+                    break;
+                default:
+                    LOGGER.warning("Unsupported forwarded packet type: " + name);
+                }
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
             }
-            else if (eventType == XmlPullParser.END_TAG && parser.getName().equals(Forwarded.ELEMENT))
-                done = true;
         }
+
         if (packet == null)
             throw new SmackException("forwarded extension must contain a packet");
         return new Forwarded(di, packet);

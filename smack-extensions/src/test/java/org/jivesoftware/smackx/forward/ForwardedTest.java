@@ -17,10 +17,13 @@
 package org.jivesoftware.smackx.forward;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
@@ -58,7 +61,34 @@ public class ForwardedTest {
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());
         assertEquals("forwarded", parser.getName());
+    }
 
+    @Test
+    public void forwardedWithDelayTest() throws Exception {
+        XmlPullParser parser;
+        String control;
+        Forwarded fwd;
+
+        // @formatter:off
+        control = XMLBuilder.create("forwarded").a("xmlns", "urn:xmpp:forwarded:0")
+                        .e("message").a("from", "romeo@montague.com").up()
+                        .e("delay").ns(DelayInformation.NAMESPACE).a("stamp", "2010-07-10T23:08:25Z")
+                  .asString(outputProperties);
+        // @formatter:on
+
+        parser = PacketParserUtils.getParserFor(control);
+        fwd = (Forwarded) new ForwardedProvider().parse(parser);
+
+        // assert there is delay information in packet
+        DelayInformation delay = fwd.getDelayInformation();
+        assertNotNull(delay);
+
+        // check message
+        assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());
+
+        // check end of tag
+        assertEquals(XmlPullParser.END_TAG, parser.getEventType());
+        assertEquals("forwarded", parser.getName());
     }
 
     @Test(expected=Exception.class)

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.forward;
+package org.jivesoftware.smackx.forward.packet;
 
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
@@ -22,16 +22,17 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**
- * Packet extension for <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297</a>: Stanza Forwarding.
+ * Packet extension for >XEP-0297: Stanza Forwarding.
  * 
  * @author Georg Lukas
+ * @see <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297: Stanza Forwarding</a>
  */
 public class Forwarded implements PacketExtension {
     public static final String NAMESPACE = "urn:xmpp:forward:0";
     public static final String ELEMENT = "forwarded";
 
-    private DelayInformation delay;
-    private Packet forwardedPacket;
+    private final DelayInformation delay;
+    private final Packet forwardedPacket;
 
     /**
      * Creates a new Forwarded packet extension.
@@ -50,7 +51,7 @@ public class Forwarded implements PacketExtension {
      * @param fwdPacket the packet that is forwarded (required).
      */
     public Forwarded(Packet fwdPacket) {
-        this.forwardedPacket = fwdPacket;
+        this(null, fwdPacket);
     }
 
     @Override
@@ -74,26 +75,6 @@ public class Forwarded implements PacketExtension {
     }
 
     /**
-     * 
-     * @param packet
-     * @return the Forwarded extension or null
-     * @deprecated use {@link #from(Packet)} instead
-     */
-    @Deprecated
-    public static Forwarded getFrom(Packet packet) {
-        return from(packet);
-    }
-
-    /**
-     * 
-     * @param packet
-     * @return the Forwarded extension or null
-     */
-    public static Forwarded from(Packet packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
-    }
-
-    /**
      * get the packet forwarded by this stanza.
      *
      * @return the {@link Packet} instance (typically a message) that was forwarded.
@@ -106,18 +87,17 @@ public class Forwarded implements PacketExtension {
      * get the timestamp of the forwarded packet.
      *
      * @return the {@link DelayInformation} representing the time when the original packet was sent. May be null.
-     * @deprecated Use {@link #getDelayInformation} instead.
-     */
-    public DelayInformation getDelayInfo() {
-        return getDelayInformation();
-    }
-
-    /**
-     * get the timestamp of the forwarded packet.
-     *
-     * @return the {@link DelayInformation} representing the time when the original packet was sent. May be null.
      */
     public DelayInformation getDelayInformation() {
         return delay;
+    }
+
+    /**
+     * 
+     * @param packet
+     * @return the Forwarded extension or null
+     */
+    public static Forwarded from(Packet packet) {
+        return packet.getExtension(ELEMENT, NAMESPACE);
     }
 }

@@ -28,6 +28,8 @@ import org.jxmpp.util.XmppDateTime;
  */
 public class DelayInformationProvider extends AbstractDelayInformationProvider {
 
+    public static final DelayInformationProvider INSTANCE = new DelayInformationProvider();
+
     @Override
     protected Date parseDate(String string) throws ParseException {
         return XmppDateTime.parseXEP0082Date(string);
