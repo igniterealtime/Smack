@@ -18,15 +18,31 @@ package org.jivesoftware.smack.util;
 
 public class Async {
 
-    public static void go(Runnable runnable) {
+    /**
+     * Creates a new thread with the given Runnable, marks it daemon, starts it and returns the started thread.
+     *
+     * @param runnable
+     * @return the started thread.
+     */
+    public static Thread go(Runnable runnable) {
         Thread thread = daemonThreadFrom(runnable);
         thread.start();
+        return thread;
     }
 
-    public static void go(Runnable runnable, String threadName) {
+    /**
+     * Creates a new thread with the given Runnable, marks it daemon, sets the name, starts it and returns the started
+     * thread.
+     *
+     * @param runnable
+     * @param threadName the thread name.
+     * @return the started thread.
+     */
+    public static Thread go(Runnable runnable, String threadName) {
         Thread thread = daemonThreadFrom(runnable);
         thread.setName(threadName);
         thread.start();
+        return thread;
     }
 
     public static Thread daemonThreadFrom(Runnable runnable) {
