@@ -41,6 +41,14 @@ public class MultipleAddresses implements PacketExtension {
         replyroom,
         replyto,
         to,
+
+        /**
+         * The "original from" type used to indicate the real originator of the stanza.
+         * <p>
+         * This Extended Stanza Addressing type is not specified in XEP-33, but in XEP-45 § 7.2.14 (Example 36).
+         * </p>
+         */
+        ofrom,
     }
 
     private List<Address> addresses = new ArrayList<Address>();
