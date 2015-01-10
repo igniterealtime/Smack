@@ -638,6 +638,21 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
+     * Returns true if the server supports the given feature.
+     *
+     * @param feature
+     * @return true if the server supports the given feature.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @since 4.1
+     */
+    public boolean serverSupportsFeature(String feature) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException {
+        return supportsFeature(connection().getServiceName(), feature);
+    }
+
+    /**
      * Queries the remote entity for it's features and returns true if the given feature is found.
      *
      * @param jid the JID of the remote entity

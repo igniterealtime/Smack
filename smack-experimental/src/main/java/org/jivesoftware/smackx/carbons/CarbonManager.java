@@ -104,8 +104,7 @@ public class CarbonManager extends Manager {
      * @throws NoResponseException 
      */
     public boolean isSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
-                        connection().getServiceName(), CarbonExtension.NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(CarbonExtension.NAMESPACE);
     }
 
     /**

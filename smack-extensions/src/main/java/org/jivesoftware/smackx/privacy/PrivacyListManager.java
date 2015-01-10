@@ -547,7 +547,6 @@ public class PrivacyListManager extends Manager {
      * @throws NotConnectedException 
      */
     public boolean isSupported() throws NoResponseException, XMPPErrorException, NotConnectedException{
-        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(
-                        connection().getServiceName(), NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(NAMESPACE);
     }
 }

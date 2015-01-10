@@ -78,7 +78,7 @@ public class OfflineMessageManager {
      * @throws NotConnectedException 
      */
     public boolean supportsFlexibleRetrieval() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(connection.getServiceName(), namespace);
+        return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(namespace);
     }
 
     /**
