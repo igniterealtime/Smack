@@ -166,6 +166,7 @@ public class PacketCollector {
      * until a packet is available or the <tt>timeout</tt> has elapsed. If the
      * timeout elapses without a result, <tt>null</tt> will be returned.
      *
+     * @param timeout the timeout in milliseconds.
      * @return the next available packet.
      */
     @SuppressWarnings("unchecked")
@@ -216,6 +217,16 @@ public class PacketCollector {
         XMPPErrorException.ifHasErrorThenThrow(result);
 
         return result;
+    }
+
+    /**
+     * Get the number of collected stanzas this packet collector has collected so far.
+     * 
+     * @return the count of collected stanzas.
+     * @since 4.1
+     */
+    public int getCollectedCount() {
+        return resultQueue.size();
     }
 
     /**
